@@ -1,0 +1,127 @@
+generator client {
+  provider        = "prisma-client-js"
+  output          = "../lib/generated/prisma"
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─── Tenant (Law Firm) ───────────────────────────────────────────────────────
+
+model Organization {
+  id        String   @id @default(cuid())
+  name      String
+  slug      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  users User[]
+
+  @@map("organizations")
+}
+
+// ─── User ────────────────────────────────────────────────────────────────────
+
+model User {
+  id        String   @id // matches Supabase auth.users.id
+  email     String   @unique
+  name      String?
+  avatarUrl String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  orgId String
+  org   Organization @relation(fields: [orgId], references: [id])
+
+  msAccounts  MsConnectedAccount[]
+  msalCache   MsalTokenCache?
+  deltaLinks  EmailDeltaLink[]
+  webhookSubs WebhookSubscription[]
+  drafts      Draft[]
+
+  @@map("users")
+}
+
+// ─── Microsoft Connected Accounts ────────────────────────────────────────────
+
+model MsConnectedAccount {
+  id            String   @id @default(cuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  homeAccountId String
+  msEmail       String
+  displayName   String?
+  tenantId      String?
+  isDefault     Boolean  @default(false)
+  connectedAt   DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@unique([userId, homeAccountId])
+  @@map("ms_connected_accounts")
+}
+
+// ─── MSAL Token Cache ─────────────────────────────────────────────────────────
+
+model MsalTokenCache {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  cacheJson String   @db.Text
+  updatedAt DateTime @updatedAt
+
+  @@map("msal_token_cache")
+}
+
+// ─── Email Delta Links ────────────────────────────────────────────────────────
+
+model EmailDeltaLink {
+  id            String   @id @default(cuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  homeAccountId String
+  folderId      String
+  deltaToken    String   @db.Text
+  updatedAt     DateTime @updatedAt
+
+  @@unique([userId, homeAccountId, folderId])
+  @@map("email_delta_links")
+}
+
+// ─── Webhook Subscriptions ────────────────────────────────────────────────────
+
+model WebhookSubscription {
+  id             String   @id @default(cuid())
+  userId         String
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  homeAccountId  String
+  subscriptionId String   @unique
+  resource       String
+  expiresAt      DateTime
+  clientState    String
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@map("webhook_subscriptions")
+}
+
+// ─── Drafts ───────────────────────────────────────────────────────────────────
+
+model Draft {
+  id            String   @id @default(cuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  homeAccountId String?
+  toRecipients  Json     @default("[]")
+  ccRecipients  Json     @default("[]")
+  bccRecipients Json     @default("[]")
+  subject       String?
+  bodyHtml      String?  @db.Text
+  attachments   Json     @default("[]")
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@map("drafts")
+}
