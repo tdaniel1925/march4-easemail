@@ -87,11 +87,7 @@ function EmailRow({
       onClick={onClick}
       className="flex items-start gap-3 px-4 py-3.5 cursor-pointer transition-colors"
       style={{
-        backgroundColor: selected
-          ? "rgb(253 235 235)"
-          : !email.isRead
-          ? "rgb(253 235 235)"
-          : "transparent",
+        backgroundColor: selected ? "rgb(253 235 235)" : "transparent",
         borderLeft: selected ? "2px solid rgb(138 9 9)" : "2px solid transparent",
       }}
     >
