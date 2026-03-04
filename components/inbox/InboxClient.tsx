@@ -381,6 +381,8 @@ export default function InboxClient({
   const [loadingEmails, setLoadingEmails] = useState(false);
   const [nextLink, setNextLink] = useState<string | null>(initialNextLink ?? null);
   const [loadingMore, setLoadingMore] = useState(false);
+  const [searchResults, setSearchResults] = useState<EmailMessage[] | null>(null);
+  const [searching, setSearching] = useState(false);
 
   const activeAccount = useAccountStore((s) => s.activeAccount);
   const firstRender = useRef(true);
@@ -434,22 +436,37 @@ export default function InboxClient({
     return () => observer.disconnect();
   }, [loadMore]);
 
-  const selectedEmail = emails.find((e) => e.id === selectedId) ?? null;
+  // Debounced search — hits Graph API after 400ms pause
+  useEffect(() => {
+    const q = search.trim();
+    if (!q) {
+      setSearchResults(null);
+      return;
+    }
+    if (!activeAccount) return;
+    const timer = setTimeout(() => {
+      setSearching(true);
+      fetch(`/api/mail/search?homeAccountId=${encodeURIComponent(activeAccount.homeAccountId)}&q=${encodeURIComponent(q)}`)
+        .then((r) => r.json())
+        .then((data: { emails: EmailMessage[] }) => setSearchResults(data.emails))
+        .catch(console.error)
+        .finally(() => setSearching(false));
+    }, 400);
+    return () => clearTimeout(timer);
+  }, [search, activeAccount?.homeAccountId]);
 
+  const selectedEmail = (searchResults ?? emails).find((e) => e.id === selectedId) ?? null;
+
+  // Tab filters apply to local emails only (not search results)
   const filteredEmails = emails.filter((e) => {
     if (activeTab === "unread" && e.isRead) return false;
     if (activeTab === "starred" && e.flag?.flagStatus !== "flagged") return false;
     if (activeTab === "attachments" && !e.hasAttachments) return false;
-    if (search) {
-      const q = search.toLowerCase();
-      return (
-        e.subject.toLowerCase().includes(q) ||
-        e.from.name.toLowerCase().includes(q) ||
-        e.bodyPreview.toLowerCase().includes(q)
-      );
-    }
     return true;
   });
+
+  // Search mode overrides tab-filtered list
+  const displayEmails = searchResults ?? filteredEmails;
 
   const unreadCount = emails.filter((e) => !e.isRead).length;
 
@@ -483,37 +500,61 @@ export default function InboxClient({
 
           {/* Search */}
           <div className="relative">
-            <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2" style={{ color: "rgb(155 155 155)" }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
+            {searching ? (
+              <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 animate-spin" style={{ color: "rgb(138 9 9)" }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+            ) : (
+              <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2" style={{ color: "rgb(155 155 155)" }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            )}
             <input
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search emails..."
-              className="w-full pl-9 pr-4 py-2 rounded-[10px] text-sm placeholder-neutral-400 focus:outline-none transition-colors border"
-              style={{ backgroundColor: "rgb(245 245 245)", borderColor: "transparent", color: "rgb(58 58 58)" }}
+              placeholder="Search all emails..."
+              className="w-full pl-9 py-2 rounded-[10px] text-sm placeholder-neutral-400 focus:outline-none transition-colors border"
+              style={{ paddingRight: search ? "2rem" : "1rem", backgroundColor: "rgb(245 245 245)", borderColor: "transparent", color: "rgb(58 58 58)" }}
               onFocus={(e) => { e.target.style.backgroundColor = "white"; e.target.style.borderColor = "rgb(218 100 100)"; }}
               onBlur={(e) => { e.target.style.backgroundColor = "rgb(245 245 245)"; e.target.style.borderColor = "transparent"; }}
             />
+            {search && (
+              <button
+                onClick={() => setSearch("")}
+                className="absolute right-2.5 top-1/2 -translate-y-1/2"
+                style={{ color: "rgb(155 155 155)" }}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            )}
           </div>
 
-          {/* Filter tabs */}
-          <div className="flex items-center gap-1 mt-3">
-            {tabs.map((tab) => (
-              <button
-                key={tab.key}
-                onClick={() => setActiveTab(tab.key)}
-                className="px-3 py-1 text-xs font-medium rounded-[10px] transition-colors"
-                style={{
-                  backgroundColor: activeTab === tab.key ? "rgb(253 235 235)" : "transparent",
-                  color: activeTab === tab.key ? "rgb(83 5 5)" : "rgb(115 115 115)",
-                }}
-              >
-                {tab.label}
-              </button>
-            ))}
-          </div>
+          {/* Filter tabs — hidden during search */}
+          {!search && (
+            <div className="flex items-center gap-1 mt-3">
+              {tabs.map((tab) => (
+                <button
+                  key={tab.key}
+                  onClick={() => setActiveTab(tab.key)}
+                  className="px-3 py-1 text-xs font-medium rounded-[10px] transition-colors"
+                  style={{
+                    backgroundColor: activeTab === tab.key ? "rgb(253 235 235)" : "transparent",
+                    color: activeTab === tab.key ? "rgb(83 5 5)" : "rgb(115 115 115)",
+                  }}
+                >
+                  {tab.label}
+                </button>
+              ))}
+            </div>
+          )}
+          {search && searchResults && (
+            <p className="mt-2 text-xs" style={{ color: "rgb(115 115 115)" }}>
+              {searchResults.length} result{searchResults.length !== 1 ? "s" : ""} for &ldquo;{search}&rdquo;
+            </p>
+          )}
         </div>
 
         {/* Email rows */}
@@ -523,12 +564,12 @@ export default function InboxClient({
               <p className="text-xs font-medium" style={{ color: "rgb(138 9 9)" }}>Loading emails…</p>
             </div>
           )}
-          {filteredEmails.length === 0 ? (
+          {displayEmails.length === 0 && !searching ? (
             <div className="flex flex-col items-center justify-center h-32 text-sm" style={{ color: "rgb(155 155 155)" }}>
-              No emails found
+              {search ? `No results for "${search}"` : "No emails found"}
             </div>
           ) : (
-            filteredEmails.map((email) => (
+            displayEmails.map((email) => (
               <EmailRow
                 key={email.id}
                 email={email}
@@ -550,8 +591,8 @@ export default function InboxClient({
             ))
           )}
 
-          {/* Infinite scroll sentinel */}
-          <div ref={sentinelRef} className="h-1" />
+          {/* Infinite scroll sentinel — only active when not searching */}
+          {!search && <div ref={sentinelRef} className="h-1" />}
           {loadingMore && (
             <div className="flex justify-center py-3">
               <p className="text-xs font-medium" style={{ color: "rgb(138 9 9)" }}>Loading more…</p>
