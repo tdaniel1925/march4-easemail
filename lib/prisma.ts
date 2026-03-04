@@ -7,9 +7,13 @@ const globalForPrisma = globalThis as unknown as {
 };
 
 function createPrismaClient() {
-  // Use direct connection (not pgbouncer pooler) — required for the pg driver adapter
-  const connectionString = process.env.DIRECT_URL ?? process.env.DATABASE_URL!;
-  // ssl: rejectUnauthorized false is required for Supabase (which enforces SSL)
+  // ALWAYS use the direct connection string — @prisma/adapter-pg is incompatible
+  // with pgbouncer transaction mode (port 6543). Never fall back to DATABASE_URL.
+  const connectionString = process.env.DIRECT_URL;
+  if (!connectionString) {
+    throw new Error("DIRECT_URL env var is not set. Prisma requires a direct DB connection.");
+  }
+  console.log("[prisma] connecting via DIRECT_URL to", connectionString.replace(/:([^:@]+)@/, ":***@"));
   const pool = new Pool({ connectionString, ssl: { rejectUnauthorized: false } });
   const adapter = new PrismaPg(pool);
   return new PrismaClient({

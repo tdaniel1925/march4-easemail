@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 
 export default function LoginPage() {
   return (
@@ -158,7 +160,9 @@ export default function LoginPage() {
           </div>
 
           {/* Error message */}
-          <ErrorMessage />
+          <Suspense>
+            <ErrorMessage />
+          </Suspense>
 
           {/* Microsoft Sign-In Button */}
           <a
@@ -211,8 +215,22 @@ export default function LoginPage() {
   );
 }
 
-// Separate client-readable error display (searchParams is async in Next 15)
+const ERROR_LABELS: Record<string, string> = {
+  ms_oauth_failed: "Microsoft sign-in was cancelled or failed. Please try again.",
+  session_failed: "Failed to create your session. Please try again.",
+};
+
 function ErrorMessage() {
-  // Static for now — error param handled client-side if needed
-  return null;
+  const params = useSearchParams();
+  const raw = params.get("error");
+  if (!raw) return null;
+  const message = ERROR_LABELS[raw] ?? `Sign-in error: ${raw}`;
+  return (
+    <div
+      className="mb-5 rounded-[10px] px-4 py-3 text-sm text-left"
+      style={{ backgroundColor: "rgb(254 242 242)", border: "1px solid rgb(252 165 165)", color: "rgb(153 27 27)" }}
+    >
+      {message}
+    </div>
+  );
 }

@@ -71,6 +71,7 @@ export async function GET(req: NextRequest) {
     }
 
     // ── 3. Ensure DB user + org ───────────────────────────────────────────────
+    console.log("[auth/callback] Step 3: checking DB for user", supabaseUserId);
     const dbUser = await prisma.user.findUnique({ where: { id: supabaseUserId } });
     if (!dbUser) {
       let org = await prisma.organization.findFirst({ where: { slug: "default" } });
@@ -127,7 +128,13 @@ export async function GET(req: NextRequest) {
     console.log("[auth/callback] Step 5 done, redirecting via magic link");
     return NextResponse.redirect(linkData.properties.action_link);
   } catch (err) {
-    console.error("[auth/callback] FAILED at:", err);
+    const e = err as Error;
+    console.error("[auth/callback] FAILED:", {
+      name: e?.name,
+      message: e?.message,
+      cause: (e as {cause?: unknown})?.cause,
+      stack: e?.stack?.split("\n").slice(0, 4).join("\n"),
+    });
     return NextResponse.redirect(new URL(`/login?error=${encodeURIComponent(String(err))}`, req.url));
   }
 }
