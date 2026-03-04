@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
+import DOMPurify from "dompurify";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -140,9 +141,28 @@ function EmailRow({
   );
 }
 
-function ReadingPane({ email }: { email: EmailMessage | null }) {
+// ─── Safe HTML renderer (DOMPurify sanitization) ─────────────────────────────
+
+function SafeHtml({ html }: { html: string }) {
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (ref.current) {
+      ref.current.innerHTML = DOMPurify.sanitize(html, {
+        FORBID_TAGS: ["script", "style", "iframe", "object", "embed"],
+        FORBID_ATTR: ["onerror", "onload", "onclick", "onmouseover"],
+      });
+    }
+  }, [html]);
+  return <div ref={ref} />;
+}
+
+// ─── Reading Pane ─────────────────────────────────────────────────────────────
+
+function ReadingPane({ email, onMarkRead }: { email: EmailMessage | null; onMarkRead?: (id: string) => void }) {
   const [replyText, setReplyText] = useState("");
   const [replySent, setReplySent] = useState(false);
+  const [replySending, setReplySending] = useState(false);
+  const [replyError, setReplyError] = useState<string | null>(null);
 
   if (!email) {
     return (
@@ -159,12 +179,28 @@ function ReadingPane({ email }: { email: EmailMessage | null }) {
     );
   }
 
-  const handleSendReply = () => {
-    if (!replyText.trim()) return;
-    // TODO: call Graph API to send reply
-    setReplySent(true);
-    setReplyText("");
-    setTimeout(() => setReplySent(false), 3000);
+  const handleSendReply = async () => {
+    if (!replyText.trim() || replySending) return;
+    setReplySending(true);
+    setReplyError(null);
+    try {
+      const res = await fetch("/api/mail/reply", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ messageId: email.id, comment: replyText.trim() }),
+      });
+      if (!res.ok) {
+        const { error } = await res.json();
+        throw new Error(error ?? "Failed to send reply");
+      }
+      setReplySent(true);
+      setReplyText("");
+      setTimeout(() => setReplySent(false), 3000);
+    } catch (e) {
+      setReplyError((e as Error).message);
+    } finally {
+      setReplySending(false);
+    }
   };
 
   return (
@@ -237,7 +273,7 @@ function ReadingPane({ email }: { email: EmailMessage | null }) {
         {/* Body */}
         <div className="text-sm leading-relaxed" style={{ color: "rgb(58 58 58)" }}>
           {email.body?.contentType === "html" ? (
-            <div dangerouslySetInnerHTML={{ __html: email.body.content }} />
+            <SafeHtml html={email.body.content} />
           ) : (
             <pre className="whitespace-pre-wrap font-sans">{email.body?.content ?? email.bodyPreview}</pre>
           )}
@@ -282,19 +318,25 @@ function ReadingPane({ email }: { email: EmailMessage | null }) {
             className="w-full px-4 py-3 min-h-[80px] text-sm resize-none focus:outline-none"
             style={{ color: replyText ? "rgb(38 38 38)" : "rgb(155 155 155)", backgroundColor: "white" }}
           />
+          {replyError && (
+            <div className="px-4 py-2 text-xs" style={{ color: "rgb(153 27 27)", backgroundColor: "rgb(254 242 242)" }}>
+              {replyError}
+            </div>
+          )}
           <div className="flex items-center justify-between px-4 py-3 border-t border-neutral-200" style={{ backgroundColor: "rgb(250 250 250)" }}>
             <div className="flex items-center gap-2">
               <button
                 onClick={handleSendReply}
-                className="flex items-center gap-2 text-white text-xs font-semibold px-4 py-2 rounded-[10px] transition-colors"
+                disabled={replySending || replySent}
+                className="flex items-center gap-2 text-white text-xs font-semibold px-4 py-2 rounded-[10px] transition-colors disabled:opacity-60"
                 style={{ backgroundColor: replySent ? "rgb(16 185 129)" : "rgb(138 9 9)" }}
-                onMouseEnter={(e) => { if (!replySent) e.currentTarget.style.backgroundColor = "rgb(110 7 7)"; }}
-                onMouseLeave={(e) => { if (!replySent) e.currentTarget.style.backgroundColor = "rgb(138 9 9)"; }}
+                onMouseEnter={(e) => { if (!replySent && !replySending) e.currentTarget.style.backgroundColor = "rgb(110 7 7)"; }}
+                onMouseLeave={(e) => { if (!replySent && !replySending) e.currentTarget.style.backgroundColor = "rgb(138 9 9)"; }}
               >
                 <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
                 </svg>
-                {replySent ? "Sent!" : "Send Reply"}
+                {replySending ? "Sending…" : replySent ? "Sent!" : "Send Reply"}
               </button>
             </div>
             <div className="flex items-center gap-1">
@@ -432,6 +474,11 @@ export default function InboxClient({ initialEmails }: { initialEmails: EmailMes
                     setEmails((prev) =>
                       prev.map((e) => (e.id === email.id ? { ...e, isRead: true } : e))
                     );
+                    fetch("/api/mail/mark-read", {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({ messageId: email.id }),
+                    }).catch(console.error);
                   }
                 }}
               />
@@ -441,7 +488,7 @@ export default function InboxClient({ initialEmails }: { initialEmails: EmailMes
       </div>
 
       {/* Reading Pane */}
-      <ReadingPane email={selectedEmail} />
+      <ReadingPane email={selectedEmail} onMarkRead={(id) => setEmails((prev) => prev.map((e) => e.id === id ? { ...e, isRead: true } : e))} />
     </div>
   );
 }
