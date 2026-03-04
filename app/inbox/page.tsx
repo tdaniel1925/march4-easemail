@@ -22,6 +22,7 @@ interface GraphMessage {
 
 interface GraphMessagesResponse {
   value: GraphMessage[];
+  "@odata.nextLink"?: string;
 }
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
@@ -45,6 +46,7 @@ export default async function InboxPage() {
 
   // 3. Fetch emails from Graph API
   let emails: EmailMessage[] = [];
+  let initialNextLink: string | null = null;
   try {
     const data = await graphGet<GraphMessagesResponse>(
       user.id,
@@ -69,6 +71,7 @@ export default async function InboxPage() {
         contentType: (m.body?.contentType as "html" | "text") ?? "text",
       },
     }));
+    initialNextLink = data["@odata.nextLink"] ?? null;
   } catch (err) {
     console.error("Failed to fetch inbox:", err);
     // Show empty inbox rather than crash
@@ -84,7 +87,7 @@ export default async function InboxPage() {
         userEmail={defaultAccount.msEmail}
         unreadCount={unreadCount}
       />
-      <InboxClient initialEmails={emails} />
+      <InboxClient initialEmails={emails} initialNextLink={initialNextLink} />
     </div>
   );
 }

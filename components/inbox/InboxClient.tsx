@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useAccountStore } from "@/lib/stores/account-store";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -367,30 +367,72 @@ function ReadingPane({ email, onMarkRead }: { email: EmailMessage | null; onMark
 
 // ─── Main Client Component ────────────────────────────────────────────────────
 
-export default function InboxClient({ initialEmails }: { initialEmails: EmailMessage[] }) {
+export default function InboxClient({
+  initialEmails,
+  initialNextLink,
+}: {
+  initialEmails: EmailMessage[];
+  initialNextLink?: string | null;
+}) {
   const [emails, setEmails] = useState<EmailMessage[]>(initialEmails);
   const [selectedId, setSelectedId] = useState<string | null>(initialEmails[0]?.id ?? null);
   const [activeTab, setActiveTab] = useState<FilterTab>("all");
   const [search, setSearch] = useState("");
   const [loadingEmails, setLoadingEmails] = useState(false);
+  const [nextLink, setNextLink] = useState<string | null>(initialNextLink ?? null);
+  const [loadingMore, setLoadingMore] = useState(false);
 
   const activeAccount = useAccountStore((s) => s.activeAccount);
   const firstRender = useRef(true);
+  const sentinelRef = useRef<HTMLDivElement>(null);
 
+  // Account switch: reload from scratch
   useEffect(() => {
     if (firstRender.current) { firstRender.current = false; return; }
     if (!activeAccount) return;
     setLoadingEmails(true);
     setSelectedId(null);
+    setNextLink(null);
     fetch(`/api/mail/inbox?homeAccountId=${encodeURIComponent(activeAccount.homeAccountId)}`)
       .then((r) => r.json())
-      .then((data: { emails: EmailMessage[] }) => {
+      .then((data: { emails: EmailMessage[]; nextLink: string | null }) => {
         setEmails(data.emails);
         setSelectedId(data.emails[0]?.id ?? null);
+        setNextLink(data.nextLink ?? null);
       })
       .catch(console.error)
       .finally(() => setLoadingEmails(false));
   }, [activeAccount?.homeAccountId]);
+
+  // Infinite scroll: load next page
+  const loadMore = useCallback(async () => {
+    if (!nextLink || loadingMore || !activeAccount) return;
+    setLoadingMore(true);
+    try {
+      const res = await fetch(
+        `/api/mail/inbox?homeAccountId=${encodeURIComponent(activeAccount.homeAccountId)}&nextLink=${encodeURIComponent(nextLink)}`
+      );
+      const data: { emails: EmailMessage[]; nextLink: string | null } = await res.json();
+      setEmails((prev) => [...prev, ...data.emails]);
+      setNextLink(data.nextLink ?? null);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLoadingMore(false);
+    }
+  }, [nextLink, loadingMore, activeAccount]);
+
+  // IntersectionObserver watches sentinel at bottom of list
+  useEffect(() => {
+    const sentinel = sentinelRef.current;
+    if (!sentinel) return;
+    const observer = new IntersectionObserver(
+      (entries) => { if (entries[0].isIntersecting) loadMore(); },
+      { rootMargin: "200px" }
+    );
+    observer.observe(sentinel);
+    return () => observer.disconnect();
+  }, [loadMore]);
 
   const selectedEmail = emails.find((e) => e.id === selectedId) ?? null;
 
@@ -506,6 +548,14 @@ export default function InboxClient({ initialEmails }: { initialEmails: EmailMes
                 }}
               />
             ))
+          )}
+
+          {/* Infinite scroll sentinel */}
+          <div ref={sentinelRef} className="h-1" />
+          {loadingMore && (
+            <div className="flex justify-center py-3">
+              <p className="text-xs font-medium" style={{ color: "rgb(138 9 9)" }}>Loading more…</p>
+            </div>
           )}
         </div>
       </div>

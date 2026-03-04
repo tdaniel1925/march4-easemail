@@ -3,6 +3,10 @@ import { createClient } from "@/lib/supabase/server";
 import { graphGet } from "@/lib/microsoft/graph";
 import type { EmailMessage } from "@/components/inbox/InboxClient";
 
+const GRAPH_BASE = "https://graph.microsoft.com/v1.0";
+const DEFAULT_PATH =
+  "/me/mailFolders/inbox/messages?$top=50&$select=id,subject,bodyPreview,receivedDateTime,isRead,hasAttachments,flag,from,body&$orderby=receivedDateTime desc";
+
 interface GraphMessage {
   id: string;
   subject: string;
@@ -15,21 +19,13 @@ interface GraphMessage {
   body: { content: string; contentType: string };
 }
 
-export async function GET(req: NextRequest) {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+interface GraphMessagesResponse {
+  value: GraphMessage[];
+  "@odata.nextLink"?: string;
+}
 
-  const homeAccountId = req.nextUrl.searchParams.get("homeAccountId");
-  if (!homeAccountId) return NextResponse.json({ error: "homeAccountId required" }, { status: 400 });
-
-  const data = await graphGet<{ value: GraphMessage[] }>(
-    user.id,
-    homeAccountId,
-    "/me/mailFolders/inbox/messages?$top=50&$select=id,subject,bodyPreview,receivedDateTime,isRead,hasAttachments,flag,from,body&$orderby=receivedDateTime desc"
-  );
-
-  const emails: EmailMessage[] = data.value.map((m) => ({
+function mapMessage(m: GraphMessage): EmailMessage {
+  return {
     id: m.id,
     subject: m.subject ?? "(no subject)",
     bodyPreview: m.bodyPreview ?? "",
@@ -45,7 +41,31 @@ export async function GET(req: NextRequest) {
       content: m.body?.content ?? m.bodyPreview ?? "",
       contentType: (m.body?.contentType as "html" | "text") ?? "text",
     },
-  }));
+  };
+}
 
-  return NextResponse.json({ emails });
+export async function GET(req: NextRequest) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  const homeAccountId = req.nextUrl.searchParams.get("homeAccountId");
+  if (!homeAccountId) return NextResponse.json({ error: "homeAccountId required" }, { status: 400 });
+
+  // Support pagination: if nextLink param is provided, use it instead of the default path
+  const nextLinkParam = req.nextUrl.searchParams.get("nextLink");
+  const path = nextLinkParam
+    ? nextLinkParam.startsWith(GRAPH_BASE)
+      ? nextLinkParam.slice(GRAPH_BASE.length)
+      : nextLinkParam
+    : DEFAULT_PATH;
+
+  const data = await graphGet<GraphMessagesResponse>(user.id, homeAccountId, path);
+
+  const emails = data.value.map(mapMessage);
+
+  return NextResponse.json({
+    emails,
+    nextLink: data["@odata.nextLink"] ?? null,
+  });
 }
