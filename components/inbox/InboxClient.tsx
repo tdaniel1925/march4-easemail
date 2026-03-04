@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { useAccountStore } from "@/lib/stores/account-store";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -375,6 +376,25 @@ export default function InboxClient({ initialEmails }: { initialEmails: EmailMes
   const [selectedId, setSelectedId] = useState<string | null>(initialEmails[0]?.id ?? null);
   const [activeTab, setActiveTab] = useState<FilterTab>("all");
   const [search, setSearch] = useState("");
+  const [loadingEmails, setLoadingEmails] = useState(false);
+
+  const activeAccount = useAccountStore((s) => s.activeAccount);
+  const firstRender = useRef(true);
+
+  useEffect(() => {
+    if (firstRender.current) { firstRender.current = false; return; }
+    if (!activeAccount) return;
+    setLoadingEmails(true);
+    setSelectedId(null);
+    fetch(`/api/mail/inbox?homeAccountId=${encodeURIComponent(activeAccount.homeAccountId)}`)
+      .then((r) => r.json())
+      .then((data: { emails: EmailMessage[] }) => {
+        setEmails(data.emails);
+        setSelectedId(data.emails[0]?.id ?? null);
+      })
+      .catch(console.error)
+      .finally(() => setLoadingEmails(false));
+  }, [activeAccount?.homeAccountId]);
 
   const selectedEmail = emails.find((e) => e.id === selectedId) ?? null;
 
@@ -459,7 +479,12 @@ export default function InboxClient({ initialEmails }: { initialEmails: EmailMes
         </div>
 
         {/* Email rows */}
-        <div className="flex-1 overflow-y-auto divide-y divide-neutral-100">
+        <div className="flex-1 overflow-y-auto divide-y divide-neutral-100 relative">
+          {loadingEmails && (
+            <div className="absolute inset-0 flex items-center justify-center z-10" style={{ backgroundColor: "rgba(255,255,255,0.80)" }}>
+              <p className="text-xs font-medium" style={{ color: "rgb(138 9 9)" }}>Loading emails…</p>
+            </div>
+          )}
           {filteredEmails.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-32 text-sm" style={{ color: "rgb(155 155 155)" }}>
               No emails found

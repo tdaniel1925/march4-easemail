@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { graphGet } from "@/lib/microsoft/graph";
 import Sidebar from "@/components/Sidebar";
 import InboxClient, { type EmailMessage } from "@/components/inbox/InboxClient";
+import { StoreInitializer } from "@/components/StoreInitializer";
 
 // ─── Graph API response shapes ───────────────────────────────────────────────
 
@@ -31,19 +32,15 @@ export default async function InboxPage() {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  // 2. Load user + connected accounts from DB
+  // 2. Load user + ALL connected accounts from DB
   const dbUser = await prisma.user.findUnique({
     where: { id: user.id },
-    include: { msAccounts: { where: { isDefault: true } } },
+    include: { msAccounts: { orderBy: { isDefault: "desc" } } },
   });
 
-  // If no user row yet (first login via Supabase), create one
-  if (!dbUser) {
-    // Redirect to onboarding/connect page
-    redirect("/onboarding");
-  }
+  if (!dbUser) redirect("/onboarding");
 
-  const defaultAccount = dbUser.msAccounts[0];
+  const defaultAccount = dbUser.msAccounts.find((a) => a.isDefault) ?? dbUser.msAccounts[0];
   if (!defaultAccount) redirect("/onboarding");
 
   // 3. Fetch emails from Graph API
@@ -81,6 +78,7 @@ export default async function InboxPage() {
 
   return (
     <div className="flex" style={{ height: "100vh", overflow: "hidden" }}>
+      <StoreInitializer accounts={dbUser.msAccounts} />
       <Sidebar
         userName={dbUser.name ?? user.email ?? "You"}
         userEmail={defaultAccount.msEmail}

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import AccountSwitcher from "@/components/AccountSwitcher";
 
 interface SidebarProps {
   userName?: string;
@@ -110,6 +111,9 @@ export default function Sidebar({ userName = "You", userEmail = "", unreadCount 
         </div>
         <span className="font-semibold text-lg" style={{ color: "rgb(27 29 29)" }}>EaseMail</span>
       </div>
+
+      {/* Account Switcher */}
+      <AccountSwitcher />
 
       {/* Compose Button */}
       <div className="px-4 py-4 flex-shrink-0">

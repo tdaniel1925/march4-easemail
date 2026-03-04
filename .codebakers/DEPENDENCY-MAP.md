@@ -1,6 +1,6 @@
 # CodeBakers Dependency Map
 # GENERATED — never edit by hand. Run `pnpm dep:map` to regenerate.
-# Last generated: 2026-03-04 | git: ecb626c
+# Last generated: 2026-03-04 | git: 041318d
 # Debug: pnpm dep:map --debug
 
 ---
@@ -9,23 +9,54 @@
 
 | Entity | Stores | Components | Hooks | Active State Field | Last-Item Behavior |
 |--------|--------|------------|-------|-------------------|-------------------|
+| AccountStore | useAccountStore | AccountSwitcher, InboxClient, StoreInitializer | — | — | — (set manually) |
+| Color | useAccountSwitcher, useInboxClient, useSidebar | — | — | — | — (set manually) |
 | ComponentFile | useGenerateDepMap | — | — | — | — (set manually) |
+| ConnectedAccount | useStoreInitializer, useAccountStore | AccountSwitcher, InboxClient, StoreInitializer | — | — | — (set manually) |
+| EmailMessage | useInboxClient | — | — | — | — (set manually) |
 | EntityMap | useGenerateDepMap | — | — | — | — (set manually) |
+| FilterTab | useInboxClient | — | — | — | — (set manually) |
+| SidebarProps | useSidebar | — | — | — | — (set manually) |
 | StoreFile | useGenerateDepMap | — | — | — | — (set manually) |
+| Target | useAccountSwitcher, useInboxClient, useSidebar | — | — | — | — (set manually) |
 
 ---
 
 ## Store Inventory
 
+### useAccountStore
+File: `lib\stores\account-store.ts`
+Entities: ConnectedAccount, AccountStore
+
+### useAccountSwitcher
+File: `components\AccountSwitcher.tsx`
+Entities: Color, Target
+
 ### useGenerateDepMap
 File: `scripts\generate-dep-map.ts`
 Entities: StoreFile, ComponentFile, EntityMap
+
+### useInboxClient
+File: `components\inbox\InboxClient.tsx`
+Entities: EmailMessage, FilterTab, Color, Target
+
+### useSidebar
+File: `components\Sidebar.tsx`
+Entities: SidebarProps, Color, Target
+
+### useStoreInitializer
+File: `components\StoreInitializer.tsx`
+Entities: ConnectedAccount
 
 ---
 
 ## Component → Store Usage
 
-*No store-connected components found yet.*
+| Component | File | Stores Used |
+|-----------|------|-------------|
+| AccountSwitcher | `components\AccountSwitcher.tsx` | useAccountStore |
+| InboxClient | `components\inbox\InboxClient.tsx` | useAccountStore |
+| StoreInitializer | `components\StoreInitializer.tsx` | useAccountStore |
 
 ---
 
