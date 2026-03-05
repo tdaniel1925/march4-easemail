@@ -10,7 +10,7 @@ export default function LoginPage() {
 
       {/* ── LEFT PANEL — Branding ─────────────────────────────────────────── */}
       <div
-        className="hidden lg:flex flex-col w-1/2 xl:w-5/12 px-10 py-8 relative overflow-y-auto flex-shrink-0"
+        className="hidden lg:flex flex-col w-1/2 xl:w-5/12 px-10 py-8 relative overflow-hidden flex-shrink-0"
         style={{
           height: "100vh",
           backgroundColor: "rgb(138 9 9)",
