@@ -1771,7 +1771,7 @@ export default function ComposeClient({
                     <span className="text-xs text-neutral-400 ml-auto">{dictateFormatted.trim().split(/\s+/).filter(Boolean).length} words</span>
                   </div>
                   <div className="bg-background-100 border border-neutral-200 rounded-large p-4 shadow-custom" style={{ minHeight: 160, maxHeight: 400, overflowY: "auto" }}>
-                    <pre className="text-sm text-neutral-800 leading-relaxed whitespace-pre-wrap font-sans">{dictateFormatted}</pre>
+                    <div className="text-sm text-neutral-800 leading-relaxed" dangerouslySetInnerHTML={{ __html: remixTextToHtml(dictateFormatted) }} />
                   </div>
                   {dictateFormatError && (
                     <p className="mt-2 text-xs text-primary-700 bg-primary-50 border border-primary-200 rounded-small px-3 py-2">{dictateFormatError}</p>
@@ -1830,6 +1830,16 @@ export default function ComposeClient({
 
                 {dictateError && (
                   <p className="mt-2 text-xs text-primary-700 bg-primary-50 border border-primary-200 rounded-small px-3 py-2">{dictateError}</p>
+                )}
+
+                {!sigName && (
+                  <p className="mt-2 flex items-center gap-1.5 text-xs text-neutral-400">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    No signature set —{" "}
+                    <a href="/signatures" className="underline hover:text-neutral-600 transition-colors">add one in Signatures →</a>
+                  </p>
                 )}
               </div>
 
