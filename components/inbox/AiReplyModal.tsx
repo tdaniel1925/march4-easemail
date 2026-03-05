@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import type { EmailMessage } from "./InboxClient";
+import type { EmailMessage } from "@/lib/types/email";
 import type { AiReplyResponse } from "@/app/api/mail/ai-reply/route";
 
 const URGENCY_CONFIG = {
