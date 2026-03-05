@@ -421,16 +421,24 @@ export default function TeamsClient({ userName, userEmail }: TeamsClientProps) {
                 </div>
               )}
               {!chatsLoading && chatsError === "reauth" && (
-                <div className="px-4 py-6 text-center">
-                  <p className="text-sm mb-3" style={{ color: "rgb(115 115 115)" }}>
-                    Teams access requires reconnecting your account with new permissions.
-                  </p>
+                <div className="px-4 py-8 text-center flex flex-col items-center gap-3">
+                  <div className="w-10 h-10 rounded-[10px] flex items-center justify-center" style={{ backgroundColor: "rgb(237 233 254)" }}>
+                    <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} style={{ color: "rgb(76 29 149)" }}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium mb-1" style={{ color: "rgb(27 29 29)" }}>Teams permissions needed</p>
+                    <p className="text-xs" style={{ color: "rgb(115 115 115)" }}>
+                      Grant access to enable chats, channels, and presence.
+                    </p>
+                  </div>
                   <a
-                    href="/accounts"
-                    className="text-sm font-medium px-3 py-1.5 rounded-[8px] inline-block"
-                    style={{ backgroundColor: "rgb(253 235 235)", color: "rgb(138 9 9)" }}
+                    href="/api/auth/microsoft/teams-consent"
+                    className="text-sm font-semibold px-4 py-2 rounded-[8px] inline-block transition-colors"
+                    style={{ backgroundColor: "rgb(76 29 149)", color: "white" }}
                   >
-                    Reconnect account
+                    Grant Teams Access
                   </a>
                 </div>
               )}
@@ -488,16 +496,24 @@ export default function TeamsClient({ userName, userEmail }: TeamsClientProps) {
                 </div>
               )}
               {!teamsLoading && teamsError === "reauth" && (
-                <div className="px-4 py-6 text-center">
-                  <p className="text-sm mb-3" style={{ color: "rgb(115 115 115)" }}>
-                    Teams access requires reconnecting your account with new permissions.
-                  </p>
+                <div className="px-4 py-8 text-center flex flex-col items-center gap-3">
+                  <div className="w-10 h-10 rounded-[10px] flex items-center justify-center" style={{ backgroundColor: "rgb(237 233 254)" }}>
+                    <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} style={{ color: "rgb(76 29 149)" }}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium mb-1" style={{ color: "rgb(27 29 29)" }}>Teams permissions needed</p>
+                    <p className="text-xs" style={{ color: "rgb(115 115 115)" }}>
+                      Grant access to enable chats, channels, and presence.
+                    </p>
+                  </div>
                   <a
-                    href="/accounts"
-                    className="text-sm font-medium px-3 py-1.5 rounded-[8px] inline-block"
-                    style={{ backgroundColor: "rgb(253 235 235)", color: "rgb(138 9 9)" }}
+                    href="/api/auth/microsoft/teams-consent"
+                    className="text-sm font-semibold px-4 py-2 rounded-[8px] inline-block transition-colors"
+                    style={{ backgroundColor: "rgb(76 29 149)", color: "white" }}
                   >
-                    Reconnect account
+                    Grant Teams Access
                   </a>
                 </div>
               )}

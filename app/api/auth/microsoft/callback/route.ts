@@ -36,6 +36,26 @@ export async function GET(req: NextRequest) {
   try {
     const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:4000";
 
+    // ── TEAMS CONSENT FLOW ───────────────────────────────────────────────────
+    // Incremental consent: re-exchanges code for a token with Teams scopes,
+    // updates the MSAL cache, then redirects to /teams. No account changes.
+    if (state.startsWith("teams_consent:")) {
+      const userId = state.slice("teams_consent:".length);
+      if (!userId) throw new Error("Invalid teams_consent state — missing userId");
+
+      console.log("[auth/callback] TEAMS_CONSENT flow for userId:", userId);
+
+      const msal = createMsalClient(userId);
+      await msal.acquireTokenByCode({
+        code,
+        scopes: GRAPH_SCOPES,
+        redirectUri: process.env.MICROSOFT_REDIRECT_URI!,
+      });
+
+      console.log("[auth/callback] TEAMS_CONSENT: cache updated, redirecting to /teams");
+      return NextResponse.redirect(new URL("/teams", appUrl));
+    }
+
     // ── ADD ACCOUNT FLOW ─────────────────────────────────────────────────────
     if (state.startsWith("add:")) {
       const userId = state.slice(4);
