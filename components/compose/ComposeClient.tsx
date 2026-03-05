@@ -42,7 +42,7 @@ interface ISpeechRecognitionResult {
 
 type Tone = "professional" | "casual" | "persuasive" | "concise";
 type Length = "shorter" | "same" | "longer";
-type ActivePanel = "remix" | "dictate" | null;
+type ActivePanel = "remix" | "dictate" | "voice" | null;
 
 const STYLE_PRESETS = [
   "Executive Brief",
@@ -142,6 +142,18 @@ export default function ComposeClient({
   const recognitionRef = useRef<ISpeechRecognition | null>(null);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
+  // ── Voice Message state ──────────────────────────────────────────────────────
+  const [voiceBlob, setVoiceBlob] = useState<Blob | null>(null);
+  const [voiceUrl, setVoiceUrl] = useState<string | null>(null);
+  const [voiceRecording, setVoiceRecording] = useState(false);
+  const [voiceTime, setVoiceTime] = useState(0);
+  const [voiceDuration, setVoiceDuration] = useState(0);
+  const [voiceError, setVoiceError] = useState<string | null>(null);
+  const voiceRecorderRef = useRef<MediaRecorder | null>(null);
+  const voiceChunksRef = useRef<Blob[]>([]);
+  const voiceTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const voiceTimeRef = useRef(0);
+
   // ── Draft indicator ─────────────────────────────────────────────────────────
   const onBodyChange = useCallback(() => {
     setDraftSaved(false);
@@ -191,6 +203,15 @@ export default function ComposeClient({
     setSendError(null);
     try {
       const bodyHtml = bodyRef.current?.innerHTML ?? "";
+      let voiceAttachment: { name: string; contentType: string; data: string } | undefined;
+      if (voiceBlob) {
+        const buf = await voiceBlob.arrayBuffer();
+        const bytes = new Uint8Array(buf);
+        let binary = "";
+        for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
+        const ext = voiceBlob.type.includes("ogg") ? "ogg" : "webm";
+        voiceAttachment = { name: `voice-message.${ext}`, contentType: voiceBlob.type, data: btoa(binary) };
+      }
       const res = await fetch("/api/mail/send", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -200,6 +221,7 @@ export default function ComposeClient({
           bcc: bcc.map((addr) => ({ emailAddress: { address: addr } })),
           subject,
           body: { contentType: "HTML", content: bodyHtml },
+          ...(voiceAttachment ? { attachment: voiceAttachment } : {}),
         }),
       });
       if (!res.ok) {
@@ -316,6 +338,64 @@ export default function ComposeClient({
     const m = Math.floor(secs / 60);
     const s = secs % 60;
     return `${m}:${s.toString().padStart(2, "0")}`;
+  }
+
+  // ── Voice recording helpers ──────────────────────────────────────────────────
+  async function startVoiceRecording() {
+    setVoiceError(null);
+    setVoiceBlob(null);
+    if (voiceUrl) { URL.revokeObjectURL(voiceUrl); setVoiceUrl(null); }
+    setVoiceTime(0);
+    setVoiceDuration(0);
+    voiceTimeRef.current = 0;
+    voiceChunksRef.current = [];
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const mimeType = (typeof MediaRecorder !== "undefined" && MediaRecorder.isTypeSupported("audio/webm;codecs=opus"))
+        ? "audio/webm;codecs=opus"
+        : (typeof MediaRecorder !== "undefined" && MediaRecorder.isTypeSupported("audio/ogg;codecs=opus"))
+          ? "audio/ogg;codecs=opus"
+          : "audio/webm";
+      const recorder = new MediaRecorder(stream, { mimeType });
+      voiceRecorderRef.current = recorder;
+      recorder.ondataavailable = (e) => { if (e.data.size > 0) voiceChunksRef.current.push(e.data); };
+      recorder.onstop = () => {
+        stream.getTracks().forEach((t) => t.stop());
+        const baseType = mimeType.split(";")[0];
+        const blob = new Blob(voiceChunksRef.current, { type: baseType });
+        setVoiceBlob(blob);
+        setVoiceUrl(URL.createObjectURL(blob));
+      };
+      recorder.start(1000);
+      setVoiceRecording(true);
+      voiceTimerRef.current = setInterval(() => {
+        voiceTimeRef.current += 1;
+        setVoiceTime(voiceTimeRef.current);
+        if (voiceTimeRef.current >= 600) stopVoiceRecording();
+      }, 1000);
+    } catch {
+      setVoiceError("Microphone access denied. Allow microphone access in your browser settings.");
+    }
+  }
+
+  function stopVoiceRecording() {
+    if (voiceTimerRef.current) { clearInterval(voiceTimerRef.current); voiceTimerRef.current = null; }
+    if (voiceRecorderRef.current && voiceRecorderRef.current.state !== "inactive") {
+      setVoiceDuration(voiceTimeRef.current);
+      voiceRecorderRef.current.stop();
+      voiceRecorderRef.current = null;
+    }
+    setVoiceRecording(false);
+  }
+
+  function clearVoiceRecording() {
+    stopVoiceRecording();
+    setVoiceBlob(null);
+    if (voiceUrl) { URL.revokeObjectURL(voiceUrl); setVoiceUrl(null); }
+    setVoiceTime(0);
+    setVoiceDuration(0);
+    voiceTimeRef.current = 0;
+    voiceChunksRef.current = [];
   }
 
   // Cleanup on unmount
@@ -524,6 +604,18 @@ export default function ComposeClient({
                 <span className="bg-white bg-opacity-20 text-white text-xs px-1.5 py-0.5 rounded-small font-medium">Speak</span>
               </button>
 
+              <button
+                onClick={() => setActivePanel(activePanel === "voice" ? null : "voice")}
+                className="flex items-center gap-2 text-white font-semibold text-xs py-2 px-3.5 rounded-small transition-all flex-shrink-0"
+                style={{ backgroundColor: voiceBlob ? "rgb(21 128 61)" : "rgb(138 9 9)" }}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+                </svg>
+                Voice Message
+                {voiceBlob && <span className="bg-white bg-opacity-20 text-white text-xs px-1.5 py-0.5 rounded-small font-medium">Attached</span>}
+              </button>
+
               <div className="ml-auto flex items-center gap-1.5">
                 <span className="text-xs text-neutral-400">Powered by</span>
                 <span className="text-xs font-semibold text-primary-600 bg-primary-50 border border-primary-100 px-2 py-0.5 rounded-small">EaseMail AI</span>
@@ -592,6 +684,37 @@ export default function ComposeClient({
               }}
             />
           </div>
+
+          {/* VOICE ATTACHMENT CHIP */}
+          {voiceBlob && (
+            <div className="px-6 py-3 border-t border-neutral-200 bg-background-50 flex-shrink-0">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-small flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "rgb(220 252 231)" }}>
+                  <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" style={{ color: "rgb(21 128 61)" }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
+                  </svg>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs font-semibold" style={{ color: "rgb(27 29 29)" }}>Voice Message</p>
+                  <p className="text-xs" style={{ color: "rgb(115 115 115)" }}>
+                    {formatTime(voiceDuration)} · {voiceBlob.size < 1024 * 1024 ? `${Math.round(voiceBlob.size / 1024)} KB` : `${(voiceBlob.size / (1024 * 1024)).toFixed(1)} MB`} · will be attached to email
+                  </p>
+                </div>
+                <button
+                  onClick={clearVoiceRecording}
+                  className="p-1.5 rounded-small transition-colors"
+                  style={{ color: "rgb(155 155 155)" }}
+                  onMouseEnter={(e) => { e.currentTarget.style.color = "rgb(138 9 9)"; e.currentTarget.style.backgroundColor = "rgb(253 235 235)"; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.color = "rgb(155 155 155)"; e.currentTarget.style.backgroundColor = "transparent"; }}
+                  title="Remove voice attachment"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          )}
 
           {/* FOOTER / SEND BAR */}
           <div className="flex items-center justify-between px-6 py-4 border-t border-neutral-200 bg-background-50 flex-shrink-0">
@@ -1178,6 +1301,173 @@ export default function ComposeClient({
                     <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                   </svg>
                   Insert into Email
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── VOICE MESSAGE PANEL (right slide-in) ───────────────────────────────── */}
+      {activePanel === "voice" && (
+        <div className="absolute inset-0 z-20 flex">
+          {/* Dimmed left area */}
+          <div className="flex-1 overlay-bg" onClick={() => { if (!voiceRecording) setActivePanel(null); }} />
+
+          {/* Voice panel */}
+          <div className="w-full max-w-md bg-background-50 border-l border-neutral-200 flex flex-col shadow-custom-hover overflow-hidden" style={{ height: "100%" }}>
+
+            {/* Header */}
+            <div className="flex items-center justify-between px-6 py-4 border-b border-neutral-200 flex-shrink-0">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-small flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "rgb(138 9 9)" }}>
+                  <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+                  </svg>
+                </div>
+                <div>
+                  <h2 className="font-heading font-semibold text-neutral-900 text-base leading-tight">Voice Message</h2>
+                  <div className="flex items-center gap-1.5">
+                    {voiceRecording && <span className="timer-dot w-1.5 h-1.5 rounded-full bg-primary-500 flex-shrink-0" />}
+                    <span className="text-xs text-neutral-500">
+                      {voiceRecording ? `Recording — ${formatTime(voiceTime)} / 10:00` : voiceBlob ? `Recorded · ${formatTime(voiceDuration)}` : "Up to 10 minutes"}
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <button
+                onClick={() => { if (!voiceRecording) setActivePanel(null); }}
+                disabled={voiceRecording}
+                className="p-1.5 text-neutral-400 hover:text-neutral-600 hover:bg-neutral-100 rounded-small transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            {/* Scrollable content */}
+            <div className="flex-1 overflow-y-auto">
+
+              {/* Waveform / visual */}
+              <div className="px-6 py-6 border-b border-neutral-200 bg-background-50 flex flex-col items-center gap-4">
+                {/* Progress ring / timer */}
+                <div className="relative flex items-center justify-center">
+                  <svg className="w-28 h-28 -rotate-90" viewBox="0 0 120 120">
+                    <circle cx="60" cy="60" r="52" fill="none" stroke="rgb(229 229 229)" strokeWidth="6" />
+                    <circle
+                      cx="60" cy="60" r="52" fill="none"
+                      stroke={voiceRecording ? "rgb(138 9 9)" : voiceBlob ? "rgb(21 128 61)" : "rgb(212 212 212)"}
+                      strokeWidth="6"
+                      strokeLinecap="round"
+                      strokeDasharray={`${2 * Math.PI * 52}`}
+                      strokeDashoffset={`${2 * Math.PI * 52 * (1 - (voiceBlob ? voiceDuration : voiceTime) / 600)}`}
+                      style={{ transition: "stroke-dashoffset 1s linear, stroke 0.3s" }}
+                    />
+                  </svg>
+                  <div className="absolute flex flex-col items-center">
+                    <span className="text-2xl font-semibold font-heading" style={{ color: voiceRecording ? "rgb(138 9 9)" : "rgb(27 29 29)" }}>
+                      {formatTime(voiceBlob ? voiceDuration : voiceTime)}
+                    </span>
+                    <span className="text-xs" style={{ color: "rgb(115 115 115)" }}>
+                      {voiceRecording ? "recording" : voiceBlob ? "recorded" : "ready"}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Waveform bars */}
+                <div className="flex items-center justify-center gap-1 h-8 w-full">
+                  {Array.from({ length: 24 }).map((_, i) => (
+                    voiceRecording ? (
+                      <div key={i} className="wave-bar" style={{ height: `${6 + Math.random() * 18}px` }} />
+                    ) : (
+                      <div key={i} className="w-[3px] rounded-sm" style={{ height: voiceBlob ? `${4 + (i % 5) * 4}px` : "4px", backgroundColor: voiceBlob ? "rgb(21 128 61)" : "rgb(212 212 212)" }} />
+                    )
+                  ))}
+                </div>
+              </div>
+
+              {/* Controls */}
+              <div className="px-6 py-6 border-b border-neutral-200 bg-background-50 flex flex-col items-center gap-4">
+                {!voiceBlob ? (
+                  /* Record / Stop button */
+                  <button
+                    onClick={voiceRecording ? stopVoiceRecording : startVoiceRecording}
+                    className="w-20 h-20 rounded-large flex items-center justify-center shadow-custom-hover transition-all"
+                    style={{ backgroundColor: voiceRecording ? "rgb(220 38 38)" : "rgb(138 9 9)" }}
+                    onMouseEnter={(e) => { e.currentTarget.style.opacity = "0.9"; }}
+                    onMouseLeave={(e) => { e.currentTarget.style.opacity = "1"; }}
+                  >
+                    {voiceRecording ? (
+                      <svg xmlns="http://www.w3.org/2000/svg" className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+                        <rect x="6" y="6" width="12" height="12" rx="2" />
+                      </svg>
+                    ) : (
+                      <svg xmlns="http://www.w3.org/2000/svg" className="w-8 h-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+                      </svg>
+                    )}
+                  </button>
+                ) : (
+                  /* Re-record button */
+                  <button
+                    onClick={clearVoiceRecording}
+                    className="flex items-center gap-2 border border-neutral-200 text-neutral-600 hover:bg-background-100 font-medium text-sm py-2.5 px-5 rounded-small transition-colors shadow-custom"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                    </svg>
+                    Re-record
+                  </button>
+                )}
+                <p className="text-xs text-center" style={{ color: "rgb(155 155 155)" }}>
+                  {voiceRecording ? "Recording will auto-stop at 10:00" : voiceBlob ? "Recording complete" : "Tap to start recording"}
+                </p>
+              </div>
+
+              {/* Playback (shown after recording) */}
+              {voiceUrl && (
+                <div className="px-6 py-5 border-b border-neutral-200 bg-background-50">
+                  <p className="text-xs font-semibold uppercase tracking-wider mb-3" style={{ color: "rgb(115 115 115)" }}>Preview</p>
+                  <audio controls src={voiceUrl} className="w-full" style={{ height: 36 }} />
+                  <p className="text-xs mt-2" style={{ color: "rgb(155 155 155)" }}>
+                    {voiceBlob && (voiceBlob.size < 1024 * 1024 ? `${Math.round(voiceBlob.size / 1024)} KB` : `${(voiceBlob.size / (1024 * 1024)).toFixed(1)} MB`)}
+                  </p>
+                </div>
+              )}
+
+              {/* Error */}
+              {voiceError && (
+                <div className="mx-6 mt-4 px-4 py-3 rounded-small border text-sm" style={{ backgroundColor: "rgb(253 235 235)", borderColor: "rgb(252 216 216)", color: "rgb(138 9 9)" }}>
+                  {voiceError}
+                </div>
+              )}
+
+            </div>
+
+            {/* Footer */}
+            <div className="flex-shrink-0 border-t border-neutral-200 bg-background-50 px-6 py-4">
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={() => { clearVoiceRecording(); setActivePanel(null); }}
+                  disabled={voiceRecording}
+                  className="flex items-center gap-2 border border-neutral-200 text-neutral-600 hover:bg-background-100 font-medium text-sm py-2.5 px-4 rounded-small transition-colors shadow-custom flex-shrink-0 disabled:opacity-40"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                  Cancel
+                </button>
+                <button
+                  onClick={() => setActivePanel(null)}
+                  disabled={!voiceBlob}
+                  className="flex-1 flex items-center justify-center gap-2 text-white font-semibold text-sm py-2.5 px-5 rounded-small transition-all shadow-custom hover:shadow-custom-hover disabled:opacity-40"
+                  style={{ backgroundColor: "rgb(138 9 9)" }}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
+                  </svg>
+                  Attach to Email
                 </button>
               </div>
             </div>

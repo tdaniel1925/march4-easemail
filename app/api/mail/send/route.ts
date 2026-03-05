@@ -8,14 +8,16 @@ export async function POST(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { to, cc, subject, body } = await req.json() as {
-    to: string[];
-    cc?: string[];
+  const { to, cc, bcc, subject, body, attachment } = await req.json() as {
+    to: { emailAddress: { address: string } }[];
+    cc?: { emailAddress: { address: string } }[];
+    bcc?: { emailAddress: { address: string } }[];
     subject: string;
-    body: string;
+    body: { contentType: string; content: string };
+    attachment?: { name: string; contentType: string; data: string };
   };
 
-  if (!to?.length || !to[0]?.trim()) {
+  if (!to?.length) {
     return NextResponse.json({ error: "At least one recipient required" }, { status: 400 });
   }
   if (!subject?.trim()) {
@@ -30,11 +32,18 @@ export async function POST(req: NextRequest) {
   const payload = {
     message: {
       subject: subject.trim(),
-      body: { contentType: "Text", content: body.trim() },
-      toRecipients: to.map((addr) => ({ emailAddress: { address: addr.trim() } })),
-      ...(cc?.filter(Boolean).length
-        ? { ccRecipients: cc!.filter(Boolean).map((addr) => ({ emailAddress: { address: addr.trim() } })) }
-        : {}),
+      body,
+      toRecipients: to,
+      ...(cc?.length ? { ccRecipients: cc } : {}),
+      ...(bcc?.length ? { bccRecipients: bcc } : {}),
+      ...(attachment ? {
+        attachments: [{
+          "@odata.type": "#microsoft.graph.fileAttachment",
+          name: attachment.name,
+          contentType: attachment.contentType,
+          contentBytes: attachment.data,
+        }],
+      } : {}),
     },
     saveToSentItems: true,
   };
