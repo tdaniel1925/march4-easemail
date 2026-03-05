@@ -47,3 +47,13 @@
 - Installed @anthropic-ai/sdk 0.78.0
 - Requires ANTHROPIC_API_KEY in .env.local
 - TypeScript: clean
+
+## 2026-03-04 — Folder Pages (Starred, Sent, Drafts, Trash)
+- feat(folders): 4 new pages — /starred /sent /drafts /trash
+- New /api/mail/folder route with Graph folder path mapping
+- FolderClient: lean version of InboxClient (search, infinite scroll, AI Reply, account switch, no tab filters)
+- Extracted shared code: ReadingPane → components/shared/ReadingPane.tsx
+- Extracted shared types: EmailMessage → lib/types/email.ts
+- Extracted shared helpers → lib/utils/email-helpers.ts
+- InboxClient + AiReplyModal updated to use shared locations
+- TypeScript: clean
