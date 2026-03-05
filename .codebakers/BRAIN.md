@@ -28,6 +28,7 @@ _Last updated: 2026-03-04_
 - `email_delta_links` — for incremental Graph sync (not yet wired)
 - `webhook_subscriptions` — MS Graph change notifications (not yet wired)
 - `drafts` — email drafts (not yet wired to UI)
+- `email_rules` — inbox automation rules (conditions/actions as Json, priority, emailCount, stopProcessing)
 
 ## Pages / Routes
 | Route | Status |
@@ -62,10 +63,22 @@ _Last updated: 2026-03-04_
 - `components/folder/FolderClient.tsx` — lean inbox (search, infinite scroll, AI Reply, no tab filters)
 - `/api/mail/folder` — serves all 4 folder routes via `?folder=sent|drafts|trash|starred`
 
+## Completed Features (session 3)
+- `/compose` — full email composer: AI Remix (tone/length/formality/presets, selection-aware), AI Dictate (SpeechRecognition → Claude formatting → preview → insert), Voice Message (MediaRecorder, 10-min), signature ghost placeholder, body expand/focus mode
+- `/signatures` — SignaturesClient, localStorage persistence (pending DB migration)
+- `/email-rules` — EmailRulesClient fully wired to DB: Prisma EmailRule model, 5 API routes, pure rule engine (lib/utils/rule-engine.ts), client-side enforcement in InboxClient
+
+## Key Patterns Established
+- **Prisma Json fields:** write via `JSON.parse(JSON.stringify(...))`, read via `as unknown as Type[]`
+- **Contenteditable blank lines:** join `<div>` sections with `<div><br></div>` not `""`
+- **AI output pipeline:** Claude → `formatEmailSpacing()` → `remixTextToHtml()` → `innerHTML`
+- **SpeechRecognition:** auto-restart on silence via `onend` + `intentionalStopRef`, 10-min cap via time ref
+- **Rule engine:** pure function, `Promise.allSettled` for side effects, never throws to inbox
+
 ## Current Focus
-- Session start: 2026-03-04
-- Last completed: All sidebar pages — Calendar, Attachments, Contacts, Help, Settings, Dashboard, Accounts
-- Next: Email Composer page (/compose) with AI Dictate and AI Remix panels
+- Session start: 2026-03-04 (session 3)
+- Last completed: AI Dictate formatting + spacing fix, dep map + error log update
+- Next: TBD by user
 
 ## Session Artifacts
 - `codebakers-suggestions.md` — improvements to the CodeBakers framework captured during this build. Update it whenever a protocol gap or recurring friction point is identified.

@@ -1,6 +1,6 @@
 # CodeBakers Dependency Map
 # GENERATED — never edit by hand. Run `pnpm dep:map` to regenerate.
-# Last generated: 2026-03-05 | git: 20dc860
+# Last generated: 2026-03-05 | git: 9927b5e
 # Debug: pnpm dep:map --debug
 
 ---
@@ -18,9 +18,10 @@
 | CalendarClientProps | useCalendarClient | — | — | — | — (set manually) |
 | CalendarEvent | useDashboardClient | — | — | — | — (set manually) |
 | CalEvent | useCalendarClient | — | — | — | — (set manually) |
-| Color | useAccountsClient, useAccountSwitcher, useAttachmentsClient, useComposeClient, useContactsClient, useDashboardClient, useFolderClient, useHelpClient, useAiReplyModal, useEmailReadClient, useInboxClient, useSettingsClient, useReadingPane, useSidebar | — | — | — | — (set manually) |
+| Color | useAccountsClient, useAccountSwitcher, useAttachmentsClient, useComposeClient, useContactsClient, useDashboardClient, useEmailRulesClient, useFolderClient, useHelpClient, useAiReplyModal, useEmailReadClient, useInboxClient, useSettingsClient, useReadingPane, useSidebar, useSignaturesClient | — | — | — | — (set manually) |
 | ComponentFile | useGenerateDepMap | — | — | — | — (set manually) |
 | ComposeMode | useEmailReadClient, useReadingPane | — | — | — | — (set manually) |
+| Condition | useEmailRulesClient | — | — | — | — (set manually) |
 | ConnectedAccount | useStoreInitializer, useAccountStore | AccountSwitcher, DashboardClient, FolderClient, InboxClient, Sidebar | — | — | — (set manually) |
 | Contact | useContactsClient | — | — | selectedContact | — (set manually) |
 | ContactRowProps | useContactsClient | — | — | — | — (set manually) |
@@ -42,8 +43,13 @@
 | Profile | useSettingsClient | — | — | — | — (set manually) |
 | Props | useContactsClient | — | — | — | — (set manually) |
 | Recipient | useEmailReadClient | — | — | — | — (set manually) |
+| Rule | useEmailRulesClient | — | — | activeRule | — (set manually) |
+| RuleAction | useEmailRulesClient | — | — | — | — (set manually) |
+| RuleFormState | useEmailRulesClient | — | — | — | — (set manually) |
 | SettingsSection | useSettingsClient | — | — | — | — (set manually) |
 | SidebarProps | useSidebar | — | — | — | — (set manually) |
+| SideEffect | useInboxClient | — | — | — | — (set manually) |
+| Signature | useSignaturesClient | — | — | — | — (set manually) |
 | StoreFile | useGenerateDepMap | — | — | — | — (set manually) |
 | StylePreset | useComposeClient | — | — | — | — (set manually) |
 | TabId | useHelpClient | — | — | — | — (set manually) |
@@ -97,6 +103,10 @@ Entities: CalendarEvent, TodoItem, EmailMessage, Color, Target
 File: `components\inbox\EmailReadClient.tsx`
 Entities: Recipient, Attachment, EmailDetail, ComposeMode, Color
 
+### useEmailRulesClient
+File: `components\email-rules\EmailRulesClient.tsx`
+Entities: RuleFormState, Condition, RuleAction, Rule, Color
+
 ### useFolderClient
 File: `components\folder\FolderClient.tsx`
 Entities: EmailMessage, Color
@@ -111,7 +121,7 @@ Entities: TabId, Article, Color
 
 ### useInboxClient
 File: `components\inbox\InboxClient.tsx`
-Entities: FilterTab, EmailMessage, Color, Target
+Entities: FilterTab, EmailMessage, SideEffect, Color, Target
 
 ### useReadingPane
 File: `components\shared\ReadingPane.tsx`
@@ -124,6 +134,10 @@ Entities: SettingsSection, Profile, NotificationSettings, FontSize, EmailDensity
 ### useSidebar
 File: `components\Sidebar.tsx`
 Entities: SidebarProps, Color, Target
+
+### useSignaturesClient
+File: `components\signatures\SignaturesClient.tsx`
+Entities: Signature, Color
 
 ### useStoreInitializer
 File: `components\StoreInitializer.tsx`

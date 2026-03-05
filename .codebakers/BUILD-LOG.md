@@ -1,5 +1,8 @@
 # Build Log
 
+## 2026-03-04 (session 3 additions)
+- [Feature] Email Rules enforcement layer: Prisma EmailRule model, 5 API routes (CRUD + reorder + increment + apply-action), pure rule engine (lib/utils/rule-engine.ts), EmailRulesClient migrated from localStorage to API with optimistic updates, InboxClient wired to apply rules to every email batch and fire MS Graph side effects via Promise.allSettled. TypeScript clean. Committed 8c0a536.
+
 ## 2026-03-04 (session 2 additions)
 - [Feature] Signature Management page: /signatures — split-panel, rich text editor, assignment toggles, live preview, new/delete modals, localStorage persistence
 - [Feature] Email Rules page: /email-rules — stats bar, rules list with IF/THEN chips, toggle, drag-n-drop reorder, new/edit/delete modals, localStorage persistence
