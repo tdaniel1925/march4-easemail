@@ -94,7 +94,7 @@ export default function AccountSwitcher() {
           })}
           <div className="border-t border-neutral-100">
             <Link
-              href="/accounts"
+              href="/api/auth/microsoft?add=1"
               onClick={() => setOpen(false)}
               className="flex items-center gap-2 px-3 py-2.5 text-xs transition-colors"
               style={{ color: "rgb(115 115 115)" }}

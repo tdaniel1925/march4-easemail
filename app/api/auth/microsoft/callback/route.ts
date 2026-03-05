@@ -1,13 +1,20 @@
 /**
  * GET /api/auth/microsoft/callback
  *
- * Flow:
- *  1. Exchange code via MSAL → get access token + account info
- *  2. Find or create Supabase user by email (service role)
- *  3. Ensure DB user row + org exist
- *  4. Save MSAL token cache + MsConnectedAccount to DB
- *  5. Generate Supabase magic link → redirect browser through it
- *     (Supabase handles setting session cookies, then redirects to /auth/callback)
+ * Two flows depending on state param:
+ *
+ * state === "login"       → first-time connect
+ *   1. Exchange code via MSAL (temp client, no cache)
+ *   2. Find or create Supabase user by email
+ *   3. Ensure DB user + org
+ *   4. Save MSAL cache + MsConnectedAccount
+ *   5. Generate magic link → browser gets a session → /inbox
+ *
+ * state === "add:{userId}" → adding a second MS account to an existing user
+ *   1. Exchange code via createMsalClient(userId) — loads existing cache,
+ *      adds new account token, auto-saves combined cache via DB plugin
+ *   2. Upsert MsConnectedAccount linked to the existing userId
+ *   3. Redirect directly to /accounts?added=1 (session unchanged)
  */
 import { NextRequest, NextResponse } from "next/server";
 import { ConfidentialClientApplication } from "@azure/msal-node";
@@ -19,7 +26,7 @@ export async function GET(req: NextRequest) {
   const { searchParams } = req.nextUrl;
   const code  = searchParams.get("code");
   const error = searchParams.get("error");
-  const state = searchParams.get("state"); // "login" | "add"
+  const state = searchParams.get("state") ?? "login";
 
   if (error || !code) {
     console.error("Microsoft OAuth error:", error, searchParams.get("error_description"));
@@ -27,8 +34,51 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    // ── 1. Exchange code via MSAL ─────────────────────────────────────────────
-    console.log("[auth/callback] Step 1: exchanging MSAL code, redirectUri=", process.env.MICROSOFT_REDIRECT_URI);
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:4000";
+
+    // ── ADD ACCOUNT FLOW ─────────────────────────────────────────────────────
+    if (state.startsWith("add:")) {
+      const userId = state.slice(4);
+      if (!userId) throw new Error("Invalid add state — missing userId");
+
+      console.log("[auth/callback] ADD flow for userId:", userId);
+
+      // Use the user's existing MSAL client (DB cache plugin).
+      // acquireTokenByCode will load Account A's tokens, add Account B's
+      // token, then auto-save the combined cache via afterCacheAccess.
+      const msal = createMsalClient(userId);
+      const tokenResult = await msal.acquireTokenByCode({
+        code,
+        scopes: GRAPH_SCOPES,
+        redirectUri: process.env.MICROSOFT_REDIRECT_URI!,
+      });
+
+      if (!tokenResult?.account) throw new Error("No account in token response");
+
+      const { homeAccountId, username: msEmail, name: displayName, tenantId } = tokenResult.account;
+      console.log("[auth/callback] ADD: linking", msEmail, "to user", userId);
+
+      await prisma.msConnectedAccount.upsert({
+        where: { userId_homeAccountId: { userId, homeAccountId } },
+        update: { msEmail, displayName: displayName ?? null, tenantId: tenantId ?? null, updatedAt: new Date() },
+        create: {
+          userId,
+          homeAccountId,
+          msEmail,
+          displayName: displayName ?? null,
+          tenantId: tenantId ?? null,
+          isDefault: false, // original account keeps default
+        },
+      });
+
+      console.log("[auth/callback] ADD: done, redirecting to /accounts?added=1");
+      return NextResponse.redirect(new URL("/accounts?added=1", appUrl));
+    }
+
+    // ── LOGIN FLOW ───────────────────────────────────────────────────────────
+
+    // 1. Exchange code via temp MSAL (no cache plugin — no userId yet)
+    console.log("[auth/callback] LOGIN flow, exchanging code");
     const tempMsal = new ConfidentialClientApplication({
       auth: {
         clientId: process.env.MICROSOFT_CLIENT_ID!,
@@ -42,23 +92,20 @@ export async function GET(req: NextRequest) {
       scopes: GRAPH_SCOPES,
       redirectUri: process.env.MICROSOFT_REDIRECT_URI!,
     });
-    console.log("[auth/callback] Step 1 done, account:", tokenResult?.account?.username);
+    console.log("[auth/callback] token acquired for:", tokenResult?.account?.username);
 
     if (!tokenResult?.account) throw new Error("No account in token response");
 
     const { homeAccountId, username: msEmail, name: displayName, tenantId } = tokenResult.account;
 
-    // ── 2. Find or create Supabase user ──────────────────────────────────────
-    console.log("[auth/callback] Step 2: find/create Supabase user for", msEmail);
+    // 2. Find or create Supabase user
     const supabaseAdmin = await createServiceClient();
-
     const { data: listData } = await supabaseAdmin.auth.admin.listUsers();
     const existing = listData?.users?.find((u) => u.email === msEmail);
 
     let supabaseUserId: string;
     if (existing) {
       supabaseUserId = existing.id;
-      console.log("[auth/callback] Step 2: found existing user", supabaseUserId);
     } else {
       const { data: newUser, error: createErr } = await supabaseAdmin.auth.admin.createUser({
         email: msEmail,
@@ -67,11 +114,9 @@ export async function GET(req: NextRequest) {
       });
       if (createErr || !newUser?.user) throw new Error(`Create user failed: ${createErr?.message}`);
       supabaseUserId = newUser.user.id;
-      console.log("[auth/callback] Step 2: created new user", supabaseUserId);
     }
 
-    // ── 3. Ensure DB user + org ───────────────────────────────────────────────
-    console.log("[auth/callback] Step 3: checking DB for user", supabaseUserId);
+    // 3. Ensure DB user + org
     const dbUser = await prisma.user.findUnique({ where: { id: supabaseUserId } });
     if (!dbUser) {
       let org = await prisma.organization.findFirst({ where: { slug: "default" } });
@@ -85,8 +130,7 @@ export async function GET(req: NextRequest) {
       });
     }
 
-    // ── 4. Save MSAL cache + connected account ────────────────────────────────
-    console.log("[auth/callback] Step 4: saving MSAL cache and connected account");
+    // 4. Save MSAL cache + connected account
     const serializedCache = tempMsal.getTokenCache().serialize();
     await prisma.msalTokenCache.upsert({
       where: { userId: supabaseUserId },
@@ -108,31 +152,24 @@ export async function GET(req: NextRequest) {
       },
     });
 
-    // ── 5. Generate Supabase magic link → redirect through it ─────────────────
-    console.log("[auth/callback] Step 5: generating magic link for", msEmail);
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:4000";
-    const redirectTo = state === "add"
-      ? `${appUrl}/auth/callback?next=/accounts?added=1`
-      : `${appUrl}/auth/callback?next=/inbox`;
-
+    // 5. Generate magic link → sets Supabase session → /inbox
     const { data: linkData, error: linkErr } = await supabaseAdmin.auth.admin.generateLink({
       type: "magiclink",
       email: msEmail,
-      options: { redirectTo },
+      options: { redirectTo: `${appUrl}/auth/callback?next=/inbox` },
     });
 
     if (linkErr || !linkData?.properties?.action_link) {
       throw new Error(`Magic link failed: ${linkErr?.message}`);
     }
 
-    console.log("[auth/callback] Step 5 done, redirecting via magic link");
     return NextResponse.redirect(linkData.properties.action_link);
+
   } catch (err) {
     const e = err as Error;
     console.error("[auth/callback] FAILED:", {
       name: e?.name,
       message: e?.message,
-      cause: (e as {cause?: unknown})?.cause,
       stack: e?.stack?.split("\n").slice(0, 4).join("\n"),
     });
     return NextResponse.redirect(new URL(`/login?error=${encodeURIComponent(String(err))}`, req.url));

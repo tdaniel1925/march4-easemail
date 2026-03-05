@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -158,10 +158,20 @@ function AccountCard({
 
 export default function AccountsClient({ accounts: initialAccounts }: { accounts: Account[] }) {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [accounts, setAccounts] = useState<Account[]>(initialAccounts);
   const [disconnecting, setDisconnecting] = useState<Account | null>(null);
   const [disconnectLoading, setDisconnectLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [addedSuccess, setAddedSuccess] = useState(false);
+
+  useEffect(() => {
+    if (searchParams.get("added") === "1") {
+      setAddedSuccess(true);
+      // Remove the query param from the URL without re-rendering
+      window.history.replaceState({}, "", "/accounts");
+    }
+  }, [searchParams]);
 
   async function handleDisconnect() {
     if (!disconnecting) return;
@@ -199,7 +209,7 @@ export default function AccountsClient({ accounts: initialAccounts }: { accounts
             <p className="text-sm mt-0.5" style={{ color: "rgb(115 115 115)" }}>Manage your connected Microsoft accounts</p>
           </div>
           <a
-            href="/api/auth/microsoft"
+            href="/api/auth/microsoft?add=1"
             className="flex items-center gap-2 text-white text-sm font-semibold px-4 py-2.5 rounded-small shadow-custom transition-colors"
             style={{ backgroundColor: "rgb(138 9 9)" }}
             onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "rgb(110 7 7)"; }}
@@ -259,6 +269,15 @@ export default function AccountsClient({ accounts: initialAccounts }: { accounts
               </div>
             </div>
 
+            {/* Success banner */}
+            {addedSuccess && (
+              <div className="mb-4 px-4 py-3 rounded-small border text-sm font-medium flex items-center justify-between"
+                style={{ backgroundColor: "rgb(220 252 231)", borderColor: "rgb(187 247 208)", color: "rgb(21 128 61)" }}>
+                <span>Account connected successfully.</span>
+                <button onClick={() => setAddedSuccess(false)} className="ml-4 text-xs underline opacity-70 hover:opacity-100">Dismiss</button>
+              </div>
+            )}
+
             {/* Error banner */}
             {error && (
               <div className="mb-4 px-4 py-3 rounded-small border text-sm font-medium"
@@ -278,7 +297,7 @@ export default function AccountsClient({ accounts: initialAccounts }: { accounts
                   <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                 </svg>
                 <p className="text-sm font-medium mb-4" style={{ color: "rgb(115 115 115)" }}>No accounts connected</p>
-                <a href="/api/auth/microsoft" className="inline-flex items-center gap-2 text-white text-sm font-semibold px-4 py-2.5 rounded-small shadow-custom"
+                <a href="/api/auth/microsoft?add=1" className="inline-flex items-center gap-2 text-white text-sm font-semibold px-4 py-2.5 rounded-small shadow-custom"
                   style={{ backgroundColor: "rgb(138 9 9)" }}>
                   Connect Microsoft Account
                 </a>
@@ -306,7 +325,7 @@ export default function AccountsClient({ accounts: initialAccounts }: { accounts
                 </div>
               </div>
               <a
-                href="/api/auth/microsoft"
+                href="/api/auth/microsoft?add=1"
                 className="flex items-center gap-2 text-white font-medium text-sm py-2 px-4 rounded-small transition-colors shadow-custom flex-shrink-0"
                 style={{ backgroundColor: "rgb(138 9 9)" }}
                 onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "rgb(110 7 7)"; }}
