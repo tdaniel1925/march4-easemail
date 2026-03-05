@@ -88,3 +88,4 @@
 - fix(sidebar): Compose button → Link href="/compose" (was non-functional button)
 - dep:map regenerated — 17 entities | 10 stores | 5 store-connected components
 - TypeScript: clean
+[2026-03-04] feat(pages): Calendar, Attachments, Contacts, Help, Settings — 11 files, 3330 lines, tsc clean

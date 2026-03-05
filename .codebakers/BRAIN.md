@@ -41,8 +41,13 @@ _Last updated: 2026-03-04_
 | `/auth/callback` | ✅ Exchanges Supabase code for session, redirects |
 | `/api/auth/signout` | ✅ Signs out Supabase session |
 | `/starred`, `/sent`, `/drafts`, `/trash` | ✅ Built — FolderClient with search, infinite scroll, AI Reply |
-| `/dashboard`, `/attachments`, `/calendar` | ❌ NOT BUILT |
-| `/accounts`, `/contacts`, `/settings`, `/help` | ❌ NOT BUILT |
+| `/dashboard` | ✅ Live clock, agenda, todos, weekly chart, recent unread |
+| `/accounts` | ✅ Account cards, disconnect modal, default promotion |
+| `/calendar` | ✅ Week-view grid, MS Graph calendarView, prev/next navigation |
+| `/attachments` | ✅ File table from Graph expanded attachments, type filter, search |
+| `/contacts` | ✅ Split-panel, alphabetical list, detail panel, /me/contacts |
+| `/help` | ✅ Hero + search, 6 category tabs, FAQ accordion |
+| `/settings` | ✅ Profile, notifications toggles, appearance, privacy, sign out |
 
 ## InboxClient Data Architecture
 - **All tab:** local `emails` state + infinite scroll via `@odata.nextLink`
@@ -59,8 +64,8 @@ _Last updated: 2026-03-04_
 
 ## Current Focus
 - Session start: 2026-03-04
-- Last completed: Starred, Sent, Drafts, Trash folder pages
-- Next: Compose or remaining sidebar pages (Dashboard, Accounts, Contacts, Settings, etc.)
+- Last completed: All sidebar pages — Calendar, Attachments, Contacts, Help, Settings, Dashboard, Accounts
+- Next: Email Composer page (/compose) with AI Dictate and AI Remix panels
 
 ## Session Artifacts
 - `codebakers-suggestions.md` — improvements to the CodeBakers framework captured during this build. Update it whenever a protocol gap or recurring friction point is identified.
