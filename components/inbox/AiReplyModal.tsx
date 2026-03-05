@@ -56,12 +56,12 @@ export default function AiReplyModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center"
+      className="fixed inset-0 z-50 flex items-center justify-center px-4 py-6"
       style={{ backgroundColor: "rgba(0,0,0,0.4)" }}
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
     >
       <div
-        className="relative bg-white rounded-[16px] w-full flex flex-col"
+        className="relative bg-white rounded-[16px] w-full flex flex-col overflow-hidden"
         style={{ maxWidth: 560, maxHeight: "85vh", boxShadow: "0 20px 60px rgba(0,0,0,0.18)" }}
       >
         {/* Header */}
