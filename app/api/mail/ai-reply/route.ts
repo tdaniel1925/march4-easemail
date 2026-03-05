@@ -57,10 +57,14 @@ Body: ${emailContent.slice(0, 3000)}`;
 
   const raw = message.content[0].type === "text" ? message.content[0].text : "";
 
+  // Strip markdown code fences if Claude wrapped the JSON
+  const cleaned = raw.replace(/^```(?:json)?\s*/i, "").replace(/\s*```\s*$/, "").trim();
+
   let result: AiReplyResponse;
   try {
-    result = JSON.parse(raw) as AiReplyResponse;
+    result = JSON.parse(cleaned) as AiReplyResponse;
   } catch {
+    console.error("[ai-reply] Failed to parse response:", cleaned);
     return NextResponse.json({ error: "AI response could not be parsed" }, { status: 500 });
   }
 
