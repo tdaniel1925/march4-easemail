@@ -40,6 +40,7 @@ model User {
   deltaLinks  EmailDeltaLink[]
   webhookSubs WebhookSubscription[]
   drafts      Draft[]
+  emailRules  EmailRule[]
 
   @@map("users")
 }
@@ -124,4 +125,24 @@ model Draft {
   updatedAt     DateTime @updatedAt
 
   @@map("drafts")
+}
+
+// ─── Email Rules ──────────────────────────────────────────────────────────────
+
+model EmailRule {
+  id             String   @id @default(cuid())
+  userId         String
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name           String
+  priority       Int
+  active         Boolean  @default(true)
+  conditions     Json
+  actions        Json
+  emailCount     Int      @default(0)
+  stopProcessing Boolean  @default(false)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([userId, priority])
+  @@map("email_rules")
 }

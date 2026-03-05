@@ -2,79 +2,57 @@
 
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
+import type {
+  Rule,
+  Condition,
+  RuleAction,
+  ConditionField,
+  ConditionOperator,
+  ActionType,
+  Logic,
+} from "@/lib/types/rules";
 
-// ─── Types ────────────────────────────────────────────────────────────────────
-
-type ConditionField = "subject" | "from" | "to" | "keywords";
-type ConditionOperator = "contains" | "is" | "starts_with" | "ends_with" | "not_contains";
-type ActionType = "archive" | "label" | "forward" | "mark_important" | "skip_inbox" | "mark_read" | "delete";
-type Logic = "AND" | "OR";
-
-interface Condition {
-  id: string;
-  field: ConditionField;
-  operator: ConditionOperator;
-  value: string;
-  logic: Logic;
-}
-
-interface RuleAction {
-  id: string;
-  type: ActionType;
-  value: string;
-}
-
-interface Rule {
-  id: string;
-  name: string;
-  priority: number;
-  active: boolean;
-  conditions: Condition[];
-  actions: RuleAction[];
-  emailCount: number;
-  stopProcessing: boolean;
-}
-
-const STORAGE_KEY = "easemail_rules";
+// re-export for RuleForm which uses these locally
+export type { ConditionField, ConditionOperator, ActionType, Logic };
 
 function makeId() {
   return Math.random().toString(36).slice(2, 10);
 }
 
-const SAMPLE_RULES: Rule[] = [
-  {
-    id: "r1", name: "Work Newsletters → Archive", priority: 1, active: true, emailCount: 142, stopProcessing: false,
-    conditions: [
-      { id: "c1", field: "subject", operator: "contains", value: "newsletter", logic: "OR" },
-      { id: "c2", field: "subject", operator: "contains", value: "digest", logic: "AND" },
-    ],
-    actions: [
-      { id: "a1", type: "archive", value: "" },
-      { id: "a2", type: "label", value: "Newsletters" },
-    ],
-  },
-  {
-    id: "r2", name: "VIP Clients → Priority Label", priority: 2, active: true, emailCount: 38, stopProcessing: false,
-    conditions: [
-      { id: "c3", field: "from", operator: "contains", value: "@acmecorp.com", logic: "OR" },
-      { id: "c4", field: "from", operator: "contains", value: "@bigclient.io", logic: "AND" },
-    ],
-    actions: [
-      { id: "a3", type: "label", value: "VIP" },
-      { id: "a4", type: "mark_important", value: "" },
-    ],
-  },
-  {
-    id: "r3", name: "Internal Team Emails → Skip Inbox", priority: 3, active: false, emailCount: 0, stopProcessing: false,
-    conditions: [
-      { id: "c5", field: "from", operator: "contains", value: "@firm.law", logic: "AND" },
-    ],
-    actions: [
-      { id: "a5", type: "skip_inbox", value: "" },
-      { id: "a6", type: "mark_read", value: "" },
-    ],
-  },
-];
+// ─── API helpers ──────────────────────────────────────────────────────────────
+
+async function apiGet<T>(path: string): Promise<T> {
+  const res = await fetch(path);
+  if (!res.ok) throw new Error(`GET ${path} failed ${res.status}`);
+  return res.json() as Promise<T>;
+}
+
+async function apiPost<T>(path: string, body: unknown): Promise<T> {
+  const res = await fetch(path, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+  if (!res.ok) throw new Error(`POST ${path} failed ${res.status}`);
+  return res.json() as Promise<T>;
+}
+
+async function apiPut<T>(path: string, body: unknown): Promise<T> {
+  const res = await fetch(path, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+  if (!res.ok) throw new Error(`PUT ${path} failed ${res.status}`);
+  return res.json() as Promise<T>;
+}
+
+async function apiDelete(path: string): Promise<void> {
+  const res = await fetch(path, { method: "DELETE" });
+  if (!res.ok) throw new Error(`DELETE ${path} failed ${res.status}`);
+}
+
+const OLD_STORAGE_KEY = "easemail_rules";
 
 // ─── Chip labels ──────────────────────────────────────────────────────────────
 
@@ -433,6 +411,8 @@ function RuleCard({
 
 export default function EmailRulesClient() {
   const [rules, setRules] = useState<Rule[]>([]);
+  const [rulesLoading, setRulesLoading] = useState(true);
+  const [rulesError, setRulesError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<"all" | "active" | "inactive">("all");
   const [showNewModal, setShowNewModal] = useState(false);
@@ -441,27 +421,49 @@ export default function EmailRulesClient() {
   const [newForm, setNewForm] = useState<RuleFormState>(emptyForm());
   const [editForm, setEditForm] = useState<RuleFormState>(emptyForm());
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
   const dragIdRef = useRef<string>("");
   const [dragOverId, setDragOverId] = useState<string>("");
 
-  // ── Load ──
+  // ── Load from API + migrate any old localStorage data ──
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) {
-        setRules(JSON.parse(raw));
-      } else {
-        setRules(SAMPLE_RULES);
-      }
-    } catch {
-      setRules(SAMPLE_RULES);
-    }
-  }, []);
+    async function load() {
+      setRulesLoading(true);
+      setRulesError(null);
+      try {
+        // One-time localStorage migration
+        try {
+          const old = localStorage.getItem(OLD_STORAGE_KEY);
+          if (old) {
+            const parsed: Rule[] = JSON.parse(old);
+            if (Array.isArray(parsed) && parsed.length > 0) {
+              // POST each old rule to the API
+              for (const r of parsed) {
+                await apiPost("/api/rules", {
+                  name: r.name,
+                  conditions: r.conditions,
+                  actions: r.actions,
+                  stopProcessing: r.stopProcessing,
+                });
+              }
+            }
+            localStorage.removeItem(OLD_STORAGE_KEY);
+          }
+        } catch {
+          // Migration failure is non-fatal
+          localStorage.removeItem(OLD_STORAGE_KEY);
+        }
 
-  function persist(updated: Rule[]) {
-    setRules(updated);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
-  }
+        const data = await apiGet<Rule[]>("/api/rules");
+        setRules(data);
+      } catch {
+        setRulesError("Failed to load rules. Please refresh.");
+      } finally {
+        setRulesLoading(false);
+      }
+    }
+    void load();
+  }, []);
 
   function reorder(arr: Rule[]): Rule[] {
     return arr.map((r, idx) => ({ ...r, priority: idx + 1 }));
@@ -482,40 +484,69 @@ export default function EmailRulesClient() {
   const totalProcessed = rules.reduce((sum, r) => sum + r.emailCount, 0);
 
   // ── Mutations ──
-  function toggleRule(id: string) {
-    persist(rules.map((r) => r.id === id ? { ...r, active: !r.active } : r));
+
+  async function toggleRule(id: string) {
+    const rule = rules.find((r) => r.id === id);
+    if (!rule) return;
+    // Optimistic
+    setRules((prev) => prev.map((r) => r.id === id ? { ...r, active: !r.active } : r));
+    try {
+      await apiPut(`/api/rules/${id}`, { active: !rule.active });
+    } catch {
+      // Revert on failure
+      setRules((prev) => prev.map((r) => r.id === id ? { ...r, active: rule.active } : r));
+    }
   }
 
-  function deleteRule(id: string) {
-    persist(reorder(rules.filter((r) => r.id !== id)));
+  async function deleteRule(id: string) {
+    // Optimistic
+    const snapshot = rules;
+    setRules((prev) => reorder(prev.filter((r) => r.id !== id)));
     setDeleteConfirmId(null);
+    try {
+      await apiDelete(`/api/rules/${id}`);
+      // Refresh to get server-assigned priorities
+      const fresh = await apiGet<Rule[]>("/api/rules");
+      setRules(fresh);
+    } catch {
+      setRules(snapshot);
+    }
   }
 
-  function moveRule(id: string, direction: "up" | "down") {
+  async function moveRule(id: string, direction: "up" | "down") {
     const idx = rules.findIndex((r) => r.id === id);
     if (idx === -1) return;
     const newRules = [...rules];
     const swap = direction === "up" ? idx - 1 : idx + 1;
     if (swap < 0 || swap >= newRules.length) return;
     [newRules[idx], newRules[swap]] = [newRules[swap], newRules[idx]];
-    persist(reorder(newRules));
+    const reordered = reorder(newRules);
+    setRules(reordered); // optimistic
+    try {
+      await apiPost("/api/rules/reorder", { ids: reordered.map((r) => r.id) });
+    } catch {
+      setRules(rules); // revert
+    }
   }
 
-  function handleCreate() {
-    if (!newForm.name.trim()) return;
-    const rule: Rule = {
-      id: makeId(),
-      name: newForm.name.trim(),
-      priority: rules.length + 1,
-      active: true,
-      conditions: newForm.conditions,
-      actions: newForm.actions,
-      emailCount: 0,
-      stopProcessing: newForm.stopProcessing,
-    };
-    persist([...rules, rule]);
-    setShowNewModal(false);
-    setNewForm(emptyForm());
+  async function handleCreate() {
+    if (!newForm.name.trim() || saving) return;
+    setSaving(true);
+    try {
+      const created = await apiPost<Rule>("/api/rules", {
+        name: newForm.name.trim(),
+        conditions: newForm.conditions,
+        actions: newForm.actions,
+        stopProcessing: newForm.stopProcessing,
+      });
+      setRules((prev) => [...prev, created]);
+      setShowNewModal(false);
+      setNewForm(emptyForm());
+    } catch {
+      // leave modal open on failure
+    } finally {
+      setSaving(false);
+    }
   }
 
   function openEdit(rule: Rule) {
@@ -524,17 +555,32 @@ export default function EmailRulesClient() {
     setShowEditModal(true);
   }
 
-  function handleSaveEdit() {
-    if (!editingRule || !editForm.name.trim()) return;
-    persist(rules.map((r) => r.id === editingRule.id ? {
-      ...r,
-      name: editForm.name.trim(),
-      conditions: editForm.conditions,
-      actions: editForm.actions,
-      stopProcessing: editForm.stopProcessing,
-    } : r));
+  async function handleSaveEdit() {
+    if (!editingRule || !editForm.name.trim() || saving) return;
+    setSaving(true);
+    // Optimistic
+    const snapshot = rules;
+    setRules((prev) =>
+      prev.map((r) =>
+        r.id === editingRule.id
+          ? { ...r, name: editForm.name.trim(), conditions: editForm.conditions, actions: editForm.actions, stopProcessing: editForm.stopProcessing }
+          : r
+      )
+    );
     setShowEditModal(false);
     setEditingRule(null);
+    try {
+      await apiPut(`/api/rules/${editingRule.id}`, {
+        name: editForm.name.trim(),
+        conditions: editForm.conditions,
+        actions: editForm.actions,
+        stopProcessing: editForm.stopProcessing,
+      });
+    } catch {
+      setRules(snapshot);
+    } finally {
+      setSaving(false);
+    }
   }
 
   // ── Drag-n-drop ──
@@ -545,7 +591,7 @@ export default function EmailRulesClient() {
     e.preventDefault();
     setDragOverId(id);
   }
-  function handleDrop(targetId: string) {
+  async function handleDrop(targetId: string) {
     setDragOverId("");
     const fromId = dragIdRef.current;
     if (!fromId || fromId === targetId) return;
@@ -555,7 +601,13 @@ export default function EmailRulesClient() {
     const newRules = [...rules];
     const [moved] = newRules.splice(fromIdx, 1);
     newRules.splice(toIdx, 0, moved);
-    persist(reorder(newRules));
+    const reordered = reorder(newRules);
+    setRules(reordered); // optimistic
+    try {
+      await apiPost("/api/rules/reorder", { ids: reordered.map((r) => r.id) });
+    } catch {
+      setRules(rules);
+    }
   }
 
   return (
@@ -661,7 +713,16 @@ export default function EmailRulesClient() {
             </div>
 
             {/* Rules list */}
-            {filtered.length === 0 ? (
+            {rulesLoading ? (
+              <div className="flex items-center justify-center py-16 text-neutral-400">
+                <svg className="animate-spin w-6 h-6 mr-2" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth={4} /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" /></svg>
+                <span className="text-sm">Loading rules…</span>
+              </div>
+            ) : rulesError ? (
+              <div className="flex items-center justify-center py-16 text-sm" style={{ color: "rgb(138 9 9)" }}>
+                {rulesError}
+              </div>
+            ) : filtered.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-16 text-neutral-400">
                 <svg xmlns="http://www.w3.org/2000/svg" className="w-10 h-10 mb-3 opacity-30" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
@@ -717,11 +778,11 @@ export default function EmailRulesClient() {
                 Cancel
               </button>
               <button
-                onClick={handleCreate}
-                disabled={!newForm.name.trim()}
+                onClick={() => void handleCreate()}
+                disabled={!newForm.name.trim() || saving}
                 className="px-4 py-2 text-sm font-semibold ai-gradient-bg text-neutral-50 rounded-small compose-btn-glow transition-all disabled:opacity-40"
               >
-                Create Rule
+                {saving ? "Creating…" : "Create Rule"}
               </button>
             </div>
           </div>
@@ -746,11 +807,11 @@ export default function EmailRulesClient() {
                 Cancel
               </button>
               <button
-                onClick={handleSaveEdit}
-                disabled={!editForm.name.trim()}
+                onClick={() => void handleSaveEdit()}
+                disabled={!editForm.name.trim() || saving}
                 className="px-4 py-2 text-sm font-semibold ai-gradient-bg text-neutral-50 rounded-small compose-btn-glow transition-all disabled:opacity-40"
               >
-                Save Changes
+                {saving ? "Saving…" : "Save Changes"}
               </button>
             </div>
           </div>

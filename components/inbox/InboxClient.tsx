@@ -5,6 +5,9 @@ import { useRouter } from "next/navigation";
 import { useAccountStore } from "@/lib/stores/account-store";
 import type { EmailMessage } from "@/lib/types/email";
 import { formatDate, getInitials, getAvatarColor } from "@/lib/utils/email-helpers";
+import { applyRules } from "@/lib/utils/rule-engine";
+import type { SideEffect } from "@/lib/utils/rule-engine";
+import type { Rule } from "@/lib/types/rules";
 
 // Re-export so existing imports from this file still work
 export type { EmailMessage };
@@ -98,6 +101,58 @@ export default function InboxClient({
   const setInboxUnread = useAccountStore((s) => s.setInboxUnread);
   const firstRender = useRef(true);
   const sentinelRef = useRef<HTMLDivElement>(null);
+  const rulesRef = useRef<Rule[]>([]);
+
+  // ── Rule engine helpers ──
+
+  function fireSideEffects(ses: SideEffect[], mc: Map<string, number>) {
+    if (ses.length) {
+      void Promise.allSettled(
+        ses.map((se) =>
+          fetch("/api/rules/apply-action", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(se),
+          })
+        )
+      );
+    }
+    mc.forEach((count, ruleId) => {
+      void fetch(`/api/rules/${ruleId}/increment`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ count }),
+      });
+    });
+  }
+
+  function processWithRules(batch: EmailMessage[], hid: string): EmailMessage[] {
+    if (!rulesRef.current.length) return batch;
+    try {
+      const { emails, sideEffects, matchCounts } = applyRules(batch, rulesRef.current, hid);
+      fireSideEffects(sideEffects, matchCounts);
+      return emails;
+    } catch {
+      return batch;
+    }
+  }
+
+  // Load rules once on mount; apply to initial email batch
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    if (!activeAccount) return;
+    const hid = activeAccount.homeAccountId;
+    fetch("/api/rules")
+      .then((r) => r.json() as Promise<Rule[]>)
+      .then((data) => {
+        rulesRef.current = data;
+        if (!data.length) return;
+        const { emails: processed, sideEffects, matchCounts } = applyRules(initialEmails, data, hid);
+        setEmails(processed);
+        fireSideEffects(sideEffects, matchCounts);
+      })
+      .catch(() => {}); // rules must never break the inbox
+  }, []);
 
   // Keep sidebar unread badge in sync with local email state
   useEffect(() => {
@@ -114,7 +169,7 @@ export default function InboxClient({
     fetch(`/api/mail/inbox?homeAccountId=${encodeURIComponent(activeAccount.homeAccountId)}`)
       .then((r) => r.json())
       .then((data: { emails: EmailMessage[]; nextLink: string | null }) => {
-        setEmails(data.emails);
+        setEmails(processWithRules(data.emails, activeAccount.homeAccountId));
         setNextLink(data.nextLink ?? null);
       })
       .catch(console.error)
@@ -143,7 +198,7 @@ export default function InboxClient({
         `/api/mail/inbox?homeAccountId=${encodeURIComponent(activeAccount.homeAccountId)}&nextLink=${encodeURIComponent(nextLink)}`
       );
       const data: { emails: EmailMessage[]; nextLink: string | null } = await res.json();
-      setEmails((prev) => [...prev, ...data.emails]);
+      setEmails((prev) => [...prev, ...processWithRules(data.emails, activeAccount.homeAccountId)]);
       setNextLink(data.nextLink ?? null);
     } catch (e) {
       console.error(e);
