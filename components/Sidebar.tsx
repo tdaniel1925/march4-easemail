@@ -1,9 +1,11 @@
 "use client";
 
+import { useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import AccountSwitcher from "@/components/AccountSwitcher";
 import { useAccountStore } from "@/lib/stores/account-store";
+import type { MailFolder } from "@/lib/types/email";
 
 interface SidebarProps {
   userName?: string;
@@ -93,6 +95,20 @@ export default function Sidebar({ userName = "You", userEmail = "" }: SidebarPro
   const pathname = usePathname();
   const unreadCount = useAccountStore((s) => s.inboxUnread);
   const draftCount = useAccountStore((s) => s.draftCount);
+  const mailFolders = useAccountStore((s) => s.mailFolders);
+  const setMailFolders = useAccountStore((s) => s.setMailFolders);
+  const activeAccount = useAccountStore((s) => s.activeAccount);
+
+  // Fetch custom folders whenever the active account changes
+  useEffect(() => {
+    if (!activeAccount) return;
+    fetch(`/api/mail/folders?homeAccountId=${encodeURIComponent(activeAccount.homeAccountId)}`)
+      .then((r) => r.json())
+      .then((data: { folders?: MailFolder[] }) => {
+        if (data.folders) setMailFolders(data.folders);
+      })
+      .catch(console.error);
+  }, [activeAccount?.homeAccountId, setMailFolders]);
 
   const initials = userName
     .split(" ")
@@ -118,17 +134,18 @@ export default function Sidebar({ userName = "You", userEmail = "" }: SidebarPro
 
       {/* Compose Button */}
       <div className="px-4 py-4 flex-shrink-0">
-        <button
+        <Link
+          href="/compose"
           className="w-full flex items-center justify-center gap-2 text-white font-medium text-sm py-2.5 px-4 rounded-[10px] transition-colors shadow-card"
           style={{ backgroundColor: "rgb(138 9 9)" }}
-          onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "rgb(110 7 7)")}
-          onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "rgb(138 9 9)")}
+          onMouseEnter={(e) => ((e.currentTarget as HTMLAnchorElement).style.backgroundColor = "rgb(110 7 7)")}
+          onMouseLeave={(e) => ((e.currentTarget as HTMLAnchorElement).style.backgroundColor = "rgb(138 9 9)")}
         >
           <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
           </svg>
           Compose
-        </button>
+        </Link>
       </div>
 
       {/* Nav */}
@@ -171,6 +188,45 @@ export default function Sidebar({ userName = "You", userEmail = "" }: SidebarPro
             );
           })}
         </ul>
+
+        {/* Custom Folders */}
+        {mailFolders.length > 0 && (
+          <>
+            <p className="text-xs font-semibold text-neutral-400 uppercase tracking-wider px-3 mt-6 mb-2">Folders</p>
+            <ul className="space-y-0.5">
+              {mailFolders.map((folder) => {
+                const href = `/folder/${folder.id}`;
+                const active = pathname === href || pathname.startsWith(href + "/");
+                return (
+                  <li key={folder.id}>
+                    <Link
+                      href={href}
+                      className="flex items-center gap-3 px-3 py-2 rounded-[10px] text-sm font-medium transition-colors"
+                      style={{
+                        backgroundColor: active ? "rgb(253 235 235)" : "transparent",
+                        color: active ? "rgb(83 5 5)" : "rgb(82 82 82)",
+                      }}
+                    >
+                      <NavIcon>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M3 7a2 2 0 012-2h3.586a1 1 0 01.707.293L10.707 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V7z" />
+                      </NavIcon>
+                      <span className="truncate">{folder.displayName}</span>
+                      {folder.unreadItemCount > 0 && (
+                        <span className="ml-auto text-xs font-semibold px-2 py-0.5 rounded-[10px]"
+                          style={{
+                            backgroundColor: active ? "rgb(138 9 9)" : "rgb(220 220 220)",
+                            color: active ? "white" : "rgb(82 82 82)",
+                          }}>
+                          {folder.unreadItemCount}
+                        </span>
+                      )}
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
+          </>
+        )}
 
         {/* Navigate */}
         <p className="text-xs font-semibold text-neutral-400 uppercase tracking-wider px-3 mt-6 mb-2">Navigate</p>

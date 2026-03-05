@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Event Detail - Exported from UXMagic Copilot">
+    <title>Event Detail</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+    
+        tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary:    { 50:'rgb(var(--color-primary-50))',100:'rgb(var(--color-primary-100))',200:'rgb(var(--color-primary-200))',300:'rgb(var(--color-primary-300))',400:'rgb(var(--color-primary-400))',500:'rgb(var(--color-primary-500))',600:'rgb(var(--color-primary-600))',700:'rgb(var(--color-primary-700))',800:'rgb(var(--color-primary-800))',900:'rgb(var(--color-primary-900))' },
+            secondary:  { 50:'rgb(var(--color-secondary-50))',100:'rgb(var(--color-secondary-100))',200:'rgb(var(--color-secondary-200))',300:'rgb(var(--color-secondary-300))',400:'rgb(var(--color-secondary-400))',500:'rgb(var(--color-secondary-500))',600:'rgb(var(--color-secondary-600))',700:'rgb(var(--color-secondary-700))',800:'rgb(var(--color-secondary-800))',900:'rgb(var(--color-secondary-900))' },
+            tertiary:   { 50:'rgb(var(--color-tertiary-50))',100:'rgb(var(--color-tertiary-100))',200:'rgb(var(--color-tertiary-200))',300:'rgb(var(--color-tertiary-300))',400:'rgb(var(--color-tertiary-400))',500:'rgb(var(--color-tertiary-500))',600:'rgb(var(--color-tertiary-600))',700:'rgb(var(--color-tertiary-700))',800:'rgb(var(--color-tertiary-800))',900:'rgb(var(--color-tertiary-900))' },
+            background: { 50:'rgb(var(--color-background-50))',100:'rgb(var(--color-background-100))',200:'rgb(var(--color-background-200))',300:'rgb(var(--color-background-300))',400:'rgb(var(--color-background-400))',500:'rgb(var(--color-background-500))',600:'rgb(var(--color-background-600))',700:'rgb(var(--color-background-700))',800:'rgb(var(--color-background-800))',900:'rgb(var(--color-background-900))' },
+            neutral:    { 50:'rgb(var(--color-neutral-50))',100:'rgb(var(--color-neutral-100))',200:'rgb(var(--color-neutral-200))',300:'rgb(var(--color-neutral-300))',400:'rgb(var(--color-neutral-400))',500:'rgb(var(--color-neutral-500))',600:'rgb(var(--color-neutral-600))',700:'rgb(var(--color-neutral-700))',800:'rgb(var(--color-neutral-800))',900:'rgb(var(--color-neutral-900))' },
+          },
+          fontFamily: { heading:['var(--font-heading-name)','sans-serif'], body:['var(--font-body-name)','sans-serif'] },
+          spacing: { base:'var(--space-base)' },
+          borderRadius: { small:'var(--radius-small)', large:'var(--radius-large)' },
+          boxShadow: { custom:'var(--shadow-custom)', 'custom-hover':'var(--shadow-custom-hover)' },
+        }
+      }
+    },
+          boxShadow: {
+            custom: 'var(--shadow-custom)',
+            'custom-hover': 'var(--shadow-custom-hover)',
+          },
+        }
+      }
+    }
+  
+    </script>
+    <link rel="stylesheet" href="styles.css">
+    <meta name="theme-color" content="#007bff">
+    <meta name="color-scheme" content="light dark">
+    <meta name="author" content="UXMagic Copilot">
+    <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    
+
+  <!-- Header -->
+  <header class="bg-white border-b border-neutral-200 h-16 flex items-center justify-between px-4 flex-shrink-0 z-20 relative">
+    <div class="flex items-center gap-4">
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 bg-primary-600 rounded-small flex items-center justify-center text-white">
+          <i data-lucide="calendar" class="w-5 h-5"></i>
+        </div>
+        <h1 class="font-heading text-xl font-semibold text-neutral-900 hidden md:block">EaseMail Calendar</h1>
+      </div>
+      <div class="hidden md:flex items-center bg-neutral-100 rounded-small p-1 ml-6">
+        <button class="px-3 py-1 text-sm font-medium text-neutral-600 hover:text-neutral-900 rounded-small">Day</button>
+        <button class="px-3 py-1 text-sm font-medium text-primary-700 bg-white shadow-sm rounded-small">Week</button>
+        <button class="px-3 py-1 text-sm font-medium text-neutral-600 hover:text-neutral-900 rounded-small">Month</button>
+        <button class="px-3 py-1 text-sm font-medium text-neutral-600 hover:text-neutral-900 rounded-small">Year</button>
+      </div>
+    </div>
+    <div class="flex items-center gap-4">
+      <div class="flex items-center gap-2">
+        <button class="p-2 hover:bg-neutral-100 rounded-small text-neutral-600">
+          <i data-lucide="chevron-left" class="w-5 h-5"></i>
+        </button>
+        <span class="font-heading font-medium text-neutral-900 text-lg">October 2023</span>
+        <button class="p-2 hover:bg-neutral-100 rounded-small text-neutral-600">
+          <i data-lucide="chevron-right" class="w-5 h-5"></i>
+        </button>
+      </div>
+      <div class="h-6 w-px bg-neutral-200 mx-2 hidden sm:block"></div>
+      <div class="flex items-center gap-3">
+        <a href="../Starred/index.html" class="text-xs text-neutral-400 hover:text-neutral-600 transition-colors hidden lg:inline">Starred</a>
+        <a href="../Sent/index.html" class="text-xs text-neutral-400 hover:text-neutral-600 transition-colors hidden lg:inline">Sent</a>
+        <a href="../Drafts/index.html" class="text-xs text-neutral-400 hover:text-neutral-600 transition-colors hidden lg:inline">Drafts</a>
+        <a href="../Trash/index.html" class="text-xs text-neutral-400 hover:text-neutral-600 transition-colors hidden lg:inline">Trash</a>
+        <div class="h-4 w-px bg-neutral-200 hidden lg:block"></div>
+        <button class="p-2 hover:bg-neutral-100 rounded-small text-neutral-600 relative">
+          <i data-lucide="bell" class="w-5 h-5"></i>
+          <span class="absolute top-2 right-2 w-2 h-2 bg-primary-600 rounded-full border-2 border-white"></span>
+        </button>
+        <button class="p-2 hover:bg-neutral-100 rounded-small text-neutral-600">
+          <i data-lucide="settings" class="w-5 h-5"></i>
+        </button>
+        <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80" alt="User" class="w-8 h-8 rounded-full border border-neutral-200">
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Layout -->
+  <div class="flex" style="height:calc(100vh - 64px);overflow:hidden;">
+
+    <!-- Sidebar -->
+    <aside class="w-64 bg-white border-r border-neutral-200 flex-shrink-0 hidden lg:flex flex-col">
+
+      <!-- New Event Button -->
+      <div class="p-4">
+        <button class="w-full bg-primary-600 hover:bg-primary-700 text-white font-medium py-2.5 px-4 rounded-small shadow-custom flex items-center justify-center gap-2 transition-colors">
+          <i data-lucide="plus" class="w-5 h-5"></i>
+          <span>New Event</span>
+        </button>
+      </div>
+
+      <!-- Mini Calendar -->
+      <div class="px-4 pb-4 border-b border-neutral-200">
+        <div class="flex items-center justify-between mb-4">
+          <span class="font-medium text-sm text-neutral-900">October 2023</span>
+          <div class="flex gap-1">
+            <button class="p-1 hover:bg-neutral-100 rounded-small"><i data-lucide="chevron-left" class="w-4 h-4 text-neutral-500"></i></button>
+            <button class="p-1 hover:bg-neutral-100 rounded-small"><i data-lucide="chevron-right" class="w-4 h-4 text-neutral-500"></i></button>
+          </div>
+        </div>
+        <div class="grid grid-cols-7 gap-1 text-center text-xs mb-2">
+          <span class="text-neutral-400">S</span>
+          <span class="text-neutral-400">M</span>
+          <span class="text-neutral-400">T</span>
+          <span class="text-neutral-400">W</span>
+          <span class="text-neutral-400">T</span>
+          <span class="text-neutral-400">F</span>
+          <span class="text-neutral-400">S</span>
+        </div>
+        <div class="grid grid-cols-7 gap-1 text-center text-sm">
+          <span class="text-neutral-300 py-1">29</span>
+          <span class="text-neutral-300 py-1">30</span>
+          <span class="text-neutral-700 py-1 hover:bg-neutral-100 rounded-small cursor-pointer">1</span>
+          <span class="text-neutral-700 py-1 hover:bg-neutral-100 rounded-small cursor-pointer">2</span>
+          <span class="text-neutral-700 py-1 hover:bg-neutral-100 rounded-small cursor-pointer">3</span>
+          <span class="text-neutral-700 py-1 hover:bg-neutral-100 rounded-small cursor-pointer">4</span>
+          <span class="text-neutral-700 py-1 hover:bg-neutral-100 rounded-small cursor-pointer">5</span>
+          <span class="text-neutral-700 py-1 hover:bg-neutral-100 rounded-small cursor-pointer">6</span>
+          <span class="text-neutral-700 py-1 hover:bg-neutral-100 rounded-small cursor-pointer">7</span>
+          <span class="text-neutral-700 py-1 hover:bg-neutral-100 rounded-small cursor-pointer">8</span>
+          <span class="text-neutral-700 py-1 hover:bg-neutral-100 rounded-small cursor-pointer">9</span>
+          <span class="text-neutral-700 py-1 hover:bg-neutral-100 rounded-small cursor-pointer">10</span>
+          <span class="text-neutral-700 py-1 hover:bg-neutral-100 rounded-small cursor-pointer">11</span>
+          <span class="text-neutral-700 py-1 hover:bg-neutral-100 rounded-small cursor-pointer">12</span>
+          <span class="text-neutral-700 py-1 hover:bg-neutral-100 rounded-small cursor-pointer">13</span>
+          <span class="text-neutral-700 py-1 hover:bg-neutral-100 rounded-small cursor-pointer">14</span>
+          <span class="text-neutral-700 py-1 hover:bg-neutral-100 rounded-small cursor-pointer">15</span>
+          <span class="text-neutral-700 py-1 hover:bg-neutral-100 rounded-small cursor-pointer">16</span>
+          <span class="bg-primary-600 text-white font-medium py-1 rounded-full shadow-sm cursor-pointer">17</span>
+          <span class="text-neutral-700 py-1 hover:bg-neutral-100 rounded-small cursor-pointer">18</span>
+          <span class="text-neutral-700 py-1 hover:bg-neutral-100 rounded-small cursor-pointer">19</span>
+          <span class="text-neutral-700 py-1 hover:bg-neutral-100 rounded-small cursor-pointer">20</span>
+          <span class="text-neutral-700 py-1 hover:bg-neutral-100 rounded-small cursor-pointer">21</span>
+          <span class="text-neutral-700 py-1 hover:bg-neutral-100 rounded-small cursor-pointer">22</span>
+          <span class="text-neutral-700 py-1 hover:bg-neutral-100 rounded-small cursor-pointer">23</span>
+          <span class="text-neutral-700 py-1 hover:bg-neutral-100 rounded-small cursor-pointer">24</span>
+          <span class="text-neutral-700 py-1 hover:bg-neutral-100 rounded-small cursor-pointer">25</span>
+          <span class="text-neutral-700 py-1 hover:bg-neutral-100 rounded-small cursor-pointer">26</span>
+        </div>
+      </div>
+
+      <!-- Navigation -->
+      <nav class="p-3 border-b border-neutral-200">
+        <div class="space-y-0.5">
+          <a href="../Unified Red Enterprise Calendar/index.html" class="flex items-center gap-3 px-3 py-2 rounded-small bg-primary-50 text-primary-700 font-medium text-sm">
+            <i data-lucide="calendar" class="w-4 h-4 text-primary-600"></i>
+            <span>Calendar</span>
+          </a>
+          <a href="../Starred/index.html" class="flex items-center gap-3 px-3 py-2 rounded-small text-neutral-600 hover:bg-neutral-100 text-sm transition-colors">
+            <i data-lucide="star" class="w-4 h-4 text-neutral-400"></i>
+            <span>Starred</span>
+          </a>
+          <a href="../Sent/index.html" class="flex items-center gap-3 px-3 py-2 rounded-small text-neutral-600 hover:bg-neutral-100 text-sm transition-colors">
+            <i data-lucide="send" class="w-4 h-4 text-neutral-400"></i>
+            <span>Sent</span>
+          </a>
+          <a href="../Drafts/index.html" class="flex items-center gap-3 px-3 py-2 rounded-small text-neutral-600 hover:bg-neutral-100 text-sm transition-colors">
+            <i data-lucide="file-text" class="w-4 h-4 text-neutral-400"></i>
+            <span>Drafts</span>
+          </a>
+          <a href="../Trash/index.html" class="flex items-center gap-3 px-3 py-2 rounded-small text-neutral-600 hover:bg-neutral-100 text-sm transition-colors">
+            <i data-lucide="trash-2" class="w-4 h-4 text-neutral-400"></i>
+            <span>Trash</span>
+          </a>
+        </div>
+      </nav>
+
+      <!-- My Calendars -->
+      <div class="p-4">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="text-xs font-semibold text-neutral-500 uppercase tracking-wider">My Calendars</h3>
+          <button class="text-neutral-400 hover:text-neutral-600"><i data-lucide="plus" class="w-4 h-4"></i></button>
+        </div>
+        <div class="space-y-2">
+          <label class="flex items-center gap-3 cursor-pointer group">
+            <input type="checkbox" checked="" class="w-4 h-4 rounded border-neutral-300 text-primary-600 focus:ring-primary-500">
+            <span class="text-sm text-neutral-700 group-hover:text-neutral-900">Work</span>
+          </label>
+          <label class="flex items-center gap-3 cursor-pointer group">
+            <input type="checkbox" checked="" class="w-4 h-4 rounded border-neutral-300 text-blue-600 focus:ring-blue-500">
+            <span class="text-sm text-neutral-700 group-hover:text-neutral-900">Personal</span>
+          </label>
+          <label class="flex items-center gap-3 cursor-pointer group">
+            <input type="checkbox" class="w-4 h-4 rounded border-neutral-300 text-green-600 focus:ring-green-500">
+            <span class="text-sm text-neutral-700 group-hover:text-neutral-900">Family</span>
+          </label>
+          <label class="flex items-center gap-3 cursor-pointer group">
+            <input type="checkbox" checked="" class="w-4 h-4 rounded border-neutral-300 text-purple-600 focus:ring-purple-500">
+            <span class="text-sm text-neutral-700 group-hover:text-neutral-900">Holidays</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Team Calendars -->
+      <div class="p-4 border-t border-neutral-200">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="text-xs font-semibold text-neutral-500 uppercase tracking-wider">Team</h3>
+          <button class="text-neutral-400 hover:text-neutral-600"><i data-lucide="chevron-down" class="w-4 h-4"></i></button>
+        </div>
+        <div class="space-y-3">
+          <div class="flex items-center gap-3">
+            <div class="w-2 h-2 rounded-full bg-orange-500"></div>
+            <span class="text-sm text-neutral-700">Design Team</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <div class="w-2 h-2 rounded-full bg-teal-500"></div>
+            <span class="text-sm text-neutral-700">Engineering</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <div class="w-2 h-2 rounded-full bg-pink-500"></div>
+            <span class="text-sm text-neutral-700">Marketing</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content: Event Detail -->
+    <main class="flex-1 bg-neutral-50 overflow-y-auto scrollable-content">
+
+      <!-- Back bar -->
+      <div class="bg-white border-b border-neutral-200 px-6 py-3 flex items-center justify-between sticky top-0 z-10">
+        <div class="flex items-center gap-3">
+          <a href="../Unified Red Enterprise Calendar/index.html" class="flex items-center gap-1.5 text-sm text-neutral-500 hover:text-primary-600 transition-colors group">
+            <i data-lucide="arrow-left" class="w-4 h-4 group-hover:-translate-x-0.5 transition-transform"></i>
+            <span>Back to Calendar</span>
+          </a>
+          <div class="h-4 w-px bg-neutral-200"></div>
+          <span class="text-sm text-neutral-400">October 19, 2023</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <button class="p-2 hover:bg-neutral-100 rounded-small text-neutral-500 transition-colors" title="Edit event">
+            <i data-lucide="pencil" class="w-4 h-4"></i>
+          </button>
+          <button class="p-2 hover:bg-neutral-100 rounded-small text-neutral-500 transition-colors" title="Share event">
+            <i data-lucide="share-2" class="w-4 h-4"></i>
+          </button>
+          <button class="p-2 hover:bg-red-50 rounded-small text-neutral-500 hover:text-red-600 transition-colors" title="Delete event">
+            <i data-lucide="trash-2" class="w-4 h-4"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Content -->
+      <div class="max-w-3xl mx-auto px-6 py-8">
+
+        <!-- Event Card Header -->
+        <div class="bg-white rounded-large border border-neutral-200 shadow-custom overflow-hidden mb-6">
+          <!-- Color band -->
+          <div class="h-2 bg-primary-600"></div>
+          <div class="p-6">
+            <div class="flex items-start justify-between gap-4">
+              <div class="flex-1">
+                <div class="flex items-center gap-2 mb-2">
+                  <span class="inline-flex items-center gap-1.5 bg-primary-50 border border-primary-100 text-primary-700 text-xs font-semibold px-2.5 py-1 rounded-small">
+                    <i data-lucide="briefcase" class="w-3 h-3"></i>
+                    Work
+                  </span>
+                  <span class="inline-flex items-center gap-1.5 bg-orange-50 border border-orange-100 text-orange-700 text-xs font-semibold px-2.5 py-1 rounded-small">
+                    <i data-lucide="users" class="w-3 h-3"></i>
+                    Team Meeting
+                  </span>
+                </div>
+                <h2 class="font-heading text-2xl font-bold text-neutral-900 tracking-tight mb-1">Q4 Strategy Review</h2>
+                <p class="text-sm text-neutral-500">Quarterly planning and performance review for all department leads</p>
+              </div>
+              <div class="w-16 h-16 bg-primary-50 border border-primary-100 rounded-large flex flex-col items-center justify-center flex-shrink-0">
+                <span class="text-xs font-semibold text-primary-600 uppercase">Oct</span>
+                <span class="text-2xl font-bold text-primary-700 leading-none">19</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Details Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+
+          <!-- Time -->
+          <div class="bg-white rounded-large border border-neutral-200 p-4 flex items-start gap-3">
+            <div class="w-9 h-9 bg-primary-50 border border-primary-100 rounded-small flex items-center justify-center flex-shrink-0">
+              <i data-lucide="clock" class="w-4 h-4 text-primary-600"></i>
+            </div>
+            <div>
+              <p class="text-xs font-semibold text-neutral-500 uppercase tracking-wider mb-1">Time</p>
+              <p class="text-sm font-semibold text-neutral-900">Thursday, October 19, 2023</p>
+              <p class="text-sm text-neutral-600">2:00 PM – 4:00 PM (2 hours)</p>
+              <p class="text-xs text-neutral-400 mt-1">GMT-5 Eastern Time</p>
+            </div>
+          </div>
+
+          <!-- Location -->
+          <div class="bg-white rounded-large border border-neutral-200 p-4 flex items-start gap-3">
+            <div class="w-9 h-9 bg-blue-50 border border-blue-100 rounded-small flex items-center justify-center flex-shrink-0">
+              <i data-lucide="map-pin" class="w-4 h-4 text-blue-600"></i>
+            </div>
+            <div>
+              <p class="text-xs font-semibold text-neutral-500 uppercase tracking-wider mb-1">Location</p>
+              <p class="text-sm font-semibold text-neutral-900">Conference Room A – Floor 12</p>
+              <p class="text-sm text-neutral-600">HQ Tower, 350 Fifth Avenue</p>
+              <a href="#" class="text-xs text-primary-600 hover:text-primary-700 mt-1 inline-flex items-center gap-1 transition-colors">
+                <i data-lucide="external-link" class="w-3 h-3"></i>
+                View on map
+              </a>
+            </div>
+          </div>
+
+          <!-- Organizer -->
+          <div class="bg-white rounded-large border border-neutral-200 p-4 flex items-start gap-3">
+            <div class="w-9 h-9 bg-purple-50 border border-purple-100 rounded-small flex items-center justify-center flex-shrink-0">
+              <i data-lucide="user-check" class="w-4 h-4 text-purple-600"></i>
+            </div>
+            <div class="flex-1">
+              <p class="text-xs font-semibold text-neutral-500 uppercase tracking-wider mb-1">Organizer</p>
+              <div class="flex items-center gap-2.5">
+                <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80" alt="Sarah Mitchell" class="w-7 h-7 rounded-full border border-neutral-200">
+                <div>
+                  <p class="text-sm font-semibold text-neutral-900">Sarah Mitchell</p>
+                  <p class="text-xs text-neutral-500">VP of Strategy</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Video Call -->
+          <div class="bg-white rounded-large border border-neutral-200 p-4 flex items-start gap-3">
+            <div class="w-9 h-9 bg-teal-50 border border-teal-100 rounded-small flex items-center justify-center flex-shrink-0">
+              <i data-lucide="video" class="w-4 h-4 text-teal-600"></i>
+            </div>
+            <div>
+              <p class="text-xs font-semibold text-neutral-500 uppercase tracking-wider mb-1">Video Call</p>
+              <p class="text-sm font-semibold text-neutral-900">Zoom Meeting</p>
+              <a href="#" class="text-xs text-primary-600 hover:text-primary-700 mt-1 inline-flex items-center gap-1 transition-colors">
+                <i data-lucide="link" class="w-3 h-3"></i>
+                Join meeting link
+              </a>
+              <p class="text-xs text-neutral-400 mt-0.5">ID: 892 341 5670 · Passcode: q4rev</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Attendees -->
+        <div class="bg-white rounded-large border border-neutral-200 shadow-custom mb-6">
+          <div class="px-6 py-4 border-b border-neutral-100 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <i data-lucide="users" class="w-4 h-4 text-neutral-500"></i>
+              <h3 class="font-heading text-sm font-semibold text-neutral-900">Attendees</h3>
+              <span class="bg-neutral-100 text-neutral-600 text-xs font-semibold px-2 py-0.5 rounded-small">5</span>
+            </div>
+            <button class="text-xs text-primary-600 hover:text-primary-700 font-medium transition-colors">Invite more</button>
+          </div>
+          <div class="divide-y divide-neutral-100">
+
+            <!-- Attendee 1 - Accepted -->
+            <div class="px-6 py-3.5 flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <div class="relative">
+                  <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80" alt="Sarah Mitchell" class="w-9 h-9 rounded-full border border-neutral-200">
+                  <span class="absolute -bottom-0.5 -right-0.5 w-4 h-4 bg-green-500 rounded-full border-2 border-white flex items-center justify-center">
+                    <i data-lucide="check" class="w-2.5 h-2.5 text-white"></i>
+                  </span>
+                </div>
+                <div>
+                  <p class="text-sm font-semibold text-neutral-900">Sarah Mitchell</p>
+                  <p class="text-xs text-neutral-500">sarah.mitchell@company.com</p>
+                </div>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="inline-flex items-center gap-1 bg-green-50 border border-green-100 text-green-700 text-xs font-medium px-2 py-0.5 rounded-small">
+                  <i data-lucide="check-circle" class="w-3 h-3"></i>
+                  Accepted
+                </span>
+                <span class="text-xs text-neutral-400 bg-neutral-100 px-2 py-0.5 rounded-small">Organizer</span>
+              </div>
+            </div>
+
+            <!-- Attendee 2 - Accepted -->
+            <div class="px-6 py-3.5 flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <div class="relative">
+                  <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80" alt="James Carter" class="w-9 h-9 rounded-full border border-neutral-200">
+                  <span class="absolute -bottom-0.5 -right-0.5 w-4 h-4 bg-green-500 rounded-full border-2 border-white flex items-center justify-center">
+                    <i data-lucide="check" class="w-2.5 h-2.5 text-white"></i>
+                  </span>
+                </div>
+                <div>
+                  <p class="text-sm font-semibold text-neutral-900">James Carter</p>
+                  <p class="text-xs text-neutral-500">j.carter@company.com</p>
+                </div>
+              </div>
+              <span class="inline-flex items-center gap-1 bg-green-50 border border-green-100 text-green-700 text-xs font-medium px-2 py-0.5 rounded-small">
+                <i data-lucide="check-circle" class="w-3 h-3"></i>
+                Accepted
+              </span>
+            </div>
+
+            <!-- Attendee 3 - Pending -->
+            <div class="px-6 py-3.5 flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <div class="relative">
+                  <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-1.2.1&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80" alt="Priya Nair" class="w-9 h-9 rounded-full border border-neutral-200">
+                  <span class="absolute -bottom-0.5 -right-0.5 w-4 h-4 bg-amber-400 rounded-full border-2 border-white flex items-center justify-center">
+                    <i data-lucide="clock" class="w-2.5 h-2.5 text-white"></i>
+                  </span>
+                </div>
+                <div>
+                  <p class="text-sm font-semibold text-neutral-900">Priya Nair</p>
+                  <p class="text-xs text-neutral-500">p.nair@company.com</p>
+                </div>
+              </div>
+              <span class="inline-flex items-center gap-1 bg-amber-50 border border-amber-100 text-amber-700 text-xs font-medium px-2 py-0.5 rounded-small">
+                <i data-lucide="clock" class="w-3 h-3"></i>
+                Pending
+              </span>
+            </div>
+
+            <!-- Attendee 4 - Declined -->
+            <div class="px-6 py-3.5 flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <div class="relative">
+                  <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?ixlib=rb-1.2.1&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80" alt="Marcus Lee" class="w-9 h-9 rounded-full border border-neutral-200 opacity-60">
+                  <span class="absolute -bottom-0.5 -right-0.5 w-4 h-4 bg-red-500 rounded-full border-2 border-white flex items-center justify-center">
+                    <i data-lucide="x" class="w-2.5 h-2.5 text-white"></i>
+                  </span>
+                </div>
+                <div>
+                  <p class="text-sm font-semibold text-neutral-500">Marcus Lee</p>
+                  <p class="text-xs text-neutral-400">m.lee@company.com</p>
+                </div>
+              </div>
+              <span class="inline-flex items-center gap-1 bg-red-50 border border-red-100 text-red-600 text-xs font-medium px-2 py-0.5 rounded-small">
+                <i data-lucide="x-circle" class="w-3 h-3"></i>
+                Declined
+              </span>
+            </div>
+
+            <!-- Attendee 5 - Accepted -->
+            <div class="px-6 py-3.5 flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <div class="relative">
+                  <div class="w-9 h-9 rounded-full border border-neutral-200 bg-teal-100 flex items-center justify-center">
+                    <span class="text-sm font-bold text-teal-700">AL</span>
+                  </div>
+                  <span class="absolute -bottom-0.5 -right-0.5 w-4 h-4 bg-green-500 rounded-full border-2 border-white flex items-center justify-center">
+                    <i data-lucide="check" class="w-2.5 h-2.5 text-white"></i>
+                  </span>
+                </div>
+                <div>
+                  <p class="text-sm font-semibold text-neutral-900">Aisha Lopez</p>
+                  <p class="text-xs text-neutral-500">a.lopez@company.com</p>
+                </div>
+              </div>
+              <span class="inline-flex items-center gap-1 bg-green-50 border border-green-100 text-green-700 text-xs font-medium px-2 py-0.5 rounded-small">
+                <i data-lucide="check-circle" class="w-3 h-3"></i>
+                Accepted
+              </span>
+            </div>
+
+          </div>
+          <!-- RSVP Summary -->
+          <div class="px-6 py-3 bg-neutral-50 border-t border-neutral-100 flex items-center gap-4 rounded-b-large">
+            <div class="flex items-center gap-1.5">
+              <div class="w-2 h-2 rounded-full bg-green-500"></div>
+              <span class="text-xs text-neutral-600"><span class="font-semibold">3</span> accepted</span>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <div class="w-2 h-2 rounded-full bg-amber-400"></div>
+              <span class="text-xs text-neutral-600"><span class="font-semibold">1</span> pending</span>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <div class="w-2 h-2 rounded-full bg-red-500"></div>
+              <span class="text-xs text-neutral-600"><span class="font-semibold">1</span> declined</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Description -->
+        <div class="bg-white rounded-large border border-neutral-200 shadow-custom mb-6">
+          <div class="px-6 py-4 border-b border-neutral-100 flex items-center gap-2">
+            <i data-lucide="align-left" class="w-4 h-4 text-neutral-500"></i>
+            <h3 class="font-heading text-sm font-semibold text-neutral-900">Description</h3>
+          </div>
+          <div class="px-6 py-5 space-y-4">
+            <p class="text-sm text-neutral-700 leading-relaxed">
+              This is our quarterly strategy review meeting for Q4 2023. All department leads are expected to attend and come prepared with a summary of their team's performance metrics, key achievements, and blockers from Q3.
+            </p>
+            <p class="text-sm text-neutral-700 leading-relaxed">
+              During this session, we will review the company's overall progress against annual OKRs, align on Q4 priorities, and discuss resource allocation for the upcoming quarter. Each department will have 10 minutes to present their highlights and roadblocks.
+            </p>
+            <p class="text-sm text-neutral-700 leading-relaxed">
+              Please ensure your slide deck is submitted to Sarah by <span class="font-semibold text-neutral-900">October 18th at 5:00 PM</span> so the presentation can be compiled ahead of the meeting. Reference materials and the Q3 report have been shared via the company drive link below.
+            </p>
+            <div class="flex items-center gap-2 pt-1">
+              <div class="w-8 h-8 bg-neutral-100 rounded-small flex items-center justify-center flex-shrink-0">
+                <i data-lucide="paperclip" class="w-4 h-4 text-neutral-500"></i>
+              </div>
+              <div>
+                <a href="#" class="text-sm text-primary-600 hover:text-primary-700 font-medium transition-colors">Q3_Performance_Report_2023.pdf</a>
+                <p class="text-xs text-neutral-400">2.4 MB · Shared via Google Drive</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RSVP Response -->
+        <div class="bg-white rounded-large border border-neutral-200 shadow-custom mb-8">
+          <div class="px-6 py-4 border-b border-neutral-100 flex items-center gap-2">
+            <i data-lucide="calendar-check" class="w-4 h-4 text-neutral-500"></i>
+            <h3 class="font-heading text-sm font-semibold text-neutral-900">Your RSVP</h3>
+          </div>
+          <div class="px-6 py-5">
+            <p class="text-sm text-neutral-600 mb-4">Will you be attending this event? Let the organizer know your response.</p>
+            <div class="flex flex-wrap gap-3">
+              <button class="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white font-semibold text-sm py-2.5 px-5 rounded-small shadow-custom transition-all">
+                <i data-lucide="check" class="w-4 h-4"></i>
+                Accept
+              </button>
+              <button class="flex items-center gap-2 bg-white hover:bg-amber-50 border border-amber-200 text-amber-700 font-semibold text-sm py-2.5 px-5 rounded-small transition-all">
+                <i data-lucide="help-circle" class="w-4 h-4"></i>
+                Maybe
+              </button>
+              <button class="flex items-center gap-2 bg-white hover:bg-red-50 border border-red-200 text-red-600 font-semibold text-sm py-2.5 px-5 rounded-small transition-all">
+                <i data-lucide="x" class="w-4 h-4"></i>
+                Decline
+              </button>
+            </div>
+            <div class="mt-4 pt-4 border-t border-neutral-100">
+              <label class="block text-xs font-semibold text-neutral-500 mb-2">Add a note (optional)</label>
+              <textarea rows="2" placeholder="e.g. I'll be joining remotely via Zoom..." class="w-full text-sm text-neutral-700 bg-neutral-50 border border-neutral-200 rounded-small px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-400 resize-none placeholder-neutral-400 transition-colors"></textarea>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script>
+    lucide.createIcons();
+  </script>
+
+
+
+    <script src="script.js"></script>
+  <script src="../demo-nav.js"></script>
+</body>
+</html>

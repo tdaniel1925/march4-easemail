@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inbox — EaseMail</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary:    { 50:'rgb(var(--color-primary-50))',100:'rgb(var(--color-primary-100))',200:'rgb(var(--color-primary-200))',300:'rgb(var(--color-primary-300))',400:'rgb(var(--color-primary-400))',500:'rgb(var(--color-primary-500))',600:'rgb(var(--color-primary-600))',700:'rgb(var(--color-primary-700))',800:'rgb(var(--color-primary-800))',900:'rgb(var(--color-primary-900))' },
+            secondary:  { 50:'rgb(var(--color-secondary-50))',100:'rgb(var(--color-secondary-100))',200:'rgb(var(--color-secondary-200))',300:'rgb(var(--color-secondary-300))',400:'rgb(var(--color-secondary-400))',500:'rgb(var(--color-secondary-500))',600:'rgb(var(--color-secondary-600))',700:'rgb(var(--color-secondary-700))',800:'rgb(var(--color-secondary-800))',900:'rgb(var(--color-secondary-900))' },
+            tertiary:   { 50:'rgb(var(--color-tertiary-50))',100:'rgb(var(--color-tertiary-100))',200:'rgb(var(--color-tertiary-200))',300:'rgb(var(--color-tertiary-300))',400:'rgb(var(--color-tertiary-400))',500:'rgb(var(--color-tertiary-500))',600:'rgb(var(--color-tertiary-600))',700:'rgb(var(--color-tertiary-700))',800:'rgb(var(--color-tertiary-800))',900:'rgb(var(--color-tertiary-900))' },
+            background: { 50:'rgb(var(--color-background-50))',100:'rgb(var(--color-background-100))',200:'rgb(var(--color-background-200))',300:'rgb(var(--color-background-300))',400:'rgb(var(--color-background-400))',500:'rgb(var(--color-background-500))',600:'rgb(var(--color-background-600))',700:'rgb(var(--color-background-700))',800:'rgb(var(--color-background-800))',900:'rgb(var(--color-background-900))' },
+            neutral:    { 50:'rgb(var(--color-neutral-50))',100:'rgb(var(--color-neutral-100))',200:'rgb(var(--color-neutral-200))',300:'rgb(var(--color-neutral-300))',400:'rgb(var(--color-neutral-400))',500:'rgb(var(--color-neutral-500))',600:'rgb(var(--color-neutral-600))',700:'rgb(var(--color-neutral-700))',800:'rgb(var(--color-neutral-800))',900:'rgb(var(--color-neutral-900))' },
+          },
+          fontFamily: { heading:['var(--font-heading-name)','sans-serif'], body:['var(--font-body-name)','sans-serif'] },
+          spacing: { base:'var(--space-base)' },
+          borderRadius: { small:'var(--radius-small)', large:'var(--radius-large)' },
+          boxShadow: { custom:'var(--shadow-custom)', 'custom-hover':'var(--shadow-custom-hover)' },
+        }
+      }
+    }
+    </script>
+    <link rel="stylesheet" href="styles.css">
+    <meta name="author" content="UXMagic Copilot">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div class="flex" style="height:100vh;overflow:hidden;">
+
+  <!-- SIDEBAR -->
+  <aside class="hidden lg:flex flex-col w-64 bg-background-50 border-r border-neutral-200 flex-shrink-0">
+    <div class="flex items-center gap-3 px-6 py-5 border-b border-neutral-200">
+      <div class="w-8 h-8 bg-primary-500 rounded-small flex items-center justify-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-neutral-50" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+      </div>
+      <span class="font-heading font-semibold text-neutral-900 text-lg">EaseMail</span>
+    </div>
+    <div class="px-4 py-4">
+      <button class="w-full flex items-center justify-center gap-2 bg-primary-500 hover:bg-primary-600 text-neutral-50 font-medium text-sm py-2.5 px-4 rounded-small transition-colors shadow-custom">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"></path></svg>
+        Compose
+      </button>
+    </div>
+    <nav class="flex-1 px-3 pb-4 overflow-y-auto">
+      <p class="text-xs font-semibold text-neutral-400 uppercase tracking-wider px-3 mb-2">Mailboxes</p>
+      <ul class="space-y-0.5">
+        <li><a href="../Inbox/index.html" class="flex items-center gap-3 px-3 py-2 rounded-small bg-primary-50 text-primary-700 text-sm font-medium">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path></svg>
+          Inbox <span class="ml-auto bg-primary-500 text-neutral-50 text-xs font-semibold px-2 py-0.5 rounded-small">12</span>
+        </a></li>
+        <li><a href="../Starred/index.html" class="flex items-center gap-3 px-3 py-2 rounded-small text-neutral-600 hover:bg-background-200 text-sm transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path></svg>
+          Starred
+        </a></li>
+        <li><a href="../Sent/index.html" class="flex items-center gap-3 px-3 py-2 rounded-small text-neutral-600 hover:bg-background-200 text-sm transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
+          Sent
+        </a></li>
+        <li><a href="../Drafts/index.html" class="flex items-center gap-3 px-3 py-2 rounded-small text-neutral-600 hover:bg-background-200 text-sm transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+          Drafts <span class="ml-auto bg-background-200 text-neutral-600 text-xs font-semibold px-2 py-0.5 rounded-small">3</span>
+        </a></li>
+        <li><a href="../Trash/index.html" class="flex items-center gap-3 px-3 py-2 rounded-small text-neutral-600 hover:bg-background-200 text-sm transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+          Trash
+        </a></li>
+      </ul>
+      <p class="text-xs font-semibold text-neutral-400 uppercase tracking-wider px-3 mt-6 mb-2">Navigate</p>
+      <ul class="space-y-0.5">
+        <li><a href="../Personal Dashboard – Brand Collection Applied/index.html" class="flex items-center gap-3 px-3 py-2 rounded-small text-neutral-600 hover:bg-background-200 text-sm transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+          Dashboard
+        </a></li>
+        <li><a href="../EaseMail - Attachments Hub/index.html" class="flex items-center gap-3 px-3 py-2 rounded-small text-neutral-600 hover:bg-background-200 text-sm transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path></svg>
+          Attachments
+        </a></li>
+        <li><a href="../Unified Red Enterprise Calendar/index.html" class="flex items-center gap-3 px-3 py-2 rounded-small text-neutral-600 hover:bg-background-200 text-sm transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+          Calendar
+        </a></li>
+      </ul>
+      <p class="text-xs font-semibold text-neutral-400 uppercase tracking-wider px-3 mt-6 mb-2">Manage</p>
+      <ul class="space-y-0.5">
+        <li><a href="../Email Accounts Dashboard/index.html" class="flex items-center gap-3 px-3 py-2 rounded-small text-neutral-600 hover:bg-background-200 text-sm transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+          Email Accounts
+        </a></li>
+        <li><a href="../MailBox/index.html" class="flex items-center gap-3 px-3 py-2 rounded-small text-neutral-600 hover:bg-background-200 text-sm transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+          Contacts
+        </a></li>
+      </ul>
+      <p class="text-xs font-semibold text-neutral-400 uppercase tracking-wider px-3 mt-6 mb-2">Support</p>
+      <ul class="space-y-0.5">
+        <li><a href="../Detailed Help Center — Brand Design System/index.html" class="flex items-center gap-3 px-3 py-2 rounded-small text-neutral-600 hover:bg-background-200 text-sm transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+          Help Center
+        </a></li>
+      </ul>
+    </nav>
+    <div class="px-4 py-4 border-t border-neutral-200">
+      <div class="flex items-center gap-3">
+        <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=40&h=40&fit=crop&crop=face" alt="Alex" class="w-9 h-9 rounded-small object-cover flex-shrink-0">
+        <div class="flex-1 min-w-0">
+          <p class="text-sm font-semibold text-neutral-900 truncate">Alex Morgan</p>
+          <p class="text-xs text-neutral-500 truncate">alex@darrenmillerlaw.com</p>
+        </div>
+        <button class="text-neutral-400 hover:text-neutral-600 transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- EMAIL LIST -->
+  <div class="flex flex-col w-full lg:w-80 xl:w-96 bg-background-50 border-r border-neutral-200 flex-shrink-0" style="height:100vh;overflow:hidden;">
+    <div class="px-4 pt-5 pb-3 border-b border-neutral-200 flex-shrink-0">
+      <div class="flex items-center justify-between mb-3">
+        <h2 class="font-heading font-semibold text-neutral-900 text-base">Inbox</h2>
+        <div class="flex items-center gap-1">
+          <button class="p-1.5 text-neutral-400 hover:text-neutral-700 hover:bg-background-200 rounded-small transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-.293.707L13 13.414V19a1 1 0 01-.553.894l-4 2A1 1 0 017 21v-7.586L3.293 6.707A1 1 0 013 6V4z"></path></svg>
+          </button>
+          <button class="p-1.5 text-neutral-400 hover:text-neutral-700 hover:bg-background-200 rounded-small transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h7"></path></svg>
+          </button>
+        </div>
+      </div>
+      <div class="relative">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-neutral-400 absolute left-3 top-1/2 -translate-y-1/2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+        <input type="text" placeholder="Search emails..." class="w-full pl-9 pr-4 py-2 bg-background-200 rounded-small text-sm text-neutral-700 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-primary-400 focus:bg-background-50 transition-colors border border-transparent focus:border-primary-300">
+      </div>
+      <div class="flex items-center gap-1 mt-3" id="inbox-filter-tabs">
+        <button onclick="filterInbox('all',this)" class="inbox-tab px-3 py-1 text-xs font-medium bg-primary-50 text-primary-700 rounded-small">All</button>
+        <button onclick="filterInbox('unread',this)" class="inbox-tab px-3 py-1 text-xs font-medium text-neutral-500 hover:bg-background-200 rounded-small transition-colors">Unread</button>
+        <button onclick="filterInbox('starred',this)" class="inbox-tab px-3 py-1 text-xs font-medium text-neutral-500 hover:bg-background-200 rounded-small transition-colors">Starred</button>
+        <button onclick="filterInbox('attachments',this)" class="inbox-tab px-3 py-1 text-xs font-medium text-neutral-500 hover:bg-background-200 rounded-small transition-colors">Attachments</button>
+      </div>
+    </div>
+    <div class="flex-1 overflow-y-auto divide-y divide-neutral-100">
+      <div class="flex items-start gap-3 px-4 py-3.5 cursor-pointer bg-primary-50 border-l-2 border-l-primary-500 hover:bg-primary-100 transition-colors">
+        <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=40&h=40&fit=crop&crop=face" alt="Sarah" class="w-9 h-9 rounded-small object-cover flex-shrink-0 mt-0.5">
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center justify-between gap-2 mb-0.5">
+            <span class="text-sm font-bold text-neutral-900 truncate">Sarah Jenkins</span>
+            <span class="text-xs text-neutral-400 flex-shrink-0">10m ago</span>
+          </div>
+          <p class="text-sm font-semibold text-neutral-800 truncate">Re: Project Timeline Update</p>
+          <p class="text-xs text-neutral-500 mt-0.5 line-clamp-2">Hi Alex, I've reviewed the timeline you sent over and have a few suggestions regarding the milestones...</p>
+        </div>
+        <span class="w-2 h-2 rounded-full bg-primary-500 flex-shrink-0 mt-2"></span>
+      </div>
+      <div class="flex items-start gap-3 px-4 py-3.5 cursor-pointer hover:bg-background-100 transition-colors">
+        <div class="w-9 h-9 rounded-small bg-secondary-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+          <span class="text-sm font-bold text-secondary-700">DT</span>
+        </div>
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center justify-between gap-2 mb-0.5">
+            <span class="text-sm font-bold text-neutral-900 truncate">Design Team</span>
+            <span class="text-xs text-neutral-400 flex-shrink-0">1h ago</span>
+          </div>
+          <p class="text-sm font-semibold text-neutral-800 truncate">Weekly Inspiration Digest</p>
+          <p class="text-xs text-neutral-500 mt-0.5 line-clamp-2">Check out the latest design trends for October. We've curated a list of top UI kits and resources...</p>
+        </div>
+        <span class="w-2 h-2 rounded-full bg-primary-500 flex-shrink-0 mt-2"></span>
+      </div>
+      <div class="flex items-start gap-3 px-4 py-3.5 cursor-pointer hover:bg-background-100 transition-colors">
+        <div class="w-9 h-9 rounded-small bg-tertiary-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+          <span class="text-sm font-bold text-tertiary-700">HR</span>
+        </div>
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center justify-between gap-2 mb-0.5">
+            <span class="text-sm font-bold text-neutral-900 truncate">HR Department</span>
+            <span class="text-xs text-neutral-400 flex-shrink-0">3h ago</span>
+          </div>
+          <p class="text-sm font-semibold text-neutral-800 truncate">Open Enrollment Reminder</p>
+          <p class="text-xs text-neutral-500 mt-0.5 line-clamp-2">This is a reminder that open enrollment for benefits ends this Friday. Please log in to complete...</p>
+        </div>
+        <span class="w-2 h-2 rounded-full bg-primary-500 flex-shrink-0 mt-2"></span>
+      </div>
+      <div class="flex items-start gap-3 px-4 py-3.5 cursor-pointer hover:bg-background-100 transition-colors">
+        <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=40&h=40&fit=crop&crop=face" alt="Marcus" class="w-9 h-9 rounded-small object-cover flex-shrink-0 mt-0.5">
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center justify-between gap-2 mb-0.5">
+            <span class="text-sm font-medium text-neutral-700 truncate">Marcus Lee</span>
+            <span class="text-xs text-neutral-400 flex-shrink-0">Yesterday</span>
+          </div>
+          <p class="text-sm font-medium text-neutral-600 truncate">Q3 Budget Approval</p>
+          <p class="text-xs text-neutral-400 mt-0.5 line-clamp-2">The budget has been approved by the finance team. Please review the attached breakdown...</p>
+        </div>
+      </div>
+      <div class="flex items-start gap-3 px-4 py-3.5 cursor-pointer hover:bg-background-100 transition-colors">
+        <div class="w-9 h-9 rounded-small bg-neutral-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+          <span class="text-sm font-bold text-neutral-600">AP</span>
+        </div>
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center justify-between gap-2 mb-0.5">
+            <span class="text-sm font-medium text-neutral-700 truncate">Aisha Patel</span>
+            <span class="text-xs text-neutral-400 flex-shrink-0">Yesterday</span>
+          </div>
+          <p class="text-sm font-medium text-neutral-600 truncate">Design System Audit — Final Review</p>
+          <p class="text-xs text-neutral-400 mt-0.5 line-clamp-2">Attaching the audit report for your review. The new button variants and spacing tokens are finalized...</p>
+        </div>
+      </div>
+      <div class="flex items-start gap-3 px-4 py-3.5 cursor-pointer hover:bg-background-100 transition-colors">
+        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=40&h=40&fit=crop&crop=face" alt="Diana" class="w-9 h-9 rounded-small object-cover flex-shrink-0 mt-0.5">
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center justify-between gap-2 mb-0.5">
+            <span class="text-sm font-medium text-neutral-700 truncate">Diana Johnson</span>
+            <span class="text-xs text-neutral-400 flex-shrink-0">Mon</span>
+          </div>
+          <p class="text-sm font-medium text-neutral-600 truncate">Re: Figma Component Library Update</p>
+          <p class="text-xs text-neutral-400 mt-0.5 line-clamp-2">Thanks for the update! The new button variants look great. I've shared them with the front-end team...</p>
+        </div>
+      </div>
+      <div class="flex items-start gap-3 px-4 py-3.5 cursor-pointer hover:bg-background-100 transition-colors">
+        <div class="w-9 h-9 rounded-small bg-primary-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+          <span class="text-sm font-bold text-primary-700">CM</span>
+        </div>
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center justify-between gap-2 mb-0.5">
+            <span class="text-sm font-medium text-neutral-700 truncate">Carlos Martinez</span>
+            <span class="text-xs text-neutral-400 flex-shrink-0">Mon</span>
+          </div>
+          <p class="text-sm font-medium text-neutral-600 truncate">Onboarding Flow Feedback</p>
+          <p class="text-xs text-neutral-400 mt-0.5 line-clamp-2">The onboarding revisions look much better. A couple of small nitpicks on step 3 but overall ready...</p>
+        </div>
+      </div>
+      <div class="flex items-start gap-3 px-4 py-3.5 cursor-pointer hover:bg-background-100 transition-colors">
+        <div class="w-9 h-9 rounded-small bg-secondary-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+          <span class="text-sm font-bold text-secondary-700">NW</span>
+        </div>
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center justify-between gap-2 mb-0.5">
+            <span class="text-sm font-medium text-neutral-700 truncate">Newsletter Weekly</span>
+            <span class="text-xs text-neutral-400 flex-shrink-0">Sun</span>
+          </div>
+          <p class="text-sm font-medium text-neutral-600 truncate">This week in product design</p>
+          <p class="text-xs text-neutral-400 mt-0.5 line-clamp-2">Inside: Figma's new auto-layout updates, how Notion designs for speed, and 5 resources for UX writers...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- READING PANE -->
+  <div class="hidden lg:flex flex-col flex-1 bg-background-50" style="overflow:hidden;">
+    <div class="flex items-center justify-between px-6 py-3.5 border-b border-neutral-200 flex-shrink-0 bg-background-50">
+      <div class="flex items-center gap-1">
+        <button class="p-1.5 text-neutral-400 hover:text-neutral-700 hover:bg-background-200 rounded-small transition-colors" title="Archive">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path></svg>
+        </button>
+        <button class="p-1.5 text-neutral-400 hover:text-neutral-700 hover:bg-background-200 rounded-small transition-colors" title="Delete">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+        </button>
+        <button class="p-1.5 text-neutral-400 hover:text-neutral-700 hover:bg-background-200 rounded-small transition-colors" title="Mark unread">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+        </button>
+        <button class="p-1.5 text-neutral-400 hover:text-neutral-700 hover:bg-background-200 rounded-small transition-colors" title="Star">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path></svg>
+        </button>
+      </div>
+      <div class="flex items-center gap-1">
+        <button class="p-1.5 text-neutral-400 hover:text-primary-600 hover:bg-primary-50 rounded-small transition-colors" title="AI Remix">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+        </button>
+        <button class="p-1.5 text-neutral-400 hover:text-neutral-700 hover:bg-background-200 rounded-small transition-colors" title="More">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path></svg>
+        </button>
+      </div>
+    </div>
+    <div class="flex-1 overflow-y-auto px-8 py-6">
+      <div class="mb-6">
+        <h1 class="font-heading text-xl font-bold text-neutral-900 mb-4">Re: Project Timeline Update</h1>
+        <div class="flex items-start justify-between gap-4">
+          <div class="flex items-start gap-3">
+            <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=40&h=40&fit=crop&crop=face" alt="Sarah" class="w-10 h-10 rounded-small object-cover flex-shrink-0">
+            <div>
+              <div class="flex items-center gap-2 flex-wrap">
+                <span class="font-semibold text-sm text-neutral-900">Sarah Jenkins</span>
+                <span class="text-xs text-neutral-400">&lt;sarah.jenkins@uxmagic.ai&gt;</span>
+              </div>
+              <p class="text-xs text-neutral-500 mt-0.5">To: alex@darrenmillerlaw.com &nbsp;&middot;&nbsp; Today at 9:31 AM</p>
+            </div>
+          </div>
+          <span class="text-xs font-semibold text-primary-600 bg-primary-50 px-2 py-1 rounded-small flex-shrink-0">Unread</span>
+        </div>
+      </div>
+      <div class="text-sm text-neutral-700 leading-relaxed space-y-4">
+        <p>Hi Alex,</p>
+        <p>I've reviewed the project timeline you sent over and I have a few suggestions regarding the milestones for Q4. Overall the structure looks solid, but I think we could be more realistic about the testing phase.</p>
+        <p>Here are my thoughts:</p>
+        <ul class="list-disc pl-5 space-y-1">
+          <li>The design handoff on <strong>October 30th</strong> feels tight — can we push to November 1st?</li>
+          <li>The QA window (Nov 4–8) needs at least 7 days, not 5. Bugs from beta were more than expected last cycle.</li>
+          <li>Launch date of <strong>November 15th</strong> looks great and has executive buy-in.</li>
+        </ul>
+        <p>I've also attached an updated Gantt chart with my proposed changes highlighted. Let me know if you want to hop on a quick call before the Thursday review.</p>
+        <p>Best,<br><strong>Sarah</strong><br><span class="text-neutral-400 text-xs">Senior Product Designer &middot; uxmagic.ai</span></p>
+      </div>
+      <div class="mt-6 pt-6 border-t border-neutral-200">
+        <p class="text-xs font-semibold text-neutral-500 uppercase tracking-wider mb-3">Attachments (1)</p>
+        <div class="inline-flex items-center gap-3 p-3 border border-neutral-200 rounded-large bg-background-50 hover:border-primary-300 transition-colors cursor-pointer group">
+          <div class="p-2 bg-white border border-neutral-200 rounded-small shadow-sm text-primary-600">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+          </div>
+          <div>
+            <p class="text-sm font-medium text-neutral-800 group-hover:text-primary-600 transition-colors">Project_Timeline_v3.xlsx</p>
+            <p class="text-xs text-neutral-500">48 KB &middot; Excel Spreadsheet</p>
+          </div>
+        </div>
+      </div>
+      <div class="mt-8 border border-neutral-200 rounded-large overflow-hidden bg-background-50 shadow-custom">
+        <div class="flex items-center gap-2 px-4 py-3 border-b border-neutral-200 text-xs text-neutral-500">
+          <span>Reply to</span>
+          <span class="font-semibold text-neutral-700">Sarah Jenkins</span>
+        </div>
+        <div id="reply-body" contenteditable="true" onclick="activateReply(this)" class="px-4 py-3 min-h-[80px] text-sm text-neutral-400 cursor-text outline-none focus:text-neutral-800" data-placeholder="Click to reply...">Click to reply...</div>
+        <div class="flex items-center justify-between px-4 py-3 border-t border-neutral-200 bg-background-100">
+          <div class="flex items-center gap-2">
+            <button onclick="sendReply(this)" class="flex items-center gap-2 bg-primary-500 hover:bg-primary-600 text-white text-xs font-semibold px-4 py-2 rounded-small transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
+              Send Reply
+            </button>
+          </div>
+          <div class="flex items-center gap-1">
+            <button onclick="window.location.href='../AI Remix Panel/index.html'" class="flex items-center gap-1.5 text-xs text-neutral-500 hover:text-primary-600 hover:bg-primary-50 px-2.5 py-1.5 rounded-small transition-colors font-medium">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+              AI Remix
+            </button>
+            <button onclick="window.location.href='../AI Dictate Overlay (Copy)/index.html'" class="flex items-center gap-1.5 text-xs text-neutral-500 hover:text-primary-600 hover:bg-primary-50 px-2.5 py-1.5 rounded-small transition-colors font-medium">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
+              AI Dictate
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+    <script src="../demo-nav.js"></script>
+  <script>
+  // I-10: Filter tabs
+  function filterInbox(mode, btn) {
+    document.querySelectorAll('.inbox-tab').forEach(function (b) {
+      b.className = 'inbox-tab px-3 py-1 text-xs font-medium text-neutral-500 hover:bg-background-200 rounded-small transition-colors';
+    });
+    btn.className = 'inbox-tab px-3 py-1 text-xs font-medium bg-primary-50 text-primary-700 rounded-small';
+    var rows = document.querySelectorAll('.flex-1.overflow-y-auto > div');
+    rows.forEach(function (row) {
+      if (mode === 'all') { row.style.display = ''; return; }
+      if (mode === 'unread') {
+        var hasDot = row.querySelector('.bg-primary-500.rounded-full');
+        row.style.display = hasDot ? '' : 'none';
+      } else if (mode === 'starred') {
+        var hasUnread = row.querySelector('[class*="font-bold"]');
+        row.style.display = ''; // show all for demo
+      } else if (mode === 'attachments') {
+        row.style.display = 'none'; // demo: no attachment preview in list
+      }
+    });
+  }
+
+  // I-18: Reply box activation
+  function activateReply(el) {
+    if (el.textContent.trim() === 'Click to reply...') {
+      el.textContent = '';
+      el.classList.remove('text-neutral-400');
+      el.classList.add('text-neutral-800');
+    }
+    el.focus();
+  }
+
+  // Send Reply
+  function sendReply(btn) {
+    var body = document.getElementById('reply-body');
+    var text = body ? body.textContent.trim() : '';
+    if (!text || text === 'Click to reply...') {
+      body.classList.add('ring-2', 'ring-red-300');
+      setTimeout(function () { body.classList.remove('ring-2', 'ring-red-300'); }, 1500);
+      return;
+    }
+    var orig = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = 'Sending…';
+    btn.style.opacity = '0.7';
+    setTimeout(function () {
+      body.textContent = 'Click to reply...';
+      body.classList.add('text-neutral-400');
+      body.classList.remove('text-neutral-800');
+      btn.innerHTML = '✓ Sent';
+      btn.style.background = '#15803d';
+      setTimeout(function () {
+        btn.innerHTML = orig;
+        btn.disabled = false;
+        btn.style.opacity = '';
+        btn.style.background = '';
+      }, 2000);
+    }, 800);
+  }
+  </script>
+</body>
+</html>

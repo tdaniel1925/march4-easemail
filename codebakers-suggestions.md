@@ -103,10 +103,13 @@
 
 ## 10. Zustand Store Initialization from Server Components
 
-**What went worked well but wasn't in the framework:** The `StoreInitializer` pattern (client component that initializes Zustand from server-loaded data using a ref to avoid double-run) is reusable and non-obvious.
+**What worked well but wasn't in the framework:** The `StoreInitializer` pattern (client component that initializes Zustand from server-loaded data) is reusable and non-obvious.
+
+**Correction to original suggestion:** The `useRef` guard trick (calling `setState` during render) causes React's "setState during render of another component" warning. **Correct pattern is `useLayoutEffect` with `[]`** — fires synchronously after DOM mount, before paint, before any `useEffect` in sibling components. This guarantees store is seeded before any consumer effect fires.
 
 **Suggestion:** Add pattern: `agents/patterns/zustand-server-init.md`
-- Document the `StoreInitializer` ref trick (use ref to only run once, not useEffect which runs after paint)
+- Template: `useLayoutEffect(() => { useStore.setState({...serverData}); }, [])`
+- Never use `useRef` guard + setState-during-render — React flags this as an error in concurrent mode
 - When Interview detects "user has multiple accounts" or "multi-tenant" → auto-suggest this pattern
 
 ---
@@ -137,4 +140,71 @@ Or simpler: **fold the BUILD-LOG entry into the feature commit itself** — alwa
 - "Did I append to BUILD-LOG.md for every feature this session?"
 - If no → block next feature until it's done
 
-*Last updated: 2026-03-04 | EaseMail session*
+---
+
+## 12. Third-Party API: Field Names Don't Match Intuition (Graph API `sentDateTime`)
+
+**What went wrong:** Sent items in MS Graph have `sentDateTime`, not `receivedDateTime`. Using `$orderby=receivedDateTime desc` on `sentItems` silently returns emails in undefined order — no error, just wrong data. Took manual inspection to diagnose.
+
+**Why this is a framework problem:** CodeBakers builds API routes fast and assumes field names are obvious. For third-party APIs, they often aren't.
+
+**Suggestion:**
+- Add to Error Sniffer: when building routes for "sent" or "outbox" type folders, warn that `receivedDateTime` may be null and `sentDateTime` should be used instead
+- Add to `agents/patterns/external-oauth-token-cache.md`: include a Graph API field reference section covering `receivedDateTime` vs `sentDateTime` vs `lastModifiedDateTime` and when each applies
+- General rule: **any `$orderby` on a third-party API route should be verified against the API docs before committing** — wrong field gives wrong results silently
+
+---
+
+## 13. Third-Party API: `$filter` + `$orderby` Incompatibility (Graph `InefficientFilter`)
+
+**What went wrong:** MS Graph returns `400 InefficientFilter` when combining `$filter=flag/flagStatus eq 'flagged'` with `$orderby`. This only affects certain filter fields (flag, categories) — not others (isRead, hasAttachments). No indication of this in the route code.
+
+**Why this is a framework problem:** The route looks correct. TypeScript passes. It fails at runtime with a cryptic Graph error.
+
+**Suggestion:**
+- Add to Error Sniffer: detect `$filter=flag/flagStatus` combined with `$orderby` → warn "Graph API rejects this combination — remove `$orderby`"
+- Add to `agents/patterns/external-oauth-token-cache.md`: document Graph `$filter` + `$orderby` known incompatibilities
+- General rule: **when a third-party API route fails with a 400 and an unfamiliar error code, that error code is information** — look it up before trying other fixes
+
+---
+
+## 14. Display Context Awareness — `from` vs `toRecipients` in Folder Views
+
+**What went wrong:** The EmailRow component always displayed `email.from.name`. In Sent and Drafts folders, `from` is always the logged-in user — so every email in Sent showed the user's own name. Looked like incoming emails because the names were wrong even though the data was correct.
+
+**Why this is a framework problem:** CodeBakers' Completeness Verifier checks that flows work end-to-end, but doesn't check whether the *display context* makes semantic sense.
+
+**Suggestion:**
+- Add to Completeness Verifier: "In any list view that shows sender/recipient, verify the correct field is displayed based on folder context: `from` for received, `toRecipients` for sent/drafts/outbox"
+- Add to atomic-unit checklist for email features: "Does the list display sender OR recipient based on folder direction?"
+- This generalises: any list component that renders differently based on context (read vs unread, sent vs received, mine vs shared) should have that context explicitly captured in the component's props, not inferred silently
+
+---
+
+## 15. Account-Scoped Resource IDs in URLs — Redirect on Account Switch
+
+**What went wrong:** Custom Graph folder IDs (e.g., `/folder/AAMkADk...`) are scoped to a specific mailbox. When the user switched accounts while on a custom folder page, FolderClient tried to fetch the old folder ID from the new account — Graph returned 404, `data.emails` was undefined, caused a runtime crash.
+
+**Why this is a framework problem:** This class of bug — *URL contains a resource ID that belongs to a specific account* — will appear in any multi-account or multi-tenant app. There's no pattern for it.
+
+**Suggestion:** Add pattern: `agents/patterns/account-scoped-resource-ids.md`
+- Rule: any dynamic route with a third-party resource ID (`/folder/[id]`, `/email/[id]`, `/document/[id]`) must handle account/tenant switching
+- Standard behavior: on account switch, redirect to the "home" page for that resource type (e.g., `/inbox` for email folders)
+- Implementation: maintain a `Set` of well-known resource keys that exist on all accounts; anything outside that set is account-scoped and gets the redirect treatment
+- API routes that receive an account-scoped ID for the wrong account should return `404` (not `500`) so the client can distinguish "wrong account" from "server error"
+- dep:map should flag dynamic routes (`[param]`) as candidates for this review
+
+---
+
+## 16. Search Scope Not Inherited from UI Context
+
+**What went wrong:** The search API (`/api/mail/search`) always searched the inbox regardless of which folder the user was currently in. Searching in Sent returned inbox results. This was silent — no error, just wrong results from the wrong folder.
+
+**Why this is a framework problem:** Search is treated as a global feature, but users expect it to be contextual. The disconnect between UI context (current folder) and API scope (hardcoded folder) is invisible until you test it in the right folder.
+
+**Suggestion:**
+- Add to Completeness Verifier: "If a page has a search input, verify the search is scoped to the current context (folder, project, workspace) not the global default"
+- Add to atomic-unit checklist for search features: "Does the search API accept a `context` or `folder` param? Is it being passed from the UI?"
+- General rule: **search APIs should always accept a scope parameter** — even if the first implementation only uses one scope, the parameter should exist from day one so adding scoping later doesn't require a breaking change
+
+*Last updated: 2026-03-05 | EaseMail session 2*

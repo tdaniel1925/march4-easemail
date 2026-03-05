@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="EaseMail Login - Exported from UXMagic Copilot">
+    <title>EaseMail — Sign In</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              50:  'rgb(var(--color-primary-50))',
+              100: 'rgb(var(--color-primary-100))',
+              200: 'rgb(var(--color-primary-200))',
+              300: 'rgb(var(--color-primary-300))',
+              400: 'rgb(var(--color-primary-400))',
+              500: 'rgb(var(--color-primary-500))',
+              600: 'rgb(var(--color-primary-600))',
+              700: 'rgb(var(--color-primary-700))',
+              800: 'rgb(var(--color-primary-800))',
+              900: 'rgb(var(--color-primary-900))',
+            },
+            secondary: {
+              50:  'rgb(var(--color-secondary-50))',
+              100: 'rgb(var(--color-secondary-100))',
+              200: 'rgb(var(--color-secondary-200))',
+              300: 'rgb(var(--color-secondary-300))',
+              400: 'rgb(var(--color-secondary-400))',
+              500: 'rgb(var(--color-secondary-500))',
+              600: 'rgb(var(--color-secondary-600))',
+              700: 'rgb(var(--color-secondary-700))',
+              800: 'rgb(var(--color-secondary-800))',
+              900: 'rgb(var(--color-secondary-900))',
+            },
+            tertiary: {
+              50:  'rgb(var(--color-tertiary-50))',
+              100: 'rgb(var(--color-tertiary-100))',
+              200: 'rgb(var(--color-tertiary-200))',
+              300: 'rgb(var(--color-tertiary-300))',
+              400: 'rgb(var(--color-tertiary-400))',
+              500: 'rgb(var(--color-tertiary-500))',
+              600: 'rgb(var(--color-tertiary-600))',
+              700: 'rgb(var(--color-tertiary-700))',
+              800: 'rgb(var(--color-tertiary-800))',
+              900: 'rgb(var(--color-tertiary-900))',
+            },
+            background: {
+              50:  'rgb(var(--color-background-50))',
+              100: 'rgb(var(--color-background-100))',
+              200: 'rgb(var(--color-background-200))',
+              300: 'rgb(var(--color-background-300))',
+              400: 'rgb(var(--color-background-400))',
+              500: 'rgb(var(--color-background-500))',
+              600: 'rgb(var(--color-background-600))',
+              700: 'rgb(var(--color-background-700))',
+              800: 'rgb(var(--color-background-800))',
+              900: 'rgb(var(--color-background-900))',
+            },
+            neutral: {
+              50:  'rgb(var(--color-neutral-50))',
+              100: 'rgb(var(--color-neutral-100))',
+              200: 'rgb(var(--color-neutral-200))',
+              300: 'rgb(var(--color-neutral-300))',
+              400: 'rgb(var(--color-neutral-400))',
+              500: 'rgb(var(--color-neutral-500))',
+              600: 'rgb(var(--color-neutral-600))',
+              700: 'rgb(var(--color-neutral-700))',
+              800: 'rgb(var(--color-neutral-800))',
+              900: 'rgb(var(--color-neutral-900))',
+            },
+          },
+          fontFamily: {
+            heading: ['var(--font-heading-name)', 'sans-serif'],
+            body:    ['var(--font-body-name)', 'sans-serif'],
+          },
+          spacing: { base: 'var(--space-base)' },
+          borderRadius: {
+            small: 'var(--radius-small)',
+            large: 'var(--radius-large)',
+          },
+          boxShadow: {
+            custom:         'var(--shadow-custom)',
+            'custom-hover': 'var(--shadow-custom-hover)',
+          },
+        }
+      }
+    }
+
+    </script>
+    <link rel="stylesheet" href="styles.css">
+    <meta name="theme-color" content="#8a0909">
+    <meta name="color-scheme" content="light dark">
+    <meta name="author" content="UXMagic Copilot">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div class="flex flex-col lg:flex-row" style="height:100vh;overflow:hidden;">
+
+  <!-- ═══════════════════════════════════════════
+       LEFT PANEL — Branding & Feature Showcase
+  ════════════════════════════════════════════ -->
+  <div class="left-panel-bg hidden lg:flex flex-col w-1/2 xl:w-5/12 px-12 py-12 relative overflow-hidden flex-shrink-0">
+
+    <!-- Decorative circles -->
+    <div class="absolute -top-24 -left-24 w-72 h-72 rounded-full bg-white opacity-5 pointer-events-none"></div>
+    <div class="absolute -bottom-32 -right-20 w-96 h-96 rounded-full bg-white opacity-5 pointer-events-none"></div>
+    <div class="absolute top-1/2 -right-16 w-48 h-48 rounded-full bg-secondary-400 opacity-10 pointer-events-none"></div>
+
+    <!-- Logo -->
+    <div class="flex items-center gap-3 mb-16 relative z-10">
+      <div class="w-10 h-10 bg-white bg-opacity-20 rounded-small flex items-center justify-center border border-white border-opacity-30">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+      </div>
+      <span class="font-heading font-bold text-white text-xl tracking-tight">EaseMail</span>
+    </div>
+
+    <!-- Hero Content -->
+    <div class="flex-1 flex flex-col justify-center relative z-10">
+
+      <!-- Floating Email Illustration -->
+      <div class="floating-envelope mb-10 flex justify-center">
+        <div class="relative">
+          <div class="w-72 bg-white bg-opacity-10 border border-white border-opacity-20 rounded-large p-5 shadow-custom-hover backdrop-blur-sm">
+            <div class="flex items-center gap-3 mb-4">
+              <div class="w-9 h-9 rounded-full bg-secondary-400 bg-opacity-80 flex items-center justify-center flex-shrink-0">
+                <span class="text-sm font-bold text-white">AP</span>
+              </div>
+              <div class="flex-1 min-w-0">
+                <p class="text-white text-xs font-semibold truncate">Aisha Patel</p>
+                <p class="text-white text-opacity-60 text-xs truncate">Q3 Design Review — Final...</p>
+              </div>
+              <div class="flex flex-col items-end gap-1">
+                <span class="text-white text-opacity-50 text-xs">Now</span>
+                <span class="w-2 h-2 rounded-full bg-tertiary-400 pulse-dot"></span>
+              </div>
+            </div>
+            <div class="space-y-1.5">
+              <div class="h-2 bg-white bg-opacity-20 rounded-full w-full"></div>
+              <div class="h-2 bg-white bg-opacity-15 rounded-full w-4/5"></div>
+              <div class="h-2 bg-white bg-opacity-10 rounded-full w-3/5"></div>
+            </div>
+            <div class="mt-4 flex items-center gap-2">
+              <div class="flex items-center gap-1.5 bg-white bg-opacity-15 border border-white border-opacity-20 rounded-small px-2.5 py-1">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 text-secondary-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                <span class="text-white text-opacity-80 text-xs font-medium">AI Remix</span>
+              </div>
+              <div class="flex items-center gap-1.5 bg-white bg-opacity-15 border border-white border-opacity-20 rounded-small px-2.5 py-1">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 text-tertiary-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
+                <span class="text-white text-opacity-80 text-xs font-medium">AI Dictate</span>
+              </div>
+            </div>
+          </div>
+          <div class="absolute -bottom-3 left-4 right-4 h-full bg-white bg-opacity-5 border border-white border-opacity-10 rounded-large -z-10"></div>
+        </div>
+      </div>
+
+      <!-- Headline -->
+      <div class="text-center mb-10">
+        <h1 class="font-heading text-3xl xl:text-4xl font-bold text-white leading-tight mb-3">
+          Email that works<br>as smart as you do
+        </h1>
+        <p class="text-white text-opacity-70 text-sm leading-relaxed max-w-xs mx-auto">
+          Compose faster with AI, manage contacts effortlessly, and stay on top of every conversation — all in one place.
+        </p>
+      </div>
+
+      <!-- Feature Cards -->
+      <div class="space-y-3">
+        <div class="feature-card rounded-large px-4 py-3 flex items-center gap-3">
+          <div class="w-8 h-8 bg-white bg-opacity-15 rounded-small flex items-center justify-center flex-shrink-0">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-secondary-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+          </div>
+          <div>
+            <p class="text-white text-sm font-semibold">AI Remix</p>
+            <p class="text-white text-opacity-60 text-xs">Rewrite emails in any tone instantly</p>
+          </div>
+          <div class="ml-auto">
+            <span class="text-xs bg-secondary-500 bg-opacity-30 text-secondary-200 px-2 py-0.5 rounded-full font-medium border border-secondary-400 border-opacity-30">New</span>
+          </div>
+        </div>
+
+        <div class="feature-card rounded-large px-4 py-3 flex items-center gap-3">
+          <div class="w-8 h-8 bg-white bg-opacity-15 rounded-small flex items-center justify-center flex-shrink-0">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-tertiary-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
+          </div>
+          <div>
+            <p class="text-white text-sm font-semibold">AI Dictate</p>
+            <p class="text-white text-opacity-60 text-xs">Speak your email, AI transcribes it</p>
+          </div>
+          <div class="ml-auto">
+            <span class="text-xs bg-tertiary-500 bg-opacity-30 text-tertiary-200 px-2 py-0.5 rounded-full font-medium border border-tertiary-400 border-opacity-30">Beta</span>
+          </div>
+        </div>
+
+        <div class="feature-card rounded-large px-4 py-3 flex items-center gap-3">
+          <div class="w-8 h-8 bg-white bg-opacity-15 rounded-small flex items-center justify-center flex-shrink-0">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-white text-opacity-80" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+          </div>
+          <div>
+            <p class="text-white text-sm font-semibold">Smart Contacts</p>
+            <p class="text-white text-opacity-60 text-xs">248 contacts, always organized</p>
+          </div>
+          <div class="ml-auto">
+            <span class="text-xs text-white text-opacity-50 font-medium">248</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Testimonial -->
+    <div class="relative z-10 mt-10 pt-8 border-t border-white border-opacity-15">
+      <div class="flex items-start gap-3">
+        <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=36&h=36&fit=crop&crop=face" alt="Aisha" class="w-9 h-9 rounded-full object-cover flex-shrink-0 border-2 border-white border-opacity-30">
+        <div>
+          <p class="text-white text-opacity-80 text-xs leading-relaxed italic">"EaseMail's AI tools have completely transformed how I handle client communication. I save hours every week."</p>
+          <p class="text-white text-opacity-50 text-xs mt-1.5 font-medium">— Aisha Patel, Senior Product Designer</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       RIGHT PANEL — Login Form
+  ════════════════════════════════════════════ -->
+  <div class="flex flex-col flex-1 bg-background-50 px-6 sm:px-10 lg:px-16 xl:px-20 py-10 justify-center" style="overflow-y:auto;">
+
+    <!-- Mobile Logo -->
+    <div class="flex items-center justify-center gap-3 mb-10 lg:hidden">
+      <div class="w-9 h-9 bg-primary-500 rounded-small flex items-center justify-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-neutral-50" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+      </div>
+      <span class="font-heading font-bold text-neutral-900 text-lg">EaseMail</span>
+    </div>
+
+    <!-- Form Container -->
+    <div class="w-full max-w-md mx-auto text-center">
+
+      <div class="mb-8 text-center">
+        <h2 class="font-heading text-2xl xl:text-3xl font-bold text-neutral-900 mb-2">Darren Miller Law Firm</h2>
+        <p class="text-sm text-neutral-500">Sign in to your EaseMail account to continue</p>
+      </div>
+
+      <!-- Microsoft OAuth Button -->
+      <button class="social-btn w-full flex items-center justify-center gap-3 bg-background-50 hover:bg-background-100 border border-neutral-200 rounded-large px-6 py-3.5 text-sm font-semibold text-neutral-700 shadow-custom transition-colors">
+        <!-- Microsoft four-square logo -->
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 21 21" class="w-5 h-5 flex-shrink-0">
+          <rect x="1" y="1" width="9" height="9" fill="#f25022"/>
+          <rect x="11" y="1" width="9" height="9" fill="#7fba00"/>
+          <rect x="1" y="11" width="9" height="9" fill="#00a4ef"/>
+          <rect x="11" y="11" width="9" height="9" fill="#ffb900"/>
+        </svg>
+        Sign in with Microsoft
+      </button>
+
+      <!-- Trust note -->
+      <p class="text-center text-xs text-neutral-400 mt-5 leading-relaxed">
+        You'll be redirected to Microsoft to authenticate.<br>
+        EaseMail only accesses your email and calendar.
+      </p>
+
+      <!-- Footer Links -->
+      <div class="mt-8 flex items-center justify-center gap-4 flex-wrap">
+        <a href="#" class="text-xs text-neutral-400 hover:text-neutral-600 transition-colors">Privacy Policy</a>
+        <span class="text-neutral-300 text-xs">·</span>
+        <a href="#" class="text-xs text-neutral-400 hover:text-neutral-600 transition-colors">Terms of Service</a>
+        <span class="text-neutral-300 text-xs">·</span>
+        <a href="../Detailed Help Center — Brand Design System/index.html" class="text-xs text-neutral-400 hover:text-neutral-600 transition-colors">Help Center</a>
+      </div>
+      <p class="text-center text-xs text-neutral-300 mt-3">© 2024 EaseMail Inc. All rights reserved.</p>
+    </div>
+  </div>
+
+</div>
+
+    <script src="../demo-nav.js"></script>
+</body>
+</html>

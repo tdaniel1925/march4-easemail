@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import type { MailFolder } from "@/lib/types/email";
 
 export interface ConnectedAccount {
   id: string;
@@ -13,10 +14,12 @@ interface AccountStore {
   activeAccount: ConnectedAccount | null;
   inboxUnread: number;
   draftCount: number;
+  mailFolders: MailFolder[];
   setAccounts: (accounts: ConnectedAccount[]) => void;
   setActiveAccount: (account: ConnectedAccount) => void;
   setInboxUnread: (count: number) => void;
   setDraftCount: (count: number) => void;
+  setMailFolders: (folders: MailFolder[]) => void;
 }
 
 export const useAccountStore = create<AccountStore>((set) => ({
@@ -24,6 +27,7 @@ export const useAccountStore = create<AccountStore>((set) => ({
   activeAccount: null,
   inboxUnread: 0,
   draftCount: 0,
+  mailFolders: [],
   setAccounts: (accounts) =>
     set({
       accounts,
@@ -32,4 +36,5 @@ export const useAccountStore = create<AccountStore>((set) => ({
   setActiveAccount: (activeAccount) => set({ activeAccount }),
   setInboxUnread: (inboxUnread) => set({ inboxUnread }),
   setDraftCount: (draftCount) => set({ draftCount }),
+  setMailFolders: (mailFolders) => set({ mailFolders }),
 }));

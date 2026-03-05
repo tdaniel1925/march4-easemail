@@ -8,9 +8,23 @@ export async function POST(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { messageId, comment } = await req.json() as { messageId: string; comment: string };
+  const {
+    messageId,
+    comment,
+    type = "reply",
+    toRecipients,
+  } = await req.json() as {
+    messageId: string;
+    comment: string;
+    type?: "reply" | "replyAll" | "forward";
+    toRecipients?: string[];
+  };
+
   if (!messageId || !comment?.trim()) {
     return NextResponse.json({ error: "messageId and comment required" }, { status: 400 });
+  }
+  if (type === "forward" && (!toRecipients?.length || !toRecipients[0]?.trim())) {
+    return NextResponse.json({ error: "toRecipients required for forward" }, { status: 400 });
   }
 
   const account = await prisma.msConnectedAccount.findFirst({
@@ -18,8 +32,21 @@ export async function POST(req: NextRequest) {
   });
   if (!account) return NextResponse.json({ error: "No connected account" }, { status: 404 });
 
-  await graphPost(user.id, account.homeAccountId, `/me/messages/${messageId}/reply`, {
-    comment: comment.trim(),
-  });
+  const graphPath = type === "replyAll"
+    ? `/me/messages/${messageId}/replyAll`
+    : type === "forward"
+    ? `/me/messages/${messageId}/forward`
+    : `/me/messages/${messageId}/reply`;
+
+  const body = type === "forward"
+    ? {
+        comment: comment.trim(),
+        toRecipients: toRecipients!.map((addr) => ({
+          emailAddress: { address: addr.trim() },
+        })),
+      }
+    : { comment: comment.trim() };
+
+  await graphPost(user.id, account.homeAccountId, graphPath, body);
   return NextResponse.json({ ok: true });
 }

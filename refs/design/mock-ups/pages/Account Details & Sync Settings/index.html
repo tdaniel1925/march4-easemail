@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Account Details & Sync Settings - Exported from UXMagic Copilot">
+    <title>Account Details & Sync Settings</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+    
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              50:  'rgb(var(--color-primary-50))',
+              100: 'rgb(var(--color-primary-100))',
+              200: 'rgb(var(--color-primary-200))',
+              300: 'rgb(var(--color-primary-300))',
+              400: 'rgb(var(--color-primary-400))',
+              500: 'rgb(var(--color-primary-500))',
+              600: 'rgb(var(--color-primary-600))',
+              700: 'rgb(var(--color-primary-700))',
+              800: 'rgb(var(--color-primary-800))',
+              900: 'rgb(var(--color-primary-900))',
+            },
+            secondary: {
+              50:  'rgb(var(--color-secondary-50))',
+              100: 'rgb(var(--color-secondary-100))',
+              200: 'rgb(var(--color-secondary-200))',
+              300: 'rgb(var(--color-secondary-300))',
+              400: 'rgb(var(--color-secondary-400))',
+              500: 'rgb(var(--color-secondary-500))',
+              600: 'rgb(var(--color-secondary-600))',
+              700: 'rgb(var(--color-secondary-700))',
+              800: 'rgb(var(--color-secondary-800))',
+              900: 'rgb(var(--color-secondary-900))',
+            },
+            tertiary: {
+              50:  'rgb(var(--color-tertiary-50))',
+              100: 'rgb(var(--color-tertiary-100))',
+              200: 'rgb(var(--color-tertiary-200))',
+              300: 'rgb(var(--color-tertiary-300))',
+              400: 'rgb(var(--color-tertiary-400))',
+              500: 'rgb(var(--color-tertiary-500))',
+              600: 'rgb(var(--color-tertiary-600))',
+              700: 'rgb(var(--color-tertiary-700))',
+              800: 'rgb(var(--color-tertiary-800))',
+              900: 'rgb(var(--color-tertiary-900))',
+            },
+            background: {
+              50:  'rgb(var(--color-background-50))',
+              100: 'rgb(var(--color-background-100))',
+              200: 'rgb(var(--color-background-200))',
+              300: 'rgb(var(--color-background-300))',
+              400: 'rgb(var(--color-background-400))',
+              500: 'rgb(var(--color-background-500))',
+              600: 'rgb(var(--color-background-600))',
+              700: 'rgb(var(--color-background-700))',
+              800: 'rgb(var(--color-background-800))',
+              900: 'rgb(var(--color-background-900))',
+            },
+            neutral: {
+              50:  'rgb(var(--color-neutral-50))',
+              100: 'rgb(var(--color-neutral-100))',
+              200: 'rgb(var(--color-neutral-200))',
+              300: 'rgb(var(--color-neutral-300))',
+              400: 'rgb(var(--color-neutral-400))',
+              500: 'rgb(var(--color-neutral-500))',
+              600: 'rgb(var(--color-neutral-600))',
+              700: 'rgb(var(--color-neutral-700))',
+              800: 'rgb(var(--color-neutral-800))',
+              900: 'rgb(var(--color-neutral-900))',
+            },
+          },
+          fontFamily: {
+            heading: ['var(--font-heading-name)', 'sans-serif'],
+            body:    ['var(--font-body-name)', 'sans-serif'],
+          },
+          spacing: { base: 'var(--space-base)' },
+          borderRadius: {
+            small: 'var(--radius-small)',
+            large: 'var(--radius-large)',
+          },
+          boxShadow: {
+            custom:         'var(--shadow-custom)',
+            'custom-hover': 'var(--shadow-custom-hover)',
+          },
+        }
+      }
+    }
+  
+    </script>
+    <link rel="stylesheet" href="styles.css">
+    <meta name="theme-color" content="#8a0909">
+    <meta name="color-scheme" content="light dark">
+    <meta name="author" content="UXMagic Copilot">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    
+
+<div class="flex" style="height:100vh;overflow:hidden;">
+
+  <!-- LEFT SIDEBAR -->
+  <!-- LEFT SIDEBAR -->
+  <aside class="hidden lg:flex flex-col w-64 bg-background-50 border-r border-neutral-200 flex-shrink-0">
+    <!-- Logo -->
+    <div class="flex items-center gap-3 px-6 py-5 border-b border-neutral-200">
+      <div class="w-8 h-8 bg-primary-500 rounded-small flex items-center justify-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-neutral-50" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+      </div>
+      <span class="font-heading font-semibold text-neutral-900 text-lg">EaseMail</span>
+    </div>
+
+    <!-- Compose -->
+    <div class="px-4 py-4">
+      <button class="w-full flex items-center justify-center gap-2 bg-primary-500 hover:bg-primary-600 text-neutral-50 font-medium text-sm py-2.5 px-4 rounded-small transition-colors shadow-custom">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"></path></svg>
+        Compose
+      </button>
+    </div>
+
+    <!-- Nav -->
+    <nav class="flex-1 px-3 pb-4 overflow-y-auto">
+      <p class="text-xs font-semibold text-neutral-400 uppercase tracking-wider px-3 mb-2">Mailboxes</p>
+      <ul class="space-y-0.5">
+        <li>
+          <a href="../Inbox/index.html" class="flex items-center gap-3 px-3 py-2 rounded-small text-neutral-600 hover:bg-background-200 text-sm transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path></svg>
+            Inbox
+            <span class="ml-auto bg-primary-500 text-neutral-50 text-xs font-semibold px-2 py-0.5 rounded-small">12</span>
+          </a>
+        </li>
+        <li>
+          <a href="../Starred/index.html" class="flex items-center gap-3 px-3 py-2 rounded-small text-neutral-600 hover:bg-background-200 text-sm transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path></svg>
+            Starred
+          </a>
+        </li>
+        <li>
+          <a href="../Sent/index.html" class="flex items-center gap-3 px-3 py-2 rounded-small text-neutral-600 hover:bg-background-200 text-sm transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
+            Sent
+          </a>
+        </li>
+        <li>
+          <a href="../Drafts/index.html" class="flex items-center gap-3 px-3 py-2 rounded-small text-neutral-600 hover:bg-background-200 text-sm transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+            Drafts
+            <span class="ml-auto bg-background-200 text-neutral-600 text-xs font-semibold px-2 py-0.5 rounded-small">3</span>
+          </a>
+        </li>
+        <li>
+          <a href="../Trash/index.html" class="flex items-center gap-3 px-3 py-2 rounded-small text-neutral-600 hover:bg-background-200 text-sm transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+            Trash
+          </a>
+        </li>
+      </ul>
+
+      <p class="text-xs font-semibold text-neutral-400 uppercase tracking-wider px-3 mt-6 mb-2">Navigate</p>
+      <ul class="space-y-0.5">
+        <li>
+          <a href="../Personal Dashboard – Brand Collection Applied/index.html" class="flex items-center gap-3 px-3 py-2 rounded-small text-neutral-600 hover:bg-background-200 text-sm transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+            Dashboard
+          </a>
+        </li>
+        <li>
+          <a href="../EaseMail - Attachments Hub/index.html" class="flex items-center gap-3 px-3 py-2 rounded-small text-neutral-600 hover:bg-background-200 text-sm transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path></svg>
+            Attachments
+          </a>
+        </li>
+        <li>
+          <a href="../Unified Red Enterprise Calendar/index.html" class="flex items-center gap-3 px-3 py-2 rounded-small text-neutral-600 hover:bg-background-200 text-sm transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+            Calendar
+          </a>
+        </li>
+      </ul>
+
+      <p class="text-xs font-semibold text-neutral-400 uppercase tracking-wider px-3 mt-6 mb-2">Manage</p>
+      <ul class="space-y-0.5">
+        <li>
+          <a href="../Email Accounts Dashboard/index.html" class="flex items-center gap-3 px-3 py-2 rounded-small text-neutral-600 hover:bg-background-200 text-sm transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+            Email Accounts
+          </a>
+        </li>
+        <li>
+          <a href="../MailBox/index.html" class="flex items-center gap-3 px-3 py-2 rounded-small text-neutral-600 hover:bg-background-200 text-sm transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+            Contacts
+          </a>
+        </li>
+      </ul>
+
+      <p class="text-xs font-semibold text-neutral-400 uppercase tracking-wider px-3 mt-6 mb-2">Support</p>
+      <ul class="space-y-0.5">
+        <li>
+          <a href="../Detailed Help Center — Brand Design System/index.html" class="flex items-center gap-3 px-3 py-2 rounded-small text-neutral-600 hover:bg-background-200 text-sm transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            Help Center
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- User Profile -->
+    <div class="px-4 py-4 border-t border-neutral-200">
+      <div class="flex items-center gap-3">
+        <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=40&h=40&fit=crop&crop=face" alt="User Avatar" class="w-9 h-9 rounded-small object-cover flex-shrink-0">
+        <div class="flex-1 min-w-0">
+          <p class="text-sm font-semibold text-neutral-900 truncate">Alex Morgan</p>
+          <p class="text-xs text-neutral-500 truncate">alex@darrenmillerlaw.com</p>
+        </div>
+        <button class="text-neutral-400 hover:text-neutral-600 transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <div class="flex-1 flex flex-col bg-background-100">
+
+    <!-- Top Header Bar -->
+    <div class="bg-background-50 border-b border-neutral-200 px-6 py-4 flex items-center gap-4 flex-shrink-0 flex-wrap">
+      <a href="../Email Accounts Dashboard/index.html" class="flex items-center gap-1.5 text-neutral-500 hover:text-neutral-700 text-sm font-medium transition-colors">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"></path></svg>
+        Email Accounts
+      </a>
+      <div class="w-px h-5 bg-neutral-200"></div>
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 rounded-large bg-secondary-50 border border-secondary-100 flex items-center justify-center flex-shrink-0">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none">
+            <rect x="2" y="4" width="20" height="16" rx="2" fill="rgb(var(--color-secondary-100))"></rect>
+            <path d="M2 8h20M8 4v16" stroke="rgb(var(--color-secondary-500))" stroke-width="1.5"></path>
+            <circle cx="5" cy="12" r="2" fill="rgb(var(--color-secondary-500))"></circle>
+          </svg>
+        </div>
+        <div>
+          <h1 class="font-heading font-semibold text-neutral-900 text-lg leading-tight">alex@darrenmillerlaw.com</h1>
+          <p class="text-xs text-neutral-500">Microsoft 365 · Connected via OAuth 2.0</p>
+        </div>
+        <span class="flex items-center gap-1.5 text-xs bg-tertiary-100 text-tertiary-700 px-2.5 py-1 rounded-small font-medium ml-1">
+          <span class="w-1.5 h-1.5 rounded-small bg-tertiary-500"></span>
+          Active
+        </span>
+      </div>
+      <div class="ml-auto flex items-center gap-2 flex-wrap">
+        <button onclick="toggleSync()" id="sync-toggle-btn" class="flex items-center gap-2 px-4 py-2 text-sm font-medium text-secondary-600 bg-secondary-50 border border-secondary-200 rounded-small hover:bg-secondary-100 transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+          Pause Sync
+        </button>
+        <button onclick="syncNowAD(this)" class="flex items-center gap-2 px-4 py-2 text-sm font-medium text-neutral-600 bg-background-50 border border-neutral-200 rounded-small hover:bg-background-200 transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+          Sync Now
+        </button>
+        <button onclick="window.location.href='../Disconnect Confirmation/index.html'" class="flex items-center gap-2 px-4 py-2 text-sm font-medium text-primary-600 bg-background-50 border border-primary-200 rounded-small hover:bg-primary-50 transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+          Disconnect
+        </button>
+      </div>
+    </div>
+
+    <!-- Content Area -->
+    <div class="flex-1 px-6 py-6" style="overflow-y:auto;">
+      <div class="max-w-5xl mx-auto">
+
+        <!-- Top Stats Row -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          <div class="bg-background-50 rounded-large border border-neutral-200 shadow-custom p-4">
+            <div class="flex items-center gap-2 mb-2">
+              <div class="w-7 h-7 bg-primary-50 rounded-small flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+              </div>
+              <span class="text-xs text-neutral-500 font-medium">Last Sync</span>
+            </div>
+            <p class="font-heading font-semibold text-neutral-900 text-sm">2 min ago</p>
+            <p class="text-xs text-neutral-400 mt-0.5">Today, 10:43 AM</p>
+          </div>
+          <div class="bg-background-50 rounded-large border border-neutral-200 shadow-custom p-4">
+            <div class="flex items-center gap-2 mb-2">
+              <div class="w-7 h-7 bg-secondary-50 rounded-small flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-secondary-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+              </div>
+              <span class="text-xs text-neutral-500 font-medium">Frequency</span>
+            </div>
+            <p class="font-heading font-semibold text-neutral-900 text-sm">Every 5 min</p>
+            <p class="text-xs text-neutral-400 mt-0.5">Push enabled</p>
+          </div>
+          <div class="bg-background-50 rounded-large border border-neutral-200 shadow-custom p-4">
+            <div class="flex items-center gap-2 mb-2">
+              <div class="w-7 h-7 bg-tertiary-50 rounded-small flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-tertiary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+              </div>
+              <span class="text-xs text-neutral-500 font-medium">Emails Synced</span>
+            </div>
+            <p class="font-heading font-semibold text-neutral-900 text-sm">14,832</p>
+            <p class="text-xs text-neutral-400 mt-0.5">+47 today</p>
+          </div>
+          <div class="bg-background-50 rounded-large border border-neutral-200 shadow-custom p-4">
+            <div class="flex items-center gap-2 mb-2">
+              <div class="w-7 h-7 bg-tertiary-50 rounded-small flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-tertiary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+              </div>
+              <span class="text-xs text-neutral-500 font-medium">Sync Health</span>
+            </div>
+            <p class="font-heading font-semibold text-tertiary-700 text-sm">Excellent</p>
+            <p class="text-xs text-neutral-400 mt-0.5">99.8% uptime (30d)</p>
+          </div>
+        </div>
+
+        <!-- Two Column Layout -->
+        <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+
+          <!-- LEFT: Sync Health + Folders -->
+          <div class="xl:col-span-2 space-y-6">
+
+            <!-- Sync Health Panel -->
+            <div class="bg-background-50 rounded-large border border-neutral-200 shadow-custom">
+              <div class="px-5 py-4 border-b border-neutral-200 flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-neutral-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                  <h2 class="font-heading font-semibold text-neutral-900 text-sm">Sync Health Overview</h2>
+                </div>
+                <span class="text-xs text-neutral-400">Last 7 days</span>
+              </div>
+              <div class="px-5 py-5">
+                <div class="space-y-4 mb-5">
+                  <div>
+                    <div class="flex items-center justify-between mb-1.5">
+                      <span class="text-xs font-medium text-neutral-700">Connection Stability</span>
+                      <span class="text-xs font-semibold text-tertiary-700">99.8%</span>
+                    </div>
+                    <div class="health-bar">
+                      <div class="health-bar-fill bg-tertiary-500" style="width: 99.8%"></div>
+                    </div>
+                  </div>
+                  <div>
+                    <div class="flex items-center justify-between mb-1.5">
+                      <span class="text-xs font-medium text-neutral-700">Sync Success Rate</span>
+                      <span class="text-xs font-semibold text-tertiary-700">98.4%</span>
+                    </div>
+                    <div class="health-bar">
+                      <div class="health-bar-fill bg-tertiary-500" style="width: 98.4%"></div>
+                    </div>
+                  </div>
+                  <div>
+                    <div class="flex items-center justify-between mb-1.5">
+                      <span class="text-xs font-medium text-neutral-700">API Quota Usage</span>
+                      <span class="text-xs font-semibold text-secondary-500">62%</span>
+                    </div>
+                    <div class="health-bar">
+                      <div class="health-bar-fill bg-secondary-400" style="width: 62%"></div>
+                    </div>
+                  </div>
+                  <div>
+                    <div class="flex items-center justify-between mb-1.5">
+                      <span class="text-xs font-medium text-neutral-700">Token Validity</span>
+                      <span class="text-xs font-semibold text-tertiary-700">Valid</span>
+                    </div>
+                    <div class="health-bar">
+                      <div class="health-bar-fill bg-tertiary-500" style="width: 100%"></div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Recent Sync Log -->
+                <div>
+                  <h3 class="font-heading text-xs font-semibold text-neutral-400 uppercase tracking-wider mb-3">Recent Sync Activity</h3>
+                  <div class="space-y-1">
+                    <div class="flex items-center gap-3 py-2 border-b border-neutral-100">
+                      <div class="w-6 h-6 bg-tertiary-100 rounded-small flex items-center justify-center flex-shrink-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 text-tertiary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
+                      </div>
+                      <div class="flex-1 min-w-0">
+                        <p class="text-xs font-medium text-neutral-800">Sync completed — 12 new messages</p>
+                        <p class="text-xs text-neutral-400">Inbox, Sent, Drafts</p>
+                      </div>
+                      <span class="text-xs text-neutral-400 flex-shrink-0">10:43 AM</span>
+                    </div>
+                    <div class="flex items-center gap-3 py-2 border-b border-neutral-100">
+                      <div class="w-6 h-6 bg-tertiary-100 rounded-small flex items-center justify-center flex-shrink-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 text-tertiary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
+                      </div>
+                      <div class="flex-1 min-w-0">
+                        <p class="text-xs font-medium text-neutral-800">Sync completed — 3 new messages</p>
+                        <p class="text-xs text-neutral-400">Inbox</p>
+                      </div>
+                      <span class="text-xs text-neutral-400 flex-shrink-0">10:38 AM</span>
+                    </div>
+                    <div class="flex items-center gap-3 py-2 border-b border-neutral-100">
+                      <div class="w-6 h-6 bg-secondary-100 rounded-small flex items-center justify-center flex-shrink-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 text-secondary-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                      </div>
+                      <div class="flex-1 min-w-0">
+                        <p class="text-xs font-medium text-neutral-800">Rate limit warning — retried after 30s</p>
+                        <p class="text-xs text-neutral-400">API quota at 80%</p>
+                      </div>
+                      <span class="text-xs text-neutral-400 flex-shrink-0">10:22 AM</span>
+                    </div>
+                    <div class="flex items-center gap-3 py-2 border-b border-neutral-100">
+                      <div class="w-6 h-6 bg-tertiary-100 rounded-small flex items-center justify-center flex-shrink-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 text-tertiary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
+                      </div>
+                      <div class="flex-1 min-w-0">
+                        <p class="text-xs font-medium text-neutral-800">Full sync completed — 47 messages</p>
+                        <p class="text-xs text-neutral-400">All folders</p>
+                      </div>
+                      <span class="text-xs text-neutral-400 flex-shrink-0">9:00 AM</span>
+                    </div>
+                    <div class="flex items-center gap-3 py-2">
+                      <div class="w-6 h-6 bg-tertiary-100 rounded-small flex items-center justify-center flex-shrink-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 text-tertiary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
+                      </div>
+                      <div class="flex-1 min-w-0">
+                        <p class="text-xs font-medium text-neutral-800">Token refreshed successfully</p>
+                        <p class="text-xs text-neutral-400">OAuth token auto-renewed</p>
+                      </div>
+                      <span class="text-xs text-neutral-400 flex-shrink-0">Yesterday</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Folders Being Synced -->
+            <div class="bg-background-50 rounded-large border border-neutral-200 shadow-custom">
+              <div class="px-5 py-4 border-b border-neutral-200 flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-neutral-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path></svg>
+                  <h2 class="font-heading font-semibold text-neutral-900 text-sm">Folders Being Synced</h2>
+                </div>
+                <button class="text-xs text-primary-600 hover:text-primary-700 font-medium transition-colors">Add Folder</button>
+              </div>
+              <div class="divide-y divide-neutral-100">
+
+                <!-- Inbox -->
+                <div class="folder-row flex items-center gap-4 px-5 py-3.5 hover:bg-background-100 transition-colors">
+                  <div class="w-8 h-8 bg-primary-50 rounded-small flex items-center justify-center flex-shrink-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path></svg>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2">
+                      <p class="text-sm font-medium text-neutral-800">Inbox</p>
+                      <span class="text-xs bg-primary-100 text-primary-700 px-1.5 py-0.5 rounded-small font-medium">Primary</span>
+                    </div>
+                    <p class="text-xs text-neutral-400 mt-0.5">8,241 messages · Last synced 2 min ago</p>
+                  </div>
+                  <div class="flex items-center gap-3">
+                    <span class="flex items-center gap-1 text-xs text-tertiary-600 font-medium">
+                      <span class="w-1.5 h-1.5 rounded-small bg-tertiary-500"></span>Syncing
+                    </span>
+                    <label class="toggle-switch">
+                      <input type="checkbox" checked="">
+                      <span class="toggle-slider"></span>
+                    </label>
+                    <div class="folder-actions flex items-center gap-1">
+                      <button class="p-1.5 text-neutral-400 hover:text-neutral-600 hover:bg-background-200 rounded-small transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Sent -->
+                <div class="folder-row flex items-center gap-4 px-5 py-3.5 hover:bg-background-100 transition-colors">
+                  <div class="w-8 h-8 bg-background-200 rounded-small flex items-center justify-center flex-shrink-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-neutral-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <p class="text-sm font-medium text-neutral-800">Sent</p>
+                    <p class="text-xs text-neutral-400 mt-0.5">3,102 messages · Last synced 2 min ago</p>
+                  </div>
+                  <div class="flex items-center gap-3">
+                    <span class="flex items-center gap-1 text-xs text-tertiary-600 font-medium">
+                      <span class="w-1.5 h-1.5 rounded-small bg-tertiary-500"></span>Syncing
+                    </span>
+                    <label class="toggle-switch">
+                      <input type="checkbox" checked="">
+                      <span class="toggle-slider"></span>
+                    </label>
+                    <div class="folder-actions flex items-center gap-1">
+                      <button class="p-1.5 text-neutral-400 hover:text-neutral-600 hover:bg-background-200 rounded-small transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Drafts -->
+                <div class="folder-row flex items-center gap-4 px-5 py-3.5 hover:bg-background-100 transition-colors">
+                  <div class="w-8 h-8 bg-background-200 rounded-small flex items-center justify-center flex-shrink-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-neutral-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <p class="text-sm font-medium text-neutral-800">Drafts</p>
+                    <p class="text-xs text-neutral-400 mt-0.5">18 messages · Last synced 2 min ago</p>
+                  </div>
+                  <div class="flex items-center gap-3">
+                    <span class="flex items-center gap-1 text-xs text-tertiary-600 font-medium">
+                      <span class="w-1.5 h-1.5 rounded-small bg-tertiary-500"></span>Syncing
+                    </span>
+                    <label class="toggle-switch">
+                      <input type="checkbox" checked="">
+                      <span class="toggle-slider"></span>
+                    </label>
+                    <div class="folder-actions flex items-center gap-1">
+                      <button class="p-1.5 text-neutral-400 hover:text-neutral-600 hover:bg-background-200 rounded-small transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Spam -->
+                <div class="folder-row flex items-center gap-4 px-5 py-3.5 hover:bg-background-100 transition-colors">
+                  <div class="w-8 h-8 bg-primary-50 rounded-small flex items-center justify-center flex-shrink-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-primary-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"></path></svg>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <p class="text-sm font-medium text-neutral-800">Spam</p>
+                    <p class="text-xs text-neutral-400 mt-0.5">204 messages · Paused</p>
+                  </div>
+                  <div class="flex items-center gap-3">
+                    <span class="flex items-center gap-1 text-xs text-neutral-400 font-medium">
+                      <span class="w-1.5 h-1.5 rounded-small bg-neutral-300"></span>Paused
+                    </span>
+                    <label class="toggle-switch">
+                      <input type="checkbox">
+                      <span class="toggle-slider"></span>
+                    </label>
+                    <div class="folder-actions flex items-center gap-1">
+                      <button class="p-1.5 text-neutral-400 hover:text-neutral-600 hover:bg-background-200 rounded-small transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Work Projects -->
+                <div class="folder-row flex items-center gap-4 px-5 py-3.5 hover:bg-background-100 transition-colors">
+                  <div class="w-8 h-8 bg-secondary-50 rounded-small flex items-center justify-center flex-shrink-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-secondary-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path></svg>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2">
+                      <p class="text-sm font-medium text-neutral-800">Work Projects</p>
+                      <span class="text-xs bg-secondary-100 text-secondary-600 px-1.5 py-0.5 rounded-small font-medium">Label</span>
+                    </div>
+                    <p class="text-xs text-neutral-400 mt-0.5">1,847 messages · Last synced 2 min ago</p>
+                  </div>
+                  <div class="flex items-center gap-3">
+                    <span class="flex items-center gap-1 text-xs text-tertiary-600 font-medium">
+                      <span class="w-1.5 h-1.5 rounded-small bg-tertiary-500"></span>Syncing
+                    </span>
+                    <label class="toggle-switch">
+                      <input type="checkbox" checked="">
+                      <span class="toggle-slider"></span>
+                    </label>
+                    <div class="folder-actions flex items-center gap-1">
+                      <button class="p-1.5 text-neutral-400 hover:text-neutral-600 hover:bg-background-200 rounded-small transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Trash -->
+                <div class="folder-row flex items-center gap-4 px-5 py-3.5 hover:bg-background-100 transition-colors">
+                  <div class="w-8 h-8 bg-background-200 rounded-small flex items-center justify-center flex-shrink-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-neutral-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <p class="text-sm font-medium text-neutral-800">Trash</p>
+                    <p class="text-xs text-neutral-400 mt-0.5">620 messages · Paused</p>
+                  </div>
+                  <div class="flex items-center gap-3">
+                    <span class="flex items-center gap-1 text-xs text-neutral-400 font-medium">
+                      <span class="w-1.5 h-1.5 rounded-small bg-neutral-300"></span>Paused
+                    </span>
+                    <label class="toggle-switch">
+                      <input type="checkbox">
+                      <span class="toggle-slider"></span>
+                    </label>
+                    <div class="folder-actions flex items-center gap-1">
+                      <button class="p-1.5 text-neutral-400 hover:text-neutral-600 hover:bg-background-200 rounded-small transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+              <div class="px-5 py-3 border-t border-neutral-200 flex items-center justify-between">
+                <span class="text-xs text-neutral-500">4 of 6 folders syncing</span>
+                <button class="text-xs text-primary-600 hover:text-primary-700 font-medium transition-colors">Manage all folders</button>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- RIGHT: Account Info + Sync Settings + Danger Zone -->
+          <div class="space-y-6">
+
+            <!-- Account Info Card -->
+            <div class="bg-background-50 rounded-large border border-neutral-200 shadow-custom p-5">
+              <h2 class="font-heading font-semibold text-neutral-900 text-sm mb-4">Account Information</h2>
+              <div class="space-y-3">
+                <div>
+                  <p class="text-xs text-neutral-400 mb-0.5">Email Address</p>
+                  <p class="text-sm font-medium text-neutral-800">alex@darrenmillerlaw.com</p>
+                </div>
+                <div>
+                  <p class="text-xs text-neutral-400 mb-0.5">Display Name</p>
+                  <p class="text-sm font-medium text-neutral-800">Alex Morgan (Work)</p>
+                </div>
+                <div>
+                  <p class="text-xs text-neutral-400 mb-0.5">Provider</p>
+                  <p class="text-sm font-medium text-neutral-800">Microsoft 365 (Azure AD)</p>
+                </div>
+                <div>
+                  <p class="text-xs text-neutral-400 mb-0.5">Auth Method</p>
+                  <span class="text-xs bg-tertiary-100 text-tertiary-700 px-2 py-0.5 rounded-small font-medium">OAuth 2.0</span>
+                </div>
+                <div>
+                  <p class="text-xs text-neutral-400 mb-0.5">Connected Since</p>
+                  <p class="text-sm font-medium text-neutral-800">March 12, 2024</p>
+                </div>
+                <div>
+                  <p class="text-xs text-neutral-400 mb-0.5">Token Expires</p>
+                  <p class="text-sm font-medium text-neutral-800">Auto-renews</p>
+                </div>
+              </div>
+              <button class="mt-4 w-full flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-neutral-600 bg-background-100 border border-neutral-200 rounded-small hover:bg-background-200 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                Edit Account Info
+              </button>
+            </div>
+
+            <!-- Sync Settings Card -->
+            <div class="bg-background-50 rounded-large border border-neutral-200 shadow-custom p-5">
+              <h2 class="font-heading font-semibold text-neutral-900 text-sm mb-4">Sync Settings</h2>
+              <div class="space-y-4">
+                <div>
+                  <label class="block text-xs font-medium text-neutral-700 mb-1.5">Sync Frequency</label>
+                  <select class="w-full px-3 py-2 bg-background-100 border border-neutral-200 rounded-small text-sm text-neutral-800 focus:outline-none focus:ring-2 focus:ring-primary-400 focus:border-primary-400 focus:bg-background-50 transition-colors">
+                    <option>Every 1 minute</option>
+                    <option selected="">Every 5 minutes</option>
+                    <option>Every 15 minutes</option>
+                    <option>Every 30 minutes</option>
+                    <option>Every hour</option>
+                    <option>Manual only</option>
+                  </select>
+                </div>
+                <div class="flex items-center justify-between py-2 border-t border-neutral-100">
+                  <div>
+                    <p class="text-xs font-medium text-neutral-800">Push Notifications</p>
+                    <p class="text-xs text-neutral-400 mt-0.5">Real-time email alerts</p>
+                  </div>
+                  <label class="toggle-switch">
+                    <input type="checkbox" checked="">
+                    <span class="toggle-slider"></span>
+                  </label>
+                </div>
+                <div class="flex items-center justify-between py-2 border-t border-neutral-100">
+                  <div>
+                    <p class="text-xs font-medium text-neutral-800">Sync Attachments</p>
+                    <p class="text-xs text-neutral-400 mt-0.5">Download email attachments</p>
+                  </div>
+                  <label class="toggle-switch">
+                    <input type="checkbox" checked="">
+                    <span class="toggle-slider"></span>
+                  </label>
+                </div>
+                <div class="flex items-center justify-between py-2 border-t border-neutral-100">
+                  <div>
+                    <p class="text-xs font-medium text-neutral-800">Sync Contacts</p>
+                    <p class="text-xs text-neutral-400 mt-0.5">Import Microsoft contacts</p>
+                  </div>
+                  <label class="toggle-switch">
+                    <input type="checkbox" checked="">
+                    <span class="toggle-slider"></span>
+                  </label>
+                </div>
+                <div class="flex items-center justify-between py-2 border-t border-neutral-100">
+                  <div>
+                    <p class="text-xs font-medium text-neutral-800">Sync Calendar</p>
+                    <p class="text-xs text-neutral-400 mt-0.5">Import Outlook Calendar events</p>
+                  </div>
+                  <label class="toggle-switch">
+                    <input type="checkbox">
+                    <span class="toggle-slider"></span>
+                  </label>
+                </div>
+                <div class="pt-2 border-t border-neutral-100">
+                  <label class="block text-xs font-medium text-neutral-700 mb-1.5">Sync History Depth</label>
+                  <select class="w-full px-3 py-2 bg-background-100 border border-neutral-200 rounded-small text-sm text-neutral-800 focus:outline-none focus:ring-2 focus:ring-primary-400 focus:border-primary-400 focus:bg-background-50 transition-colors">
+                    <option>Last 30 days</option>
+                    <option>Last 3 months</option>
+                    <option selected="">Last 12 months</option>
+                    <option>All time</option>
+                  </select>
+                </div>
+              </div>
+              <button onclick="saveSettingsAD(this)" class="mt-4 w-full flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium text-neutral-50 bg-primary-500 hover:bg-primary-600 rounded-small transition-colors shadow-custom">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
+                Save Settings
+              </button>
+            </div>
+
+            <!-- Danger Zone -->
+            <div class="bg-background-50 rounded-large border border-primary-200 shadow-custom p-5">
+              <h2 class="font-heading font-semibold text-primary-700 text-sm mb-1">Danger Zone</h2>
+              <p class="text-xs text-neutral-500 mb-4">These actions are irreversible. Proceed with caution.</p>
+              <div class="space-y-2">
+                <button onclick="resyncAD(this)" class="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-neutral-700 bg-background-100 border border-neutral-200 rounded-small hover:bg-background-200 transition-colors text-left">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-neutral-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                  <div>
+                    <p class="text-xs font-medium text-neutral-800">Re-sync All Emails</p>
+                    <p class="text-xs text-neutral-400">Wipe local cache and re-download</p>
+                  </div>
+                </button>
+                <button onclick="window.location.href='../Disconnect Confirmation/index.html'" class="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-primary-600 bg-primary-50 border border-primary-200 rounded-small hover:bg-primary-100 transition-colors text-left">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-primary-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                  <div>
+                    <p class="text-xs font-medium text-primary-700">Disconnect Account</p>
+                    <p class="text-xs text-primary-400">Remove this account from EaseMail</p>
+                  </div>
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  let syncActive = true;
+  function toggleSync() {
+    const btn = document.getElementById('sync-toggle-btn');
+    syncActive = !syncActive;
+    if (syncActive) {
+      btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> Pause Sync';
+      btn.className = 'flex items-center gap-2 px-4 py-2 text-sm font-medium text-secondary-600 bg-secondary-50 border border-secondary-200 rounded-small hover:bg-secondary-100 transition-colors';
+    } else {
+      btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> Resume Sync';
+      btn.className = 'flex items-center gap-2 px-4 py-2 text-sm font-medium text-tertiary-700 bg-tertiary-50 border border-tertiary-200 rounded-small hover:bg-tertiary-100 transition-colors';
+    }
+  }
+</script>
+
+
+
+
+    <script src="script.js"></script>
+  <script src="../demo-nav.js"></script>
+  <script>
+  function syncNowAD(btn) {
+    var orig = btn.innerHTML;
+    btn.disabled = true;
+    btn.style.opacity = '0.7';
+    btn.innerHTML = '<svg class="w-4 h-4 animate-spin" style="animation:adSpin 1s linear infinite" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg> Syncing…';
+    var style = document.getElementById('ad-spin-style');
+    if (!style) {
+      style = document.createElement('style');
+      style.id = 'ad-spin-style';
+      style.textContent = '@keyframes adSpin{to{transform:rotate(360deg)}}';
+      document.head.appendChild(style);
+    }
+    setTimeout(function () {
+      btn.innerHTML = '✓ Synced';
+      btn.style.opacity = '';
+      btn.disabled = false;
+      setTimeout(function () { btn.innerHTML = orig; }, 2500);
+    }, 1500);
+  }
+
+  function saveSettingsAD(btn) {
+    var orig = btn.innerHTML;
+    btn.disabled = true;
+    btn.style.opacity = '0.7';
+    setTimeout(function () {
+      btn.innerHTML = '<svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg> Saved!';
+      btn.disabled = false;
+      btn.style.opacity = '';
+      setTimeout(function () { btn.innerHTML = orig; }, 2500);
+    }, 600);
+  }
+
+  function resyncAD(btn) {
+    if (!confirm('This will wipe local email cache and re-download all messages. This may take several minutes. Continue?')) return;
+    btn.disabled = true;
+    btn.style.opacity = '0.7';
+    var p = btn.querySelector('p.font-medium');
+    if (p) p.textContent = 'Re-syncing…';
+    setTimeout(function () {
+      btn.disabled = false;
+      btn.style.opacity = '';
+      if (p) p.textContent = 'Re-sync All Emails';
+      var badge = document.createElement('div');
+      badge.style.cssText = 'margin-top:6px;padding:6px 12px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:6px;font-size:11px;color:#15803d;font-weight:600;';
+      badge.textContent = '✓ Re-sync started. This runs in the background.';
+      btn.insertAdjacentElement('afterend', badge);
+      setTimeout(function () { badge.remove(); }, 3500);
+    }, 1000);
+  }
+  </script>
+</body>
+</html>

@@ -7,10 +7,16 @@ import FolderClient from "@/components/folder/FolderClient";
 import { StoreInitializer } from "@/components/StoreInitializer";
 import type { EmailMessage } from "@/lib/types/email";
 
+interface GraphRecipient {
+  emailAddress: { name: string; address: string };
+}
+
 interface GraphMessage {
-  id: string; subject: string; bodyPreview: string; receivedDateTime: string;
+  id: string; subject: string; bodyPreview: string;
+  receivedDateTime: string; sentDateTime?: string;
   isRead: boolean; hasAttachments: boolean; flag: { flagStatus: string };
   from: { emailAddress: { name: string; address: string } };
+  toRecipients?: GraphRecipient[];
   body: { content: string; contentType: string };
 }
 
@@ -27,20 +33,25 @@ export default async function SentPage() {
   const defaultAccount = dbUser.msAccounts.find((a) => a.isDefault) ?? dbUser.msAccounts[0];
   if (!defaultAccount) redirect("/onboarding");
 
-  const SELECT = "id,subject,bodyPreview,receivedDateTime,isRead,hasAttachments,flag,from,body";
+  const SELECT = "id,subject,bodyPreview,receivedDateTime,sentDateTime,isRead,hasAttachments,flag,from,toRecipients,body";
   let emails: EmailMessage[] = [];
   let initialNextLink: string | null = null;
 
   try {
     const data = await graphGet<{ value: GraphMessage[]; "@odata.nextLink"?: string }>(
       user.id, defaultAccount.homeAccountId,
-      `/me/mailFolders/sentItems/messages?$select=${SELECT}&$top=50&$orderby=receivedDateTime desc`
+      `/me/mailFolders/sentItems/messages?$select=${SELECT}&$top=50&$orderby=sentDateTime desc`
     );
     emails = data.value.map((m) => ({
       id: m.id, subject: m.subject ?? "(no subject)", bodyPreview: m.bodyPreview ?? "",
-      receivedDateTime: m.receivedDateTime, isRead: m.isRead, hasAttachments: m.hasAttachments,
+      receivedDateTime: m.sentDateTime ?? m.receivedDateTime ?? "",
+      sentDateTime: m.sentDateTime,
+      isRead: m.isRead, hasAttachments: m.hasAttachments,
       flag: { flagStatus: m.flag?.flagStatus === "flagged" ? "flagged" : "notFlagged" as const },
       from: { name: m.from?.emailAddress?.name ?? "Unknown", address: m.from?.emailAddress?.address ?? "" },
+      toRecipients: m.toRecipients?.map((r) => ({
+        name: r.emailAddress?.name ?? "", address: r.emailAddress?.address ?? "",
+      })),
       body: { content: m.body?.content ?? m.bodyPreview ?? "", contentType: (m.body?.contentType as "html" | "text") ?? "text" },
     }));
     initialNextLink = data["@odata.nextLink"] ?? null;

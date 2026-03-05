@@ -1,0 +1,22 @@
+{
+  "name": "detailed-help-center---brand-design-system",
+  "version": "1.0.0",
+  "description": "UI project exported from UXMagic Copilot - Detailed Help Center — Brand Design System",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx serve .",
+    "dev": "npx live-server ."
+  },
+  "keywords": [
+    "ui",
+    "frontend",
+    "design",
+    "uxmagic"
+  ],
+  "author": "UXMagic Copilot",
+  "license": "MIT",
+  "devDependencies": {
+    "live-server": "^1.2.2",
+    "serve": "^14.2.1"
+  }
+}

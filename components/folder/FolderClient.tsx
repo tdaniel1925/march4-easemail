@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import { useAccountStore } from "@/lib/stores/account-store";
 import { ReadingPane } from "@/components/shared/ReadingPane";
 import AiReplyModal from "@/components/inbox/AiReplyModal";
@@ -14,13 +15,18 @@ function EmailRow({
   selected,
   onClick,
   onAiReply,
+  showRecipient = false,
 }: {
   email: EmailMessage;
   selected: boolean;
   onClick: () => void;
   onAiReply: () => void;
+  showRecipient?: boolean;
 }) {
-  const color = getAvatarColor(email.from.name);
+  const displayName = showRecipient
+    ? (email.toRecipients?.[0]?.name || email.toRecipients?.[0]?.address || email.from.name)
+    : email.from.name;
+  const color = getAvatarColor(displayName);
   const [hovered, setHovered] = useState(false);
 
   return (
@@ -53,13 +59,13 @@ function EmailRow({
         className="w-9 h-9 rounded-[10px] flex items-center justify-center flex-shrink-0 mt-0.5 text-sm font-bold"
         style={{ backgroundColor: color.bg, color: color.text }}
       >
-        {getInitials(email.from.name)}
+        {getInitials(displayName)}
       </div>
 
       <div className="flex-1 min-w-0">
         <div className="flex items-center justify-between gap-2 mb-0.5">
           <span className="text-sm truncate" style={{ fontWeight: email.isRead ? 500 : 700, color: email.isRead ? "rgb(82 82 82)" : "rgb(27 29 29)" }}>
-            {email.from.name}
+            {showRecipient ? `To: ${displayName}` : displayName}
           </span>
           <span className="text-xs flex-shrink-0" style={{ color: "rgb(155 155 155)" }}>
             {formatDate(email.receivedDateTime)}
@@ -107,19 +113,26 @@ export default function FolderClient({
   const activeAccount = useAccountStore((s) => s.activeAccount);
   const firstRender = useRef(true);
   const sentinelRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
 
-  // Account switch: reload
+  // Well-known folder names that exist on every account
+  const SYSTEM_FOLDERS = new Set(["sent", "drafts", "trash", "starred"]);
+  const isCustomFolder = !SYSTEM_FOLDERS.has(folder);
+
+  // Account switch: reload system folders, redirect away from custom folders
   useEffect(() => {
     if (firstRender.current) { firstRender.current = false; return; }
     if (!activeAccount) return;
+    // Custom folder IDs belong to a specific account — redirect to inbox on switch
+    if (isCustomFolder) { router.push("/inbox"); return; }
     setLoadingEmails(true);
     setSelectedId(null);
     setNextLink(null);
     fetch(`/api/mail/folder?folder=${folder}&homeAccountId=${encodeURIComponent(activeAccount.homeAccountId)}`)
       .then((r) => r.json())
-      .then((data: { emails: EmailMessage[]; nextLink: string | null }) => {
-        setEmails(data.emails);
-        setSelectedId(data.emails[0]?.id ?? null);
+      .then((data: { emails?: EmailMessage[]; nextLink?: string | null }) => {
+        setEmails(data.emails ?? []);
+        setSelectedId(data.emails?.[0]?.id ?? null);
         setNextLink(data.nextLink ?? null);
       })
       .catch(console.error)
@@ -162,7 +175,7 @@ export default function FolderClient({
     if (!activeAccount) return;
     const timer = setTimeout(() => {
       setSearching(true);
-      fetch(`/api/mail/search?homeAccountId=${encodeURIComponent(activeAccount.homeAccountId)}&q=${encodeURIComponent(q)}`)
+      fetch(`/api/mail/search?homeAccountId=${encodeURIComponent(activeAccount.homeAccountId)}&q=${encodeURIComponent(q)}&folder=${encodeURIComponent(folder)}`)
         .then((r) => r.json())
         .then((data: { emails: EmailMessage[] }) => setSearchResults(data.emails))
         .catch(console.error)
@@ -240,6 +253,7 @@ export default function FolderClient({
                 key={email.id}
                 email={email}
                 selected={selectedId === email.id}
+                showRecipient={folder === "sent" || folder === "drafts"}
                 onAiReply={() => setAiReplyEmail(email)}
                 onClick={() => {
                   setSelectedId(email.id);

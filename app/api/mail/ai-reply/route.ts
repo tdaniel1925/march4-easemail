@@ -49,15 +49,22 @@ From: ${from}
 Subject: ${subject}
 Body: ${emailContent.slice(0, 3000)}`;
 
-  const message = await client.messages.create({
-    model: "claude-haiku-4-5-20251001",
-    max_tokens: 1024,
-    messages: [{ role: "user", content: prompt }],
-  });
+  let message;
+  try {
+    message = await client.messages.create({
+      model: "claude-haiku-4-5-20251001",
+      max_tokens: 1024,
+      messages: [{ role: "user", content: prompt }],
+    });
+  } catch (e) {
+    console.error("[ai-reply] Anthropic API error:", e);
+    return NextResponse.json(
+      { error: `Anthropic API error: ${(e as Error).message}` },
+      { status: 500 }
+    );
+  }
 
   const raw = message.content[0].type === "text" ? message.content[0].text : "";
-
-  // Strip markdown code fences if Claude wrapped the JSON
   const cleaned = raw.replace(/^```(?:json)?\s*/i, "").replace(/\s*```\s*$/, "").trim();
 
   let result: AiReplyResponse;

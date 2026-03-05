@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useLayoutEffect } from "react";
 import { useAccountStore, ConnectedAccount } from "@/lib/stores/account-store";
 
 export function StoreInitializer({
@@ -10,14 +10,13 @@ export function StoreInitializer({
   accounts: ConnectedAccount[];
   inboxUnread: number;
 }) {
-  const initialized = useRef(false);
-  if (!initialized.current) {
-    initialized.current = true;
+  useLayoutEffect(() => {
     useAccountStore.setState({
       accounts,
       activeAccount: accounts.find((a) => a.isDefault) ?? accounts[0] ?? null,
       inboxUnread,
     });
-  }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   return null;
 }

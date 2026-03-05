@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="AI Dictate Overlay (Copy) - Exported from UXMagic Copilot">
+    <title>AI Dictate Overlay (Copy)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+    
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              50:  'rgb(var(--color-primary-50))',
+              100: 'rgb(var(--color-primary-100))',
+              200: 'rgb(var(--color-primary-200))',
+              300: 'rgb(var(--color-primary-300))',
+              400: 'rgb(var(--color-primary-400))',
+              500: 'rgb(var(--color-primary-500))',
+              600: 'rgb(var(--color-primary-600))',
+              700: 'rgb(var(--color-primary-700))',
+              800: 'rgb(var(--color-primary-800))',
+              900: 'rgb(var(--color-primary-900))',
+            },
+            secondary: {
+              50:  'rgb(var(--color-secondary-50))',
+              100: 'rgb(var(--color-secondary-100))',
+              200: 'rgb(var(--color-secondary-200))',
+              300: 'rgb(var(--color-secondary-300))',
+              400: 'rgb(var(--color-secondary-400))',
+              500: 'rgb(var(--color-secondary-500))',
+              600: 'rgb(var(--color-secondary-600))',
+              700: 'rgb(var(--color-secondary-700))',
+              800: 'rgb(var(--color-secondary-800))',
+              900: 'rgb(var(--color-secondary-900))',
+            },
+            tertiary: {
+              50:  'rgb(var(--color-tertiary-50))',
+              100: 'rgb(var(--color-tertiary-100))',
+              200: 'rgb(var(--color-tertiary-200))',
+              300: 'rgb(var(--color-tertiary-300))',
+              400: 'rgb(var(--color-tertiary-400))',
+              500: 'rgb(var(--color-tertiary-500))',
+              600: 'rgb(var(--color-tertiary-600))',
+              700: 'rgb(var(--color-tertiary-700))',
+              800: 'rgb(var(--color-tertiary-800))',
+              900: 'rgb(var(--color-tertiary-900))',
+            },
+            background: {
+              50:  'rgb(var(--color-background-50))',
+              100: 'rgb(var(--color-background-100))',
+              200: 'rgb(var(--color-background-200))',
+              300: 'rgb(var(--color-background-300))',
+              400: 'rgb(var(--color-background-400))',
+              500: 'rgb(var(--color-background-500))',
+              600: 'rgb(var(--color-background-600))',
+              700: 'rgb(var(--color-background-700))',
+              800: 'rgb(var(--color-background-800))',
+              900: 'rgb(var(--color-background-900))',
+            },
+            neutral: {
+              50:  'rgb(var(--color-neutral-50))',
+              100: 'rgb(var(--color-neutral-100))',
+              200: 'rgb(var(--color-neutral-200))',
+              300: 'rgb(var(--color-neutral-300))',
+              400: 'rgb(var(--color-neutral-400))',
+              500: 'rgb(var(--color-neutral-500))',
+              600: 'rgb(var(--color-neutral-600))',
+              700: 'rgb(var(--color-neutral-700))',
+              800: 'rgb(var(--color-neutral-800))',
+              900: 'rgb(var(--color-neutral-900))',
+            },
+          },
+          fontFamily: {
+            heading: ['var(--font-heading-name)', 'sans-serif'],
+            body:    ['var(--font-body-name)',    'sans-serif'],
+          },
+          spacing: { base: 'var(--space-base)' },
+          borderRadius: {
+            small: 'var(--radius-small)',
+            large: 'var(--radius-large)',
+          },
+          boxShadow: {
+            custom:       'var(--shadow-custom)',
+            'custom-hover': 'var(--shadow-custom-hover)',
+          },
+        }
+      }
+    }
+  
+    </script>
+    <link rel="stylesheet" href="styles.css">
+    <meta name="theme-color" content="#8a0909">
+    <meta name="color-scheme" content="light dark">
+    <meta name="author" content="UXMagic Copilot">
+    <style>
+      /* Waveform bars animation */
+      .wave-bar {
+        display: inline-block;
+        width: 3px;
+        height: 16px;
+        margin: 0 1.5px;
+        background: currentColor;
+        border-radius: 2px;
+        animation: wavePulse 1.2s ease-in-out infinite;
+      }
+      .wave-bar:nth-child(1)  { animation-delay: 0.0s; }
+      .wave-bar:nth-child(2)  { animation-delay: 0.1s; }
+      .wave-bar:nth-child(3)  { animation-delay: 0.2s; }
+      .wave-bar:nth-child(4)  { animation-delay: 0.3s; }
+      .wave-bar:nth-child(5)  { animation-delay: 0.4s; }
+      .wave-bar:nth-child(6)  { animation-delay: 0.5s; }
+      .wave-bar:nth-child(7)  { animation-delay: 0.6s; }
+      .wave-bar:nth-child(8)  { animation-delay: 0.5s; }
+      .wave-bar:nth-child(9)  { animation-delay: 0.4s; }
+      .wave-bar:nth-child(10) { animation-delay: 0.3s; }
+      .wave-bar:nth-child(11) { animation-delay: 0.2s; }
+      .wave-bar:nth-child(12) { animation-delay: 0.1s; }
+      .wave-bar:nth-child(13) { animation-delay: 0.0s; }
+      .wave-bar:nth-child(14) { animation-delay: 0.1s; }
+      .wave-bar:nth-child(15) { animation-delay: 0.2s; }
+      .wave-bar:nth-child(16) { animation-delay: 0.3s; }
+      .wave-bar:nth-child(17) { animation-delay: 0.4s; }
+      .wave-bar:nth-child(18) { animation-delay: 0.5s; }
+      .wave-bar:nth-child(19) { animation-delay: 0.6s; }
+      .wave-bar:nth-child(20) { animation-delay: 0.5s; }
+      .wave-bar:nth-child(21) { animation-delay: 0.4s; }
+      @keyframes wavePulse {
+        0%, 100% { transform: scaleY(0.4); opacity: 0.5; }
+        50%       { transform: scaleY(1.0); opacity: 1.0; }
+      }
+
+      /* Mic pulse rings */
+      .mic-pulse, .mic-pulse-2, .mic-pulse-3 {
+        animation: micRing 2s ease-out infinite;
+      }
+      .mic-pulse-2 { animation-delay: 0.6s; }
+      .mic-pulse-3 { animation-delay: 1.2s; }
+      @keyframes micRing {
+        0%   { transform: scale(1);    opacity: 0.5; }
+        100% { transform: scale(1.8);  opacity: 0;   }
+      }
+
+      /* Transcription cursor blink */
+      .cursor-blink {
+        animation: cursorBlink 1s step-end infinite;
+      }
+      @keyframes cursorBlink {
+        0%, 100% { opacity: 1; }
+        50%      { opacity: 0; }
+      }
+    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    
+
+<div class="flex" style="height:100vh;overflow:hidden;">
+
+  <!-- LEFT SIDEBAR -->
+  <aside class="hidden lg:flex flex-col w-64 bg-background-50 border-r border-neutral-200 flex-shrink-0">
+    <!-- Logo -->
+    <div class="flex items-center gap-3 px-6 py-5 border-b border-neutral-200">
+      <div class="w-8 h-8 bg-primary-500 rounded-small flex items-center justify-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-neutral-50" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+      </div>
+      <span class="font-heading font-semibold text-neutral-900 text-lg">EaseMail</span>
+    </div>
+    <!-- Compose -->
+    <div class="px-4 py-4">
+      <button class="w-full flex items-center justify-center gap-2 bg-primary-500 hover:bg-primary-600 text-neutral-50 font-medium text-sm py-2.5 px-4 rounded-small transition-colors shadow-custom">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+        Compose
+      </button>
+    </div>
+    <!-- Nav -->
+    <nav class="flex-1 px-3 pb-4 overflow-y-auto">
+      <!-- Mailboxes -->
+      <p class="text-xs font-semibold text-neutral-400 uppercase tracking-wider px-3 mb-2 mt-2">Mailboxes</p>
+      <ul class="space-y-0.5 mb-4">
+        <li><a href="../Inbox/index.html" class="flex items-center gap-3 px-3 py-2 rounded-small bg-primary-50 text-primary-700 font-medium text-sm"><svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/></svg>Inbox<span class="ml-auto bg-primary-500 text-neutral-50 text-xs font-semibold px-2 py-0.5 rounded-small">12</span></a></li>
+        <li><a href="../Starred/index.html" class="flex items-center gap-3 px-3 py-2 rounded-small text-neutral-600 hover:bg-background-100 text-sm transition-colors"><svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/></svg>Starred</a></li>
+        <li><a href="../Sent/index.html" class="flex items-center gap-3 px-3 py-2 rounded-small text-neutral-600 hover:bg-background-100 text-sm transition-colors"><svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>Sent</a></li>
+        <li><a href="../Drafts/index.html" class="flex items-center gap-3 px-3 py-2 rounded-small text-neutral-600 hover:bg-background-100 text-sm transition-colors"><svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>Drafts<span class="ml-auto bg-neutral-200 text-neutral-600 text-xs font-semibold px-2 py-0.5 rounded-small">3</span></a></li>
+        <li><a href="../Trash/index.html" class="flex items-center gap-3 px-3 py-2 rounded-small text-neutral-600 hover:bg-background-100 text-sm transition-colors"><svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>Trash</a></li>
+      </ul>
+      <!-- Navigate -->
+      <p class="text-xs font-semibold text-neutral-400 uppercase tracking-wider px-3 mb-2">Navigate</p>
+      <ul class="space-y-0.5 mb-4">
+        <li><a href="../Personal Dashboard – Brand Collection Applied/index.html" class="flex items-center gap-3 px-3 py-2 rounded-small text-neutral-600 hover:bg-background-100 text-sm transition-colors"><svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>Dashboard</a></li>
+        <li><a href="../EaseMail - Attachments Hub/index.html" class="flex items-center gap-3 px-3 py-2 rounded-small text-neutral-600 hover:bg-background-100 text-sm transition-colors"><svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/></svg>Attachments</a></li>
+        <li><a href="../Unified Red Enterprise Calendar/index.html" class="flex items-center gap-3 px-3 py-2 rounded-small text-neutral-600 hover:bg-background-100 text-sm transition-colors"><svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>Calendar</a></li>
+      </ul>
+      <!-- Manage -->
+      <p class="text-xs font-semibold text-neutral-400 uppercase tracking-wider px-3 mb-2">Manage</p>
+      <ul class="space-y-0.5 mb-4">
+        <li><a href="../Email Accounts Dashboard/index.html" class="flex items-center gap-3 px-3 py-2 rounded-small text-neutral-600 hover:bg-background-100 text-sm transition-colors"><svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"/></svg>Email Accounts</a></li>
+        <li><a href="../MailBox/index.html" class="flex items-center gap-3 px-3 py-2 rounded-small text-neutral-600 hover:bg-background-100 text-sm transition-colors"><svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>Contacts</a></li>
+      </ul>
+      <!-- Support -->
+      <p class="text-xs font-semibold text-neutral-400 uppercase tracking-wider px-3 mb-2">Support</p>
+      <ul class="space-y-0.5">
+        <li><a href="../Detailed Help Center — Brand Design System/index.html" class="flex items-center gap-3 px-3 py-2 rounded-small text-neutral-600 hover:bg-background-100 text-sm transition-colors"><svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>Help Center</a></li>
+      </ul>
+    </nav>
+    <!-- User Profile -->
+    <div class="px-4 py-4 border-t border-neutral-200">
+      <div class="flex items-center gap-3">
+        <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=40&h=40&fit=crop&crop=face" alt="User" class="w-9 h-9 rounded-small object-cover">
+        <div class="flex-1 min-w-0">
+          <p class="text-sm font-semibold text-neutral-900 truncate">Alex Morgan</p>
+          <p class="text-xs text-neutral-500 truncate">alex@darrenmillerlaw.com</p>
+        </div>
+        <button class="text-neutral-400 hover:text-neutral-600 transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN AREA -->
+  <div class="flex flex-1 overflow-hidden">
+
+    <!-- COMPOSER -->
+    <div class="flex flex-col flex-1 bg-background-50 border-r border-neutral-200" style="overflow-y:auto;">
+      <div class="flex items-center justify-between px-6 py-4 border-b border-neutral-200">
+        <div class="flex items-center gap-3">
+          <h2 class="font-heading font-semibold text-neutral-900 text-base">New Message</h2>
+          <span class="text-xs bg-neutral-100 text-neutral-500 px-2 py-0.5 rounded-small font-medium">Draft saved</span>
+        </div>
+      </div>
+      <div class="border-b border-neutral-200">
+        <div class="flex items-center gap-3 px-6 py-3 border-b border-neutral-100">
+          <span class="text-xs font-semibold text-neutral-400 w-12">To</span>
+          <div class="flex gap-1.5">
+            <span class="inline-flex items-center gap-1 bg-primary-50 text-primary-700 border border-primary-200 rounded-small px-2 py-0.5 text-xs font-medium">Sarah Chen</span>
+            <span class="inline-flex items-center gap-1 bg-primary-50 text-primary-700 border border-primary-200 rounded-small px-2 py-0.5 text-xs font-medium">David Park</span>
+          </div>
+        </div>
+        <div class="flex items-center gap-3 px-6 py-3">
+          <span class="text-xs font-semibold text-neutral-400 w-12">Subject</span>
+          <span class="text-sm font-semibold text-neutral-900">Q3 Design Review — Action Items &amp; Next Steps</span>
+        </div>
+      </div>
+      <div class="px-8 py-6">
+        <p class="text-sm text-neutral-700 mb-3">Hi Sarah and David,</p>
+        <p class="text-sm text-neutral-700 mb-3">I hope you're both doing well! Following up on our discussion from last week's design sync, I wanted to share the key action items and next steps for the Q3 design review process.</p>
+        <p class="text-sm font-semibold text-neutral-900 mb-2">Action Items:</p>
+        <ul class="text-sm text-neutral-700 space-y-1 pl-5 mb-3" style="list-style-type: disc;">
+          <li>Finalize the component library audit report by Friday, Oct 25</li>
+          <li>Review and approve the updated button variants in the Figma file</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- AI DICTATE PANEL -->
+    <div class="w-[540px] flex-shrink-0 flex flex-col bg-background-50 border-l border-neutral-200 overflow-hidden">
+
+        <!-- PANEL HEADER -->
+        <div class="flex items-center justify-between px-6 py-4 border-b border-neutral-200 bg-background-50 flex-shrink-0">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 ai-gradient-bg rounded-small flex items-center justify-center flex-shrink-0">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-neutral-50" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
+            </div>
+            <div>
+              <h2 class="font-heading font-semibold text-neutral-900 text-base leading-tight">AI Dictate</h2>
+              <p class="text-xs text-neutral-500">Speak naturally — AI transcribes in real-time</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2">
+            <button class="flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium text-neutral-500 hover:text-primary-600 hover:bg-primary-50 rounded-small transition-colors border border-neutral-200">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 17l-5-5m0 0l5-5m-5 5h12"></path></svg>
+              Composer
+            </button>
+            <button class="p-1.5 text-neutral-400 hover:text-neutral-600 hover:bg-neutral-100 rounded-small transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- SCROLLABLE CONTENT -->
+        <div class="flex-1 overflow-y-auto">
+
+          <!-- SECTION 1: Waveform Visualizer -->
+          <div class="em-dictate-header px-6 pt-6 pb-5 border-b border-neutral-200" style="background: linear-gradient(to bottom, rgb(var(--color-primary-50)), rgb(var(--color-background-50))); max-height: 220px;">
+            <!-- Status bar -->
+            <div class="flex items-center justify-between mb-4">
+              <div class="flex items-center gap-2">
+                <span class="timer-dot w-2.5 h-2.5 rounded-small bg-primary-500 flex-shrink-0"></span>
+                <span class="text-sm font-semibold text-neutral-800">Recording</span>
+                <span class="text-sm font-mono font-semibold text-primary-600 ml-1">0:42</span>
+              </div>
+              <div class="flex items-center gap-3">
+                <!-- Noise level -->
+                <div class="flex items-center gap-1.5">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-neutral-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072M12 18.364V21m0 0H9m3 0h3M12 3v2.636m0 0a5 5 0 015 5v2.728M12 5.636a5 5 0 00-5 5v2.728"></path></svg>
+                  <div class="flex items-end gap-0.5 h-4">
+                    <div class="noise-bar w-1 bg-primary-300 rounded-small" style="height: 6px;"></div>
+                    <div class="noise-bar w-1 bg-primary-400 rounded-small" style="height: 10px;"></div>
+                    <div class="noise-bar w-1 bg-primary-500 rounded-small" style="height: 14px;"></div>
+                    <div class="noise-bar w-1 bg-primary-400 rounded-small" style="height: 10px;"></div>
+                    <div class="noise-bar w-1 bg-primary-300 rounded-small" style="height: 6px;"></div>
+                  </div>
+                  <span class="text-xs text-neutral-500">Good signal</span>
+                </div>
+                <!-- Language -->
+                <div class="flex items-center gap-1 px-2 py-1 bg-background-50 border border-neutral-200 rounded-small shadow-custom">
+                  <span class="text-xs font-medium text-neutral-600">EN</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 text-neutral-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg>
+                </div>
+              </div>
+            </div>
+
+            <!-- Waveform bars -->
+            <div class="flex items-center justify-center gap-1.5" style="height: 96px;">
+              <div class="wave-bar"></div>
+              <div class="wave-bar"></div>
+              <div class="wave-bar"></div>
+              <div class="wave-bar"></div>
+              <div class="wave-bar"></div>
+              <div class="wave-bar"></div>
+              <div class="wave-bar"></div>
+              <div class="wave-bar"></div>
+              <div class="wave-bar"></div>
+              <div class="wave-bar"></div>
+              <div class="wave-bar"></div>
+              <div class="wave-bar"></div>
+              <div class="wave-bar"></div>
+              <div class="wave-bar"></div>
+              <div class="wave-bar"></div>
+              <div class="wave-bar"></div>
+              <div class="wave-bar"></div>
+              <div class="wave-bar"></div>
+              <div class="wave-bar"></div>
+              <div class="wave-bar"></div>
+              <div class="wave-bar"></div>
+            </div>
+          </div>
+
+          <!-- SECTION 2: Live Transcription -->
+          <div class="px-6 py-5 border-b border-neutral-200 bg-background-50" style="max-height: 320px;">
+            <div class="flex items-center justify-between mb-3">
+              <div class="flex items-center gap-2">
+                <h3 class="font-heading text-sm font-semibold text-neutral-800">Live Transcription</h3>
+                <span class="flex items-center gap-1 text-xs font-medium text-primary-600 bg-primary-50 px-2 py-0.5 rounded-small border border-primary-100">
+                  <span class="timer-dot w-1.5 h-1.5 rounded-small bg-primary-500"></span>
+                  Live
+                </span>
+              </div>
+              <div class="flex items-center gap-2">
+                <button class="flex items-center gap-1 text-xs text-neutral-500 hover:text-neutral-700 transition-colors px-2 py-1 hover:bg-neutral-100 rounded-small">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                  Edit
+                </button>
+                <button class="flex items-center gap-1 text-xs text-neutral-500 hover:text-neutral-700 transition-colors px-2 py-1 hover:bg-neutral-100 rounded-small">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                  Clear
+                </button>
+              </div>
+            </div>
+
+            <!-- Transcription text area -->
+            <div class="bg-background-100 border border-neutral-200 rounded-large p-4 relative shadow-custom" style="max-height: 200px; overflow-y: auto;">
+              <!-- Confidence indicator -->
+              <div class="flex items-center gap-2 mb-3 pb-2 border-b border-neutral-200">
+                <span class="text-xs text-neutral-500">Confidence</span>
+                <div class="flex-1 h-1.5 bg-neutral-200 rounded-small overflow-hidden">
+                  <div class="confidence-bar h-full rounded-small" style="width: 94%;"></div>
+                </div>
+                <span class="text-xs font-semibold text-primary-600">94%</span>
+              </div>
+
+              <!-- Transcribed text -->
+              <div class="text-sm text-neutral-800 leading-relaxed">
+                <span class="word-appear" style="animation-delay: 0s;">Hi</span>
+                <span class="word-appear" style="animation-delay: 0.05s;"> Sarah</span>
+                <span class="word-appear" style="animation-delay: 0.1s;"> and</span>
+                <span class="word-appear" style="animation-delay: 0.15s;"> David,</span>
+                <span class="word-appear" style="animation-delay: 0.2s;"> I</span>
+                <span class="word-appear" style="animation-delay: 0.25s;"> wanted</span>
+                <span class="word-appear" style="animation-delay: 0.3s;"> to</span>
+                <span class="word-appear" style="animation-delay: 0.35s;"> follow</span>
+                <span class="word-appear" style="animation-delay: 0.4s;"> up</span>
+                <span class="word-appear" style="animation-delay: 0.45s;"> on</span>
+                <span class="word-appear" style="animation-delay: 0.5s;"> our</span>
+                <span class="word-appear" style="animation-delay: 0.55s;"> design</span>
+                <span class="word-appear" style="animation-delay: 0.6s;"> sync</span>
+                <span class="word-appear" style="animation-delay: 0.65s;"> from</span>
+                <span class="word-appear" style="animation-delay: 0.7s;"> last</span>
+                <span class="word-appear" style="animation-delay: 0.75s;"> week.</span>
+                <span class="word-appear" style="animation-delay: 0.8s;"> I</span>
+                <span class="word-appear" style="animation-delay: 0.85s;"> just</span>
+                <span class="word-appear" style="animation-delay: 0.9s;"> wanted</span>
+                <span class="word-appear" style="animation-delay: 0.95s;"> to</span>
+                <span class="word-appear" style="animation-delay: 1.0s;"> quickly</span>
+                <span class="word-appear" style="animation-delay: 1.05s;"> recap</span>
+                <span class="word-appear" style="animation-delay: 1.1s;"> the</span>
+                <span class="word-appear" style="animation-delay: 1.15s;"> three</span>
+                <span class="word-appear" style="animation-delay: 1.2s;"> main</span>
+                <span class="word-appear" style="animation-delay: 1.25s;"> action</span>
+                <span class="word-appear" style="animation-delay: 1.3s;"> items</span>
+                <span class="word-appear" style="animation-delay: 1.35s;"> we</span>
+                <span class="word-appear" style="animation-delay: 1.4s;"> discussed</span>
+                <span class="word-appear" style="animation-delay: 1.45s;"> and</span>
+                <span class="word-appear" style="animation-delay: 1.5s;"> make</span>
+                <span class="word-appear" style="animation-delay: 1.55s;"> sure</span>
+                <span class="word-appear" style="animation-delay: 1.6s;"> everyone</span>
+                <span class="word-appear" style="animation-delay: 1.65s;"> is</span>
+                <span class="word-appear" style="animation-delay: 1.7s;"> aligned</span>
+                <span class="word-appear" style="animation-delay: 1.75s;"> on</span>
+                <span class="word-appear" style="animation-delay: 1.8s;"> the</span>
+                <span class="word-appear" style="animation-delay: 1.85s;"> next</span>
+                <span class="word-appear" style="animation-delay: 1.9s;"> steps</span>
+                <span class="word-appear" style="animation-delay: 1.95s;"> before</span>
+                <span class="word-appear" style="animation-delay: 2.0s;"> the</span>
+                <span class="word-appear" style="animation-delay: 2.05s;"> end</span>
+                <span class="word-appear" style="animation-delay: 2.1s;"> of</span>
+                <span class="word-appear" style="animation-delay: 2.15s;"> the</span>
+                <span class="word-appear" style="animation-delay: 2.2s;"> week.</span>
+                <span class="bg-primary-100 text-primary-800 px-0.5 rounded-small word-appear" style="animation-delay: 2.3s;"> First</span>
+                <span class="bg-primary-100 text-primary-800 px-0.5 rounded-small word-appear" style="animation-delay: 2.4s;"> of</span>
+                <span class="bg-primary-100 text-primary-800 px-0.5 rounded-small word-appear" style="animation-delay: 2.5s;"> all,</span>
+                <span class="cursor-blink inline-block w-0.5 h-4 bg-primary-500 ml-0.5 align-middle"></span>
+              </div>
+
+              <!-- Word count badge -->
+              <div class="absolute bottom-3 right-3">
+                <span class="text-xs text-neutral-400 bg-background-50 border border-neutral-200 px-2 py-0.5 rounded-small">52 words</span>
+              </div>
+            </div>
+
+            <!-- Smart suggestions row -->
+            <div class="mt-3 flex items-center gap-2 flex-wrap">
+              <span class="text-xs text-neutral-400 flex-shrink-0">AI suggests:</span>
+              <button class="flex items-center gap-1 text-xs font-medium text-primary-600 bg-primary-50 hover:bg-primary-100 border border-primary-200 px-2.5 py-1 rounded-small transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"></path></svg>
+                Add greeting
+              </button>
+              <button class="flex items-center gap-1 text-xs font-medium text-secondary-700 bg-secondary-50 hover:bg-secondary-100 border border-secondary-200 px-2.5 py-1 rounded-small transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
+                Format as list
+              </button>
+              <button class="flex items-center gap-1 text-xs font-medium text-tertiary-700 bg-tertiary-50 hover:bg-tertiary-100 border border-tertiary-200 px-2.5 py-1 rounded-small transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                Make concise
+              </button>
+            </div>
+          </div>
+
+          <!-- SECTION 3: Mic Controls -->
+          <div class="px-6 py-6 border-b border-neutral-200 bg-background-50" style="max-height: 200px;">
+            <div class="flex items-center justify-center gap-6">
+
+              <!-- Restart button -->
+              <button class="flex flex-col items-center gap-2 group">
+                <div class="w-12 h-12 rounded-large border-2 border-neutral-200 group-hover:border-neutral-300 bg-background-50 group-hover:bg-background-100 flex items-center justify-center transition-all shadow-custom">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-neutral-500 group-hover:text-neutral-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                </div>
+                <span class="text-xs text-neutral-500 group-hover:text-neutral-700 font-medium">Restart</span>
+              </button>
+
+              <!-- Pause button -->
+              <button class="flex flex-col items-center gap-2 group">
+                <div class="w-14 h-14 rounded-large border-2 border-secondary-300 group-hover:border-secondary-400 bg-secondary-50 group-hover:bg-secondary-100 flex items-center justify-center transition-all shadow-custom">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-secondary-600 group-hover:text-secondary-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                </div>
+                <span class="text-xs text-secondary-600 group-hover:text-secondary-700 font-medium">Pause</span>
+              </button>
+
+              <!-- Mic button (main) — with pulse rings -->
+              <button class="flex flex-col items-center gap-2 group relative">
+                <div class="relative flex items-center justify-center">
+                  <div class="mic-pulse absolute w-20 h-20 rounded-large border-2 border-primary-400 opacity-40"></div>
+                  <div class="mic-pulse-2 absolute w-20 h-20 rounded-large border-2 border-primary-300 opacity-30"></div>
+                  <div class="mic-pulse-3 absolute w-20 h-20 rounded-large border-2 border-primary-200 opacity-20"></div>
+                  <div class="w-20 h-20 rounded-large ai-gradient-bg flex items-center justify-center shadow-custom-hover relative z-10 group-hover:opacity-90 transition-opacity">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-neutral-50" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
+                  </div>
+                </div>
+                <span class="text-xs text-primary-600 font-semibold">Recording…</span>
+              </button>
+
+              <!-- Stop button -->
+              <button class="flex flex-col items-center gap-2 group">
+                <div class="w-14 h-14 rounded-large border-2 border-primary-200 group-hover:border-primary-300 bg-primary-50 group-hover:bg-primary-100 flex items-center justify-center transition-all shadow-custom">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-primary-500 group-hover:text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path><path stroke-linecap="round" stroke-linejoin="round" d="M9 10a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z"></path></svg>
+                </div>
+                <span class="text-xs text-primary-500 group-hover:text-primary-600 font-medium">Stop</span>
+              </button>
+
+              <!-- Settings button -->
+              <button class="flex flex-col items-center gap-2 group">
+                <div class="w-12 h-12 rounded-large border-2 border-neutral-200 group-hover:border-neutral-300 bg-background-50 group-hover:bg-background-100 flex items-center justify-center transition-all shadow-custom">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-neutral-500 group-hover:text-neutral-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                </div>
+                <span class="text-xs text-neutral-500 group-hover:text-neutral-700 font-medium">Settings</span>
+              </button>
+
+            </div>
+          </div>
+
+          <!-- SECTION 4: Dictation Stats -->
+          <div class="px-6 py-4 border-b border-neutral-200 bg-background-100" style="max-height: 140px;">
+            <div class="grid grid-cols-3 gap-3">
+              <!-- Duration -->
+              <div class="flex items-center gap-3 p-3 bg-background-50 rounded-large border border-neutral-200 shadow-custom">
+                <div class="w-8 h-8 bg-primary-100 rounded-small flex items-center justify-center flex-shrink-0">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                </div>
+                <div>
+                  <p class="text-sm font-semibold text-neutral-900 font-mono">0:42</p>
+                  <p class="text-xs text-neutral-500">Duration</p>
+                </div>
+              </div>
+              <!-- Words -->
+              <div class="flex items-center gap-3 p-3 bg-background-50 rounded-large border border-neutral-200 shadow-custom">
+                <div class="w-8 h-8 bg-secondary-100 rounded-small flex items-center justify-center flex-shrink-0">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-secondary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"></path></svg>
+                </div>
+                <div>
+                  <p class="text-sm font-semibold text-neutral-900">52</p>
+                  <p class="text-xs text-neutral-500">Words</p>
+                </div>
+              </div>
+              <!-- Speed -->
+              <div class="flex items-center gap-3 p-3 bg-background-50 rounded-large border border-neutral-200 shadow-custom">
+                <div class="w-8 h-8 bg-tertiary-100 rounded-small flex items-center justify-center flex-shrink-0">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-tertiary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                </div>
+                <div>
+                  <p class="text-sm font-semibold text-neutral-900">74 <span class="text-xs font-normal text-neutral-500">wpm</span></p>
+                  <p class="text-xs text-neutral-500">Speed</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- SECTION 5: Insert Options -->
+          <div class="px-6 py-4 bg-background-50" style="max-height: 120px;">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="font-heading text-sm font-semibold text-neutral-800">Insert Options</h3>
+            </div>
+            <div class="flex items-center gap-4 flex-wrap">
+              <label class="flex items-center gap-2 cursor-pointer">
+                <div class="w-4 h-4 rounded-small bg-primary-500 flex items-center justify-center flex-shrink-0">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 text-neutral-50" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
+                </div>
+                <span class="text-xs text-neutral-700 font-medium">Auto-punctuate</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer">
+                <div class="w-4 h-4 rounded-small bg-primary-500 flex items-center justify-center flex-shrink-0">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 text-neutral-50" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
+                </div>
+                <span class="text-xs text-neutral-700 font-medium">Fix grammar</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer">
+                <div class="w-4 h-4 rounded-small border-2 border-neutral-300 flex-shrink-0 bg-background-50"></div>
+                <span class="text-xs text-neutral-600">Append to existing</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer">
+                <div class="w-4 h-4 rounded-small border-2 border-neutral-300 flex-shrink-0 bg-background-50"></div>
+                <span class="text-xs text-neutral-600">Replace selection</span>
+              </label>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- PANEL FOOTER -->
+        <div class="flex-shrink-0 border-t border-neutral-200 bg-background-50 px-6 py-4">
+          <div class="flex items-center gap-3">
+
+            <!-- Discard -->
+            <button class="flex items-center gap-2 border border-neutral-200 text-neutral-600 hover:bg-background-100 font-medium text-sm py-2.5 px-4 rounded-small transition-colors shadow-custom flex-shrink-0">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>
+              Discard
+            </button>
+
+            <!-- Copy text -->
+            <button class="flex items-center gap-2 border border-neutral-200 text-neutral-600 hover:bg-background-100 font-medium text-sm py-2.5 px-4 rounded-small transition-colors shadow-custom flex-shrink-0">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+              Copy
+            </button>
+
+            <!-- Insert into Email (primary CTA) -->
+            <button id="dictate-insert-btn" onclick="insertDictated(this)" class="flex-1 flex items-center justify-center gap-2 ai-gradient-bg text-neutral-50 font-semibold text-sm py-2.5 px-5 rounded-small transition-all shadow-custom hover:shadow-custom-hover">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+              Insert into Email
+            </button>
+
+          </div>
+
+          <!-- Flow navigation row -->
+          <div class="flex items-center justify-center gap-4 mt-3 pt-3 border-t border-neutral-200">
+            <button class="flex items-center gap-1.5 text-xs text-neutral-500 hover:text-primary-600 transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+              Email Composer
+            </button>
+            <span class="text-neutral-300">·</span>
+            <button class="flex items-center gap-1.5 text-xs text-neutral-500 hover:text-primary-600 transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+              AI Remix
+            </button>
+            <span class="text-neutral-300">·</span>
+            <button class="flex items-center gap-1.5 text-xs text-primary-600 font-semibold transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
+              AI Dictate
+            </button>
+            <span class="text-neutral-300">·</span>
+            <button class="flex items-center gap-1.5 text-xs text-neutral-500 hover:text-tertiary-600 transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072M12 18.364V21m0 0H9m3 0h3M12 3v2.636m0 0a5 5 0 015 5v2.728M12 5.636a5 5 0 00-5 5v2.728"></path></svg>
+              Voice Recorder
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+</div>
+
+
+
+    <script src="script.js"></script>
+  <script src="../demo-nav.js"></script>
+  <script>
+  function insertDictated(btn) {
+    var origHTML = btn.innerHTML;
+    btn.disabled = true;
+    btn.style.opacity = '0.7';
+    btn.innerHTML = '<svg class="w-4 h-4 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>&nbsp;Inserting…';
+    setTimeout(function () {
+      btn.innerHTML = origHTML;
+      btn.disabled = false;
+      btn.style.opacity = '';
+      var banner = document.getElementById('dictate-success-banner');
+      if (!banner) {
+        banner = document.createElement('div');
+        banner.id = 'dictate-success-banner';
+        banner.style.cssText = 'margin-top:10px;padding:8px 14px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:6px;font-size:12px;color:#15803d;font-weight:600;text-align:center;';
+        banner.textContent = '✓ Text inserted into your email draft.';
+        btn.closest('.flex.items-center.gap-3').insertAdjacentElement('afterend', banner);
+      }
+      banner.style.display = '';
+      setTimeout(function () { banner.style.display = 'none'; }, 3000);
+    }, 700);
+  }
+  </script>
+</body>
+</html>

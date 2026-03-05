@@ -34,7 +34,7 @@ export default async function StarredPage() {
   try {
     const data = await graphGet<{ value: GraphMessage[]; "@odata.nextLink"?: string }>(
       user.id, defaultAccount.homeAccountId,
-      `/me/messages?$filter=flag/flagStatus eq 'flagged'&$select=${SELECT}&$top=50&$orderby=receivedDateTime desc`
+      `/me/messages?$filter=flag/flagStatus eq 'flagged'&$select=${SELECT}&$top=50`
     );
     emails = data.value.map((m) => ({
       id: m.id, subject: m.subject ?? "(no subject)", bodyPreview: m.bodyPreview ?? "",

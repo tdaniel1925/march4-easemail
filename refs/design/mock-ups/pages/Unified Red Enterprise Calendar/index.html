@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Calendar — EaseMail">
+    <title>Calendar — EaseMail</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script>
+    
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              50: '#fef2f2',
+              100: '#fee2e2',
+              200: '#fecaca',
+              300: '#fca5a5',
+              400: '#f87171',
+              500: '#ef4444',
+              600: '#dc2626',
+              700: '#b91c1c',
+              800: '#991b1b',
+              900: '#7f1d1d',
+            }
+          },
+          fontFamily: {
+            heading: ['var(--font-heading-name)', 'sans-serif'],
+            body: ['var(--font-body-name)', 'sans-serif'],
+          },
+          spacing: {
+            base: 'var(--space-base)',
+          },
+          borderRadius: {
+            small: 'var(--radius-small)',
+            large: 'var(--radius-large)',
+          },
+          boxShadow: {
+            custom: 'var(--shadow-custom)',
+            'custom-hover': 'var(--shadow-custom-hover)',
+          },
+        }
+      }
+    }
+  
+    </script>
+    <link rel="stylesheet" href="styles.css">
+    <meta name="theme-color" content="#8a0909">
+    <meta name="color-scheme" content="light dark">
+    <meta name="author" content="UXMagic Copilot">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body style="height:100vh;overflow:hidden;display:flex;flex-direction:column;">
+
+
+  <!-- Header -->
+  <header class="bg-white border-b border-neutral-200 h-16 flex items-center justify-between px-4 flex-shrink-0 z-20 relative">
+    <div class="flex items-center gap-4">
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 bg-primary-600 rounded-small flex items-center justify-center text-white">
+          <i data-lucide="calendar" class="w-5 h-5"></i>
+        </div>
+        <h1 class="font-heading text-xl font-semibold text-neutral-900 hidden md:block">EaseMail Calendar</h1>
+      </div>
+      
+      <div class="hidden md:flex items-center bg-neutral-100 rounded-small p-1 ml-6">
+        <button class="px-3 py-1 text-sm font-medium text-neutral-600 hover:text-neutral-900 rounded-small">Day</button>
+        <button class="px-3 py-1 text-sm font-medium text-primary-700 bg-white shadow-sm rounded-small">Week</button>
+        <button class="px-3 py-1 text-sm font-medium text-neutral-600 hover:text-neutral-900 rounded-small">Month</button>
+        <button class="px-3 py-1 text-sm font-medium text-neutral-600 hover:text-neutral-900 rounded-small">Year</button>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-4">
+      <div class="flex items-center gap-2">
+        <button class="p-2 hover:bg-neutral-100 rounded-small text-neutral-600">
+          <i data-lucide="chevron-left" class="w-5 h-5"></i>
+        </button>
+        <span class="font-heading font-medium text-neutral-900 text-lg">October 2023</span>
+        <button class="p-2 hover:bg-neutral-100 rounded-small text-neutral-600">
+          <i data-lucide="chevron-right" class="w-5 h-5"></i>
+        </button>
+      </div>
+      
+      <div class="h-6 w-px bg-neutral-200 mx-2 hidden sm:block"></div>
+      
+      <div class="flex items-center gap-3">
+        <button class="p-2 hover:bg-neutral-100 rounded-small text-neutral-600 relative">
+          <i data-lucide="bell" class="w-5 h-5"></i>
+          <span class="absolute top-2 right-2 w-2 h-2 bg-primary-600 rounded-full border-2 border-white"></span>
+        </button>
+        <button class="p-2 hover:bg-neutral-100 rounded-small text-neutral-600">
+          <i data-lucide="settings" class="w-5 h-5"></i>
+        </button>
+        <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80" alt="User" class="w-8 h-8 rounded-full border border-neutral-200">
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <div class="flex flex-1 overflow-hidden">
+    
+    <!-- LEFT SIDEBAR -->
+    <aside class="hidden lg:flex flex-col w-64 bg-background-50 border-r border-neutral-200 flex-shrink-0">
+      <!-- Logo -->
+      <div class="flex items-center gap-3 px-6 py-5 border-b border-neutral-200">
+        <div class="w-8 h-8 bg-primary-500 rounded-small flex items-center justify-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-neutral-50" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+        </div>
+        <span class="font-heading font-semibold text-neutral-900 text-lg">EaseMail</span>
+      </div>
+      <!-- Compose -->
+      <div class="px-4 py-4">
+        <button class="w-full flex items-center justify-center gap-2 bg-primary-500 hover:bg-primary-600 text-neutral-50 font-medium text-sm py-2.5 px-4 rounded-small transition-colors shadow-custom">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+          Compose
+        </button>
+      </div>
+      <!-- Nav -->
+      <nav class="flex-1 px-3 pb-4 overflow-y-auto">
+        <!-- Mailboxes -->
+        <p class="text-xs font-semibold text-neutral-400 uppercase tracking-wider px-3 mb-2 mt-2">Mailboxes</p>
+        <ul class="space-y-0.5 mb-4">
+          <li><a href="../Inbox/index.html" class="flex items-center gap-3 px-3 py-2 rounded-small bg-primary-50 text-primary-700 font-medium text-sm"><svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/></svg>Inbox<span class="ml-auto bg-primary-500 text-neutral-50 text-xs font-semibold px-2 py-0.5 rounded-small">12</span></a></li>
+          <li><a href="../Starred/index.html" class="flex items-center gap-3 px-3 py-2 rounded-small text-neutral-600 hover:bg-background-100 text-sm transition-colors"><svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/></svg>Starred</a></li>
+          <li><a href="../Sent/index.html" class="flex items-center gap-3 px-3 py-2 rounded-small text-neutral-600 hover:bg-background-100 text-sm transition-colors"><svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>Sent</a></li>
+          <li><a href="../Drafts/index.html" class="flex items-center gap-3 px-3 py-2 rounded-small text-neutral-600 hover:bg-background-100 text-sm transition-colors"><svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>Drafts<span class="ml-auto bg-neutral-200 text-neutral-600 text-xs font-semibold px-2 py-0.5 rounded-small">3</span></a></li>
+          <li><a href="../Trash/index.html" class="flex items-center gap-3 px-3 py-2 rounded-small text-neutral-600 hover:bg-background-100 text-sm transition-colors"><svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>Trash</a></li>
+        </ul>
+        <!-- Navigate -->
+        <p class="text-xs font-semibold text-neutral-400 uppercase tracking-wider px-3 mb-2">Navigate</p>
+        <ul class="space-y-0.5 mb-4">
+          <li><a href="../Personal Dashboard – Brand Collection Applied/index.html" class="flex items-center gap-3 px-3 py-2 rounded-small text-neutral-600 hover:bg-background-100 text-sm transition-colors"><svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>Dashboard</a></li>
+          <li><a href="../EaseMail - Attachments Hub/index.html" class="flex items-center gap-3 px-3 py-2 rounded-small text-neutral-600 hover:bg-background-100 text-sm transition-colors"><svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/></svg>Attachments</a></li>
+          <li><a href="../Unified Red Enterprise Calendar/index.html" class="flex items-center gap-3 px-3 py-2 rounded-small text-neutral-600 hover:bg-background-100 text-sm transition-colors"><svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>Calendar</a></li>
+        </ul>
+        <!-- Manage -->
+        <p class="text-xs font-semibold text-neutral-400 uppercase tracking-wider px-3 mb-2">Manage</p>
+        <ul class="space-y-0.5 mb-4">
+          <li><a href="../Email Accounts Dashboard/index.html" class="flex items-center gap-3 px-3 py-2 rounded-small text-neutral-600 hover:bg-background-100 text-sm transition-colors"><svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"/></svg>Email Accounts</a></li>
+          <li><a href="../MailBox/index.html" class="flex items-center gap-3 px-3 py-2 rounded-small text-neutral-600 hover:bg-background-100 text-sm transition-colors"><svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>Contacts</a></li>
+        </ul>
+        <!-- Support -->
+        <p class="text-xs font-semibold text-neutral-400 uppercase tracking-wider px-3 mb-2">Support</p>
+        <ul class="space-y-0.5">
+          <li><a href="../Detailed Help Center — Brand Design System/index.html" class="flex items-center gap-3 px-3 py-2 rounded-small text-neutral-600 hover:bg-background-100 text-sm transition-colors"><svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>Help Center</a></li>
+        </ul>
+      </nav>
+      <!-- User Profile -->
+      <div class="px-4 py-4 border-t border-neutral-200">
+        <div class="flex items-center gap-3">
+          <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=40&h=40&fit=crop&crop=face" alt="User" class="w-9 h-9 rounded-small object-cover">
+          <div class="flex-1 min-w-0">
+            <p class="text-sm font-semibold text-neutral-900 truncate">Alex Morgan</p>
+            <p class="text-xs text-neutral-500 truncate">alex@darrenmillerlaw.com</p>
+          </div>
+          <button class="text-neutral-400 hover:text-neutral-600 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Calendar Grid -->
+    <main class="flex-1 flex flex-col bg-white overflow-hidden relative">
+      
+      <!-- Days Header -->
+      <div class="flex border-b border-neutral-200 flex-shrink-0 ml-14">
+        <div class="flex-1 py-3 text-center border-r border-neutral-100">
+          <span class="block text-xs font-medium text-neutral-500 uppercase">Mon</span>
+          <span class="block text-xl font-semibold text-neutral-700 mt-1">16</span>
+        </div>
+        <div class="flex-1 py-3 text-center border-r border-neutral-100 bg-primary-50">
+          <span class="block text-xs font-bold text-primary-600 uppercase">Tue</span>
+          <div class="w-8 h-8 rounded-full bg-primary-600 text-white flex items-center justify-center mx-auto mt-1 font-bold shadow-sm">17</div>
+        </div>
+        <div class="flex-1 py-3 text-center border-r border-neutral-100">
+          <span class="block text-xs font-medium text-neutral-500 uppercase">Wed</span>
+          <span class="block text-xl font-semibold text-neutral-700 mt-1">18</span>
+        </div>
+        <div class="flex-1 py-3 text-center border-r border-neutral-100">
+          <span class="block text-xs font-medium text-neutral-500 uppercase">Thu</span>
+          <span class="block text-xl font-semibold text-neutral-700 mt-1">19</span>
+        </div>
+        <div class="flex-1 py-3 text-center border-r border-neutral-100">
+          <span class="block text-xs font-medium text-neutral-500 uppercase">Fri</span>
+          <span class="block text-xl font-semibold text-neutral-700 mt-1">20</span>
+        </div>
+        <div class="flex-1 py-3 text-center border-r border-neutral-100 bg-neutral-50">
+          <span class="block text-xs font-medium text-neutral-400 uppercase">Sat</span>
+          <span class="block text-xl font-semibold text-neutral-400 mt-1">21</span>
+        </div>
+        <div class="flex-1 py-3 text-center bg-neutral-50">
+          <span class="block text-xs font-medium text-neutral-400 uppercase">Sun</span>
+          <span class="block text-xl font-semibold text-neutral-400 mt-1">22</span>
+        </div>
+      </div>
+
+      <!-- All Day Events Row -->
+      <div class="flex border-b border-neutral-200 flex-shrink-0 min-h-[3rem] ml-14">
+        <div class="w-14 -ml-14 border-r border-neutral-200 flex items-center justify-center text-xs text-neutral-400 bg-white z-10">
+          All day
+        </div>
+        <div class="flex-1 border-r border-neutral-100 p-1"></div>
+        <div class="flex-1 border-r border-neutral-100 p-1 relative">
+          <div class="bg-purple-100 border-l-4 border-purple-500 text-purple-800 text-xs p-1 rounded-sm truncate font-medium">
+            Company Holiday
+          </div>
+        </div>
+        <div class="flex-1 border-r border-neutral-100 p-1"></div>
+        <div class="flex-1 border-r border-neutral-100 p-1"></div>
+        <div class="flex-1 border-r border-neutral-100 p-1"></div>
+        <div class="flex-1 border-r border-neutral-100 bg-neutral-50 p-1"></div>
+        <div class="flex-1 bg-neutral-50 p-1"></div>
+      </div>
+
+      <!-- Time Grid Scrollable Area -->
+      <div class="flex-1 overflow-y-auto relative custom-scrollbar">
+        <!-- Current Time Indicator Line -->
+        <div class="absolute w-full z-10 pointer-events-none flex items-center" style="top: 340px;">
+          <div class="w-14 text-right pr-2 text-xs font-bold text-primary-600 -mt-2 bg-white">10:15</div>
+          <div class="flex-1 h-px bg-primary-600 relative">
+            <div class="absolute -left-1 -top-1 w-2 h-2 rounded-full bg-primary-600"></div>
+          </div>
+        </div>
+
+        <!-- Grid Background -->
+        <div class="flex relative">
+          <!-- Time Column -->
+          <div class="w-14 flex-shrink-0 flex flex-col text-xs text-neutral-400 text-right bg-white border-r border-neutral-200">
+            <div class="h-20 pr-2 pt-2 relative"><span class="-mt-2 block">8 AM</span></div>
+            <div class="h-20 pr-2 pt-2 relative"><span class="-mt-2 block">9 AM</span></div>
+            <div class="h-20 pr-2 pt-2 relative"><span class="-mt-2 block">10 AM</span></div>
+            <div class="h-20 pr-2 pt-2 relative"><span class="-mt-2 block">11 AM</span></div>
+            <div class="h-20 pr-2 pt-2 relative"><span class="-mt-2 block">12 PM</span></div>
+            <div class="h-20 pr-2 pt-2 relative"><span class="-mt-2 block">1 PM</span></div>
+            <div class="h-20 pr-2 pt-2 relative"><span class="-mt-2 block">2 PM</span></div>
+            <div class="h-20 pr-2 pt-2 relative"><span class="-mt-2 block">3 PM</span></div>
+            <div class="h-20 pr-2 pt-2 relative"><span class="-mt-2 block">4 PM</span></div>
+            <div class="h-20 pr-2 pt-2 relative"><span class="-mt-2 block">5 PM</span></div>
+            <div class="h-20 pr-2 pt-2 relative"><span class="-mt-2 block">6 PM</span></div>
+          </div>
+
+          <!-- Days Columns -->
+          <div class="flex-1 grid grid-cols-7 h-full border-b border-neutral-100">
+            <!-- Monday -->
+            <div class="border-r border-neutral-100 relative">
+              <div class="h-20 border-t border-neutral-100 border-dashed"></div>
+              <div class="h-20 border-t border-neutral-100 border-dashed"></div>
+              <div class="h-20 border-t border-neutral-100 border-dashed"></div>
+              <div class="h-20 border-t border-neutral-100 border-dashed"></div>
+              <div class="h-20 border-t border-neutral-100 border-dashed"></div>
+              <div class="h-20 border-t border-neutral-100 border-dashed"></div>
+              <div class="h-20 border-t border-neutral-100 border-dashed"></div>
+              <div class="h-20 border-t border-neutral-100 border-dashed"></div>
+              <div class="h-20 border-t border-neutral-100 border-dashed"></div>
+              <div class="h-20 border-t border-neutral-100 border-dashed"></div>
+              <div class="h-20 border-t border-neutral-100 border-dashed"></div>
+
+              <!-- Event Item -->
+              <div class="absolute top-[160px] left-1 right-1 h-[80px] bg-blue-50 border-l-4 border-blue-500 rounded-sm p-2 cursor-pointer hover:bg-blue-100 transition-colors shadow-sm group">
+                <div class="text-xs font-semibold text-blue-800">Weekly Sync</div>
+                <div class="text-xs text-blue-600 mt-0.5">10:00 - 11:00 AM</div>
+                <div class="text-xs text-blue-500 mt-1 flex items-center gap-1">
+                  <i data-lucide="map-pin" class="w-3 h-3"></i> Room 302
+                </div>
+              </div>
+            </div>
+
+            <!-- Tuesday (Today) -->
+            <div class="border-r border-neutral-100 relative bg-neutral-50/30">
+              <div class="h-20 border-t border-neutral-100 border-dashed"></div>
+              <div class="h-20 border-t border-neutral-100 border-dashed"></div>
+              <div class="h-20 border-t border-neutral-100 border-dashed"></div>
+              <div class="h-20 border-t border-neutral-100 border-dashed"></div>
+              <div class="h-20 border-t border-neutral-100 border-dashed"></div>
+              <div class="h-20 border-t border-neutral-100 border-dashed"></div>
+              <div class="h-20 border-t border-neutral-100 border-dashed"></div>
+              <div class="h-20 border-t border-neutral-100 border-dashed"></div>
+              <div class="h-20 border-t border-neutral-100 border-dashed"></div>
+              <div class="h-20 border-t border-neutral-100 border-dashed"></div>
+              <div class="h-20 border-t border-neutral-100 border-dashed"></div>
+
+              <!-- Event Item -->
+              <div class="absolute top-[80px] left-1 right-1 h-[60px] bg-primary-50 border-l-4 border-primary-500 rounded-sm p-2 cursor-pointer hover:bg-primary-100 transition-colors shadow-sm z-20">
+                <div class="flex justify-between items-start">
+                  <div class="text-xs font-semibold text-primary-900">Project Review</div>
+                  <i data-lucide="video" class="w-3 h-3 text-primary-500"></i>
+                </div>
+                <div class="text-xs text-primary-700 mt-0.5">9:00 - 9:45 AM</div>
+              </div>
+
+              <!-- Event Item -->
+              <div class="absolute top-[260px] left-1 right-1 h-[100px] bg-orange-50 border-l-4 border-orange-500 rounded-sm p-2 cursor-pointer hover:bg-orange-100 transition-colors shadow-sm">
+                <div class="text-xs font-semibold text-orange-900">Design Workshop</div>
+                <div class="text-xs text-orange-700 mt-0.5">11:15 - 12:30 PM</div>
+                <div class="flex -space-x-1 mt-2">
+                  <img class="w-5 h-5 rounded-full border border-white" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&amp;fit=crop&amp;w=32&amp;h=32" alt="">
+                  <img class="w-5 h-5 rounded-full border border-white" src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&amp;fit=crop&amp;w=32&amp;h=32" alt="">
+                  <div class="w-5 h-5 rounded-full border border-white bg-neutral-200 text-[8px] flex items-center justify-center text-neutral-600">+3</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Wednesday -->
+            <div class="border-r border-neutral-100 relative">
+              <div class="h-20 border-t border-neutral-100 border-dashed"></div>
+              <div class="h-20 border-t border-neutral-100 border-dashed"></div>
+              <div class="h-20 border-t border-neutral-100 border-dashed"></div>
+              <div class="h-20 border-t border-neutral-100 border-dashed"></div>
+              <div class="h-20 border-t border-neutral-100 border-dashed"></div>
+              <div class="h-20 border-t border-neutral-100 border-dashed"></div>
+              <div class="h-20 border-t border-neutral-100 border-dashed"></div>
+              <div class="h-20 border-t border-neutral-100 border-dashed"></div>
+              <div class="h-20 border-t border-neutral-100 border-dashed"></div>
+              <div class="h-20 border-t border-neutral-100 border-dashed"></div>
+              <div class="h-20 border-t border-neutral-100 border-dashed"></div>
+
+              <!-- Event Item -->
+              <div class="absolute top-[340px] left-1 right-1 h-[60px] bg-teal-50 border-l-4 border-teal-500 rounded-sm p-2 cursor-pointer hover:bg-teal-100 transition-colors shadow-sm">
+                <div class="text-xs font-semibold text-teal-900">Client Call</div>
+                <div class="text-xs text-teal-700 mt-0.5">12:15 - 1:00 PM</div>
+              </div>
+            </div>
+
+            <!-- Thursday -->
+            <div class="border-r border-neutral-100 relative">
+              <div class="h-20 border-t border-neutral-100 border-dashed"></div>
+              <div class="h-20 border-t border-neutral-100 border-dashed"></div>
+              <div class="h-20 border-t border-neutral-100 border-dashed"></div>
+              <div class="h-20 border-t border-neutral-100 border-dashed"></div>
+              <div class="h-20 border-t border-neutral-100 border-dashed"></div>
+              <div class="h-20 border-t border-neutral-100 border-dashed"></div>
+              <div class="h-20 border-t border-neutral-100 border-dashed"></div>
+              <div class="h-20 border-t border-neutral-100 border-dashed"></div>
+              <div class="h-20 border-t border-neutral-100 border-dashed"></div>
+              <div class="h-20 border-t border-neutral-100 border-dashed"></div>
+              <div class="h-20 border-t border-neutral-100 border-dashed"></div>
+
+              <!-- Event Item -->
+              <div class="absolute top-[160px] left-1 right-1 h-[120px] bg-primary-50 border-l-4 border-primary-500 rounded-sm p-2 cursor-pointer hover:bg-primary-100 transition-colors shadow-sm">
+                <div class="text-xs font-semibold text-primary-900">Q4 Planning</div>
+                <div class="text-xs text-primary-700 mt-0.5">10:00 - 11:30 AM</div>
+                <div class="text-xs text-primary-600 mt-2 leading-tight">
+                  Review quarterly goals and set new targets for the team.
+                </div>
+              </div>
+            </div>
+
+            <!-- Friday -->
+            <div class="border-r border-neutral-100 relative">
+              <div class="h-20 border-t border-neutral-100 border-dashed"></div>
+              <div class="h-20 border-t border-neutral-100 border-dashed"></div>
+              <div class="h-20 border-t border-neutral-100 border-dashed"></div>
+              <div class="h-20 border-t border-neutral-100 border-dashed"></div>
+              <div class="h-20 border-t border-neutral-100 border-dashed"></div>
+              <div class="h-20 border-t border-neutral-100 border-dashed"></div>
+              <div class="h-20 border-t border-neutral-100 border-dashed"></div>
+              <div class="h-20 border-t border-neutral-100 border-dashed"></div>
+              <div class="h-20 border-t border-neutral-100 border-dashed"></div>
+              <div class="h-20 border-t border-neutral-100 border-dashed"></div>
+              <div class="h-20 border-t border-neutral-100 border-dashed"></div>
+
+              <!-- Event Item -->
+              <div class="absolute top-[400px] left-1 right-1 h-[60px] bg-neutral-100 border-l-4 border-neutral-500 rounded-sm p-2 cursor-pointer hover:bg-neutral-200 transition-colors shadow-sm">
+                <div class="text-xs font-semibold text-neutral-800">Focus Time</div>
+                <div class="text-xs text-neutral-600 mt-0.5">1:00 - 2:00 PM</div>
+              </div>
+            </div>
+
+            <!-- Saturday -->
+            <div class="border-r border-neutral-100 relative bg-neutral-50">
+              <div class="h-20 border-t border-neutral-100 border-dashed"></div>
+              <div class="h-20 border-t border-neutral-100 border-dashed"></div>
+              <div class="h-20 border-t border-neutral-100 border-dashed"></div>
+              <div class="h-20 border-t border-neutral-100 border-dashed"></div>
+              <div class="h-20 border-t border-neutral-100 border-dashed"></div>
+              <div class="h-20 border-t border-neutral-100 border-dashed"></div>
+              <div class="h-20 border-t border-neutral-100 border-dashed"></div>
+              <div class="h-20 border-t border-neutral-100 border-dashed"></div>
+              <div class="h-20 border-t border-neutral-100 border-dashed"></div>
+              <div class="h-20 border-t border-neutral-100 border-dashed"></div>
+              <div class="h-20 border-t border-neutral-100 border-dashed"></div>
+            </div>
+
+            <!-- Sunday -->
+            <div class="relative bg-neutral-50">
+              <div class="h-20 border-t border-neutral-100 border-dashed"></div>
+              <div class="h-20 border-t border-neutral-100 border-dashed"></div>
+              <div class="h-20 border-t border-neutral-100 border-dashed"></div>
+              <div class="h-20 border-t border-neutral-100 border-dashed"></div>
+              <div class="h-20 border-t border-neutral-100 border-dashed"></div>
+              <div class="h-20 border-t border-neutral-100 border-dashed"></div>
+              <div class="h-20 border-t border-neutral-100 border-dashed"></div>
+              <div class="h-20 border-t border-neutral-100 border-dashed"></div>
+              <div class="h-20 border-t border-neutral-100 border-dashed"></div>
+              <div class="h-20 border-t border-neutral-100 border-dashed"></div>
+              <div class="h-20 border-t border-neutral-100 border-dashed"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    // Initialize Lucide icons
+    lucide.createIcons();
+
+    (function () {
+      // --- Dynamic current time indicator ---
+      var indicator = document.querySelector('.absolute.w-full.z-10.pointer-events-none');
+      var timeLabel = indicator ? indicator.querySelector('.text-primary-600') : null;
+
+      function updateTime() {
+        var t = new Date();
+        var h = t.getHours();
+        var m = t.getMinutes();
+        var top = (h - 8) * 80 + m * 80 / 60;
+        if (!indicator) return;
+        if (top >= 0 && top <= 880) {
+          indicator.style.top = top + 'px';
+          indicator.style.display = '';
+        } else {
+          indicator.style.display = 'none';
+        }
+        if (timeLabel) {
+          var ampm = h >= 12 ? 'PM' : 'AM';
+          var dh = h > 12 ? h - 12 : (h === 0 ? 12 : h);
+          timeLabel.textContent = dh + ':' + (m < 10 ? '0' : '') + m + ' ' + ampm;
+        }
+      }
+      updateTime();
+      setInterval(updateTime, 60000);
+
+      // --- Update month/year label to current month ---
+      var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+      var now = new Date();
+      var monthLabel = document.querySelector('span.font-heading.font-medium');
+      if (monthLabel) monthLabel.textContent = months[now.getMonth()] + ' ' + now.getFullYear();
+
+      // --- View toggle buttons ---
+      var viewWrap = document.querySelector('.hidden.md\\:flex.items-center.bg-neutral-100');
+      if (viewWrap) {
+        var viewBtns = viewWrap.querySelectorAll('button');
+        viewBtns.forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            viewBtns.forEach(function (b) {
+              b.classList.remove('text-primary-700', 'bg-white', 'shadow-sm');
+              b.classList.add('text-neutral-600');
+            });
+            btn.classList.add('text-primary-700', 'bg-white', 'shadow-sm');
+            btn.classList.remove('text-neutral-600');
+            if (btn.textContent.trim() !== 'Week') {
+              showToast(btn.textContent.trim() + ' view — coming soon', 'neutral');
+            }
+          });
+        });
+      }
+
+      // --- Event card click → toast with title + time ---
+      document.querySelectorAll('main .cursor-pointer').forEach(function (evt) {
+        evt.addEventListener('click', function (e) {
+          e.stopPropagation();
+          var titleEl = evt.querySelector('[class*="font-semibold"]');
+          var allXs = evt.querySelectorAll('.text-xs');
+          var timeEl = allXs.length > 1 ? allXs[1] : allXs[0];
+          var msg = titleEl ? titleEl.textContent.trim() : 'Event';
+          if (timeEl) msg += ' · ' + timeEl.textContent.trim();
+          showToast(msg, 'primary');
+        });
+      });
+
+      function showToast(msg, type) {
+        var isPrimary = type === 'primary';
+        var toast = document.createElement('div');
+        toast.style.cssText = [
+          'position:fixed',
+          'bottom:24px',
+          'left:50%',
+          'transform:translateX(-50%)',
+          'background:' + (isPrimary ? '#fef2f2' : '#f9fafb'),
+          'border:1px solid ' + (isPrimary ? '#8a0909' : '#6b7280'),
+          'color:' + (isPrimary ? '#7f1d1d' : '#374151'),
+          'padding:10px 20px',
+          'border-radius:8px',
+          'font-size:13px',
+          'font-weight:500',
+          'z-index:9999',
+          'box-shadow:0 4px 12px rgba(0,0,0,0.15)',
+          'white-space:nowrap',
+          'transition:opacity 0.3s'
+        ].join(';');
+        toast.textContent = msg;
+        document.body.appendChild(toast);
+        setTimeout(function () {
+          toast.style.opacity = '0';
+          setTimeout(function () { toast.remove(); }, 300);
+        }, 2500);
+      }
+    })();
+  </script>
+
+
+    <script src="script.js"></script>
+  <script src="../demo-nav.js"></script>
+</body>
+</html>

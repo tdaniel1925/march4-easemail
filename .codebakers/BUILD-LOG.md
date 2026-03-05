@@ -48,6 +48,26 @@
 - Requires ANTHROPIC_API_KEY in .env.local
 - TypeScript: clean
 
+## 2026-03-04 — Custom Folders
+- feat(folders): MailFolder type added to lib/types/email.ts
+- feat(folders): mailFolders + setMailFolders added to account-store
+- feat(folders): /api/mail/folders — lists user's custom folders, filters out system well-known folders
+- feat(folders): /api/mail/folder extended — custom folder IDs now supported (not just well-known names)
+- feat(folders): Sidebar fetches custom folders on activeAccount change, renders "Folders" section with unread badges
+- feat(folders): /folder/[folderId]/page.tsx — dynamic route for any custom folder
+- fix(folders): dep:map regenerated — MailFolder + mailFolders now tracked
+- TypeScript: clean
+
+## 2026-03-04 — Folder Sync Fixes
+- fix(sent): $orderby changed from receivedDateTime → sentDateTime (sent items don't have receivedDateTime)
+- fix(sent/drafts): toRecipients added to SELECT, EmailMessage type, and mapMessage
+- fix(FolderClient): EmailRow shows "To: [recipient]" for sent/drafts folders instead of from (the user)
+- fix(search): /api/mail/search now accepts ?folder= and scopes $search to that folder
+- fix(FolderClient): search passes &folder= param so search stays scoped to current folder
+- fix(starred): removed $orderby from flag/flagStatus $filter queries (Graph InefficientFilter error)
+- fix(StoreInitializer): replaced useRef render-time setState with useLayoutEffect
+- TypeScript: clean
+
 ## 2026-03-04 — Folder Pages (Starred, Sent, Drafts, Trash)
 - feat(folders): 4 new pages — /starred /sent /drafts /trash
 - New /api/mail/folder route with Graph folder path mapping
@@ -56,4 +76,15 @@
 - Extracted shared types: EmailMessage → lib/types/email.ts
 - Extracted shared helpers → lib/utils/email-helpers.ts
 - InboxClient + AiReplyModal updated to use shared locations
+- TypeScript: clean
+
+## 2026-03-05 — Compose + AI Remix + AI Dictate
+- feat(compose): /compose page — full composer with From/To/Cc/Subject/body fields
+- feat(compose): To and Cc recipient chips — type + Enter/comma/Tab to add, backspace to remove
+- feat(compose): /api/mail/send — Graph POST /me/sendMail (uses graphFetch directly; 202 No Content handled)
+- feat(ai-remix): AI Remix panel (480px) — tone selector (4 cards), style options (length/formality/extras), custom instruction, remixed preview with copy, version history with Restore, Accept & Replace, Discard
+- feat(ai-remix): /api/mail/remix — claude-haiku-4-5 rewrites email body per tone/style params
+- feat(ai-dictate): AI Dictate panel (480px) — Web Speech API (SpeechRecognition), live transcript, Insert into email, animated mic pulse rings
+- fix(sidebar): Compose button → Link href="/compose" (was non-functional button)
+- dep:map regenerated — 17 entities | 10 stores | 5 store-connected components
 - TypeScript: clean

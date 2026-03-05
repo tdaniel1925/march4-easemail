@@ -1,6 +1,6 @@
 # CodeBakers Dependency Map
 # GENERATED — never edit by hand. Run `pnpm dep:map` to regenerate.
-# Last generated: 2026-03-04 | git: 041318d
+# Last generated: 2026-03-05 | git: 0eb1626
 # Debug: pnpm dep:map --debug
 
 ---
@@ -9,16 +9,23 @@
 
 | Entity | Stores | Components | Hooks | Active State Field | Last-Item Behavior |
 |--------|--------|------------|-------|-------------------|-------------------|
-| AccountStore | useAccountStore | AccountSwitcher, InboxClient, StoreInitializer | — | — | — (set manually) |
-| Color | useAccountSwitcher, useInboxClient, useSidebar | — | — | — | — (set manually) |
+| AccountStore | useAccountStore | AccountSwitcher, FolderClient, InboxClient, Sidebar, StoreInitializer | — | — | — (set manually) |
+| ActivePanel | useComposeClient | — | — | — | — (set manually) |
+| Color | useAccountSwitcher, useComposeClient, useFolderClient, useAiReplyModal, useInboxClient, useReadingPane, useSidebar | — | — | — | — (set manually) |
 | ComponentFile | useGenerateDepMap | — | — | — | — (set manually) |
-| ConnectedAccount | useStoreInitializer, useAccountStore | AccountSwitcher, InboxClient, StoreInitializer | — | — | — (set manually) |
-| EmailMessage | useInboxClient | — | — | — | — (set manually) |
+| ComposeMode | useReadingPane | — | — | — | — (set manually) |
+| ConnectedAccount | useStoreInitializer, useAccountStore | AccountSwitcher, FolderClient, InboxClient, Sidebar, StoreInitializer | — | — | — (set manually) |
+| EmailMessage | useFolderClient, useInboxClient | — | — | — | — (set manually) |
 | EntityMap | useGenerateDepMap | — | — | — | — (set manually) |
 | FilterTab | useInboxClient | — | — | — | — (set manually) |
+| Formality | useComposeClient | — | — | — | — (set manually) |
+| Length | useComposeClient | — | — | — | — (set manually) |
+| MailFolder | useAccountStore | AccountSwitcher, FolderClient, InboxClient, Sidebar, StoreInitializer | — | — | — (set manually) |
+| RemixVersion | useComposeClient | — | — | — | — (set manually) |
 | SidebarProps | useSidebar | — | — | — | — (set manually) |
 | StoreFile | useGenerateDepMap | — | — | — | — (set manually) |
-| Target | useAccountSwitcher, useInboxClient, useSidebar | — | — | — | — (set manually) |
+| Target | useAccountSwitcher, useComposeClient, useFolderClient, useAiReplyModal, useInboxClient, useReadingPane, useSidebar | — | — | — | — (set manually) |
+| Tone | useComposeClient | — | — | — | — (set manually) |
 
 ---
 
@@ -26,11 +33,23 @@
 
 ### useAccountStore
 File: `lib\stores\account-store.ts`
-Entities: ConnectedAccount, AccountStore
+Entities: ConnectedAccount, AccountStore, MailFolder
 
 ### useAccountSwitcher
 File: `components\AccountSwitcher.tsx`
 Entities: Color, Target
+
+### useAiReplyModal
+File: `components\inbox\AiReplyModal.tsx`
+Entities: Target, Color
+
+### useComposeClient
+File: `components\compose\ComposeClient.tsx`
+Entities: Tone, Length, Formality, ActivePanel, RemixVersion, Color, Target
+
+### useFolderClient
+File: `components\folder\FolderClient.tsx`
+Entities: EmailMessage, Target, Color
 
 ### useGenerateDepMap
 File: `scripts\generate-dep-map.ts`
@@ -38,7 +57,11 @@ Entities: StoreFile, ComponentFile, EntityMap
 
 ### useInboxClient
 File: `components\inbox\InboxClient.tsx`
-Entities: EmailMessage, FilterTab, Color, Target
+Entities: FilterTab, EmailMessage, Target, Color
+
+### useReadingPane
+File: `components\shared\ReadingPane.tsx`
+Entities: ComposeMode, Color, Target
 
 ### useSidebar
 File: `components\Sidebar.tsx`
@@ -55,7 +78,9 @@ Entities: ConnectedAccount
 | Component | File | Stores Used |
 |-----------|------|-------------|
 | AccountSwitcher | `components\AccountSwitcher.tsx` | useAccountStore |
+| FolderClient | `components\folder\FolderClient.tsx` | useAccountStore |
 | InboxClient | `components\inbox\InboxClient.tsx` | useAccountStore |
+| Sidebar | `components\Sidebar.tsx` | useAccountStore |
 | StoreInitializer | `components\StoreInitializer.tsx` | useAccountStore |
 
 ---

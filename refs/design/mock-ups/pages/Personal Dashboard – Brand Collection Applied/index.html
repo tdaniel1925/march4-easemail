@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Personal Dashboard – Brand Collection Applied - Exported from UXMagic Copilot">
+    <title>Dashboard — EaseMail</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+    <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            heading: ['var(--font-heading-name)', 'sans-serif'],
+            body:    ['var(--font-body-name)', 'sans-serif'],
+          },
+          spacing: { base: 'var(--space-base)' },
+          borderRadius: { small: 'var(--radius-small)', large: 'var(--radius-large)' },
+          boxShadow: { custom: 'var(--shadow-custom)', 'custom-hover': 'var(--shadow-custom-hover)' },
+          colors: {
+            primary:    { 50:'rgb(var(--color-primary-50))',100:'rgb(var(--color-primary-100))',200:'rgb(var(--color-primary-200))',300:'rgb(var(--color-primary-300))',400:'rgb(var(--color-primary-400))',500:'rgb(var(--color-primary-500))',600:'rgb(var(--color-primary-600))',700:'rgb(var(--color-primary-700))',800:'rgb(var(--color-primary-800))',900:'rgb(var(--color-primary-900))' },
+            secondary:  { 50:'rgb(var(--color-secondary-50))',100:'rgb(var(--color-secondary-100))',200:'rgb(var(--color-secondary-200))',300:'rgb(var(--color-secondary-300))',400:'rgb(var(--color-secondary-400))',500:'rgb(var(--color-secondary-500))',600:'rgb(var(--color-secondary-600))',700:'rgb(var(--color-secondary-700))',800:'rgb(var(--color-secondary-800))',900:'rgb(var(--color-secondary-900))' },
+            tertiary:   { 50:'rgb(var(--color-tertiary-50))',100:'rgb(var(--color-tertiary-100))',200:'rgb(var(--color-tertiary-200))',300:'rgb(var(--color-tertiary-300))',400:'rgb(var(--color-tertiary-400))',500:'rgb(var(--color-tertiary-500))',600:'rgb(var(--color-tertiary-600))',700:'rgb(var(--color-tertiary-700))',800:'rgb(var(--color-tertiary-800))',900:'rgb(var(--color-tertiary-900))' },
+            background: { 50:'rgb(var(--color-background-50))',100:'rgb(var(--color-background-100))',200:'rgb(var(--color-background-200))',300:'rgb(var(--color-background-300))',400:'rgb(var(--color-background-400))',500:'rgb(var(--color-background-500))',600:'rgb(var(--color-background-600))',700:'rgb(var(--color-background-700))',800:'rgb(var(--color-background-800))',900:'rgb(var(--color-background-900))' },
+            neutral:    { 50:'rgb(var(--color-neutral-50))',100:'rgb(var(--color-neutral-100))',200:'rgb(var(--color-neutral-200))',300:'rgb(var(--color-neutral-300))',400:'rgb(var(--color-neutral-400))',500:'rgb(var(--color-neutral-500))',600:'rgb(var(--color-neutral-600))',700:'rgb(var(--color-neutral-700))',800:'rgb(var(--color-neutral-800))',900:'rgb(var(--color-neutral-900))' },
+          },
+        }
+      }
+    }
+    </script>
+    <link rel="stylesheet" href="styles.css">
+    <meta name="author" content="UXMagic Copilot">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div class="flex flex-col w-full" style="height:100vh;overflow:hidden;">
+
+  <!-- ── Welcome Header ── -->
+  <header class="bg-background-50 border-b border-neutral-200 px-6 lg:px-10 py-5 flex-shrink-0">
+    <div class="max-w-7xl mx-auto flex items-end justify-between gap-4 flex-wrap">
+      <div>
+        <p class="font-body text-xs font-semibold uppercase tracking-widest text-neutral-400 mb-1">Dashboard</p>
+        <h1 class="font-heading font-bold text-neutral-900" style="font-size:clamp(1.6rem,3.5vw,2.5rem);line-height:1.15;">
+          Welcome back, <span class="text-primary-500">Alex</span>
+        </h1>
+        <p class="font-body text-sm text-neutral-500 mt-1 font-medium">
+          <span id="current-date">Wednesday, October 25</span>
+          &nbsp;·&nbsp;
+          <span id="current-time">09:41 AM</span>
+        </p>
+      </div>
+      <button onclick="window.openComposer && window.openComposer()" class="flex items-center gap-2 bg-primary-500 hover:bg-primary-600 text-white text-sm font-semibold px-4 py-2.5 rounded-small shadow-custom transition-colors flex-shrink-0">
+        <i data-lucide="plus" class="w-4 h-4"></i>
+        Compose
+      </button>
+    </div>
+  </header>
+
+  <!-- ── Dashboard Content ── -->
+  <main class="flex-1 overflow-y-auto bg-background-100">
+    <div class="max-w-7xl mx-auto px-6 lg:px-10 py-6">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+
+        <!-- ── Left Column ── -->
+        <div class="lg:col-span-2 flex flex-col gap-5">
+
+          <!-- Today's Agenda -->
+          <section class="bg-background-50 rounded-large shadow-custom border border-neutral-200 p-6">
+            <div class="flex items-center justify-between mb-5">
+              <h2 class="font-heading text-base font-semibold text-neutral-900 flex items-center gap-2">
+                <i data-lucide="calendar-days" class="w-5 h-5 text-primary-500"></i>
+                Today's Agenda
+              </h2>
+              <button onclick="window.location.href='../Unified Red Enterprise Calendar/index.html'" class="text-sm font-medium text-primary-500 hover:text-primary-700 transition-colors">View Calendar →</button>
+            </div>
+            <div class="flex flex-col gap-3">
+              <!-- Agenda Item 1 -->
+              <div class="flex gap-4 p-4 rounded-large bg-background-100 border border-neutral-200 hover:border-primary-300 transition-colors group cursor-pointer">
+                <div class="flex-shrink-0 w-14 flex flex-col items-center justify-center bg-primary-500 rounded-large">
+                  <span class="text-xs font-bold text-primary-100 uppercase">Oct</span>
+                  <span class="text-2xl font-bold text-white leading-none">25</span>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex flex-wrap justify-between items-start gap-2">
+                    <h3 class="font-heading font-semibold text-neutral-900 group-hover:text-primary-600 transition-colors">Product Design Review</h3>
+                    <span class="text-xs font-semibold text-primary-600 bg-primary-50 px-2 py-1 rounded-small border border-primary-100">10:00 AM</span>
+                  </div>
+                  <p class="text-sm text-neutral-500 mt-1">Reviewing the new mobile app prototypes with the design team.</p>
+                  <div class="flex items-center gap-2 mt-3">
+                    <div class="flex -space-x-2">
+                      <img class="w-6 h-6 rounded-full border-2 border-white object-cover" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=64&h=64" alt="User">
+                      <img class="w-6 h-6 rounded-full border-2 border-white object-cover" src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=64&h=64" alt="User">
+                    </div>
+                    <span class="text-xs text-neutral-400">+3 others</span>
+                  </div>
+                </div>
+              </div>
+              <!-- Agenda Item 2 -->
+              <div class="flex gap-4 p-4 rounded-large bg-background-100 border border-neutral-200 hover:border-primary-300 transition-colors group cursor-pointer">
+                <div class="flex-shrink-0 w-14 flex flex-col items-center justify-center bg-secondary-500 rounded-large">
+                  <span class="text-xs font-bold text-secondary-100 uppercase">Oct</span>
+                  <span class="text-2xl font-bold text-white leading-none">25</span>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex flex-wrap justify-between items-start gap-2">
+                    <h3 class="font-heading font-semibold text-neutral-900 group-hover:text-primary-600 transition-colors">Client Strategy Meeting</h3>
+                    <span class="text-xs font-semibold text-neutral-600 bg-neutral-100 px-2 py-1 rounded-small border border-neutral-200">02:30 PM</span>
+                  </div>
+                  <p class="text-sm text-neutral-500 mt-1">Quarterly planning session with the marketing department.</p>
+                </div>
+              </div>
+              <!-- Agenda Item 3 -->
+              <div class="flex gap-4 p-4 rounded-large bg-background-100 border border-neutral-200 hover:border-primary-300 transition-colors group cursor-pointer">
+                <div class="flex-shrink-0 w-14 flex flex-col items-center justify-center bg-tertiary-500 rounded-large">
+                  <span class="text-xs font-bold text-tertiary-100 uppercase">Oct</span>
+                  <span class="text-2xl font-bold text-white leading-none">25</span>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex flex-wrap justify-between items-start gap-2">
+                    <h3 class="font-heading font-semibold text-neutral-900 group-hover:text-primary-600 transition-colors">Team Standup</h3>
+                    <span class="text-xs font-semibold text-tertiary-700 bg-tertiary-50 px-2 py-1 rounded-small border border-tertiary-100">05:00 PM</span>
+                  </div>
+                  <p class="text-sm text-neutral-500 mt-1">Daily sync with the engineering and product teams.</p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- To Do List -->
+          <section class="bg-background-50 rounded-large shadow-custom border border-neutral-200 p-6">
+            <div class="flex items-center justify-between mb-5">
+              <h2 class="font-heading text-base font-semibold text-neutral-900 flex items-center gap-2">
+                <i data-lucide="check-square" class="w-5 h-5 text-secondary-500"></i>
+                To Do List
+              </h2>
+              <button onclick="addDashTask(this)" class="p-2 text-neutral-400 hover:text-primary-500 transition-colors rounded-large hover:bg-background-200" title="Add task">
+                <i data-lucide="plus" class="w-5 h-5"></i>
+              </button>
+            </div>
+            <div class="flex flex-col gap-1">
+              <label class="flex items-start gap-3 p-3 rounded-large hover:bg-background-100 cursor-pointer transition-colors group">
+                <input type="checkbox" class="mt-0.5 w-5 h-5 rounded border-neutral-300 flex-shrink-0" style="accent-color:rgb(var(--color-primary-500));">
+                <div class="flex-1 min-w-0">
+                  <span class="font-medium text-neutral-800 block">Finalize Q4 Budget Report</span>
+                  <div class="flex items-center gap-2 mt-1 flex-wrap">
+                    <span class="text-xs font-semibold text-primary-700 bg-primary-50 px-2 py-0.5 rounded-small border border-primary-100">High Priority</span>
+                    <span class="text-xs text-neutral-400">Due Today</span>
+                  </div>
+                </div>
+              </label>
+              <label class="flex items-start gap-3 p-3 rounded-large hover:bg-background-100 cursor-pointer transition-colors">
+                <input type="checkbox" checked class="mt-0.5 w-5 h-5 rounded border-neutral-300 flex-shrink-0" style="accent-color:rgb(var(--color-primary-500));">
+                <div class="flex-1 min-w-0">
+                  <span class="font-medium text-neutral-400 line-through block">Email update to stakeholders</span>
+                  <span class="text-xs text-neutral-400">Completed 10:15 AM</span>
+                </div>
+              </label>
+              <label class="flex items-start gap-3 p-3 rounded-large hover:bg-background-100 cursor-pointer transition-colors">
+                <input type="checkbox" class="mt-0.5 w-5 h-5 rounded border-neutral-300 flex-shrink-0" style="accent-color:rgb(var(--color-primary-500));">
+                <div class="flex-1 min-w-0">
+                  <span class="font-medium text-neutral-800 block">Prepare presentation slides</span>
+                  <div class="flex items-center gap-2 mt-1">
+                    <span class="text-xs font-semibold text-secondary-700 bg-secondary-50 px-2 py-0.5 rounded-small border border-secondary-100">In Progress</span>
+                  </div>
+                </div>
+              </label>
+              <label class="flex items-start gap-3 p-3 rounded-large hover:bg-background-100 cursor-pointer transition-colors">
+                <input type="checkbox" class="mt-0.5 w-5 h-5 rounded border-neutral-300 flex-shrink-0" style="accent-color:rgb(var(--color-primary-500));">
+                <div class="flex-1 min-w-0">
+                  <span class="font-medium text-neutral-800 block">Review pull requests on GitHub</span>
+                  <div class="flex items-center gap-2 mt-1">
+                    <span class="text-xs font-semibold text-tertiary-700 bg-tertiary-50 px-2 py-0.5 rounded-small border border-tertiary-100">Normal</span>
+                    <span class="text-xs text-neutral-400">Due Tomorrow</span>
+                  </div>
+                </div>
+              </label>
+            </div>
+          </section>
+
+        </div>
+
+        <!-- ── Right Column ── -->
+        <div class="flex flex-col gap-5">
+
+          <!-- New Emails -->
+          <section class="bg-background-50 rounded-large shadow-custom border border-neutral-200 p-6">
+            <div class="flex items-center justify-between mb-5">
+              <h2 class="font-heading text-base font-semibold text-neutral-900 flex items-center gap-2">
+                <i data-lucide="mail" class="w-5 h-5 text-primary-500"></i>
+                New Emails
+              </h2>
+              <span class="bg-primary-500 text-white text-xs font-bold px-2.5 py-1 rounded-small">5 New</span>
+            </div>
+            <div class="flex flex-col gap-4">
+              <div class="group cursor-pointer">
+                <div class="flex justify-between items-start mb-0.5">
+                  <h4 class="font-semibold text-neutral-900 text-sm group-hover:text-primary-600 transition-colors">Sarah Jenkins</h4>
+                  <span class="text-xs text-neutral-400 flex-shrink-0 ml-2">10m ago</span>
+                </div>
+                <p class="text-sm text-neutral-700 font-medium truncate">Re: Project Timeline Update</p>
+                <p class="text-xs text-neutral-500 mt-0.5 line-clamp-2">Hi Alex, I've reviewed the timeline you sent over and I have a few suggestions regarding the milestones...</p>
+                <div class="h-px bg-neutral-100 mt-4"></div>
+              </div>
+              <div class="group cursor-pointer">
+                <div class="flex justify-between items-start mb-0.5">
+                  <h4 class="font-semibold text-neutral-900 text-sm group-hover:text-primary-600 transition-colors">Design Team</h4>
+                  <span class="text-xs text-neutral-400 flex-shrink-0 ml-2">1h ago</span>
+                </div>
+                <p class="text-sm text-neutral-700 font-medium truncate">Weekly Inspiration Digest</p>
+                <p class="text-xs text-neutral-500 mt-0.5 line-clamp-2">Check out the latest design trends for October. We've curated a list of top UI kits and resources...</p>
+                <div class="h-px bg-neutral-100 mt-4"></div>
+              </div>
+              <div class="group cursor-pointer">
+                <div class="flex justify-between items-start mb-0.5">
+                  <h4 class="font-semibold text-neutral-900 text-sm group-hover:text-primary-600 transition-colors">HR Department</h4>
+                  <span class="text-xs text-neutral-400 flex-shrink-0 ml-2">3h ago</span>
+                </div>
+                <p class="text-sm text-neutral-700 font-medium truncate">Open Enrollment Reminder</p>
+                <p class="text-xs text-neutral-500 mt-0.5 line-clamp-2">This is a reminder that open enrollment for benefits ends this Friday. Please log in to complete...</p>
+              </div>
+            </div>
+            <button onclick="window.location.href='../Inbox/index.html'" class="w-full mt-5 py-2.5 text-sm font-semibold text-neutral-600 bg-background-200 hover:bg-background-300 rounded-small transition-colors border border-neutral-200">
+              View All Inbox
+            </button>
+          </section>
+
+          <!-- Weekly Activity Chart -->
+          <section class="bg-background-50 rounded-large shadow-custom border border-neutral-200 p-6">
+            <div class="flex items-center justify-between mb-4">
+              <h2 class="font-heading text-base font-semibold text-neutral-900">Weekly Activity</h2>
+              <span class="text-xs font-medium text-neutral-400">Tasks completed</span>
+            </div>
+            <div class="h-36 w-full">
+              <canvas id="activityChart"></canvas>
+            </div>
+          </section>
+
+          <!-- Quick Stats Row -->
+          <section class="grid grid-cols-2 gap-3">
+            <div class="bg-primary-500 rounded-large shadow-custom p-4 flex flex-col gap-1">
+              <i data-lucide="inbox" class="w-5 h-5 text-primary-200"></i>
+              <span class="font-heading text-2xl font-bold text-white">24</span>
+              <span class="text-xs text-primary-200 font-medium">Unread Messages</span>
+            </div>
+            <div class="bg-secondary-500 rounded-large shadow-custom p-4 flex flex-col gap-1">
+              <i data-lucide="list-checks" class="w-5 h-5 text-secondary-100"></i>
+              <span class="font-heading text-2xl font-bold text-white">7</span>
+              <span class="text-xs text-secondary-100 font-medium">Tasks Pending</span>
+            </div>
+            <div class="bg-tertiary-500 rounded-large shadow-custom p-4 flex flex-col gap-1">
+              <i data-lucide="calendar-check" class="w-5 h-5 text-tertiary-100"></i>
+              <span class="font-heading text-2xl font-bold text-white">3</span>
+              <span class="text-xs text-tertiary-100 font-medium">Events Today</span>
+            </div>
+            <div class="bg-neutral-800 rounded-large shadow-custom p-4 flex flex-col gap-1">
+              <i data-lucide="bell" class="w-5 h-5 text-neutral-400"></i>
+              <span class="font-heading text-2xl font-bold text-white">12</span>
+              <span class="text-xs text-neutral-400 font-medium">Notifications</span>
+            </div>
+          </section>
+
+        </div>
+      </div>
+    </div>
+  </main>
+
+</div>
+
+<script>
+  lucide.createIcons();
+
+  function updateDateTime() {
+    const now = new Date();
+    const dateOpts = { weekday: 'long', month: 'long', day: 'numeric' };
+    const timeOpts = { hour: '2-digit', minute: '2-digit' };
+    document.getElementById('current-date').textContent = now.toLocaleDateString('en-US', dateOpts);
+    document.getElementById('current-time').textContent = now.toLocaleTimeString('en-US', timeOpts);
+  }
+  updateDateTime();
+  setInterval(updateDateTime, 60000);
+
+  const ctx = document.getElementById('activityChart').getContext('2d');
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+      datasets: [{
+        label: 'Tasks',
+        data: [12, 19, 15, 17, 14, 8, 5],
+        backgroundColor: 'rgba(220,38,38,0.85)',
+        borderRadius: 6,
+        barThickness: 14,
+      }, {
+        label: 'Emails',
+        data: [5, 8, 6, 11, 9, 3, 2],
+        backgroundColor: 'rgba(245,158,11,0.75)',
+        borderRadius: 6,
+        barThickness: 14,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        y: {
+          beginAtZero: true,
+          grid: { color: 'rgba(214,215,215,0.5)' },
+          ticks: { color: '#6b7280', font: { size: 10 } },
+          border: { display: false }
+        },
+        x: {
+          grid: { display: false },
+          ticks: { color: '#6b7280', font: { size: 11 } },
+          border: { display: false }
+        }
+      }
+    }
+  });
+</script>
+
+<script src="script.js"></script>
+<script src="../demo-nav.js"></script>
+<script>
+  // PD-7: Todo checkbox toggle
+  document.querySelectorAll('label input[type="checkbox"]').forEach(function (cb) {
+    cb.addEventListener('change', function () {
+      var label = cb.closest('label');
+      var nameEl = label ? label.querySelector('span.font-medium') : null;
+      if (!nameEl) return;
+      if (cb.checked) {
+        nameEl.classList.add('line-through', 'text-neutral-400');
+        nameEl.classList.remove('text-neutral-800');
+      } else {
+        nameEl.classList.remove('line-through', 'text-neutral-400');
+        nameEl.classList.add('text-neutral-800');
+      }
+    });
+  });
+
+  // PD-8: Email list item clicks
+  document.querySelectorAll('.group.cursor-pointer').forEach(function (item) {
+    item.addEventListener('click', function () {
+      window.location.href = '../Inbox/index.html';
+    });
+  });
+
+  // PD-5: Add task inline
+  function addDashTask(btn) {
+    var listEl = btn.closest('section').querySelector('.flex.flex-col.gap-1');
+    if (!listEl) return;
+    var existing = document.getElementById('dash-new-task-row');
+    if (existing) { existing.querySelector('input').focus(); return; }
+    var row = document.createElement('label');
+    row.id = 'dash-new-task-row';
+    row.className = 'flex items-start gap-3 p-3 rounded-large bg-primary-50 border border-primary-200 cursor-pointer transition-colors';
+    row.innerHTML = '<input type="checkbox" class="mt-0.5 w-5 h-5 rounded border-neutral-300 flex-shrink-0" style="accent-color:rgb(var(--color-primary-500));">'
+      + '<input id="dash-task-input" type="text" placeholder="New task…" class="flex-1 text-sm font-medium text-neutral-800 bg-transparent outline-none border-none" autofocus>'
+      + '<button onclick="saveDashTask(event)" class="text-xs font-semibold text-primary-600 hover:text-primary-800 ml-2 flex-shrink-0">Add</button>';
+    listEl.appendChild(row);
+    row.querySelector('#dash-task-input').focus();
+  }
+
+  function saveDashTask(e) {
+    e.preventDefault();
+    var input = document.getElementById('dash-task-input');
+    var val = input ? input.value.trim() : '';
+    var row = document.getElementById('dash-new-task-row');
+    if (!val) { if (row) row.remove(); return; }
+    if (row) {
+      row.id = '';
+      row.className = 'flex items-start gap-3 p-3 rounded-large hover:bg-background-100 cursor-pointer transition-colors';
+      row.innerHTML = '<input type="checkbox" class="mt-0.5 w-5 h-5 rounded border-neutral-300 flex-shrink-0" style="accent-color:rgb(var(--color-primary-500));">'
+        + '<div class="flex-1 min-w-0"><span class="font-medium text-neutral-800 block">' + val + '</span></div>';
+      row.querySelector('input[type=checkbox]').addEventListener('change', function (ev) {
+        var nameEl = row.querySelector('span.font-medium');
+        if (nameEl) { nameEl.classList.toggle('line-through', ev.target.checked); nameEl.classList.toggle('text-neutral-400', ev.target.checked); }
+      });
+    }
+  }
+
+  // PD-12: Update agenda dates from current date
+  (function () {
+    var now = new Date();
+    var month = now.toLocaleString('en-US', { month: 'short' }).toUpperCase();
+    var day = now.getDate();
+    document.querySelectorAll('.flex-shrink-0.w-14.flex.flex-col').forEach(function (badge) {
+      var monthEl = badge.querySelector('span.text-xs');
+      var dayEl = badge.querySelector('span.text-2xl');
+      if (monthEl) monthEl.textContent = month;
+      if (dayEl) dayEl.textContent = day;
+    });
+  })();
+</script>
+</body>
+</html>

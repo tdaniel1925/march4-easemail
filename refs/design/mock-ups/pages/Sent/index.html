@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Sent - Exported from UXMagic Copilot">
+    <title>Sent</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+    
+        tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary:    { 50:'rgb(var(--color-primary-50))',100:'rgb(var(--color-primary-100))',200:'rgb(var(--color-primary-200))',300:'rgb(var(--color-primary-300))',400:'rgb(var(--color-primary-400))',500:'rgb(var(--color-primary-500))',600:'rgb(var(--color-primary-600))',700:'rgb(var(--color-primary-700))',800:'rgb(var(--color-primary-800))',900:'rgb(var(--color-primary-900))' },
+            secondary:  { 50:'rgb(var(--color-secondary-50))',100:'rgb(var(--color-secondary-100))',200:'rgb(var(--color-secondary-200))',300:'rgb(var(--color-secondary-300))',400:'rgb(var(--color-secondary-400))',500:'rgb(var(--color-secondary-500))',600:'rgb(var(--color-secondary-600))',700:'rgb(var(--color-secondary-700))',800:'rgb(var(--color-secondary-800))',900:'rgb(var(--color-secondary-900))' },
+            tertiary:   { 50:'rgb(var(--color-tertiary-50))',100:'rgb(var(--color-tertiary-100))',200:'rgb(var(--color-tertiary-200))',300:'rgb(var(--color-tertiary-300))',400:'rgb(var(--color-tertiary-400))',500:'rgb(var(--color-tertiary-500))',600:'rgb(var(--color-tertiary-600))',700:'rgb(var(--color-tertiary-700))',800:'rgb(var(--color-tertiary-800))',900:'rgb(var(--color-tertiary-900))' },
+            background: { 50:'rgb(var(--color-background-50))',100:'rgb(var(--color-background-100))',200:'rgb(var(--color-background-200))',300:'rgb(var(--color-background-300))',400:'rgb(var(--color-background-400))',500:'rgb(var(--color-background-500))',600:'rgb(var(--color-background-600))',700:'rgb(var(--color-background-700))',800:'rgb(var(--color-background-800))',900:'rgb(var(--color-background-900))' },
+            neutral:    { 50:'rgb(var(--color-neutral-50))',100:'rgb(var(--color-neutral-100))',200:'rgb(var(--color-neutral-200))',300:'rgb(var(--color-neutral-300))',400:'rgb(var(--color-neutral-400))',500:'rgb(var(--color-neutral-500))',600:'rgb(var(--color-neutral-600))',700:'rgb(var(--color-neutral-700))',800:'rgb(var(--color-neutral-800))',900:'rgb(var(--color-neutral-900))' },
+          },
+          fontFamily: { heading:['var(--font-heading-name)','sans-serif'], body:['var(--font-body-name)','sans-serif'] },
+          spacing: { base:'var(--space-base)' },
+          borderRadius: { small:'var(--radius-small)', large:'var(--radius-large)' },
+          boxShadow: { custom:'var(--shadow-custom)', 'custom-hover':'var(--shadow-custom-hover)' },
+        }
+      }
+    },
+          boxShadow: {
+            custom: 'var(--shadow-custom)',
+            'custom-hover': 'var(--shadow-custom-hover)',
+          },
+        }
+      }
+    }
+  
+    </script>
+    <link rel="stylesheet" href="styles.css">
+    <meta name="theme-color" content="#007bff">
+    <meta name="color-scheme" content="light dark">
+    <meta name="author" content="UXMagic Copilot">
+    <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    
+
+  <!-- Top Header -->
+  <header class="bg-white border-b border-neutral-200 h-14 flex items-center justify-between px-4 flex-shrink-0 z-20 relative">
+    <div class="flex items-center gap-3">
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 bg-primary-600 rounded-small flex items-center justify-center text-white">
+          <i data-lucide="mail" class="w-4 h-4"></i>
+        </div>
+        <h1 class="font-heading text-lg font-semibold text-neutral-900 hidden md:block tracking-tight">EaseMail</h1>
+        <span class="hidden md:inline text-neutral-300 mx-1">|</span>
+        <span class="hidden md:inline text-xs font-medium text-neutral-500 uppercase tracking-wider">Legal Communications</span>
+      </div>
+    </div>
+
+    <!-- Search Bar -->
+    <div class="flex-1 max-w-xl mx-6 hidden md:block">
+      <div class="relative">
+        <i data-lucide="search" class="w-4 h-4 text-neutral-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
+        <input type="text" placeholder="Search emails, cases, clients..." class="w-full pl-9 pr-4 py-2 bg-neutral-100 border border-neutral-200 rounded-small text-sm text-neutral-700 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-primary-200 focus:border-primary-400">
+      </div>
+    </div>
+
+    <div class="flex items-center gap-2">
+      <button class="p-2 hover:bg-neutral-100 rounded-small text-neutral-500 relative">
+        <i data-lucide="bell" class="w-5 h-5"></i>
+        <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-primary-600 rounded-full border border-white"></span>
+      </button>
+      <button class="p-2 hover:bg-neutral-100 rounded-small text-neutral-500">
+        <i data-lucide="settings" class="w-5 h-5"></i>
+      </button>
+      <div class="h-5 w-px bg-neutral-200 mx-1"></div>
+      <div class="flex items-center gap-2 cursor-pointer">
+        <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80" alt="User" class="w-8 h-8 rounded-full border border-neutral-200">
+        <div class="hidden md:block">
+          <p class="text-xs font-semibold text-neutral-800 leading-tight">Alex Mitchell</p>
+          <p class="text-xs text-neutral-500 leading-tight">Associate, Harrington &amp; Cole</p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Layout -->
+  <div class="flex" style="height: calc(100vh - 56px); overflow:hidden;">
+
+    <!-- Left Sidebar: Navigation -->
+    <aside class="w-56 bg-white border-r border-neutral-200 flex flex-col flex-shrink-0">
+      <div class="p-3">
+        <button onclick="window.openComposer && window.openComposer()" class="w-full bg-primary-600 hover:bg-primary-700 text-white font-medium py-2 px-3 rounded-small shadow-custom flex items-center justify-center gap-2 transition-colors text-sm">
+          <i data-lucide="edit" class="w-4 h-4"></i>
+          <span>Compose</span>
+        </button>
+      </div>
+
+      <nav class="flex-1 px-2 pb-4 overflow-y-auto">
+        <div class="space-y-0.5">
+          <a href="../Inbox/index.html" class="flex items-center gap-3 px-3 py-2 rounded-small text-sm text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900 transition-colors">
+            <i data-lucide="inbox" class="w-4 h-4 flex-shrink-0"></i>
+            <span class="flex-1">Inbox</span>
+            <span class="bg-primary-600 text-white text-xs font-semibold px-1.5 py-0.5 rounded-small">12</span>
+          </a>
+          <a href="../Starred/index.html" class="flex items-center gap-3 px-3 py-2 rounded-small text-sm text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900 transition-colors">
+            <i data-lucide="star" class="w-4 h-4 flex-shrink-0 text-amber-400"></i>
+            <span class="flex-1">Starred</span>
+            <span class="bg-amber-100 text-amber-700 text-xs font-semibold px-1.5 py-0.5 rounded-small">5</span>
+          </a>
+          <a href="../Sent/index.html" class="flex items-center gap-3 px-3 py-2 rounded-small text-sm bg-primary-50 text-primary-700 font-semibold border border-primary-200 transition-colors">
+            <i data-lucide="send" class="w-4 h-4 flex-shrink-0 text-primary-600"></i>
+            <span class="flex-1">Sent</span>
+          </a>
+          <a href="../Drafts/index.html" class="flex items-center gap-3 px-3 py-2 rounded-small text-sm text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900 transition-colors">
+            <i data-lucide="file-text" class="w-4 h-4 flex-shrink-0"></i>
+            <span class="flex-1">Drafts</span>
+            <span class="bg-neutral-200 text-neutral-600 text-xs font-semibold px-1.5 py-0.5 rounded-small">3</span>
+          </a>
+          <a href="../Trash/index.html" class="flex items-center gap-3 px-3 py-2 rounded-small text-sm text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900 transition-colors">
+            <i data-lucide="trash-2" class="w-4 h-4 flex-shrink-0"></i>
+            <span class="flex-1">Trash</span>
+          </a>
+        </div>
+
+        <div class="mt-5 mb-2 px-3">
+          <p class="text-xs font-semibold text-neutral-400 uppercase tracking-wider">Labels</p>
+        </div>
+        <div class="space-y-0.5">
+          <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-small text-sm text-neutral-600 hover:bg-neutral-100 transition-colors">
+            <span class="w-2.5 h-2.5 rounded-full bg-blue-500 flex-shrink-0"></span>
+            <span>Litigation</span>
+          </a>
+          <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-small text-sm text-neutral-600 hover:bg-neutral-100 transition-colors">
+            <span class="w-2.5 h-2.5 rounded-full bg-green-500 flex-shrink-0"></span>
+            <span>Corporate</span>
+          </a>
+          <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-small text-sm text-neutral-600 hover:bg-neutral-100 transition-colors">
+            <span class="w-2.5 h-2.5 rounded-full bg-purple-500 flex-shrink-0"></span>
+            <span>Client Comms</span>
+          </a>
+          <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-small text-sm text-neutral-600 hover:bg-neutral-100 transition-colors">
+            <span class="w-2.5 h-2.5 rounded-full bg-orange-500 flex-shrink-0"></span>
+            <span>Urgent</span>
+          </a>
+          <a href="../Unified Red Enterprise Calendar/index.html" class="flex items-center gap-3 px-3 py-2 rounded-small text-sm text-neutral-600 hover:bg-neutral-100 transition-colors">
+            <i data-lucide="calendar" class="w-4 h-4 flex-shrink-0"></i>
+            <span>Calendar</span>
+          </a>
+        </div>
+
+
+        <div class="mt-5 mb-2 px-3">
+          <p class="text-xs font-semibold text-neutral-400 uppercase tracking-wider">Navigate</p>
+        </div>
+        <div class="space-y-0.5">
+          <a href="../Personal Dashboard – Brand Collection Applied/index.html" class="flex items-center gap-3 px-3 py-2 rounded-small text-sm text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900 transition-colors">
+            <i data-lucide="layout-dashboard" class="w-4 h-4 flex-shrink-0"></i>
+            <span>Dashboard</span>
+          </a>
+          <a href="../EaseMail - Attachments Hub/index.html" class="flex items-center gap-3 px-3 py-2 rounded-small text-sm text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900 transition-colors">
+            <i data-lucide="paperclip" class="w-4 h-4 flex-shrink-0"></i>
+            <span>Attachments</span>
+          </a>
+        </div>
+
+        <div class="mt-5 mb-2 px-3">
+          <p class="text-xs font-semibold text-neutral-400 uppercase tracking-wider">Manage</p>
+        </div>
+        <div class="space-y-0.5">
+          <a href="../Email Accounts Dashboard/index.html" class="flex items-center gap-3 px-3 py-2 rounded-small text-sm text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900 transition-colors">
+            <i data-lucide="mail" class="w-4 h-4 flex-shrink-0"></i>
+            <span>Email Accounts</span>
+          </a>
+          <a href="../MailBox/index.html" class="flex items-center gap-3 px-3 py-2 rounded-small text-sm text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900 transition-colors">
+            <i data-lucide="users" class="w-4 h-4 flex-shrink-0"></i>
+            <span>Contacts</span>
+          </a>
+        </div>
+
+        <div class="mt-5 mb-2 px-3">
+          <p class="text-xs font-semibold text-neutral-400 uppercase tracking-wider">Support</p>
+        </div>
+        <div class="space-y-0.5">
+          <a href="../Detailed Help Center — Brand Design System/index.html" class="flex items-center gap-3 px-3 py-2 rounded-small text-sm text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900 transition-colors">
+            <i data-lucide="help-circle" class="w-4 h-4 flex-shrink-0"></i>
+            <span>Help Center</span>
+          </a>
+        </div>
+
+        <div class="mt-5 mb-2 px-3">
+          <p class="text-xs font-semibold text-neutral-400 uppercase tracking-wider">Account</p>
+        </div>
+        <div class="space-y-0.5">
+          <a href="../Sign Up/index.html" class="flex items-center gap-3 px-3 py-2 rounded-small text-sm text-neutral-600 hover:bg-neutral-100 transition-colors">
+            <i data-lucide="user-plus" class="w-4 h-4 flex-shrink-0"></i>
+            <span>Sign Up</span>
+          </a>
+          <a href="../Forgot Password/index.html" class="flex items-center gap-3 px-3 py-2 rounded-small text-sm text-neutral-600 hover:bg-neutral-100 transition-colors">
+            <i data-lucide="key" class="w-4 h-4 flex-shrink-0"></i>
+            <span>Forgot Password</span>
+          </a>
+        </div>
+      </nav>
+
+      <!-- Storage Indicator -->
+      <div class="p-3 border-t border-neutral-200">
+        <div class="flex items-center justify-between mb-1">
+          <span class="text-xs text-neutral-500">Storage</span>
+          <span class="text-xs font-medium text-neutral-700">6.2 / 15 GB</span>
+        </div>
+        <div class="w-full bg-neutral-200 rounded-full h-1.5">
+          <div class="bg-primary-500 h-1.5 rounded-full" style="width: 41%;"></div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Middle Panel: Sent Email List -->
+    <div class="w-80 bg-white border-r border-neutral-200 flex flex-col flex-shrink-0">
+      <!-- Panel Header -->
+      <div class="px-4 py-3 border-b border-neutral-200 flex items-center justify-between flex-shrink-0">
+        <div class="flex items-center gap-2">
+          <i data-lucide="send" class="w-4 h-4 text-primary-600"></i>
+          <h2 class="font-heading text-sm font-semibold text-neutral-900">Sent</h2>
+          <span class="bg-neutral-100 text-neutral-600 text-xs font-semibold px-1.5 py-0.5 rounded-small">6</span>
+        </div>
+        <div class="flex items-center gap-1">
+          <button class="p-1.5 hover:bg-neutral-100 rounded-small text-neutral-400">
+            <i data-lucide="filter" class="w-3.5 h-3.5"></i>
+          </button>
+          <button class="p-1.5 hover:bg-neutral-100 rounded-small text-neutral-400">
+            <i data-lucide="more-horizontal" class="w-3.5 h-3.5"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Email List -->
+      <div class="flex-1 overflow-y-auto">
+
+        <!-- Email 1 - Selected (Reply to Judge Wells) -->
+        <div class="email-row selected px-4 py-3 cursor-pointer border-b border-neutral-100">
+          <div class="flex items-start gap-3">
+            <div class="flex-shrink-0 mt-0.5">
+              <div class="w-8 h-8 rounded-full bg-primary-100 flex items-center justify-center">
+                <span class="text-xs font-bold text-primary-700">AM</span>
+              </div>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center justify-between mb-0.5">
+                <span class="text-xs text-neutral-500 font-medium">To: Judge Patricia Wells</span>
+                <span class="text-xs text-neutral-400 flex-shrink-0 ml-2">9:47 AM</span>
+              </div>
+              <p class="text-xs font-semibold text-neutral-800 truncate mb-0.5">RE: Hearing Rescheduled – Case No. 2023-CV-4471</p>
+              <p class="text-xs text-neutral-500 truncate">Your Honor, I write to confirm receipt of the Court's notice regarding the rescheduled hearing...</p>
+              <div class="flex items-center gap-1.5 mt-1.5">
+                <span class="inline-flex items-center gap-1 bg-green-100 text-green-700 text-xs px-1.5 py-0.5 rounded-small font-medium">
+                  <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>Delivered
+                </span>
+                <span class="inline-flex items-center gap-1 bg-blue-100 text-blue-700 text-xs px-1.5 py-0.5 rounded-small font-medium">Litigation</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Email 2 -->
+        <div class="email-row px-4 py-3 cursor-pointer border-b border-neutral-100">
+          <div class="flex items-start gap-3">
+            <div class="flex-shrink-0 mt-0.5">
+              <div class="w-8 h-8 rounded-full bg-primary-100 flex items-center justify-center">
+                <span class="text-xs font-bold text-primary-700">AM</span>
+              </div>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center justify-between mb-0.5">
+                <span class="text-xs text-neutral-500 font-medium">To: Marcus Bellamy</span>
+                <span class="text-xs text-neutral-400 flex-shrink-0 ml-2">Oct 16</span>
+              </div>
+              <p class="text-xs font-semibold text-neutral-800 truncate mb-0.5">RE: Settlement Offer – Whitmore v. Aldridge Corp.</p>
+              <p class="text-xs text-neutral-500 truncate">Thank you for the settlement proposal. Our client has reviewed the terms and we are prepared to...</p>
+              <div class="flex items-center gap-1.5 mt-1.5">
+                <span class="inline-flex items-center gap-1 bg-green-100 text-green-700 text-xs px-1.5 py-0.5 rounded-small font-medium">
+                  <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>Delivered
+                </span>
+                <span class="inline-flex items-center gap-1 bg-green-100 text-green-700 text-xs px-1.5 py-0.5 rounded-small font-medium">Corporate</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Email 3 -->
+        <div class="email-row px-4 py-3 cursor-pointer border-b border-neutral-100">
+          <div class="flex items-start gap-3">
+            <div class="flex-shrink-0 mt-0.5">
+              <div class="w-8 h-8 rounded-full bg-primary-100 flex items-center justify-center">
+                <span class="text-xs font-bold text-primary-700">AM</span>
+              </div>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center justify-between mb-0.5">
+                <span class="text-xs text-neutral-500 font-medium">To: Sophia Reinholt</span>
+                <span class="text-xs text-neutral-400 flex-shrink-0 ml-2">Oct 15</span>
+              </div>
+              <p class="text-xs font-semibold text-neutral-800 truncate mb-0.5">RE: Deposition Transcript – Dr. Alan Forsythe</p>
+              <p class="text-xs text-neutral-500 truncate">Sophia, I've reviewed the certified transcript. There are a few passages I'd like to flag for our...</p>
+              <div class="flex items-center gap-1.5 mt-1.5">
+                <span class="inline-flex items-center gap-1 bg-green-100 text-green-700 text-xs px-1.5 py-0.5 rounded-small font-medium">
+                  <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>Delivered
+                </span>
+                <span class="inline-flex items-center gap-1 bg-blue-100 text-blue-700 text-xs px-1.5 py-0.5 rounded-small font-medium">Litigation</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Email 4 -->
+        <div class="email-row px-4 py-3 cursor-pointer border-b border-neutral-100">
+          <div class="flex items-start gap-3">
+            <div class="flex-shrink-0 mt-0.5">
+              <div class="w-8 h-8 rounded-full bg-primary-100 flex items-center justify-center">
+                <span class="text-xs font-bold text-primary-700">AM</span>
+              </div>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center justify-between mb-0.5">
+                <span class="text-xs text-neutral-500 font-medium">To: Thomas Keller, Esq.</span>
+                <span class="text-xs text-neutral-400 flex-shrink-0 ml-2">Oct 14</span>
+              </div>
+              <p class="text-xs font-semibold text-neutral-800 truncate mb-0.5">RE: Confidential: Expert Witness Availability</p>
+              <p class="text-xs text-neutral-500 truncate">Thomas, excellent news on Dr. Marsh's availability. Please forward her CV and fee schedule at your...</p>
+              <div class="flex items-center gap-1.5 mt-1.5">
+                <span class="inline-flex items-center gap-1 bg-green-100 text-green-700 text-xs px-1.5 py-0.5 rounded-small font-medium">
+                  <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>Delivered
+                </span>
+                <span class="inline-flex items-center gap-1 bg-purple-100 text-purple-700 text-xs px-1.5 py-0.5 rounded-small font-medium">Client Comms</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Email 5 -->
+        <div class="email-row px-4 py-3 cursor-pointer border-b border-neutral-100">
+          <div class="flex items-start gap-3">
+            <div class="flex-shrink-0 mt-0.5">
+              <div class="w-8 h-8 rounded-full bg-primary-100 flex items-center justify-center">
+                <span class="text-xs font-bold text-primary-700">AM</span>
+              </div>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center justify-between mb-0.5">
+                <span class="text-xs text-neutral-500 font-medium">To: James Harrington</span>
+                <span class="text-xs text-neutral-400 flex-shrink-0 ml-2">Oct 13</span>
+              </div>
+              <p class="text-xs font-semibold text-neutral-800 truncate mb-0.5">Summary: Pre-Trial Motions Status Update</p>
+              <p class="text-xs text-neutral-500 truncate">James, please find attached a summary of all pending pre-trial motions and their current status as of...</p>
+              <div class="flex items-center gap-1.5 mt-1.5">
+                <span class="inline-flex items-center gap-1 bg-green-100 text-green-700 text-xs px-1.5 py-0.5 rounded-small font-medium">
+                  <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>Delivered
+                </span>
+                <span class="inline-flex items-center gap-1 bg-neutral-100 text-neutral-600 text-xs px-1.5 py-0.5 rounded-small font-medium">
+                  <i data-lucide="paperclip" class="w-3 h-3"></i>1
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Email 6 -->
+        <div class="email-row px-4 py-3 cursor-pointer border-b border-neutral-100">
+          <div class="flex items-start gap-3">
+            <div class="flex-shrink-0 mt-0.5">
+              <div class="w-8 h-8 rounded-full bg-primary-100 flex items-center justify-center">
+                <span class="text-xs font-bold text-primary-700">AM</span>
+              </div>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center justify-between mb-0.5">
+                <span class="text-xs text-neutral-500 font-medium">To: Clerk's Office – SDNY</span>
+                <span class="text-xs text-neutral-400 flex-shrink-0 ml-2">Oct 12</span>
+              </div>
+              <p class="text-xs font-semibold text-neutral-800 truncate mb-0.5">Notice of Appearance – Case No. 2023-CV-4471</p>
+              <p class="text-xs text-neutral-500 truncate">Please accept this Notice of Appearance on behalf of the Plaintiff in the above-captioned matter. Counsel...</p>
+              <div class="flex items-center gap-1.5 mt-1.5">
+                <span class="inline-flex items-center gap-1 bg-green-100 text-green-700 text-xs px-1.5 py-0.5 rounded-small font-medium">
+                  <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>Delivered
+                </span>
+                <span class="inline-flex items-center gap-1 bg-blue-100 text-blue-700 text-xs px-1.5 py-0.5 rounded-small font-medium">Litigation</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Right Panel: Reading Pane (Sent Message) -->
+    <div class="flex-1 bg-white flex flex-col overflow-hidden">
+
+      <!-- Reading Pane Header -->
+      <div class="px-6 py-4 border-b border-neutral-200 flex-shrink-0">
+        <div class="flex items-start justify-between gap-4">
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2 mb-1">
+              <h2 class="font-heading text-lg font-semibold text-neutral-900 leading-tight">RE: Hearing Rescheduled – Case No. 2023-CV-4471</h2>
+              <span class="flex-shrink-0 inline-flex items-center gap-1 bg-primary-50 border border-primary-200 text-primary-700 text-xs font-semibold px-2 py-0.5 rounded-small">
+                <i data-lucide="send" class="w-3 h-3"></i>
+                Sent
+              </span>
+            </div>
+            <div class="flex items-center gap-2 flex-wrap">
+              <span class="inline-flex items-center gap-1 bg-green-100 text-green-700 text-xs px-2 py-0.5 rounded-small font-medium">
+                <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>Delivered
+              </span>
+              <span class="inline-flex items-center gap-1 bg-blue-100 text-blue-700 text-xs px-2 py-0.5 rounded-small font-medium">Litigation</span>
+              <span class="text-xs text-neutral-400">Case No. 2023-CV-4471</span>
+            </div>
+          </div>
+          <div class="flex items-center gap-1 flex-shrink-0">
+            <button class="p-2 hover:bg-neutral-100 rounded-small text-neutral-500 transition-colors" title="Forward">
+              <i data-lucide="forward" class="w-4 h-4"></i>
+            </button>
+            <div class="w-px h-5 bg-neutral-200 mx-1"></div>
+            <button class="p-2 hover:bg-neutral-100 rounded-small text-neutral-500 transition-colors" title="Archive">
+              <i data-lucide="archive" class="w-4 h-4"></i>
+            </button>
+            <button class="p-2 hover:bg-neutral-100 rounded-small text-neutral-500 transition-colors" title="Delete">
+              <i data-lucide="trash-2" class="w-4 h-4"></i>
+            </button>
+            <button class="p-2 hover:bg-neutral-100 rounded-small text-neutral-500 transition-colors" title="More">
+              <i data-lucide="more-vertical" class="w-4 h-4"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sender Info (Sent From) -->
+      <div class="px-6 py-3 border-b border-neutral-100 flex-shrink-0 bg-neutral-50">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-primary-100 flex items-center justify-center flex-shrink-0">
+              <span class="text-sm font-bold text-primary-700">AM</span>
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="text-sm font-semibold text-neutral-900">Alex Mitchell</span>
+                <span class="text-xs text-neutral-400 bg-neutral-200 px-1.5 py-0.5 rounded-small">Associate, Harrington &amp; Cole</span>
+              </div>
+              <div class="flex items-center gap-1 mt-0.5 flex-wrap">
+                <span class="text-xs text-neutral-500">From:</span>
+                <span class="text-xs text-neutral-600">a.mitchell@harringtoncole.com</span>
+                <span class="text-xs text-neutral-400 mx-1">·</span>
+                <span class="text-xs text-neutral-500">To:</span>
+                <span class="text-xs text-neutral-600">chambers.wells@nysd.uscourts.gov</span>
+              </div>
+            </div>
+          </div>
+          <div class="text-right flex-shrink-0">
+            <p class="text-xs font-medium text-neutral-700">Tuesday, October 17, 2023</p>
+            <p class="text-xs text-neutral-500">9:47 AM EDT</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Email Body -->
+      <div class="flex-1 overflow-y-auto px-6 py-5">
+        <div class="max-w-3xl">
+
+          <!-- Sent Reply Context Banner -->
+          <div class="bg-primary-50 border border-primary-200 rounded-large p-4 mb-5">
+            <div class="flex items-start gap-3">
+              <i data-lucide="send" class="w-5 h-5 text-primary-600 flex-shrink-0 mt-0.5"></i>
+              <div>
+                <p class="text-xs font-semibold text-primary-800 uppercase tracking-wider mb-1">Sent Reply</p>
+                <p class="text-xs text-primary-700">This message was sent in reply to a notice from the Chambers of Judge Patricia A. Wells, U.S.D.J.</p>
+                <p class="text-xs text-primary-600 mt-0.5">Delivered to: chambers.wells@nysd.uscourts.gov</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="text-sm text-neutral-700 leading-relaxed space-y-4">
+            <p>Your Honor,</p>
+
+            <p>I write on behalf of Plaintiff to confirm receipt of the Court's notice dated October 17, 2023, regarding the rescheduling of the hearing in the above-captioned matter.</p>
+
+            <p>Plaintiff's counsel will appear in person at <strong class="text-neutral-900 font-semibold">Courtroom 14B, Daniel Patrick Moynihan U.S. Courthouse, 500 Pearl Street, New York, NY 10007</strong> on <strong class="text-neutral-900 font-semibold">Monday, October 23, 2023 at 2:00 PM EDT</strong> as directed.</p>
+
+            <!-- Confirmation Block -->
+            <div class="bg-green-50 border-l-4 border-green-500 rounded-small p-4 my-4">
+              <div class="flex items-start gap-3">
+                <i data-lucide="check-circle" class="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5"></i>
+                <div>
+                  <p class="text-sm font-semibold text-green-900">Appearance Confirmed</p>
+                  <p class="text-xs text-green-700 mt-0.5">Monday, October 23, 2023 at 2:00 PM EDT</p>
+                  <p class="text-xs text-green-700">Courtroom 14B – Daniel Patrick Moynihan U.S. Courthouse</p>
+                </div>
+              </div>
+            </div>
+
+            <p>With respect to the matters to be addressed at the hearing, Plaintiff intends to present oral argument on the following:</p>
+
+            <ol class="list-decimal list-inside space-y-2 pl-2 text-neutral-700">
+              <li>Plaintiff's Motion in Limine to Exclude Expert Testimony (Dkt. No. 87) – Plaintiff will rely on the papers previously submitted and requests ten (10) minutes for oral argument.</li>
+              <li>Defendant's Motion for Summary Judgment on Counts III and IV (Dkt. No. 91) – Plaintiff will submit a supplemental brief by October 20, 2023 at 5:00 PM as directed.</li>
+              <li>Scheduling of the pre-trial conference and trial date – Plaintiff is available for trial during the weeks of November 13 and November 27, 2023.</li>
+            </ol>
+
+            <p>Plaintiff's supplemental briefing will be filed in accordance with the Court's Individual Rules and Practices no later than <strong class="text-neutral-900 font-semibold">Friday, October 20, 2023 at 5:00 PM</strong>.</p>
+
+            <p>Should the Court require any additional information prior to the hearing, please do not hesitate to contact our office at (212) 555-0182.</p>
+
+            <div class="pt-2">
+              <p>Respectfully submitted,</p>
+              <div class="mt-3">
+                <p class="font-semibold text-neutral-900">Alex Mitchell</p>
+                <p class="text-neutral-600">Associate Attorney</p>
+                <p class="text-neutral-600">Harrington &amp; Cole LLP</p>
+                <p class="text-neutral-500 text-xs mt-1">a.mitchell@harringtoncole.com</p>
+                <p class="text-neutral-500 text-xs">(212) 555-0182</p>
+                <p class="text-neutral-500 text-xs">350 Fifth Avenue, Suite 4100, New York, NY 10118</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Original Message Quote -->
+          <div class="mt-6 pt-4 border-t border-neutral-200">
+            <div class="flex items-center gap-2 mb-3">
+              <i data-lucide="corner-down-right" class="w-4 h-4 text-neutral-400"></i>
+              <p class="text-xs font-semibold text-neutral-500 uppercase tracking-wider">Original Message</p>
+            </div>
+            <div class="border-l-2 border-neutral-300 pl-4">
+              <p class="text-xs text-neutral-500 mb-2">From: Judge Patricia Wells &lt;chambers.wells@nysd.uscourts.gov&gt; · October 17, 2023 at 9:14 AM</p>
+              <p class="text-xs text-neutral-500 leading-relaxed italic">Counsel, please be advised that the hearing in the above-captioned matter, previously scheduled for Thursday, October 19, 2023 at 10:00 AM, has been rescheduled to Monday, October 23, 2023 at 2:00 PM EDT, Courtroom 14B...</p>
+            </div>
+          </div>
+
+          <!-- Confidentiality Notice -->
+          <div class="mt-5 pt-4 border-t border-neutral-200">
+            <p class="text-xs text-neutral-400 leading-relaxed italic">CONFIDENTIALITY NOTICE: This communication is from Harrington &amp; Cole LLP and is intended solely for the use of the individual or entity to which it is addressed. This message may contain information that is privileged, confidential, and exempt from disclosure under applicable law. If you have received this communication in error, please notify the sender immediately and destroy all copies.</p>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Sent from EaseMail Footer (no reply box) -->
+      <div class="px-6 py-3 border-t border-neutral-200 flex-shrink-0 bg-neutral-50">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <div class="w-5 h-5 bg-primary-600 rounded-small flex items-center justify-center">
+              <i data-lucide="mail" class="w-3 h-3 text-white"></i>
+            </div>
+            <span class="text-xs text-neutral-500">Sent from <span class="font-semibold text-neutral-700">EaseMail</span> · EaseMail for Legal Professionals</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="inline-flex items-center gap-1 bg-green-100 text-green-700 text-xs px-2 py-1 rounded-small font-medium">
+              <i data-lucide="check-circle" class="w-3 h-3"></i>
+              Delivered
+            </span>
+            <span class="text-xs text-neutral-400">Oct 17, 2023 · 9:47 AM</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    lucide.createIcons();
+
+    // Email row selection
+    document.querySelectorAll('.email-row').forEach(row => {
+      row.addEventListener('click', function() {
+        document.querySelectorAll('.email-row').forEach(r => r.classList.remove('selected'));
+        this.classList.add('selected');
+      });
+    });
+  </script>
+
+
+    <script src="script.js"></script>
+  <script src="../demo-nav.js"></script>
+</body>
+</html>

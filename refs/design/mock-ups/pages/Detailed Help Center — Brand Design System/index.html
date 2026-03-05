@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Detailed Help Center — Brand Design System - Exported from UXMagic Copilot">
+    <title>Detailed Help Center — Brand Design System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+    
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              50:  'rgb(var(--color-primary-50))',
+              100: 'rgb(var(--color-primary-100))',
+              200: 'rgb(var(--color-primary-200))',
+              300: 'rgb(var(--color-primary-300))',
+              400: 'rgb(var(--color-primary-400))',
+              500: 'rgb(var(--color-primary-500))',
+              600: 'rgb(var(--color-primary-600))',
+              700: 'rgb(var(--color-primary-700))',
+              800: 'rgb(var(--color-primary-800))',
+              900: 'rgb(var(--color-primary-900))',
+            },
+            secondary: {
+              50:  'rgb(var(--color-secondary-50))',
+              100: 'rgb(var(--color-secondary-100))',
+              200: 'rgb(var(--color-secondary-200))',
+              300: 'rgb(var(--color-secondary-300))',
+              400: 'rgb(var(--color-secondary-400))',
+              500: 'rgb(var(--color-secondary-500))',
+              600: 'rgb(var(--color-secondary-600))',
+              700: 'rgb(var(--color-secondary-700))',
+              800: 'rgb(var(--color-secondary-800))',
+              900: 'rgb(var(--color-secondary-900))',
+            },
+            tertiary: {
+              50:  'rgb(var(--color-tertiary-50))',
+              100: 'rgb(var(--color-tertiary-100))',
+              200: 'rgb(var(--color-tertiary-200))',
+              300: 'rgb(var(--color-tertiary-300))',
+              400: 'rgb(var(--color-tertiary-400))',
+              500: 'rgb(var(--color-tertiary-500))',
+              600: 'rgb(var(--color-tertiary-600))',
+              700: 'rgb(var(--color-tertiary-700))',
+              800: 'rgb(var(--color-tertiary-800))',
+              900: 'rgb(var(--color-tertiary-900))',
+            },
+            background: {
+              50:  'rgb(var(--color-background-50))',
+              100: 'rgb(var(--color-background-100))',
+              200: 'rgb(var(--color-background-200))',
+              300: 'rgb(var(--color-background-300))',
+              400: 'rgb(var(--color-background-400))',
+              500: 'rgb(var(--color-background-500))',
+              600: 'rgb(var(--color-background-600))',
+              700: 'rgb(var(--color-background-700))',
+              800: 'rgb(var(--color-background-800))',
+              900: 'rgb(var(--color-background-900))',
+            },
+            neutral: {
+              50:  'rgb(var(--color-neutral-50))',
+              100: 'rgb(var(--color-neutral-100))',
+              200: 'rgb(var(--color-neutral-200))',
+              300: 'rgb(var(--color-neutral-300))',
+              400: 'rgb(var(--color-neutral-400))',
+              500: 'rgb(var(--color-neutral-500))',
+              600: 'rgb(var(--color-neutral-600))',
+              700: 'rgb(var(--color-neutral-700))',
+              800: 'rgb(var(--color-neutral-800))',
+              900: 'rgb(var(--color-neutral-900))',
+            },
+          },
+          fontFamily: {
+            heading: ['var(--font-heading-name)', 'sans-serif'],
+            body:    ['var(--font-body-name)', 'sans-serif'],
+          },
+          spacing: {
+            base: 'var(--space-base)',
+          },
+          borderRadius: {
+            small: 'var(--radius-small)',
+            large: 'var(--radius-large)',
+          },
+          boxShadow: {
+            custom:       'var(--shadow-custom)',
+            'custom-hover': 'var(--shadow-custom-hover)',
+          },
+        }
+      }
+    }
+  
+    </script>
+    <link rel="stylesheet" href="styles.css">
+    <meta name="theme-color" content="#8a0909">
+    <meta name="color-scheme" content="light dark">
+    <meta name="author" content="UXMagic Copilot">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body style="height:100vh;overflow:hidden;display:flex;flex-direction:column;">
+
+
+  <!-- Help Center Hero -->
+  <section class="bg-primary-500 py-16 px-4" style="max-height: 440px; flex-shrink:0;">
+    <div class="max-w-4xl mx-auto text-center">
+      <div class="inline-flex items-center gap-2 bg-primary-700 text-neutral-50 text-sm font-medium px-4 py-1.5 rounded-small mb-5">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636a9 9 0 11-12.728 0M12 9v4m0 4h.01"></path></svg>
+        Help Center
+      </div>
+      <h1 class="font-heading text-3xl md:text-5xl font-bold text-neutral-50 mb-4">How can we help you?</h1>
+      <p class="text-primary-100 text-lg mb-8 max-w-xl mx-auto">Search our knowledge base or browse categories below to find the answers you need.</p>
+      <div class="relative max-w-2xl mx-auto">
+        <svg xmlns="http://www.w3.org/2000/svg" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z"></path></svg>
+        <input type="text" id="helpSearch" placeholder="Search for articles, guides, FAQs..." class="w-full pl-12 pr-4 py-4 rounded-large text-neutral-800 text-base shadow-custom focus:outline-none focus:ring-2 focus:ring-primary-300 bg-background-50" oninput="filterArticles(this.value)">
+      </div>
+      <div id="searchResults" class="hidden max-w-2xl mx-auto mt-3 bg-background-50 rounded-large shadow-custom-hover text-left overflow-hidden"></div>
+    </div>
+  </section>
+
+  <!-- Quick Stats -->
+  <section class="bg-background-50 border-b border-neutral-200 py-6 px-4" style="max-height: 120px; flex-shrink:0;">
+    <div class="max-w-5xl mx-auto grid grid-cols-3 gap-4 text-center">
+      <div>
+        <p class="font-heading text-2xl font-bold text-primary-500">120+</p>
+        <p class="text-neutral-500 text-sm">Help Articles</p>
+      </div>
+      <div>
+        <p class="font-heading text-2xl font-bold text-primary-500">24/7</p>
+        <p class="text-neutral-500 text-sm">Support Available</p>
+      </div>
+      <div>
+        <p class="font-heading text-2xl font-bold text-primary-500">98%</p>
+        <p class="text-neutral-500 text-sm">Issues Resolved</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Scrollable content wrapper -->
+  <div style="flex:1;overflow-y:auto;">
+
+  <!-- Category Navigation -->
+  <section class="bg-background-100 py-10 px-4">
+    <div class="max-w-5xl mx-auto">
+      <h2 class="font-heading text-xl font-semibold text-neutral-800 mb-6 text-center">Browse by Category</h2>
+      <div class="flex flex-wrap justify-center gap-3" id="categoryTabs">
+        <button onclick="switchCategory('getting-started')" class="category-tab font-medium text-sm px-5 py-2.5 rounded-small transition-all duration-200 shadow-custom bg-primary-500 text-neutral-50" data-cat="getting-started">🚀 Getting Started</button>
+        <button onclick="switchCategory('account')" class="category-tab font-medium text-sm px-5 py-2.5 rounded-small transition-all duration-200 shadow-custom bg-background-200 text-neutral-700" data-cat="account">👤 Account &amp; Billing</button>
+        <button onclick="switchCategory('features')" class="category-tab font-medium text-sm px-5 py-2.5 rounded-small transition-all duration-200 shadow-custom bg-background-200 text-neutral-700" data-cat="features">⚙️ Features &amp; Tools</button>
+        <button onclick="switchCategory('integrations')" class="category-tab font-medium text-sm px-5 py-2.5 rounded-small transition-all duration-200 shadow-custom bg-background-200 text-neutral-700" data-cat="integrations">🔗 Integrations</button>
+        <button onclick="switchCategory('troubleshooting')" class="category-tab font-medium text-sm px-5 py-2.5 rounded-small transition-all duration-200 shadow-custom bg-background-200 text-neutral-700" data-cat="troubleshooting">🛠️ Troubleshooting</button>
+        <button onclick="switchCategory('security')" class="category-tab font-medium text-sm px-5 py-2.5 rounded-small transition-all duration-200 shadow-custom bg-background-200 text-neutral-700" data-cat="security">🔒 Security &amp; Privacy</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Help Content Panels -->
+  <section class="py-10 px-4 bg-background-100">
+    <div class="max-w-5xl mx-auto">
+
+      <!-- Getting Started Panel -->
+      <div id="panel-getting-started" class="help-panel active">
+        <div class="grid md:grid-cols-3 gap-6 mb-10">
+          <div class="bg-background-50 rounded-large shadow-custom p-6 hover:shadow-custom-hover transition-all cursor-pointer border border-neutral-200">
+            <div class="w-12 h-12 bg-primary-100 rounded-large flex items-center justify-center mb-4">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+            </div>
+            <h3 class="font-heading text-base font-semibold text-neutral-800 mb-2">Create Your Account</h3>
+            <p class="text-neutral-500 text-sm">Step-by-step guide to signing up and setting up your profile for the first time.</p>
+            <span class="inline-block mt-3 text-primary-600 text-sm font-medium">Read guide →</span>
+          </div>
+          <div class="bg-background-50 rounded-large shadow-custom p-6 hover:shadow-custom-hover transition-all cursor-pointer border border-neutral-200">
+            <div class="w-12 h-12 bg-tertiary-100 rounded-large flex items-center justify-center mb-4">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-tertiary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path></svg>
+            </div>
+            <h3 class="font-heading text-base font-semibold text-neutral-800 mb-2">Quick Setup Checklist</h3>
+            <p class="text-neutral-500 text-sm">Complete your onboarding in minutes with our interactive setup checklist.</p>
+            <span class="inline-block mt-3 text-primary-600 text-sm font-medium">View checklist →</span>
+          </div>
+          <div class="bg-background-50 rounded-large shadow-custom p-6 hover:shadow-custom-hover transition-all cursor-pointer border border-neutral-200">
+            <div class="w-12 h-12 bg-secondary-100 rounded-large flex items-center justify-center mb-4">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-secondary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.069A1 1 0 0121 8.82V15.18a1 1 0 01-1.447.894L15 14M3 8a2 2 0 012-2h8a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V8z"></path></svg>
+            </div>
+            <h3 class="font-heading text-base font-semibold text-neutral-800 mb-2">Video Tutorials</h3>
+            <p class="text-neutral-500 text-sm">Watch our beginner-friendly video walkthroughs to get up and running fast.</p>
+            <span class="inline-block mt-3 text-primary-600 text-sm font-medium">Watch videos →</span>
+          </div>
+        </div>
+        <div class="bg-background-50 rounded-large shadow-custom p-6 border border-neutral-200">
+          <h3 class="font-heading text-lg font-semibold text-neutral-800 mb-1">Getting Started — Step by Step</h3>
+          <p class="text-neutral-500 text-sm mb-6">Follow these steps to get the most out of the platform from day one.</p>
+          <div class="space-y-4">
+            <div class="flex gap-4 items-start p-4 bg-primary-50 rounded-large border border-primary-100">
+              <div class="w-8 h-8 bg-primary-500 text-neutral-50 rounded-small flex items-center justify-center font-bold text-sm flex-shrink-0">1</div>
+              <div>
+                <p class="font-semibold text-neutral-800 text-sm">Sign Up &amp; Verify Email</p>
+                <p class="text-neutral-500 text-sm mt-0.5">Create your account using your email or social login. Check your inbox for a verification link.</p>
+              </div>
+            </div>
+            <div class="flex gap-4 items-start p-4 bg-background-100 rounded-large border border-neutral-200">
+              <div class="w-8 h-8 bg-primary-500 text-neutral-50 rounded-small flex items-center justify-center font-bold text-sm flex-shrink-0">2</div>
+              <div>
+                <p class="font-semibold text-neutral-800 text-sm">Complete Your Profile</p>
+                <p class="text-neutral-500 text-sm mt-0.5">Add your name, photo, and preferences so the platform can personalize your experience.</p>
+              </div>
+            </div>
+            <div class="flex gap-4 items-start p-4 bg-background-100 rounded-large border border-neutral-200">
+              <div class="w-8 h-8 bg-primary-500 text-neutral-50 rounded-small flex items-center justify-center font-bold text-sm flex-shrink-0">3</div>
+              <div>
+                <p class="font-semibold text-neutral-800 text-sm">Explore the Dashboard</p>
+                <p class="text-neutral-500 text-sm mt-0.5">Familiarize yourself with the main navigation, widgets, and key features available to you.</p>
+              </div>
+            </div>
+            <div class="flex gap-4 items-start p-4 bg-background-100 rounded-large border border-neutral-200">
+              <div class="w-8 h-8 bg-primary-500 text-neutral-50 rounded-small flex items-center justify-center font-bold text-sm flex-shrink-0">4</div>
+              <div>
+                <p class="font-semibold text-neutral-800 text-sm">Invite Your Team</p>
+                <p class="text-neutral-500 text-sm mt-0.5">Go to Settings → Team to invite colleagues and assign roles for collaboration.</p>
+              </div>
+            </div>
+            <div class="flex gap-4 items-start p-4 bg-background-100 rounded-large border border-neutral-200">
+              <div class="w-8 h-8 bg-primary-500 text-neutral-50 rounded-small flex items-center justify-center font-bold text-sm flex-shrink-0">5</div>
+              <div>
+                <p class="font-semibold text-neutral-800 text-sm">Connect Integrations</p>
+                <p class="text-neutral-500 text-sm mt-0.5">Link your favorite tools like Microsoft Teams, OneDrive, or Power Automate to streamline your workflow.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Account & Billing Panel -->
+      <div id="panel-account" class="help-panel">
+        <div class="grid md:grid-cols-2 gap-6 mb-8">
+          <div class="bg-background-50 rounded-large shadow-custom p-6 border border-neutral-200">
+            <h3 class="font-heading text-base font-semibold text-neutral-800 mb-4 flex items-center gap-2"><span class="text-primary-500">👤</span> Account Management</h3>
+            <ul class="space-y-3">
+              <li class="flex items-center gap-3 text-sm text-neutral-700 hover:text-primary-600 cursor-pointer transition-colors"><svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-neutral-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>How to update your profile information</li>
+              <li class="flex items-center gap-3 text-sm text-neutral-700 hover:text-primary-600 cursor-pointer transition-colors"><svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-neutral-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>Changing your email address</li>
+              <li class="flex items-center gap-3 text-sm text-neutral-700 hover:text-primary-600 cursor-pointer transition-colors"><svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-neutral-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>Resetting your password</li>
+              <li class="flex items-center gap-3 text-sm text-neutral-700 hover:text-primary-600 cursor-pointer transition-colors"><svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-neutral-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>Managing notification preferences</li>
+              <li class="flex items-center gap-3 text-sm text-neutral-700 hover:text-primary-600 cursor-pointer transition-colors"><svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-neutral-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>Deleting your account</li>
+            </ul>
+          </div>
+          <div class="bg-background-50 rounded-large shadow-custom p-6 border border-neutral-200">
+            <h3 class="font-heading text-base font-semibold text-neutral-800 mb-4 flex items-center gap-2"><span class="text-tertiary-500">💳</span> Billing &amp; Payments</h3>
+            <ul class="space-y-3">
+              <li class="flex items-center gap-3 text-sm text-neutral-700 hover:text-primary-600 cursor-pointer transition-colors"><svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-neutral-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>Understanding your billing cycle</li>
+              <li class="flex items-center gap-3 text-sm text-neutral-700 hover:text-primary-600 cursor-pointer transition-colors"><svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-neutral-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>Upgrading or downgrading your plan</li>
+              <li class="flex items-center gap-3 text-sm text-neutral-700 hover:text-primary-600 cursor-pointer transition-colors"><svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-neutral-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>Updating payment methods</li>
+              <li class="flex items-center gap-3 text-sm text-neutral-700 hover:text-primary-600 cursor-pointer transition-colors"><svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-neutral-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>Downloading invoices and receipts</li>
+              <li class="flex items-center gap-3 text-sm text-neutral-700 hover:text-primary-600 cursor-pointer transition-colors"><svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-neutral-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>Cancelling your subscription</li>
+            </ul>
+          </div>
+        </div>
+        <div class="bg-secondary-50 border border-secondary-200 rounded-large p-5 flex gap-4 items-start">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-secondary-500 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M12 2a10 10 0 100 20A10 10 0 0012 2z"></path></svg>
+          <div>
+            <p class="font-semibold text-secondary-800 text-sm">Billing questions?</p>
+            <p class="text-secondary-700 text-sm mt-0.5">For billing disputes or refund requests, please contact our billing team directly at <span class="font-medium underline cursor-pointer text-primary-600">billing@support.com</span> or use the live chat below.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Features & Tools Panel -->
+      <div id="panel-features" class="help-panel">
+        <div class="grid md:grid-cols-3 gap-5 mb-8">
+          <div class="bg-background-50 rounded-large shadow-custom p-5 hover:shadow-custom-hover transition-all cursor-pointer border border-neutral-200">
+            <div class="w-10 h-10 bg-primary-100 rounded-large flex items-center justify-center mb-3">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+            </div>
+            <h3 class="font-heading text-sm font-semibold text-neutral-800 mb-1">Analytics Dashboard</h3>
+            <p class="text-neutral-500 text-xs">Learn how to read and customize your analytics reports and charts.</p>
+            <span class="text-primary-600 text-xs font-medium mt-2 inline-block">8 articles</span>
+          </div>
+          <div class="bg-background-50 rounded-large shadow-custom p-5 hover:shadow-custom-hover transition-all cursor-pointer border border-neutral-200">
+            <div class="w-10 h-10 bg-secondary-100 rounded-large flex items-center justify-center mb-3">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-secondary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+            </div>
+            <h3 class="font-heading text-sm font-semibold text-neutral-800 mb-1">Team Collaboration</h3>
+            <p class="text-neutral-500 text-xs">Manage team members, roles, permissions, and shared workspaces.</p>
+            <span class="text-primary-600 text-xs font-medium mt-2 inline-block">12 articles</span>
+          </div>
+          <div class="bg-background-50 rounded-large shadow-custom p-5 hover:shadow-custom-hover transition-all cursor-pointer border border-neutral-200">
+            <div class="w-10 h-10 bg-tertiary-100 rounded-large flex items-center justify-center mb-3">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-tertiary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
+            </div>
+            <h3 class="font-heading text-sm font-semibold text-neutral-800 mb-1">Notifications &amp; Alerts</h3>
+            <p class="text-neutral-500 text-xs">Configure smart alerts, email digests, and in-app notification settings.</p>
+            <span class="text-primary-600 text-xs font-medium mt-2 inline-block">5 articles</span>
+          </div>
+          <div class="bg-background-50 rounded-large shadow-custom p-5 hover:shadow-custom-hover transition-all cursor-pointer border border-neutral-200">
+            <div class="w-10 h-10 bg-primary-100 rounded-large flex items-center justify-center mb-3">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+            </div>
+            <h3 class="font-heading text-sm font-semibold text-neutral-800 mb-1">Import &amp; Export</h3>
+            <p class="text-neutral-500 text-xs">Import data from CSV, Excel, or other platforms and export your reports.</p>
+            <span class="text-primary-600 text-xs font-medium mt-2 inline-block">6 articles</span>
+          </div>
+          <div class="bg-background-50 rounded-large shadow-custom p-5 hover:shadow-custom-hover transition-all cursor-pointer border border-neutral-200">
+            <div class="w-10 h-10 bg-secondary-100 rounded-large flex items-center justify-center mb-3">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-secondary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+            </div>
+            <h3 class="font-heading text-sm font-semibold text-neutral-800 mb-1">Automation &amp; Workflows</h3>
+            <p class="text-neutral-500 text-xs">Build automated workflows to save time and reduce repetitive tasks.</p>
+            <span class="text-primary-600 text-xs font-medium mt-2 inline-block">10 articles</span>
+          </div>
+          <div class="bg-background-50 rounded-large shadow-custom p-5 hover:shadow-custom-hover transition-all cursor-pointer border border-neutral-200">
+            <div class="w-10 h-10 bg-tertiary-100 rounded-large flex items-center justify-center mb-3">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-tertiary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+            </div>
+            <h3 class="font-heading text-sm font-semibold text-neutral-800 mb-1">Reports &amp; Templates</h3>
+            <p class="text-neutral-500 text-xs">Create, save, and share custom report templates with your team.</p>
+            <span class="text-primary-600 text-xs font-medium mt-2 inline-block">7 articles</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Integrations Panel -->
+      <div id="panel-integrations" class="help-panel">
+        <div class="bg-background-50 rounded-large shadow-custom p-6 mb-6 border border-neutral-200">
+          <h3 class="font-heading text-base font-semibold text-neutral-800 mb-4">Available Integrations</h3>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="border border-neutral-200 rounded-large p-4 flex flex-col items-center gap-2 hover:border-primary-400 hover:shadow-custom transition-all cursor-pointer">
+              <img src="https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=48&amp;h=48&amp;fit=crop&amp;crop=center" alt="Slack" class="w-10 h-10 rounded-small object-cover">
+              <span class="text-xs font-medium text-neutral-700">Slack</span>
+              <span class="text-xs text-tertiary-700 bg-tertiary-50 px-2 py-0.5 rounded-small">Connected</span>
+            </div>
+            <div class="border border-neutral-200 rounded-large p-4 flex flex-col items-center gap-2 hover:border-primary-400 hover:shadow-custom transition-all cursor-pointer">
+              <img src="https://images.unsplash.com/photo-1573804633927-bfcbcd909acd?w=48&amp;h=48&amp;fit=crop&amp;crop=center" alt="OneDrive" class="w-10 h-10 rounded-small object-cover">
+              <span class="text-xs font-medium text-neutral-700">OneDrive</span>
+              <span class="text-xs text-neutral-500 bg-neutral-100 px-2 py-0.5 rounded-small">Available</span>
+            </div>
+            <div class="border border-neutral-200 rounded-large p-4 flex flex-col items-center gap-2 hover:border-primary-400 hover:shadow-custom transition-all cursor-pointer">
+              <img src="https://images.unsplash.com/photo-1563986768609-322da13575f3?w=48&amp;h=48&amp;fit=crop&amp;crop=center" alt="Zapier" class="w-10 h-10 rounded-small object-cover">
+              <span class="text-xs font-medium text-neutral-700">Zapier</span>
+              <span class="text-xs text-neutral-500 bg-neutral-100 px-2 py-0.5 rounded-small">Available</span>
+            </div>
+            <div class="border border-neutral-200 rounded-large p-4 flex flex-col items-center gap-2 hover:border-primary-400 hover:shadow-custom transition-all cursor-pointer">
+              <img src="https://images.unsplash.com/photo-1614680376573-df3480f0c6ff?w=48&amp;h=48&amp;fit=crop&amp;crop=center" alt="Notion" class="w-10 h-10 rounded-small object-cover">
+              <span class="text-xs font-medium text-neutral-700">Notion</span>
+              <span class="text-xs text-neutral-500 bg-neutral-100 px-2 py-0.5 rounded-small">Available</span>
+            </div>
+          </div>
+        </div>
+        <div class="bg-background-50 rounded-large shadow-custom p-6 border border-neutral-200">
+          <h3 class="font-heading text-base font-semibold text-neutral-800 mb-4">Integration Guides</h3>
+          <div class="space-y-3">
+            <div class="flex items-center justify-between p-3 bg-background-100 rounded-large hover:bg-primary-50 cursor-pointer transition-colors border border-neutral-200">
+              <span class="text-sm text-neutral-700">How to connect Slack for real-time notifications</span>
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-neutral-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+            </div>
+            <div class="flex items-center justify-between p-3 bg-background-100 rounded-large hover:bg-primary-50 cursor-pointer transition-colors border border-neutral-200">
+              <span class="text-sm text-neutral-700">Setting up Microsoft OneDrive sync</span>
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-neutral-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+            </div>
+            <div class="flex items-center justify-between p-3 bg-background-100 rounded-large hover:bg-primary-50 cursor-pointer transition-colors border border-neutral-200">
+              <span class="text-sm text-neutral-700">Using Zapier to automate workflows</span>
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-neutral-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+            </div>
+            <div class="flex items-center justify-between p-3 bg-background-100 rounded-large hover:bg-primary-50 cursor-pointer transition-colors border border-neutral-200">
+              <span class="text-sm text-neutral-700">API documentation and webhook setup</span>
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-neutral-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Troubleshooting Panel -->
+      <div id="panel-troubleshooting" class="help-panel">
+        <div class="bg-primary-50 border border-primary-200 rounded-large p-5 mb-6 flex gap-4 items-start">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-primary-500 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"></path></svg>
+          <div>
+            <p class="font-semibold text-primary-800 text-sm">Experiencing a critical issue?</p>
+            <p class="text-primary-700 text-sm mt-0.5">If you're facing a service outage or data issue, check our <span class="underline cursor-pointer font-medium">Status Page</span> or contact support immediately.</p>
+          </div>
+        </div>
+        <div class="bg-background-50 rounded-large shadow-custom p-6 border border-neutral-200">
+          <h3 class="font-heading text-base font-semibold text-neutral-800 mb-5">Common Issues &amp; Solutions</h3>
+          <div class="space-y-3">
+            <div class="border border-neutral-200 rounded-large overflow-hidden">
+              <button onclick="toggleAccordion('faq1')" class="w-full flex items-center justify-between p-4 text-left hover:bg-background-100 transition-colors">
+                <span class="font-medium text-neutral-800 text-sm">I can't log in to my account</span>
+                <svg id="icon-faq1" xmlns="http://www.w3.org/2000/svg" class="accordion-icon w-5 h-5 text-neutral-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+              </button>
+              <div id="faq1" class="accordion-content px-4 pb-4 bg-background-50">
+                <p class="text-neutral-600 text-sm">Try these steps: (1) Clear your browser cache and cookies. (2) Use the "Forgot Password" link to reset your credentials. (3) Ensure you're using the correct email address. (4) Disable browser extensions that may block login. If the issue persists, contact support with your account email.</p>
+              </div>
+            </div>
+            <div class="border border-neutral-200 rounded-large overflow-hidden">
+              <button onclick="toggleAccordion('faq2')" class="w-full flex items-center justify-between p-4 text-left hover:bg-background-100 transition-colors">
+                <span class="font-medium text-neutral-800 text-sm">My data isn't syncing or updating</span>
+                <svg id="icon-faq2" xmlns="http://www.w3.org/2000/svg" class="accordion-icon w-5 h-5 text-neutral-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+              </button>
+              <div id="faq2" class="accordion-content px-4 pb-4 bg-background-50">
+                <p class="text-neutral-600 text-sm">Data sync issues are often caused by: (1) Slow or unstable internet connection. (2) Integration token expiry — re-authenticate your connected apps. (3) Browser cache — try a hard refresh (Ctrl+Shift+R). (4) Check our status page for any ongoing sync issues on our end.</p>
+              </div>
+            </div>
+            <div class="border border-neutral-200 rounded-large overflow-hidden">
+              <button onclick="toggleAccordion('faq3')" class="w-full flex items-center justify-between p-4 text-left hover:bg-background-100 transition-colors">
+                <span class="font-medium text-neutral-800 text-sm">I was charged incorrectly</span>
+                <svg id="icon-faq3" xmlns="http://www.w3.org/2000/svg" class="accordion-icon w-5 h-5 text-neutral-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+              </button>
+              <div id="faq3" class="accordion-content px-4 pb-4 bg-background-50">
+                <p class="text-neutral-600 text-sm">If you believe you've been charged incorrectly, please: (1) Review your billing history in Settings → Billing. (2) Check if a plan upgrade or add-on was applied. (3) Contact our billing team at billing@support.com with your invoice number. We process refund requests within 3–5 business days.</p>
+              </div>
+            </div>
+            <div class="border border-neutral-200 rounded-large overflow-hidden">
+              <button onclick="toggleAccordion('faq4')" class="w-full flex items-center justify-between p-4 text-left hover:bg-background-100 transition-colors">
+                <span class="font-medium text-neutral-800 text-sm">The app is loading slowly or crashing</span>
+                <svg id="icon-faq4" xmlns="http://www.w3.org/2000/svg" class="accordion-icon w-5 h-5 text-neutral-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+              </button>
+              <div id="faq4" class="accordion-content px-4 pb-4 bg-background-50">
+                <p class="text-neutral-600 text-sm">Performance issues can be resolved by: (1) Refreshing the page or restarting the app. (2) Clearing browser cache and cookies. (3) Trying a different browser (Chrome, Firefox, Edge). (4) Checking your internet speed. (5) Disabling heavy browser extensions. If the problem continues, report it via the feedback button.</p>
+              </div>
+            </div>
+            <div class="border border-neutral-200 rounded-large overflow-hidden">
+              <button onclick="toggleAccordion('faq5')" class="w-full flex items-center justify-between p-4 text-left hover:bg-background-100 transition-colors">
+                <span class="font-medium text-neutral-800 text-sm">I didn't receive the verification email</span>
+                <svg id="icon-faq5" xmlns="http://www.w3.org/2000/svg" class="accordion-icon w-5 h-5 text-neutral-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+              </button>
+              <div id="faq5" class="accordion-content px-4 pb-4 bg-background-50">
+                <p class="text-neutral-600 text-sm">If you haven't received the verification email: (1) Check your spam or junk folder. (2) Ensure you entered the correct email address. (3) Click "Resend Verification Email" from the login screen. (4) Add noreply@ourapp.com to your contacts to prevent filtering. If still not received after 10 minutes, contact support.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Security Panel -->
+      <div id="panel-security" class="help-panel">
+        <div class="grid md:grid-cols-2 gap-6 mb-6">
+          <div class="bg-background-50 rounded-large shadow-custom p-6 border border-neutral-200">
+            <h3 class="font-heading text-base font-semibold text-neutral-800 mb-4 flex items-center gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+              Account Security
+            </h3>
+            <ul class="space-y-3">
+              <li class="flex items-center gap-3 text-sm text-neutral-700 hover:text-primary-600 cursor-pointer transition-colors"><svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-neutral-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>Enabling two-factor authentication (2FA)</li>
+              <li class="flex items-center gap-3 text-sm text-neutral-700 hover:text-primary-600 cursor-pointer transition-colors"><svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-neutral-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>Managing active sessions and devices</li>
+              <li class="flex items-center gap-3 text-sm text-neutral-700 hover:text-primary-600 cursor-pointer transition-colors"><svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-neutral-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>Setting up SSO for your organization</li>
+              <li class="flex items-center gap-3 text-sm text-neutral-700 hover:text-primary-600 cursor-pointer transition-colors"><svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-neutral-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>Reviewing login activity and audit logs</li>
+            </ul>
+          </div>
+          <div class="bg-background-50 rounded-large shadow-custom p-6 border border-neutral-200">
+            <h3 class="font-heading text-base font-semibold text-neutral-800 mb-4 flex items-center gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-tertiary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+              Privacy &amp; Data
+            </h3>
+            <ul class="space-y-3">
+              <li class="flex items-center gap-3 text-sm text-neutral-700 hover:text-primary-600 cursor-pointer transition-colors"><svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-neutral-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>Understanding our data privacy policy</li>
+              <li class="flex items-center gap-3 text-sm text-neutral-700 hover:text-primary-600 cursor-pointer transition-colors"><svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-neutral-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>Requesting a copy of your data (GDPR)</li>
+              <li class="flex items-center gap-3 text-sm text-neutral-700 hover:text-primary-600 cursor-pointer transition-colors"><svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-neutral-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>Managing cookie preferences</li>
+              <li class="flex items-center gap-3 text-sm text-neutral-700 hover:text-primary-600 cursor-pointer transition-colors"><svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-neutral-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>How we handle data breaches</li>
+            </ul>
+          </div>
+        </div>
+        <div class="bg-primary-50 border border-primary-200 rounded-large p-5 flex gap-4 items-start">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-primary-500 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M12 2a10 10 0 100 20A10 10 0 0012 2z"></path></svg>
+          <div>
+            <p class="font-semibold text-primary-800 text-sm">Report a Security Vulnerability</p>
+            <p class="text-primary-700 text-sm mt-0.5">If you've discovered a security issue, please report it responsibly to <span class="font-medium underline cursor-pointer">security@ourapp.com</span>. We take all reports seriously and respond within 24 hours.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- FAQ Section -->
+  <section class="py-12 px-4 bg-background-50">
+    <div class="max-w-3xl mx-auto">
+      <div class="text-center mb-8">
+        <h2 class="font-heading text-2xl md:text-3xl font-bold text-neutral-900 mb-2">Frequently Asked Questions</h2>
+        <p class="text-neutral-500 text-sm">Quick answers to the most common questions we receive.</p>
+      </div>
+      <div class="space-y-3">
+        <div class="border border-neutral-200 rounded-large overflow-hidden">
+          <button onclick="toggleAccordion('gfaq1')" class="w-full flex items-center justify-between p-4 text-left hover:bg-background-100 transition-colors">
+            <span class="font-medium text-neutral-800 text-sm">Is there a free trial available?</span>
+            <svg id="icon-gfaq1" xmlns="http://www.w3.org/2000/svg" class="accordion-icon w-5 h-5 text-neutral-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+          </button>
+          <div id="gfaq1" class="accordion-content px-4 pb-4 bg-background-50">
+            <p class="text-neutral-600 text-sm">Yes! We offer a 14-day free trial with full access to all Pro features. No credit card required to start. After the trial, you can choose to upgrade to a paid plan or continue with our free tier.</p>
+          </div>
+        </div>
+        <div class="border border-neutral-200 rounded-large overflow-hidden">
+          <button onclick="toggleAccordion('gfaq2')" class="w-full flex items-center justify-between p-4 text-left hover:bg-background-100 transition-colors">
+            <span class="font-medium text-neutral-800 text-sm">Can I change my plan at any time?</span>
+            <svg id="icon-gfaq2" xmlns="http://www.w3.org/2000/svg" class="accordion-icon w-5 h-5 text-neutral-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+          </button>
+          <div id="gfaq2" class="accordion-content px-4 pb-4 bg-background-50">
+            <p class="text-neutral-600 text-sm">Absolutely. You can upgrade or downgrade your plan at any time from Settings → Billing. Upgrades take effect immediately, while downgrades apply at the end of your current billing cycle. Prorated credits are applied automatically.</p>
+          </div>
+        </div>
+        <div class="border border-neutral-200 rounded-large overflow-hidden">
+          <button onclick="toggleAccordion('gfaq3')" class="w-full flex items-center justify-between p-4 text-left hover:bg-background-100 transition-colors">
+            <span class="font-medium text-neutral-800 text-sm">How do I export my data?</span>
+            <svg id="icon-gfaq3" xmlns="http://www.w3.org/2000/svg" class="accordion-icon w-5 h-5 text-neutral-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+          </button>
+          <div id="gfaq3" class="accordion-content px-4 pb-4 bg-background-50">
+            <p class="text-neutral-600 text-sm">You can export your data in CSV, JSON, or PDF format from Settings → Data &amp; Privacy → Export Data. The export includes all your records, reports, and account information. Large exports may take a few minutes and will be emailed to you.</p>
+          </div>
+        </div>
+        <div class="border border-neutral-200 rounded-large overflow-hidden">
+          <button onclick="toggleAccordion('gfaq4')" class="w-full flex items-center justify-between p-4 text-left hover:bg-background-100 transition-colors">
+            <span class="font-medium text-neutral-800 text-sm">What payment methods do you accept?</span>
+            <svg id="icon-gfaq4" xmlns="http://www.w3.org/2000/svg" class="accordion-icon w-5 h-5 text-neutral-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+          </button>
+          <div id="gfaq4" class="accordion-content px-4 pb-4 bg-background-50">
+            <p class="text-neutral-600 text-sm">We accept all major credit cards (Visa, Mastercard, American Express), PayPal, and bank transfers for annual plans. All payments are processed securely via Stripe. We do not store your card details on our servers.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Support Section -->
+  <section class="py-12 px-4 bg-background-100">
+    <div class="max-w-5xl mx-auto">
+      <div class="text-center mb-8">
+        <h2 class="font-heading text-2xl md:text-3xl font-bold text-neutral-900 mb-2">Still need help?</h2>
+        <p class="text-neutral-500 text-sm">Our support team is ready to assist you through any of these channels.</p>
+      </div>
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="bg-background-50 rounded-large shadow-custom p-6 text-center hover:shadow-custom-hover transition-all cursor-pointer border border-neutral-200">
+          <div class="w-14 h-14 bg-primary-100 rounded-large flex items-center justify-center mx-auto mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
+          </div>
+          <h3 class="font-heading text-base font-semibold text-neutral-800 mb-1">Live Chat</h3>
+          <p class="text-neutral-500 text-sm mb-4">Chat with a support agent in real-time. Available Mon–Fri, 9am–6pm EST.</p>
+          <span class="inline-flex items-center gap-1.5 text-xs text-tertiary-700 bg-tertiary-100 px-3 py-1 rounded-small font-medium"><span class="w-2 h-2 bg-tertiary-500 rounded-small inline-block"></span>Online Now</span>
+        </div>
+        <div class="bg-background-50 rounded-large shadow-custom p-6 text-center hover:shadow-custom-hover transition-all cursor-pointer border border-neutral-200">
+          <div class="w-14 h-14 bg-secondary-100 rounded-large flex items-center justify-center mx-auto mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 text-secondary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+          </div>
+          <h3 class="font-heading text-base font-semibold text-neutral-800 mb-1">Email Support</h3>
+          <p class="text-neutral-500 text-sm mb-4">Send us a detailed message and we'll respond within 24 hours on business days.</p>
+          <span class="text-primary-600 text-sm font-medium">support@ourapp.com</span>
+        </div>
+        <div class="bg-background-50 rounded-large shadow-custom p-6 text-center hover:shadow-custom-hover transition-all cursor-pointer border border-neutral-200">
+          <div class="w-14 h-14 bg-tertiary-100 rounded-large flex items-center justify-center mx-auto mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 text-tertiary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+          </div>
+          <h3 class="font-heading text-base font-semibold text-neutral-800 mb-1">Community Forum</h3>
+          <p class="text-neutral-500 text-sm mb-4">Join thousands of users sharing tips, solutions, and best practices.</p>
+          <span class="text-primary-600 text-sm font-medium">Visit Community →</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Feedback Section -->
+  <section class="py-10 px-4 bg-primary-500">
+    <div class="max-w-2xl mx-auto text-center">
+      <h2 class="font-heading text-xl md:text-2xl font-bold text-neutral-50 mb-2">Was this help center useful?</h2>
+      <p class="text-primary-100 text-sm mb-6">Your feedback helps us improve our documentation and support resources.</p>
+      <div class="flex justify-center gap-4 flex-wrap">
+        <button class="flex items-center gap-2 bg-background-50 text-primary-700 font-semibold text-sm px-6 py-3 rounded-small shadow-custom hover:shadow-custom-hover transition-all">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5"></path></svg>
+          Yes, it helped!
+        </button>
+        <button class="flex items-center gap-2 bg-primary-600 text-neutral-50 font-semibold text-sm px-6 py-3 rounded-small border border-primary-400 hover:bg-primary-700 transition-all">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14H5.236a2 2 0 01-1.789-2.894l3.5-7A2 2 0 018.736 3h4.018a2 2 0 01.485.06l3.76.94m-7 10v5a2 2 0 002 2h.096c.5 0 .905-.405.905-.904 0-.715.211-1.413.608-2.008L17 13V4m-7 10h2m5-10h2a2 2 0 012 2v6a2 2 0 01-2 2h-2.5"></path></svg>
+          Needs improvement
+        </button>
+      </div>
+    </div>
+  </section>
+
+  </div><!-- end scrollable content wrapper -->
+
+  <script>
+    function switchCategory(cat) {
+      document.querySelectorAll('.category-tab').forEach(btn => {
+        btn.style.backgroundColor = '';
+        btn.style.color = '';
+        btn.classList.remove('active');
+        btn.classList.add('bg-background-200', 'text-neutral-700');
+        btn.classList.remove('bg-primary-500', 'text-neutral-50');
+      });
+      document.querySelectorAll('.help-panel').forEach(panel => panel.classList.remove('active'));
+      const activeBtn = document.querySelector(`[data-cat="${cat}"]`);
+      if (activeBtn) {
+        activeBtn.classList.remove('bg-background-200', 'text-neutral-700');
+        activeBtn.classList.add('bg-primary-500', 'text-neutral-50');
+      }
+      const panel = document.getElementById(`panel-${cat}`);
+      if (panel) panel.classList.add('active');
+    }
+
+    function toggleAccordion(id) {
+      const content = document.getElementById(id);
+      const icon = document.getElementById(`icon-${id}`);
+      const isOpen = content.classList.contains('open');
+      content.classList.toggle('open', !isOpen);
+      icon.classList.toggle('rotated', !isOpen);
+    }
+
+    const allArticles = [
+      "Create Your Account", "Quick Setup Checklist", "Video Tutorials",
+      "How to update your profile information", "Changing your email address",
+      "Resetting your password", "Managing notification preferences",
+      "Understanding your billing cycle", "Upgrading or downgrading your plan",
+      "Updating payment methods", "Downloading invoices and receipts",
+      "Analytics Dashboard", "Team Collaboration", "Notifications & Alerts",
+      "Import & Export", "Automation & Workflows", "Reports & Templates",
+      "How to connect Microsoft Teams for real-time notifications", "Setting up Microsoft OneDrive sync",
+      "Using Power Automate to automate workflows", "API documentation and webhook setup",
+      "I can't log in to my account", "My data isn't syncing or updating",
+      "I was charged incorrectly", "The app is loading slowly or crashing",
+      "Enabling two-factor authentication (2FA)", "Managing active sessions and devices",
+      "Understanding our data privacy policy", "Requesting a copy of your data (GDPR)"
+    ];
+
+    function filterArticles(query) {
+      const resultsBox = document.getElementById('searchResults');
+      if (!query.trim()) { resultsBox.classList.add('hidden'); return; }
+      const filtered = allArticles.filter(a => a.toLowerCase().includes(query.toLowerCase()));
+      if (filtered.length === 0) {
+        resultsBox.innerHTML = '<div class="p-4 text-sm text-neutral-500">No results found. Try a different search term.</div>';
+      } else {
+        resultsBox.innerHTML = filtered.slice(0, 6).map(a =>
+          `<div class="flex items-center gap-3 px-4 py-3 hover:bg-primary-50 cursor-pointer border-b border-neutral-100 last:border-0 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-primary-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+            <span class="text-sm text-neutral-700">${a}</span>
+          </div>`
+        ).join('');
+      }
+      resultsBox.classList.remove('hidden');
+    }
+
+    document.addEventListener('click', function(e) {
+      const resultsBox = document.getElementById('searchResults');
+      if (!e.target.closest('#helpSearch') && !e.target.closest('#searchResults')) {
+        resultsBox.classList.add('hidden');
+      }
+    });
+  </script>
+
+
+
+    <script src="script.js"></script>
+  <script src="../demo-nav.js"></script>
+</body>
+</html>

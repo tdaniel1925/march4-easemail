@@ -10,7 +10,7 @@ const DEFAULT_PATH =
 
 const TAB_PATHS: Record<string, string> = {
   unread:      `/me/mailFolders/inbox/messages?$filter=isRead eq false&$select=${SELECT}&$top=100&$orderby=receivedDateTime desc`,
-  starred:     `/me/mailFolders/inbox/messages?$filter=flag/flagStatus eq 'flagged'&$select=${SELECT}&$top=100&$orderby=receivedDateTime desc`,
+  starred:     `/me/mailFolders/inbox/messages?$filter=flag/flagStatus eq 'flagged'&$select=${SELECT}&$top=100`,
   attachments: `/me/mailFolders/inbox/messages?$filter=hasAttachments eq true&$select=${SELECT}&$top=100&$orderby=receivedDateTime desc`,
 };
 
