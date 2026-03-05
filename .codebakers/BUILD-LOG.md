@@ -89,3 +89,11 @@
 - dep:map regenerated — 17 entities | 10 stores | 5 store-connected components
 - TypeScript: clean
 [2026-03-04] feat(pages): Calendar, Attachments, Contacts, Help, Settings — 11 files, 3330 lines, tsc clean
+
+## 2026-03-04 — Bug fixes + Voice Message
+- fix(attachments): removed $orderby from Graph call to resolve InefficientFilter 400 — sort client-side instead
+- fix(modals): AiReplyModal + DisconnectModal — added overflow-hidden + px-4 py-6 padding so they never exceed viewport
+- fix(compose): composer card now fills viewport height (overflow-hidden + flex-1 min-h-0 + body overflow-y-auto)
+- fix(compose): replaced all linear-gradient AI classes with solid rgb(138 9 9) — ai-gradient-bg, ai-remix-btn, ai-dictate-btn, ai-section-glow
+- feat(compose): Voice Message recording — up to 10 min, MediaRecorder API, progress ring, waveform bars, playback preview, attaches as audio/webm to email via Graph fileAttachment
+- fix(send): /api/mail/send route aligned to accept structured recipient objects, bcc, body as object, optional attachment
