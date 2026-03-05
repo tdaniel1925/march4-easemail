@@ -364,12 +364,19 @@ export default function ComposeClient({
   const [sigInserted, setSigInserted] = useState(false);
 
   // ── Draft auto-save helpers ──────────────────────────────────────────────────
+  // Keep a ref to the latest saveDraftFn to avoid stale closure in the timer
+  const saveDraftFnRef = useRef<typeof saveDraftFn | null>(null);
   const triggerAutoSave = useCallback(() => {
     setDraftSaved(false);
     if (autoSaveTimerRef.current) clearTimeout(autoSaveTimerRef.current);
-    autoSaveTimerRef.current = setTimeout(() => void saveDraftFn(), 5000);
+    autoSaveTimerRef.current = setTimeout(() => void saveDraftFnRef.current?.(), 5000);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Keep ref current after every render so the stable timer callback calls the latest saveDraftFn
+  useEffect(() => {
+    saveDraftFnRef.current = saveDraftFn;
+  });
 
   const onBodyChange = useCallback(() => {
     triggerAutoSave();

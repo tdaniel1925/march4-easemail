@@ -7,6 +7,10 @@
 import { chromium } from "@playwright/test";
 import * as fs from "fs";
 import * as path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const BASE_URL = process.env.PLAYWRIGHT_BASE_URL ?? "http://localhost:3000";
 const OUT = path.join(__dirname, "session.json");
@@ -15,7 +19,10 @@ async function main() {
   console.log("Opening browser — log in with your Microsoft account.");
   console.log("The browser will close automatically once you reach /inbox.\n");
 
-  const browser = await chromium.launch({ headless: false });
+  const browser = await chromium.launch({
+    headless: false,
+    channel: "msedge",
+  });
   const context = await browser.newContext();
   const page = await context.newPage();
 
