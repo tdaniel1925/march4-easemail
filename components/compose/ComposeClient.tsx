@@ -364,8 +364,8 @@ export default function ComposeClient({
       </header>
 
       {/* SCROLLABLE BODY */}
-      <div className="flex-1 overflow-y-auto px-6 py-5">
-        <div className="max-w-4xl mx-auto bg-background-50 rounded-large composer-shadow border border-neutral-200 flex flex-col overflow-hidden">
+      <div className="flex-1 overflow-hidden px-6 py-5 flex flex-col">
+        <div className="max-w-4xl w-full mx-auto bg-background-50 rounded-large composer-shadow border border-neutral-200 flex flex-col overflow-hidden flex-1 min-h-0">
 
           {/* COMPOSER HEADER */}
           <div className="flex items-center justify-between px-6 py-4 border-b border-neutral-200 flex-shrink-0">
@@ -579,7 +579,7 @@ export default function ComposeClient({
           </div>
 
           {/* EMAIL BODY */}
-          <div className="flex-1 px-8 py-6 bg-background-50" style={{ minHeight: 280 }}>
+          <div className="flex-1 overflow-y-auto px-8 py-6 bg-background-50" style={{ minHeight: 0 }}>
             <div
               ref={bodyRef}
               contentEditable
@@ -674,7 +674,7 @@ export default function ComposeClient({
             <div className="flex-1 overflow-y-auto">
 
               {/* Tone cards */}
-              <div className="px-6 pt-5 pb-5 border-b border-neutral-200" style={{ background: "linear-gradient(to bottom, rgb(var(--color-primary-50)), rgb(var(--color-background-50)))" }}>
+              <div className="px-6 pt-5 pb-5 border-b border-neutral-200" style={{ background: "rgb(var(--color-primary-50))" }}>
                 <div className="flex items-center justify-between mb-3">
                   <h3 className="font-heading text-sm font-semibold text-neutral-800">Select Tone</h3>
                   <span className="text-xs text-neutral-400">Choose how your email should sound</span>

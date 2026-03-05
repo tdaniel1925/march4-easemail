@@ -121,21 +121,21 @@ img {
 
 /* ─── Custom utility classes ────────────────────────────────────────────────── */
 
-/* AI gradient — primary #8A0909 → secondary #540303 */
+/* AI solid color — #8A0909 */
 .ai-gradient-bg {
-  background: linear-gradient(135deg, rgb(138 9 9), rgb(84 3 3));
+  background: rgb(138 9 9);
 }
 
 .ai-remix-btn {
-  background: linear-gradient(135deg, rgb(138 9 9), rgb(84 3 3));
+  background: rgb(138 9 9);
 }
 
 .ai-dictate-btn {
-  background: linear-gradient(135deg, rgb(84 3 3), rgb(16 185 129));
+  background: rgb(138 9 9);
 }
 
 .ai-voice-btn {
-  background: linear-gradient(135deg, rgb(16 185 129), rgb(5 150 105));
+  background: rgb(16 185 129);
 }
 
 /* Glow effects */
@@ -159,9 +159,9 @@ img {
   background: rgba(27, 29, 29, 0.4);
 }
 
-/* AI section subtle gradient */
+/* AI section background */
 .ai-section-glow {
-  background: linear-gradient(to right, rgb(var(--color-primary-50)), rgb(var(--color-background-50)));
+  background: rgb(var(--color-primary-50));
 }
 
 /* Recipient chips */
