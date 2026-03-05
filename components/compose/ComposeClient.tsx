@@ -5,6 +5,14 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import diff from "fast-diff";
 
+// Lazy DOMPurify sanitizer — avoids SSR issues
+function sanitize(html: string): string {
+  if (typeof window === "undefined") return html;
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const DOMPurify = (require("dompurify") as { default: { sanitize: (s: string) => string } }).default;
+  return DOMPurify.sanitize(html);
+}
+
 // ─── Browser Speech API types ─────────────────────────────────────────────────
 declare global {
   interface Window {
@@ -2112,7 +2120,7 @@ export default function ComposeClient({
                         <span className="text-xs font-semibold text-primary-600">{computeQualityScore(originalBodyRef.current, remixedBody ?? "")}%</span>
                       </div>
                       {showDiff && originalBodyRef.current ? (
-                        <div className="text-sm text-neutral-700 leading-relaxed" dangerouslySetInnerHTML={{ __html: computeDiff(originalBodyRef.current, remixedBody ?? "") }} />
+                        <div className="text-sm text-neutral-700 leading-relaxed" dangerouslySetInnerHTML={{ __html: sanitize(computeDiff(originalBodyRef.current, remixedBody ?? "")) }} />
                       ) : (
                         <p className="text-sm text-neutral-700 leading-relaxed whitespace-pre-wrap">{remixedBody}</p>
                       )}
@@ -2280,7 +2288,7 @@ export default function ComposeClient({
                     <span className="text-xs text-neutral-400 ml-auto">{dictateFormatted.trim().split(/\s+/).filter(Boolean).length} words</span>
                   </div>
                   <div className="bg-background-100 border border-neutral-200 rounded-large p-4 shadow-custom" style={{ minHeight: 160, maxHeight: 400, overflowY: "auto" }}>
-                    <div className="text-sm text-neutral-800 leading-relaxed" dangerouslySetInnerHTML={{ __html: remixTextToHtml(dictateFormatted) }} />
+                    <div className="text-sm text-neutral-800 leading-relaxed" dangerouslySetInnerHTML={{ __html: sanitize(remixTextToHtml(dictateFormatted)) }} />
                   </div>
                   {dictateFormatError && (
                     <p className="mt-2 text-xs text-primary-700 bg-primary-50 border border-primary-200 rounded-small px-3 py-2">{dictateFormatError}</p>

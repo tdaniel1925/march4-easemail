@@ -99,7 +99,7 @@ export async function GET(req: NextRequest) {
     const { homeAccountId, username: msEmail, name: displayName, tenantId } = tokenResult.account;
 
     // 2. Find or create Supabase user
-    const supabaseAdmin = await createServiceClient();
+    const supabaseAdmin = createServiceClient();
     const { data: listData } = await supabaseAdmin.auth.admin.listUsers();
     const existing = listData?.users?.find((u) => u.email === msEmail);
 

@@ -26,27 +26,13 @@ export async function createClient() {
   );
 }
 
-export async function createServiceClient() {
-  const cookieStore = await cookies();
-
-  return createServerClient(
+export function createServiceClient() {
+  // Service role client must NOT use cookies — it authenticates via the
+  // service role key directly, not via user session cookies.
+  const { createClient } = require("@supabase/supabase-js") as typeof import("@supabase/supabase-js");
+  return createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    {
-      cookies: {
-        getAll() {
-          return cookieStore.getAll();
-        },
-        setAll(cookiesToSet) {
-          try {
-            cookiesToSet.forEach(({ name, value, options }) => {
-              cookieStore.set(name, value, options);
-            });
-          } catch {
-            // no-op
-          }
-        },
-      },
-    }
+    { auth: { autoRefreshToken: false, persistSession: false } }
   );
 }
