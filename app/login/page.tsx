@@ -10,7 +10,7 @@ export default function LoginPage() {
 
       {/* ── LEFT PANEL — Branding ─────────────────────────────────────────── */}
       <div
-        className="hidden lg:flex flex-col w-1/2 xl:w-5/12 px-10 py-8 relative overflow-hidden flex-shrink-0"
+        className="hidden lg:flex flex-col w-1/2 xl:w-5/12 px-10 py-8 relative overflow-y-auto flex-shrink-0"
         style={{
           height: "100vh",
           backgroundColor: "rgb(138 9 9)",
@@ -44,11 +44,11 @@ export default function LoginPage() {
               <div className="w-72 rounded-[10px] p-5 shadow-lg" style={{ background: "rgba(255,255,255,0.10)", border: "1px solid rgba(255,255,255,0.20)", backdropFilter: "blur(8px)" }}>
                 <div className="flex items-center gap-3 mb-4">
                   <div className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "rgba(130,30,30,0.80)" }}>
-                    <span className="text-sm font-bold text-white">AP</span>
+                    <span className="text-sm font-bold text-white">WL</span>
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-white text-xs font-semibold truncate">Aisha Patel</p>
-                    <p className="text-xs truncate" style={{ color: "rgba(255,255,255,0.60)" }}>Q3 Design Review — Final...</p>
+                    <p className="text-white text-xs font-semibold truncate">William L.</p>
+                    <p className="text-xs truncate" style={{ color: "rgba(255,255,255,0.60)" }}>Deposition</p>
                   </div>
                   <div className="flex flex-col items-end gap-1">
                     <span className="text-xs" style={{ color: "rgba(255,255,255,0.50)" }}>Now</span>
@@ -185,8 +185,7 @@ export default function LoginPage() {
           </a>
 
           <p className="text-center text-xs mt-5 leading-relaxed" style={{ color: "rgb(155 155 155)" }}>
-            You&apos;ll be redirected to Microsoft to authenticate.<br />
-            EaseMail only accesses your email and calendar.
+            To join this Organization you only need to login with your dmillerlaw.com email address. Once authenticated, EaseMail will sync your emails, contacts and calendar. Please contact David Romero with any questions or issues.
           </p>
 
           <div className="mt-8 flex items-center justify-center gap-4 flex-wrap">
