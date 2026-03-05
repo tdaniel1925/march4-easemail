@@ -153,3 +153,96 @@ For any feature that sends text through an LLM and inserts the result into an em
 4. **Show preview first:** Never auto-insert AI output. Show a preview with the same rendering as the final insert so the user sees exactly what they'll get.
 
 This pipeline is now standardized for both AI Remix and AI Dictate.
+
+---
+
+## #10 — MSAL getAllAccounts() Does Not Trigger Cache Load
+
+**Problem:** `ConfidentialClientApplication.getTokenCache().getAllAccounts()` is synchronous and reads only the in-memory cache. It does NOT trigger `beforeCacheAccess`. When a new MSAL client is created per request (Next.js API route pattern), the in-memory cache is empty, so `getAllAccounts()` always returns `[]` — even if tokens are persisted in the DB.
+
+**Wrong:**
+```typescript
+const accounts = await msalClient.getTokenCache().getAllAccounts();
+const account = accounts.find((a) => a.homeAccountId === homeAccountId);
+// account is always undefined on a fresh client instance!
+```
+
+**Correct — pre-load from DB before calling getAllAccounts():**
+```typescript
+const row = await prisma.msalTokenCache.findUnique({ where: { userId }, select: { cacheJson: true } });
+if (row?.cacheJson) {
+  msalClient.getTokenCache().deserialize(row.cacheJson);
+}
+const accounts = await msalClient.getTokenCache().getAllAccounts();
+```
+
+**Add to CodeBakers:** Any MSAL node integration that creates a client per request MUST pre-load the token cache from persistence before `getAllAccounts()`. The `ICachePlugin.beforeCacheAccess` hook is only triggered by `acquireTokenSilent` and similar token acquisition operations — not by read helpers.
+
+---
+
+## #11 — API Routes Without try/catch Return HTML, Not JSON
+
+**Problem:** When a Next.js API route has an unhandled thrown error (e.g., no try/catch around an async call), Next.js catches it and returns an HTML error page (500). Any client code that calls `.json()` on that response will throw `SyntaxError: Unexpected end of JSON input`. This is always misread as a client-side bug.
+
+**Pattern:** Every API route that does async work must wrap it in try/catch and return `NextResponse.json({ error })` on failure — never let Next.js generate the error response.
+
+```typescript
+// Wrong — unhandled throw returns HTML 500
+const data = await graphGet(...);
+
+// Correct
+try {
+  const data = await graphGet(...);
+  return NextResponse.json({ data });
+} catch (err) {
+  return NextResponse.json({ error: String(err) }, { status: 500 });
+}
+```
+
+**Defensive client pattern:** Always check `r.ok` before calling `r.json()`:
+```typescript
+.then((r) => { if (!r.ok) throw new Error(`${r.status}`); return r.json(); })
+```
+
+**Add to CodeBakers:** Add to Error Sniffer — "Unexpected end of JSON input" in the browser almost always means an API route returned HTML instead of JSON. Check server logs for unhandled throws in route handlers.
+
+---
+
+## #12 — Account Deletion Must Clean Up All homeAccountId-Scoped Records
+
+**Problem:** Deleting a connected account record leaves orphaned data — webhook subscriptions, delta sync links, drafts, and MSAL token cache entries all reference `homeAccountId`. Leaving them causes silent Graph API calls with stale tokens, and the old account still appears in the sidebar switcher.
+
+**Complete disconnect checklist:**
+1. Cancel Graph webhook subscriptions for that `homeAccountId` (best-effort, `Promise.allSettled`)
+2. Remove account tokens from MSAL cache JSON (deserialize → `removeAccount()` → serialize → save to DB)
+3. Delete `WebhookSubscription` records in DB
+4. Delete `EmailDeltaLink` records in DB
+5. Delete `Draft` records for that `homeAccountId` in DB
+6. Delete `MsConnectedAccount` record
+7. Promote new default account if deleted was default
+8. Update Zustand store client-side so sidebar reflects the change immediately
+
+**Add to CodeBakers:** Add as a standard pattern in `agents/patterns/account-disconnect.md`. Any multi-account app must implement this full cleanup or users will see phantom accounts in the UI and receive Graph auth errors.
+
+---
+
+## #13 — Memory Updates Must Be Automatic, Not User-Prompted
+
+**Problem:** Claude completes tasks and reports done without updating BRAIN.md, the dependency map, or codebakers-suggestions.md — leaving memory stale across sessions. Users have to explicitly ask "did you update CodeBakers?" every time.
+
+**Root cause:** The memory update step is listed in the system but not enforced as a hard gate before reporting done. Claude treats it as optional cleanup rather than a required part of task completion.
+
+**Solution — Two-layer enforcement:**
+
+**Layer 1: Hard rule in CLAUDE.md (top of Hard Rules section):**
+> **🧠 Memory:** After every completed task — before reporting done — you MUST:
+> 1. Update `BRAIN.md` (current focus, new patterns, any architecture decisions made)
+> 2. Run `pnpm dep:map` if any store or component was added or changed
+> 3. Add to `codebakers-suggestions.md` if a new reusable pattern was discovered
+>
+> This is not optional. Skipping it is a protocol violation.
+
+**Layer 2: Add to `@verify` / `verify-protocol-compliance.ps1`:**
+Add a check: "Was BRAIN.md modified today?" If `git log --since=midnight .codebakers/BRAIN.md` returns no commits, flag as a warning. If it's been more than 24 hours since the last BRAIN.md update and work has been done (commits exist today), flag as a violation.
+
+**The standard:** Memory updates are part of task completion — the same as `tsc --noEmit`. A task is not done until memory reflects what was built.

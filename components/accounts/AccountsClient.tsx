@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useAccountStore } from "@/lib/stores/account-store";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -135,18 +136,18 @@ function AccountCard({
         </div>
 
         {/* Actions */}
-        <div className="flex items-center gap-1 flex-shrink-0">
+        <div className="flex-shrink-0">
           <button
-            title="Disconnect"
             onClick={() => onDisconnect(account)}
-            className="p-2 rounded-small transition-colors"
-            style={{ color: "rgb(155 155 155)" }}
-            onMouseEnter={(e) => { e.currentTarget.style.color = "rgb(138 9 9)"; e.currentTarget.style.backgroundColor = "rgb(253 235 235)"; }}
-            onMouseLeave={(e) => { e.currentTarget.style.color = "rgb(155 155 155)"; e.currentTarget.style.backgroundColor = "transparent"; }}
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-small border transition-colors"
+            style={{ color: "rgb(138 9 9)", borderColor: "rgb(252 216 216)", backgroundColor: "rgb(253 235 235)" }}
+            onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "rgb(252 216 216)"; }}
+            onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "rgb(253 235 235)"; }}
           >
-            <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
             </svg>
+            Disconnect
           </button>
         </div>
       </div>
@@ -161,6 +162,7 @@ export default function AccountsClient({ accounts: initialAccounts }: { accounts
   const searchParams = useSearchParams();
   const [accounts, setAccounts] = useState<Account[]>(initialAccounts);
   const [disconnecting, setDisconnecting] = useState<Account | null>(null);
+  const removeAccountFromStore = useAccountStore((s) => s.removeAccount);
   const [disconnectLoading, setDisconnectLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [addedSuccess, setAddedSuccess] = useState(false);
@@ -187,6 +189,7 @@ export default function AccountsClient({ accounts: initialAccounts }: { accounts
         const data = await res.json().catch(() => ({}));
         throw new Error(data.error ?? "Failed to disconnect");
       }
+      removeAccountFromStore(disconnecting.homeAccountId);
       setAccounts((prev) => prev.filter((a) => a.id !== disconnecting.id));
       setDisconnecting(null);
       // If no accounts left, redirect to onboarding

@@ -1,5 +1,10 @@
 # Build Log
 
+## 2026-03-05
+- [Phase 4] NL Event Creation + Multi-account Dashboard: /api/calendar/nl-create (Claude Haiku parses natural language → prefill), NL input bar in CalendarClient header (Enter or Create button → parse → opens EventFormModal prefilled), dashboard page now fetches calendar events via Promise.allSettled across ALL connected accounts (was default account only), sorted + capped at 6. tsc clean.
+- [Phase 3] Email → Calendar: /api/calendar/parse-invite (Claude Haiku extracts subject/start/end/location/attendees/body from email). EmailReadClient: invite detection heuristic (subject/body keywords + .ics attachment), "Add to Calendar" toolbar button (highlighted red when invite detected), calls parse-invite on click, opens EventFormModal prefilled. homeAccountId threaded from page → client. tsc clean.
+- [Phase 2] Calendar event interactions complete: EventFormModal.tsx (create/edit), EventDetailModal.tsx (view/respond/delete), API routes (POST/PATCH/DELETE /api/calendar/event, POST /api/calendar/respond). CalendarClient.tsx updated: "New Event" button, both modals rendered, edit flow wired (detail → form prefilled), optimistic event list update on save. tsc clean. dep:map regenerated.
+
 ## 2026-03-04 (session 3 additions)
 - [Feature] Email Rules enforcement layer: Prisma EmailRule model, 5 API routes (CRUD + reorder + increment + apply-action), pure rule engine (lib/utils/rule-engine.ts), EmailRulesClient migrated from localStorage to API with optimistic updates, InboxClient wired to apply rules to every email batch and fire MS Graph side effects via Promise.allSettled. TypeScript clean. Committed 8c0a536.
 
@@ -114,3 +119,20 @@
 - [Fix] ComposeClient: AI Dictate — SpeechRecognition auto-restarts on silence (intentionalStopRef pattern)
 - [Fix] ComposeClient: stopRecording/pauseRecording set intentionalStopRef=true to prevent spurious restart
 - [Feature] ComposeClient: body expand/focus mode — click expand icon in body area to hide AI bar + toolbar, giving full height for long emails; mini floating toolbar (Bold/Italic/Underline/Bullets/Numbers) visible in focus mode; same bodyRef (no sync needed)
+
+## 2026-03-05 — Auth + Composer features + Bug fixes
+- [Fix] createServiceClient(): converted from async cookie-based client to sync service-role client using top-level import (require() inside function body not reliably bundled by Next.js production build)
+- [Fix] /auth/callback: replaced Route Handler with client-side page.tsx — Route Handlers cannot receive URL hash fragments; Supabase implicit flow sends #access_token= which browsers strip before HTTP request. New page handles both PKCE (?code=) and implicit (#access_token=) flows.
+- [Fix] ComposeClient: XSS — added DOMPurify sanitize() to AI diff and dictate previews using dangerouslySetInnerHTML
+- [Fix] ComposeClient: stale closure on saveDraftFnRef — moved assignment from render body to useEffect
+- [Feature] ComposeClient: high importance flag toggle button in footer
+- [Feature] ComposeClient: read receipt toggle button in footer
+- [Feature] ComposeClient: discard confirmation modal — only shown when composer has content
+- [Feature] ComposeClient: drag & drop file attachments onto composer card
+- [Feature] ComposeClient: drag & drop inline image insertion onto body (insertImageAtCursor via Range.insertNode, not execCommand)
+- [Feature] ComposeClient: inline image paste via onPaste handler
+- [Feature] /api/mail/send: passes importance and isReadReceiptRequested to Graph API
+- [Tests] composer.spec.ts: added 7 new E2E tests (8/8b/8c/8d discard, 9/9b drag-drop file, 10 drag-drop image) — 23 total, all passing
+- [Fix] inbox API: added try/catch around graphGet — was returning HTML 500 page on error, causing "Unexpected end of JSON input" in InboxClient .json() call when switching accounts
+- [Fix] InboxClient: check r.ok before r.json() in account-switch and tab-switch fetch chains
+- TypeScript: CLEAN

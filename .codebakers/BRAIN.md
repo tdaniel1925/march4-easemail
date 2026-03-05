@@ -1,5 +1,5 @@
 # 🍞 EaseMail — BRAIN.md
-_Last updated: 2026-03-04_
+_Last updated: 2026-03-05_
 
 ## Project Identity
 - **Name:** EaseMail
@@ -40,12 +40,12 @@ _Last updated: 2026-03-04_
 | `/inbox` | ✅ Fetches emails via Graph, list + reading pane |
 | `/api/auth/microsoft` | ✅ Initiates MSAL auth code flow |
 | `/api/auth/microsoft/callback` | ✅ Exchanges code, upserts user+DB, generates magic link |
-| `/auth/callback` | ✅ Exchanges Supabase code for session, redirects |
+| `/auth/callback` | ✅ Client-side page (NOT route handler) — handles both PKCE (?code=) and implicit (#access_token=) flows |
 | `/api/auth/signout` | ✅ Signs out Supabase session |
 | `/starred`, `/sent`, `/drafts`, `/trash` | ✅ Built — FolderClient with search, infinite scroll, AI Reply |
 | `/dashboard` | ✅ Live clock, agenda, todos, weekly chart, recent unread |
-| `/accounts` | ✅ Account cards, disconnect modal, default promotion |
-| `/calendar` | ✅ Week-view grid, MS Graph calendarView, prev/next navigation |
+| `/accounts` | ✅ Account cards, disconnect modal, default promotion, full cleanup on disconnect (webhooks, delta links, drafts, MSAL cache, Zustand store) |
+| `/calendar` | ⚠️ Read-only week view only — multi-account sync, event details, NL create all missing |
 | `/attachments` | ✅ File table from Graph expanded attachments, type filter, search |
 | `/contacts` | ✅ Split-panel, alphabetical list, detail panel, /me/contacts |
 | `/help` | ✅ Hero + search, 6 category tabs, FAQ accordion |
@@ -76,10 +76,43 @@ _Last updated: 2026-03-04_
 - **SpeechRecognition:** auto-restart on silence via `onend` + `intentionalStopRef`, 10-min cap via time ref
 - **Rule engine:** pure function, `Promise.allSettled` for side effects, never throws to inbox
 
+## MSAL Token Cache — Critical Pattern
+- `getAllAccounts()` is synchronous and reads in-memory state ONLY — does NOT trigger `beforeCacheAccess`
+- Fix: manually `deserialize()` from DB before calling `getAllAccounts()` in `acquireTokenSilent()`
+- `acquireTokenSilent()` now takes `userId` as 3rd param to load cache row directly
+- `graphFetch()` passes `userId` through to `acquireTokenSilent()`
+- See `lib/microsoft/msal.ts` — `acquireTokenSilent()` for the pattern
+
+## Account Store — removeAccount
+- `account-store.ts` now has `removeAccount(homeAccountId)` action
+- Updates `accounts[]` and resets `activeAccount` to new default if deleted account was active
+- Called by `AccountsClient` after successful disconnect API response
+
+## Account Disconnect — Full Cleanup (2026-03-05)
+On disconnect, `app/api/accounts/disconnect/route.ts` now:
+1. Cancels Graph webhook subscriptions (best-effort via Promise.allSettled)
+2. Removes account tokens from MSAL cache JSON in DB
+3. Deletes WebhookSubscription + EmailDeltaLink + Draft records in one transaction
+4. Deletes MsConnectedAccount
+5. Promotes new default if needed
+Client: `AccountsClient` calls `removeAccount()` on Zustand store → sidebar updates live
+
+## Auth Callback — Critical Architecture Note
+- `/auth/callback` MUST be a client-side `page.tsx`, NOT a route handler
+- Supabase implicit flow sends `#access_token=` as URL hash fragment
+- Browsers strip hash fragments before sending HTTP requests → route handlers never see them
+- Client page reads both `?code=` (PKCE) and `window.location.hash` (implicit)
+
+## Inbox API — Error Handling
+- `/api/mail/inbox` and `/api/mail/folders` wrap all Graph calls in try/catch
+- MSAL cache miss → returns `{ error: "account_requires_reauth" }` with HTTP 401
+- InboxClient detects 401 and shows inline reconnect banner (not silent failure)
+- `/api/mail/folders` uses `$filter=wellKnownName eq null` (NOT `$select=wellKnownName` — Graph rejects that)
+
 ## Current Focus
-- Session start: 2026-03-04 (session 3 continued)
-- Last completed: Composer gap analysis + full feature build (P0+P1+P2)
-- Next: TBD by user
+- Session start: 2026-03-05
+- Last completed: Auth fixes, MSAL cache pre-load, account disconnect full cleanup, calendar audit
+- Next: Calendar — multi-account sync, event detail modal, natural language event creation
 
 ## Composer Features Built (session 3 continued)
 - File attachments: file picker → base64 → Graph send (inline ≤4MB, array)

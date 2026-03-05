@@ -96,6 +96,7 @@ export default function InboxClient({
   const [searching, setSearching] = useState(false);
   const [tabEmails, setTabEmails] = useState<EmailMessage[] | null>(null);
   const [loadingTab, setLoadingTab] = useState(false);
+  const [requiresReauth, setRequiresReauth] = useState(false);
 
   const activeAccount = useAccountStore((s) => s.activeAccount);
   const setInboxUnread = useAccountStore((s) => s.setInboxUnread);
@@ -163,12 +164,21 @@ export default function InboxClient({
   useEffect(() => {
     if (firstRender.current) { firstRender.current = false; return; }
     if (!activeAccount) return;
+    setRequiresReauth(false);
     setLoadingEmails(true);
     setNextLink(null);
     setTabEmails(null);
     fetch(`/api/mail/inbox?homeAccountId=${encodeURIComponent(activeAccount.homeAccountId)}`)
-      .then((r) => r.json())
-      .then((data: { emails: EmailMessage[]; nextLink: string | null }) => {
+      .then(async (r) => {
+        if (r.status === 401) {
+          const body = await r.json() as { error: string };
+          if (body.error === "account_requires_reauth") { setRequiresReauth(true); return null; }
+        }
+        if (!r.ok) throw new Error(`inbox ${r.status}`);
+        return r.json() as Promise<{ emails: EmailMessage[]; nextLink: string | null }>;
+      })
+      .then((data) => {
+        if (!data) return;
         setEmails(processWithRules(data.emails, activeAccount.homeAccountId));
         setNextLink(data.nextLink ?? null);
       })
@@ -183,7 +193,7 @@ export default function InboxClient({
     setLoadingTab(true);
     setTabEmails(null);
     fetch(`/api/mail/inbox?homeAccountId=${encodeURIComponent(activeAccount.homeAccountId)}&tab=${activeTab}`)
-      .then((r) => r.json())
+      .then((r) => { if (!r.ok) throw new Error(`inbox-tab ${r.status}`); return r.json(); })
       .then((data: { emails: EmailMessage[] }) => setTabEmails(data.emails))
       .catch(console.error)
       .finally(() => setLoadingTab(false));
@@ -351,6 +361,22 @@ export default function InboxClient({
             </p>
           )}
         </div>
+
+        {/* Reconnect banner */}
+        {requiresReauth && activeAccount && (
+          <div className="mx-4 mt-3 px-4 py-3 rounded-[10px] border flex items-center justify-between gap-3" style={{ backgroundColor: "rgb(253 235 235)", borderColor: "rgb(220 180 180)" }}>
+            <p className="text-xs" style={{ color: "rgb(83 5 5)" }}>
+              This account&apos;s session expired. Reconnect to load emails.
+            </p>
+            <a
+              href="/api/auth/microsoft?add=1"
+              className="text-xs font-semibold flex-shrink-0 underline"
+              style={{ color: "rgb(138 9 9)" }}
+            >
+              Reconnect
+            </a>
+          </div>
+        )}
 
         {/* Email rows */}
         <div className="flex-1 overflow-y-auto divide-y divide-neutral-100 relative">

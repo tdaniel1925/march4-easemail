@@ -68,12 +68,18 @@ export async function GET(req: NextRequest) {
       : nextLinkParam
     : TAB_PATHS[tab] ?? DEFAULT_PATH;
 
-  const data = await graphGet<GraphMessagesResponse>(user.id, homeAccountId, path);
-
-  const emails = data.value.map(mapMessage);
-
-  return NextResponse.json({
-    emails,
-    nextLink: data["@odata.nextLink"] ?? null,
-  });
+  try {
+    const data = await graphGet<GraphMessagesResponse>(user.id, homeAccountId, path);
+    const emails = data.value.map(mapMessage);
+    return NextResponse.json({ emails, nextLink: data["@odata.nextLink"] ?? null });
+  } catch (err) {
+    const msg = String(err);
+    console.error("[inbox] Graph error:", msg);
+    // MSAL cache miss = account tokens lost (server restart, first connect on another device).
+    // Return 401 so client can prompt reconnection instead of a generic 500.
+    if (msg.includes("not found in MSAL cache")) {
+      return NextResponse.json({ error: "account_requires_reauth" }, { status: 401 });
+    }
+    return NextResponse.json({ error: msg }, { status: 500 });
+  }
 }

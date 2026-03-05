@@ -107,7 +107,7 @@ export default async function EmailReadPage({
         userName={dbUser.name ?? user.email ?? "You"}
         userEmail={defaultAccount.msEmail}
       />
-      <EmailReadClient email={email} />
+      <EmailReadClient email={email} homeAccountId={defaultAccount.homeAccountId} />
     </div>
   );
 }

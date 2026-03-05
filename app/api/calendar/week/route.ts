@@ -2,88 +2,63 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { graphGet } from "@/lib/microsoft/graph";
-import type { CalEvent } from "@/components/calendar/CalendarClient";
+import {
+  type CalEvent,
+  type GraphCalEventList,
+  mapGraphEvent,
+  CALENDAR_SELECT,
+} from "@/lib/types/calendar";
 
-// ─── Graph shapes ─────────────────────────────────────────────────────────────
-
-interface GraphEvent {
-  id: string;
-  subject: string;
-  start: { dateTime: string; timeZone: string };
-  end: { dateTime: string; timeZone: string };
-  location?: { displayName: string };
-  attendees?: { emailAddress: { name: string; address: string } }[];
-  bodyPreview?: string;
-}
-
-interface GraphEventList {
-  value: GraphEvent[];
-}
-
-// ─── GET /api/calendar/week?start={isoDate} ───────────────────────────────────
+// ─── GET /api/calendar/week?start={YYYY-MM-DD} ────────────────────────────────
+// Fetches events for the given week across ALL connected accounts.
 
 export async function GET(req: NextRequest): Promise<NextResponse> {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const startParam = req.nextUrl.searchParams.get("start");
-  if (!startParam) {
-    return NextResponse.json(
-      { error: "start query param required (ISO date)" },
-      { status: 400 }
-    );
+  if (!startParam || isNaN(Date.parse(`${startParam}T00:00:00`))) {
+    return NextResponse.json({ error: "start param required (YYYY-MM-DD)" }, { status: 400 });
   }
 
-  const dbUser = await prisma.user.findUnique({
-    where: { id: user.id },
-    include: { msAccounts: { orderBy: { isDefault: "desc" } } },
+  const accounts = await prisma.msConnectedAccount.findMany({
+    where: { userId: user.id },
+    orderBy: { isDefault: "desc" },
   });
-  if (!dbUser) {
-    return NextResponse.json({ error: "User not found" }, { status: 404 });
+  if (!accounts.length) {
+    return NextResponse.json({ error: "No connected accounts" }, { status: 400 });
   }
 
-  const defaultAccount =
-    dbUser.msAccounts.find((a) => a.isDefault) ?? dbUser.msAccounts[0];
-  if (!defaultAccount) {
-    return NextResponse.json(
-      { error: "No connected account" },
-      { status: 400 }
-    );
-  }
+  const weekStart = new Date(`${startParam}T00:00:00`);
+  const weekEnd = new Date(weekStart);
+  weekEnd.setDate(weekStart.getDate() + 6);
+  weekEnd.setHours(23, 59, 59, 999);
 
-  // Build date range: startParam is Monday, weekEnd = Monday + 6 days at 23:59:59
-  const weekStartDate = new Date(`${startParam}T00:00:00`);
-  const weekEndDate = new Date(weekStartDate);
-  weekEndDate.setDate(weekStartDate.getDate() + 6);
-  weekEndDate.setHours(23, 59, 59, 999);
+  const graphPath =
+    `/me/calendarView` +
+    `?startDateTime=${encodeURIComponent(weekStart.toISOString())}` +
+    `&endDateTime=${encodeURIComponent(weekEnd.toISOString())}` +
+    `&$select=${CALENDAR_SELECT}` +
+    `&$top=200`;
 
-  try {
-    const eventsData = await graphGet<GraphEventList>(
-      user.id,
-      defaultAccount.homeAccountId,
-      `/me/calendarView?startDateTime=${encodeURIComponent(weekStartDate.toISOString())}&endDateTime=${encodeURIComponent(weekEndDate.toISOString())}&$top=50&$select=id,subject,start,end,location,attendees,bodyPreview&$orderby=start/dateTime`
-    );
+  // Fetch from all accounts in parallel — partial failures don't break the page
+  const results = await Promise.allSettled(
+    accounts.map((acc) =>
+      graphGet<GraphCalEventList>(user.id, acc.homeAccountId, graphPath).then((data) =>
+        (data.value ?? []).map((e) => mapGraphEvent(e, acc.homeAccountId, acc.msEmail))
+      )
+    )
+  );
 
-    const events: CalEvent[] = (eventsData.value ?? []).map((e) => ({
-      id: e.id,
-      subject: e.subject ?? "(no subject)",
-      startDateTime: e.start.dateTime,
-      endDateTime: e.end.dateTime,
-      location: e.location?.displayName ?? "",
-      attendeeCount: e.attendees?.length ?? 0,
-    }));
+  const events: CalEvent[] = results
+    .filter((r): r is PromiseFulfilledResult<CalEvent[]> => r.status === "fulfilled")
+    .flatMap((r) => r.value)
+    .sort((a, b) => new Date(a.startDateTime).getTime() - new Date(b.startDateTime).getTime());
 
-    return NextResponse.json({ events });
-  } catch (err) {
-    const message = err instanceof Error ? err.message : "Unknown error";
-    return NextResponse.json(
-      { error: `Failed to fetch calendar events: ${message}` },
-      { status: 500 }
-    );
-  }
+  const errors = results
+    .filter((r): r is PromiseRejectedResult => r.status === "rejected")
+    .map((r) => String(r.reason));
+
+  return NextResponse.json({ events, ...(errors.length ? { errors } : {}) });
 }

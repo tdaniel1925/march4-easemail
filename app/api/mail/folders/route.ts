@@ -3,21 +3,12 @@ import { createClient } from "@/lib/supabase/server";
 import { graphGet } from "@/lib/microsoft/graph";
 import type { MailFolder } from "@/lib/types/email";
 
-// Well-known system folder names — excluded from custom folder list
-// since they're already represented by dedicated sidebar links
-const SYSTEM_WELL_KNOWN = new Set([
-  "inbox", "drafts", "sentitems", "deleteditems", "junkemail",
-  "archive", "outbox", "recoverableitemsdeletions", "msgfolderroot",
-  "searchfolders", "syncissues", "conflicts", "localfailures",
-  "serverfailures", "scheduled", "conversationhistory",
-]);
 
 interface GraphFolder {
   id: string;
   displayName: string;
   unreadItemCount: number;
   totalItemCount: number;
-  wellKnownName: string | null;
 }
 
 export async function GET(req: NextRequest) {
@@ -29,13 +20,14 @@ export async function GET(req: NextRequest) {
   if (!homeAccountId) return NextResponse.json({ error: "homeAccountId required" }, { status: 400 });
 
   try {
+    // $filter=wellKnownName eq null returns only custom (non-system) folders.
+    // wellKnownName cannot appear in $select (Graph 400) but is valid in $filter.
     const data = await graphGet<{ value: GraphFolder[] }>(
       user.id, homeAccountId,
-      "/me/mailFolders?$select=id,displayName,unreadItemCount,totalItemCount,wellKnownName&$top=100"
+      "/me/mailFolders?$filter=wellKnownName eq null&$select=id,displayName,unreadItemCount,totalItemCount&$top=100"
     );
 
     const folders: MailFolder[] = data.value
-      .filter((f) => !SYSTEM_WELL_KNOWN.has((f.wellKnownName ?? "").toLowerCase()))
       .map((f) => ({
         id: f.id,
         displayName: f.displayName,
@@ -45,7 +37,11 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json({ folders });
   } catch (err) {
-    console.error("folders list error:", err);
-    return NextResponse.json({ error: String(err) }, { status: 500 });
+    const msg = String(err);
+    console.error("folders list error:", msg);
+    if (msg.includes("not found in MSAL cache")) {
+      return NextResponse.json({ error: "account_requires_reauth" }, { status: 401 });
+    }
+    return NextResponse.json({ error: msg }, { status: 500 });
   }
 }

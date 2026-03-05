@@ -99,8 +99,20 @@ export async function acquireTokenByCode(
 
 export async function acquireTokenSilent(
   msalClient: ConfidentialClientApplication,
-  homeAccountId: string
+  homeAccountId: string,
+  userId: string
 ) {
+  // getAllAccounts() is synchronous — it reads the in-memory cache only and does NOT
+  // trigger beforeCacheAccess. We must manually deserialize from DB first so that
+  // tokens persisted in previous requests/server restarts are available.
+  const row = await prisma.msalTokenCache.findUnique({
+    where: { userId },
+    select: { cacheJson: true },
+  });
+  if (row?.cacheJson) {
+    msalClient.getTokenCache().deserialize(row.cacheJson);
+  }
+
   const accounts = await msalClient.getTokenCache().getAllAccounts();
   const account = accounts.find((a) => a.homeAccountId === homeAccountId);
 

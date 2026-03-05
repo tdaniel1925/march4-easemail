@@ -51,21 +51,29 @@ export default async function DashboardPage() {
   const defaultAccount = dbUser.msAccounts.find((a) => a.isDefault) ?? dbUser.msAccounts[0];
   if (!defaultAccount) redirect("/onboarding");
 
-  // Fetch today's calendar events
+  // Fetch today's calendar events across all accounts
   const now = new Date();
   const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString();
   const endOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59).toISOString();
 
   let events: GraphEventList["value"] = [];
   try {
-    const eventsData = await graphGet<GraphEventList>(
-      user.id,
-      defaultAccount.homeAccountId,
-      `/me/calendarView?startDateTime=${encodeURIComponent(startOfDay)}&endDateTime=${encodeURIComponent(endOfDay)}&$top=3&$select=id,subject,start,end,location,attendees&$orderby=start/dateTime`
+    const results = await Promise.allSettled(
+      dbUser.msAccounts.map((acc) =>
+        graphGet<GraphEventList>(
+          user.id,
+          acc.homeAccountId,
+          `/me/calendarView?startDateTime=${encodeURIComponent(startOfDay)}&endDateTime=${encodeURIComponent(endOfDay)}&$top=10&$select=id,subject,start,end,location,attendees&$orderby=start/dateTime`
+        )
+      )
     );
-    events = eventsData.value ?? [];
+    events = results
+      .filter((r): r is PromiseFulfilledResult<GraphEventList> => r.status === "fulfilled")
+      .flatMap((r) => r.value.value ?? [])
+      .sort((a, b) => new Date(a.start.dateTime).getTime() - new Date(b.start.dateTime).getTime())
+      .slice(0, 6);
   } catch {
-    // Calendar may not be consented — not fatal
+    // Not fatal
   }
 
   // Fetch top 3 unread emails

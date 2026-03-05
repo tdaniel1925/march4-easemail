@@ -3,6 +3,8 @@
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { getInitials, getAvatarColor } from "@/lib/utils/email-helpers";
+import EventFormModal from "@/components/calendar/EventFormModal";
+import type { ParseInviteResponse } from "@/app/api/calendar/parse-invite/route";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -35,6 +37,32 @@ interface EmailDetail {
 
 type ComposeMode = "reply" | "replyAll" | "forward";
 
+// ─── Invite detection ─────────────────────────────────────────────────────────
+
+const INVITE_SUBJECT_KEYWORDS = [
+  "invite", "meeting", "call", "conference", "appointment", "webinar",
+  "zoom", "teams", "join us", "you're invited", "save the date",
+  "sync", "standup", "catchup", "catch-up",
+];
+const INVITE_BODY_KEYWORDS = [
+  "join the meeting", "meeting link", "calendar event", "agenda",
+  "meeting id", "passcode", "zoom.us", "teams.microsoft.com",
+  "meet.google.com", "webex.com", "gotomeeting",
+];
+
+function isLikelyInvite(email: EmailDetail): boolean {
+  const sub = email.subject.toLowerCase();
+  const preview = email.bodyPreview.toLowerCase();
+  const hasIcs = email.attachments.some(
+    (a) => a.contentType.includes("calendar") || a.name.toLowerCase().endsWith(".ics")
+  );
+  return (
+    hasIcs ||
+    INVITE_SUBJECT_KEYWORDS.some((kw) => sub.includes(kw)) ||
+    INVITE_BODY_KEYWORDS.some((kw) => preview.includes(kw))
+  );
+}
+
 // ─── SafeHtml ─────────────────────────────────────────────────────────────────
 
 function SafeHtml({ html }: { html: string }) {
@@ -55,7 +83,7 @@ function SafeHtml({ html }: { html: string }) {
 
 // ─── EmailReadClient ──────────────────────────────────────────────────────────
 
-export default function EmailReadClient({ email }: { email: EmailDetail }) {
+export default function EmailReadClient({ email, homeAccountId }: { email: EmailDetail; homeAccountId: string }) {
   const [composeMode, setComposeMode] = useState<ComposeMode | null>(null);
   const [toField, setToField] = useState("");
   const [replyText, setReplyText] = useState("");
@@ -66,7 +94,13 @@ export default function EmailReadClient({ email }: { email: EmailDetail }) {
   const [isStarred, setIsStarred] = useState(email.flag.flagStatus === "flagged");
   const [showAllRecipients, setShowAllRecipients] = useState(false);
   const [aiLoading, setAiLoading] = useState(false);
+  const [calLoading, setCalLoading] = useState(false);
+  const [calError, setCalError] = useState<string | null>(null);
+  const [showCalForm, setShowCalForm] = useState(false);
+  const [calPrefill, setCalPrefill] = useState<ParseInviteResponse | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  const isInvite = isLikelyInvite(email);
 
   // Mark as read on mount
   useEffect(() => {
@@ -153,6 +187,32 @@ export default function EmailReadClient({ email }: { email: EmailDetail }) {
     }
   }
 
+  async function handleAddToCalendar() {
+    setCalLoading(true);
+    setCalError(null);
+    try {
+      const res = await fetch("/api/calendar/parse-invite", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          subject: email.subject,
+          fromAddress: email.from.address,
+          body: email.body.content,
+          bodyPreview: email.bodyPreview,
+          receivedDateTime: email.receivedDateTime,
+        }),
+      });
+      const data = await res.json() as { ok?: boolean; prefill?: ParseInviteResponse; error?: string };
+      if (!res.ok || !data.ok || !data.prefill) throw new Error(data.error ?? "Failed to parse invite");
+      setCalPrefill(data.prefill);
+      setShowCalForm(true);
+    } catch (e) {
+      setCalError((e as Error).message);
+    } finally {
+      setCalLoading(false);
+    }
+  }
+
   function formatSize(bytes: number) {
     if (bytes < 1024) return `${bytes} B`;
     if (bytes < 1048576) return `${Math.round(bytes / 1024)} KB`;
@@ -232,6 +292,34 @@ export default function EmailReadClient({ email }: { email: EmailDetail }) {
             )}
             AI Reply
           </button>
+
+          {/* Add to Calendar */}
+          <button
+            onClick={() => void handleAddToCalendar()}
+            disabled={calLoading}
+            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-small text-xs font-medium transition-colors disabled:opacity-60"
+            style={isInvite
+              ? { backgroundColor: "rgb(253 235 235)", color: "rgb(138 9 9)", border: "1px solid rgb(238 180 180)" }
+              : { backgroundColor: "transparent", color: "rgb(82 82 82)", border: "1px solid transparent" }
+            }
+            title="Add this email to your calendar"
+          >
+            {calLoading ? (
+              <svg className="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth={4} />
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+              </svg>
+            ) : (
+              <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+            )}
+            {isInvite ? "Add to Calendar" : "Calendar"}
+          </button>
+          {calError && (
+            <span className="text-xs font-medium" style={{ color: "rgb(138 9 9)" }}>{calError}</span>
+          )}
+
         </div>
 
         {/* Right: action icons */}
@@ -465,6 +553,23 @@ export default function EmailReadClient({ email }: { email: EmailDetail }) {
           <div className="h-16" />
         </div>
       </div>
+
+      {/* ── Calendar event form ────────────────────────────────────────────────── */}
+      {showCalForm && (
+        <EventFormModal
+          prefill={calPrefill ? {
+            subject: calPrefill.subject,
+            start: calPrefill.start || undefined,
+            end: calPrefill.end || undefined,
+            location: calPrefill.location || undefined,
+            attendees: calPrefill.attendees.length ? calPrefill.attendees : undefined,
+            body: calPrefill.body || undefined,
+            homeAccountId,
+          } : { homeAccountId }}
+          onClose={() => { setShowCalForm(false); setCalPrefill(null); }}
+          onSaved={() => { setShowCalForm(false); setCalPrefill(null); }}
+        />
+      )}
     </div>
   );
 }

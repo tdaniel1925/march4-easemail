@@ -15,7 +15,7 @@ export async function graphFetch(
   options: RequestInit = {}
 ): Promise<Response> {
   const msal = createMsalClient(userId);
-  const token = await acquireTokenSilent(msal, homeAccountId);
+  const token = await acquireTokenSilent(msal, homeAccountId, userId);
 
   return fetch(`${GRAPH_BASE}${path}`, {
     ...options,
