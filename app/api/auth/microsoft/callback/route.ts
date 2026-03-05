@@ -100,12 +100,13 @@ export async function GET(req: NextRequest) {
 
     // 2. Find or create Supabase user
     const supabaseAdmin = createServiceClient();
-    const { data: listData } = await supabaseAdmin.auth.admin.listUsers();
-    const existing = listData?.users?.find((u) => u.email === msEmail);
+
+    // Look up by email in our DB (O(1) indexed lookup — avoids listUsers O(n) scan)
+    const existingDbUser = await prisma.user.findUnique({ where: { email: msEmail } });
 
     let supabaseUserId: string;
-    if (existing) {
-      supabaseUserId = existing.id;
+    if (existingDbUser) {
+      supabaseUserId = existingDbUser.id;
     } else {
       const { data: newUser, error: createErr } = await supabaseAdmin.auth.admin.createUser({
         email: msEmail,
