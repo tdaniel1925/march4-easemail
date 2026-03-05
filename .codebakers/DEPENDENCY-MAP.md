@@ -1,6 +1,6 @@
 # CodeBakers Dependency Map
 # GENERATED — never edit by hand. Run `pnpm dep:map` to regenerate.
-# Last generated: 2026-03-05 | git: 0cfded7
+# Last generated: 2026-03-05 | git: d5ee6b3
 # Debug: pnpm dep:map --debug
 
 ---
@@ -12,6 +12,9 @@
 | Account | useAccountsClient, useComposeClient | — | — | activeAccount | — (set manually) |
 | AccountStore | useAccountStore | AccountsClient, AccountSwitcher, EventFormModal, DashboardClient, FolderClient | — | — | — (set manually) |
 | ActivePanel | useComposeClient | — | — | — | — (set manually) |
+| AdminEmailRule | useAdminClient | — | — | — | — (set manually) |
+| AdminSignature | useAdminClient | — | — | — | — (set manually) |
+| AdminUser | useAdminClient | — | — | — | — (set manually) |
 | Article | useHelpClient | — | — | — | — (set manually) |
 | Attachment | useEmailReadClient | — | — | — | — (set manually) |
 | AttachmentItem | useAttachmentsClient | — | — | — | — (set manually) |
@@ -19,7 +22,7 @@
 | CalendarEvent | useDashboardClient | — | — | — | — (set manually) |
 | CalendarStore | useCalendarStore | CalendarClient, EventDetailModal, EventFormModal | — | — | — (set manually) |
 | CalEvent | useCalendarClient | — | — | — | — (set manually) |
-| Color | useAccountsClient, useAccountSwitcher, useAttachmentsClient, useCalendarClient, useEventDetailModal, useEventFormModal, useComposeClient, useContactsClient, useDashboardClient, useEmailRulesClient, useFolderClient, useHelpClient, useAiReplyModal, useEmailReadClient, useInboxClient, useSettingsClient, useReadingPane, useSidebar, useSignaturesClient | — | — | — | — (set manually) |
+| Color | useAccountsClient, useAccountSwitcher, useAdminClient, useAttachmentsClient, useCalendarClient, useEventDetailModal, useEventFormModal, useComposeClient, useContactsClient, useDashboardClient, useEmailRulesClient, useFolderClient, useHelpClient, useAiReplyModal, useEmailReadClient, useInboxClient, useSettingsClient, useReadingPane, useSidebar, useSignaturesClient | — | — | — | — (set manually) |
 | ComponentFile | useGenerateDepMap | — | — | — | — (set manually) |
 | ComposeMode | useComposeClient, useReadingPane | — | — | — | — (set manually) |
 | Condition | useEmailRulesClient | — | — | — | — (set manually) |
@@ -47,7 +50,7 @@
 | NotificationSettings | useSettingsClient | — | — | — | — (set manually) |
 | PositionedEvent | useCalendarClient | — | — | — | — (set manually) |
 | Profile | useSettingsClient | — | — | — | — (set manually) |
-| Props | useEventFormModal, useContactsClient | — | — | — | — (set manually) |
+| Props | useAdminClient, useEventFormModal, useContactsClient | — | — | — | — (set manually) |
 | Recipient | useEmailReadClient | — | — | — | — (set manually) |
 | Response | useEventDetailModal | — | — | — | — (set manually) |
 | Rule | useEmailRulesClient | — | — | activeRule | — (set manually) |
@@ -61,8 +64,10 @@
 | SpeechRecognitionConstructor | useCalendarClient | — | — | — | — (set manually) |
 | StoreFile | useGenerateDepMap | — | — | — | — (set manually) |
 | StylePreset | useComposeClient | — | — | — | — (set manually) |
+| SyncStat | useAdminClient | — | — | — | — (set manually) |
+| Tab | useAdminClient | — | — | activeTab | — (set manually) |
 | TabId | useHelpClient | — | — | — | — (set manually) |
-| Target | useAccountsClient, useAccountSwitcher, useAttachmentsClient, useComposeClient, useContactsClient, useDashboardClient, useAiReplyModal, useEmailReadClient, useInboxClient, useReadingPane, useSidebar | — | — | — | — (set manually) |
+| Target | useAccountsClient, useAccountSwitcher, useAdminClient, useAttachmentsClient, useComposeClient, useContactsClient, useDashboardClient, useAiReplyModal, useEmailReadClient, useInboxClient, useReadingPane, useSidebar | — | — | — | — (set manually) |
 | Time | useCalendarClient | — | — | — | — (set manually) |
 | TodoItem | useDashboardClient | — | — | — | — (set manually) |
 | Tone | useComposeClient | — | — | — | — (set manually) |
@@ -84,6 +89,10 @@ Entities: ConnectedAccount, AccountStore, MailFolder
 ### useAccountSwitcher
 File: `components\AccountSwitcher.tsx`
 Entities: Color, Target
+
+### useAdminClient
+File: `components\admin\AdminClient.tsx`
+Entities: AdminUser, SyncStat, AdminEmailRule, AdminSignature, Props, Tab, Target, Color
 
 ### useAiReplyModal
 File: `components\inbox\AiReplyModal.tsx`
