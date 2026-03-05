@@ -395,6 +395,8 @@ export default function CalendarClient({ weekStart: initialWeekStart, events: in
     return () => clearInterval(id);
   }, []);
 
+  useEffect(() => () => { recogRef.current?.stop(); }, []);
+
   useEffect(() => {
     if (scrollRef.current) scrollRef.current.scrollTop = 0;
   }, [activeView]);

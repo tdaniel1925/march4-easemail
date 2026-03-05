@@ -4,10 +4,31 @@ import { prisma } from "@/lib/prisma";
 import { graphGet } from "@/lib/microsoft/graph";
 import {
   type CalEvent,
+  type GraphCalEvent,
   type GraphCalEventList,
   mapGraphEvent,
   CALENDAR_SELECT,
 } from "@/lib/types/calendar";
+
+const GRAPH_BASE = "https://graph.microsoft.com/v1.0";
+
+type PagedCalEventList = GraphCalEventList & { "@odata.nextLink"?: string };
+
+async function fetchAllPages(
+  userId: string,
+  homeAccountId: string,
+  initialPath: string
+): Promise<GraphCalEvent[]> {
+  const all: GraphCalEvent[] = [];
+  let path: string | null = initialPath;
+  while (path) {
+    const data: PagedCalEventList = await graphGet<PagedCalEventList>(userId, homeAccountId, path);
+    all.push(...(data.value ?? []));
+    const next: string | null = data["@odata.nextLink"] ?? null;
+    path = next ? (next.startsWith(GRAPH_BASE) ? next.slice(GRAPH_BASE.length) : next) : null;
+  }
+  return all;
+}
 
 // ─── GET /api/calendar/range?start={YYYY-MM-DD}&end={YYYY-MM-DD} ──────────────
 // Fetches events for an arbitrary date range across ALL connected accounts.
@@ -37,12 +58,12 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     `?startDateTime=${encodeURIComponent(rangeStart.toISOString())}` +
     `&endDateTime=${encodeURIComponent(rangeEnd.toISOString())}` +
     `&$select=${CALENDAR_SELECT}` +
-    `&$top=500`;
+    `&$top=100`;
 
   const results = await Promise.allSettled(
     accounts.map((acc) =>
-      graphGet<GraphCalEventList>(user.id, acc.homeAccountId, graphPath).then((data) =>
-        (data.value ?? []).map((e) => mapGraphEvent(e, acc.homeAccountId, acc.msEmail))
+      fetchAllPages(user.id, acc.homeAccountId, graphPath).then((events) =>
+        events.map((e) => mapGraphEvent(e, acc.homeAccountId, acc.msEmail))
       )
     )
   );

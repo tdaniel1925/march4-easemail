@@ -222,7 +222,11 @@ export default function InboxClient({
     setTabEmails(null);
     fetch(`/api/mail/inbox?homeAccountId=${encodeURIComponent(activeAccount.homeAccountId)}&tab=${activeTab}`)
       .then(async (r) => {
-        if (r.status === 401) { setRequiresReauth(true); return null; }
+        if (r.status === 401) {
+          const body = await r.json().catch(() => ({} as { error?: string })) as { error?: string };
+          if (body.error === "Unauthorized") { window.location.href = "/login"; return null; }
+          setRequiresReauth(true); return null;
+        }
         if (!r.ok) throw new Error(`inbox-tab ${r.status}`);
         return r.json() as Promise<{ emails: EmailMessage[] }>;
       })

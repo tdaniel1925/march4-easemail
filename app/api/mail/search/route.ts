@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { graphGet } from "@/lib/microsoft/graph";
+import { isReauthError } from "@/lib/microsoft/auth-errors";
 import type { EmailMessage } from "@/lib/types/email";
 
 // Maps well-known folder param → Graph well-known folder name
@@ -73,7 +74,7 @@ export async function GET(req: NextRequest) {
   } catch (err) {
     const msg = String(err);
     console.error("search error:", msg);
-    if (msg.includes("REAUTH_REQUIRED") || msg.includes("not found in MSAL cache") || msg.includes("no_tokens_found") || msg.includes("InteractionRequired")) {
+    if (isReauthError(err)) {
       return NextResponse.json({ error: "account_requires_reauth" }, { status: 401 });
     }
     return NextResponse.json({ error: msg }, { status: 500 });
