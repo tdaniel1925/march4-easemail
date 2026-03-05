@@ -3,8 +3,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useAccountStore } from "@/lib/stores/account-store";
-import { ReadingPane } from "@/components/shared/ReadingPane";
-import AiReplyModal from "@/components/inbox/AiReplyModal";
 import type { EmailMessage } from "@/lib/types/email";
 import { formatDate, getInitials, getAvatarColor } from "@/lib/utils/email-helpers";
 
@@ -12,49 +10,23 @@ import { formatDate, getInitials, getAvatarColor } from "@/lib/utils/email-helpe
 
 function EmailRow({
   email,
-  selected,
   onClick,
-  onAiReply,
   showRecipient = false,
 }: {
   email: EmailMessage;
-  selected: boolean;
   onClick: () => void;
-  onAiReply: () => void;
   showRecipient?: boolean;
 }) {
   const displayName = showRecipient
     ? (email.toRecipients?.[0]?.name || email.toRecipients?.[0]?.address || email.from.name)
     : email.from.name;
   const color = getAvatarColor(displayName);
-  const [hovered, setHovered] = useState(false);
 
   return (
     <div
       onClick={onClick}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      className="relative flex items-start gap-3 px-4 py-3.5 cursor-pointer transition-colors"
-      style={{
-        backgroundColor: selected ? "rgb(253 235 235)" : "transparent",
-        borderLeft: selected ? "2px solid rgb(138 9 9)" : "2px solid transparent",
-      }}
+      className="relative flex items-start gap-3 px-4 py-3.5 cursor-pointer transition-colors hover:bg-neutral-50 border-l-2 border-transparent"
     >
-      {hovered && (
-        <button
-          onClick={(e) => { e.stopPropagation(); onAiReply(); }}
-          className="absolute right-3 top-3 flex items-center gap-1 text-xs font-medium px-2 py-1 rounded-[8px] z-10"
-          style={{ backgroundColor: "rgb(138 9 9)", color: "white" }}
-          onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "rgb(110 7 7)"; }}
-          onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "rgb(138 9 9)"; }}
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-          </svg>
-          AI Reply
-        </button>
-      )}
-
       <div
         className="w-9 h-9 rounded-[10px] flex items-center justify-center flex-shrink-0 mt-0.5 text-sm font-bold"
         style={{ backgroundColor: color.bg, color: color.text }}
@@ -99,21 +71,18 @@ export default function FolderClient({
   initialEmails: EmailMessage[];
   initialNextLink: string | null;
 }) {
+  const router = useRouter();
   const [emails, setEmails] = useState<EmailMessage[]>(initialEmails);
-  const [selectedId, setSelectedId] = useState<string | null>(initialEmails[0]?.id ?? null);
   const [search, setSearch] = useState("");
   const [loadingEmails, setLoadingEmails] = useState(false);
   const [nextLink, setNextLink] = useState<string | null>(initialNextLink);
   const [loadingMore, setLoadingMore] = useState(false);
   const [searchResults, setSearchResults] = useState<EmailMessage[] | null>(null);
   const [searching, setSearching] = useState(false);
-  const [aiReplyEmail, setAiReplyEmail] = useState<EmailMessage | null>(null);
-  const [replyText, setReplyText] = useState("");
 
   const activeAccount = useAccountStore((s) => s.activeAccount);
   const firstRender = useRef(true);
   const sentinelRef = useRef<HTMLDivElement>(null);
-  const router = useRouter();
 
   // Well-known folder names that exist on every account
   const SYSTEM_FOLDERS = new Set(["sent", "drafts", "trash", "starred"]);
@@ -123,16 +92,13 @@ export default function FolderClient({
   useEffect(() => {
     if (firstRender.current) { firstRender.current = false; return; }
     if (!activeAccount) return;
-    // Custom folder IDs belong to a specific account — redirect to inbox on switch
     if (isCustomFolder) { router.push("/inbox"); return; }
     setLoadingEmails(true);
-    setSelectedId(null);
     setNextLink(null);
     fetch(`/api/mail/folder?folder=${folder}&homeAccountId=${encodeURIComponent(activeAccount.homeAccountId)}`)
       .then((r) => r.json())
       .then((data: { emails?: EmailMessage[]; nextLink?: string | null }) => {
         setEmails(data.emails ?? []);
-        setSelectedId(data.emails?.[0]?.id ?? null);
         setNextLink(data.nextLink ?? null);
       })
       .catch(console.error)
@@ -184,16 +150,11 @@ export default function FolderClient({
     return () => clearTimeout(timer);
   }, [search, activeAccount?.homeAccountId]);
 
-  // Reset reply on email change
-  useEffect(() => { setReplyText(""); }, [selectedId]);
-
   const displayEmails = searchResults ?? emails;
-  const selectedEmail = displayEmails.find((e) => e.id === selectedId) ?? null;
 
   return (
     <div className="flex flex-1" style={{ overflow: "hidden" }}>
-      {/* Email List */}
-      <div className="flex flex-col w-full lg:w-80 xl:w-96 bg-white border-r border-neutral-200 flex-shrink-0" style={{ height: "100vh", overflow: "hidden" }}>
+      <div className="flex flex-col w-full bg-white flex-shrink-0" style={{ height: "100vh", overflow: "hidden" }}>
         {/* Header */}
         <div className="px-4 pt-5 pb-3 border-b border-neutral-200 flex-shrink-0">
           <div className="flex items-center justify-between mb-3">
@@ -252,19 +213,12 @@ export default function FolderClient({
               <EmailRow
                 key={email.id}
                 email={email}
-                selected={selectedId === email.id}
                 showRecipient={folder === "sent" || folder === "drafts"}
-                onAiReply={() => setAiReplyEmail(email)}
                 onClick={() => {
-                  setSelectedId(email.id);
                   if (!email.isRead) {
                     setEmails((prev) => prev.map((e) => e.id === email.id ? { ...e, isRead: true } : e));
-                    fetch("/api/mail/mark-read", {
-                      method: "POST",
-                      headers: { "Content-Type": "application/json" },
-                      body: JSON.stringify({ messageId: email.id }),
-                    }).catch(console.error);
                   }
+                  router.push(`/inbox/${email.id}`);
                 }}
               />
             ))
@@ -277,27 +231,6 @@ export default function FolderClient({
           )}
         </div>
       </div>
-
-      {/* Reading Pane */}
-      <ReadingPane
-        email={selectedEmail}
-        replyText={replyText}
-        setReplyText={setReplyText}
-        emptyLabel={`Select an email from ${folderLabel.toLowerCase()}`}
-        onMarkRead={(id) => setEmails((prev) => prev.map((e) => e.id === id ? { ...e, isRead: true } : e))}
-      />
-
-      {/* AI Reply Modal */}
-      {aiReplyEmail && (
-        <AiReplyModal
-          email={aiReplyEmail}
-          onClose={() => setAiReplyEmail(null)}
-          onSelectOption={(body) => {
-            setSelectedId(aiReplyEmail.id);
-            setReplyText(body);
-          }}
-        />
-      )}
     </div>
   );
 }
