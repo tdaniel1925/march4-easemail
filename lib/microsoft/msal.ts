@@ -117,17 +117,33 @@ export async function acquireTokenSilent(
   const account = accounts.find((a) => a.homeAccountId === homeAccountId);
 
   if (!account) {
-    throw new Error(`Account ${homeAccountId} not found in MSAL cache`);
+    throw new Error(`REAUTH_REQUIRED: Account ${homeAccountId} not found in MSAL cache`);
   }
 
-  const result = await msalClient.acquireTokenSilent({
-    scopes: GRAPH_SCOPES,
-    account,
-  });
+  try {
+    const result = await msalClient.acquireTokenSilent({
+      scopes: GRAPH_SCOPES,
+      account,
+    });
 
-  if (!result?.accessToken) {
-    throw new Error("Failed to acquire access token silently");
+    if (!result?.accessToken) {
+      throw new Error("REAUTH_REQUIRED: No access token returned");
+    }
+
+    return result.accessToken;
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : String(err);
+    // MSAL throws InteractionRequiredAuthError for expired/missing tokens
+    if (
+      msg.includes("REAUTH_REQUIRED") ||
+      msg.includes("no_tokens_found") ||
+      msg.includes("InteractionRequired") ||
+      msg.includes("interaction_required") ||
+      msg.includes("invalid_grant") ||
+      msg.includes("consent_required")
+    ) {
+      throw new Error(`REAUTH_REQUIRED: ${msg}`);
+    }
+    throw err;
   }
-
-  return result.accessToken;
 }

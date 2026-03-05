@@ -89,7 +89,11 @@ export async function GET(req: NextRequest) {
     const emails = data.value.map(mapMessage);
     return NextResponse.json({ emails, nextLink: data["@odata.nextLink"] ?? null });
   } catch (err) {
-    console.error("folder route error:", err);
-    return NextResponse.json({ error: String(err) }, { status: 500 });
+    const msg = String(err);
+    console.error("folder route error:", msg);
+    if (msg.includes("REAUTH_REQUIRED") || msg.includes("not found in MSAL cache") || msg.includes("no_tokens_found") || msg.includes("InteractionRequired")) {
+      return NextResponse.json({ error: "account_requires_reauth" }, { status: 401 });
+    }
+    return NextResponse.json({ error: msg }, { status: 500 });
   }
 }

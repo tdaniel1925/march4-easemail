@@ -77,7 +77,7 @@ export async function GET(req: NextRequest) {
     console.error("[inbox] Graph error:", msg);
     // MSAL cache miss = account tokens lost (server restart, first connect on another device).
     // Return 401 so client can prompt reconnection instead of a generic 500.
-    if (msg.includes("not found in MSAL cache")) {
+    if (msg.includes("REAUTH_REQUIRED") || msg.includes("not found in MSAL cache") || msg.includes("no_tokens_found") || msg.includes("InteractionRequired")) {
       return NextResponse.json({ error: "account_requires_reauth" }, { status: 401 });
     }
     return NextResponse.json({ error: msg }, { status: 500 });

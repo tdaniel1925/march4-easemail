@@ -71,7 +71,11 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json({ emails });
   } catch (err) {
-    console.error("search error:", err);
-    return NextResponse.json({ error: String(err) }, { status: 500 });
+    const msg = String(err);
+    console.error("search error:", msg);
+    if (msg.includes("REAUTH_REQUIRED") || msg.includes("not found in MSAL cache") || msg.includes("no_tokens_found") || msg.includes("InteractionRequired")) {
+      return NextResponse.json({ error: "account_requires_reauth" }, { status: 401 });
+    }
+    return NextResponse.json({ error: msg }, { status: 500 });
   }
 }
