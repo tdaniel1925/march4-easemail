@@ -12,7 +12,7 @@
  */
 import { NextRequest, NextResponse } from "next/server";
 import { ConfidentialClientApplication } from "@azure/msal-node";
-import { GRAPH_SCOPES } from "@/lib/microsoft/msal";
+import { TEAMS_SCOPES } from "@/lib/microsoft/msal";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 
@@ -37,7 +37,7 @@ export async function GET(req: NextRequest) {
   });
 
   const authUrl = await msal.getAuthCodeUrl({
-    scopes: GRAPH_SCOPES,
+    scopes: TEAMS_SCOPES,
     redirectUri: process.env.MICROSOFT_REDIRECT_URI!,
     prompt: "consent",
     loginHint,

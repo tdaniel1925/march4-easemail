@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { graphGet } from "@/lib/microsoft/graph";
+import { TEAMS_SCOPES } from "@/lib/microsoft/msal";
 import { isReauthError } from "@/lib/microsoft/auth-errors";
 
 interface GraphPresence {
@@ -33,7 +34,8 @@ export async function GET(req: NextRequest) {
     const presence = await graphGet<GraphPresence>(
       user.id,
       homeAccountId,
-      `/users/${userId}/presence`
+      `/users/${userId}/presence`,
+      TEAMS_SCOPES
     );
     return NextResponse.json({ presence });
   } catch (err: unknown) {

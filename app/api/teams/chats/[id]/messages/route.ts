@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { graphGet } from "@/lib/microsoft/graph";
+import { TEAMS_SCOPES } from "@/lib/microsoft/msal";
 import { isReauthError } from "@/lib/microsoft/auth-errors";
 
 interface GraphChatMessage {
@@ -43,7 +44,8 @@ export async function GET(
     const data = await graphGet<GraphMessageList>(
       user.id,
       homeAccountId,
-      `/me/chats/${chatId}/messages?$top=50&$orderby=createdDateTime desc`
+      `/me/chats/${chatId}/messages?$top=50&$orderby=createdDateTime desc`,
+      TEAMS_SCOPES
     );
     // Return in chronological order
     const messages = (data.value ?? [])

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { graphPost } from "@/lib/microsoft/graph";
+import { TEAMS_SCOPES } from "@/lib/microsoft/msal";
 import { isReauthError } from "@/lib/microsoft/auth-errors";
 
 export async function POST(
@@ -38,7 +39,8 @@ export async function POST(
       user.id,
       accountId,
       `/teams/${teamId}/channels/${channelId}/messages`,
-      { body: { contentType: "text", content: content.trim() } }
+      { body: { contentType: "text", content: content.trim() } },
+      TEAMS_SCOPES
     );
     return NextResponse.json({ message });
   } catch (err: unknown) {

@@ -19,7 +19,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { ConfidentialClientApplication } from "@azure/msal-node";
 import { createServiceClient } from "@/lib/supabase/server";
-import { createMsalClient, GRAPH_SCOPES } from "@/lib/microsoft/msal";
+import { createMsalClient, GRAPH_SCOPES, TEAMS_SCOPES } from "@/lib/microsoft/msal";
 import { prisma } from "@/lib/prisma";
 
 export async function GET(req: NextRequest) {
@@ -48,7 +48,7 @@ export async function GET(req: NextRequest) {
       const msal = createMsalClient(userId);
       await msal.acquireTokenByCode({
         code,
-        scopes: GRAPH_SCOPES,
+        scopes: TEAMS_SCOPES,
         redirectUri: process.env.MICROSOFT_REDIRECT_URI!,
       });
 

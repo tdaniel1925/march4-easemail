@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { graphGet } from "@/lib/microsoft/graph";
+import { TEAMS_SCOPES } from "@/lib/microsoft/msal";
 import { isReauthError } from "@/lib/microsoft/auth-errors";
 
 interface GraphChat {
@@ -37,7 +38,8 @@ export async function GET(req: NextRequest) {
     const data = await graphGet<GraphChatList>(
       user.id,
       homeAccountId,
-      "/me/chats?$expand=members&$top=50"
+      "/me/chats?$expand=members&$top=50",
+      TEAMS_SCOPES
     );
     return NextResponse.json({ chats: data.value ?? [] });
   } catch (err: unknown) {

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { graphPost } from "@/lib/microsoft/graph";
+import { TEAMS_SCOPES } from "@/lib/microsoft/msal";
 import { isReauthError } from "@/lib/microsoft/auth-errors";
 
 interface GraphOnlineMeeting {
@@ -49,7 +50,8 @@ export async function POST(req: NextRequest) {
         startDateTime,
         endDateTime,
         lobbyBypassSettings: { scope: "organization", isDialInBypassEnabled: false },
-      }
+      },
+      TEAMS_SCOPES
     );
     return NextResponse.json({
       id: meeting.id,

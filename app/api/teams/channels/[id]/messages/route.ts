@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { graphGet } from "@/lib/microsoft/graph";
+import { TEAMS_SCOPES } from "@/lib/microsoft/msal";
 import { isReauthError } from "@/lib/microsoft/auth-errors";
 
 interface GraphChannelMessage {
@@ -45,7 +46,8 @@ export async function GET(
     const data = await graphGet<GraphMessageList>(
       user.id,
       homeAccountId,
-      `/teams/${teamId}/channels/${channelId}/messages?$top=50`
+      `/teams/${teamId}/channels/${channelId}/messages?$top=50`,
+      TEAMS_SCOPES
     );
     const messages = (data.value ?? [])
       .filter((m) => !m.deletedDateTime && m.messageType === "message" && !m.replyToId)

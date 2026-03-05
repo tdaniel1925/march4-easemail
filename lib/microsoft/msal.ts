@@ -59,15 +59,19 @@ export function createMsalClient(userId: string): ConfidentialClientApplication 
 
 // ─── Scopes ───────────────────────────────────────────────────────────────────
 
+// Core scopes — requested at login, always present in the mail/calendar token
 export const GRAPH_SCOPES = [
   "https://graph.microsoft.com/Mail.ReadWrite",
   "https://graph.microsoft.com/Mail.Send",
   "https://graph.microsoft.com/Calendars.ReadWrite",
   "https://graph.microsoft.com/Contacts.ReadWrite",
   "https://graph.microsoft.com/User.Read",
-  // Teams — user-consent scopes only
-  // ChannelMessage.Read.All and Presence.Read.All require tenant admin consent
-  // and are handled gracefully at the API level (403 → informative message)
+];
+
+// Teams scopes — requested via incremental consent (/api/auth/microsoft/teams-consent)
+// Kept separate so acquireTokenSilent requests only Teams scopes and gets a fresh
+// Teams-specific token, avoiding conflicts with the cached mail/calendar token.
+export const TEAMS_SCOPES = [
   "https://graph.microsoft.com/Chat.ReadWrite",
   "https://graph.microsoft.com/ChannelMessage.Send",
   "https://graph.microsoft.com/Team.ReadBasic.All",
@@ -108,7 +112,8 @@ export async function acquireTokenByCode(
 export async function acquireTokenSilent(
   msalClient: ConfidentialClientApplication,
   homeAccountId: string,
-  userId: string
+  userId: string,
+  scopes: string[] = GRAPH_SCOPES
 ) {
   // getAllAccounts() is synchronous — it reads the in-memory cache only and does NOT
   // trigger beforeCacheAccess. We must manually deserialize from DB first so that
@@ -130,7 +135,7 @@ export async function acquireTokenSilent(
 
   try {
     const result = await msalClient.acquireTokenSilent({
-      scopes: GRAPH_SCOPES,
+      scopes,
       account,
     });
 

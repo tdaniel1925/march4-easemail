@@ -2,7 +2,7 @@
  * Microsoft Graph API helper.
  * All calls go through graphFetch() which handles token acquisition.
  */
-import { createMsalClient, acquireTokenSilent } from "./msal";
+import { createMsalClient, acquireTokenSilent, GRAPH_SCOPES } from "./msal";
 
 const GRAPH_BASE = "https://graph.microsoft.com/v1.0";
 
@@ -12,10 +12,11 @@ export async function graphFetch(
   userId: string,
   homeAccountId: string,
   path: string,
-  options: RequestInit = {}
+  options: RequestInit = {},
+  scopes: string[] = GRAPH_SCOPES
 ): Promise<Response> {
   const msal = createMsalClient(userId);
-  const token = await acquireTokenSilent(msal, homeAccountId, userId);
+  const token = await acquireTokenSilent(msal, homeAccountId, userId, scopes);
 
   return fetch(`${GRAPH_BASE}${path}`, {
     ...options,
@@ -30,9 +31,10 @@ export async function graphFetch(
 export async function graphGet<T>(
   userId: string,
   homeAccountId: string,
-  path: string
+  path: string,
+  scopes: string[] = GRAPH_SCOPES
 ): Promise<T> {
-  const res = await graphFetch(userId, homeAccountId, path);
+  const res = await graphFetch(userId, homeAccountId, path, {}, scopes);
   if (!res.ok) {
     const err = await res.text();
     throw new Error(`Graph GET ${path} failed ${res.status}: ${err}`);
@@ -44,12 +46,13 @@ export async function graphPost<T>(
   userId: string,
   homeAccountId: string,
   path: string,
-  body: unknown
+  body: unknown,
+  scopes: string[] = GRAPH_SCOPES
 ): Promise<T> {
   const res = await graphFetch(userId, homeAccountId, path, {
     method: "POST",
     body: JSON.stringify(body),
-  });
+  }, scopes);
   if (!res.ok) {
     const err = await res.text();
     throw new Error(`Graph POST ${path} failed ${res.status}: ${err}`);

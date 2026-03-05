@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { graphGet } from "@/lib/microsoft/graph";
+import { TEAMS_SCOPES } from "@/lib/microsoft/msal";
 import { isReauthError } from "@/lib/microsoft/auth-errors";
 
 interface GraphChannel {
@@ -39,7 +40,8 @@ export async function GET(
     const data = await graphGet<GraphChannelList>(
       user.id,
       homeAccountId,
-      `/teams/${teamId}/channels?$select=id,displayName,description,membershipType`
+      `/teams/${teamId}/channels?$select=id,displayName,description,membershipType`,
+      TEAMS_SCOPES
     );
     return NextResponse.json({ channels: data.value ?? [] });
   } catch (err: unknown) {

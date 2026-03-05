@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { graphGet } from "@/lib/microsoft/graph";
+import { TEAMS_SCOPES } from "@/lib/microsoft/msal";
 import { isReauthError } from "@/lib/microsoft/auth-errors";
 
 interface GraphTeam {
@@ -35,7 +36,8 @@ export async function GET(req: NextRequest) {
     const data = await graphGet<GraphTeamList>(
       user.id,
       homeAccountId,
-      "/me/joinedTeams?$select=id,displayName,description,webUrl"
+      "/me/joinedTeams?$select=id,displayName,description,webUrl",
+      TEAMS_SCOPES
     );
     return NextResponse.json({ teams: data.value ?? [] });
   } catch (err: unknown) {
