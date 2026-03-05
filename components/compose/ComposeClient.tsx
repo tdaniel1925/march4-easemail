@@ -604,8 +604,10 @@ export default function ComposeClient({
   function handleCardDrop(e: React.DragEvent) {
     e.preventDefault();
     setIsDragOver(false);
-    const files = Array.from(e.dataTransfer.files);
-    for (const file of files) {
+    const fileItems = Array.from(e.dataTransfer.items).filter((item) => item.kind === "file");
+    for (const item of fileItems) {
+      const file = item.getAsFile();
+      if (!file) continue;
       const reader = new FileReader();
       reader.onload = (ev) => {
         const base64 = (ev.target?.result as string).split(",")[1] ?? "";
@@ -624,21 +626,20 @@ export default function ComposeClient({
     if (hasImage) e.preventDefault();
   }
   function handleBodyDrop(e: React.DragEvent<HTMLDivElement>) {
-    const imageFile = Array.from(e.dataTransfer.files).find((f) => f.type.startsWith("image/"));
-    if (!imageFile) return;
+    const imageItem = Array.from(e.dataTransfer.items).find(
+      (item) => item.kind === "file" && item.type.startsWith("image/")
+    );
+    if (!imageItem) return;
     e.preventDefault();
-    e.stopPropagation(); // prevent card handler from also firing
+    e.stopPropagation(); // prevent card handler from also adding as attachment
+    const file = imageItem.getAsFile();
+    if (!file) return;
     const reader = new FileReader();
     reader.onload = (ev) => {
-      const dataUrl = ev.target?.result as string;
-      document.execCommand(
-        "insertHTML",
-        false,
-        `<img src="${dataUrl}" style="max-width:100%;height:auto" alt="dropped image">`
-      );
+      insertImageAtCursor(ev.target?.result as string, "dropped image");
       triggerAutoSave();
     };
-    reader.readAsDataURL(imageFile);
+    reader.readAsDataURL(file);
   }
 
   // ── File attachments ─────────────────────────────────────────────────────────
@@ -665,7 +666,29 @@ export default function ComposeClient({
     setAttachments((prev) => prev.filter((a) => a.id !== id));
   }
 
-  // ── Inline image paste ───────────────────────────────────────────────────────
+  // ── Inline image insertion (paste & drop) ───────────────────────────────────
+  function insertImageAtCursor(dataUrl: string, alt: string) {
+    if (!bodyRef.current) return;
+    const img = document.createElement("img");
+    img.src = dataUrl;
+    img.style.maxWidth = "100%";
+    img.style.height = "auto";
+    img.alt = alt;
+
+    const sel = window.getSelection();
+    if (sel && sel.rangeCount > 0 && bodyRef.current.contains(sel.getRangeAt(0).commonAncestorContainer)) {
+      const range = sel.getRangeAt(0);
+      range.deleteContents();
+      range.insertNode(img);
+      range.setStartAfter(img);
+      range.collapse(true);
+      sel.removeAllRanges();
+      sel.addRange(range);
+    } else {
+      bodyRef.current.appendChild(img);
+    }
+  }
+
   function handleBodyPaste(e: React.ClipboardEvent<HTMLDivElement>) {
     const items = Array.from(e.clipboardData.items);
     const imageItem = items.find((item) => item.type.startsWith("image/"));
@@ -677,12 +700,7 @@ export default function ComposeClient({
 
     const reader = new FileReader();
     reader.onload = (ev) => {
-      const dataUrl = ev.target?.result as string;
-      document.execCommand(
-        "insertHTML",
-        false,
-        `<img src="${dataUrl}" style="max-width:100%;height:auto" alt="pasted image">`
-      );
+      insertImageAtCursor(ev.target?.result as string, "pasted image");
       triggerAutoSave();
     };
     reader.readAsDataURL(file);

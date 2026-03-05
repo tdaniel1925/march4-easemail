@@ -266,6 +266,123 @@ test("6c. New compose (no mode param) shows New Message header", async ({ page }
   await expect(page.locator("h2", { hasText: "Compose New Email" })).toBeVisible();
 });
 
+// ─── Test 8: Discard confirmation ────────────────────────────────────────────
+
+test("8. Discarding an empty composer navigates away without a modal", async ({ page }) => {
+  await goToCompose(page);
+
+  // Click Discard with nothing typed — should navigate directly (no modal)
+  await page.locator("button", { hasText: "Discard" }).click();
+
+  // Should be on /inbox (or redirected), not still on /compose
+  await expect(page).not.toHaveURL(/\/compose$/, { timeout: 5000 });
+});
+
+test("8b. Discarding a composer with content shows a confirmation modal", async ({ page }) => {
+  await goToCompose(page);
+
+  // Type something so the composer has content
+  await page.locator('input[placeholder="Subject…"]').fill("Important motion filing");
+
+  await page.locator("button", { hasText: "Discard" }).click();
+
+  // Modal should appear
+  await expect(page.locator("text=Discard draft?")).toBeVisible({ timeout: 3000 });
+  await expect(page.locator("text=Keep editing")).toBeVisible();
+});
+
+test("8c. Keep editing closes the modal and stays on compose", async ({ page }) => {
+  await goToCompose(page);
+
+  await page.locator('input[placeholder="Subject…"]').fill("Don't lose this");
+  await page.locator("button", { hasText: "Discard" }).click();
+  await expect(page.locator("text=Discard draft?")).toBeVisible({ timeout: 3000 });
+
+  await page.locator("button", { hasText: "Keep editing" }).click();
+
+  // Modal gone, still on compose
+  await expect(page.locator("text=Discard draft?")).not.toBeVisible();
+  await expect(page).toHaveURL(/compose/);
+});
+
+test("8d. Confirming discard navigates away", async ({ page }) => {
+  await goToCompose(page);
+
+  await page.locator('input[placeholder="Subject…"]').fill("About to be discarded");
+  await page.locator("button", { hasText: "Discard" }).click();
+  await expect(page.locator("text=Discard draft?")).toBeVisible({ timeout: 3000 });
+
+  // Click the red Discard button inside the modal
+  await page.locator("dialog, [role=dialog], .fixed").locator("button", { hasText: "Discard" }).click();
+
+  await expect(page).not.toHaveURL(/\/compose$/, { timeout: 5000 });
+});
+
+// ─── Test 9: Drag & drop file attachments ────────────────────────────────────
+
+test("9. Dragging a file onto the composer adds it as an attachment", async ({ page }) => {
+  await goToCompose(page);
+
+  // Simulate a file drag-drop onto the composer card using the DataTransfer API
+  const dataTransfer = await page.evaluateHandle(() => {
+    const dt = new DataTransfer();
+    const file = new File(["contract content"], "contract.pdf", { type: "application/pdf" });
+    dt.items.add(file);
+    return dt;
+  });
+
+  const card = page.locator(".composer-shadow").first();
+  await card.dispatchEvent("dragover", { dataTransfer });
+  await card.dispatchEvent("drop", { dataTransfer });
+
+  // Attachment chip should appear with the filename
+  await expect(page.locator("text=contract.pdf")).toBeVisible({ timeout: 5000 });
+});
+
+test("9b. Dropping multiple files attaches all of them", async ({ page }) => {
+  await goToCompose(page);
+
+  const dataTransfer = await page.evaluateHandle(() => {
+    const dt = new DataTransfer();
+    dt.items.add(new File(["a"], "brief.docx", { type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document" }));
+    dt.items.add(new File(["b"], "exhibit.pdf", { type: "application/pdf" }));
+    return dt;
+  });
+
+  const card = page.locator(".composer-shadow").first();
+  await card.dispatchEvent("dragover", { dataTransfer });
+  await card.dispatchEvent("drop", { dataTransfer });
+
+  await expect(page.locator("text=brief.docx")).toBeVisible({ timeout: 5000 });
+  await expect(page.locator("text=exhibit.pdf")).toBeVisible({ timeout: 5000 });
+});
+
+// ─── Test 10: Drag & drop inline image ───────────────────────────────────────
+
+test("10. Dragging an image onto the email body inserts it inline", async ({ page }) => {
+  await goToCompose(page);
+
+  // Build a minimal 1×1 PNG as a data URL and drop it on the body
+  const dataTransfer = await page.evaluateHandle(() => {
+    const dt = new DataTransfer();
+    // Minimal 1x1 transparent PNG (base64)
+    const b64 = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==";
+    const byteStr = atob(b64);
+    const arr = new Uint8Array(byteStr.length);
+    for (let i = 0; i < byteStr.length; i++) arr[i] = byteStr.charCodeAt(i);
+    const file = new File([arr], "screenshot.png", { type: "image/png" });
+    dt.items.add(file);
+    return dt;
+  });
+
+  const body = page.locator('[contenteditable="true"]').first();
+  await body.dispatchEvent("dragover", { dataTransfer });
+  await body.dispatchEvent("drop", { dataTransfer });
+
+  // An <img> should be inserted into the body
+  await expect(body.locator("img")).toBeVisible({ timeout: 5000 });
+});
+
 // ─── Test: Ctrl+Enter keyboard shortcut ──────────────────────────────────────
 
 test("7. Ctrl+Enter triggers send (shows Sending state or error — not ignored)", async ({ page }) => {
