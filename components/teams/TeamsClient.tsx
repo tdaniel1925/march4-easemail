@@ -277,7 +277,21 @@ export default function TeamsClient({ userName, userEmail }: TeamsClientProps) {
         url = `/api/teams/channels/${thread.channelId}/messages?teamId=${thread.teamId}`;
       }
       const res = await fetch(url);
-      if (!res.ok) return;
+      if (!res.ok) {
+        const body = await res.json() as { error?: string };
+        if (body.error === "admin_consent_required") {
+          setMessages([{
+            id: "__admin_consent__",
+            createdDateTime: new Date().toISOString(),
+            from: null,
+            body: {
+              contentType: "text",
+              content: "Reading channel messages requires your Microsoft 365 admin to grant ChannelMessage.Read.All permission for this app.",
+            },
+          }]);
+        }
+        return;
+      }
       const data = await res.json() as { messages: TeamsMessage[] };
       setMessages(data.messages);
     } finally {

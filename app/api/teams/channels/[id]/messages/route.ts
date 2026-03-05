@@ -55,6 +55,10 @@ export async function GET(
     if (isReauthError(err)) {
       return NextResponse.json({ error: "account_requires_reauth" }, { status: 401 });
     }
+    const msg = String(err);
+    if (msg.includes("403") || msg.includes("Authorization_RequestDenied")) {
+      return NextResponse.json({ error: "admin_consent_required" }, { status: 403 });
+    }
     console.error("[teams/channels/messages]", err);
     return NextResponse.json({ error: "Failed to fetch channel messages" }, { status: 500 });
   }

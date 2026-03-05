@@ -65,13 +65,13 @@ export const GRAPH_SCOPES = [
   "https://graph.microsoft.com/Calendars.ReadWrite",
   "https://graph.microsoft.com/Contacts.ReadWrite",
   "https://graph.microsoft.com/User.Read",
-  // Teams
+  // Teams — user-consent scopes only
+  // ChannelMessage.Read.All and Presence.Read.All require tenant admin consent
+  // and are handled gracefully at the API level (403 → informative message)
   "https://graph.microsoft.com/Chat.ReadWrite",
-  "https://graph.microsoft.com/ChannelMessage.Read.All",
   "https://graph.microsoft.com/ChannelMessage.Send",
   "https://graph.microsoft.com/Team.ReadBasic.All",
   "https://graph.microsoft.com/Channel.ReadBasic.All",
-  "https://graph.microsoft.com/Presence.Read.All",
   "https://graph.microsoft.com/OnlineMeetings.ReadWrite",
 ];
 
