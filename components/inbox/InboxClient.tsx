@@ -324,8 +324,15 @@ export default function InboxClient({
     const timer = setTimeout(() => {
       setSearching(true);
       fetch(`/api/mail/search?homeAccountId=${encodeURIComponent(activeAccount.homeAccountId)}&q=${encodeURIComponent(q)}`)
-        .then((r) => r.json())
-        .then((data: { emails: EmailMessage[] }) => setSearchResults(data.emails))
+        .then(async (r) => {
+          if (r.status === 401) {
+            const body = await r.json().catch(() => ({} as { error?: string })) as { error?: string };
+            if (body.error === "Unauthorized") { window.location.href = "/login"; return null; }
+            setRequiresReauth(true); return null;
+          }
+          return r.json() as Promise<{ emails: EmailMessage[] }>;
+        })
+        .then((data) => { if (data) setSearchResults(data.emails); })
         .catch(console.error)
         .finally(() => setSearching(false));
     }, 400);

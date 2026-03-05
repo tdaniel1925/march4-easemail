@@ -86,6 +86,7 @@ export default function FolderClient({
   const [loadingMore, setLoadingMore] = useState(false);
   const [searchResults, setSearchResults] = useState<EmailMessage[] | null>(null);
   const [searching, setSearching] = useState(false);
+  const [requiresReauth, setRequiresReauth] = useState(false);
 
   const activeAccount = useAccountStore((s) => s.activeAccount);
   const firstRender = useRef(true);
@@ -102,9 +103,18 @@ export default function FolderClient({
     if (isCustomFolder) { router.push("/inbox"); return; }
     setLoadingEmails(true);
     setNextLink(null);
+    setRequiresReauth(false);
     fetch(`/api/mail/folder?folder=${folder}&homeAccountId=${encodeURIComponent(activeAccount.homeAccountId)}`)
-      .then((r) => r.json())
-      .then((data: { emails?: EmailMessage[]; nextLink?: string | null }) => {
+      .then(async (r) => {
+        if (r.status === 401) {
+          const body = await r.json().catch(() => ({} as { error?: string })) as { error?: string };
+          if (body.error === "Unauthorized") { window.location.href = "/login"; return null; }
+          setRequiresReauth(true); return null;
+        }
+        return r.json() as Promise<{ emails?: EmailMessage[]; nextLink?: string | null }>;
+      })
+      .then((data) => {
+        if (!data) return;
         setEmails(data.emails ?? []);
         setNextLink(data.nextLink ?? null);
       })
@@ -149,8 +159,15 @@ export default function FolderClient({
     const timer = setTimeout(() => {
       setSearching(true);
       fetch(`/api/mail/search?homeAccountId=${encodeURIComponent(activeAccount.homeAccountId)}&q=${encodeURIComponent(q)}&folder=${encodeURIComponent(folder)}`)
-        .then((r) => r.json())
-        .then((data: { emails: EmailMessage[] }) => setSearchResults(data.emails))
+        .then(async (r) => {
+          if (r.status === 401) {
+            const body = await r.json().catch(() => ({} as { error?: string })) as { error?: string };
+            if (body.error === "Unauthorized") { window.location.href = "/login"; return null; }
+            setRequiresReauth(true); return null;
+          }
+          return r.json() as Promise<{ emails: EmailMessage[] }>;
+        })
+        .then((data) => { if (data) setSearchResults(data.emails); })
         .catch(console.error)
         .finally(() => setSearching(false));
     }, 400);
@@ -167,6 +184,18 @@ export default function FolderClient({
           <div className="flex items-center justify-between mb-3">
             <h2 className="font-semibold text-base" style={{ color: "rgb(27 29 29)" }}>{folderLabel}</h2>
           </div>
+
+          {/* Reconnect banner */}
+          {requiresReauth && activeAccount && (
+            <div className="mb-3 px-4 py-3 rounded-[10px] border flex items-center justify-between gap-3" style={{ backgroundColor: "rgb(253 235 235)", borderColor: "rgb(220 180 180)" }}>
+              <p className="text-xs" style={{ color: "rgb(83 5 5)" }}>
+                This account&apos;s session expired. Reconnect to load emails.
+              </p>
+              <a href="/api/auth/microsoft?add=1" className="text-xs font-semibold flex-shrink-0 underline" style={{ color: "rgb(138 9 9)" }}>
+                Reconnect
+              </a>
+            </div>
+          )}
 
           {/* Search */}
           <div className="relative">

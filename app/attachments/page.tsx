@@ -33,6 +33,7 @@ export interface AttachmentItem {
   senderName: string;
   senderAddress: string;
   receivedDateTime: string;
+  homeAccountId: string;
 }
 
 export default async function AttachmentsPage() {
@@ -70,6 +71,7 @@ export default async function AttachmentsPage() {
           senderName: message.from?.emailAddress?.name ?? "Unknown",
           senderAddress: message.from?.emailAddress?.address ?? "",
           receivedDateTime: message.receivedDateTime,
+          homeAccountId: defaultAccount.homeAccountId,
         });
       }
     }

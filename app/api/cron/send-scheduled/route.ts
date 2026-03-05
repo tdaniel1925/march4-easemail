@@ -77,7 +77,14 @@ export async function GET(req: NextRequest) {
   );
 
   const sent = results.filter((r) => r.status === "fulfilled").length;
-  const failed = results.filter((r) => r.status === "rejected").length;
+  const failures = results.filter((r): r is PromiseRejectedResult => r.status === "rejected");
+  failures.forEach((f, i) => console.error(`[cron] draft send failure #${i + 1}:`, f.reason));
 
-  return NextResponse.json({ sent, failed, total: dueDrafts.length });
+  return NextResponse.json({
+    ok: true,
+    sent,
+    failed: failures.length,
+    total: dueDrafts.length,
+    timestamp: now.toISOString(),
+  });
 }

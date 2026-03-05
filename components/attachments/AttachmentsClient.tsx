@@ -282,6 +282,28 @@ function AttachmentRow({
   onRowClick: () => void;
 }) {
   const type = getFileType(item.contentType, item.name);
+  const [downloading, setDownloading] = useState(false);
+
+  async function handleDownload(e: React.MouseEvent) {
+    e.stopPropagation();
+    if (downloading) return;
+    setDownloading(true);
+    try {
+      const url = `/api/mail/attachments/${encodeURIComponent(item.messageId)}/${encodeURIComponent(item.id)}?homeAccountId=${encodeURIComponent(item.homeAccountId)}`;
+      const res = await fetch(url);
+      if (!res.ok) throw new Error(`Download failed: ${res.status}`);
+      const blob = await res.blob();
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = item.name;
+      a.click();
+      URL.revokeObjectURL(a.href);
+    } catch (err) {
+      console.error("[download]", err);
+    } finally {
+      setDownloading(false);
+    }
+  }
 
   return (
     <tr
@@ -322,28 +344,41 @@ function AttachmentRow({
         </span>
       </td>
       <td className="px-5 py-3.5 text-right">
-        <button
-          onClick={(e) => { e.stopPropagation(); }}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[8px] text-xs font-medium transition-colors"
-          style={{
-            backgroundColor: "rgb(253 235 235)",
-            color: "rgb(138 9 9)",
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = "rgb(138 9 9)";
-            e.currentTarget.style.color = "white";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = "rgb(253 235 235)";
-            e.currentTarget.style.color = "rgb(138 9 9)";
-          }}
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-            <path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-          </svg>
-          View email
-        </button>
+        <div className="flex items-center justify-end gap-2">
+          <button
+            onClick={handleDownload}
+            disabled={downloading}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[8px] text-xs font-medium transition-colors disabled:opacity-50"
+            style={{ backgroundColor: "rgb(245 245 245)", color: "rgb(58 58 58)" }}
+            onMouseEnter={(e) => { if (!downloading) { e.currentTarget.style.backgroundColor = "rgb(229 229 229)"; } }}
+            onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "rgb(245 245 245)"; }}
+            title="Download attachment"
+          >
+            {downloading ? (
+              <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+            ) : (
+              <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+              </svg>
+            )}
+            Download
+          </button>
+          <button
+            onClick={(e) => { e.stopPropagation(); onRowClick(); }}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[8px] text-xs font-medium transition-colors"
+            style={{ backgroundColor: "rgb(253 235 235)", color: "rgb(138 9 9)" }}
+            onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "rgb(138 9 9)"; e.currentTarget.style.color = "white"; }}
+            onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "rgb(253 235 235)"; e.currentTarget.style.color = "rgb(138 9 9)"; }}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              <path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+            </svg>
+            View email
+          </button>
+        </div>
       </td>
     </tr>
   );

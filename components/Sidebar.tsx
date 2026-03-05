@@ -148,6 +148,11 @@ export default function Sidebar({ userName = "You", userEmail = "" }: SidebarPro
     setOpen((prev) => ({ ...prev, [key]: !prev[key] }));
   }
 
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  // Close mobile drawer on route change
+  useEffect(() => { setMobileOpen(false); }, [pathname]);
+
   // Fetch custom folders whenever the active account changes
   useEffect(() => {
     if (!activeAccount) return;
@@ -315,6 +320,104 @@ export default function Sidebar({ userName = "You", userEmail = "" }: SidebarPro
           </div>
         </div>
       </aside>
+
+      {/* Mobile top header bar */}
+      <div className="lg:hidden fixed top-0 left-0 right-0 z-40 flex items-center justify-between px-4 py-3 bg-white border-b border-neutral-200">
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => setMobileOpen(true)}
+            className="p-1.5 rounded-lg hover:bg-neutral-100 transition-colors"
+            aria-label="Open menu"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-neutral-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+          <div className="flex items-center gap-2">
+            <div className="w-6 h-6 rounded-md flex items-center justify-center" style={{ backgroundColor: "rgb(138 9 9)" }}>
+              <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
+            </div>
+            <span className="font-semibold text-sm" style={{ color: "rgb(27 29 29)" }}>EaseMail</span>
+          </div>
+        </div>
+        <Link href="/compose" className="p-1.5 rounded-lg hover:bg-neutral-100 transition-colors" aria-label="Compose">
+          <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-neutral-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+          </svg>
+        </Link>
+      </div>
+
+      {/* Mobile drawer overlay */}
+      {mobileOpen && (
+        <div
+          className="lg:hidden fixed inset-0 z-50 flex"
+          onClick={() => setMobileOpen(false)}
+        >
+          <div className="absolute inset-0 bg-black/40" />
+          <aside
+            className="relative flex flex-col w-72 bg-white h-full overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Drawer header */}
+            <div className="flex items-center justify-between px-6 py-4 border-b border-neutral-200 flex-shrink-0">
+              <div className="flex items-center gap-3">
+                <div className="w-7 h-7 rounded-[8px] flex items-center justify-center" style={{ backgroundColor: "rgb(138 9 9)" }}>
+                  <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  </svg>
+                </div>
+                <span className="font-semibold" style={{ color: "rgb(27 29 29)" }}>EaseMail</span>
+              </div>
+              <button
+                onClick={() => setMobileOpen(false)}
+                className="p-1.5 rounded-lg hover:bg-neutral-100 transition-colors"
+                aria-label="Close menu"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-neutral-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            {/* Drawer uses same nav content as desktop aside */}
+            <AccountSwitcher />
+            <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-1">
+              <SidebarSection title="Mailboxes" open={open.mailboxes} onToggle={() => toggle("mailboxes")}>
+                <ul className="space-y-0.5">
+                  {mailboxLinks.map((l) => (
+                    <li key={l.href}>
+                      <NavLink
+                        href={l.href} label={l.label} active={pathname === l.href}
+                        badge={"badgeKey" in l ? (l.badgeKey === "unread" ? unreadCount : draftCount) : undefined}
+                        icon={l.icon}
+                      />
+                    </li>
+                  ))}
+                </ul>
+              </SidebarSection>
+              <SidebarSection title="Navigate" open={open.navigate} onToggle={() => toggle("navigate")}>
+                <ul className="space-y-0.5">
+                  {navLinks.map((l) => (
+                    <li key={l.href}>
+                      <NavLink href={l.href} label={l.label} active={pathname === l.href} icon={l.icon} />
+                    </li>
+                  ))}
+                </ul>
+              </SidebarSection>
+              <SidebarSection title="Manage" open={open.manage} onToggle={() => toggle("manage")}>
+                <ul className="space-y-0.5">
+                  {manageLinks.map((l) => (
+                    <li key={l.href}>
+                      <NavLink href={l.href} label={l.label} active={pathname === l.href} icon={l.icon} />
+                    </li>
+                  ))}
+                </ul>
+              </SidebarSection>
+            </nav>
+          </aside>
+        </div>
+      )}
 
       {/* Mobile floating compose FAB */}
       <Link
