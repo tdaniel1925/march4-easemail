@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -632,6 +633,26 @@ export default function SettingsClient({ profile }: { profile: Profile }) {
               />
             );
           })}
+          {/* Email settings links */}
+          <div className="my-2 border-t border-neutral-100" />
+          <p
+            className="text-xs font-semibold uppercase tracking-wider px-3 mb-1"
+            style={{ color: "rgb(160 160 160)" }}
+          >
+            Email
+          </p>
+          <Link
+            href="/signatures"
+            className="w-full text-left px-3 py-2 rounded-[10px] text-sm font-medium transition-colors text-neutral-600 hover:bg-neutral-100"
+          >
+            Signatures
+          </Link>
+          <Link
+            href="/email-rules"
+            className="w-full text-left px-3 py-2 rounded-[10px] text-sm font-medium transition-colors text-neutral-600 hover:bg-neutral-100"
+          >
+            Email Rules
+          </Link>
         </aside>
 
         {/* Content */}

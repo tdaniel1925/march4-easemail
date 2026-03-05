@@ -1,5 +1,12 @@
 # Build Log
 
+## 2026-03-04 (session 2 additions)
+- [Feature] Signature Management page: /signatures — split-panel, rich text editor, assignment toggles, live preview, new/delete modals, localStorage persistence
+- [Feature] Email Rules page: /email-rules — stats bar, rules list with IF/THEN chips, toggle, drag-n-drop reorder, new/edit/delete modals, localStorage persistence
+- [Update] SettingsClient: added Email section with Signatures + Email Rules nav links
+- [Update] ComposeClient footer: added Rules link between signature pill and Discard
+- TypeScript: CLEAN
+
 ## 2026-03-04
 - [Session Start] Git initialized. CodeBakers memory system initialized.
 - [Setup] refs/ and .codebakers/ created.

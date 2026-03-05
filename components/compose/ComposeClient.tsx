@@ -162,6 +162,62 @@ function ColorPicker({
   );
 }
 
+// ─── Email spacing formatter ──────────────────────────────────────────────────
+// Rules:
+//   • If first line is a salutation → blank line after it
+//   • One blank line before closing valediction (Best regards, Thank you, etc.)
+//   • One blank line between closing and signature name
+
+const SALUTATION_RE = /^(hey|hi+|hello|dear|to whom it may concern|good (morning|afternoon|evening))\b/i;
+const CLOSING_RE = /^(best( regards)?|kind regards|warm(ly| regards)?|sincerely(,| yours)?|yours (truly|sincerely)?|thank you|thanks|regards|with (appreciation|gratitude|best regards)|respectfully|cheers|take care|looking forward|cordially|all the best|best wishes|many thanks|much appreciated),?\.?\s*$/i;
+
+function formatEmailSpacing(text: string): string {
+  const lines = text.split("\n").map((l) => l.trimEnd());
+  while (lines.length && !lines[0].trim()) lines.shift();
+  while (lines.length && !lines[lines.length - 1].trim()) lines.pop();
+  if (!lines.length) return text;
+
+  // Split salutation off the top
+  let salutation: string[] = [];
+  const rest = [...lines];
+  if (SALUTATION_RE.test(rest[0].trim())) {
+    salutation = [rest.shift()!];
+    while (rest.length && !rest[0].trim()) rest.shift(); // consume blanks after
+  }
+
+  // Find last closing line
+  let closingIdx = -1;
+  for (let i = rest.length - 1; i >= 0; i--) {
+    if (CLOSING_RE.test(rest[i].trim())) { closingIdx = i; break; }
+  }
+
+  let body: string[];
+  let closing: string[] = [];
+  let signature: string[] = [];
+
+  if (closingIdx !== -1) {
+    body = rest.slice(0, closingIdx);
+    while (body.length && !body[body.length - 1].trim()) body.pop();
+    closing = [rest[closingIdx]];
+    signature = rest.slice(closingIdx + 1);
+    while (signature.length && !signature[0].trim()) signature.shift();
+    while (signature.length && !signature[signature.length - 1].trim()) signature.pop();
+  } else {
+    body = rest;
+    while (body.length && !body[body.length - 1].trim()) body.pop();
+  }
+
+  // Assemble: each present section separated by exactly one blank line
+  const sections = [salutation, body, closing, signature].filter((s) => s.length > 0);
+  const result: string[] = [];
+  sections.forEach((section, i) => {
+    result.push(...section);
+    if (i < sections.length - 1) result.push("");
+  });
+
+  return result.join("\n");
+}
+
 // ─── ComposeClient ────────────────────────────────────────────────────────────
 
 export default function ComposeClient({
@@ -196,12 +252,13 @@ export default function ComposeClient({
   const [tone, setTone] = useState<Tone>("professional");
   const [length, setLength] = useState<Length>("same");
   const [formality, setFormality] = useState(75);
-  const [emojiOn, setEmojiOn] = useState(false);
   const [selectedPreset, setSelectedPreset] = useState<StylePreset | null>(null);
   const [remixing, setRemixing] = useState(false);
   const [remixedBody, setRemixedBody] = useState<string | null>(null);
   const [remixError, setRemixError] = useState<string | null>(null);
   const [showDiff, setShowDiff] = useState(true);
+  const [remixTarget, setRemixTarget] = useState<"selection" | "full">("full");
+  const remixRangeRef = useRef<Range | null>(null);
 
   // ── AI Dictate state ────────────────────────────────────────────────────────
   const [isRecording, setIsRecording] = useState(false);
@@ -213,6 +270,7 @@ export default function ComposeClient({
   const [fixGrammar, setFixGrammar] = useState(true);
   const recognitionRef = useRef<ISpeechRecognition | null>(null);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const intentionalStopRef = useRef(false);
 
   // ── Voice Message state ──────────────────────────────────────────────────────
   const [voiceBlob, setVoiceBlob] = useState<Blob | null>(null);
@@ -231,6 +289,14 @@ export default function ComposeClient({
   const [showTextColorPicker, setShowTextColorPicker] = useState(false);
   const [showHighlightPicker, setShowHighlightPicker] = useState(false);
   const savedSelectionRef = useRef<Range | null>(null);
+  const [bodyExpanded, setBodyExpanded] = useState(false);
+
+  // ── Signature state ──────────────────────────────────────────────────────────
+  const [sig, setSig] = useState<{ name: string; title: string } | null>(null);
+  const [showSigEditor, setShowSigEditor] = useState(false);
+  const [sigName, setSigName] = useState("");
+  const [sigTitle, setSigTitle] = useState("");
+  const [sigInserted, setSigInserted] = useState(false);
 
   // ── Draft indicator ─────────────────────────────────────────────────────────
   const onBodyChange = useCallback(() => {
@@ -361,7 +427,9 @@ export default function ComposeClient({
 
   // ── AI Remix ────────────────────────────────────────────────────────────────
   async function handleRemix() {
-    const bodyText = bodyRef.current?.innerText ?? "";
+    const bodyText = remixTarget === "selection" && remixRangeRef.current
+      ? remixRangeRef.current.toString()
+      : (bodyRef.current?.innerText ?? "");
     if (!bodyText.trim()) { setRemixError("Write something in the email body first."); return; }
     setRemixing(true);
     setRemixError(null);
@@ -370,11 +438,18 @@ export default function ComposeClient({
       const res = await fetch("/api/mail/remix", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ body: bodyText, tone, length, formality: formalityLabel(formality), emoji: emojiOn }),
+        body: JSON.stringify({
+          body: bodyText,
+          tone,
+          length,
+          formality: formalityLabel(formality),
+          extras: [],
+          customInstruction: selectedPreset ? `Format this as a ${selectedPreset} email.` : undefined,
+        }),
       });
       const data = await res.json() as { remixed?: string; error?: string };
       if (!res.ok || data.error) { setRemixError(data.error ?? "Remix failed"); return; }
-      setRemixedBody(data.remixed ?? null);
+      setRemixedBody(data.remixed ? formatEmailSpacing(data.remixed) : null);
     } catch {
       setRemixError("Network error. Please try again.");
     } finally {
@@ -382,11 +457,29 @@ export default function ComposeClient({
     }
   }
 
+  function remixTextToHtml(text: string) {
+    const escaped = text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    return escaped.split(/\n\n+/).map((p) => `<div>${p.replace(/\n/g, "<br>")}</div>`).join("") || "<div><br></div>";
+  }
+
   function acceptRemix() {
     if (!remixedBody || !bodyRef.current) return;
-    bodyRef.current.innerText = remixedBody;
+    if (remixTarget === "selection" && remixRangeRef.current) {
+      // Replace only the selected range
+      bodyRef.current.focus();
+      const sel = window.getSelection();
+      if (sel) {
+        sel.removeAllRanges();
+        sel.addRange(remixRangeRef.current);
+        document.execCommand("insertHTML", false, remixTextToHtml(remixedBody));
+      }
+      remixRangeRef.current = null;
+    } else {
+      bodyRef.current.innerHTML = remixTextToHtml(remixedBody);
+    }
     setActivePanel(null);
     setRemixedBody(null);
+    setTimeout(() => bodyRef.current?.focus(), 50);
   }
 
   function formalityLabel(val: number) {
@@ -417,8 +510,17 @@ export default function ComposeClient({
       setInterimTranscript(interim);
     };
     rec.onerror = () => setDictateError("Microphone error. Please check permissions.");
-    rec.onend = () => { setIsRecording(false); if (timerRef.current) clearInterval(timerRef.current); };
+    rec.onend = () => {
+      // Browser auto-stops after silence — restart unless user intentionally stopped
+      if (!intentionalStopRef.current) {
+        try { rec.start(); } catch { /* already stopped */ }
+      } else {
+        setIsRecording(false);
+        if (timerRef.current) clearInterval(timerRef.current);
+      }
+    };
 
+    intentionalStopRef.current = false;
     rec.start();
     recognitionRef.current = rec;
     setIsRecording(true);
@@ -427,12 +529,14 @@ export default function ComposeClient({
   }
 
   function stopRecording() {
+    intentionalStopRef.current = true;
     recognitionRef.current?.stop();
     setIsRecording(false);
     if (timerRef.current) clearInterval(timerRef.current);
   }
 
   function pauseRecording() {
+    intentionalStopRef.current = true;
     recognitionRef.current?.stop();
     setIsRecording(false);
     if (timerRef.current) clearInterval(timerRef.current);
@@ -520,6 +624,19 @@ export default function ComposeClient({
     voiceChunksRef.current = [];
   }
 
+  // Load signature from localStorage
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem("easemail_sig");
+      if (stored) {
+        const s = JSON.parse(stored) as { name: string; title: string };
+        setSig(s);
+        setSigName(s.name);
+        setSigTitle(s.title);
+      }
+    } catch {}
+  }, []);
+
   // Cleanup on unmount
   useEffect(() => {
     return () => {
@@ -528,6 +645,31 @@ export default function ComposeClient({
       if (draftTimer.current) clearTimeout(draftTimer.current);
     };
   }, []);
+
+  // ── Signature helpers ────────────────────────────────────────────────────────
+  function saveSig() {
+    if (!sigName.trim()) return;
+    const s = { name: sigName.trim(), title: sigTitle.trim() };
+    setSig(s);
+    localStorage.setItem("easemail_sig", JSON.stringify(s));
+    setShowSigEditor(false);
+  }
+
+  function insertSignature(s?: { name: string; title: string }) {
+    const target = s ?? sig;
+    if (!bodyRef.current || !target) return;
+    bodyRef.current.focus();
+    const range = document.createRange();
+    range.selectNodeContents(bodyRef.current);
+    range.collapse(false);
+    const sel = window.getSelection();
+    sel?.removeAllRanges();
+    sel?.addRange(range);
+    const esc = (t: string) => t.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    const titleHtml = target.title ? `<div>${esc(target.title)}</div>` : "";
+    document.execCommand("insertHTML", false, `<div><br></div><div>--</div><div>${esc(target.name)}</div>${titleHtml}`);
+    setSigInserted(true);
+  }
 
   const wordCount = bodyRef.current?.innerText?.trim().split(/\s+/).filter(Boolean).length ?? 0;
 
@@ -694,7 +836,7 @@ export default function ComposeClient({
           </div>
 
           {/* AI FEATURE BUTTONS */}
-          <div className="px-6 py-3 border-b border-neutral-200 ai-section-glow flex-shrink-0">
+          {!bodyExpanded && <div className="px-6 py-3 border-b border-neutral-200 ai-section-glow flex-shrink-0">
             <div className="flex items-center gap-3 flex-wrap">
               <span className="text-xs font-semibold text-neutral-500 flex-shrink-0 flex items-center gap-1.5">
                 <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5 text-primary-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -706,7 +848,21 @@ export default function ComposeClient({
 
               <div className="relative group flex-shrink-0">
                 <button
-                  onClick={() => setActivePanel(activePanel === "remix" ? null : "remix")}
+                  onClick={() => {
+                    if (activePanel === "remix") { setActivePanel(null); return; }
+                    // Capture selection inside body before panel steals focus
+                    const sel = window.getSelection();
+                    if (sel && sel.rangeCount > 0 && sel.toString().trim() && bodyRef.current?.contains(sel.getRangeAt(0).commonAncestorContainer)) {
+                      remixRangeRef.current = sel.getRangeAt(0).cloneRange();
+                      setRemixTarget("selection");
+                    } else {
+                      remixRangeRef.current = null;
+                      setRemixTarget("full");
+                    }
+                    setRemixedBody(null);
+                    setRemixError(null);
+                    setActivePanel("remix");
+                  }}
                   className="flex items-center gap-2 ai-remix-btn text-white font-semibold text-xs py-2 px-3.5 rounded-small transition-all"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -765,10 +921,10 @@ export default function ComposeClient({
                 <span className="text-xs font-semibold text-primary-600 bg-primary-50 border border-primary-100 px-2 py-0.5 rounded-small">EaseMail AI</span>
               </div>
             </div>
-          </div>
+          </div>}
 
           {/* RICH TEXT TOOLBAR */}
-          <div className="border-b border-neutral-200 bg-background-50 flex-shrink-0">
+          {!bodyExpanded && <div className="border-b border-neutral-200 bg-background-50 flex-shrink-0">
             <div className="flex items-center gap-0.5 px-3 py-1.5 flex-wrap">
 
               {/* Undo / Redo */}
@@ -950,10 +1106,51 @@ export default function ComposeClient({
               </ToolBtn>
 
             </div>
-          </div>
+          </div>}
 
           {/* EMAIL BODY */}
-          <div className="flex-1 overflow-y-auto px-8 py-6 bg-background-50" style={{ minHeight: 0 }}>
+          <div className="flex-1 overflow-y-auto px-8 py-6 bg-background-50 relative" style={{ minHeight: 0 }}>
+
+            {/* Focus mode controls */}
+            <div className="absolute top-3 right-4 z-10 flex items-center gap-2">
+              {bodyExpanded && (
+                <div className="flex items-center gap-0.5 bg-white border border-neutral-200 rounded-[10px] px-1.5 py-1 shadow-custom">
+                  <ToolBtn title="Bold (Ctrl+B)" active={activeFormats.has("bold")} onClick={() => execFormat("bold")}>
+                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M6 4h8a4 4 0 014 4 4 4 0 01-4 4H6z" /><path strokeLinecap="round" strokeLinejoin="round" d="M6 12h9a4 4 0 014 4 4 4 0 01-4 4H6z" /></svg>
+                  </ToolBtn>
+                  <ToolBtn title="Italic (Ctrl+I)" active={activeFormats.has("italic")} onClick={() => execFormat("italic")}>
+                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M10 4h4M8 20h4M12 4l-4 16" /></svg>
+                  </ToolBtn>
+                  <ToolBtn title="Underline (Ctrl+U)" active={activeFormats.has("underline")} onClick={() => execFormat("underline")}>
+                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M7 4v6a5 5 0 0010 0V4M5 20h14" /></svg>
+                  </ToolBtn>
+                  <div className="w-px h-4 bg-neutral-200 mx-0.5" />
+                  <ToolBtn title="Bullet list" active={activeFormats.has("insertUnorderedList")} onClick={() => execFormat("insertUnorderedList")}>
+                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" /><circle cx="1.5" cy="6" r="1" fill="currentColor" /><circle cx="1.5" cy="12" r="1" fill="currentColor" /><circle cx="1.5" cy="18" r="1" fill="currentColor" /></svg>
+                  </ToolBtn>
+                  <ToolBtn title="Numbered list" active={activeFormats.has("insertOrderedList")} onClick={() => execFormat("insertOrderedList")}>
+                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01" /></svg>
+                  </ToolBtn>
+                </div>
+              )}
+              <button
+                onMouseDown={(e) => e.preventDefault()}
+                onClick={() => { setBodyExpanded((v) => !v); setTimeout(() => bodyRef.current?.focus(), 50); }}
+                title={bodyExpanded ? "Exit focus mode" : "Expand — focus mode for long emails"}
+                className="p-1.5 rounded-[8px] border border-neutral-200 bg-white text-neutral-400 hover:text-primary-600 hover:border-primary-300 shadow-custom transition-all"
+              >
+                {bodyExpanded ? (
+                  <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 9V4.5M9 9H4.5M9 9L3.75 3.75M9 15v4.5M9 15H4.5M9 15l-5.25 5.25M15 9h4.5M15 9V4.5M15 9l5.25-5.25M15 15h4.5M15 15v4.5m0-4.5l5.25 5.25" />
+                  </svg>
+                ) : (
+                  <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+                  </svg>
+                )}
+              </button>
+            </div>
+
             <div
               ref={bodyRef}
               contentEditable
@@ -961,10 +1158,25 @@ export default function ComposeClient({
               onInput={onBodyChange}
               className="text-sm text-neutral-700 leading-relaxed outline-none min-h-[200px]"
               data-placeholder="Write your email…"
-              style={{
-                caretColor: "rgb(138 9 9)",
-              }}
+              style={{ caretColor: "rgb(138 9 9)" }}
             />
+
+            {/* Ghost signature — click to insert for real */}
+            {sig && !sigInserted && (
+              <div
+                onClick={() => insertSignature()}
+                className="mt-6 cursor-pointer group select-none"
+                title="Click to insert your signature"
+              >
+                <div className="w-8 h-px bg-neutral-200 mb-2 group-hover:bg-primary-300 transition-colors" />
+                <p className="text-sm text-neutral-300 group-hover:text-neutral-500 transition-colors">{sig.name}</p>
+                {sig.title && <p className="text-xs text-neutral-300 group-hover:text-neutral-400 transition-colors mt-0.5">{sig.title}</p>}
+                <p className="text-xs text-neutral-200 group-hover:text-primary-400 transition-colors mt-1.5 flex items-center gap-1">
+                  <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" /></svg>
+                  Insert signature
+                </p>
+              </div>
+            )}
           </div>
 
           {/* VOICE ATTACHMENT CHIP */}
@@ -998,6 +1210,63 @@ export default function ComposeClient({
             </div>
           )}
 
+          {/* SIGNATURE EDITOR (inline, slides in above footer) */}
+          {showSigEditor && (
+            <div className="border-t border-neutral-200 bg-background-100 px-6 py-4 flex-shrink-0">
+              <div className="flex items-end gap-3">
+                <div className="flex-1 grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="text-xs font-semibold text-neutral-500 block mb-1.5">Name</label>
+                    <input
+                      type="text"
+                      value={sigName}
+                      onChange={(e) => setSigName(e.target.value)}
+                      onKeyDown={(e) => e.key === "Enter" && saveSig()}
+                      placeholder="John Smith"
+                      autoFocus
+                      className="w-full text-sm border border-neutral-200 rounded-small px-3 py-2 outline-none bg-background-50 focus:border-primary-400 transition-colors"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs font-semibold text-neutral-500 block mb-1.5">Title <span className="font-normal text-neutral-400">(optional)</span></label>
+                    <input
+                      type="text"
+                      value={sigTitle}
+                      onChange={(e) => setSigTitle(e.target.value)}
+                      onKeyDown={(e) => e.key === "Enter" && saveSig()}
+                      placeholder="Senior Attorney"
+                      className="w-full text-sm border border-neutral-200 rounded-small px-3 py-2 outline-none bg-background-50 focus:border-primary-400 transition-colors"
+                    />
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 pb-0.5">
+                  <button
+                    onClick={saveSig}
+                    disabled={!sigName.trim()}
+                    className="text-xs font-semibold text-white px-3 py-2 rounded-small transition-colors disabled:opacity-40"
+                    style={{ backgroundColor: "rgb(138 9 9)" }}
+                  >
+                    Save
+                  </button>
+                  <button
+                    onClick={() => setShowSigEditor(false)}
+                    className="text-xs text-neutral-500 px-3 py-2 rounded-small hover:bg-background-200 transition-colors"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+              {sigName.trim() && (
+                <div className="mt-3 px-3 py-2.5 bg-background-50 border border-neutral-200 rounded-small">
+                  <p className="text-xs text-neutral-400 mb-1.5">Preview</p>
+                  <div className="w-6 h-px bg-neutral-300 mb-1.5" />
+                  <p className="text-sm text-neutral-700">{sigName}</p>
+                  {sigTitle && <p className="text-xs text-neutral-400 mt-0.5">{sigTitle}</p>}
+                </div>
+              )}
+            </div>
+          )}
+
           {/* FOOTER / SEND BAR */}
           <div className="flex items-center justify-between px-6 py-4 border-t border-neutral-200 bg-background-50 flex-shrink-0">
             <div className="flex items-center gap-2">
@@ -1021,6 +1290,40 @@ export default function ComposeClient({
             </div>
             <div className="flex items-center gap-3">
               <span className="text-xs text-neutral-400">{wordCount} words</span>
+
+              {/* Signature pill */}
+              {sig ? (
+                sigInserted ? (
+                  <span className="flex items-center gap-1.5 text-xs font-medium px-2.5 py-1.5 rounded-small" style={{ color: "rgb(21 128 61)", backgroundColor: "rgb(220 252 231)" }}>
+                    <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+                    Sig added
+                  </span>
+                ) : (
+                  <button
+                    onClick={() => insertSignature()}
+                    className="flex items-center gap-1.5 text-xs font-medium text-neutral-500 hover:text-primary-600 px-2.5 py-1.5 rounded-small border border-dashed border-neutral-300 hover:border-primary-300 hover:bg-primary-50 transition-all"
+                  >
+                    <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
+                    + Sig
+                  </button>
+                )
+              ) : (
+                <button
+                  onClick={() => setShowSigEditor(true)}
+                  className="flex items-center gap-1.5 text-xs text-neutral-400 hover:text-neutral-600 px-2.5 py-1.5 rounded-small hover:bg-background-100 transition-colors"
+                  title="Set your email signature"
+                >
+                  <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
+                  Set signature
+                </button>
+              )}
+
+              <Link href="/email-rules" className="flex items-center gap-1.5 text-xs text-neutral-400 hover:text-primary-600 transition-colors px-2 py-1.5 rounded-small hover:bg-background-100">
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                </svg>
+                Rules
+              </Link>
               <Link href="/inbox" className="flex items-center gap-1.5 text-xs text-neutral-500 hover:text-primary-600 transition-colors px-2 py-1.5 rounded-small hover:bg-background-100">
                 <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -1078,6 +1381,33 @@ export default function ComposeClient({
             {/* Scrollable content */}
             <div className="flex-1 overflow-y-auto">
 
+              {/* Remix target indicator */}
+              <div className="px-6 py-3 border-b border-neutral-200 bg-background-100 flex items-center gap-3">
+                <span className="text-xs font-semibold text-neutral-500 flex-shrink-0">Remixing:</span>
+                <div className="flex items-center gap-1.5">
+                  <button
+                    onClick={() => { remixRangeRef.current = null; setRemixTarget("full"); setRemixedBody(null); }}
+                    className={`text-xs px-2.5 py-1 rounded-small border transition-all ${remixTarget === "full" ? "border-primary-300 text-primary-700 bg-primary-50 font-semibold" : "border-neutral-200 text-neutral-500 hover:border-primary-200 hover:text-primary-600 bg-background-50"}`}
+                  >
+                    Full email
+                  </button>
+                  <button
+                    onClick={() => setRemixTarget("selection")}
+                    disabled={!remixRangeRef.current}
+                    className={`text-xs px-2.5 py-1 rounded-small border transition-all ${remixTarget === "selection" ? "border-primary-300 text-primary-700 bg-primary-50 font-semibold" : "border-neutral-200 text-neutral-500 hover:border-primary-200 hover:text-primary-600 bg-background-50"} disabled:opacity-40 disabled:cursor-not-allowed`}
+                  >
+                    {remixRangeRef.current
+                      ? `Selection (${remixRangeRef.current.toString().trim().split(/\s+/).filter(Boolean).length} words)`
+                      : "Selection — highlight text first"}
+                  </button>
+                </div>
+                {remixTarget === "selection" && remixRangeRef.current && (
+                  <span className="ml-auto text-xs text-neutral-400 italic truncate max-w-[180px]">
+                    "{remixRangeRef.current.toString().trim().slice(0, 60)}{remixRangeRef.current.toString().trim().length > 60 ? "…" : ""}"
+                  </span>
+                )}
+              </div>
+
               {/* Tone cards */}
               <div className="px-6 pt-5 pb-5 border-b border-neutral-200" style={{ background: "rgb(var(--color-primary-50))" }}>
                 <div className="flex items-center justify-between mb-3">
@@ -1114,31 +1444,25 @@ export default function ComposeClient({
                 </div>
               </div>
 
-              {/* Style Presets */}
-              <div className="px-6 py-4 border-b border-neutral-200 bg-background-50">
-                <div className="flex items-center justify-between mb-3">
-                  <h3 className="font-heading text-sm font-semibold text-neutral-800">Style Presets</h3>
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  {STYLE_PRESETS.map((preset) => (
-                    <button
-                      key={preset}
-                      onClick={() => setSelectedPreset(selectedPreset === preset ? null : preset)}
-                      className={`preset-chip text-xs font-medium px-3 py-1.5 rounded-small border-2 transition-all ${
-                        selectedPreset === preset ? "preset-chip-active" : "text-neutral-600 border-neutral-200 bg-background-50"
-                      }`}
+              {/* Style Preset dropdown + Settings row */}
+              <div className="px-6 py-3.5 border-b border-neutral-200 bg-background-50">
+                <div className="flex items-center gap-4 flex-wrap">
+                  <div className="flex items-center gap-2 flex-shrink-0">
+                    <span className="text-xs font-semibold text-neutral-500">Style</span>
+                    <select
+                      className="toolbar-select"
+                      value={selectedPreset ?? ""}
+                      onChange={(e) => setSelectedPreset((e.target.value as StylePreset) || null)}
+                      style={{ maxWidth: 140 }}
                     >
-                      {preset}
-                    </button>
-                  ))}
-                </div>
-              </div>
+                      <option value="">None</option>
+                      {STYLE_PRESETS.map((p) => <option key={p} value={p}>{p}</option>)}
+                    </select>
+                  </div>
 
-              {/* Remix Settings */}
-              <div className="px-6 py-3.5 border-b border-neutral-200 bg-background-100">
-                <div className="flex items-center gap-6 flex-wrap">
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs font-semibold text-neutral-500 flex-shrink-0">Length</span>
+                  <div className="w-px h-5 bg-neutral-200 flex-shrink-0" />
+                  <div className="flex items-center gap-2 flex-shrink-0">
+                    <span className="text-xs font-semibold text-neutral-500">Length</span>
                     <div className="flex items-center gap-1">
                       {(["shorter", "same", "longer"] as Length[]).map((l) => (
                         <button
@@ -1167,14 +1491,6 @@ export default function ComposeClient({
                       className="flex-1"
                     />
                     <span className="text-xs font-semibold text-primary-600 flex-shrink-0 w-16">{formalityLabel(formality)}</span>
-                  </div>
-                  <div className="w-px h-5 bg-neutral-200 flex-shrink-0" />
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs font-semibold text-neutral-500">Emoji</span>
-                    <button onClick={() => setEmojiOn(!emojiOn)} className={`toggle-track ${emojiOn ? "on" : "off"}`}>
-                      <div className="toggle-thumb" />
-                    </button>
-                    <span className="text-xs text-neutral-400">{emojiOn ? "On" : "Off"}</span>
                   </div>
                 </div>
               </div>
@@ -1314,7 +1630,7 @@ export default function ComposeClient({
                   Try Another
                 </button>
                 <button
-                  onClick={() => setActivePanel(null)}
+                  onClick={() => { setActivePanel(null); setTimeout(() => bodyRef.current?.focus(), 80); }}
                   className="flex items-center gap-2 border-2 border-neutral-200 text-neutral-600 hover:border-neutral-300 hover:bg-background-100 font-medium text-sm py-2.5 px-4 rounded-small transition-all shadow-custom flex-shrink-0"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
