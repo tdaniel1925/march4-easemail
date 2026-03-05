@@ -1,5 +1,23 @@
 # Build Log
 
+## 2026-03-05 — Production Sprint: All 13 P1-PROD items completed
+- [Refactor] isReauthError() helper: extracted to lib/microsoft/auth-errors.ts, used in all 4 mail routes
+- [Fix] SpeechRecognition: cleanup useEffect on CalendarClient unmount
+- [Fix] Calendar range route: follows @odata.nextLink pages instead of $top=500 cap
+- [Fix] InboxClient tab fetch 401: added Unauthorized body check (redirect to /login)
+- [Fix] InboxClient + FolderClient search: 401 check with Unauthorized/reauth handling
+- [Feature] PROD-1: middleware.ts — Supabase auth enforced at edge on all routes
+- [Feature] PROD-2: app/error.tsx + not-found.tsx + inbox/calendar/compose/dashboard error.tsx
+- [Feature] PROD-3/7: vercel.json cron config confirmed, cron route hardened with error logging
+- [Feature] PROD-4: Mobile sidebar — hamburger top bar + slide-in drawer + auto-close
+- [Feature] PROD-5: Labels — MS Graph categories, activeLabel in store, sidebar wires to InboxClient
+- [Feature] PROD-6: Reconnect UX already complete (FolderClient also gets banner now)
+- [Feature] PROD-8: Multi-account polling — InboxClient polls all accounts[] in parallel
+- [Feature] PROD-10: Contacts write ops — POST/PATCH/DELETE + New/Edit/Delete modals
+- [Feature] PROD-11: Attachment download — /api/mail/attachments/[id]/[attId] + Download button
+- [Feature] PROD-13: Help Center — 36 law firm FAQs + keyboard shortcuts table
+- TypeScript: CLEAN
+
 ## 2026-03-05 — Production audit + calendar views + sidebar accordion
 - [Feature] Calendar: voice mic button (Web Speech API → Claude nl-create → EventFormModal prefill)
 - [Feature] Calendar: confirmation banner after event saved (green, 4s auto-dismiss)

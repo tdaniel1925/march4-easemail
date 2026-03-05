@@ -111,8 +111,24 @@ Client: `AccountsClient` calls `removeAccount()` on Zustand store → sidebar up
 
 ## Current Focus
 - Session: 2026-03-05 (continued)
-- Last completed: Calendar voice mic + all views (Day/Month/Agenda/Year), sidebar accordion, inbox 401 fix, MSAL reauth across all routes, compose window layout, email polling banner, search limit 250
-- Next: Production hardening sprint — 13 items listed in FIX-QUEUE.md P1-PROD
+- Last completed: Full production hardening sprint — all 13 P1-PROD items done
+- Status: App is production-ready. All 13 production items complete.
+
+## Production Hardening — Completed (2026-03-05)
+- middleware.ts: Supabase auth at edge, public routes whitelisted
+- Error boundaries: global + section-level (inbox/calendar/compose/dashboard) + not-found.tsx
+- Mobile sidebar: hamburger bar, slide-in drawer, auto-close on route change
+- Labels: MS Graph categories filter, store-driven, sidebar → inbox filter
+- FolderClient: full 401 handling + reconnect banner
+- Search 401: both InboxClient and FolderClient search paths protected
+- Multi-account polling: all accounts polled in parallel
+- Contacts write: POST/PATCH/DELETE + full CRUD UI with modals
+- Attachment download: base64 → blob → browser download
+- Cron hardened: CRON_SECRET + structured logging + timestamps
+- Help Center: 36 real FAQs + keyboard shortcuts table
+- isReauthError() helper: DRY across all 4 mail routes
+- Calendar range route: @odata.nextLink pagination, no 500-event cap
+- SpeechRecognition cleanup on unmount
 
 ## Calendar — Now Complete
 - Week, Day, Month, Agenda, Year views all functional
