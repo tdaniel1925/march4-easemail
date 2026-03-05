@@ -55,7 +55,7 @@ export default async function AttachmentsPage() {
     const data = await graphGet<GraphMessagesResponse>(
       user.id,
       defaultAccount.homeAccountId,
-      "/me/messages?$filter=hasAttachments eq true&$top=25&$select=id,subject,from,receivedDateTime,hasAttachments&$expand=attachments($select=id,name,size,contentType)&$orderby=receivedDateTime desc"
+      "/me/messages?$filter=hasAttachments eq true&$top=25&$select=id,subject,from,receivedDateTime,hasAttachments&$expand=attachments($select=id,name,size,contentType)"
     );
 
     for (const message of data.value ?? []) {
@@ -73,6 +73,7 @@ export default async function AttachmentsPage() {
         });
       }
     }
+    attachments.sort((a, b) => b.receivedDateTime.localeCompare(a.receivedDateTime));
   } catch (err) {
     console.error("Failed to fetch attachments:", err);
   }
