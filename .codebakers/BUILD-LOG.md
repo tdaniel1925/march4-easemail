@@ -97,3 +97,10 @@
 - fix(compose): replaced all linear-gradient AI classes with solid rgb(138 9 9) — ai-gradient-bg, ai-remix-btn, ai-dictate-btn, ai-section-glow
 - feat(compose): Voice Message recording — up to 10 min, MediaRecorder API, progress ring, waveform bars, playback preview, attaches as audio/webm to email via Graph fileAttachment
 - fix(send): /api/mail/send route aligned to accept structured recipient objects, bcc, body as object, optional attachment
+- [Fix] ComposeClient: AI Remix — fixed emoji extras API mismatch (was sending boolean, server expects string[])
+- [Fix] ComposeClient: AI Remix — selectedPreset now sent to API as customInstruction
+- [Fix] ComposeClient: acceptRemix — replaced innerText= with safe innerHTML (preserves rich text, escapes HTML)
+- [Fix] ComposeClient: "Edit First" button now focuses body on close
+- [Fix] ComposeClient: AI Dictate — SpeechRecognition auto-restarts on silence (intentionalStopRef pattern)
+- [Fix] ComposeClient: stopRecording/pauseRecording set intentionalStopRef=true to prevent spurious restart
+- [Feature] ComposeClient: body expand/focus mode — click expand icon in body area to hide AI bar + toolbar, giving full height for long emails; mini floating toolbar (Bold/Italic/Underline/Bullets/Numbers) visible in focus mode; same bodyRef (no sync needed)
