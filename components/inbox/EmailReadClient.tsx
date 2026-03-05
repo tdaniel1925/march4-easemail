@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { getInitials, getAvatarColor } from "@/lib/utils/email-helpers";
 import EventFormModal from "@/components/calendar/EventFormModal";
 import type { ParseInviteResponse } from "@/app/api/calendar/parse-invite/route";
@@ -34,8 +35,6 @@ interface EmailDetail {
   body: { content: string; contentType: "html" | "text" };
   attachments: Attachment[];
 }
-
-type ComposeMode = "reply" | "replyAll" | "forward";
 
 // ─── Invite detection ─────────────────────────────────────────────────────────
 
@@ -84,33 +83,14 @@ function SafeHtml({ html }: { html: string }) {
 // ─── EmailReadClient ──────────────────────────────────────────────────────────
 
 export default function EmailReadClient({ email, homeAccountId }: { email: EmailDetail; homeAccountId: string }) {
-  const [composeMode, setComposeMode] = useState<ComposeMode | null>(null);
-  const [toField, setToField] = useState("");
-  const [replyText, setReplyText] = useState("");
-  const [replySending, setReplySending] = useState(false);
-  const [replySent, setReplySent] = useState(false);
-  const [replyError, setReplyError] = useState<string | null>(null);
+  const router = useRouter();
   const [isRead, setIsRead] = useState(email.isRead);
   const [isStarred, setIsStarred] = useState(email.flag.flagStatus === "flagged");
   const [showAllRecipients, setShowAllRecipients] = useState(false);
-  const [aiLoading, setAiLoading] = useState(false);
   const [calLoading, setCalLoading] = useState(false);
   const [calError, setCalError] = useState<string | null>(null);
   const [showCalForm, setShowCalForm] = useState(false);
   const [calPrefill, setCalPrefill] = useState<ParseInviteResponse | null>(null);
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
-
-  // Pre-fill reply text from AI Reply modal (stored in sessionStorage)
-  useEffect(() => {
-    const key = `ai-reply-${email.id}`;
-    const prefill = sessionStorage.getItem(key);
-    if (prefill) {
-      setReplyText(prefill);
-      setComposeMode("reply");
-      sessionStorage.removeItem(key);
-      setTimeout(() => textareaRef.current?.focus(), 100);
-    }
-  }, [email.id]);
 
   const isInvite = isLikelyInvite(email);
 
@@ -127,76 +107,8 @@ export default function EmailReadClient({ email, homeAccountId }: { email: Email
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [email.id]);
 
-  function openCompose(mode: ComposeMode) {
-    setComposeMode(mode);
-    setReplyError(null);
-    setReplySent(false);
-    setReplyText("");
-    setTimeout(() => textareaRef.current?.focus(), 50);
-  }
-
-  function closeCompose() {
-    setComposeMode(null);
-    setReplyText("");
-    setToField("");
-    setReplyError(null);
-  }
-
-  async function handleSend() {
-    if (!replyText.trim() || replySending) return;
-    if (composeMode === "forward" && !toField.trim()) {
-      setReplyError("Please enter a recipient email address.");
-      return;
-    }
-    setReplySending(true);
-    setReplyError(null);
-    try {
-      const res = await fetch("/api/mail/reply", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          messageId: email.id,
-          comment: replyText.trim(),
-          type: composeMode,
-          ...(composeMode === "forward" ? { toRecipients: [toField.trim()] } : {}),
-        }),
-      });
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({ error: "Failed to send" }));
-        throw new Error((data as { error?: string }).error ?? "Failed to send");
-      }
-      setReplySent(true);
-      setReplyText("");
-      setTimeout(() => { setReplySent(false); setComposeMode(null); }, 2500);
-    } catch (e) {
-      setReplyError((e as Error).message);
-    } finally {
-      setReplySending(false);
-    }
-  }
-
-  async function handleAiReply() {
-    setAiLoading(true);
-    try {
-      const res = await fetch("/api/mail/ai-reply", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          subject: email.subject,
-          from: email.from.name,
-          body: email.bodyPreview,
-        }),
-      });
-      const data = await res.json() as { options?: string[]; error?: string };
-      if (data.options?.[0]) {
-        setReplyText(data.options[0]);
-        openCompose("reply");
-      }
-    } catch {
-      // silently fail — user can still type manually
-    } finally {
-      setAiLoading(false);
-    }
+  function openCompose(mode: "reply" | "replyAll" | "forward") {
+    router.push(`/compose?mode=${mode}&messageId=${email.id}`);
   }
 
   async function handleAddToCalendar() {
@@ -237,10 +149,6 @@ export default function EmailReadClient({ email, homeAccountId }: { email: Email
     timeStyle: "short",
   });
 
-  const sendLabel =
-    composeMode === "forward" ? "Forward" :
-    composeMode === "replyAll" ? "Reply All" : "Reply";
-
   return (
     <div className="flex flex-col flex-1 bg-background-100" style={{ height: "100vh", overflow: "hidden" }}>
 
@@ -260,50 +168,26 @@ export default function EmailReadClient({ email, homeAccountId }: { email: Email
 
           <div className="w-px h-5 bg-neutral-200" />
 
-          {/* Reply / Reply All / Forward */}
+          {/* Reply / Reply All / Forward — open full composer */}
           {([
-            { mode: "reply" as ComposeMode, label: "Reply", icon: "M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" },
-            { mode: "replyAll" as ComposeMode, label: "Reply All", icon: "M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6M7 6l-4 4 4 4" },
-            { mode: "forward" as ComposeMode, label: "Forward", icon: "M21 10H11a8 8 0 00-8 8v2m18-10l-6-6m6 6l-6 6" },
-          ]).map(({ mode, label, icon }) => {
-            const active = composeMode === mode;
-            return (
-              <button
-                key={mode}
-                onClick={() => active ? closeCompose() : openCompose(mode)}
-                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-small text-xs font-medium transition-colors"
-                style={{
-                  backgroundColor: active ? "rgb(253 235 235)" : "transparent",
-                  color: active ? "rgb(138 9 9)" : "rgb(82 82 82)",
-                  border: active ? "1px solid rgb(238 180 180)" : "1px solid transparent",
-                }}
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d={icon} />
-                </svg>
-                {label}
-              </button>
-            );
-          })}
-
-          {/* AI Reply */}
-          <button
-            onClick={handleAiReply}
-            disabled={aiLoading}
-            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-small text-xs font-medium transition-colors disabled:opacity-60 ai-gradient-bg text-white"
-          >
-            {aiLoading ? (
-              <svg className="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth={4} />
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
-              </svg>
-            ) : (
+            { mode: "reply" as const, label: "Reply", icon: "M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" },
+            { mode: "replyAll" as const, label: "Reply All", icon: "M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6M7 6l-4 4 4 4" },
+            { mode: "forward" as const, label: "Forward", icon: "M21 10H11a8 8 0 00-8 8v2m18-10l-6-6m6 6l-6 6" },
+          ]).map(({ mode, label, icon }) => (
+            <button
+              key={mode}
+              onClick={() => openCompose(mode)}
+              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-small text-xs font-medium transition-colors"
+              style={{ backgroundColor: "transparent", color: "rgb(82 82 82)", border: "1px solid transparent" }}
+              onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "rgb(245 245 245)"; }}
+              onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "transparent"; }}
+            >
               <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                <path strokeLinecap="round" strokeLinejoin="round" d={icon} />
               </svg>
-            )}
-            AI Reply
-          </button>
+              {label}
+            </button>
+          ))}
 
           {/* Add to Calendar */}
           <button
@@ -331,7 +215,6 @@ export default function EmailReadClient({ email, homeAccountId }: { email: Email
           {calError && (
             <span className="text-xs font-medium" style={{ color: "rgb(138 9 9)" }}>{calError}</span>
           )}
-
         </div>
 
         {/* Right: action icons */}
@@ -467,101 +350,6 @@ export default function EmailReadClient({ email, homeAccountId }: { email: Email
             </div>
           )}
 
-          {/* ── Inline Reply / Forward ───────────────────────────────────────── */}
-          {composeMode ? (
-            <div className="border border-neutral-200 rounded-large bg-white shadow-custom overflow-hidden">
-              {/* Header */}
-              <div className="flex items-center justify-between px-5 py-3 border-b border-neutral-100 bg-background-50">
-                <div className="flex items-center gap-2">
-                  <div className="w-5 h-5 ai-gradient-bg rounded-small flex items-center justify-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                      {composeMode === "forward"
-                        ? <path strokeLinecap="round" strokeLinejoin="round" d="M21 10H11a8 8 0 00-8 8v2m18-10l-6-6m6 6l-6 6" />
-                        : <path strokeLinecap="round" strokeLinejoin="round" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />}
-                    </svg>
-                  </div>
-                  <span className="text-sm font-semibold text-neutral-800">
-                    {composeMode === "replyAll" ? "Reply to all" :
-                     composeMode === "forward"  ? "Forward" :
-                     `Reply to ${email.from.name}`}
-                  </span>
-                </div>
-                <button onClick={closeCompose} className="p-1 rounded-small hover:bg-background-100 text-neutral-400 hover:text-neutral-600 transition-colors">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
-              </div>
-
-              {/* To field — forward only */}
-              {composeMode === "forward" && (
-                <div className="flex items-center gap-2 px-5 py-2.5 border-b border-neutral-100">
-                  <span className="text-xs font-medium text-neutral-400 flex-shrink-0">To:</span>
-                  <input
-                    type="email"
-                    value={toField}
-                    onChange={(e) => setToField(e.target.value)}
-                    placeholder="recipient@example.com"
-                    className="flex-1 text-sm focus:outline-none bg-transparent text-neutral-800 placeholder-neutral-400"
-                  />
-                </div>
-              )}
-
-              {/* Textarea */}
-              <textarea
-                ref={textareaRef}
-                value={replyText}
-                onChange={(e) => setReplyText(e.target.value)}
-                placeholder={composeMode === "forward" ? "Add a message…" : "Write your reply…"}
-                className="w-full px-5 py-4 text-sm resize-none focus:outline-none text-neutral-800 placeholder-neutral-400"
-                style={{ minHeight: 120, maxHeight: 300 }}
-                onKeyDown={(e) => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) handleSend(); }}
-              />
-
-              {/* Error */}
-              {replyError && (
-                <div className="px-5 py-2.5 text-xs text-primary-700 bg-primary-50 border-t border-primary-100">
-                  {replyError}
-                </div>
-              )}
-
-              {/* Actions */}
-              <div className="flex items-center gap-2 px-5 py-3 border-t border-neutral-100 bg-background-50">
-                <button
-                  onClick={handleSend}
-                  disabled={replySending || replySent || !replyText.trim()}
-                  className="flex items-center gap-1.5 text-white text-sm font-semibold px-4 py-2 rounded-small transition-colors disabled:opacity-60 ai-gradient-bg"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
-                  </svg>
-                  {replySending ? "Sending…" : replySent ? "Sent!" : `Send ${sendLabel}`}
-                </button>
-                <button
-                  onClick={closeCompose}
-                  className="text-sm px-3 py-2 rounded-small text-neutral-500 hover:bg-background-100 hover:text-neutral-700 transition-colors"
-                >
-                  Discard
-                </button>
-                <span className="ml-auto text-xs text-neutral-300">⌘↵ to send</span>
-              </div>
-            </div>
-          ) : (
-            /* Quick-reply prompt */
-            <button
-              onClick={() => openCompose("reply")}
-              className="w-full flex items-center gap-3 px-5 py-4 border border-neutral-200 rounded-large bg-white text-neutral-400 hover:border-primary-300 hover:text-primary-600 transition-all shadow-custom text-sm"
-            >
-              <div className="w-7 h-7 ai-gradient-bg rounded-small flex items-center justify-center flex-shrink-0">
-                <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
-                </svg>
-              </div>
-              Reply to {email.from.name}…
-            </button>
-          )}
-
-          {/* Bottom padding */}
           <div className="h-16" />
         </div>
       </div>

@@ -449,8 +449,8 @@ export default function InboxClient({
         email={aiReplyEmail}
         onClose={() => setAiReplyEmail(null)}
         onSelectOption={(body) => {
-          sessionStorage.setItem(`ai-reply-${aiReplyEmail.id}`, body);
-          router.push(`/inbox/${aiReplyEmail.id}`);
+          sessionStorage.setItem(`ai-reply-body-${aiReplyEmail.id}`, body);
+          router.push(`/compose?mode=reply&messageId=${aiReplyEmail.id}`);
           setAiReplyEmail(null);
         }}
       />

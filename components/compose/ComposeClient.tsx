@@ -1110,6 +1110,13 @@ export default function ComposeClient({
           originalSubject: origSubject,
           originalBodyHtml: msg.body?.content ?? "",
         });
+
+        // Pre-fill body from AI Reply selection (stored by InboxClient)
+        const aiBody = sessionStorage.getItem(`ai-reply-body-${messageId}`);
+        if (aiBody && bodyRef.current) {
+          bodyRef.current.innerHTML = aiBody;
+          sessionStorage.removeItem(`ai-reply-body-${messageId}`);
+        }
       })
       .catch(() => {});
   // eslint-disable-next-line react-hooks/exhaustive-deps
