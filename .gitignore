@@ -33,7 +33,7 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-/lib/generated/prisma
+# /lib/generated/prisma — generated at build/install time, do not ignore
 
 # Playwright
 tests/e2e/auth/session.json
