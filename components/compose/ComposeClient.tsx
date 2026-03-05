@@ -268,9 +268,13 @@ export default function ComposeClient({
   const [dictateError, setDictateError] = useState<string | null>(null);
   const [autoPunctuate, setAutoPunctuate] = useState(true);
   const [fixGrammar, setFixGrammar] = useState(true);
+  const [dictateFormatted, setDictateFormatted] = useState<string | null>(null);
+  const [dictateFormatting, setDictateFormatting] = useState(false);
+  const [dictateFormatError, setDictateFormatError] = useState<string | null>(null);
   const recognitionRef = useRef<ISpeechRecognition | null>(null);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const intentionalStopRef = useRef(false);
+  const dictateTimeRef = useRef(0);
 
   // ── Voice Message state ──────────────────────────────────────────────────────
   const [voiceBlob, setVoiceBlob] = useState<Blob | null>(null);
@@ -525,7 +529,12 @@ export default function ComposeClient({
     recognitionRef.current = rec;
     setIsRecording(true);
     setDictateError(null);
-    timerRef.current = setInterval(() => setRecordingTime((t) => t + 1), 1000);
+    dictateTimeRef.current = recordingTime; // resume from current time if paused
+    timerRef.current = setInterval(() => {
+      dictateTimeRef.current += 1;
+      setRecordingTime(dictateTimeRef.current);
+      if (dictateTimeRef.current >= 600) stopRecording(); // auto-stop at 10 min
+    }, 1000);
   }
 
   function stopRecording() {
@@ -547,16 +556,48 @@ export default function ComposeClient({
     setTranscript("");
     setInterimTranscript("");
     setRecordingTime(0);
+    dictateTimeRef.current = 0;
+    setDictateFormatted(null);
+    setDictateFormatError(null);
   }
 
-  function insertTranscript() {
-    if (!bodyRef.current) return;
-    const text = transcript + interimTranscript;
-    if (!text.trim()) return;
+  async function generateEmail() {
+    const text = (transcript + interimTranscript).trim();
+    if (!text || dictateFormatting) return;
+    stopRecording();
+    setDictateFormatting(true);
+    setDictateFormatError(null);
+    setDictateFormatted(null);
+    try {
+      const res = await fetch("/api/mail/dictate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ transcript: text }),
+      });
+      const data = await res.json() as { formatted?: string; error?: string };
+      if (!res.ok || data.error) {
+        setDictateFormatError(data.error ?? "Failed to format email");
+        return;
+      }
+      setDictateFormatted(data.formatted ? formatEmailSpacing(data.formatted) : null);
+    } catch {
+      setDictateFormatError("Network error. Please try again.");
+    } finally {
+      setDictateFormatting(false);
+    }
+  }
+
+  function insertDictated() {
+    if (!dictateFormatted || !bodyRef.current) return;
+    bodyRef.current.innerHTML = remixTextToHtml(dictateFormatted);
     bodyRef.current.focus();
-    document.execCommand("insertText", false, text);
+    const sel = window.getSelection();
+    if (sel) { sel.selectAllChildren(bodyRef.current); sel.collapseToEnd(); }
+    setDictateFormatted(null);
     setTranscript("");
     setInterimTranscript("");
+    setRecordingTime(0);
+    dictateTimeRef.current = 0;
     setActivePanel(null);
   }
 
@@ -1690,7 +1731,7 @@ export default function ComposeClient({
             {/* Scrollable content */}
             <div className="flex-1 overflow-y-auto">
 
-              {/* Waveform */}
+              {/* Waveform — always visible */}
               <div className="px-6 py-5 border-b border-neutral-200 bg-background-50">
                 <div className="flex items-center justify-center gap-1 h-10">
                   {isRecording ? (
@@ -1704,6 +1745,42 @@ export default function ComposeClient({
                   )}
                 </div>
               </div>
+
+              {/* ── Phase: AI formatting loading ── */}
+              {dictateFormatting && (
+                <div className="flex flex-col items-center justify-center py-20 gap-4 px-6">
+                  <svg className="animate-spin w-8 h-8 text-primary-500" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth={4} />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+                  </svg>
+                  <p className="text-sm font-medium text-neutral-600">Formatting your email…</p>
+                  <p className="text-xs text-neutral-400 text-center">AI is turning your dictation into a perfectly structured email</p>
+                </div>
+              )}
+
+              {/* ── Phase: Formatted preview ── */}
+              {!dictateFormatting && dictateFormatted !== null && (
+                <div className="px-6 py-5">
+                  <div className="flex items-center gap-2 mb-3">
+                    <div className="w-5 h-5 ai-gradient-bg rounded-small flex items-center justify-center flex-shrink-0">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                      </svg>
+                    </div>
+                    <h3 className="font-heading text-sm font-semibold text-neutral-800">Formatted Email</h3>
+                    <span className="text-xs text-neutral-400 ml-auto">{dictateFormatted.trim().split(/\s+/).filter(Boolean).length} words</span>
+                  </div>
+                  <div className="bg-background-100 border border-neutral-200 rounded-large p-4 shadow-custom" style={{ minHeight: 160, maxHeight: 400, overflowY: "auto" }}>
+                    <pre className="text-sm text-neutral-800 leading-relaxed whitespace-pre-wrap font-sans">{dictateFormatted}</pre>
+                  </div>
+                  {dictateFormatError && (
+                    <p className="mt-2 text-xs text-primary-700 bg-primary-50 border border-primary-200 rounded-small px-3 py-2">{dictateFormatError}</p>
+                  )}
+                </div>
+              )}
+
+              {/* ── Phase: Recording UI (transcript + controls + settings + stats) ── */}
+              {!dictateFormatting && dictateFormatted === null && (<>
 
               {/* Live transcription */}
               <div className="px-6 py-5 border-b border-neutral-200 bg-background-50">
@@ -1876,30 +1953,64 @@ export default function ComposeClient({
                 </div>
               </div>
 
+              </>)}
+
             </div>
 
             {/* Footer */}
             <div className="flex-shrink-0 border-t border-neutral-200 bg-background-50 px-6 py-4">
               <div className="flex items-center gap-3">
-                <button
-                  onClick={() => { stopRecording(); setTranscript(""); setInterimTranscript(""); setActivePanel(null); }}
-                  className="flex items-center gap-2 border border-neutral-200 text-neutral-600 hover:bg-background-100 font-medium text-sm py-2.5 px-4 rounded-small transition-colors shadow-custom flex-shrink-0"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                  Discard
-                </button>
-                <button
-                  onClick={insertTranscript}
-                  disabled={!transcript && !interimTranscript}
-                  className="flex-1 flex items-center justify-center gap-2 ai-gradient-bg text-white font-semibold text-sm py-2.5 px-5 rounded-small transition-all shadow-custom hover:shadow-custom-hover disabled:opacity-40"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                  </svg>
-                  Insert into Email
-                </button>
+
+                {/* Phase: preview — Retake | Insert */}
+                {!dictateFormatting && dictateFormatted !== null ? (<>
+                  <button
+                    onClick={restartRecording}
+                    className="flex items-center gap-2 border border-neutral-200 text-neutral-600 hover:bg-background-100 font-medium text-sm py-2.5 px-4 rounded-small transition-colors shadow-custom flex-shrink-0"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                    </svg>
+                    Retake
+                  </button>
+                  <button
+                    onClick={insertDictated}
+                    className="flex-1 flex items-center justify-center gap-2 ai-gradient-bg text-white font-semibold text-sm py-2.5 px-5 rounded-small transition-all shadow-custom hover:shadow-custom-hover"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                    Insert into Email
+                  </button>
+                </>) : (<>
+
+                {/* Phase: recording / formatting — Discard | Generate Email */}
+                  <button
+                    onClick={() => { stopRecording(); setTranscript(""); setInterimTranscript(""); setDictateFormatted(null); setActivePanel(null); }}
+                    className="flex items-center gap-2 border border-neutral-200 text-neutral-600 hover:bg-background-100 font-medium text-sm py-2.5 px-4 rounded-small transition-colors shadow-custom flex-shrink-0"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                    Discard
+                  </button>
+                  <button
+                    onClick={() => void generateEmail()}
+                    disabled={(!transcript && !interimTranscript) || dictateFormatting}
+                    className="flex-1 flex items-center justify-center gap-2 ai-gradient-bg text-white font-semibold text-sm py-2.5 px-5 rounded-small transition-all shadow-custom hover:shadow-custom-hover disabled:opacity-40"
+                  >
+                    {dictateFormatting ? (
+                      <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth={4} />
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+                      </svg>
+                    ) : (
+                      <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                      </svg>
+                    )}
+                    {dictateFormatting ? "Formatting…" : "Generate Email"}
+                  </button>
+                </>)}
               </div>
             </div>
           </div>
