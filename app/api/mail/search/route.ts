@@ -45,10 +45,10 @@ export async function GET(req: NextRequest) {
   const search = encodeURIComponent(q);
   const wellKnown = WELL_KNOWN_FOLDER_PATHS[folder];
   const path = (folder === "starred" || (!wellKnown && !folder))
-    ? `/me/messages?$search="${search}"&$select=${SELECT}&$top=50`
+    ? `/me/messages?$search="${search}"&$select=${SELECT}&$top=250`
     : wellKnown
-      ? `/me/mailFolders/${wellKnown}/messages?$search="${search}"&$select=${SELECT}&$top=50`
-      : `/me/mailFolders/${encodeURIComponent(folder)}/messages?$search="${search}"&$select=${SELECT}&$top=50`;
+      ? `/me/mailFolders/${wellKnown}/messages?$search="${search}"&$select=${SELECT}&$top=250`
+      : `/me/mailFolders/${encodeURIComponent(folder)}/messages?$search="${search}"&$select=${SELECT}&$top=250`;
 
   try {
     const data = await graphGet<{ value: GraphMessage[] }>(user.id, homeAccountId, path);
