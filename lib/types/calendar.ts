@@ -17,7 +17,7 @@ export interface CalEvent {
   isRecurring?: boolean;
 }
 
-export type CalendarView = "day" | "week" | "month";
+export type CalendarView = "day" | "week" | "month" | "agenda" | "year";
 
 export type EventType = "court" | "deposition" | "client" | "deadline" | "internal" | "other";
 
