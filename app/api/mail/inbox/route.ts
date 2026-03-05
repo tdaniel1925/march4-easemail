@@ -4,8 +4,15 @@ import { graphGet } from "@/lib/microsoft/graph";
 import type { EmailMessage } from "@/components/inbox/InboxClient";
 
 const GRAPH_BASE = "https://graph.microsoft.com/v1.0";
+const SELECT = "id,subject,bodyPreview,receivedDateTime,isRead,hasAttachments,flag,from,body";
 const DEFAULT_PATH =
-  "/me/mailFolders/inbox/messages?$top=50&$select=id,subject,bodyPreview,receivedDateTime,isRead,hasAttachments,flag,from,body&$orderby=receivedDateTime desc";
+  `/me/mailFolders/inbox/messages?$top=50&$select=${SELECT}&$orderby=receivedDateTime desc`;
+
+const TAB_PATHS: Record<string, string> = {
+  unread:      `/me/mailFolders/inbox/messages?$filter=isRead eq false&$select=${SELECT}&$top=100&$orderby=receivedDateTime desc`,
+  starred:     `/me/mailFolders/inbox/messages?$filter=flag/flagStatus eq 'flagged'&$select=${SELECT}&$top=100&$orderby=receivedDateTime desc`,
+  attachments: `/me/mailFolders/inbox/messages?$filter=hasAttachments eq true&$select=${SELECT}&$top=100&$orderby=receivedDateTime desc`,
+};
 
 interface GraphMessage {
   id: string;
@@ -52,13 +59,14 @@ export async function GET(req: NextRequest) {
   const homeAccountId = req.nextUrl.searchParams.get("homeAccountId");
   if (!homeAccountId) return NextResponse.json({ error: "homeAccountId required" }, { status: 400 });
 
-  // Support pagination: if nextLink param is provided, use it instead of the default path
+  // Priority: nextLink (pagination) > tab filter > default
   const nextLinkParam = req.nextUrl.searchParams.get("nextLink");
+  const tab = req.nextUrl.searchParams.get("tab") ?? "";
   const path = nextLinkParam
     ? nextLinkParam.startsWith(GRAPH_BASE)
       ? nextLinkParam.slice(GRAPH_BASE.length)
       : nextLinkParam
-    : DEFAULT_PATH;
+    : TAB_PATHS[tab] ?? DEFAULT_PATH;
 
   const data = await graphGet<GraphMessagesResponse>(user.id, homeAccountId, path);
 

@@ -44,9 +44,15 @@ _Last updated: 2026-03-04_
 | `/dashboard`, `/attachments`, `/calendar` | ❌ NOT BUILT |
 | `/accounts`, `/contacts`, `/settings`, `/help` | ❌ NOT BUILT |
 
+## InboxClient Data Architecture
+- **All tab:** local `emails` state + infinite scroll via `@odata.nextLink`
+- **Unread/Starred/Attachments tabs:** fetch from Graph API with `$filter` on tab switch — NOT local filtering. Route: `/api/mail/inbox?tab=unread|starred|attachments`
+- **Search:** debounced 400ms → `/api/mail/search?q=...` — overrides all tabs, disables infinite scroll
+- InboxClient owns all data fetching; Sidebar reads counts from Zustand `account-store`
+
 ## Current Focus
 - Session start: 2026-03-04
-- Task: Deep review completed + login page troubleshooting
+- Task: Inbox feature build — tabs, search, infinite scroll, live counts
 
 ## Known Issues / Risks
 See FIX-QUEUE.md

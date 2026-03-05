@@ -383,6 +383,8 @@ export default function InboxClient({
   const [loadingMore, setLoadingMore] = useState(false);
   const [searchResults, setSearchResults] = useState<EmailMessage[] | null>(null);
   const [searching, setSearching] = useState(false);
+  const [tabEmails, setTabEmails] = useState<EmailMessage[] | null>(null);
+  const [loadingTab, setLoadingTab] = useState(false);
 
   const activeAccount = useAccountStore((s) => s.activeAccount);
   const setInboxUnread = useAccountStore((s) => s.setInboxUnread);
@@ -401,6 +403,7 @@ export default function InboxClient({
     setLoadingEmails(true);
     setSelectedId(null);
     setNextLink(null);
+    setTabEmails(null);
     fetch(`/api/mail/inbox?homeAccountId=${encodeURIComponent(activeAccount.homeAccountId)}`)
       .then((r) => r.json())
       .then((data: { emails: EmailMessage[]; nextLink: string | null }) => {
@@ -411,6 +414,19 @@ export default function InboxClient({
       .catch(console.error)
       .finally(() => setLoadingEmails(false));
   }, [activeAccount?.homeAccountId]);
+
+  // Tab switch: fetch from Graph for filtered tabs, use local list for "all"
+  useEffect(() => {
+    if (activeTab === "all") { setTabEmails(null); return; }
+    if (!activeAccount) return;
+    setLoadingTab(true);
+    setTabEmails(null);
+    fetch(`/api/mail/inbox?homeAccountId=${encodeURIComponent(activeAccount.homeAccountId)}&tab=${activeTab}`)
+      .then((r) => r.json())
+      .then((data: { emails: EmailMessage[] }) => setTabEmails(data.emails))
+      .catch(console.error)
+      .finally(() => setLoadingTab(false));
+  }, [activeTab, activeAccount?.homeAccountId]);
 
   // Infinite scroll: load next page
   const loadMore = useCallback(async () => {
@@ -463,16 +479,11 @@ export default function InboxClient({
 
   const selectedEmail = (searchResults ?? emails).find((e) => e.id === selectedId) ?? null;
 
-  // Tab filters apply to local emails only (not search results)
-  const filteredEmails = emails.filter((e) => {
-    if (activeTab === "unread" && e.isRead) return false;
-    if (activeTab === "starred" && e.flag?.flagStatus !== "flagged") return false;
-    if (activeTab === "attachments" && !e.hasAttachments) return false;
-    return true;
-  });
+  // "All" tab uses local emails (supports infinite scroll); other tabs use Graph-fetched results
+  const baseEmails = activeTab === "all" ? emails : (tabEmails ?? []);
 
-  // Search mode overrides tab-filtered list
-  const displayEmails = searchResults ?? filteredEmails;
+  // Search overrides everything
+  const displayEmails = searchResults ?? baseEmails;
 
   const unreadCount = emails.filter((e) => !e.isRead).length;
 
@@ -565,9 +576,9 @@ export default function InboxClient({
 
         {/* Email rows */}
         <div className="flex-1 overflow-y-auto divide-y divide-neutral-100 relative">
-          {loadingEmails && (
+          {(loadingEmails || loadingTab) && (
             <div className="absolute inset-0 flex items-center justify-center z-10" style={{ backgroundColor: "rgba(255,255,255,0.80)" }}>
-              <p className="text-xs font-medium" style={{ color: "rgb(138 9 9)" }}>Loading emails…</p>
+              <p className="text-xs font-medium" style={{ color: "rgb(138 9 9)" }}>Loading…</p>
             </div>
           )}
           {displayEmails.length === 0 && !searching ? (
@@ -597,8 +608,8 @@ export default function InboxClient({
             ))
           )}
 
-          {/* Infinite scroll sentinel — only active when not searching */}
-          {!search && <div ref={sentinelRef} className="h-1" />}
+          {/* Infinite scroll sentinel — All tab only, not during search */}
+          {!search && activeTab === "all" && <div ref={sentinelRef} className="h-1" />}
           {loadingMore && (
             <div className="flex justify-center py-3">
               <p className="text-xs font-medium" style={{ color: "rgb(138 9 9)" }}>Loading more…</p>
