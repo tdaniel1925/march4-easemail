@@ -1,5 +1,15 @@
 # Build Log
 
+## 2026-03-05 — Calendar E2E Tests (19/19)
+- [Tests] calendar.spec.ts: all 19 tests passing
+- [Fix] EventFormModal: added noValidate to form — browser native HTML5 min-attribute validation was silently blocking handleSubmit (root cause of test 8b failure)
+- [Fix] EventFormModal: added data-testid="event-start/event-end" to datetime inputs
+- [Fix] calendar.spec.ts test 8b: use __reactProps$ to call onChange directly (only reliable way to update React state for datetime-local in Playwright)
+- [Fix] calendar.spec.ts tests 12/12b: use exact regex /^Day$/ /^Week$/ — "Today" substring was matching "Day"
+- [Fix] EventFormModal: form id="event-form" + button form="event-form" attribute — submit button was outside <form> so onSubmit never fired
+- [Infra] playwright.config.ts + global-setup.ts: automated Supabase magic-link auth before every test run — no more manual DevTools cookie copying
+- TypeScript: CLEAN
+
 ## 2026-03-05
 - [Phase 4] NL Event Creation + Multi-account Dashboard: /api/calendar/nl-create (Claude Haiku parses natural language → prefill), NL input bar in CalendarClient header (Enter or Create button → parse → opens EventFormModal prefilled), dashboard page now fetches calendar events via Promise.allSettled across ALL connected accounts (was default account only), sorted + capped at 6. tsc clean.
 - [Phase 3] Email → Calendar: /api/calendar/parse-invite (Claude Haiku extracts subject/start/end/location/attendees/body from email). EmailReadClient: invite detection heuristic (subject/body keywords + .ics attachment), "Add to Calendar" toolbar button (highlighted red when invite detected), calls parse-invite on click, opens EventFormModal prefilled. homeAccountId threaded from page → client. tsc clean.
