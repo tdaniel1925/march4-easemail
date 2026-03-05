@@ -54,5 +54,8 @@ _Last updated: 2026-03-04_
 - Session start: 2026-03-04
 - Task: Inbox feature build — tabs, search, infinite scroll, live counts
 
+## Session Artifacts
+- `codebakers-suggestions.md` — improvements to the CodeBakers framework captured during this build. Update it whenever a protocol gap or recurring friction point is identified.
+
 ## Known Issues / Risks
 See FIX-QUEUE.md
