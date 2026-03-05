@@ -582,37 +582,61 @@ export default function ComposeClient({
               </span>
               <div className="w-px h-5 bg-neutral-200 flex-shrink-0" />
 
-              <button
-                onClick={() => setActivePanel(activePanel === "remix" ? null : "remix")}
-                className="flex items-center gap-2 ai-remix-btn text-white font-semibold text-xs py-2 px-3.5 rounded-small transition-all flex-shrink-0"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                </svg>
-                AI Remix
-              </button>
+              <div className="relative group flex-shrink-0">
+                <button
+                  onClick={() => setActivePanel(activePanel === "remix" ? null : "remix")}
+                  className="flex items-center gap-2 ai-remix-btn text-white font-semibold text-xs py-2 px-3.5 rounded-small transition-all"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                  </svg>
+                  AI Remix
+                </button>
+                <div className="pointer-events-none absolute bottom-full left-1/2 -translate-x-1/2 mb-2 z-50 opacity-0 group-hover:opacity-100 transition-opacity duration-150">
+                  <div className="px-2.5 py-1.5 rounded-[6px] text-xs text-white whitespace-nowrap" style={{ backgroundColor: "rgb(27 29 29)" }}>
+                    Rewrite your email in a different tone or style
+                  </div>
+                  <div className="mx-auto w-0 h-0" style={{ borderLeft: "5px solid transparent", borderRight: "5px solid transparent", borderTop: "5px solid rgb(27 29 29)", width: "fit-content" }} />
+                </div>
+              </div>
 
-              <button
-                onClick={() => setActivePanel(activePanel === "dictate" ? null : "dictate")}
-                className="flex items-center gap-2 ai-dictate-btn text-white font-semibold text-xs py-2 px-3.5 rounded-small transition-all flex-shrink-0"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
-                </svg>
-                AI Dictate
-              </button>
+              <div className="relative group flex-shrink-0">
+                <button
+                  onClick={() => setActivePanel(activePanel === "dictate" ? null : "dictate")}
+                  className="flex items-center gap-2 ai-dictate-btn text-white font-semibold text-xs py-2 px-3.5 rounded-small transition-all"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+                  </svg>
+                  AI Dictate
+                </button>
+                <div className="pointer-events-none absolute bottom-full left-1/2 -translate-x-1/2 mb-2 z-50 opacity-0 group-hover:opacity-100 transition-opacity duration-150">
+                  <div className="px-2.5 py-1.5 rounded-[6px] text-xs text-white whitespace-nowrap" style={{ backgroundColor: "rgb(27 29 29)" }}>
+                    Speak your email — transcribed live as you talk
+                  </div>
+                  <div className="mx-auto w-0 h-0" style={{ borderLeft: "5px solid transparent", borderRight: "5px solid transparent", borderTop: "5px solid rgb(27 29 29)", width: "fit-content" }} />
+                </div>
+              </div>
 
-              <button
-                onClick={() => setActivePanel(activePanel === "voice" ? null : "voice")}
-                className="flex items-center gap-2 text-white font-semibold text-xs py-2 px-3.5 rounded-small transition-all flex-shrink-0"
-                style={{ backgroundColor: voiceBlob ? "rgb(21 128 61)" : "rgb(138 9 9)" }}
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
-                </svg>
-                Voice Message
-                {voiceBlob && <span className="bg-white bg-opacity-20 text-white text-xs px-1.5 py-0.5 rounded-small font-medium">Attached</span>}
-              </button>
+              <div className="relative group flex-shrink-0">
+                <button
+                  onClick={() => setActivePanel(activePanel === "voice" ? null : "voice")}
+                  className="flex items-center gap-2 text-white font-semibold text-xs py-2 px-3.5 rounded-small transition-all"
+                  style={{ backgroundColor: voiceBlob ? "rgb(21 128 61)" : "rgb(138 9 9)" }}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+                  </svg>
+                  Voice Message
+                  {voiceBlob && <span className="bg-white bg-opacity-20 text-white text-xs px-1.5 py-0.5 rounded-small font-medium">Attached</span>}
+                </button>
+                <div className="pointer-events-none absolute bottom-full left-1/2 -translate-x-1/2 mb-2 z-50 opacity-0 group-hover:opacity-100 transition-opacity duration-150">
+                  <div className="px-2.5 py-1.5 rounded-[6px] text-xs text-white whitespace-nowrap" style={{ backgroundColor: "rgb(27 29 29)" }}>
+                    Record a voice message — attached as audio to the email
+                  </div>
+                  <div className="mx-auto w-0 h-0" style={{ borderLeft: "5px solid transparent", borderRight: "5px solid transparent", borderTop: "5px solid rgb(27 29 29)", width: "fit-content" }} />
+                </div>
+              </div>
 
               <div className="ml-auto flex items-center gap-1.5">
                 <span className="text-xs text-neutral-400">Powered by</span>
