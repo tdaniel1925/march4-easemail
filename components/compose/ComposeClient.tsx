@@ -303,6 +303,16 @@ export default function ComposeClient({
   const [scheduledAt, setScheduledAt] = useState<Date | null>(null);
   const [showScheduleMenu, setShowScheduleMenu] = useState(false);
 
+  // ── Importance + read receipt ────────────────────────────────────────────────
+  const [importance, setImportance] = useState<"normal" | "high">("normal");
+  const [requestReadReceipt, setRequestReadReceipt] = useState(false);
+
+  // ── Discard confirmation ─────────────────────────────────────────────────────
+  const [showDiscardConfirm, setShowDiscardConfirm] = useState(false);
+
+  // ── Drag-over state (card-level file drop) ───────────────────────────────────
+  const [isDragOver, setIsDragOver] = useState(false);
+
   // ── Contact Autocomplete ─────────────────────────────────────────────────────
   const [toSuggestions, setToSuggestions] = useState<ContactSuggestion[]>([]);
   const [ccSuggestions, setCcSuggestions] = useState<ContactSuggestion[]>([]);
@@ -521,6 +531,8 @@ export default function ComposeClient({
           attachments: allAttachments,
           fromHomeAccountId: fromAccountId,
           draftId: draftIdRef.current ?? undefined,
+          importance,
+          isReadReceiptRequested: requestReadReceipt,
         }),
       });
       if (!res.ok) {
@@ -568,6 +580,65 @@ export default function ComposeClient({
     } finally {
       setDraftSaving(false);
     }
+  }
+
+  // ── Discard: has content? ────────────────────────────────────────────────────
+  function hasComposerContent(): boolean {
+    const bodyHtml = bodyRef.current?.innerHTML ?? "";
+    return to.length > 0 || subject.trim().length > 0 || bodyHtml.length > 20;
+  }
+
+  // ── Card-level drag & drop (file attachments) ────────────────────────────────
+  function handleCardDragOver(e: React.DragEvent) {
+    if (Array.from(e.dataTransfer.items).some((item) => item.kind === "file")) {
+      e.preventDefault();
+      setIsDragOver(true);
+    }
+  }
+  function handleCardDragLeave(e: React.DragEvent) {
+    // Only clear when leaving the card entirely (not entering a child)
+    if (!(e.currentTarget as HTMLElement).contains(e.relatedTarget as Node)) {
+      setIsDragOver(false);
+    }
+  }
+  function handleCardDrop(e: React.DragEvent) {
+    e.preventDefault();
+    setIsDragOver(false);
+    const files = Array.from(e.dataTransfer.files);
+    for (const file of files) {
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        const base64 = (ev.target?.result as string).split(",")[1] ?? "";
+        setAttachments((prev) => [
+          ...prev,
+          { id: crypto.randomUUID(), name: file.name, type: file.type, size: file.size, data: base64 },
+        ]);
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  // ── Body drag & drop (inline images — intercepts before card handler) ────────
+  function handleBodyDragOver(e: React.DragEvent<HTMLDivElement>) {
+    const hasImage = Array.from(e.dataTransfer.items).some((item) => item.type.startsWith("image/"));
+    if (hasImage) e.preventDefault();
+  }
+  function handleBodyDrop(e: React.DragEvent<HTMLDivElement>) {
+    const imageFile = Array.from(e.dataTransfer.files).find((f) => f.type.startsWith("image/"));
+    if (!imageFile) return;
+    e.preventDefault();
+    e.stopPropagation(); // prevent card handler from also firing
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const dataUrl = ev.target?.result as string;
+      document.execCommand(
+        "insertHTML",
+        false,
+        `<img src="${dataUrl}" style="max-width:100%;height:auto" alt="dropped image">`
+      );
+      triggerAutoSave();
+    };
+    reader.readAsDataURL(imageFile);
   }
 
   // ── File attachments ─────────────────────────────────────────────────────────
@@ -1104,7 +1175,22 @@ export default function ComposeClient({
 
       {/* SCROLLABLE BODY */}
       <div className="flex-1 overflow-hidden px-6 py-5 flex flex-col">
-        <div className="max-w-4xl w-full mx-auto bg-background-50 rounded-large composer-shadow border border-neutral-200 flex flex-col overflow-hidden flex-1 min-h-0">
+        <div
+          className={`relative max-w-4xl w-full mx-auto bg-background-50 rounded-large composer-shadow flex flex-col overflow-hidden flex-1 min-h-0 transition-all ${isDragOver ? "border-2 border-primary-400 ring-2 ring-primary-100" : "border border-neutral-200"}`}
+          onDragOver={handleCardDragOver}
+          onDragLeave={handleCardDragLeave}
+          onDrop={handleCardDrop}
+        >
+          {isDragOver && (
+            <div className="absolute inset-0 z-40 flex items-center justify-center pointer-events-none rounded-large bg-primary-50/60">
+              <div className="flex flex-col items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-8 h-8 text-primary-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
+                </svg>
+                <span className="text-sm font-semibold text-primary-700">Drop to attach</span>
+              </div>
+            </div>
+          )}
 
           {/* COMPOSER HEADER */}
           <div className="flex items-center justify-between px-6 py-4 border-b border-neutral-200 flex-shrink-0">
@@ -1651,6 +1737,8 @@ export default function ComposeClient({
               suppressContentEditableWarning
               onInput={onBodyChange}
               onPaste={handleBodyPaste}
+              onDragOver={handleBodyDragOver}
+              onDrop={handleBodyDrop}
               className="text-sm text-neutral-700 leading-relaxed outline-none min-h-[200px]"
               data-placeholder="Write your email…"
               style={{ caretColor: "rgb(138 9 9)" }}
@@ -1786,6 +1874,31 @@ export default function ComposeClient({
                 {attachments.length > 0 ? `${attachments.length} file${attachments.length > 1 ? "s" : ""}` : "Attach"}
               </button>
 
+              {/* High importance toggle */}
+              <button
+                onClick={() => setImportance((v) => v === "high" ? "normal" : "high")}
+                title={importance === "high" ? "High importance (click to remove)" : "Mark as high importance"}
+                className={`flex items-center gap-1 px-2.5 py-2 text-xs font-semibold border rounded-small transition-all shadow-custom ${importance === "high" ? "bg-primary-50 border-primary-400 text-primary-700" : "border-neutral-200 text-neutral-500 hover:bg-background-100 hover:border-neutral-300"}`}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v4m0 4h.01M12 3a9 9 0 100 18A9 9 0 0012 3z" />
+                </svg>
+                {importance === "high" && <span>High</span>}
+              </button>
+
+              {/* Read receipt toggle */}
+              <button
+                onClick={() => setRequestReadReceipt((v) => !v)}
+                title={requestReadReceipt ? "Read receipt requested (click to remove)" : "Request read receipt"}
+                className={`flex items-center gap-1 px-2.5 py-2 text-xs font-semibold border rounded-small transition-all shadow-custom ${requestReadReceipt ? "bg-secondary-50 border-secondary-400 text-secondary-700" : "border-neutral-200 text-neutral-500 hover:bg-background-100 hover:border-neutral-300"}`}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                </svg>
+                {requestReadReceipt && <span>Receipt</span>}
+              </button>
+
               {/* Send button */}
               <button
                 onClick={() => void handleSend()}
@@ -1902,12 +2015,40 @@ export default function ComposeClient({
                 </svg>
                 Rules
               </Link>
-              <Link href="/inbox" className="flex items-center gap-1.5 text-xs text-neutral-500 hover:text-primary-600 transition-colors px-2 py-1.5 rounded-small hover:bg-background-100">
+              <button
+                onClick={() => hasComposerContent() ? setShowDiscardConfirm(true) : router.push("/inbox")}
+                className="flex items-center gap-1.5 text-xs text-neutral-500 hover:text-primary-600 transition-colors px-2 py-1.5 rounded-small hover:bg-background-100"
+              >
                 <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                 </svg>
                 Discard
-              </Link>
+              </button>
+
+              {/* Discard confirmation */}
+              {showDiscardConfirm && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30">
+                  <div className="bg-white rounded-large shadow-custom-hover border border-neutral-200 p-6 max-w-sm w-full mx-4">
+                    <h3 className="font-heading font-semibold text-neutral-900 text-base mb-1.5">Discard draft?</h3>
+                    <p className="text-sm text-neutral-500 mb-5">This email will not be saved. Any content you&apos;ve written will be lost.</p>
+                    <div className="flex items-center gap-3 justify-end">
+                      <button
+                        onClick={() => setShowDiscardConfirm(false)}
+                        className="px-4 py-2 text-sm font-medium text-neutral-600 border border-neutral-200 rounded-small hover:bg-background-100 transition-colors"
+                      >
+                        Keep editing
+                      </button>
+                      <button
+                        onClick={() => router.push("/inbox")}
+                        className="px-4 py-2 text-sm font-semibold text-white rounded-small transition-colors"
+                        style={{ backgroundColor: "rgb(138 9 9)" }}
+                      >
+                        Discard
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 

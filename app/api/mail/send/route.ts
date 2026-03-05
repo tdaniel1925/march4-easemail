@@ -23,6 +23,8 @@ export async function POST(req: NextRequest) {
     attachments,
     fromHomeAccountId,
     draftId,
+    importance,
+    isReadReceiptRequested,
   } = await req.json() as {
     to: { emailAddress: { address: string } }[];
     cc?: { emailAddress: { address: string } }[];
@@ -32,6 +34,8 @@ export async function POST(req: NextRequest) {
     attachments?: Attachment[];
     fromHomeAccountId?: string;
     draftId?: string;
+    importance?: "normal" | "high";
+    isReadReceiptRequested?: boolean;
   };
 
   if (!to?.length) {
@@ -67,6 +71,8 @@ export async function POST(req: NextRequest) {
       ...(cc?.length ? { ccRecipients: cc } : {}),
       ...(bcc?.length ? { bccRecipients: bcc } : {}),
       ...(graphAttachments.length ? { attachments: graphAttachments } : {}),
+      ...(importance === "high" ? { importance: "high" } : {}),
+      ...(isReadReceiptRequested ? { isReadReceiptRequested: true } : {}),
     },
     saveToSentItems: true,
   };
