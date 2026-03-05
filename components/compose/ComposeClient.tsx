@@ -590,7 +590,6 @@ export default function ComposeClient({
                   <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                 </svg>
                 AI Remix
-                <span className="bg-white bg-opacity-20 text-white text-xs px-1.5 py-0.5 rounded-small font-medium">Rewrite</span>
               </button>
 
               <button
@@ -601,7 +600,6 @@ export default function ComposeClient({
                   <path strokeLinecap="round" strokeLinejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
                 </svg>
                 AI Dictate
-                <span className="bg-white bg-opacity-20 text-white text-xs px-1.5 py-0.5 rounded-small font-medium">Speak</span>
               </button>
 
               <button
