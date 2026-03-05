@@ -195,7 +195,7 @@ export default function TeamsClient({ userName, userEmail }: TeamsClientProps) {
       const res = await fetch("/api/teams/chats");
       if (!res.ok) {
         const body = await res.json() as { error?: string };
-        if (body.error === "account_requires_reauth") {
+        if (body.error === "account_requires_reauth" || body.error === "teams_scope_required" || res.status === 403) {
           setChatsError("reauth");
         } else {
           setChatsError(body.error ?? "Failed to load chats");
@@ -222,7 +222,11 @@ export default function TeamsClient({ userName, userEmail }: TeamsClientProps) {
       const res = await fetch("/api/teams/teams");
       if (!res.ok) {
         const body = await res.json() as { error?: string };
-        setTeamsError(body.error ?? "Failed to load teams");
+        if (body.error === "teams_scope_required" || res.status === 403 || body.error === "account_requires_reauth") {
+          setTeamsError("reauth");
+        } else {
+          setTeamsError(body.error ?? "Failed to load teams");
+        }
         return;
       }
       const data = await res.json() as { teams: TeamsTeam[] };
@@ -483,7 +487,21 @@ export default function TeamsClient({ userName, userEmail }: TeamsClientProps) {
                   <div className="w-5 h-5 rounded-full border-2 border-neutral-200 animate-spin" style={{ borderTopColor: "rgb(138 9 9)" }} />
                 </div>
               )}
-              {!teamsLoading && teamsError && (
+              {!teamsLoading && teamsError === "reauth" && (
+                <div className="px-4 py-6 text-center">
+                  <p className="text-sm mb-3" style={{ color: "rgb(115 115 115)" }}>
+                    Teams access requires reconnecting your account with new permissions.
+                  </p>
+                  <a
+                    href="/accounts"
+                    className="text-sm font-medium px-3 py-1.5 rounded-[8px] inline-block"
+                    style={{ backgroundColor: "rgb(253 235 235)", color: "rgb(138 9 9)" }}
+                  >
+                    Reconnect account
+                  </a>
+                </div>
+              )}
+              {!teamsLoading && teamsError && teamsError !== "reauth" && (
                 <div className="px-4 py-6 text-center">
                   <p className="text-sm" style={{ color: "rgb(115 115 115)" }}>{teamsError}</p>
                 </div>

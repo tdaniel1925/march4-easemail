@@ -37,12 +37,16 @@ export async function GET(req: NextRequest) {
     const data = await graphGet<GraphChatList>(
       user.id,
       homeAccountId,
-      "/me/chats?$expand=members&$orderby=lastUpdatedDateTime desc&$top=50"
+      "/me/chats?$expand=members&$top=50"
     );
     return NextResponse.json({ chats: data.value ?? [] });
   } catch (err: unknown) {
     if (isReauthError(err)) {
       return NextResponse.json({ error: "account_requires_reauth" }, { status: 401 });
+    }
+    const msg = String(err);
+    if (msg.includes("403") || msg.includes("Authorization_RequestDenied") || msg.includes("Forbidden")) {
+      return NextResponse.json({ error: "teams_scope_required" }, { status: 403 });
     }
     console.error("[teams/chats]", err);
     return NextResponse.json({ error: "Failed to fetch chats" }, { status: 500 });

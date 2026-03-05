@@ -10,7 +10,7 @@ import type { MailFolder } from "@/lib/types/email";
 interface SidebarProps {
   userName?: string;
   userEmail?: string;
-  isAdmin?: boolean;
+  isAdmin?: boolean; // optional override; if omitted, computed from NEXT_PUBLIC_ADMIN_EMAILS
 }
 
 const mailboxLinks = [
@@ -126,7 +126,9 @@ function NavLink({ href, label, icon, badge, active }: {
   );
 }
 
-export default function Sidebar({ userName = "You", userEmail = "", isAdmin = false }: SidebarProps) {
+export default function Sidebar({ userName = "You", userEmail = "", isAdmin: isAdminProp }: SidebarProps) {
+  const adminEmails = (process.env.NEXT_PUBLIC_ADMIN_EMAILS ?? "").split(",").map((e) => e.trim().toLowerCase()).filter(Boolean);
+  const isAdmin = isAdminProp ?? adminEmails.includes(userEmail.trim().toLowerCase());
   const pathname = usePathname();
   const unreadCount = useAccountStore((s) => s.inboxUnread);
   const draftCount = useAccountStore((s) => s.draftCount);
