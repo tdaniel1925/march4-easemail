@@ -7,13 +7,14 @@ const globalForPrisma = globalThis as unknown as {
 };
 
 function createPrismaClient() {
-  // ALWAYS use the direct connection string — @prisma/adapter-pg is incompatible
-  // with pgbouncer transaction mode (port 6543). Never fall back to DATABASE_URL.
-  const connectionString = process.env.DIRECT_URL;
-  if (!connectionString) {
-    throw new Error("DIRECT_URL env var is not set. Prisma requires a direct DB connection.");
+  // Use the pooler URL (port 6543) — Vercel cannot reach the direct DB port 5432.
+  // Strip ?pgbouncer=true since that's a Prisma ORM hint, not a pg driver parameter.
+  const rawUrl = process.env.DATABASE_URL;
+  if (!rawUrl) {
+    throw new Error("DATABASE_URL env var is not set.");
   }
-  console.log("[prisma] connecting via DIRECT_URL to", connectionString.replace(/:([^:@]+)@/, ":***@"));
+  const connectionString = rawUrl.replace(/[?&]pgbouncer=true/i, "").replace(/\?$/, "");
+  console.log("[prisma] connecting via DATABASE_URL pooler to", connectionString.replace(/:([^:@]+)@/, ":***@"));
   const pool = new Pool({ connectionString, ssl: { rejectUnauthorized: false } });
   const adapter = new PrismaPg(pool);
   return new PrismaClient({
