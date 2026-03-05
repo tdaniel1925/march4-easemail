@@ -3,12 +3,11 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import AccountSwitcher from "@/components/AccountSwitcher";
+import { useAccountStore } from "@/lib/stores/account-store";
 
 interface SidebarProps {
   userName?: string;
   userEmail?: string;
-  unreadCount?: number;
-  draftCount?: number;
 }
 
 const mailboxLinks = [
@@ -90,8 +89,10 @@ function NavIcon({ children }: { children: React.ReactNode }) {
   );
 }
 
-export default function Sidebar({ userName = "You", userEmail = "", unreadCount = 0, draftCount = 0 }: SidebarProps) {
+export default function Sidebar({ userName = "You", userEmail = "" }: SidebarProps) {
   const pathname = usePathname();
+  const unreadCount = useAccountStore((s) => s.inboxUnread);
+  const draftCount = useAccountStore((s) => s.draftCount);
 
   const initials = userName
     .split(" ")

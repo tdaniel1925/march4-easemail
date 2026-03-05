@@ -385,8 +385,14 @@ export default function InboxClient({
   const [searching, setSearching] = useState(false);
 
   const activeAccount = useAccountStore((s) => s.activeAccount);
+  const setInboxUnread = useAccountStore((s) => s.setInboxUnread);
   const firstRender = useRef(true);
   const sentinelRef = useRef<HTMLDivElement>(null);
+
+  // Keep sidebar unread badge in sync with local email state
+  useEffect(() => {
+    setInboxUnread(emails.filter((e) => !e.isRead).length);
+  }, [emails, setInboxUnread]);
 
   // Account switch: reload from scratch
   useEffect(() => {

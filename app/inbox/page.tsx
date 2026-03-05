@@ -81,11 +81,10 @@ export default async function InboxPage() {
 
   return (
     <div className="flex" style={{ height: "100vh", overflow: "hidden" }}>
-      <StoreInitializer accounts={dbUser.msAccounts} />
+      <StoreInitializer accounts={dbUser.msAccounts} inboxUnread={unreadCount} />
       <Sidebar
         userName={dbUser.name ?? user.email ?? "You"}
         userEmail={defaultAccount.msEmail}
-        unreadCount={unreadCount}
       />
       <InboxClient initialEmails={emails} initialNextLink={initialNextLink} />
     </div>
