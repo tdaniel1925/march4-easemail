@@ -59,6 +59,22 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(loginUrl);
   }
 
+  // Domain/admin gate — block sessions from unauthorized email domains
+  const userEmail = (user.email ?? "").toLowerCase().trim();
+  const userDomain = userEmail.split("@")[1] ?? "";
+  const allowedDomains = (process.env.ALLOWED_DOMAINS ?? "dmillerlaw.com")
+    .split(",").map((d) => d.trim().toLowerCase()).filter(Boolean);
+  const adminEmails = (process.env.ADMIN_EMAILS ?? "")
+    .split(",").map((e) => e.trim().toLowerCase()).filter(Boolean);
+  const isAllowed = allowedDomains.includes(userDomain) || adminEmails.includes(userEmail);
+
+  if (!isAllowed) {
+    if (pathname.startsWith("/api/")) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
+    return NextResponse.redirect(new URL("/login?error=unauthorized_domain", request.url));
+  }
+
   return response;
 }
 

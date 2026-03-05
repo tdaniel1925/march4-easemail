@@ -550,7 +550,7 @@ export default function ComposeClient({
         setSendError((err as { error?: string }).error ?? "Send failed");
         return;
       }
-      router.push("/sent");
+      router.back();
     } catch {
       setSendError("Network error. Please try again.");
     } finally {

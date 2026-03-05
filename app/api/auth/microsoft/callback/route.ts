@@ -22,6 +22,17 @@ import { createServiceClient } from "@/lib/supabase/server";
 import { createMsalClient, GRAPH_SCOPES, TEAMS_SCOPES } from "@/lib/microsoft/msal";
 import { prisma } from "@/lib/prisma";
 
+// ── Domain/admin allowlist ────────────────────────────────────────────────────
+function isEmailAllowed(email: string): boolean {
+  const lower = email.toLowerCase().trim();
+  const domain = lower.split("@")[1] ?? "";
+  const allowedDomains = (process.env.ALLOWED_DOMAINS ?? "dmillerlaw.com")
+    .split(",").map((d) => d.trim().toLowerCase()).filter(Boolean);
+  const adminEmails = (process.env.ADMIN_EMAILS ?? "")
+    .split(",").map((e) => e.trim().toLowerCase()).filter(Boolean);
+  return allowedDomains.includes(domain) || adminEmails.includes(lower);
+}
+
 export async function GET(req: NextRequest) {
   const { searchParams } = req.nextUrl;
   const code  = searchParams.get("code");
@@ -76,6 +87,12 @@ export async function GET(req: NextRequest) {
       if (!tokenResult?.account) throw new Error("No account in token response");
 
       const { homeAccountId, username: msEmail, name: displayName, tenantId } = tokenResult.account;
+
+      if (!isEmailAllowed(msEmail)) {
+        console.warn("[auth/callback] ADD: blocked unauthorized email:", msEmail);
+        return NextResponse.redirect(new URL("/login?error=unauthorized_domain", appUrl));
+      }
+
       console.log("[auth/callback] ADD: linking", msEmail, "to user", userId);
 
       await prisma.msConnectedAccount.upsert({
@@ -117,6 +134,12 @@ export async function GET(req: NextRequest) {
     if (!tokenResult?.account) throw new Error("No account in token response");
 
     const { homeAccountId, username: msEmail, name: displayName, tenantId } = tokenResult.account;
+
+    // 1b. Domain/admin gate — reject unauthorized accounts before creating anything
+    if (!isEmailAllowed(msEmail)) {
+      console.warn("[auth/callback] LOGIN: blocked unauthorized email:", msEmail);
+      return NextResponse.redirect(new URL("/login?error=unauthorized_domain", appUrl));
+    }
 
     // 2. Find or create Supabase user
     const supabaseAdmin = createServiceClient();

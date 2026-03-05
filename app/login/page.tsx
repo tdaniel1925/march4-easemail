@@ -217,6 +217,7 @@ export default function LoginPage() {
 const ERROR_LABELS: Record<string, string> = {
   ms_oauth_failed: "Microsoft sign-in was cancelled or failed. Please try again.",
   session_failed: "Failed to create your session. Please try again.",
+  unauthorized_domain: "Access is restricted to dmillerlaw.com accounts. Please sign in with your firm email.",
 };
 
 function ErrorMessage() {
