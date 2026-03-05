@@ -1,5 +1,21 @@
 # Build Log
 
+## 2026-03-05 — Production audit + calendar views + sidebar accordion
+- [Feature] Calendar: voice mic button (Web Speech API → Claude nl-create → EventFormModal prefill)
+- [Feature] Calendar: confirmation banner after event saved (green, 4s auto-dismiss)
+- [Feature] Calendar: Day view (single-day time grid, prev/next day nav)
+- [Feature] Calendar: Month view (month grid, event chips, click date → day view)
+- [Feature] Calendar: Agenda view (next 60 days, grouped by date, event cards, click → detail)
+- [Feature] Calendar: Year view (12 mini-month calendars, event dots, click → month/day view)
+- [Feature] Calendar: /api/calendar/range (arbitrary date range fetch, up to 500 events)
+- [Feature] Sidebar: accordion collapsible sections with animated chevron
+- [Fix] Inbox: any 401 handled (Supabase "Unauthorized" → redirect /login, MSAL → reauth banner)
+- [Fix] MSAL: all 4 mail API routes now return 401 account_requires_reauth for token expiry
+- [Fix] Search: $top increased to 250 (Graph API max for $search queries)
+- [Fix] Compose: reply context banner truncated (no more overflow), outer wrapper overflow-y-auto
+- [Fix] Compose: fixed-height card (calc 100vh-130px) prevents compression
+- TypeScript: CLEAN
+
 ## 2026-03-05 — AI Dictate panel layout fix
 - [Fix] ComposeClient: AI Dictate scrollable content area — added `min-h-0` to `flex-1 overflow-y-auto` div. Without it, flex items default to `min-height: auto` and grow past parent bounds, pushing footer buttons (Discard / Generate Email, Retake / Insert) out of viewport when transcript is long.
 - TypeScript: CLEAN

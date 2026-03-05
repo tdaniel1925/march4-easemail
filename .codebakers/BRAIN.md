@@ -110,9 +110,21 @@ Client: `AccountsClient` calls `removeAccount()` on Zustand store → sidebar up
 - `/api/mail/folders` uses `$filter=wellKnownName eq null` (NOT `$select=wellKnownName` — Graph rejects that)
 
 ## Current Focus
-- Session start: 2026-03-05
-- Last completed: Auth fixes, MSAL cache pre-load, account disconnect full cleanup, calendar audit
-- Next: Calendar — multi-account sync, event detail modal, natural language event creation
+- Session: 2026-03-05 (continued)
+- Last completed: Calendar voice mic + all views (Day/Month/Agenda/Year), sidebar accordion, inbox 401 fix, MSAL reauth across all routes, compose window layout, email polling banner, search limit 250
+- Next: Production hardening sprint — 13 items listed in FIX-QUEUE.md P1-PROD
+
+## Calendar — Now Complete
+- Week, Day, Month, Agenda, Year views all functional
+- NL text input + mic voice button (Web Speech API → Claude → EventFormModal prefill)
+- Confirmation banner after event saved (green, 4s auto-dismiss)
+- /api/calendar/range route (arbitrary date range fetch)
+- CalendarView type now includes: "day" | "week" | "month" | "agenda" | "year"
+
+## Sidebar — Now Accordion
+- All sections collapsible (Mailboxes, Folders, Navigate, Manage, AI Tools, Labels, Support)
+- Mailboxes/Navigate/Manage default open; AI Tools/Labels/Support default collapsed
+- ChevronIcon animates on toggle
 
 ## Composer Features Built (session 3 continued)
 - File attachments: file picker → base64 → Graph send (inline ≤4MB, array)
