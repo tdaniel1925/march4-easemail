@@ -1,4 +1,5 @@
 import { createServerClient } from "@supabase/ssr";
+import { createClient as createSupabaseClient } from "@supabase/supabase-js";
 import { cookies } from "next/headers";
 
 export async function createClient() {
@@ -27,10 +28,8 @@ export async function createClient() {
 }
 
 export function createServiceClient() {
-  // Service role client must NOT use cookies — it authenticates via the
-  // service role key directly, not via user session cookies.
-  const { createClient } = require("@supabase/supabase-js") as typeof import("@supabase/supabase-js");
-  return createClient(
+  // Service role client must NOT use cookies — authenticates via key only.
+  return createSupabaseClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!,
     { auth: { autoRefreshToken: false, persistSession: false } }
