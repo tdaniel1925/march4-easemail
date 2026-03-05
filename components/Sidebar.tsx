@@ -132,6 +132,8 @@ export default function Sidebar({ userName = "You", userEmail = "" }: SidebarPro
   const mailFolders = useAccountStore((s) => s.mailFolders);
   const setMailFolders = useAccountStore((s) => s.setMailFolders);
   const activeAccount = useAccountStore((s) => s.activeAccount);
+  const activeLabel = useAccountStore((s) => s.activeLabel);
+  const setActiveLabel = useAccountStore((s) => s.setActiveLabel);
 
   // Accordion open state — Mailboxes + Navigate open by default
   const [open, setOpen] = useState({
@@ -274,14 +276,25 @@ export default function Sidebar({ userName = "You", userEmail = "" }: SidebarPro
           {/* Labels */}
           <SidebarSection title="Labels" open={open.labels} onToggle={() => toggle("labels")} className="mt-2">
             <ul className="space-y-0.5">
-              {labelItems.map((item) => (
-                <li key={item.label}>
-                  <button className="w-full flex items-center gap-3 px-3 py-2 rounded-[10px] text-sm transition-colors hover:bg-neutral-50 text-neutral-600">
-                    <span className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: item.color }} />
-                    {item.label}
-                  </button>
-                </li>
-              ))}
+              {labelItems.map((item) => {
+                const isLabelActive = activeLabel === item.label;
+                return (
+                  <li key={item.label}>
+                    <Link
+                      href="/inbox"
+                      onClick={() => setActiveLabel(isLabelActive ? null : item.label)}
+                      className="w-full flex items-center gap-3 px-3 py-2 rounded-[10px] text-sm transition-colors"
+                      style={{
+                        backgroundColor: isLabelActive ? "rgb(253 235 235)" : "transparent",
+                        color: isLabelActive ? "rgb(83 5 5)" : "rgb(82 82 82)",
+                      }}
+                    >
+                      <span className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: item.color }} />
+                      {item.label}
+                    </Link>
+                  </li>
+                );
+              })}
             </ul>
           </SidebarSection>
 

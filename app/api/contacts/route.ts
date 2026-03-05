@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
-import { graphGet } from "@/lib/microsoft/graph";
+import { graphGet, graphPost } from "@/lib/microsoft/graph";
 
 interface GraphPerson {
   displayName?: string;
@@ -11,6 +11,15 @@ interface GraphPerson {
 
 interface GraphResponse {
   value?: GraphPerson[];
+}
+
+interface GraphContact {
+  id?: string;
+  displayName: string;
+  emailAddresses?: { address: string; name?: string }[];
+  mobilePhone?: string;
+  jobTitle?: string;
+  companyName?: string;
 }
 
 // ─── GET /api/contacts?q=searchTerm ──────────────────────────────────────────
@@ -49,5 +58,41 @@ export async function GET(req: NextRequest) {
     return NextResponse.json(results);
   } catch {
     return NextResponse.json([]);
+  }
+}
+
+// ─── POST /api/contacts — Create a new contact ────────────────────────────────
+
+export async function POST(req: NextRequest) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  const account = await prisma.msConnectedAccount.findFirst({
+    where: { userId: user.id, isDefault: true },
+  });
+  if (!account) return NextResponse.json({ error: "No connected account" }, { status: 400 });
+
+  const body = await req.json() as {
+    displayName: string;
+    email?: string;
+    phone?: string;
+    company?: string;
+    title?: string;
+  };
+
+  const payload: GraphContact = {
+    displayName: body.displayName,
+    ...(body.email ? { emailAddresses: [{ address: body.email, name: body.displayName }] } : {}),
+    ...(body.phone ? { mobilePhone: body.phone } : {}),
+    ...(body.company ? { companyName: body.company } : {}),
+    ...(body.title ? { jobTitle: body.title } : {}),
+  };
+
+  try {
+    const contact = await graphPost<GraphContact>(user.id, account.homeAccountId, "/me/contacts", payload);
+    return NextResponse.json({ contact }, { status: 201 });
+  } catch (err) {
+    return NextResponse.json({ error: String(err) }, { status: 500 });
   }
 }

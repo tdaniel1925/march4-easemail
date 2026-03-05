@@ -12,6 +12,7 @@ interface GraphContact {
   id: string;
   displayName: string;
   emailAddresses: { address: string; name: string }[];
+  mobilePhone?: string;
   jobTitle?: string;
   companyName?: string;
   department?: string;
@@ -29,6 +30,7 @@ export interface Contact {
   email: string;
   jobTitle: string;
   company: string;
+  phone: string;
   initials: string;
 }
 
@@ -63,6 +65,7 @@ export default async function ContactsPage() {
         email: c.emailAddresses?.[0]?.address ?? "",
         jobTitle: c.jobTitle ?? "",
         company: c.companyName ?? "",
+        phone: c.mobilePhone ?? "",
         initials: c.displayName.slice(0, 2).toUpperCase(),
       }));
   } catch {

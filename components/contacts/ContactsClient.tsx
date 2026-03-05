@@ -40,10 +40,152 @@ interface Props {
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
-export default function ContactsClient({ contacts }: Props) {
+type ContactFormData = { displayName: string; email: string; phone: string; company: string; title: string };
+
+function ContactModal({
+  initial,
+  onClose,
+  onSave,
+  saving,
+}: {
+  initial?: Contact;
+  onClose: () => void;
+  onSave: (data: ContactFormData) => void;
+  saving: boolean;
+}) {
+  const [form, setForm] = useState<ContactFormData>({
+    displayName: initial?.displayName ?? "",
+    email: initial?.email ?? "",
+    phone: initial?.phone ?? "",
+    company: initial?.company ?? "",
+    title: initial?.jobTitle ?? "",
+  });
+  const set = (k: keyof ContactFormData) => (e: React.ChangeEvent<HTMLInputElement>) =>
+    setForm((p) => ({ ...p, [k]: e.target.value }));
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40" onClick={onClose}>
+      <div className="bg-white rounded-[16px] w-full max-w-md p-6 shadow-xl" onClick={(e) => e.stopPropagation()}>
+        <h2 className="text-base font-semibold mb-5" style={{ color: "rgb(27 29 29)" }}>
+          {initial ? "Edit Contact" : "New Contact"}
+        </h2>
+        <div className="space-y-3">
+          {(["displayName", "email", "phone", "company", "title"] as (keyof ContactFormData)[]).map((k) => (
+            <div key={k}>
+              <label className="block text-xs font-medium mb-1" style={{ color: "rgb(115 115 115)" }}>
+                {k === "displayName" ? "Full Name *" : k === "title" ? "Job Title" : k.charAt(0).toUpperCase() + k.slice(1)}
+              </label>
+              <input
+                type={k === "email" ? "email" : k === "phone" ? "tel" : "text"}
+                value={form[k]}
+                onChange={set(k)}
+                className="w-full px-3 py-2 rounded-[10px] text-sm border outline-none transition-colors"
+                style={{ backgroundColor: "rgb(245 245 245)", borderColor: "transparent", color: "rgb(27 29 29)" }}
+                onFocus={(e) => { e.target.style.borderColor = "rgb(218 100 100)"; e.target.style.backgroundColor = "white"; }}
+                onBlur={(e) => { e.target.style.borderColor = "transparent"; e.target.style.backgroundColor = "rgb(245 245 245)"; }}
+              />
+            </div>
+          ))}
+        </div>
+        <div className="flex justify-end gap-3 mt-6">
+          <button onClick={onClose} className="px-4 py-2 text-sm rounded-[10px]" style={{ color: "rgb(82 82 82)", backgroundColor: "rgb(245 245 245)" }}>
+            Cancel
+          </button>
+          <button
+            onClick={() => form.displayName.trim() && onSave(form)}
+            disabled={saving || !form.displayName.trim()}
+            className="px-4 py-2 text-sm text-white rounded-[10px] disabled:opacity-50"
+            style={{ backgroundColor: "rgb(138 9 9)" }}
+          >
+            {saving ? "Saving…" : initial ? "Save Changes" : "Add Contact"}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default function ContactsClient({ contacts: initialContacts }: Props) {
+  const [contacts, setContacts] = useState<Contact[]>(initialContacts);
   const [query, setQuery] = useState("");
   const [selectedContact, setSelectedContact] = useState<Contact | null>(null);
   const [activeTab, setActiveTab] = useState<"all" | "frequent" | "vip">("all");
+  const [showNewModal, setShowNewModal] = useState(false);
+  const [editContact, setEditContact] = useState<Contact | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<Contact | null>(null);
+  const [saving, setSaving] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+
+  async function handleCreate(data: ContactFormData) {
+    setSaving(true);
+    try {
+      const res = await fetch("/api/contacts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ displayName: data.displayName, email: data.email, phone: data.phone, company: data.company, title: data.title }),
+      });
+      if (!res.ok) throw new Error("Failed to create contact");
+      const { contact } = await res.json() as { contact: { id: string; displayName: string; emailAddresses?: { address: string }[]; mobilePhone?: string; jobTitle?: string; companyName?: string } };
+      const newContact: Contact = {
+        id: contact.id,
+        displayName: contact.displayName,
+        email: contact.emailAddresses?.[0]?.address ?? data.email,
+        phone: contact.mobilePhone ?? data.phone,
+        jobTitle: contact.jobTitle ?? data.title,
+        company: contact.companyName ?? data.company,
+        initials: contact.displayName.slice(0, 2).toUpperCase(),
+      };
+      setContacts((prev) => [...prev, newContact].sort((a, b) => a.displayName.localeCompare(b.displayName)));
+      setShowNewModal(false);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  async function handleEdit(data: ContactFormData) {
+    if (!editContact) return;
+    setSaving(true);
+    try {
+      await fetch(`/api/contacts/${encodeURIComponent(editContact.id)}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ displayName: data.displayName, email: data.email, phone: data.phone, company: data.company, title: data.title }),
+      });
+      const updated: Contact = {
+        ...editContact,
+        displayName: data.displayName,
+        email: data.email,
+        phone: data.phone,
+        jobTitle: data.title,
+        company: data.company,
+        initials: data.displayName.slice(0, 2).toUpperCase(),
+      };
+      setContacts((prev) => prev.map((c) => c.id === editContact.id ? updated : c).sort((a, b) => a.displayName.localeCompare(b.displayName)));
+      setSelectedContact(updated);
+      setEditContact(null);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  async function handleDelete() {
+    if (!deleteTarget) return;
+    setDeleting(true);
+    try {
+      await fetch(`/api/contacts/${encodeURIComponent(deleteTarget.id)}`, { method: "DELETE" });
+      setContacts((prev) => prev.filter((c) => c.id !== deleteTarget.id));
+      if (selectedContact?.id === deleteTarget.id) setSelectedContact(null);
+      setDeleteTarget(null);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setDeleting(false);
+    }
+  }
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -71,23 +213,13 @@ export default function ContactsClient({ contacts }: Props) {
               All Contacts
             </h1>
             <button
+              onClick={() => setShowNewModal(true)}
               className="flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-[10px] text-white transition-colors"
               style={{ backgroundColor: "rgb(138 9 9)" }}
-              onMouseEnter={(e) =>
-                ((e.currentTarget as HTMLButtonElement).style.backgroundColor = "rgb(110 7 7)")
-              }
-              onMouseLeave={(e) =>
-                ((e.currentTarget as HTMLButtonElement).style.backgroundColor = "rgb(138 9 9)")
-              }
+              onMouseEnter={(e) => ((e.currentTarget as HTMLButtonElement).style.backgroundColor = "rgb(110 7 7)")}
+              onMouseLeave={(e) => ((e.currentTarget as HTMLButtonElement).style.backgroundColor = "rgb(138 9 9)")}
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="w-3.5 h-3.5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={2}
-              >
+              <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
               </svg>
               Add Contact
@@ -203,13 +335,43 @@ export default function ContactsClient({ contacts }: Props) {
         </div>
       </div>
 
+      {/* Modals */}
+      {showNewModal && (
+        <ContactModal onClose={() => setShowNewModal(false)} onSave={handleCreate} saving={saving} />
+      )}
+      {editContact && (
+        <ContactModal initial={editContact} onClose={() => setEditContact(null)} onSave={handleEdit} saving={saving} />
+      )}
+      {deleteTarget && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40" onClick={() => setDeleteTarget(null)}>
+          <div className="bg-white rounded-[16px] w-full max-w-sm p-6 shadow-xl" onClick={(e) => e.stopPropagation()}>
+            <h2 className="text-base font-semibold mb-2" style={{ color: "rgb(27 29 29)" }}>Delete Contact</h2>
+            <p className="text-sm mb-6" style={{ color: "rgb(82 82 82)" }}>
+              Remove <strong>{deleteTarget.displayName}</strong> from your contacts? This cannot be undone.
+            </p>
+            <div className="flex justify-end gap-3">
+              <button onClick={() => setDeleteTarget(null)} className="px-4 py-2 text-sm rounded-[10px]" style={{ color: "rgb(82 82 82)", backgroundColor: "rgb(245 245 245)" }}>
+                Cancel
+              </button>
+              <button onClick={handleDelete} disabled={deleting} className="px-4 py-2 text-sm text-white rounded-[10px] disabled:opacity-50" style={{ backgroundColor: "rgb(220 38 38)" }}>
+                {deleting ? "Deleting…" : "Delete"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* ── Right panel ──────────────────────────────────────────────────────── */}
       <div
         className="flex-1 flex flex-col overflow-y-auto"
         style={{ backgroundColor: "rgb(250 250 250)" }}
       >
         {selectedContact ? (
-          <ContactDetail contact={selectedContact} />
+          <ContactDetail
+            contact={selectedContact}
+            onEdit={() => setEditContact(selectedContact)}
+            onDelete={() => setDeleteTarget(selectedContact)}
+          />
         ) : (
           <div className="flex flex-col items-center justify-center h-full gap-3">
             <svg
@@ -315,7 +477,7 @@ function ContactRow({ contact, color, isSelected, onSelect }: ContactRowProps) {
 
 // ─── Contact detail ───────────────────────────────────────────────────────────
 
-function ContactDetail({ contact }: { contact: Contact }) {
+function ContactDetail({ contact, onEdit, onDelete }: { contact: Contact; onEdit: () => void; onDelete: () => void }) {
   const color = getColor(contact.displayName);
 
   return (
@@ -346,6 +508,28 @@ function ContactDetail({ contact }: { contact: Contact }) {
           {contact.email}
         </p>
       )}
+
+      {/* Edit + Delete actions */}
+      <div className="flex gap-2 mb-4">
+        <button
+          onClick={onEdit}
+          className="px-3 py-1.5 text-xs rounded-[8px] font-medium"
+          style={{ backgroundColor: "rgb(245 245 245)", color: "rgb(58 58 58)" }}
+          onMouseEnter={(e) => { (e.currentTarget).style.backgroundColor = "rgb(229 229 229)"; }}
+          onMouseLeave={(e) => { (e.currentTarget).style.backgroundColor = "rgb(245 245 245)"; }}
+        >
+          Edit
+        </button>
+        <button
+          onClick={onDelete}
+          className="px-3 py-1.5 text-xs rounded-[8px] font-medium"
+          style={{ backgroundColor: "rgb(253 235 235)", color: "rgb(138 9 9)" }}
+          onMouseEnter={(e) => { (e.currentTarget).style.backgroundColor = "rgb(220 38 38)"; (e.currentTarget).style.color = "white"; }}
+          onMouseLeave={(e) => { (e.currentTarget).style.backgroundColor = "rgb(253 235 235)"; (e.currentTarget).style.color = "rgb(138 9 9)"; }}
+        >
+          Delete
+        </button>
+      </div>
 
       {/* Compose button */}
       {contact.email && (
@@ -382,6 +566,9 @@ function ContactDetail({ contact }: { contact: Contact }) {
       <div className="w-full max-w-md mt-10 space-y-3">
         {contact.email && (
           <DetailRow label="Email" value={contact.email} />
+        )}
+        {contact.phone && (
+          <DetailRow label="Phone" value={contact.phone} />
         )}
         {contact.jobTitle && (
           <DetailRow label="Job Title" value={contact.jobTitle} />

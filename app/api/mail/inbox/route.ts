@@ -63,11 +63,20 @@ export async function GET(req: NextRequest) {
   // Priority: nextLink (pagination) > tab filter > default
   const nextLinkParam = req.nextUrl.searchParams.get("nextLink");
   const tab = req.nextUrl.searchParams.get("tab") ?? "";
+  const labelParam = req.nextUrl.searchParams.get("label") ?? "";
+
+  let tabPath: string | undefined;
+  if (tab === "label" && labelParam) {
+    tabPath = `/me/mailFolders/inbox/messages?$filter=categories/any(c:c eq '${labelParam}')&$select=${SELECT}&$top=100`;
+  } else {
+    tabPath = TAB_PATHS[tab];
+  }
+
   const path = nextLinkParam
     ? nextLinkParam.startsWith(GRAPH_BASE)
       ? nextLinkParam.slice(GRAPH_BASE.length)
       : nextLinkParam
-    : TAB_PATHS[tab] ?? DEFAULT_PATH;
+    : tabPath ?? DEFAULT_PATH;
 
   try {
     const data = await graphGet<GraphMessagesResponse>(user.id, homeAccountId, path);

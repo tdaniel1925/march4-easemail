@@ -13,7 +13,7 @@ import AiReplyModal from "@/components/inbox/AiReplyModal";
 // Re-export so existing imports from this file still work
 export type { EmailMessage };
 
-type FilterTab = "all" | "unread" | "starred" | "attachments";
+type FilterTab = "all" | "unread" | "starred" | "attachments" | "label";
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
 
@@ -125,7 +125,9 @@ export default function InboxClient({
   const [pendingNewEmails, setPendingNewEmails] = useState<EmailMessage[]>([]);
 
   const activeAccount = useAccountStore((s) => s.activeAccount);
+  const accounts = useAccountStore((s) => s.accounts);
   const setInboxUnread = useAccountStore((s) => s.setInboxUnread);
+  const activeLabel = useAccountStore((s) => s.activeLabel);
   const firstRender = useRef(true);
   const sentinelRef = useRef<HTMLDivElement>(null);
   const rulesRef = useRef<Rule[]>([]);
@@ -214,13 +216,26 @@ export default function InboxClient({
       .finally(() => setLoadingEmails(false));
   }, [activeAccount?.homeAccountId]);
 
+  // Label change from sidebar: switch to label tab
+  useEffect(() => {
+    if (activeLabel) {
+      setActiveTab("label");
+    } else if (activeTab === "label") {
+      setActiveTab("all");
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeLabel]);
+
   // Tab switch: fetch from Graph for filtered tabs, use local list for "all"
   useEffect(() => {
     if (activeTab === "all") { setTabEmails(null); return; }
     if (!activeAccount) return;
     setLoadingTab(true);
     setTabEmails(null);
-    fetch(`/api/mail/inbox?homeAccountId=${encodeURIComponent(activeAccount.homeAccountId)}&tab=${activeTab}`)
+    const url = activeTab === "label" && activeLabel
+      ? `/api/mail/inbox?homeAccountId=${encodeURIComponent(activeAccount.homeAccountId)}&tab=label&label=${encodeURIComponent(activeLabel)}`
+      : `/api/mail/inbox?homeAccountId=${encodeURIComponent(activeAccount.homeAccountId)}&tab=${activeTab}`;
+    fetch(url)
       .then(async (r) => {
         if (r.status === 401) {
           const body = await r.json().catch(() => ({} as { error?: string })) as { error?: string };
@@ -233,29 +248,36 @@ export default function InboxClient({
       .then((data) => { if (data) setTabEmails(data.emails); })
       .catch(console.error)
       .finally(() => setLoadingTab(false));
-  }, [activeTab, activeAccount?.homeAccountId]);
+  }, [activeTab, activeAccount?.homeAccountId, activeLabel]);
 
   // Keep knownIds in sync as emails are added
   useEffect(() => {
     emails.forEach((e) => knownIdsRef.current.add(e.id));
   }, [emails]);
 
-  // Poll every 30s for new emails — pauses when tab hidden or search/filter active
+  // Poll every 30s for new emails across ALL connected accounts
   useEffect(() => {
-    if (!activeAccount) return;
+    if (!activeAccount || accounts.length === 0) return;
     const poll = async () => {
       if (document.hidden || activeTab !== "all" || search) return;
       try {
-        const res = await fetch(
-          `/api/mail/inbox?homeAccountId=${encodeURIComponent(activeAccount.homeAccountId)}`
+        const results = await Promise.allSettled(
+          accounts.map((acc) =>
+            fetch(`/api/mail/inbox?homeAccountId=${encodeURIComponent(acc.homeAccountId)}`)
+              .then((r) => r.ok ? r.json() as Promise<{ emails: EmailMessage[] }> : Promise.reject())
+              .then((data) => data.emails)
+          )
         );
-        if (!res.ok) return;
-        const data: { emails: EmailMessage[] } = await res.json();
-        const fresh = data.emails.filter((e) => !knownIdsRef.current.has(e.id));
-        if (fresh.length > 0) {
+        const allFresh: EmailMessage[] = [];
+        results.forEach((r) => {
+          if (r.status === "fulfilled") {
+            allFresh.push(...r.value.filter((e) => !knownIdsRef.current.has(e.id)));
+          }
+        });
+        if (allFresh.length > 0) {
           setPendingNewEmails((prev) => {
             const existingIds = new Set(prev.map((e) => e.id));
-            return [...fresh.filter((e) => !existingIds.has(e.id)), ...prev];
+            return [...allFresh.filter((e) => !existingIds.has(e.id)), ...prev];
           });
         }
       } catch {
@@ -264,7 +286,7 @@ export default function InboxClient({
     };
     const id = setInterval(poll, 30_000);
     return () => clearInterval(id);
-  }, [activeAccount?.homeAccountId, activeTab, search]);
+  }, [activeAccount?.homeAccountId, accounts.length, activeTab, search]);
 
   // Clear pending banner when account switches
   useEffect(() => {
@@ -352,6 +374,7 @@ export default function InboxClient({
     { key: "unread", label: "Unread" },
     { key: "starred", label: "Starred" },
     { key: "attachments", label: "Attachments" },
+    ...(activeLabel ? [{ key: "label" as FilterTab, label: activeLabel }] : []),
   ];
 
   return (
