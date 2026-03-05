@@ -52,22 +52,40 @@ export default async function ContactsPage() {
 
   let contacts: Contact[] = [];
   try {
-    const data = await graphGet<GraphContactList>(
-      user.id,
-      defaultAccount.homeAccountId,
-      `/me/contacts?$top=100&$select=id,displayName,emailAddresses,jobTitle,companyName,department&$orderby=displayName`
-    );
-    contacts = (data.value ?? [])
-      .filter((c) => c.displayName)
-      .map((c): Contact => ({
+    // Try DB cache first
+    const cached = await prisma.cachedContact.findMany({
+      where: { userId: user.id, homeAccountId: defaultAccount.homeAccountId },
+      orderBy: { displayName: "asc" },
+    });
+
+    if (cached.length > 0) {
+      contacts = cached.map((c): Contact => ({
         id: c.id,
         displayName: c.displayName,
-        email: c.emailAddresses?.[0]?.address ?? "",
-        jobTitle: c.jobTitle ?? "",
-        company: c.companyName ?? "",
-        phone: c.mobilePhone ?? "",
+        email: c.emailAddress,
+        jobTitle: c.jobTitle,
+        company: c.company,
+        phone: c.phone,
         initials: c.displayName.slice(0, 2).toUpperCase(),
       }));
+    } else {
+      const data = await graphGet<GraphContactList>(
+        user.id,
+        defaultAccount.homeAccountId,
+        `/me/contacts?$top=100&$select=id,displayName,emailAddresses,jobTitle,companyName,department&$orderby=displayName`
+      );
+      contacts = (data.value ?? [])
+        .filter((c) => c.displayName)
+        .map((c): Contact => ({
+          id: c.id,
+          displayName: c.displayName,
+          email: c.emailAddresses?.[0]?.address ?? "",
+          jobTitle: c.jobTitle ?? "",
+          company: c.companyName ?? "",
+          phone: c.mobilePhone ?? "",
+          initials: c.displayName.slice(0, 2).toUpperCase(),
+        }));
+    }
   } catch {
     // Contacts scope may not be consented — not fatal
   }

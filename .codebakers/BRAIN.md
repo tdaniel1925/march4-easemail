@@ -25,11 +25,15 @@ _Last updated: 2026-03-05_
 - `users` — mirrors Supabase auth.users.id, belongs to org
 - `ms_connected_accounts` — one per MS account linked
 - `msal_token_cache` — serialized MSAL cache per user
-- `email_delta_links` — for incremental Graph sync (not yet wired)
-- `webhook_subscriptions` — MS Graph change notifications (not yet wired)
+- `email_delta_links` — stores delta tokens for emails AND calendar (folderId="calendar" for cal)
+- `webhook_subscriptions` — MS Graph change notifications (table exists, not wired)
 - `drafts` — email drafts (graphDraftId, scheduledAt, scheduledSent — fully wired)
 - `signatures` — email signatures (name, title, company, phone, isDefault) — replaces localStorage
 - `email_rules` — inbox automation rules (conditions/actions as Json, priority, emailCount, stopProcessing)
+- `cached_folders` — synced mail folders (wellKnownName for inbox/sent/drafts/deletedItems lookup)
+- `cached_emails` — synced emails (folderId, receivedDateTime, flagStatus, categories as Json)
+- `cached_calendar_events` — synced calendar events (startDateTime, endDateTime, attendees as Json)
+- `cached_contacts` — synced contacts (displayName, emailAddress, phone, jobTitle, company)
 
 ## Pages / Routes
 | Route | Status |
@@ -87,6 +91,16 @@ _Last updated: 2026-03-05_
 - `account-store.ts` now has `removeAccount(homeAccountId)` action
 - Updates `accounts[]` and resets `activeAccount` to new default if deleted account was active
 - Called by `AccountsClient` after successful disconnect API response
+
+## Offline-First Sync Engine (2026-03-05)
+- **Cron:** `/api/cron/sync` runs every minute (vercel.json). Delta-syncs all accounts.
+- **Flow:** syncFolders → syncEmails (per folder, delta) → syncCalendar (delta) → syncContacts (hourly full refresh)
+- **Delta tokens:** stored in `email_delta_links` table. For calendar: folderId = "calendar".
+- **410 Gone:** clears delta token, returns. Next run does fresh full sync.
+- **Cache-first reads:** all pages + API routes read from DB cache first, fallback to Graph if empty.
+- **Cursor pagination:** cache returns last email ID as nextLink (not Graph URL). Routes detect "http..." prefix = legacy Graph URL, otherwise treat as cursor ID.
+- **mark-read:** fires-and-forgets `cachedEmail.updateMany` after Graph PATCH succeeds.
+- **Sync libs:** `lib/sync/folder-sync.ts`, `email-sync.ts`, `calendar-sync.ts`, `contact-sync.ts`
 
 ## Account Disconnect — Full Cleanup (2026-03-05)
 On disconnect, `app/api/accounts/disconnect/route.ts` now:

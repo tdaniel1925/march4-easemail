@@ -6,6 +6,7 @@ import Sidebar from "@/components/Sidebar";
 import FolderClient from "@/components/folder/FolderClient";
 import { StoreInitializer } from "@/components/StoreInitializer";
 import type { EmailMessage } from "@/lib/types/email";
+import { mapCachedEmail } from "@/lib/utils/email-helpers";
 
 interface GraphMessage {
   id: string; subject: string; bodyPreview: string; receivedDateTime: string;
@@ -27,23 +28,34 @@ export default async function StarredPage() {
   const defaultAccount = dbUser.msAccounts.find((a) => a.isDefault) ?? dbUser.msAccounts[0];
   if (!defaultAccount) redirect("/onboarding");
 
-  const SELECT = "id,subject,bodyPreview,receivedDateTime,isRead,hasAttachments,flag,from,body";
   let emails: EmailMessage[] = [];
   let initialNextLink: string | null = null;
 
   try {
-    const data = await graphGet<{ value: GraphMessage[]; "@odata.nextLink"?: string }>(
-      user.id, defaultAccount.homeAccountId,
-      `/me/messages?$filter=flag/flagStatus eq 'flagged'&$select=${SELECT}&$top=50`
-    );
-    emails = data.value.map((m) => ({
-      id: m.id, subject: m.subject ?? "(no subject)", bodyPreview: m.bodyPreview ?? "",
-      receivedDateTime: m.receivedDateTime, isRead: m.isRead, hasAttachments: m.hasAttachments,
-      flag: { flagStatus: m.flag?.flagStatus === "flagged" ? "flagged" : "notFlagged" as const },
-      from: { name: m.from?.emailAddress?.name ?? "Unknown", address: m.from?.emailAddress?.address ?? "" },
-      body: { content: m.body?.content ?? m.bodyPreview ?? "", contentType: (m.body?.contentType as "html" | "text") ?? "text" },
-    }));
-    initialNextLink = data["@odata.nextLink"] ?? null;
+    // Starred emails can be in any folder — query by flagStatus across all folders
+    const cached = await prisma.cachedEmail.findMany({
+      where: { userId: user.id, homeAccountId: defaultAccount.homeAccountId, flagStatus: "flagged" },
+      orderBy: { receivedDateTime: "desc" },
+      take: 50,
+    });
+
+    if (cached.length > 0) {
+      emails = cached.map(mapCachedEmail);
+    } else {
+      const SELECT = "id,subject,bodyPreview,receivedDateTime,isRead,hasAttachments,flag,from,body";
+      const data = await graphGet<{ value: GraphMessage[]; "@odata.nextLink"?: string }>(
+        user.id, defaultAccount.homeAccountId,
+        `/me/messages?$filter=flag/flagStatus eq 'flagged'&$select=${SELECT}&$top=50`
+      );
+      emails = data.value.map((m) => ({
+        id: m.id, subject: m.subject ?? "(no subject)", bodyPreview: m.bodyPreview ?? "",
+        receivedDateTime: m.receivedDateTime, isRead: m.isRead, hasAttachments: m.hasAttachments,
+        flag: { flagStatus: m.flag?.flagStatus === "flagged" ? "flagged" : "notFlagged" as const },
+        from: { name: m.from?.emailAddress?.name ?? "Unknown", address: m.from?.emailAddress?.address ?? "" },
+        body: { content: m.body?.content ?? m.bodyPreview ?? "", contentType: (m.body?.contentType as "html" | "text") ?? "text" },
+      }));
+      initialNextLink = data["@odata.nextLink"] ?? null;
+    }
   } catch (err) { console.error("Failed to fetch starred:", err); }
 
   return (

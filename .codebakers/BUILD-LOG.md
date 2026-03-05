@@ -1,5 +1,23 @@
 # Build Log
 
+## 2026-03-05 — Offline-First Sync Engine
+- [Schema] 4 new models: CachedFolder, CachedEmail, CachedCalendarEvent, CachedContact — pushed via `prisma db push`
+- [Sync] lib/sync/folder-sync.ts — full folder tree upsert (top-level + child folders)
+- [Sync] lib/sync/email-sync.ts — delta sync per folder, 410 handling, @removed deletes, MAX_PAGES=100
+- [Sync] lib/sync/calendar-sync.ts — delta sync calendarView, same pattern as email
+- [Sync] lib/sync/contact-sync.ts — full refresh per account, hourly gate in cron
+- [Cron] app/api/cron/sync/route.ts — per-account Promise.allSettled, isReauthError skip, contact gate
+- [Config] vercel.json — added /api/cron/sync every minute
+- [Util] lib/utils/email-helpers.ts — mapCachedEmail() mapper function
+- [Pages] inbox, starred, sent, drafts, trash, folder/[id] — cache-first + Graph fallback
+- [Routes] /api/mail/inbox — cache-first + cursor pagination + tab filters from DB
+- [Routes] /api/mail/folder — cache-first + cursor pagination, WELL_KNOWN map
+- [Routes] /api/mail/folders — cache-first (wellKnownName=null), fallback to Graph
+- [Routes] /api/calendar/range — cache-first from cachedCalendarEvent, Graph fallback
+- [Routes] /api/contacts GET — cache-first search, Graph /me/people fallback
+- [Routes] /api/mail/mark-read — fire-and-forget cachedEmail.updateMany after Graph PATCH
+- [TS] tsc --noEmit clean
+
 ## 2026-03-05 — Production Sprint: All 13 P1-PROD items completed
 - [Refactor] isReauthError() helper: extracted to lib/microsoft/auth-errors.ts, used in all 4 mail routes
 - [Fix] SpeechRecognition: cleanup useEffect on CalendarClient unmount

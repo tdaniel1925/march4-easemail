@@ -17,5 +17,12 @@ export async function POST(req: NextRequest) {
   if (!account) return NextResponse.json({ error: "No connected account" }, { status: 404 });
 
   await graphPatch(user.id, account.homeAccountId, `/me/messages/${messageId}`, { isRead: true });
+
+  // Fire-and-forget cache update — must not delay or break the response
+  prisma.cachedEmail.updateMany({
+    where: { id: messageId, userId: user.id },
+    data: { isRead: true },
+  }).catch((err) => console.warn("[mark-read] cache update failed:", err));
+
   return NextResponse.json({ ok: true });
 }

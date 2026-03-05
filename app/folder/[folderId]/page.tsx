@@ -6,6 +6,7 @@ import Sidebar from "@/components/Sidebar";
 import FolderClient from "@/components/folder/FolderClient";
 import { StoreInitializer } from "@/components/StoreInitializer";
 import type { EmailMessage } from "@/lib/types/email";
+import { mapCachedEmail } from "@/lib/utils/email-helpers";
 
 interface GraphRecipient {
   emailAddress: { name: string; address: string };
@@ -51,30 +52,46 @@ export default async function CustomFolderPage({
   let initialNextLink: string | null = null;
 
   try {
-    // Fetch folder metadata for display name
-    const folderMeta = await graphGet<GraphFolder>(
-      user.id, defaultAccount.homeAccountId,
-      `/me/mailFolders/${encodeURIComponent(folderId)}?$select=id,displayName`
-    );
-    folderLabel = folderMeta.displayName;
+    // Try cache first — look up folder by ID for label and emails
+    const cachedFolder = await prisma.cachedFolder.findUnique({
+      where: { id: folderId },
+    });
 
-    // Fetch messages
-    const data = await graphGet<{ value: GraphMessage[]; "@odata.nextLink"?: string }>(
-      user.id, defaultAccount.homeAccountId,
-      `/me/mailFolders/${encodeURIComponent(folderId)}/messages?$select=${SELECT}&$top=50&$orderby=receivedDateTime desc`
-    );
-    emails = data.value.map((m) => ({
-      id: m.id, subject: m.subject ?? "(no subject)", bodyPreview: m.bodyPreview ?? "",
-      receivedDateTime: m.receivedDateTime ?? "",
-      isRead: m.isRead, hasAttachments: m.hasAttachments,
-      flag: { flagStatus: m.flag?.flagStatus === "flagged" ? "flagged" : "notFlagged" as const },
-      from: { name: m.from?.emailAddress?.name ?? "Unknown", address: m.from?.emailAddress?.address ?? "" },
-      toRecipients: m.toRecipients?.map((r) => ({
-        name: r.emailAddress?.name ?? "", address: r.emailAddress?.address ?? "",
-      })),
-      body: { content: m.body?.content ?? m.bodyPreview ?? "", contentType: (m.body?.contentType as "html" | "text") ?? "text" },
-    }));
-    initialNextLink = data["@odata.nextLink"] ?? null;
+    if (cachedFolder) {
+      folderLabel = cachedFolder.displayName;
+      const cached = await prisma.cachedEmail.findMany({
+        where: { userId: user.id, homeAccountId: defaultAccount.homeAccountId, folderId },
+        orderBy: { receivedDateTime: "desc" },
+        take: 50,
+      });
+      if (cached.length > 0) emails = cached.map(mapCachedEmail);
+    }
+
+    if (emails.length === 0) {
+      // Fall back to Graph
+      const folderMeta = await graphGet<GraphFolder>(
+        user.id, defaultAccount.homeAccountId,
+        `/me/mailFolders/${encodeURIComponent(folderId)}?$select=id,displayName`
+      );
+      folderLabel = folderMeta.displayName;
+
+      const data = await graphGet<{ value: GraphMessage[]; "@odata.nextLink"?: string }>(
+        user.id, defaultAccount.homeAccountId,
+        `/me/mailFolders/${encodeURIComponent(folderId)}/messages?$select=${SELECT}&$top=50&$orderby=receivedDateTime desc`
+      );
+      emails = data.value.map((m) => ({
+        id: m.id, subject: m.subject ?? "(no subject)", bodyPreview: m.bodyPreview ?? "",
+        receivedDateTime: m.receivedDateTime ?? "",
+        isRead: m.isRead, hasAttachments: m.hasAttachments,
+        flag: { flagStatus: m.flag?.flagStatus === "flagged" ? "flagged" : "notFlagged" as const },
+        from: { name: m.from?.emailAddress?.name ?? "Unknown", address: m.from?.emailAddress?.address ?? "" },
+        toRecipients: m.toRecipients?.map((r) => ({
+          name: r.emailAddress?.name ?? "", address: r.emailAddress?.address ?? "",
+        })),
+        body: { content: m.body?.content ?? m.bodyPreview ?? "", contentType: (m.body?.contentType as "html" | "text") ?? "text" },
+      }));
+      initialNextLink = data["@odata.nextLink"] ?? null;
+    }
   } catch (err) {
     console.error("Failed to fetch custom folder:", err);
   }

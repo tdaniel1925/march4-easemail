@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { prisma } from "@/lib/prisma";
 import { graphGet } from "@/lib/microsoft/graph";
 import { isReauthError } from "@/lib/microsoft/auth-errors";
 import type { MailFolder } from "@/lib/types/email";
-
 
 interface GraphFolder {
   id: string;
@@ -22,15 +22,30 @@ export async function GET(req: NextRequest) {
   if (!homeAccountId) return NextResponse.json({ error: "homeAccountId required" }, { status: 400 });
 
   try {
-    // Fetch all folders; filter client-side to exclude system well-known folders.
-    // $filter=wellKnownName eq null fails on some account/tenant types (Graph 400/500).
+    // Try cache first — custom folders only (wellKnownName is null)
+    const cached = await prisma.cachedFolder.findMany({
+      where: { userId: user.id, homeAccountId, wellKnownName: null },
+      orderBy: { displayName: "asc" },
+    });
+
+    if (cached.length > 0) {
+      const folders: MailFolder[] = cached.map((f) => ({
+        id: f.id,
+        displayName: f.displayName,
+        unreadItemCount: f.unreadCount,
+        totalItemCount: f.totalCount,
+      }));
+      return NextResponse.json({ folders });
+    }
+
+    // Fallback to Graph
     const data = await graphGet<{ value: GraphFolder[] }>(
       user.id, homeAccountId,
       "/me/mailFolders?$select=id,displayName,unreadItemCount,totalItemCount,wellKnownName&$top=100"
     );
 
     const folders: MailFolder[] = data.value
-      .filter((f) => !f.wellKnownName)   // exclude inbox, drafts, sent, deleted, etc.
+      .filter((f) => !f.wellKnownName)
       .map((f) => ({
         id: f.id,
         displayName: f.displayName,

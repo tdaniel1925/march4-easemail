@@ -31,7 +31,7 @@ async function fetchAllPages(
 }
 
 // ─── GET /api/calendar/range?start={YYYY-MM-DD}&end={YYYY-MM-DD} ──────────────
-// Fetches events for an arbitrary date range across ALL connected accounts.
+// Returns events for an arbitrary date range. Reads from DB cache first.
 
 export async function GET(req: NextRequest): Promise<NextResponse> {
   const supabase = await createClient();
@@ -44,14 +44,50 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     return NextResponse.json({ error: "start and end params required (YYYY-MM-DD)" }, { status: 400 });
   }
 
+  const rangeStart = new Date(`${startParam}T00:00:00`);
+  const rangeEnd = new Date(`${endParam}T23:59:59.999`);
+
+  // ── Cache-first ────────────────────────────────────────────────────────────
+
+  const cached = await prisma.cachedCalendarEvent.findMany({
+    where: {
+      userId: user.id,
+      startDateTime: { lte: rangeEnd },
+      endDateTime: { gte: rangeStart },
+    },
+    orderBy: { startDateTime: "asc" },
+  });
+
+  if (cached.length > 0) {
+    const events: CalEvent[] = cached.map((e) => ({
+      id: e.id,
+      subject: e.subject || "(no subject)",
+      startDateTime: e.startDateTime.toISOString(),
+      endDateTime: e.endDateTime.toISOString(),
+      isAllDay: e.isAllDay,
+      location: e.location ?? undefined,
+      bodyPreview: e.bodyPreview || undefined,
+      organizer:
+        e.organizerName || e.organizerEmail
+          ? { name: e.organizerName ?? "", address: e.organizerEmail ?? "" }
+          : undefined,
+      attendees: (e.attendees as { name: string; address: string; responseStatus?: string }[]) ?? [],
+      onlineMeetingUrl: e.onlineMeetingUrl ?? undefined,
+      responseStatus: (e.responseStatus as CalEvent["responseStatus"]) ?? "none",
+      accountHomeId: e.homeAccountId,
+      accountEmail: "",
+      isRecurring: e.isRecurring,
+    }));
+    return NextResponse.json({ events });
+  }
+
+  // ── Fallback to Graph ──────────────────────────────────────────────────────
+
   const accounts = await prisma.msConnectedAccount.findMany({
     where: { userId: user.id },
     orderBy: { isDefault: "desc" },
   });
   if (!accounts.length) return NextResponse.json({ events: [] });
-
-  const rangeStart = new Date(`${startParam}T00:00:00`);
-  const rangeEnd = new Date(`${endParam}T23:59:59.999`);
 
   const graphPath =
     `/me/calendarView` +

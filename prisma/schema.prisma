@@ -5,9 +5,7 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
+  provider = "postgresql"
 }
 
 // ─── Tenant (Law Firm) ───────────────────────────────────────────────────────
@@ -37,13 +35,17 @@ model User {
   orgId String
   org   Organization @relation(fields: [orgId], references: [id])
 
-  msAccounts  MsConnectedAccount[]
-  msalCache   MsalTokenCache?
-  deltaLinks  EmailDeltaLink[]
-  webhookSubs WebhookSubscription[]
-  drafts      Draft[]
-  emailRules  EmailRule[]
-  signatures  Signature[]
+  msAccounts       MsConnectedAccount[]
+  msalCache        MsalTokenCache?
+  deltaLinks       EmailDeltaLink[]
+  webhookSubs      WebhookSubscription[]
+  drafts           Draft[]
+  emailRules       EmailRule[]
+  signatures       Signature[]
+  cachedFolders    CachedFolder[]
+  cachedEmails     CachedEmail[]
+  cachedCalEvents  CachedCalendarEvent[]
+  cachedContacts   CachedContact[]
 
   @@map("users")
 }
@@ -148,6 +150,88 @@ model Signature {
   updatedAt DateTime @updatedAt
 
   @@map("signatures")
+}
+
+// ─── Sync Cache ───────────────────────────────────────────────────────────────
+
+model CachedFolder {
+  id             String   @id
+  userId         String
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  homeAccountId  String
+  displayName    String
+  parentFolderId String?
+  unreadCount    Int      @default(0)
+  totalCount     Int      @default(0)
+  wellKnownName  String?
+  syncedAt       DateTime @default(now())
+
+  @@index([userId, homeAccountId, wellKnownName])
+  @@map("cached_folders")
+}
+
+model CachedEmail {
+  id               String    @id
+  userId           String
+  user             User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  homeAccountId    String
+  folderId         String
+  subject          String    @default("")
+  bodyPreview      String    @default("") @db.Text
+  fromName         String    @default("")
+  fromAddress      String    @default("")
+  toRecipients     Json      @default("[]")
+  receivedDateTime DateTime
+  sentDateTime     DateTime?
+  isRead           Boolean   @default(false)
+  hasAttachments   Boolean   @default(false)
+  flagStatus       String    @default("notFlagged")
+  categories       Json      @default("[]")
+  syncedAt         DateTime  @default(now())
+
+  @@index([userId, homeAccountId, folderId, receivedDateTime(sort: Desc)])
+  @@index([userId, homeAccountId, isRead])
+  @@index([userId, homeAccountId, flagStatus])
+  @@map("cached_emails")
+}
+
+model CachedCalendarEvent {
+  id               String   @id
+  userId           String
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  homeAccountId    String
+  subject          String   @default("")
+  bodyPreview      String   @default("") @db.Text
+  startDateTime    DateTime
+  endDateTime      DateTime
+  isAllDay         Boolean  @default(false)
+  location         String?
+  organizerName    String?
+  organizerEmail   String?
+  responseStatus   String   @default("none")
+  onlineMeetingUrl String?
+  attendees        Json     @default("[]")
+  isRecurring      Boolean  @default(false)
+  syncedAt         DateTime @default(now())
+
+  @@index([userId, startDateTime, endDateTime])
+  @@map("cached_calendar_events")
+}
+
+model CachedContact {
+  id            String   @id
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  homeAccountId String
+  displayName   String   @default("")
+  emailAddress  String   @default("")
+  phone         String   @default("")
+  jobTitle      String   @default("")
+  company       String   @default("")
+  syncedAt      DateTime @default(now())
+
+  @@index([userId, homeAccountId, displayName])
+  @@map("cached_contacts")
 }
 
 // ─── Email Rules ──────────────────────────────────────────────────────────────

@@ -1,3 +1,32 @@
+import type { EmailMessage } from "@/lib/types/email";
+
+export function mapCachedEmail(row: {
+  id: string;
+  subject: string;
+  bodyPreview: string;
+  fromName: string;
+  fromAddress: string;
+  toRecipients: unknown;
+  receivedDateTime: Date;
+  sentDateTime: Date | null;
+  isRead: boolean;
+  hasAttachments: boolean;
+  flagStatus: string;
+}): EmailMessage {
+  return {
+    id: row.id,
+    subject: row.subject || "(no subject)",
+    bodyPreview: row.bodyPreview,
+    receivedDateTime: row.receivedDateTime.toISOString(),
+    sentDateTime: row.sentDateTime?.toISOString(),
+    isRead: row.isRead,
+    hasAttachments: row.hasAttachments,
+    flag: { flagStatus: row.flagStatus === "flagged" ? "flagged" : "notFlagged" },
+    from: { name: row.fromName, address: row.fromAddress },
+    toRecipients: (row.toRecipients as { name: string; address: string }[]) ?? [],
+  };
+}
+
 export function formatDate(iso: string): string {
   const d = new Date(iso);
   const now = new Date();

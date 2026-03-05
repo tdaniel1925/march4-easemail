@@ -54,6 +54,26 @@ export type Draft = $Result.DefaultSelection<Prisma.$DraftPayload>
  */
 export type Signature = $Result.DefaultSelection<Prisma.$SignaturePayload>
 /**
+ * Model CachedFolder
+ * 
+ */
+export type CachedFolder = $Result.DefaultSelection<Prisma.$CachedFolderPayload>
+/**
+ * Model CachedEmail
+ * 
+ */
+export type CachedEmail = $Result.DefaultSelection<Prisma.$CachedEmailPayload>
+/**
+ * Model CachedCalendarEvent
+ * 
+ */
+export type CachedCalendarEvent = $Result.DefaultSelection<Prisma.$CachedCalendarEventPayload>
+/**
+ * Model CachedContact
+ * 
+ */
+export type CachedContact = $Result.DefaultSelection<Prisma.$CachedContactPayload>
+/**
  * Model EmailRule
  * 
  */
@@ -259,6 +279,46 @@ export class PrismaClient<
     * ```
     */
   get signature(): Prisma.SignatureDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.cachedFolder`: Exposes CRUD operations for the **CachedFolder** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more CachedFolders
+    * const cachedFolders = await prisma.cachedFolder.findMany()
+    * ```
+    */
+  get cachedFolder(): Prisma.CachedFolderDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.cachedEmail`: Exposes CRUD operations for the **CachedEmail** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more CachedEmails
+    * const cachedEmails = await prisma.cachedEmail.findMany()
+    * ```
+    */
+  get cachedEmail(): Prisma.CachedEmailDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.cachedCalendarEvent`: Exposes CRUD operations for the **CachedCalendarEvent** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more CachedCalendarEvents
+    * const cachedCalendarEvents = await prisma.cachedCalendarEvent.findMany()
+    * ```
+    */
+  get cachedCalendarEvent(): Prisma.CachedCalendarEventDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.cachedContact`: Exposes CRUD operations for the **CachedContact** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more CachedContacts
+    * const cachedContacts = await prisma.cachedContact.findMany()
+    * ```
+    */
+  get cachedContact(): Prisma.CachedContactDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.emailRule`: Exposes CRUD operations for the **EmailRule** model.
@@ -711,6 +771,10 @@ export namespace Prisma {
     WebhookSubscription: 'WebhookSubscription',
     Draft: 'Draft',
     Signature: 'Signature',
+    CachedFolder: 'CachedFolder',
+    CachedEmail: 'CachedEmail',
+    CachedCalendarEvent: 'CachedCalendarEvent',
+    CachedContact: 'CachedContact',
     EmailRule: 'EmailRule'
   };
 
@@ -727,7 +791,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "organization" | "user" | "msConnectedAccount" | "msalTokenCache" | "emailDeltaLink" | "webhookSubscription" | "draft" | "signature" | "emailRule"
+      modelProps: "organization" | "user" | "msConnectedAccount" | "msalTokenCache" | "emailDeltaLink" | "webhookSubscription" | "draft" | "signature" | "cachedFolder" | "cachedEmail" | "cachedCalendarEvent" | "cachedContact" | "emailRule"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1323,6 +1387,302 @@ export namespace Prisma {
           }
         }
       }
+      CachedFolder: {
+        payload: Prisma.$CachedFolderPayload<ExtArgs>
+        fields: Prisma.CachedFolderFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.CachedFolderFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CachedFolderPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.CachedFolderFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CachedFolderPayload>
+          }
+          findFirst: {
+            args: Prisma.CachedFolderFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CachedFolderPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.CachedFolderFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CachedFolderPayload>
+          }
+          findMany: {
+            args: Prisma.CachedFolderFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CachedFolderPayload>[]
+          }
+          create: {
+            args: Prisma.CachedFolderCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CachedFolderPayload>
+          }
+          createMany: {
+            args: Prisma.CachedFolderCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.CachedFolderCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CachedFolderPayload>[]
+          }
+          delete: {
+            args: Prisma.CachedFolderDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CachedFolderPayload>
+          }
+          update: {
+            args: Prisma.CachedFolderUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CachedFolderPayload>
+          }
+          deleteMany: {
+            args: Prisma.CachedFolderDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.CachedFolderUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.CachedFolderUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CachedFolderPayload>[]
+          }
+          upsert: {
+            args: Prisma.CachedFolderUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CachedFolderPayload>
+          }
+          aggregate: {
+            args: Prisma.CachedFolderAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateCachedFolder>
+          }
+          groupBy: {
+            args: Prisma.CachedFolderGroupByArgs<ExtArgs>
+            result: $Utils.Optional<CachedFolderGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.CachedFolderCountArgs<ExtArgs>
+            result: $Utils.Optional<CachedFolderCountAggregateOutputType> | number
+          }
+        }
+      }
+      CachedEmail: {
+        payload: Prisma.$CachedEmailPayload<ExtArgs>
+        fields: Prisma.CachedEmailFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.CachedEmailFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CachedEmailPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.CachedEmailFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CachedEmailPayload>
+          }
+          findFirst: {
+            args: Prisma.CachedEmailFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CachedEmailPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.CachedEmailFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CachedEmailPayload>
+          }
+          findMany: {
+            args: Prisma.CachedEmailFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CachedEmailPayload>[]
+          }
+          create: {
+            args: Prisma.CachedEmailCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CachedEmailPayload>
+          }
+          createMany: {
+            args: Prisma.CachedEmailCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.CachedEmailCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CachedEmailPayload>[]
+          }
+          delete: {
+            args: Prisma.CachedEmailDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CachedEmailPayload>
+          }
+          update: {
+            args: Prisma.CachedEmailUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CachedEmailPayload>
+          }
+          deleteMany: {
+            args: Prisma.CachedEmailDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.CachedEmailUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.CachedEmailUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CachedEmailPayload>[]
+          }
+          upsert: {
+            args: Prisma.CachedEmailUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CachedEmailPayload>
+          }
+          aggregate: {
+            args: Prisma.CachedEmailAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateCachedEmail>
+          }
+          groupBy: {
+            args: Prisma.CachedEmailGroupByArgs<ExtArgs>
+            result: $Utils.Optional<CachedEmailGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.CachedEmailCountArgs<ExtArgs>
+            result: $Utils.Optional<CachedEmailCountAggregateOutputType> | number
+          }
+        }
+      }
+      CachedCalendarEvent: {
+        payload: Prisma.$CachedCalendarEventPayload<ExtArgs>
+        fields: Prisma.CachedCalendarEventFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.CachedCalendarEventFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CachedCalendarEventPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.CachedCalendarEventFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CachedCalendarEventPayload>
+          }
+          findFirst: {
+            args: Prisma.CachedCalendarEventFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CachedCalendarEventPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.CachedCalendarEventFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CachedCalendarEventPayload>
+          }
+          findMany: {
+            args: Prisma.CachedCalendarEventFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CachedCalendarEventPayload>[]
+          }
+          create: {
+            args: Prisma.CachedCalendarEventCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CachedCalendarEventPayload>
+          }
+          createMany: {
+            args: Prisma.CachedCalendarEventCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.CachedCalendarEventCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CachedCalendarEventPayload>[]
+          }
+          delete: {
+            args: Prisma.CachedCalendarEventDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CachedCalendarEventPayload>
+          }
+          update: {
+            args: Prisma.CachedCalendarEventUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CachedCalendarEventPayload>
+          }
+          deleteMany: {
+            args: Prisma.CachedCalendarEventDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.CachedCalendarEventUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.CachedCalendarEventUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CachedCalendarEventPayload>[]
+          }
+          upsert: {
+            args: Prisma.CachedCalendarEventUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CachedCalendarEventPayload>
+          }
+          aggregate: {
+            args: Prisma.CachedCalendarEventAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateCachedCalendarEvent>
+          }
+          groupBy: {
+            args: Prisma.CachedCalendarEventGroupByArgs<ExtArgs>
+            result: $Utils.Optional<CachedCalendarEventGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.CachedCalendarEventCountArgs<ExtArgs>
+            result: $Utils.Optional<CachedCalendarEventCountAggregateOutputType> | number
+          }
+        }
+      }
+      CachedContact: {
+        payload: Prisma.$CachedContactPayload<ExtArgs>
+        fields: Prisma.CachedContactFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.CachedContactFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CachedContactPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.CachedContactFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CachedContactPayload>
+          }
+          findFirst: {
+            args: Prisma.CachedContactFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CachedContactPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.CachedContactFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CachedContactPayload>
+          }
+          findMany: {
+            args: Prisma.CachedContactFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CachedContactPayload>[]
+          }
+          create: {
+            args: Prisma.CachedContactCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CachedContactPayload>
+          }
+          createMany: {
+            args: Prisma.CachedContactCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.CachedContactCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CachedContactPayload>[]
+          }
+          delete: {
+            args: Prisma.CachedContactDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CachedContactPayload>
+          }
+          update: {
+            args: Prisma.CachedContactUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CachedContactPayload>
+          }
+          deleteMany: {
+            args: Prisma.CachedContactDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.CachedContactUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.CachedContactUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CachedContactPayload>[]
+          }
+          upsert: {
+            args: Prisma.CachedContactUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CachedContactPayload>
+          }
+          aggregate: {
+            args: Prisma.CachedContactAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateCachedContact>
+          }
+          groupBy: {
+            args: Prisma.CachedContactGroupByArgs<ExtArgs>
+            result: $Utils.Optional<CachedContactGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.CachedContactCountArgs<ExtArgs>
+            result: $Utils.Optional<CachedContactCountAggregateOutputType> | number
+          }
+        }
+      }
       EmailRule: {
         payload: Prisma.$EmailRulePayload<ExtArgs>
         fields: Prisma.EmailRuleFieldRefs
@@ -1513,6 +1873,10 @@ export namespace Prisma {
     webhookSubscription?: WebhookSubscriptionOmit
     draft?: DraftOmit
     signature?: SignatureOmit
+    cachedFolder?: CachedFolderOmit
+    cachedEmail?: CachedEmailOmit
+    cachedCalendarEvent?: CachedCalendarEventOmit
+    cachedContact?: CachedContactOmit
     emailRule?: EmailRuleOmit
   }
 
@@ -1631,6 +1995,10 @@ export namespace Prisma {
     drafts: number
     emailRules: number
     signatures: number
+    cachedFolders: number
+    cachedEmails: number
+    cachedCalEvents: number
+    cachedContacts: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -1640,6 +2008,10 @@ export namespace Prisma {
     drafts?: boolean | UserCountOutputTypeCountDraftsArgs
     emailRules?: boolean | UserCountOutputTypeCountEmailRulesArgs
     signatures?: boolean | UserCountOutputTypeCountSignaturesArgs
+    cachedFolders?: boolean | UserCountOutputTypeCountCachedFoldersArgs
+    cachedEmails?: boolean | UserCountOutputTypeCountCachedEmailsArgs
+    cachedCalEvents?: boolean | UserCountOutputTypeCountCachedCalEventsArgs
+    cachedContacts?: boolean | UserCountOutputTypeCountCachedContactsArgs
   }
 
   // Custom InputTypes
@@ -1693,6 +2065,34 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountSignaturesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: SignatureWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountCachedFoldersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CachedFolderWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountCachedEmailsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CachedEmailWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountCachedCalEventsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CachedCalendarEventWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountCachedContactsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CachedContactWhereInput
   }
 
 
@@ -2958,6 +3358,10 @@ export namespace Prisma {
     drafts?: boolean | User$draftsArgs<ExtArgs>
     emailRules?: boolean | User$emailRulesArgs<ExtArgs>
     signatures?: boolean | User$signaturesArgs<ExtArgs>
+    cachedFolders?: boolean | User$cachedFoldersArgs<ExtArgs>
+    cachedEmails?: boolean | User$cachedEmailsArgs<ExtArgs>
+    cachedCalEvents?: boolean | User$cachedCalEventsArgs<ExtArgs>
+    cachedContacts?: boolean | User$cachedContactsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -3003,6 +3407,10 @@ export namespace Prisma {
     drafts?: boolean | User$draftsArgs<ExtArgs>
     emailRules?: boolean | User$emailRulesArgs<ExtArgs>
     signatures?: boolean | User$signaturesArgs<ExtArgs>
+    cachedFolders?: boolean | User$cachedFoldersArgs<ExtArgs>
+    cachedEmails?: boolean | User$cachedEmailsArgs<ExtArgs>
+    cachedCalEvents?: boolean | User$cachedCalEventsArgs<ExtArgs>
+    cachedContacts?: boolean | User$cachedContactsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -3023,6 +3431,10 @@ export namespace Prisma {
       drafts: Prisma.$DraftPayload<ExtArgs>[]
       emailRules: Prisma.$EmailRulePayload<ExtArgs>[]
       signatures: Prisma.$SignaturePayload<ExtArgs>[]
+      cachedFolders: Prisma.$CachedFolderPayload<ExtArgs>[]
+      cachedEmails: Prisma.$CachedEmailPayload<ExtArgs>[]
+      cachedCalEvents: Prisma.$CachedCalendarEventPayload<ExtArgs>[]
+      cachedContacts: Prisma.$CachedContactPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -3434,6 +3846,10 @@ export namespace Prisma {
     drafts<T extends User$draftsArgs<ExtArgs> = {}>(args?: Subset<T, User$draftsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DraftPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     emailRules<T extends User$emailRulesArgs<ExtArgs> = {}>(args?: Subset<T, User$emailRulesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EmailRulePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     signatures<T extends User$signaturesArgs<ExtArgs> = {}>(args?: Subset<T, User$signaturesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SignaturePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    cachedFolders<T extends User$cachedFoldersArgs<ExtArgs> = {}>(args?: Subset<T, User$cachedFoldersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CachedFolderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    cachedEmails<T extends User$cachedEmailsArgs<ExtArgs> = {}>(args?: Subset<T, User$cachedEmailsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CachedEmailPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    cachedCalEvents<T extends User$cachedCalEventsArgs<ExtArgs> = {}>(args?: Subset<T, User$cachedCalEventsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CachedCalendarEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    cachedContacts<T extends User$cachedContactsArgs<ExtArgs> = {}>(args?: Subset<T, User$cachedContactsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CachedContactPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -4026,6 +4442,102 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: SignatureScalarFieldEnum | SignatureScalarFieldEnum[]
+  }
+
+  /**
+   * User.cachedFolders
+   */
+  export type User$cachedFoldersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CachedFolder
+     */
+    select?: CachedFolderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CachedFolder
+     */
+    omit?: CachedFolderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CachedFolderInclude<ExtArgs> | null
+    where?: CachedFolderWhereInput
+    orderBy?: CachedFolderOrderByWithRelationInput | CachedFolderOrderByWithRelationInput[]
+    cursor?: CachedFolderWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: CachedFolderScalarFieldEnum | CachedFolderScalarFieldEnum[]
+  }
+
+  /**
+   * User.cachedEmails
+   */
+  export type User$cachedEmailsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CachedEmail
+     */
+    select?: CachedEmailSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CachedEmail
+     */
+    omit?: CachedEmailOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CachedEmailInclude<ExtArgs> | null
+    where?: CachedEmailWhereInput
+    orderBy?: CachedEmailOrderByWithRelationInput | CachedEmailOrderByWithRelationInput[]
+    cursor?: CachedEmailWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: CachedEmailScalarFieldEnum | CachedEmailScalarFieldEnum[]
+  }
+
+  /**
+   * User.cachedCalEvents
+   */
+  export type User$cachedCalEventsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CachedCalendarEvent
+     */
+    select?: CachedCalendarEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CachedCalendarEvent
+     */
+    omit?: CachedCalendarEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CachedCalendarEventInclude<ExtArgs> | null
+    where?: CachedCalendarEventWhereInput
+    orderBy?: CachedCalendarEventOrderByWithRelationInput | CachedCalendarEventOrderByWithRelationInput[]
+    cursor?: CachedCalendarEventWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: CachedCalendarEventScalarFieldEnum | CachedCalendarEventScalarFieldEnum[]
+  }
+
+  /**
+   * User.cachedContacts
+   */
+  export type User$cachedContactsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CachedContact
+     */
+    select?: CachedContactSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CachedContact
+     */
+    omit?: CachedContactOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CachedContactInclude<ExtArgs> | null
+    where?: CachedContactWhereInput
+    orderBy?: CachedContactOrderByWithRelationInput | CachedContactOrderByWithRelationInput[]
+    cursor?: CachedContactWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: CachedContactScalarFieldEnum | CachedContactScalarFieldEnum[]
   }
 
   /**
@@ -10653,6 +11165,4654 @@ export namespace Prisma {
 
 
   /**
+   * Model CachedFolder
+   */
+
+  export type AggregateCachedFolder = {
+    _count: CachedFolderCountAggregateOutputType | null
+    _avg: CachedFolderAvgAggregateOutputType | null
+    _sum: CachedFolderSumAggregateOutputType | null
+    _min: CachedFolderMinAggregateOutputType | null
+    _max: CachedFolderMaxAggregateOutputType | null
+  }
+
+  export type CachedFolderAvgAggregateOutputType = {
+    unreadCount: number | null
+    totalCount: number | null
+  }
+
+  export type CachedFolderSumAggregateOutputType = {
+    unreadCount: number | null
+    totalCount: number | null
+  }
+
+  export type CachedFolderMinAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    homeAccountId: string | null
+    displayName: string | null
+    parentFolderId: string | null
+    unreadCount: number | null
+    totalCount: number | null
+    wellKnownName: string | null
+    syncedAt: Date | null
+  }
+
+  export type CachedFolderMaxAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    homeAccountId: string | null
+    displayName: string | null
+    parentFolderId: string | null
+    unreadCount: number | null
+    totalCount: number | null
+    wellKnownName: string | null
+    syncedAt: Date | null
+  }
+
+  export type CachedFolderCountAggregateOutputType = {
+    id: number
+    userId: number
+    homeAccountId: number
+    displayName: number
+    parentFolderId: number
+    unreadCount: number
+    totalCount: number
+    wellKnownName: number
+    syncedAt: number
+    _all: number
+  }
+
+
+  export type CachedFolderAvgAggregateInputType = {
+    unreadCount?: true
+    totalCount?: true
+  }
+
+  export type CachedFolderSumAggregateInputType = {
+    unreadCount?: true
+    totalCount?: true
+  }
+
+  export type CachedFolderMinAggregateInputType = {
+    id?: true
+    userId?: true
+    homeAccountId?: true
+    displayName?: true
+    parentFolderId?: true
+    unreadCount?: true
+    totalCount?: true
+    wellKnownName?: true
+    syncedAt?: true
+  }
+
+  export type CachedFolderMaxAggregateInputType = {
+    id?: true
+    userId?: true
+    homeAccountId?: true
+    displayName?: true
+    parentFolderId?: true
+    unreadCount?: true
+    totalCount?: true
+    wellKnownName?: true
+    syncedAt?: true
+  }
+
+  export type CachedFolderCountAggregateInputType = {
+    id?: true
+    userId?: true
+    homeAccountId?: true
+    displayName?: true
+    parentFolderId?: true
+    unreadCount?: true
+    totalCount?: true
+    wellKnownName?: true
+    syncedAt?: true
+    _all?: true
+  }
+
+  export type CachedFolderAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which CachedFolder to aggregate.
+     */
+    where?: CachedFolderWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CachedFolders to fetch.
+     */
+    orderBy?: CachedFolderOrderByWithRelationInput | CachedFolderOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: CachedFolderWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CachedFolders from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CachedFolders.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned CachedFolders
+    **/
+    _count?: true | CachedFolderCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: CachedFolderAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: CachedFolderSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: CachedFolderMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: CachedFolderMaxAggregateInputType
+  }
+
+  export type GetCachedFolderAggregateType<T extends CachedFolderAggregateArgs> = {
+        [P in keyof T & keyof AggregateCachedFolder]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateCachedFolder[P]>
+      : GetScalarType<T[P], AggregateCachedFolder[P]>
+  }
+
+
+
+
+  export type CachedFolderGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CachedFolderWhereInput
+    orderBy?: CachedFolderOrderByWithAggregationInput | CachedFolderOrderByWithAggregationInput[]
+    by: CachedFolderScalarFieldEnum[] | CachedFolderScalarFieldEnum
+    having?: CachedFolderScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: CachedFolderCountAggregateInputType | true
+    _avg?: CachedFolderAvgAggregateInputType
+    _sum?: CachedFolderSumAggregateInputType
+    _min?: CachedFolderMinAggregateInputType
+    _max?: CachedFolderMaxAggregateInputType
+  }
+
+  export type CachedFolderGroupByOutputType = {
+    id: string
+    userId: string
+    homeAccountId: string
+    displayName: string
+    parentFolderId: string | null
+    unreadCount: number
+    totalCount: number
+    wellKnownName: string | null
+    syncedAt: Date
+    _count: CachedFolderCountAggregateOutputType | null
+    _avg: CachedFolderAvgAggregateOutputType | null
+    _sum: CachedFolderSumAggregateOutputType | null
+    _min: CachedFolderMinAggregateOutputType | null
+    _max: CachedFolderMaxAggregateOutputType | null
+  }
+
+  type GetCachedFolderGroupByPayload<T extends CachedFolderGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<CachedFolderGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof CachedFolderGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], CachedFolderGroupByOutputType[P]>
+            : GetScalarType<T[P], CachedFolderGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type CachedFolderSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    homeAccountId?: boolean
+    displayName?: boolean
+    parentFolderId?: boolean
+    unreadCount?: boolean
+    totalCount?: boolean
+    wellKnownName?: boolean
+    syncedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["cachedFolder"]>
+
+  export type CachedFolderSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    homeAccountId?: boolean
+    displayName?: boolean
+    parentFolderId?: boolean
+    unreadCount?: boolean
+    totalCount?: boolean
+    wellKnownName?: boolean
+    syncedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["cachedFolder"]>
+
+  export type CachedFolderSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    homeAccountId?: boolean
+    displayName?: boolean
+    parentFolderId?: boolean
+    unreadCount?: boolean
+    totalCount?: boolean
+    wellKnownName?: boolean
+    syncedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["cachedFolder"]>
+
+  export type CachedFolderSelectScalar = {
+    id?: boolean
+    userId?: boolean
+    homeAccountId?: boolean
+    displayName?: boolean
+    parentFolderId?: boolean
+    unreadCount?: boolean
+    totalCount?: boolean
+    wellKnownName?: boolean
+    syncedAt?: boolean
+  }
+
+  export type CachedFolderOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "homeAccountId" | "displayName" | "parentFolderId" | "unreadCount" | "totalCount" | "wellKnownName" | "syncedAt", ExtArgs["result"]["cachedFolder"]>
+  export type CachedFolderInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type CachedFolderIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type CachedFolderIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $CachedFolderPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "CachedFolder"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      userId: string
+      homeAccountId: string
+      displayName: string
+      parentFolderId: string | null
+      unreadCount: number
+      totalCount: number
+      wellKnownName: string | null
+      syncedAt: Date
+    }, ExtArgs["result"]["cachedFolder"]>
+    composites: {}
+  }
+
+  type CachedFolderGetPayload<S extends boolean | null | undefined | CachedFolderDefaultArgs> = $Result.GetResult<Prisma.$CachedFolderPayload, S>
+
+  type CachedFolderCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<CachedFolderFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: CachedFolderCountAggregateInputType | true
+    }
+
+  export interface CachedFolderDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['CachedFolder'], meta: { name: 'CachedFolder' } }
+    /**
+     * Find zero or one CachedFolder that matches the filter.
+     * @param {CachedFolderFindUniqueArgs} args - Arguments to find a CachedFolder
+     * @example
+     * // Get one CachedFolder
+     * const cachedFolder = await prisma.cachedFolder.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends CachedFolderFindUniqueArgs>(args: SelectSubset<T, CachedFolderFindUniqueArgs<ExtArgs>>): Prisma__CachedFolderClient<$Result.GetResult<Prisma.$CachedFolderPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one CachedFolder that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {CachedFolderFindUniqueOrThrowArgs} args - Arguments to find a CachedFolder
+     * @example
+     * // Get one CachedFolder
+     * const cachedFolder = await prisma.cachedFolder.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends CachedFolderFindUniqueOrThrowArgs>(args: SelectSubset<T, CachedFolderFindUniqueOrThrowArgs<ExtArgs>>): Prisma__CachedFolderClient<$Result.GetResult<Prisma.$CachedFolderPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first CachedFolder that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CachedFolderFindFirstArgs} args - Arguments to find a CachedFolder
+     * @example
+     * // Get one CachedFolder
+     * const cachedFolder = await prisma.cachedFolder.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends CachedFolderFindFirstArgs>(args?: SelectSubset<T, CachedFolderFindFirstArgs<ExtArgs>>): Prisma__CachedFolderClient<$Result.GetResult<Prisma.$CachedFolderPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first CachedFolder that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CachedFolderFindFirstOrThrowArgs} args - Arguments to find a CachedFolder
+     * @example
+     * // Get one CachedFolder
+     * const cachedFolder = await prisma.cachedFolder.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends CachedFolderFindFirstOrThrowArgs>(args?: SelectSubset<T, CachedFolderFindFirstOrThrowArgs<ExtArgs>>): Prisma__CachedFolderClient<$Result.GetResult<Prisma.$CachedFolderPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more CachedFolders that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CachedFolderFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all CachedFolders
+     * const cachedFolders = await prisma.cachedFolder.findMany()
+     * 
+     * // Get first 10 CachedFolders
+     * const cachedFolders = await prisma.cachedFolder.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const cachedFolderWithIdOnly = await prisma.cachedFolder.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends CachedFolderFindManyArgs>(args?: SelectSubset<T, CachedFolderFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CachedFolderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a CachedFolder.
+     * @param {CachedFolderCreateArgs} args - Arguments to create a CachedFolder.
+     * @example
+     * // Create one CachedFolder
+     * const CachedFolder = await prisma.cachedFolder.create({
+     *   data: {
+     *     // ... data to create a CachedFolder
+     *   }
+     * })
+     * 
+     */
+    create<T extends CachedFolderCreateArgs>(args: SelectSubset<T, CachedFolderCreateArgs<ExtArgs>>): Prisma__CachedFolderClient<$Result.GetResult<Prisma.$CachedFolderPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many CachedFolders.
+     * @param {CachedFolderCreateManyArgs} args - Arguments to create many CachedFolders.
+     * @example
+     * // Create many CachedFolders
+     * const cachedFolder = await prisma.cachedFolder.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends CachedFolderCreateManyArgs>(args?: SelectSubset<T, CachedFolderCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many CachedFolders and returns the data saved in the database.
+     * @param {CachedFolderCreateManyAndReturnArgs} args - Arguments to create many CachedFolders.
+     * @example
+     * // Create many CachedFolders
+     * const cachedFolder = await prisma.cachedFolder.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many CachedFolders and only return the `id`
+     * const cachedFolderWithIdOnly = await prisma.cachedFolder.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends CachedFolderCreateManyAndReturnArgs>(args?: SelectSubset<T, CachedFolderCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CachedFolderPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a CachedFolder.
+     * @param {CachedFolderDeleteArgs} args - Arguments to delete one CachedFolder.
+     * @example
+     * // Delete one CachedFolder
+     * const CachedFolder = await prisma.cachedFolder.delete({
+     *   where: {
+     *     // ... filter to delete one CachedFolder
+     *   }
+     * })
+     * 
+     */
+    delete<T extends CachedFolderDeleteArgs>(args: SelectSubset<T, CachedFolderDeleteArgs<ExtArgs>>): Prisma__CachedFolderClient<$Result.GetResult<Prisma.$CachedFolderPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one CachedFolder.
+     * @param {CachedFolderUpdateArgs} args - Arguments to update one CachedFolder.
+     * @example
+     * // Update one CachedFolder
+     * const cachedFolder = await prisma.cachedFolder.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends CachedFolderUpdateArgs>(args: SelectSubset<T, CachedFolderUpdateArgs<ExtArgs>>): Prisma__CachedFolderClient<$Result.GetResult<Prisma.$CachedFolderPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more CachedFolders.
+     * @param {CachedFolderDeleteManyArgs} args - Arguments to filter CachedFolders to delete.
+     * @example
+     * // Delete a few CachedFolders
+     * const { count } = await prisma.cachedFolder.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends CachedFolderDeleteManyArgs>(args?: SelectSubset<T, CachedFolderDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more CachedFolders.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CachedFolderUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many CachedFolders
+     * const cachedFolder = await prisma.cachedFolder.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends CachedFolderUpdateManyArgs>(args: SelectSubset<T, CachedFolderUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more CachedFolders and returns the data updated in the database.
+     * @param {CachedFolderUpdateManyAndReturnArgs} args - Arguments to update many CachedFolders.
+     * @example
+     * // Update many CachedFolders
+     * const cachedFolder = await prisma.cachedFolder.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more CachedFolders and only return the `id`
+     * const cachedFolderWithIdOnly = await prisma.cachedFolder.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends CachedFolderUpdateManyAndReturnArgs>(args: SelectSubset<T, CachedFolderUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CachedFolderPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one CachedFolder.
+     * @param {CachedFolderUpsertArgs} args - Arguments to update or create a CachedFolder.
+     * @example
+     * // Update or create a CachedFolder
+     * const cachedFolder = await prisma.cachedFolder.upsert({
+     *   create: {
+     *     // ... data to create a CachedFolder
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the CachedFolder we want to update
+     *   }
+     * })
+     */
+    upsert<T extends CachedFolderUpsertArgs>(args: SelectSubset<T, CachedFolderUpsertArgs<ExtArgs>>): Prisma__CachedFolderClient<$Result.GetResult<Prisma.$CachedFolderPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of CachedFolders.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CachedFolderCountArgs} args - Arguments to filter CachedFolders to count.
+     * @example
+     * // Count the number of CachedFolders
+     * const count = await prisma.cachedFolder.count({
+     *   where: {
+     *     // ... the filter for the CachedFolders we want to count
+     *   }
+     * })
+    **/
+    count<T extends CachedFolderCountArgs>(
+      args?: Subset<T, CachedFolderCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], CachedFolderCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a CachedFolder.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CachedFolderAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends CachedFolderAggregateArgs>(args: Subset<T, CachedFolderAggregateArgs>): Prisma.PrismaPromise<GetCachedFolderAggregateType<T>>
+
+    /**
+     * Group by CachedFolder.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CachedFolderGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends CachedFolderGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: CachedFolderGroupByArgs['orderBy'] }
+        : { orderBy?: CachedFolderGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, CachedFolderGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetCachedFolderGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the CachedFolder model
+   */
+  readonly fields: CachedFolderFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for CachedFolder.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__CachedFolderClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the CachedFolder model
+   */
+  interface CachedFolderFieldRefs {
+    readonly id: FieldRef<"CachedFolder", 'String'>
+    readonly userId: FieldRef<"CachedFolder", 'String'>
+    readonly homeAccountId: FieldRef<"CachedFolder", 'String'>
+    readonly displayName: FieldRef<"CachedFolder", 'String'>
+    readonly parentFolderId: FieldRef<"CachedFolder", 'String'>
+    readonly unreadCount: FieldRef<"CachedFolder", 'Int'>
+    readonly totalCount: FieldRef<"CachedFolder", 'Int'>
+    readonly wellKnownName: FieldRef<"CachedFolder", 'String'>
+    readonly syncedAt: FieldRef<"CachedFolder", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * CachedFolder findUnique
+   */
+  export type CachedFolderFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CachedFolder
+     */
+    select?: CachedFolderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CachedFolder
+     */
+    omit?: CachedFolderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CachedFolderInclude<ExtArgs> | null
+    /**
+     * Filter, which CachedFolder to fetch.
+     */
+    where: CachedFolderWhereUniqueInput
+  }
+
+  /**
+   * CachedFolder findUniqueOrThrow
+   */
+  export type CachedFolderFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CachedFolder
+     */
+    select?: CachedFolderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CachedFolder
+     */
+    omit?: CachedFolderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CachedFolderInclude<ExtArgs> | null
+    /**
+     * Filter, which CachedFolder to fetch.
+     */
+    where: CachedFolderWhereUniqueInput
+  }
+
+  /**
+   * CachedFolder findFirst
+   */
+  export type CachedFolderFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CachedFolder
+     */
+    select?: CachedFolderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CachedFolder
+     */
+    omit?: CachedFolderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CachedFolderInclude<ExtArgs> | null
+    /**
+     * Filter, which CachedFolder to fetch.
+     */
+    where?: CachedFolderWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CachedFolders to fetch.
+     */
+    orderBy?: CachedFolderOrderByWithRelationInput | CachedFolderOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for CachedFolders.
+     */
+    cursor?: CachedFolderWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CachedFolders from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CachedFolders.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CachedFolders.
+     */
+    distinct?: CachedFolderScalarFieldEnum | CachedFolderScalarFieldEnum[]
+  }
+
+  /**
+   * CachedFolder findFirstOrThrow
+   */
+  export type CachedFolderFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CachedFolder
+     */
+    select?: CachedFolderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CachedFolder
+     */
+    omit?: CachedFolderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CachedFolderInclude<ExtArgs> | null
+    /**
+     * Filter, which CachedFolder to fetch.
+     */
+    where?: CachedFolderWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CachedFolders to fetch.
+     */
+    orderBy?: CachedFolderOrderByWithRelationInput | CachedFolderOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for CachedFolders.
+     */
+    cursor?: CachedFolderWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CachedFolders from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CachedFolders.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CachedFolders.
+     */
+    distinct?: CachedFolderScalarFieldEnum | CachedFolderScalarFieldEnum[]
+  }
+
+  /**
+   * CachedFolder findMany
+   */
+  export type CachedFolderFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CachedFolder
+     */
+    select?: CachedFolderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CachedFolder
+     */
+    omit?: CachedFolderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CachedFolderInclude<ExtArgs> | null
+    /**
+     * Filter, which CachedFolders to fetch.
+     */
+    where?: CachedFolderWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CachedFolders to fetch.
+     */
+    orderBy?: CachedFolderOrderByWithRelationInput | CachedFolderOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing CachedFolders.
+     */
+    cursor?: CachedFolderWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CachedFolders from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CachedFolders.
+     */
+    skip?: number
+    distinct?: CachedFolderScalarFieldEnum | CachedFolderScalarFieldEnum[]
+  }
+
+  /**
+   * CachedFolder create
+   */
+  export type CachedFolderCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CachedFolder
+     */
+    select?: CachedFolderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CachedFolder
+     */
+    omit?: CachedFolderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CachedFolderInclude<ExtArgs> | null
+    /**
+     * The data needed to create a CachedFolder.
+     */
+    data: XOR<CachedFolderCreateInput, CachedFolderUncheckedCreateInput>
+  }
+
+  /**
+   * CachedFolder createMany
+   */
+  export type CachedFolderCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many CachedFolders.
+     */
+    data: CachedFolderCreateManyInput | CachedFolderCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * CachedFolder createManyAndReturn
+   */
+  export type CachedFolderCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CachedFolder
+     */
+    select?: CachedFolderSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the CachedFolder
+     */
+    omit?: CachedFolderOmit<ExtArgs> | null
+    /**
+     * The data used to create many CachedFolders.
+     */
+    data: CachedFolderCreateManyInput | CachedFolderCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CachedFolderIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * CachedFolder update
+   */
+  export type CachedFolderUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CachedFolder
+     */
+    select?: CachedFolderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CachedFolder
+     */
+    omit?: CachedFolderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CachedFolderInclude<ExtArgs> | null
+    /**
+     * The data needed to update a CachedFolder.
+     */
+    data: XOR<CachedFolderUpdateInput, CachedFolderUncheckedUpdateInput>
+    /**
+     * Choose, which CachedFolder to update.
+     */
+    where: CachedFolderWhereUniqueInput
+  }
+
+  /**
+   * CachedFolder updateMany
+   */
+  export type CachedFolderUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update CachedFolders.
+     */
+    data: XOR<CachedFolderUpdateManyMutationInput, CachedFolderUncheckedUpdateManyInput>
+    /**
+     * Filter which CachedFolders to update
+     */
+    where?: CachedFolderWhereInput
+    /**
+     * Limit how many CachedFolders to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * CachedFolder updateManyAndReturn
+   */
+  export type CachedFolderUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CachedFolder
+     */
+    select?: CachedFolderSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the CachedFolder
+     */
+    omit?: CachedFolderOmit<ExtArgs> | null
+    /**
+     * The data used to update CachedFolders.
+     */
+    data: XOR<CachedFolderUpdateManyMutationInput, CachedFolderUncheckedUpdateManyInput>
+    /**
+     * Filter which CachedFolders to update
+     */
+    where?: CachedFolderWhereInput
+    /**
+     * Limit how many CachedFolders to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CachedFolderIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * CachedFolder upsert
+   */
+  export type CachedFolderUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CachedFolder
+     */
+    select?: CachedFolderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CachedFolder
+     */
+    omit?: CachedFolderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CachedFolderInclude<ExtArgs> | null
+    /**
+     * The filter to search for the CachedFolder to update in case it exists.
+     */
+    where: CachedFolderWhereUniqueInput
+    /**
+     * In case the CachedFolder found by the `where` argument doesn't exist, create a new CachedFolder with this data.
+     */
+    create: XOR<CachedFolderCreateInput, CachedFolderUncheckedCreateInput>
+    /**
+     * In case the CachedFolder was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<CachedFolderUpdateInput, CachedFolderUncheckedUpdateInput>
+  }
+
+  /**
+   * CachedFolder delete
+   */
+  export type CachedFolderDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CachedFolder
+     */
+    select?: CachedFolderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CachedFolder
+     */
+    omit?: CachedFolderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CachedFolderInclude<ExtArgs> | null
+    /**
+     * Filter which CachedFolder to delete.
+     */
+    where: CachedFolderWhereUniqueInput
+  }
+
+  /**
+   * CachedFolder deleteMany
+   */
+  export type CachedFolderDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which CachedFolders to delete
+     */
+    where?: CachedFolderWhereInput
+    /**
+     * Limit how many CachedFolders to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * CachedFolder without action
+   */
+  export type CachedFolderDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CachedFolder
+     */
+    select?: CachedFolderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CachedFolder
+     */
+    omit?: CachedFolderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CachedFolderInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model CachedEmail
+   */
+
+  export type AggregateCachedEmail = {
+    _count: CachedEmailCountAggregateOutputType | null
+    _min: CachedEmailMinAggregateOutputType | null
+    _max: CachedEmailMaxAggregateOutputType | null
+  }
+
+  export type CachedEmailMinAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    homeAccountId: string | null
+    folderId: string | null
+    subject: string | null
+    bodyPreview: string | null
+    fromName: string | null
+    fromAddress: string | null
+    receivedDateTime: Date | null
+    sentDateTime: Date | null
+    isRead: boolean | null
+    hasAttachments: boolean | null
+    flagStatus: string | null
+    syncedAt: Date | null
+  }
+
+  export type CachedEmailMaxAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    homeAccountId: string | null
+    folderId: string | null
+    subject: string | null
+    bodyPreview: string | null
+    fromName: string | null
+    fromAddress: string | null
+    receivedDateTime: Date | null
+    sentDateTime: Date | null
+    isRead: boolean | null
+    hasAttachments: boolean | null
+    flagStatus: string | null
+    syncedAt: Date | null
+  }
+
+  export type CachedEmailCountAggregateOutputType = {
+    id: number
+    userId: number
+    homeAccountId: number
+    folderId: number
+    subject: number
+    bodyPreview: number
+    fromName: number
+    fromAddress: number
+    toRecipients: number
+    receivedDateTime: number
+    sentDateTime: number
+    isRead: number
+    hasAttachments: number
+    flagStatus: number
+    categories: number
+    syncedAt: number
+    _all: number
+  }
+
+
+  export type CachedEmailMinAggregateInputType = {
+    id?: true
+    userId?: true
+    homeAccountId?: true
+    folderId?: true
+    subject?: true
+    bodyPreview?: true
+    fromName?: true
+    fromAddress?: true
+    receivedDateTime?: true
+    sentDateTime?: true
+    isRead?: true
+    hasAttachments?: true
+    flagStatus?: true
+    syncedAt?: true
+  }
+
+  export type CachedEmailMaxAggregateInputType = {
+    id?: true
+    userId?: true
+    homeAccountId?: true
+    folderId?: true
+    subject?: true
+    bodyPreview?: true
+    fromName?: true
+    fromAddress?: true
+    receivedDateTime?: true
+    sentDateTime?: true
+    isRead?: true
+    hasAttachments?: true
+    flagStatus?: true
+    syncedAt?: true
+  }
+
+  export type CachedEmailCountAggregateInputType = {
+    id?: true
+    userId?: true
+    homeAccountId?: true
+    folderId?: true
+    subject?: true
+    bodyPreview?: true
+    fromName?: true
+    fromAddress?: true
+    toRecipients?: true
+    receivedDateTime?: true
+    sentDateTime?: true
+    isRead?: true
+    hasAttachments?: true
+    flagStatus?: true
+    categories?: true
+    syncedAt?: true
+    _all?: true
+  }
+
+  export type CachedEmailAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which CachedEmail to aggregate.
+     */
+    where?: CachedEmailWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CachedEmails to fetch.
+     */
+    orderBy?: CachedEmailOrderByWithRelationInput | CachedEmailOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: CachedEmailWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CachedEmails from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CachedEmails.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned CachedEmails
+    **/
+    _count?: true | CachedEmailCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: CachedEmailMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: CachedEmailMaxAggregateInputType
+  }
+
+  export type GetCachedEmailAggregateType<T extends CachedEmailAggregateArgs> = {
+        [P in keyof T & keyof AggregateCachedEmail]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateCachedEmail[P]>
+      : GetScalarType<T[P], AggregateCachedEmail[P]>
+  }
+
+
+
+
+  export type CachedEmailGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CachedEmailWhereInput
+    orderBy?: CachedEmailOrderByWithAggregationInput | CachedEmailOrderByWithAggregationInput[]
+    by: CachedEmailScalarFieldEnum[] | CachedEmailScalarFieldEnum
+    having?: CachedEmailScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: CachedEmailCountAggregateInputType | true
+    _min?: CachedEmailMinAggregateInputType
+    _max?: CachedEmailMaxAggregateInputType
+  }
+
+  export type CachedEmailGroupByOutputType = {
+    id: string
+    userId: string
+    homeAccountId: string
+    folderId: string
+    subject: string
+    bodyPreview: string
+    fromName: string
+    fromAddress: string
+    toRecipients: JsonValue
+    receivedDateTime: Date
+    sentDateTime: Date | null
+    isRead: boolean
+    hasAttachments: boolean
+    flagStatus: string
+    categories: JsonValue
+    syncedAt: Date
+    _count: CachedEmailCountAggregateOutputType | null
+    _min: CachedEmailMinAggregateOutputType | null
+    _max: CachedEmailMaxAggregateOutputType | null
+  }
+
+  type GetCachedEmailGroupByPayload<T extends CachedEmailGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<CachedEmailGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof CachedEmailGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], CachedEmailGroupByOutputType[P]>
+            : GetScalarType<T[P], CachedEmailGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type CachedEmailSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    homeAccountId?: boolean
+    folderId?: boolean
+    subject?: boolean
+    bodyPreview?: boolean
+    fromName?: boolean
+    fromAddress?: boolean
+    toRecipients?: boolean
+    receivedDateTime?: boolean
+    sentDateTime?: boolean
+    isRead?: boolean
+    hasAttachments?: boolean
+    flagStatus?: boolean
+    categories?: boolean
+    syncedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["cachedEmail"]>
+
+  export type CachedEmailSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    homeAccountId?: boolean
+    folderId?: boolean
+    subject?: boolean
+    bodyPreview?: boolean
+    fromName?: boolean
+    fromAddress?: boolean
+    toRecipients?: boolean
+    receivedDateTime?: boolean
+    sentDateTime?: boolean
+    isRead?: boolean
+    hasAttachments?: boolean
+    flagStatus?: boolean
+    categories?: boolean
+    syncedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["cachedEmail"]>
+
+  export type CachedEmailSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    homeAccountId?: boolean
+    folderId?: boolean
+    subject?: boolean
+    bodyPreview?: boolean
+    fromName?: boolean
+    fromAddress?: boolean
+    toRecipients?: boolean
+    receivedDateTime?: boolean
+    sentDateTime?: boolean
+    isRead?: boolean
+    hasAttachments?: boolean
+    flagStatus?: boolean
+    categories?: boolean
+    syncedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["cachedEmail"]>
+
+  export type CachedEmailSelectScalar = {
+    id?: boolean
+    userId?: boolean
+    homeAccountId?: boolean
+    folderId?: boolean
+    subject?: boolean
+    bodyPreview?: boolean
+    fromName?: boolean
+    fromAddress?: boolean
+    toRecipients?: boolean
+    receivedDateTime?: boolean
+    sentDateTime?: boolean
+    isRead?: boolean
+    hasAttachments?: boolean
+    flagStatus?: boolean
+    categories?: boolean
+    syncedAt?: boolean
+  }
+
+  export type CachedEmailOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "homeAccountId" | "folderId" | "subject" | "bodyPreview" | "fromName" | "fromAddress" | "toRecipients" | "receivedDateTime" | "sentDateTime" | "isRead" | "hasAttachments" | "flagStatus" | "categories" | "syncedAt", ExtArgs["result"]["cachedEmail"]>
+  export type CachedEmailInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type CachedEmailIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type CachedEmailIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $CachedEmailPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "CachedEmail"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      userId: string
+      homeAccountId: string
+      folderId: string
+      subject: string
+      bodyPreview: string
+      fromName: string
+      fromAddress: string
+      toRecipients: Prisma.JsonValue
+      receivedDateTime: Date
+      sentDateTime: Date | null
+      isRead: boolean
+      hasAttachments: boolean
+      flagStatus: string
+      categories: Prisma.JsonValue
+      syncedAt: Date
+    }, ExtArgs["result"]["cachedEmail"]>
+    composites: {}
+  }
+
+  type CachedEmailGetPayload<S extends boolean | null | undefined | CachedEmailDefaultArgs> = $Result.GetResult<Prisma.$CachedEmailPayload, S>
+
+  type CachedEmailCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<CachedEmailFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: CachedEmailCountAggregateInputType | true
+    }
+
+  export interface CachedEmailDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['CachedEmail'], meta: { name: 'CachedEmail' } }
+    /**
+     * Find zero or one CachedEmail that matches the filter.
+     * @param {CachedEmailFindUniqueArgs} args - Arguments to find a CachedEmail
+     * @example
+     * // Get one CachedEmail
+     * const cachedEmail = await prisma.cachedEmail.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends CachedEmailFindUniqueArgs>(args: SelectSubset<T, CachedEmailFindUniqueArgs<ExtArgs>>): Prisma__CachedEmailClient<$Result.GetResult<Prisma.$CachedEmailPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one CachedEmail that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {CachedEmailFindUniqueOrThrowArgs} args - Arguments to find a CachedEmail
+     * @example
+     * // Get one CachedEmail
+     * const cachedEmail = await prisma.cachedEmail.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends CachedEmailFindUniqueOrThrowArgs>(args: SelectSubset<T, CachedEmailFindUniqueOrThrowArgs<ExtArgs>>): Prisma__CachedEmailClient<$Result.GetResult<Prisma.$CachedEmailPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first CachedEmail that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CachedEmailFindFirstArgs} args - Arguments to find a CachedEmail
+     * @example
+     * // Get one CachedEmail
+     * const cachedEmail = await prisma.cachedEmail.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends CachedEmailFindFirstArgs>(args?: SelectSubset<T, CachedEmailFindFirstArgs<ExtArgs>>): Prisma__CachedEmailClient<$Result.GetResult<Prisma.$CachedEmailPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first CachedEmail that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CachedEmailFindFirstOrThrowArgs} args - Arguments to find a CachedEmail
+     * @example
+     * // Get one CachedEmail
+     * const cachedEmail = await prisma.cachedEmail.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends CachedEmailFindFirstOrThrowArgs>(args?: SelectSubset<T, CachedEmailFindFirstOrThrowArgs<ExtArgs>>): Prisma__CachedEmailClient<$Result.GetResult<Prisma.$CachedEmailPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more CachedEmails that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CachedEmailFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all CachedEmails
+     * const cachedEmails = await prisma.cachedEmail.findMany()
+     * 
+     * // Get first 10 CachedEmails
+     * const cachedEmails = await prisma.cachedEmail.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const cachedEmailWithIdOnly = await prisma.cachedEmail.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends CachedEmailFindManyArgs>(args?: SelectSubset<T, CachedEmailFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CachedEmailPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a CachedEmail.
+     * @param {CachedEmailCreateArgs} args - Arguments to create a CachedEmail.
+     * @example
+     * // Create one CachedEmail
+     * const CachedEmail = await prisma.cachedEmail.create({
+     *   data: {
+     *     // ... data to create a CachedEmail
+     *   }
+     * })
+     * 
+     */
+    create<T extends CachedEmailCreateArgs>(args: SelectSubset<T, CachedEmailCreateArgs<ExtArgs>>): Prisma__CachedEmailClient<$Result.GetResult<Prisma.$CachedEmailPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many CachedEmails.
+     * @param {CachedEmailCreateManyArgs} args - Arguments to create many CachedEmails.
+     * @example
+     * // Create many CachedEmails
+     * const cachedEmail = await prisma.cachedEmail.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends CachedEmailCreateManyArgs>(args?: SelectSubset<T, CachedEmailCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many CachedEmails and returns the data saved in the database.
+     * @param {CachedEmailCreateManyAndReturnArgs} args - Arguments to create many CachedEmails.
+     * @example
+     * // Create many CachedEmails
+     * const cachedEmail = await prisma.cachedEmail.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many CachedEmails and only return the `id`
+     * const cachedEmailWithIdOnly = await prisma.cachedEmail.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends CachedEmailCreateManyAndReturnArgs>(args?: SelectSubset<T, CachedEmailCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CachedEmailPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a CachedEmail.
+     * @param {CachedEmailDeleteArgs} args - Arguments to delete one CachedEmail.
+     * @example
+     * // Delete one CachedEmail
+     * const CachedEmail = await prisma.cachedEmail.delete({
+     *   where: {
+     *     // ... filter to delete one CachedEmail
+     *   }
+     * })
+     * 
+     */
+    delete<T extends CachedEmailDeleteArgs>(args: SelectSubset<T, CachedEmailDeleteArgs<ExtArgs>>): Prisma__CachedEmailClient<$Result.GetResult<Prisma.$CachedEmailPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one CachedEmail.
+     * @param {CachedEmailUpdateArgs} args - Arguments to update one CachedEmail.
+     * @example
+     * // Update one CachedEmail
+     * const cachedEmail = await prisma.cachedEmail.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends CachedEmailUpdateArgs>(args: SelectSubset<T, CachedEmailUpdateArgs<ExtArgs>>): Prisma__CachedEmailClient<$Result.GetResult<Prisma.$CachedEmailPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more CachedEmails.
+     * @param {CachedEmailDeleteManyArgs} args - Arguments to filter CachedEmails to delete.
+     * @example
+     * // Delete a few CachedEmails
+     * const { count } = await prisma.cachedEmail.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends CachedEmailDeleteManyArgs>(args?: SelectSubset<T, CachedEmailDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more CachedEmails.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CachedEmailUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many CachedEmails
+     * const cachedEmail = await prisma.cachedEmail.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends CachedEmailUpdateManyArgs>(args: SelectSubset<T, CachedEmailUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more CachedEmails and returns the data updated in the database.
+     * @param {CachedEmailUpdateManyAndReturnArgs} args - Arguments to update many CachedEmails.
+     * @example
+     * // Update many CachedEmails
+     * const cachedEmail = await prisma.cachedEmail.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more CachedEmails and only return the `id`
+     * const cachedEmailWithIdOnly = await prisma.cachedEmail.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends CachedEmailUpdateManyAndReturnArgs>(args: SelectSubset<T, CachedEmailUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CachedEmailPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one CachedEmail.
+     * @param {CachedEmailUpsertArgs} args - Arguments to update or create a CachedEmail.
+     * @example
+     * // Update or create a CachedEmail
+     * const cachedEmail = await prisma.cachedEmail.upsert({
+     *   create: {
+     *     // ... data to create a CachedEmail
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the CachedEmail we want to update
+     *   }
+     * })
+     */
+    upsert<T extends CachedEmailUpsertArgs>(args: SelectSubset<T, CachedEmailUpsertArgs<ExtArgs>>): Prisma__CachedEmailClient<$Result.GetResult<Prisma.$CachedEmailPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of CachedEmails.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CachedEmailCountArgs} args - Arguments to filter CachedEmails to count.
+     * @example
+     * // Count the number of CachedEmails
+     * const count = await prisma.cachedEmail.count({
+     *   where: {
+     *     // ... the filter for the CachedEmails we want to count
+     *   }
+     * })
+    **/
+    count<T extends CachedEmailCountArgs>(
+      args?: Subset<T, CachedEmailCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], CachedEmailCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a CachedEmail.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CachedEmailAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends CachedEmailAggregateArgs>(args: Subset<T, CachedEmailAggregateArgs>): Prisma.PrismaPromise<GetCachedEmailAggregateType<T>>
+
+    /**
+     * Group by CachedEmail.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CachedEmailGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends CachedEmailGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: CachedEmailGroupByArgs['orderBy'] }
+        : { orderBy?: CachedEmailGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, CachedEmailGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetCachedEmailGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the CachedEmail model
+   */
+  readonly fields: CachedEmailFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for CachedEmail.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__CachedEmailClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the CachedEmail model
+   */
+  interface CachedEmailFieldRefs {
+    readonly id: FieldRef<"CachedEmail", 'String'>
+    readonly userId: FieldRef<"CachedEmail", 'String'>
+    readonly homeAccountId: FieldRef<"CachedEmail", 'String'>
+    readonly folderId: FieldRef<"CachedEmail", 'String'>
+    readonly subject: FieldRef<"CachedEmail", 'String'>
+    readonly bodyPreview: FieldRef<"CachedEmail", 'String'>
+    readonly fromName: FieldRef<"CachedEmail", 'String'>
+    readonly fromAddress: FieldRef<"CachedEmail", 'String'>
+    readonly toRecipients: FieldRef<"CachedEmail", 'Json'>
+    readonly receivedDateTime: FieldRef<"CachedEmail", 'DateTime'>
+    readonly sentDateTime: FieldRef<"CachedEmail", 'DateTime'>
+    readonly isRead: FieldRef<"CachedEmail", 'Boolean'>
+    readonly hasAttachments: FieldRef<"CachedEmail", 'Boolean'>
+    readonly flagStatus: FieldRef<"CachedEmail", 'String'>
+    readonly categories: FieldRef<"CachedEmail", 'Json'>
+    readonly syncedAt: FieldRef<"CachedEmail", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * CachedEmail findUnique
+   */
+  export type CachedEmailFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CachedEmail
+     */
+    select?: CachedEmailSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CachedEmail
+     */
+    omit?: CachedEmailOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CachedEmailInclude<ExtArgs> | null
+    /**
+     * Filter, which CachedEmail to fetch.
+     */
+    where: CachedEmailWhereUniqueInput
+  }
+
+  /**
+   * CachedEmail findUniqueOrThrow
+   */
+  export type CachedEmailFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CachedEmail
+     */
+    select?: CachedEmailSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CachedEmail
+     */
+    omit?: CachedEmailOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CachedEmailInclude<ExtArgs> | null
+    /**
+     * Filter, which CachedEmail to fetch.
+     */
+    where: CachedEmailWhereUniqueInput
+  }
+
+  /**
+   * CachedEmail findFirst
+   */
+  export type CachedEmailFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CachedEmail
+     */
+    select?: CachedEmailSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CachedEmail
+     */
+    omit?: CachedEmailOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CachedEmailInclude<ExtArgs> | null
+    /**
+     * Filter, which CachedEmail to fetch.
+     */
+    where?: CachedEmailWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CachedEmails to fetch.
+     */
+    orderBy?: CachedEmailOrderByWithRelationInput | CachedEmailOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for CachedEmails.
+     */
+    cursor?: CachedEmailWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CachedEmails from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CachedEmails.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CachedEmails.
+     */
+    distinct?: CachedEmailScalarFieldEnum | CachedEmailScalarFieldEnum[]
+  }
+
+  /**
+   * CachedEmail findFirstOrThrow
+   */
+  export type CachedEmailFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CachedEmail
+     */
+    select?: CachedEmailSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CachedEmail
+     */
+    omit?: CachedEmailOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CachedEmailInclude<ExtArgs> | null
+    /**
+     * Filter, which CachedEmail to fetch.
+     */
+    where?: CachedEmailWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CachedEmails to fetch.
+     */
+    orderBy?: CachedEmailOrderByWithRelationInput | CachedEmailOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for CachedEmails.
+     */
+    cursor?: CachedEmailWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CachedEmails from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CachedEmails.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CachedEmails.
+     */
+    distinct?: CachedEmailScalarFieldEnum | CachedEmailScalarFieldEnum[]
+  }
+
+  /**
+   * CachedEmail findMany
+   */
+  export type CachedEmailFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CachedEmail
+     */
+    select?: CachedEmailSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CachedEmail
+     */
+    omit?: CachedEmailOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CachedEmailInclude<ExtArgs> | null
+    /**
+     * Filter, which CachedEmails to fetch.
+     */
+    where?: CachedEmailWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CachedEmails to fetch.
+     */
+    orderBy?: CachedEmailOrderByWithRelationInput | CachedEmailOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing CachedEmails.
+     */
+    cursor?: CachedEmailWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CachedEmails from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CachedEmails.
+     */
+    skip?: number
+    distinct?: CachedEmailScalarFieldEnum | CachedEmailScalarFieldEnum[]
+  }
+
+  /**
+   * CachedEmail create
+   */
+  export type CachedEmailCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CachedEmail
+     */
+    select?: CachedEmailSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CachedEmail
+     */
+    omit?: CachedEmailOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CachedEmailInclude<ExtArgs> | null
+    /**
+     * The data needed to create a CachedEmail.
+     */
+    data: XOR<CachedEmailCreateInput, CachedEmailUncheckedCreateInput>
+  }
+
+  /**
+   * CachedEmail createMany
+   */
+  export type CachedEmailCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many CachedEmails.
+     */
+    data: CachedEmailCreateManyInput | CachedEmailCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * CachedEmail createManyAndReturn
+   */
+  export type CachedEmailCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CachedEmail
+     */
+    select?: CachedEmailSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the CachedEmail
+     */
+    omit?: CachedEmailOmit<ExtArgs> | null
+    /**
+     * The data used to create many CachedEmails.
+     */
+    data: CachedEmailCreateManyInput | CachedEmailCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CachedEmailIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * CachedEmail update
+   */
+  export type CachedEmailUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CachedEmail
+     */
+    select?: CachedEmailSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CachedEmail
+     */
+    omit?: CachedEmailOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CachedEmailInclude<ExtArgs> | null
+    /**
+     * The data needed to update a CachedEmail.
+     */
+    data: XOR<CachedEmailUpdateInput, CachedEmailUncheckedUpdateInput>
+    /**
+     * Choose, which CachedEmail to update.
+     */
+    where: CachedEmailWhereUniqueInput
+  }
+
+  /**
+   * CachedEmail updateMany
+   */
+  export type CachedEmailUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update CachedEmails.
+     */
+    data: XOR<CachedEmailUpdateManyMutationInput, CachedEmailUncheckedUpdateManyInput>
+    /**
+     * Filter which CachedEmails to update
+     */
+    where?: CachedEmailWhereInput
+    /**
+     * Limit how many CachedEmails to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * CachedEmail updateManyAndReturn
+   */
+  export type CachedEmailUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CachedEmail
+     */
+    select?: CachedEmailSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the CachedEmail
+     */
+    omit?: CachedEmailOmit<ExtArgs> | null
+    /**
+     * The data used to update CachedEmails.
+     */
+    data: XOR<CachedEmailUpdateManyMutationInput, CachedEmailUncheckedUpdateManyInput>
+    /**
+     * Filter which CachedEmails to update
+     */
+    where?: CachedEmailWhereInput
+    /**
+     * Limit how many CachedEmails to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CachedEmailIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * CachedEmail upsert
+   */
+  export type CachedEmailUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CachedEmail
+     */
+    select?: CachedEmailSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CachedEmail
+     */
+    omit?: CachedEmailOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CachedEmailInclude<ExtArgs> | null
+    /**
+     * The filter to search for the CachedEmail to update in case it exists.
+     */
+    where: CachedEmailWhereUniqueInput
+    /**
+     * In case the CachedEmail found by the `where` argument doesn't exist, create a new CachedEmail with this data.
+     */
+    create: XOR<CachedEmailCreateInput, CachedEmailUncheckedCreateInput>
+    /**
+     * In case the CachedEmail was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<CachedEmailUpdateInput, CachedEmailUncheckedUpdateInput>
+  }
+
+  /**
+   * CachedEmail delete
+   */
+  export type CachedEmailDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CachedEmail
+     */
+    select?: CachedEmailSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CachedEmail
+     */
+    omit?: CachedEmailOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CachedEmailInclude<ExtArgs> | null
+    /**
+     * Filter which CachedEmail to delete.
+     */
+    where: CachedEmailWhereUniqueInput
+  }
+
+  /**
+   * CachedEmail deleteMany
+   */
+  export type CachedEmailDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which CachedEmails to delete
+     */
+    where?: CachedEmailWhereInput
+    /**
+     * Limit how many CachedEmails to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * CachedEmail without action
+   */
+  export type CachedEmailDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CachedEmail
+     */
+    select?: CachedEmailSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CachedEmail
+     */
+    omit?: CachedEmailOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CachedEmailInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model CachedCalendarEvent
+   */
+
+  export type AggregateCachedCalendarEvent = {
+    _count: CachedCalendarEventCountAggregateOutputType | null
+    _min: CachedCalendarEventMinAggregateOutputType | null
+    _max: CachedCalendarEventMaxAggregateOutputType | null
+  }
+
+  export type CachedCalendarEventMinAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    homeAccountId: string | null
+    subject: string | null
+    bodyPreview: string | null
+    startDateTime: Date | null
+    endDateTime: Date | null
+    isAllDay: boolean | null
+    location: string | null
+    organizerName: string | null
+    organizerEmail: string | null
+    responseStatus: string | null
+    onlineMeetingUrl: string | null
+    isRecurring: boolean | null
+    syncedAt: Date | null
+  }
+
+  export type CachedCalendarEventMaxAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    homeAccountId: string | null
+    subject: string | null
+    bodyPreview: string | null
+    startDateTime: Date | null
+    endDateTime: Date | null
+    isAllDay: boolean | null
+    location: string | null
+    organizerName: string | null
+    organizerEmail: string | null
+    responseStatus: string | null
+    onlineMeetingUrl: string | null
+    isRecurring: boolean | null
+    syncedAt: Date | null
+  }
+
+  export type CachedCalendarEventCountAggregateOutputType = {
+    id: number
+    userId: number
+    homeAccountId: number
+    subject: number
+    bodyPreview: number
+    startDateTime: number
+    endDateTime: number
+    isAllDay: number
+    location: number
+    organizerName: number
+    organizerEmail: number
+    responseStatus: number
+    onlineMeetingUrl: number
+    attendees: number
+    isRecurring: number
+    syncedAt: number
+    _all: number
+  }
+
+
+  export type CachedCalendarEventMinAggregateInputType = {
+    id?: true
+    userId?: true
+    homeAccountId?: true
+    subject?: true
+    bodyPreview?: true
+    startDateTime?: true
+    endDateTime?: true
+    isAllDay?: true
+    location?: true
+    organizerName?: true
+    organizerEmail?: true
+    responseStatus?: true
+    onlineMeetingUrl?: true
+    isRecurring?: true
+    syncedAt?: true
+  }
+
+  export type CachedCalendarEventMaxAggregateInputType = {
+    id?: true
+    userId?: true
+    homeAccountId?: true
+    subject?: true
+    bodyPreview?: true
+    startDateTime?: true
+    endDateTime?: true
+    isAllDay?: true
+    location?: true
+    organizerName?: true
+    organizerEmail?: true
+    responseStatus?: true
+    onlineMeetingUrl?: true
+    isRecurring?: true
+    syncedAt?: true
+  }
+
+  export type CachedCalendarEventCountAggregateInputType = {
+    id?: true
+    userId?: true
+    homeAccountId?: true
+    subject?: true
+    bodyPreview?: true
+    startDateTime?: true
+    endDateTime?: true
+    isAllDay?: true
+    location?: true
+    organizerName?: true
+    organizerEmail?: true
+    responseStatus?: true
+    onlineMeetingUrl?: true
+    attendees?: true
+    isRecurring?: true
+    syncedAt?: true
+    _all?: true
+  }
+
+  export type CachedCalendarEventAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which CachedCalendarEvent to aggregate.
+     */
+    where?: CachedCalendarEventWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CachedCalendarEvents to fetch.
+     */
+    orderBy?: CachedCalendarEventOrderByWithRelationInput | CachedCalendarEventOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: CachedCalendarEventWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CachedCalendarEvents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CachedCalendarEvents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned CachedCalendarEvents
+    **/
+    _count?: true | CachedCalendarEventCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: CachedCalendarEventMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: CachedCalendarEventMaxAggregateInputType
+  }
+
+  export type GetCachedCalendarEventAggregateType<T extends CachedCalendarEventAggregateArgs> = {
+        [P in keyof T & keyof AggregateCachedCalendarEvent]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateCachedCalendarEvent[P]>
+      : GetScalarType<T[P], AggregateCachedCalendarEvent[P]>
+  }
+
+
+
+
+  export type CachedCalendarEventGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CachedCalendarEventWhereInput
+    orderBy?: CachedCalendarEventOrderByWithAggregationInput | CachedCalendarEventOrderByWithAggregationInput[]
+    by: CachedCalendarEventScalarFieldEnum[] | CachedCalendarEventScalarFieldEnum
+    having?: CachedCalendarEventScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: CachedCalendarEventCountAggregateInputType | true
+    _min?: CachedCalendarEventMinAggregateInputType
+    _max?: CachedCalendarEventMaxAggregateInputType
+  }
+
+  export type CachedCalendarEventGroupByOutputType = {
+    id: string
+    userId: string
+    homeAccountId: string
+    subject: string
+    bodyPreview: string
+    startDateTime: Date
+    endDateTime: Date
+    isAllDay: boolean
+    location: string | null
+    organizerName: string | null
+    organizerEmail: string | null
+    responseStatus: string
+    onlineMeetingUrl: string | null
+    attendees: JsonValue
+    isRecurring: boolean
+    syncedAt: Date
+    _count: CachedCalendarEventCountAggregateOutputType | null
+    _min: CachedCalendarEventMinAggregateOutputType | null
+    _max: CachedCalendarEventMaxAggregateOutputType | null
+  }
+
+  type GetCachedCalendarEventGroupByPayload<T extends CachedCalendarEventGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<CachedCalendarEventGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof CachedCalendarEventGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], CachedCalendarEventGroupByOutputType[P]>
+            : GetScalarType<T[P], CachedCalendarEventGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type CachedCalendarEventSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    homeAccountId?: boolean
+    subject?: boolean
+    bodyPreview?: boolean
+    startDateTime?: boolean
+    endDateTime?: boolean
+    isAllDay?: boolean
+    location?: boolean
+    organizerName?: boolean
+    organizerEmail?: boolean
+    responseStatus?: boolean
+    onlineMeetingUrl?: boolean
+    attendees?: boolean
+    isRecurring?: boolean
+    syncedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["cachedCalendarEvent"]>
+
+  export type CachedCalendarEventSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    homeAccountId?: boolean
+    subject?: boolean
+    bodyPreview?: boolean
+    startDateTime?: boolean
+    endDateTime?: boolean
+    isAllDay?: boolean
+    location?: boolean
+    organizerName?: boolean
+    organizerEmail?: boolean
+    responseStatus?: boolean
+    onlineMeetingUrl?: boolean
+    attendees?: boolean
+    isRecurring?: boolean
+    syncedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["cachedCalendarEvent"]>
+
+  export type CachedCalendarEventSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    homeAccountId?: boolean
+    subject?: boolean
+    bodyPreview?: boolean
+    startDateTime?: boolean
+    endDateTime?: boolean
+    isAllDay?: boolean
+    location?: boolean
+    organizerName?: boolean
+    organizerEmail?: boolean
+    responseStatus?: boolean
+    onlineMeetingUrl?: boolean
+    attendees?: boolean
+    isRecurring?: boolean
+    syncedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["cachedCalendarEvent"]>
+
+  export type CachedCalendarEventSelectScalar = {
+    id?: boolean
+    userId?: boolean
+    homeAccountId?: boolean
+    subject?: boolean
+    bodyPreview?: boolean
+    startDateTime?: boolean
+    endDateTime?: boolean
+    isAllDay?: boolean
+    location?: boolean
+    organizerName?: boolean
+    organizerEmail?: boolean
+    responseStatus?: boolean
+    onlineMeetingUrl?: boolean
+    attendees?: boolean
+    isRecurring?: boolean
+    syncedAt?: boolean
+  }
+
+  export type CachedCalendarEventOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "homeAccountId" | "subject" | "bodyPreview" | "startDateTime" | "endDateTime" | "isAllDay" | "location" | "organizerName" | "organizerEmail" | "responseStatus" | "onlineMeetingUrl" | "attendees" | "isRecurring" | "syncedAt", ExtArgs["result"]["cachedCalendarEvent"]>
+  export type CachedCalendarEventInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type CachedCalendarEventIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type CachedCalendarEventIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $CachedCalendarEventPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "CachedCalendarEvent"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      userId: string
+      homeAccountId: string
+      subject: string
+      bodyPreview: string
+      startDateTime: Date
+      endDateTime: Date
+      isAllDay: boolean
+      location: string | null
+      organizerName: string | null
+      organizerEmail: string | null
+      responseStatus: string
+      onlineMeetingUrl: string | null
+      attendees: Prisma.JsonValue
+      isRecurring: boolean
+      syncedAt: Date
+    }, ExtArgs["result"]["cachedCalendarEvent"]>
+    composites: {}
+  }
+
+  type CachedCalendarEventGetPayload<S extends boolean | null | undefined | CachedCalendarEventDefaultArgs> = $Result.GetResult<Prisma.$CachedCalendarEventPayload, S>
+
+  type CachedCalendarEventCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<CachedCalendarEventFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: CachedCalendarEventCountAggregateInputType | true
+    }
+
+  export interface CachedCalendarEventDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['CachedCalendarEvent'], meta: { name: 'CachedCalendarEvent' } }
+    /**
+     * Find zero or one CachedCalendarEvent that matches the filter.
+     * @param {CachedCalendarEventFindUniqueArgs} args - Arguments to find a CachedCalendarEvent
+     * @example
+     * // Get one CachedCalendarEvent
+     * const cachedCalendarEvent = await prisma.cachedCalendarEvent.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends CachedCalendarEventFindUniqueArgs>(args: SelectSubset<T, CachedCalendarEventFindUniqueArgs<ExtArgs>>): Prisma__CachedCalendarEventClient<$Result.GetResult<Prisma.$CachedCalendarEventPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one CachedCalendarEvent that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {CachedCalendarEventFindUniqueOrThrowArgs} args - Arguments to find a CachedCalendarEvent
+     * @example
+     * // Get one CachedCalendarEvent
+     * const cachedCalendarEvent = await prisma.cachedCalendarEvent.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends CachedCalendarEventFindUniqueOrThrowArgs>(args: SelectSubset<T, CachedCalendarEventFindUniqueOrThrowArgs<ExtArgs>>): Prisma__CachedCalendarEventClient<$Result.GetResult<Prisma.$CachedCalendarEventPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first CachedCalendarEvent that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CachedCalendarEventFindFirstArgs} args - Arguments to find a CachedCalendarEvent
+     * @example
+     * // Get one CachedCalendarEvent
+     * const cachedCalendarEvent = await prisma.cachedCalendarEvent.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends CachedCalendarEventFindFirstArgs>(args?: SelectSubset<T, CachedCalendarEventFindFirstArgs<ExtArgs>>): Prisma__CachedCalendarEventClient<$Result.GetResult<Prisma.$CachedCalendarEventPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first CachedCalendarEvent that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CachedCalendarEventFindFirstOrThrowArgs} args - Arguments to find a CachedCalendarEvent
+     * @example
+     * // Get one CachedCalendarEvent
+     * const cachedCalendarEvent = await prisma.cachedCalendarEvent.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends CachedCalendarEventFindFirstOrThrowArgs>(args?: SelectSubset<T, CachedCalendarEventFindFirstOrThrowArgs<ExtArgs>>): Prisma__CachedCalendarEventClient<$Result.GetResult<Prisma.$CachedCalendarEventPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more CachedCalendarEvents that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CachedCalendarEventFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all CachedCalendarEvents
+     * const cachedCalendarEvents = await prisma.cachedCalendarEvent.findMany()
+     * 
+     * // Get first 10 CachedCalendarEvents
+     * const cachedCalendarEvents = await prisma.cachedCalendarEvent.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const cachedCalendarEventWithIdOnly = await prisma.cachedCalendarEvent.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends CachedCalendarEventFindManyArgs>(args?: SelectSubset<T, CachedCalendarEventFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CachedCalendarEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a CachedCalendarEvent.
+     * @param {CachedCalendarEventCreateArgs} args - Arguments to create a CachedCalendarEvent.
+     * @example
+     * // Create one CachedCalendarEvent
+     * const CachedCalendarEvent = await prisma.cachedCalendarEvent.create({
+     *   data: {
+     *     // ... data to create a CachedCalendarEvent
+     *   }
+     * })
+     * 
+     */
+    create<T extends CachedCalendarEventCreateArgs>(args: SelectSubset<T, CachedCalendarEventCreateArgs<ExtArgs>>): Prisma__CachedCalendarEventClient<$Result.GetResult<Prisma.$CachedCalendarEventPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many CachedCalendarEvents.
+     * @param {CachedCalendarEventCreateManyArgs} args - Arguments to create many CachedCalendarEvents.
+     * @example
+     * // Create many CachedCalendarEvents
+     * const cachedCalendarEvent = await prisma.cachedCalendarEvent.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends CachedCalendarEventCreateManyArgs>(args?: SelectSubset<T, CachedCalendarEventCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many CachedCalendarEvents and returns the data saved in the database.
+     * @param {CachedCalendarEventCreateManyAndReturnArgs} args - Arguments to create many CachedCalendarEvents.
+     * @example
+     * // Create many CachedCalendarEvents
+     * const cachedCalendarEvent = await prisma.cachedCalendarEvent.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many CachedCalendarEvents and only return the `id`
+     * const cachedCalendarEventWithIdOnly = await prisma.cachedCalendarEvent.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends CachedCalendarEventCreateManyAndReturnArgs>(args?: SelectSubset<T, CachedCalendarEventCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CachedCalendarEventPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a CachedCalendarEvent.
+     * @param {CachedCalendarEventDeleteArgs} args - Arguments to delete one CachedCalendarEvent.
+     * @example
+     * // Delete one CachedCalendarEvent
+     * const CachedCalendarEvent = await prisma.cachedCalendarEvent.delete({
+     *   where: {
+     *     // ... filter to delete one CachedCalendarEvent
+     *   }
+     * })
+     * 
+     */
+    delete<T extends CachedCalendarEventDeleteArgs>(args: SelectSubset<T, CachedCalendarEventDeleteArgs<ExtArgs>>): Prisma__CachedCalendarEventClient<$Result.GetResult<Prisma.$CachedCalendarEventPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one CachedCalendarEvent.
+     * @param {CachedCalendarEventUpdateArgs} args - Arguments to update one CachedCalendarEvent.
+     * @example
+     * // Update one CachedCalendarEvent
+     * const cachedCalendarEvent = await prisma.cachedCalendarEvent.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends CachedCalendarEventUpdateArgs>(args: SelectSubset<T, CachedCalendarEventUpdateArgs<ExtArgs>>): Prisma__CachedCalendarEventClient<$Result.GetResult<Prisma.$CachedCalendarEventPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more CachedCalendarEvents.
+     * @param {CachedCalendarEventDeleteManyArgs} args - Arguments to filter CachedCalendarEvents to delete.
+     * @example
+     * // Delete a few CachedCalendarEvents
+     * const { count } = await prisma.cachedCalendarEvent.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends CachedCalendarEventDeleteManyArgs>(args?: SelectSubset<T, CachedCalendarEventDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more CachedCalendarEvents.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CachedCalendarEventUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many CachedCalendarEvents
+     * const cachedCalendarEvent = await prisma.cachedCalendarEvent.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends CachedCalendarEventUpdateManyArgs>(args: SelectSubset<T, CachedCalendarEventUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more CachedCalendarEvents and returns the data updated in the database.
+     * @param {CachedCalendarEventUpdateManyAndReturnArgs} args - Arguments to update many CachedCalendarEvents.
+     * @example
+     * // Update many CachedCalendarEvents
+     * const cachedCalendarEvent = await prisma.cachedCalendarEvent.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more CachedCalendarEvents and only return the `id`
+     * const cachedCalendarEventWithIdOnly = await prisma.cachedCalendarEvent.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends CachedCalendarEventUpdateManyAndReturnArgs>(args: SelectSubset<T, CachedCalendarEventUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CachedCalendarEventPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one CachedCalendarEvent.
+     * @param {CachedCalendarEventUpsertArgs} args - Arguments to update or create a CachedCalendarEvent.
+     * @example
+     * // Update or create a CachedCalendarEvent
+     * const cachedCalendarEvent = await prisma.cachedCalendarEvent.upsert({
+     *   create: {
+     *     // ... data to create a CachedCalendarEvent
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the CachedCalendarEvent we want to update
+     *   }
+     * })
+     */
+    upsert<T extends CachedCalendarEventUpsertArgs>(args: SelectSubset<T, CachedCalendarEventUpsertArgs<ExtArgs>>): Prisma__CachedCalendarEventClient<$Result.GetResult<Prisma.$CachedCalendarEventPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of CachedCalendarEvents.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CachedCalendarEventCountArgs} args - Arguments to filter CachedCalendarEvents to count.
+     * @example
+     * // Count the number of CachedCalendarEvents
+     * const count = await prisma.cachedCalendarEvent.count({
+     *   where: {
+     *     // ... the filter for the CachedCalendarEvents we want to count
+     *   }
+     * })
+    **/
+    count<T extends CachedCalendarEventCountArgs>(
+      args?: Subset<T, CachedCalendarEventCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], CachedCalendarEventCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a CachedCalendarEvent.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CachedCalendarEventAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends CachedCalendarEventAggregateArgs>(args: Subset<T, CachedCalendarEventAggregateArgs>): Prisma.PrismaPromise<GetCachedCalendarEventAggregateType<T>>
+
+    /**
+     * Group by CachedCalendarEvent.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CachedCalendarEventGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends CachedCalendarEventGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: CachedCalendarEventGroupByArgs['orderBy'] }
+        : { orderBy?: CachedCalendarEventGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, CachedCalendarEventGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetCachedCalendarEventGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the CachedCalendarEvent model
+   */
+  readonly fields: CachedCalendarEventFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for CachedCalendarEvent.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__CachedCalendarEventClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the CachedCalendarEvent model
+   */
+  interface CachedCalendarEventFieldRefs {
+    readonly id: FieldRef<"CachedCalendarEvent", 'String'>
+    readonly userId: FieldRef<"CachedCalendarEvent", 'String'>
+    readonly homeAccountId: FieldRef<"CachedCalendarEvent", 'String'>
+    readonly subject: FieldRef<"CachedCalendarEvent", 'String'>
+    readonly bodyPreview: FieldRef<"CachedCalendarEvent", 'String'>
+    readonly startDateTime: FieldRef<"CachedCalendarEvent", 'DateTime'>
+    readonly endDateTime: FieldRef<"CachedCalendarEvent", 'DateTime'>
+    readonly isAllDay: FieldRef<"CachedCalendarEvent", 'Boolean'>
+    readonly location: FieldRef<"CachedCalendarEvent", 'String'>
+    readonly organizerName: FieldRef<"CachedCalendarEvent", 'String'>
+    readonly organizerEmail: FieldRef<"CachedCalendarEvent", 'String'>
+    readonly responseStatus: FieldRef<"CachedCalendarEvent", 'String'>
+    readonly onlineMeetingUrl: FieldRef<"CachedCalendarEvent", 'String'>
+    readonly attendees: FieldRef<"CachedCalendarEvent", 'Json'>
+    readonly isRecurring: FieldRef<"CachedCalendarEvent", 'Boolean'>
+    readonly syncedAt: FieldRef<"CachedCalendarEvent", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * CachedCalendarEvent findUnique
+   */
+  export type CachedCalendarEventFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CachedCalendarEvent
+     */
+    select?: CachedCalendarEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CachedCalendarEvent
+     */
+    omit?: CachedCalendarEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CachedCalendarEventInclude<ExtArgs> | null
+    /**
+     * Filter, which CachedCalendarEvent to fetch.
+     */
+    where: CachedCalendarEventWhereUniqueInput
+  }
+
+  /**
+   * CachedCalendarEvent findUniqueOrThrow
+   */
+  export type CachedCalendarEventFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CachedCalendarEvent
+     */
+    select?: CachedCalendarEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CachedCalendarEvent
+     */
+    omit?: CachedCalendarEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CachedCalendarEventInclude<ExtArgs> | null
+    /**
+     * Filter, which CachedCalendarEvent to fetch.
+     */
+    where: CachedCalendarEventWhereUniqueInput
+  }
+
+  /**
+   * CachedCalendarEvent findFirst
+   */
+  export type CachedCalendarEventFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CachedCalendarEvent
+     */
+    select?: CachedCalendarEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CachedCalendarEvent
+     */
+    omit?: CachedCalendarEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CachedCalendarEventInclude<ExtArgs> | null
+    /**
+     * Filter, which CachedCalendarEvent to fetch.
+     */
+    where?: CachedCalendarEventWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CachedCalendarEvents to fetch.
+     */
+    orderBy?: CachedCalendarEventOrderByWithRelationInput | CachedCalendarEventOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for CachedCalendarEvents.
+     */
+    cursor?: CachedCalendarEventWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CachedCalendarEvents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CachedCalendarEvents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CachedCalendarEvents.
+     */
+    distinct?: CachedCalendarEventScalarFieldEnum | CachedCalendarEventScalarFieldEnum[]
+  }
+
+  /**
+   * CachedCalendarEvent findFirstOrThrow
+   */
+  export type CachedCalendarEventFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CachedCalendarEvent
+     */
+    select?: CachedCalendarEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CachedCalendarEvent
+     */
+    omit?: CachedCalendarEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CachedCalendarEventInclude<ExtArgs> | null
+    /**
+     * Filter, which CachedCalendarEvent to fetch.
+     */
+    where?: CachedCalendarEventWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CachedCalendarEvents to fetch.
+     */
+    orderBy?: CachedCalendarEventOrderByWithRelationInput | CachedCalendarEventOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for CachedCalendarEvents.
+     */
+    cursor?: CachedCalendarEventWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CachedCalendarEvents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CachedCalendarEvents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CachedCalendarEvents.
+     */
+    distinct?: CachedCalendarEventScalarFieldEnum | CachedCalendarEventScalarFieldEnum[]
+  }
+
+  /**
+   * CachedCalendarEvent findMany
+   */
+  export type CachedCalendarEventFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CachedCalendarEvent
+     */
+    select?: CachedCalendarEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CachedCalendarEvent
+     */
+    omit?: CachedCalendarEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CachedCalendarEventInclude<ExtArgs> | null
+    /**
+     * Filter, which CachedCalendarEvents to fetch.
+     */
+    where?: CachedCalendarEventWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CachedCalendarEvents to fetch.
+     */
+    orderBy?: CachedCalendarEventOrderByWithRelationInput | CachedCalendarEventOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing CachedCalendarEvents.
+     */
+    cursor?: CachedCalendarEventWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CachedCalendarEvents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CachedCalendarEvents.
+     */
+    skip?: number
+    distinct?: CachedCalendarEventScalarFieldEnum | CachedCalendarEventScalarFieldEnum[]
+  }
+
+  /**
+   * CachedCalendarEvent create
+   */
+  export type CachedCalendarEventCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CachedCalendarEvent
+     */
+    select?: CachedCalendarEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CachedCalendarEvent
+     */
+    omit?: CachedCalendarEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CachedCalendarEventInclude<ExtArgs> | null
+    /**
+     * The data needed to create a CachedCalendarEvent.
+     */
+    data: XOR<CachedCalendarEventCreateInput, CachedCalendarEventUncheckedCreateInput>
+  }
+
+  /**
+   * CachedCalendarEvent createMany
+   */
+  export type CachedCalendarEventCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many CachedCalendarEvents.
+     */
+    data: CachedCalendarEventCreateManyInput | CachedCalendarEventCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * CachedCalendarEvent createManyAndReturn
+   */
+  export type CachedCalendarEventCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CachedCalendarEvent
+     */
+    select?: CachedCalendarEventSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the CachedCalendarEvent
+     */
+    omit?: CachedCalendarEventOmit<ExtArgs> | null
+    /**
+     * The data used to create many CachedCalendarEvents.
+     */
+    data: CachedCalendarEventCreateManyInput | CachedCalendarEventCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CachedCalendarEventIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * CachedCalendarEvent update
+   */
+  export type CachedCalendarEventUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CachedCalendarEvent
+     */
+    select?: CachedCalendarEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CachedCalendarEvent
+     */
+    omit?: CachedCalendarEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CachedCalendarEventInclude<ExtArgs> | null
+    /**
+     * The data needed to update a CachedCalendarEvent.
+     */
+    data: XOR<CachedCalendarEventUpdateInput, CachedCalendarEventUncheckedUpdateInput>
+    /**
+     * Choose, which CachedCalendarEvent to update.
+     */
+    where: CachedCalendarEventWhereUniqueInput
+  }
+
+  /**
+   * CachedCalendarEvent updateMany
+   */
+  export type CachedCalendarEventUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update CachedCalendarEvents.
+     */
+    data: XOR<CachedCalendarEventUpdateManyMutationInput, CachedCalendarEventUncheckedUpdateManyInput>
+    /**
+     * Filter which CachedCalendarEvents to update
+     */
+    where?: CachedCalendarEventWhereInput
+    /**
+     * Limit how many CachedCalendarEvents to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * CachedCalendarEvent updateManyAndReturn
+   */
+  export type CachedCalendarEventUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CachedCalendarEvent
+     */
+    select?: CachedCalendarEventSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the CachedCalendarEvent
+     */
+    omit?: CachedCalendarEventOmit<ExtArgs> | null
+    /**
+     * The data used to update CachedCalendarEvents.
+     */
+    data: XOR<CachedCalendarEventUpdateManyMutationInput, CachedCalendarEventUncheckedUpdateManyInput>
+    /**
+     * Filter which CachedCalendarEvents to update
+     */
+    where?: CachedCalendarEventWhereInput
+    /**
+     * Limit how many CachedCalendarEvents to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CachedCalendarEventIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * CachedCalendarEvent upsert
+   */
+  export type CachedCalendarEventUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CachedCalendarEvent
+     */
+    select?: CachedCalendarEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CachedCalendarEvent
+     */
+    omit?: CachedCalendarEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CachedCalendarEventInclude<ExtArgs> | null
+    /**
+     * The filter to search for the CachedCalendarEvent to update in case it exists.
+     */
+    where: CachedCalendarEventWhereUniqueInput
+    /**
+     * In case the CachedCalendarEvent found by the `where` argument doesn't exist, create a new CachedCalendarEvent with this data.
+     */
+    create: XOR<CachedCalendarEventCreateInput, CachedCalendarEventUncheckedCreateInput>
+    /**
+     * In case the CachedCalendarEvent was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<CachedCalendarEventUpdateInput, CachedCalendarEventUncheckedUpdateInput>
+  }
+
+  /**
+   * CachedCalendarEvent delete
+   */
+  export type CachedCalendarEventDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CachedCalendarEvent
+     */
+    select?: CachedCalendarEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CachedCalendarEvent
+     */
+    omit?: CachedCalendarEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CachedCalendarEventInclude<ExtArgs> | null
+    /**
+     * Filter which CachedCalendarEvent to delete.
+     */
+    where: CachedCalendarEventWhereUniqueInput
+  }
+
+  /**
+   * CachedCalendarEvent deleteMany
+   */
+  export type CachedCalendarEventDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which CachedCalendarEvents to delete
+     */
+    where?: CachedCalendarEventWhereInput
+    /**
+     * Limit how many CachedCalendarEvents to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * CachedCalendarEvent without action
+   */
+  export type CachedCalendarEventDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CachedCalendarEvent
+     */
+    select?: CachedCalendarEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CachedCalendarEvent
+     */
+    omit?: CachedCalendarEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CachedCalendarEventInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model CachedContact
+   */
+
+  export type AggregateCachedContact = {
+    _count: CachedContactCountAggregateOutputType | null
+    _min: CachedContactMinAggregateOutputType | null
+    _max: CachedContactMaxAggregateOutputType | null
+  }
+
+  export type CachedContactMinAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    homeAccountId: string | null
+    displayName: string | null
+    emailAddress: string | null
+    phone: string | null
+    jobTitle: string | null
+    company: string | null
+    syncedAt: Date | null
+  }
+
+  export type CachedContactMaxAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    homeAccountId: string | null
+    displayName: string | null
+    emailAddress: string | null
+    phone: string | null
+    jobTitle: string | null
+    company: string | null
+    syncedAt: Date | null
+  }
+
+  export type CachedContactCountAggregateOutputType = {
+    id: number
+    userId: number
+    homeAccountId: number
+    displayName: number
+    emailAddress: number
+    phone: number
+    jobTitle: number
+    company: number
+    syncedAt: number
+    _all: number
+  }
+
+
+  export type CachedContactMinAggregateInputType = {
+    id?: true
+    userId?: true
+    homeAccountId?: true
+    displayName?: true
+    emailAddress?: true
+    phone?: true
+    jobTitle?: true
+    company?: true
+    syncedAt?: true
+  }
+
+  export type CachedContactMaxAggregateInputType = {
+    id?: true
+    userId?: true
+    homeAccountId?: true
+    displayName?: true
+    emailAddress?: true
+    phone?: true
+    jobTitle?: true
+    company?: true
+    syncedAt?: true
+  }
+
+  export type CachedContactCountAggregateInputType = {
+    id?: true
+    userId?: true
+    homeAccountId?: true
+    displayName?: true
+    emailAddress?: true
+    phone?: true
+    jobTitle?: true
+    company?: true
+    syncedAt?: true
+    _all?: true
+  }
+
+  export type CachedContactAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which CachedContact to aggregate.
+     */
+    where?: CachedContactWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CachedContacts to fetch.
+     */
+    orderBy?: CachedContactOrderByWithRelationInput | CachedContactOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: CachedContactWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CachedContacts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CachedContacts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned CachedContacts
+    **/
+    _count?: true | CachedContactCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: CachedContactMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: CachedContactMaxAggregateInputType
+  }
+
+  export type GetCachedContactAggregateType<T extends CachedContactAggregateArgs> = {
+        [P in keyof T & keyof AggregateCachedContact]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateCachedContact[P]>
+      : GetScalarType<T[P], AggregateCachedContact[P]>
+  }
+
+
+
+
+  export type CachedContactGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CachedContactWhereInput
+    orderBy?: CachedContactOrderByWithAggregationInput | CachedContactOrderByWithAggregationInput[]
+    by: CachedContactScalarFieldEnum[] | CachedContactScalarFieldEnum
+    having?: CachedContactScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: CachedContactCountAggregateInputType | true
+    _min?: CachedContactMinAggregateInputType
+    _max?: CachedContactMaxAggregateInputType
+  }
+
+  export type CachedContactGroupByOutputType = {
+    id: string
+    userId: string
+    homeAccountId: string
+    displayName: string
+    emailAddress: string
+    phone: string
+    jobTitle: string
+    company: string
+    syncedAt: Date
+    _count: CachedContactCountAggregateOutputType | null
+    _min: CachedContactMinAggregateOutputType | null
+    _max: CachedContactMaxAggregateOutputType | null
+  }
+
+  type GetCachedContactGroupByPayload<T extends CachedContactGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<CachedContactGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof CachedContactGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], CachedContactGroupByOutputType[P]>
+            : GetScalarType<T[P], CachedContactGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type CachedContactSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    homeAccountId?: boolean
+    displayName?: boolean
+    emailAddress?: boolean
+    phone?: boolean
+    jobTitle?: boolean
+    company?: boolean
+    syncedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["cachedContact"]>
+
+  export type CachedContactSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    homeAccountId?: boolean
+    displayName?: boolean
+    emailAddress?: boolean
+    phone?: boolean
+    jobTitle?: boolean
+    company?: boolean
+    syncedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["cachedContact"]>
+
+  export type CachedContactSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    homeAccountId?: boolean
+    displayName?: boolean
+    emailAddress?: boolean
+    phone?: boolean
+    jobTitle?: boolean
+    company?: boolean
+    syncedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["cachedContact"]>
+
+  export type CachedContactSelectScalar = {
+    id?: boolean
+    userId?: boolean
+    homeAccountId?: boolean
+    displayName?: boolean
+    emailAddress?: boolean
+    phone?: boolean
+    jobTitle?: boolean
+    company?: boolean
+    syncedAt?: boolean
+  }
+
+  export type CachedContactOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "homeAccountId" | "displayName" | "emailAddress" | "phone" | "jobTitle" | "company" | "syncedAt", ExtArgs["result"]["cachedContact"]>
+  export type CachedContactInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type CachedContactIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type CachedContactIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $CachedContactPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "CachedContact"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      userId: string
+      homeAccountId: string
+      displayName: string
+      emailAddress: string
+      phone: string
+      jobTitle: string
+      company: string
+      syncedAt: Date
+    }, ExtArgs["result"]["cachedContact"]>
+    composites: {}
+  }
+
+  type CachedContactGetPayload<S extends boolean | null | undefined | CachedContactDefaultArgs> = $Result.GetResult<Prisma.$CachedContactPayload, S>
+
+  type CachedContactCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<CachedContactFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: CachedContactCountAggregateInputType | true
+    }
+
+  export interface CachedContactDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['CachedContact'], meta: { name: 'CachedContact' } }
+    /**
+     * Find zero or one CachedContact that matches the filter.
+     * @param {CachedContactFindUniqueArgs} args - Arguments to find a CachedContact
+     * @example
+     * // Get one CachedContact
+     * const cachedContact = await prisma.cachedContact.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends CachedContactFindUniqueArgs>(args: SelectSubset<T, CachedContactFindUniqueArgs<ExtArgs>>): Prisma__CachedContactClient<$Result.GetResult<Prisma.$CachedContactPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one CachedContact that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {CachedContactFindUniqueOrThrowArgs} args - Arguments to find a CachedContact
+     * @example
+     * // Get one CachedContact
+     * const cachedContact = await prisma.cachedContact.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends CachedContactFindUniqueOrThrowArgs>(args: SelectSubset<T, CachedContactFindUniqueOrThrowArgs<ExtArgs>>): Prisma__CachedContactClient<$Result.GetResult<Prisma.$CachedContactPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first CachedContact that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CachedContactFindFirstArgs} args - Arguments to find a CachedContact
+     * @example
+     * // Get one CachedContact
+     * const cachedContact = await prisma.cachedContact.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends CachedContactFindFirstArgs>(args?: SelectSubset<T, CachedContactFindFirstArgs<ExtArgs>>): Prisma__CachedContactClient<$Result.GetResult<Prisma.$CachedContactPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first CachedContact that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CachedContactFindFirstOrThrowArgs} args - Arguments to find a CachedContact
+     * @example
+     * // Get one CachedContact
+     * const cachedContact = await prisma.cachedContact.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends CachedContactFindFirstOrThrowArgs>(args?: SelectSubset<T, CachedContactFindFirstOrThrowArgs<ExtArgs>>): Prisma__CachedContactClient<$Result.GetResult<Prisma.$CachedContactPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more CachedContacts that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CachedContactFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all CachedContacts
+     * const cachedContacts = await prisma.cachedContact.findMany()
+     * 
+     * // Get first 10 CachedContacts
+     * const cachedContacts = await prisma.cachedContact.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const cachedContactWithIdOnly = await prisma.cachedContact.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends CachedContactFindManyArgs>(args?: SelectSubset<T, CachedContactFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CachedContactPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a CachedContact.
+     * @param {CachedContactCreateArgs} args - Arguments to create a CachedContact.
+     * @example
+     * // Create one CachedContact
+     * const CachedContact = await prisma.cachedContact.create({
+     *   data: {
+     *     // ... data to create a CachedContact
+     *   }
+     * })
+     * 
+     */
+    create<T extends CachedContactCreateArgs>(args: SelectSubset<T, CachedContactCreateArgs<ExtArgs>>): Prisma__CachedContactClient<$Result.GetResult<Prisma.$CachedContactPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many CachedContacts.
+     * @param {CachedContactCreateManyArgs} args - Arguments to create many CachedContacts.
+     * @example
+     * // Create many CachedContacts
+     * const cachedContact = await prisma.cachedContact.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends CachedContactCreateManyArgs>(args?: SelectSubset<T, CachedContactCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many CachedContacts and returns the data saved in the database.
+     * @param {CachedContactCreateManyAndReturnArgs} args - Arguments to create many CachedContacts.
+     * @example
+     * // Create many CachedContacts
+     * const cachedContact = await prisma.cachedContact.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many CachedContacts and only return the `id`
+     * const cachedContactWithIdOnly = await prisma.cachedContact.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends CachedContactCreateManyAndReturnArgs>(args?: SelectSubset<T, CachedContactCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CachedContactPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a CachedContact.
+     * @param {CachedContactDeleteArgs} args - Arguments to delete one CachedContact.
+     * @example
+     * // Delete one CachedContact
+     * const CachedContact = await prisma.cachedContact.delete({
+     *   where: {
+     *     // ... filter to delete one CachedContact
+     *   }
+     * })
+     * 
+     */
+    delete<T extends CachedContactDeleteArgs>(args: SelectSubset<T, CachedContactDeleteArgs<ExtArgs>>): Prisma__CachedContactClient<$Result.GetResult<Prisma.$CachedContactPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one CachedContact.
+     * @param {CachedContactUpdateArgs} args - Arguments to update one CachedContact.
+     * @example
+     * // Update one CachedContact
+     * const cachedContact = await prisma.cachedContact.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends CachedContactUpdateArgs>(args: SelectSubset<T, CachedContactUpdateArgs<ExtArgs>>): Prisma__CachedContactClient<$Result.GetResult<Prisma.$CachedContactPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more CachedContacts.
+     * @param {CachedContactDeleteManyArgs} args - Arguments to filter CachedContacts to delete.
+     * @example
+     * // Delete a few CachedContacts
+     * const { count } = await prisma.cachedContact.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends CachedContactDeleteManyArgs>(args?: SelectSubset<T, CachedContactDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more CachedContacts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CachedContactUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many CachedContacts
+     * const cachedContact = await prisma.cachedContact.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends CachedContactUpdateManyArgs>(args: SelectSubset<T, CachedContactUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more CachedContacts and returns the data updated in the database.
+     * @param {CachedContactUpdateManyAndReturnArgs} args - Arguments to update many CachedContacts.
+     * @example
+     * // Update many CachedContacts
+     * const cachedContact = await prisma.cachedContact.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more CachedContacts and only return the `id`
+     * const cachedContactWithIdOnly = await prisma.cachedContact.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends CachedContactUpdateManyAndReturnArgs>(args: SelectSubset<T, CachedContactUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CachedContactPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one CachedContact.
+     * @param {CachedContactUpsertArgs} args - Arguments to update or create a CachedContact.
+     * @example
+     * // Update or create a CachedContact
+     * const cachedContact = await prisma.cachedContact.upsert({
+     *   create: {
+     *     // ... data to create a CachedContact
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the CachedContact we want to update
+     *   }
+     * })
+     */
+    upsert<T extends CachedContactUpsertArgs>(args: SelectSubset<T, CachedContactUpsertArgs<ExtArgs>>): Prisma__CachedContactClient<$Result.GetResult<Prisma.$CachedContactPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of CachedContacts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CachedContactCountArgs} args - Arguments to filter CachedContacts to count.
+     * @example
+     * // Count the number of CachedContacts
+     * const count = await prisma.cachedContact.count({
+     *   where: {
+     *     // ... the filter for the CachedContacts we want to count
+     *   }
+     * })
+    **/
+    count<T extends CachedContactCountArgs>(
+      args?: Subset<T, CachedContactCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], CachedContactCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a CachedContact.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CachedContactAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends CachedContactAggregateArgs>(args: Subset<T, CachedContactAggregateArgs>): Prisma.PrismaPromise<GetCachedContactAggregateType<T>>
+
+    /**
+     * Group by CachedContact.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CachedContactGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends CachedContactGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: CachedContactGroupByArgs['orderBy'] }
+        : { orderBy?: CachedContactGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, CachedContactGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetCachedContactGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the CachedContact model
+   */
+  readonly fields: CachedContactFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for CachedContact.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__CachedContactClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the CachedContact model
+   */
+  interface CachedContactFieldRefs {
+    readonly id: FieldRef<"CachedContact", 'String'>
+    readonly userId: FieldRef<"CachedContact", 'String'>
+    readonly homeAccountId: FieldRef<"CachedContact", 'String'>
+    readonly displayName: FieldRef<"CachedContact", 'String'>
+    readonly emailAddress: FieldRef<"CachedContact", 'String'>
+    readonly phone: FieldRef<"CachedContact", 'String'>
+    readonly jobTitle: FieldRef<"CachedContact", 'String'>
+    readonly company: FieldRef<"CachedContact", 'String'>
+    readonly syncedAt: FieldRef<"CachedContact", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * CachedContact findUnique
+   */
+  export type CachedContactFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CachedContact
+     */
+    select?: CachedContactSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CachedContact
+     */
+    omit?: CachedContactOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CachedContactInclude<ExtArgs> | null
+    /**
+     * Filter, which CachedContact to fetch.
+     */
+    where: CachedContactWhereUniqueInput
+  }
+
+  /**
+   * CachedContact findUniqueOrThrow
+   */
+  export type CachedContactFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CachedContact
+     */
+    select?: CachedContactSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CachedContact
+     */
+    omit?: CachedContactOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CachedContactInclude<ExtArgs> | null
+    /**
+     * Filter, which CachedContact to fetch.
+     */
+    where: CachedContactWhereUniqueInput
+  }
+
+  /**
+   * CachedContact findFirst
+   */
+  export type CachedContactFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CachedContact
+     */
+    select?: CachedContactSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CachedContact
+     */
+    omit?: CachedContactOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CachedContactInclude<ExtArgs> | null
+    /**
+     * Filter, which CachedContact to fetch.
+     */
+    where?: CachedContactWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CachedContacts to fetch.
+     */
+    orderBy?: CachedContactOrderByWithRelationInput | CachedContactOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for CachedContacts.
+     */
+    cursor?: CachedContactWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CachedContacts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CachedContacts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CachedContacts.
+     */
+    distinct?: CachedContactScalarFieldEnum | CachedContactScalarFieldEnum[]
+  }
+
+  /**
+   * CachedContact findFirstOrThrow
+   */
+  export type CachedContactFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CachedContact
+     */
+    select?: CachedContactSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CachedContact
+     */
+    omit?: CachedContactOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CachedContactInclude<ExtArgs> | null
+    /**
+     * Filter, which CachedContact to fetch.
+     */
+    where?: CachedContactWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CachedContacts to fetch.
+     */
+    orderBy?: CachedContactOrderByWithRelationInput | CachedContactOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for CachedContacts.
+     */
+    cursor?: CachedContactWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CachedContacts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CachedContacts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CachedContacts.
+     */
+    distinct?: CachedContactScalarFieldEnum | CachedContactScalarFieldEnum[]
+  }
+
+  /**
+   * CachedContact findMany
+   */
+  export type CachedContactFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CachedContact
+     */
+    select?: CachedContactSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CachedContact
+     */
+    omit?: CachedContactOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CachedContactInclude<ExtArgs> | null
+    /**
+     * Filter, which CachedContacts to fetch.
+     */
+    where?: CachedContactWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CachedContacts to fetch.
+     */
+    orderBy?: CachedContactOrderByWithRelationInput | CachedContactOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing CachedContacts.
+     */
+    cursor?: CachedContactWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CachedContacts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CachedContacts.
+     */
+    skip?: number
+    distinct?: CachedContactScalarFieldEnum | CachedContactScalarFieldEnum[]
+  }
+
+  /**
+   * CachedContact create
+   */
+  export type CachedContactCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CachedContact
+     */
+    select?: CachedContactSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CachedContact
+     */
+    omit?: CachedContactOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CachedContactInclude<ExtArgs> | null
+    /**
+     * The data needed to create a CachedContact.
+     */
+    data: XOR<CachedContactCreateInput, CachedContactUncheckedCreateInput>
+  }
+
+  /**
+   * CachedContact createMany
+   */
+  export type CachedContactCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many CachedContacts.
+     */
+    data: CachedContactCreateManyInput | CachedContactCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * CachedContact createManyAndReturn
+   */
+  export type CachedContactCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CachedContact
+     */
+    select?: CachedContactSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the CachedContact
+     */
+    omit?: CachedContactOmit<ExtArgs> | null
+    /**
+     * The data used to create many CachedContacts.
+     */
+    data: CachedContactCreateManyInput | CachedContactCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CachedContactIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * CachedContact update
+   */
+  export type CachedContactUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CachedContact
+     */
+    select?: CachedContactSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CachedContact
+     */
+    omit?: CachedContactOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CachedContactInclude<ExtArgs> | null
+    /**
+     * The data needed to update a CachedContact.
+     */
+    data: XOR<CachedContactUpdateInput, CachedContactUncheckedUpdateInput>
+    /**
+     * Choose, which CachedContact to update.
+     */
+    where: CachedContactWhereUniqueInput
+  }
+
+  /**
+   * CachedContact updateMany
+   */
+  export type CachedContactUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update CachedContacts.
+     */
+    data: XOR<CachedContactUpdateManyMutationInput, CachedContactUncheckedUpdateManyInput>
+    /**
+     * Filter which CachedContacts to update
+     */
+    where?: CachedContactWhereInput
+    /**
+     * Limit how many CachedContacts to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * CachedContact updateManyAndReturn
+   */
+  export type CachedContactUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CachedContact
+     */
+    select?: CachedContactSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the CachedContact
+     */
+    omit?: CachedContactOmit<ExtArgs> | null
+    /**
+     * The data used to update CachedContacts.
+     */
+    data: XOR<CachedContactUpdateManyMutationInput, CachedContactUncheckedUpdateManyInput>
+    /**
+     * Filter which CachedContacts to update
+     */
+    where?: CachedContactWhereInput
+    /**
+     * Limit how many CachedContacts to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CachedContactIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * CachedContact upsert
+   */
+  export type CachedContactUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CachedContact
+     */
+    select?: CachedContactSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CachedContact
+     */
+    omit?: CachedContactOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CachedContactInclude<ExtArgs> | null
+    /**
+     * The filter to search for the CachedContact to update in case it exists.
+     */
+    where: CachedContactWhereUniqueInput
+    /**
+     * In case the CachedContact found by the `where` argument doesn't exist, create a new CachedContact with this data.
+     */
+    create: XOR<CachedContactCreateInput, CachedContactUncheckedCreateInput>
+    /**
+     * In case the CachedContact was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<CachedContactUpdateInput, CachedContactUncheckedUpdateInput>
+  }
+
+  /**
+   * CachedContact delete
+   */
+  export type CachedContactDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CachedContact
+     */
+    select?: CachedContactSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CachedContact
+     */
+    omit?: CachedContactOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CachedContactInclude<ExtArgs> | null
+    /**
+     * Filter which CachedContact to delete.
+     */
+    where: CachedContactWhereUniqueInput
+  }
+
+  /**
+   * CachedContact deleteMany
+   */
+  export type CachedContactDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which CachedContacts to delete
+     */
+    where?: CachedContactWhereInput
+    /**
+     * Limit how many CachedContacts to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * CachedContact without action
+   */
+  export type CachedContactDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CachedContact
+     */
+    select?: CachedContactSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CachedContact
+     */
+    omit?: CachedContactOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CachedContactInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Model EmailRule
    */
 
@@ -11943,6 +17103,80 @@ export namespace Prisma {
   export type SignatureScalarFieldEnum = (typeof SignatureScalarFieldEnum)[keyof typeof SignatureScalarFieldEnum]
 
 
+  export const CachedFolderScalarFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    homeAccountId: 'homeAccountId',
+    displayName: 'displayName',
+    parentFolderId: 'parentFolderId',
+    unreadCount: 'unreadCount',
+    totalCount: 'totalCount',
+    wellKnownName: 'wellKnownName',
+    syncedAt: 'syncedAt'
+  };
+
+  export type CachedFolderScalarFieldEnum = (typeof CachedFolderScalarFieldEnum)[keyof typeof CachedFolderScalarFieldEnum]
+
+
+  export const CachedEmailScalarFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    homeAccountId: 'homeAccountId',
+    folderId: 'folderId',
+    subject: 'subject',
+    bodyPreview: 'bodyPreview',
+    fromName: 'fromName',
+    fromAddress: 'fromAddress',
+    toRecipients: 'toRecipients',
+    receivedDateTime: 'receivedDateTime',
+    sentDateTime: 'sentDateTime',
+    isRead: 'isRead',
+    hasAttachments: 'hasAttachments',
+    flagStatus: 'flagStatus',
+    categories: 'categories',
+    syncedAt: 'syncedAt'
+  };
+
+  export type CachedEmailScalarFieldEnum = (typeof CachedEmailScalarFieldEnum)[keyof typeof CachedEmailScalarFieldEnum]
+
+
+  export const CachedCalendarEventScalarFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    homeAccountId: 'homeAccountId',
+    subject: 'subject',
+    bodyPreview: 'bodyPreview',
+    startDateTime: 'startDateTime',
+    endDateTime: 'endDateTime',
+    isAllDay: 'isAllDay',
+    location: 'location',
+    organizerName: 'organizerName',
+    organizerEmail: 'organizerEmail',
+    responseStatus: 'responseStatus',
+    onlineMeetingUrl: 'onlineMeetingUrl',
+    attendees: 'attendees',
+    isRecurring: 'isRecurring',
+    syncedAt: 'syncedAt'
+  };
+
+  export type CachedCalendarEventScalarFieldEnum = (typeof CachedCalendarEventScalarFieldEnum)[keyof typeof CachedCalendarEventScalarFieldEnum]
+
+
+  export const CachedContactScalarFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    homeAccountId: 'homeAccountId',
+    displayName: 'displayName',
+    emailAddress: 'emailAddress',
+    phone: 'phone',
+    jobTitle: 'jobTitle',
+    company: 'company',
+    syncedAt: 'syncedAt'
+  };
+
+  export type CachedContactScalarFieldEnum = (typeof CachedContactScalarFieldEnum)[keyof typeof CachedContactScalarFieldEnum]
+
+
   export const EmailRuleScalarFieldEnum: {
     id: 'id',
     userId: 'userId',
@@ -12159,6 +17393,10 @@ export namespace Prisma {
     drafts?: DraftListRelationFilter
     emailRules?: EmailRuleListRelationFilter
     signatures?: SignatureListRelationFilter
+    cachedFolders?: CachedFolderListRelationFilter
+    cachedEmails?: CachedEmailListRelationFilter
+    cachedCalEvents?: CachedCalendarEventListRelationFilter
+    cachedContacts?: CachedContactListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -12177,6 +17415,10 @@ export namespace Prisma {
     drafts?: DraftOrderByRelationAggregateInput
     emailRules?: EmailRuleOrderByRelationAggregateInput
     signatures?: SignatureOrderByRelationAggregateInput
+    cachedFolders?: CachedFolderOrderByRelationAggregateInput
+    cachedEmails?: CachedEmailOrderByRelationAggregateInput
+    cachedCalEvents?: CachedCalendarEventOrderByRelationAggregateInput
+    cachedContacts?: CachedContactOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -12198,6 +17440,10 @@ export namespace Prisma {
     drafts?: DraftListRelationFilter
     emailRules?: EmailRuleListRelationFilter
     signatures?: SignatureListRelationFilter
+    cachedFolders?: CachedFolderListRelationFilter
+    cachedEmails?: CachedEmailListRelationFilter
+    cachedCalEvents?: CachedCalendarEventListRelationFilter
+    cachedContacts?: CachedContactListRelationFilter
   }, "id" | "email">
 
   export type UserOrderByWithAggregationInput = {
@@ -12663,6 +17909,378 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"Signature"> | Date | string
   }
 
+  export type CachedFolderWhereInput = {
+    AND?: CachedFolderWhereInput | CachedFolderWhereInput[]
+    OR?: CachedFolderWhereInput[]
+    NOT?: CachedFolderWhereInput | CachedFolderWhereInput[]
+    id?: StringFilter<"CachedFolder"> | string
+    userId?: StringFilter<"CachedFolder"> | string
+    homeAccountId?: StringFilter<"CachedFolder"> | string
+    displayName?: StringFilter<"CachedFolder"> | string
+    parentFolderId?: StringNullableFilter<"CachedFolder"> | string | null
+    unreadCount?: IntFilter<"CachedFolder"> | number
+    totalCount?: IntFilter<"CachedFolder"> | number
+    wellKnownName?: StringNullableFilter<"CachedFolder"> | string | null
+    syncedAt?: DateTimeFilter<"CachedFolder"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type CachedFolderOrderByWithRelationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    homeAccountId?: SortOrder
+    displayName?: SortOrder
+    parentFolderId?: SortOrderInput | SortOrder
+    unreadCount?: SortOrder
+    totalCount?: SortOrder
+    wellKnownName?: SortOrderInput | SortOrder
+    syncedAt?: SortOrder
+    user?: UserOrderByWithRelationInput
+  }
+
+  export type CachedFolderWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: CachedFolderWhereInput | CachedFolderWhereInput[]
+    OR?: CachedFolderWhereInput[]
+    NOT?: CachedFolderWhereInput | CachedFolderWhereInput[]
+    userId?: StringFilter<"CachedFolder"> | string
+    homeAccountId?: StringFilter<"CachedFolder"> | string
+    displayName?: StringFilter<"CachedFolder"> | string
+    parentFolderId?: StringNullableFilter<"CachedFolder"> | string | null
+    unreadCount?: IntFilter<"CachedFolder"> | number
+    totalCount?: IntFilter<"CachedFolder"> | number
+    wellKnownName?: StringNullableFilter<"CachedFolder"> | string | null
+    syncedAt?: DateTimeFilter<"CachedFolder"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id">
+
+  export type CachedFolderOrderByWithAggregationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    homeAccountId?: SortOrder
+    displayName?: SortOrder
+    parentFolderId?: SortOrderInput | SortOrder
+    unreadCount?: SortOrder
+    totalCount?: SortOrder
+    wellKnownName?: SortOrderInput | SortOrder
+    syncedAt?: SortOrder
+    _count?: CachedFolderCountOrderByAggregateInput
+    _avg?: CachedFolderAvgOrderByAggregateInput
+    _max?: CachedFolderMaxOrderByAggregateInput
+    _min?: CachedFolderMinOrderByAggregateInput
+    _sum?: CachedFolderSumOrderByAggregateInput
+  }
+
+  export type CachedFolderScalarWhereWithAggregatesInput = {
+    AND?: CachedFolderScalarWhereWithAggregatesInput | CachedFolderScalarWhereWithAggregatesInput[]
+    OR?: CachedFolderScalarWhereWithAggregatesInput[]
+    NOT?: CachedFolderScalarWhereWithAggregatesInput | CachedFolderScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"CachedFolder"> | string
+    userId?: StringWithAggregatesFilter<"CachedFolder"> | string
+    homeAccountId?: StringWithAggregatesFilter<"CachedFolder"> | string
+    displayName?: StringWithAggregatesFilter<"CachedFolder"> | string
+    parentFolderId?: StringNullableWithAggregatesFilter<"CachedFolder"> | string | null
+    unreadCount?: IntWithAggregatesFilter<"CachedFolder"> | number
+    totalCount?: IntWithAggregatesFilter<"CachedFolder"> | number
+    wellKnownName?: StringNullableWithAggregatesFilter<"CachedFolder"> | string | null
+    syncedAt?: DateTimeWithAggregatesFilter<"CachedFolder"> | Date | string
+  }
+
+  export type CachedEmailWhereInput = {
+    AND?: CachedEmailWhereInput | CachedEmailWhereInput[]
+    OR?: CachedEmailWhereInput[]
+    NOT?: CachedEmailWhereInput | CachedEmailWhereInput[]
+    id?: StringFilter<"CachedEmail"> | string
+    userId?: StringFilter<"CachedEmail"> | string
+    homeAccountId?: StringFilter<"CachedEmail"> | string
+    folderId?: StringFilter<"CachedEmail"> | string
+    subject?: StringFilter<"CachedEmail"> | string
+    bodyPreview?: StringFilter<"CachedEmail"> | string
+    fromName?: StringFilter<"CachedEmail"> | string
+    fromAddress?: StringFilter<"CachedEmail"> | string
+    toRecipients?: JsonFilter<"CachedEmail">
+    receivedDateTime?: DateTimeFilter<"CachedEmail"> | Date | string
+    sentDateTime?: DateTimeNullableFilter<"CachedEmail"> | Date | string | null
+    isRead?: BoolFilter<"CachedEmail"> | boolean
+    hasAttachments?: BoolFilter<"CachedEmail"> | boolean
+    flagStatus?: StringFilter<"CachedEmail"> | string
+    categories?: JsonFilter<"CachedEmail">
+    syncedAt?: DateTimeFilter<"CachedEmail"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type CachedEmailOrderByWithRelationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    homeAccountId?: SortOrder
+    folderId?: SortOrder
+    subject?: SortOrder
+    bodyPreview?: SortOrder
+    fromName?: SortOrder
+    fromAddress?: SortOrder
+    toRecipients?: SortOrder
+    receivedDateTime?: SortOrder
+    sentDateTime?: SortOrderInput | SortOrder
+    isRead?: SortOrder
+    hasAttachments?: SortOrder
+    flagStatus?: SortOrder
+    categories?: SortOrder
+    syncedAt?: SortOrder
+    user?: UserOrderByWithRelationInput
+  }
+
+  export type CachedEmailWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: CachedEmailWhereInput | CachedEmailWhereInput[]
+    OR?: CachedEmailWhereInput[]
+    NOT?: CachedEmailWhereInput | CachedEmailWhereInput[]
+    userId?: StringFilter<"CachedEmail"> | string
+    homeAccountId?: StringFilter<"CachedEmail"> | string
+    folderId?: StringFilter<"CachedEmail"> | string
+    subject?: StringFilter<"CachedEmail"> | string
+    bodyPreview?: StringFilter<"CachedEmail"> | string
+    fromName?: StringFilter<"CachedEmail"> | string
+    fromAddress?: StringFilter<"CachedEmail"> | string
+    toRecipients?: JsonFilter<"CachedEmail">
+    receivedDateTime?: DateTimeFilter<"CachedEmail"> | Date | string
+    sentDateTime?: DateTimeNullableFilter<"CachedEmail"> | Date | string | null
+    isRead?: BoolFilter<"CachedEmail"> | boolean
+    hasAttachments?: BoolFilter<"CachedEmail"> | boolean
+    flagStatus?: StringFilter<"CachedEmail"> | string
+    categories?: JsonFilter<"CachedEmail">
+    syncedAt?: DateTimeFilter<"CachedEmail"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id">
+
+  export type CachedEmailOrderByWithAggregationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    homeAccountId?: SortOrder
+    folderId?: SortOrder
+    subject?: SortOrder
+    bodyPreview?: SortOrder
+    fromName?: SortOrder
+    fromAddress?: SortOrder
+    toRecipients?: SortOrder
+    receivedDateTime?: SortOrder
+    sentDateTime?: SortOrderInput | SortOrder
+    isRead?: SortOrder
+    hasAttachments?: SortOrder
+    flagStatus?: SortOrder
+    categories?: SortOrder
+    syncedAt?: SortOrder
+    _count?: CachedEmailCountOrderByAggregateInput
+    _max?: CachedEmailMaxOrderByAggregateInput
+    _min?: CachedEmailMinOrderByAggregateInput
+  }
+
+  export type CachedEmailScalarWhereWithAggregatesInput = {
+    AND?: CachedEmailScalarWhereWithAggregatesInput | CachedEmailScalarWhereWithAggregatesInput[]
+    OR?: CachedEmailScalarWhereWithAggregatesInput[]
+    NOT?: CachedEmailScalarWhereWithAggregatesInput | CachedEmailScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"CachedEmail"> | string
+    userId?: StringWithAggregatesFilter<"CachedEmail"> | string
+    homeAccountId?: StringWithAggregatesFilter<"CachedEmail"> | string
+    folderId?: StringWithAggregatesFilter<"CachedEmail"> | string
+    subject?: StringWithAggregatesFilter<"CachedEmail"> | string
+    bodyPreview?: StringWithAggregatesFilter<"CachedEmail"> | string
+    fromName?: StringWithAggregatesFilter<"CachedEmail"> | string
+    fromAddress?: StringWithAggregatesFilter<"CachedEmail"> | string
+    toRecipients?: JsonWithAggregatesFilter<"CachedEmail">
+    receivedDateTime?: DateTimeWithAggregatesFilter<"CachedEmail"> | Date | string
+    sentDateTime?: DateTimeNullableWithAggregatesFilter<"CachedEmail"> | Date | string | null
+    isRead?: BoolWithAggregatesFilter<"CachedEmail"> | boolean
+    hasAttachments?: BoolWithAggregatesFilter<"CachedEmail"> | boolean
+    flagStatus?: StringWithAggregatesFilter<"CachedEmail"> | string
+    categories?: JsonWithAggregatesFilter<"CachedEmail">
+    syncedAt?: DateTimeWithAggregatesFilter<"CachedEmail"> | Date | string
+  }
+
+  export type CachedCalendarEventWhereInput = {
+    AND?: CachedCalendarEventWhereInput | CachedCalendarEventWhereInput[]
+    OR?: CachedCalendarEventWhereInput[]
+    NOT?: CachedCalendarEventWhereInput | CachedCalendarEventWhereInput[]
+    id?: StringFilter<"CachedCalendarEvent"> | string
+    userId?: StringFilter<"CachedCalendarEvent"> | string
+    homeAccountId?: StringFilter<"CachedCalendarEvent"> | string
+    subject?: StringFilter<"CachedCalendarEvent"> | string
+    bodyPreview?: StringFilter<"CachedCalendarEvent"> | string
+    startDateTime?: DateTimeFilter<"CachedCalendarEvent"> | Date | string
+    endDateTime?: DateTimeFilter<"CachedCalendarEvent"> | Date | string
+    isAllDay?: BoolFilter<"CachedCalendarEvent"> | boolean
+    location?: StringNullableFilter<"CachedCalendarEvent"> | string | null
+    organizerName?: StringNullableFilter<"CachedCalendarEvent"> | string | null
+    organizerEmail?: StringNullableFilter<"CachedCalendarEvent"> | string | null
+    responseStatus?: StringFilter<"CachedCalendarEvent"> | string
+    onlineMeetingUrl?: StringNullableFilter<"CachedCalendarEvent"> | string | null
+    attendees?: JsonFilter<"CachedCalendarEvent">
+    isRecurring?: BoolFilter<"CachedCalendarEvent"> | boolean
+    syncedAt?: DateTimeFilter<"CachedCalendarEvent"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type CachedCalendarEventOrderByWithRelationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    homeAccountId?: SortOrder
+    subject?: SortOrder
+    bodyPreview?: SortOrder
+    startDateTime?: SortOrder
+    endDateTime?: SortOrder
+    isAllDay?: SortOrder
+    location?: SortOrderInput | SortOrder
+    organizerName?: SortOrderInput | SortOrder
+    organizerEmail?: SortOrderInput | SortOrder
+    responseStatus?: SortOrder
+    onlineMeetingUrl?: SortOrderInput | SortOrder
+    attendees?: SortOrder
+    isRecurring?: SortOrder
+    syncedAt?: SortOrder
+    user?: UserOrderByWithRelationInput
+  }
+
+  export type CachedCalendarEventWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: CachedCalendarEventWhereInput | CachedCalendarEventWhereInput[]
+    OR?: CachedCalendarEventWhereInput[]
+    NOT?: CachedCalendarEventWhereInput | CachedCalendarEventWhereInput[]
+    userId?: StringFilter<"CachedCalendarEvent"> | string
+    homeAccountId?: StringFilter<"CachedCalendarEvent"> | string
+    subject?: StringFilter<"CachedCalendarEvent"> | string
+    bodyPreview?: StringFilter<"CachedCalendarEvent"> | string
+    startDateTime?: DateTimeFilter<"CachedCalendarEvent"> | Date | string
+    endDateTime?: DateTimeFilter<"CachedCalendarEvent"> | Date | string
+    isAllDay?: BoolFilter<"CachedCalendarEvent"> | boolean
+    location?: StringNullableFilter<"CachedCalendarEvent"> | string | null
+    organizerName?: StringNullableFilter<"CachedCalendarEvent"> | string | null
+    organizerEmail?: StringNullableFilter<"CachedCalendarEvent"> | string | null
+    responseStatus?: StringFilter<"CachedCalendarEvent"> | string
+    onlineMeetingUrl?: StringNullableFilter<"CachedCalendarEvent"> | string | null
+    attendees?: JsonFilter<"CachedCalendarEvent">
+    isRecurring?: BoolFilter<"CachedCalendarEvent"> | boolean
+    syncedAt?: DateTimeFilter<"CachedCalendarEvent"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id">
+
+  export type CachedCalendarEventOrderByWithAggregationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    homeAccountId?: SortOrder
+    subject?: SortOrder
+    bodyPreview?: SortOrder
+    startDateTime?: SortOrder
+    endDateTime?: SortOrder
+    isAllDay?: SortOrder
+    location?: SortOrderInput | SortOrder
+    organizerName?: SortOrderInput | SortOrder
+    organizerEmail?: SortOrderInput | SortOrder
+    responseStatus?: SortOrder
+    onlineMeetingUrl?: SortOrderInput | SortOrder
+    attendees?: SortOrder
+    isRecurring?: SortOrder
+    syncedAt?: SortOrder
+    _count?: CachedCalendarEventCountOrderByAggregateInput
+    _max?: CachedCalendarEventMaxOrderByAggregateInput
+    _min?: CachedCalendarEventMinOrderByAggregateInput
+  }
+
+  export type CachedCalendarEventScalarWhereWithAggregatesInput = {
+    AND?: CachedCalendarEventScalarWhereWithAggregatesInput | CachedCalendarEventScalarWhereWithAggregatesInput[]
+    OR?: CachedCalendarEventScalarWhereWithAggregatesInput[]
+    NOT?: CachedCalendarEventScalarWhereWithAggregatesInput | CachedCalendarEventScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"CachedCalendarEvent"> | string
+    userId?: StringWithAggregatesFilter<"CachedCalendarEvent"> | string
+    homeAccountId?: StringWithAggregatesFilter<"CachedCalendarEvent"> | string
+    subject?: StringWithAggregatesFilter<"CachedCalendarEvent"> | string
+    bodyPreview?: StringWithAggregatesFilter<"CachedCalendarEvent"> | string
+    startDateTime?: DateTimeWithAggregatesFilter<"CachedCalendarEvent"> | Date | string
+    endDateTime?: DateTimeWithAggregatesFilter<"CachedCalendarEvent"> | Date | string
+    isAllDay?: BoolWithAggregatesFilter<"CachedCalendarEvent"> | boolean
+    location?: StringNullableWithAggregatesFilter<"CachedCalendarEvent"> | string | null
+    organizerName?: StringNullableWithAggregatesFilter<"CachedCalendarEvent"> | string | null
+    organizerEmail?: StringNullableWithAggregatesFilter<"CachedCalendarEvent"> | string | null
+    responseStatus?: StringWithAggregatesFilter<"CachedCalendarEvent"> | string
+    onlineMeetingUrl?: StringNullableWithAggregatesFilter<"CachedCalendarEvent"> | string | null
+    attendees?: JsonWithAggregatesFilter<"CachedCalendarEvent">
+    isRecurring?: BoolWithAggregatesFilter<"CachedCalendarEvent"> | boolean
+    syncedAt?: DateTimeWithAggregatesFilter<"CachedCalendarEvent"> | Date | string
+  }
+
+  export type CachedContactWhereInput = {
+    AND?: CachedContactWhereInput | CachedContactWhereInput[]
+    OR?: CachedContactWhereInput[]
+    NOT?: CachedContactWhereInput | CachedContactWhereInput[]
+    id?: StringFilter<"CachedContact"> | string
+    userId?: StringFilter<"CachedContact"> | string
+    homeAccountId?: StringFilter<"CachedContact"> | string
+    displayName?: StringFilter<"CachedContact"> | string
+    emailAddress?: StringFilter<"CachedContact"> | string
+    phone?: StringFilter<"CachedContact"> | string
+    jobTitle?: StringFilter<"CachedContact"> | string
+    company?: StringFilter<"CachedContact"> | string
+    syncedAt?: DateTimeFilter<"CachedContact"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type CachedContactOrderByWithRelationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    homeAccountId?: SortOrder
+    displayName?: SortOrder
+    emailAddress?: SortOrder
+    phone?: SortOrder
+    jobTitle?: SortOrder
+    company?: SortOrder
+    syncedAt?: SortOrder
+    user?: UserOrderByWithRelationInput
+  }
+
+  export type CachedContactWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: CachedContactWhereInput | CachedContactWhereInput[]
+    OR?: CachedContactWhereInput[]
+    NOT?: CachedContactWhereInput | CachedContactWhereInput[]
+    userId?: StringFilter<"CachedContact"> | string
+    homeAccountId?: StringFilter<"CachedContact"> | string
+    displayName?: StringFilter<"CachedContact"> | string
+    emailAddress?: StringFilter<"CachedContact"> | string
+    phone?: StringFilter<"CachedContact"> | string
+    jobTitle?: StringFilter<"CachedContact"> | string
+    company?: StringFilter<"CachedContact"> | string
+    syncedAt?: DateTimeFilter<"CachedContact"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id">
+
+  export type CachedContactOrderByWithAggregationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    homeAccountId?: SortOrder
+    displayName?: SortOrder
+    emailAddress?: SortOrder
+    phone?: SortOrder
+    jobTitle?: SortOrder
+    company?: SortOrder
+    syncedAt?: SortOrder
+    _count?: CachedContactCountOrderByAggregateInput
+    _max?: CachedContactMaxOrderByAggregateInput
+    _min?: CachedContactMinOrderByAggregateInput
+  }
+
+  export type CachedContactScalarWhereWithAggregatesInput = {
+    AND?: CachedContactScalarWhereWithAggregatesInput | CachedContactScalarWhereWithAggregatesInput[]
+    OR?: CachedContactScalarWhereWithAggregatesInput[]
+    NOT?: CachedContactScalarWhereWithAggregatesInput | CachedContactScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"CachedContact"> | string
+    userId?: StringWithAggregatesFilter<"CachedContact"> | string
+    homeAccountId?: StringWithAggregatesFilter<"CachedContact"> | string
+    displayName?: StringWithAggregatesFilter<"CachedContact"> | string
+    emailAddress?: StringWithAggregatesFilter<"CachedContact"> | string
+    phone?: StringWithAggregatesFilter<"CachedContact"> | string
+    jobTitle?: StringWithAggregatesFilter<"CachedContact"> | string
+    company?: StringWithAggregatesFilter<"CachedContact"> | string
+    syncedAt?: DateTimeWithAggregatesFilter<"CachedContact"> | Date | string
+  }
+
   export type EmailRuleWhereInput = {
     AND?: EmailRuleWhereInput | EmailRuleWhereInput[]
     OR?: EmailRuleWhereInput[]
@@ -12825,6 +18443,10 @@ export namespace Prisma {
     drafts?: DraftCreateNestedManyWithoutUserInput
     emailRules?: EmailRuleCreateNestedManyWithoutUserInput
     signatures?: SignatureCreateNestedManyWithoutUserInput
+    cachedFolders?: CachedFolderCreateNestedManyWithoutUserInput
+    cachedEmails?: CachedEmailCreateNestedManyWithoutUserInput
+    cachedCalEvents?: CachedCalendarEventCreateNestedManyWithoutUserInput
+    cachedContacts?: CachedContactCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -12842,6 +18464,10 @@ export namespace Prisma {
     drafts?: DraftUncheckedCreateNestedManyWithoutUserInput
     emailRules?: EmailRuleUncheckedCreateNestedManyWithoutUserInput
     signatures?: SignatureUncheckedCreateNestedManyWithoutUserInput
+    cachedFolders?: CachedFolderUncheckedCreateNestedManyWithoutUserInput
+    cachedEmails?: CachedEmailUncheckedCreateNestedManyWithoutUserInput
+    cachedCalEvents?: CachedCalendarEventUncheckedCreateNestedManyWithoutUserInput
+    cachedContacts?: CachedContactUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserUpdateInput = {
@@ -12859,6 +18485,10 @@ export namespace Prisma {
     drafts?: DraftUpdateManyWithoutUserNestedInput
     emailRules?: EmailRuleUpdateManyWithoutUserNestedInput
     signatures?: SignatureUpdateManyWithoutUserNestedInput
+    cachedFolders?: CachedFolderUpdateManyWithoutUserNestedInput
+    cachedEmails?: CachedEmailUpdateManyWithoutUserNestedInput
+    cachedCalEvents?: CachedCalendarEventUpdateManyWithoutUserNestedInput
+    cachedContacts?: CachedContactUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -12876,6 +18506,10 @@ export namespace Prisma {
     drafts?: DraftUncheckedUpdateManyWithoutUserNestedInput
     emailRules?: EmailRuleUncheckedUpdateManyWithoutUserNestedInput
     signatures?: SignatureUncheckedUpdateManyWithoutUserNestedInput
+    cachedFolders?: CachedFolderUncheckedUpdateManyWithoutUserNestedInput
+    cachedEmails?: CachedEmailUncheckedUpdateManyWithoutUserNestedInput
+    cachedCalEvents?: CachedCalendarEventUncheckedUpdateManyWithoutUserNestedInput
+    cachedContacts?: CachedContactUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -13384,6 +19018,436 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type CachedFolderCreateInput = {
+    id: string
+    homeAccountId: string
+    displayName: string
+    parentFolderId?: string | null
+    unreadCount?: number
+    totalCount?: number
+    wellKnownName?: string | null
+    syncedAt?: Date | string
+    user: UserCreateNestedOneWithoutCachedFoldersInput
+  }
+
+  export type CachedFolderUncheckedCreateInput = {
+    id: string
+    userId: string
+    homeAccountId: string
+    displayName: string
+    parentFolderId?: string | null
+    unreadCount?: number
+    totalCount?: number
+    wellKnownName?: string | null
+    syncedAt?: Date | string
+  }
+
+  export type CachedFolderUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    homeAccountId?: StringFieldUpdateOperationsInput | string
+    displayName?: StringFieldUpdateOperationsInput | string
+    parentFolderId?: NullableStringFieldUpdateOperationsInput | string | null
+    unreadCount?: IntFieldUpdateOperationsInput | number
+    totalCount?: IntFieldUpdateOperationsInput | number
+    wellKnownName?: NullableStringFieldUpdateOperationsInput | string | null
+    syncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutCachedFoldersNestedInput
+  }
+
+  export type CachedFolderUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    homeAccountId?: StringFieldUpdateOperationsInput | string
+    displayName?: StringFieldUpdateOperationsInput | string
+    parentFolderId?: NullableStringFieldUpdateOperationsInput | string | null
+    unreadCount?: IntFieldUpdateOperationsInput | number
+    totalCount?: IntFieldUpdateOperationsInput | number
+    wellKnownName?: NullableStringFieldUpdateOperationsInput | string | null
+    syncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CachedFolderCreateManyInput = {
+    id: string
+    userId: string
+    homeAccountId: string
+    displayName: string
+    parentFolderId?: string | null
+    unreadCount?: number
+    totalCount?: number
+    wellKnownName?: string | null
+    syncedAt?: Date | string
+  }
+
+  export type CachedFolderUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    homeAccountId?: StringFieldUpdateOperationsInput | string
+    displayName?: StringFieldUpdateOperationsInput | string
+    parentFolderId?: NullableStringFieldUpdateOperationsInput | string | null
+    unreadCount?: IntFieldUpdateOperationsInput | number
+    totalCount?: IntFieldUpdateOperationsInput | number
+    wellKnownName?: NullableStringFieldUpdateOperationsInput | string | null
+    syncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CachedFolderUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    homeAccountId?: StringFieldUpdateOperationsInput | string
+    displayName?: StringFieldUpdateOperationsInput | string
+    parentFolderId?: NullableStringFieldUpdateOperationsInput | string | null
+    unreadCount?: IntFieldUpdateOperationsInput | number
+    totalCount?: IntFieldUpdateOperationsInput | number
+    wellKnownName?: NullableStringFieldUpdateOperationsInput | string | null
+    syncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CachedEmailCreateInput = {
+    id: string
+    homeAccountId: string
+    folderId: string
+    subject?: string
+    bodyPreview?: string
+    fromName?: string
+    fromAddress?: string
+    toRecipients?: JsonNullValueInput | InputJsonValue
+    receivedDateTime: Date | string
+    sentDateTime?: Date | string | null
+    isRead?: boolean
+    hasAttachments?: boolean
+    flagStatus?: string
+    categories?: JsonNullValueInput | InputJsonValue
+    syncedAt?: Date | string
+    user: UserCreateNestedOneWithoutCachedEmailsInput
+  }
+
+  export type CachedEmailUncheckedCreateInput = {
+    id: string
+    userId: string
+    homeAccountId: string
+    folderId: string
+    subject?: string
+    bodyPreview?: string
+    fromName?: string
+    fromAddress?: string
+    toRecipients?: JsonNullValueInput | InputJsonValue
+    receivedDateTime: Date | string
+    sentDateTime?: Date | string | null
+    isRead?: boolean
+    hasAttachments?: boolean
+    flagStatus?: string
+    categories?: JsonNullValueInput | InputJsonValue
+    syncedAt?: Date | string
+  }
+
+  export type CachedEmailUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    homeAccountId?: StringFieldUpdateOperationsInput | string
+    folderId?: StringFieldUpdateOperationsInput | string
+    subject?: StringFieldUpdateOperationsInput | string
+    bodyPreview?: StringFieldUpdateOperationsInput | string
+    fromName?: StringFieldUpdateOperationsInput | string
+    fromAddress?: StringFieldUpdateOperationsInput | string
+    toRecipients?: JsonNullValueInput | InputJsonValue
+    receivedDateTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    sentDateTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isRead?: BoolFieldUpdateOperationsInput | boolean
+    hasAttachments?: BoolFieldUpdateOperationsInput | boolean
+    flagStatus?: StringFieldUpdateOperationsInput | string
+    categories?: JsonNullValueInput | InputJsonValue
+    syncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutCachedEmailsNestedInput
+  }
+
+  export type CachedEmailUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    homeAccountId?: StringFieldUpdateOperationsInput | string
+    folderId?: StringFieldUpdateOperationsInput | string
+    subject?: StringFieldUpdateOperationsInput | string
+    bodyPreview?: StringFieldUpdateOperationsInput | string
+    fromName?: StringFieldUpdateOperationsInput | string
+    fromAddress?: StringFieldUpdateOperationsInput | string
+    toRecipients?: JsonNullValueInput | InputJsonValue
+    receivedDateTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    sentDateTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isRead?: BoolFieldUpdateOperationsInput | boolean
+    hasAttachments?: BoolFieldUpdateOperationsInput | boolean
+    flagStatus?: StringFieldUpdateOperationsInput | string
+    categories?: JsonNullValueInput | InputJsonValue
+    syncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CachedEmailCreateManyInput = {
+    id: string
+    userId: string
+    homeAccountId: string
+    folderId: string
+    subject?: string
+    bodyPreview?: string
+    fromName?: string
+    fromAddress?: string
+    toRecipients?: JsonNullValueInput | InputJsonValue
+    receivedDateTime: Date | string
+    sentDateTime?: Date | string | null
+    isRead?: boolean
+    hasAttachments?: boolean
+    flagStatus?: string
+    categories?: JsonNullValueInput | InputJsonValue
+    syncedAt?: Date | string
+  }
+
+  export type CachedEmailUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    homeAccountId?: StringFieldUpdateOperationsInput | string
+    folderId?: StringFieldUpdateOperationsInput | string
+    subject?: StringFieldUpdateOperationsInput | string
+    bodyPreview?: StringFieldUpdateOperationsInput | string
+    fromName?: StringFieldUpdateOperationsInput | string
+    fromAddress?: StringFieldUpdateOperationsInput | string
+    toRecipients?: JsonNullValueInput | InputJsonValue
+    receivedDateTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    sentDateTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isRead?: BoolFieldUpdateOperationsInput | boolean
+    hasAttachments?: BoolFieldUpdateOperationsInput | boolean
+    flagStatus?: StringFieldUpdateOperationsInput | string
+    categories?: JsonNullValueInput | InputJsonValue
+    syncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CachedEmailUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    homeAccountId?: StringFieldUpdateOperationsInput | string
+    folderId?: StringFieldUpdateOperationsInput | string
+    subject?: StringFieldUpdateOperationsInput | string
+    bodyPreview?: StringFieldUpdateOperationsInput | string
+    fromName?: StringFieldUpdateOperationsInput | string
+    fromAddress?: StringFieldUpdateOperationsInput | string
+    toRecipients?: JsonNullValueInput | InputJsonValue
+    receivedDateTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    sentDateTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isRead?: BoolFieldUpdateOperationsInput | boolean
+    hasAttachments?: BoolFieldUpdateOperationsInput | boolean
+    flagStatus?: StringFieldUpdateOperationsInput | string
+    categories?: JsonNullValueInput | InputJsonValue
+    syncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CachedCalendarEventCreateInput = {
+    id: string
+    homeAccountId: string
+    subject?: string
+    bodyPreview?: string
+    startDateTime: Date | string
+    endDateTime: Date | string
+    isAllDay?: boolean
+    location?: string | null
+    organizerName?: string | null
+    organizerEmail?: string | null
+    responseStatus?: string
+    onlineMeetingUrl?: string | null
+    attendees?: JsonNullValueInput | InputJsonValue
+    isRecurring?: boolean
+    syncedAt?: Date | string
+    user: UserCreateNestedOneWithoutCachedCalEventsInput
+  }
+
+  export type CachedCalendarEventUncheckedCreateInput = {
+    id: string
+    userId: string
+    homeAccountId: string
+    subject?: string
+    bodyPreview?: string
+    startDateTime: Date | string
+    endDateTime: Date | string
+    isAllDay?: boolean
+    location?: string | null
+    organizerName?: string | null
+    organizerEmail?: string | null
+    responseStatus?: string
+    onlineMeetingUrl?: string | null
+    attendees?: JsonNullValueInput | InputJsonValue
+    isRecurring?: boolean
+    syncedAt?: Date | string
+  }
+
+  export type CachedCalendarEventUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    homeAccountId?: StringFieldUpdateOperationsInput | string
+    subject?: StringFieldUpdateOperationsInput | string
+    bodyPreview?: StringFieldUpdateOperationsInput | string
+    startDateTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    endDateTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    isAllDay?: BoolFieldUpdateOperationsInput | boolean
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    organizerName?: NullableStringFieldUpdateOperationsInput | string | null
+    organizerEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    responseStatus?: StringFieldUpdateOperationsInput | string
+    onlineMeetingUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    attendees?: JsonNullValueInput | InputJsonValue
+    isRecurring?: BoolFieldUpdateOperationsInput | boolean
+    syncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutCachedCalEventsNestedInput
+  }
+
+  export type CachedCalendarEventUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    homeAccountId?: StringFieldUpdateOperationsInput | string
+    subject?: StringFieldUpdateOperationsInput | string
+    bodyPreview?: StringFieldUpdateOperationsInput | string
+    startDateTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    endDateTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    isAllDay?: BoolFieldUpdateOperationsInput | boolean
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    organizerName?: NullableStringFieldUpdateOperationsInput | string | null
+    organizerEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    responseStatus?: StringFieldUpdateOperationsInput | string
+    onlineMeetingUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    attendees?: JsonNullValueInput | InputJsonValue
+    isRecurring?: BoolFieldUpdateOperationsInput | boolean
+    syncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CachedCalendarEventCreateManyInput = {
+    id: string
+    userId: string
+    homeAccountId: string
+    subject?: string
+    bodyPreview?: string
+    startDateTime: Date | string
+    endDateTime: Date | string
+    isAllDay?: boolean
+    location?: string | null
+    organizerName?: string | null
+    organizerEmail?: string | null
+    responseStatus?: string
+    onlineMeetingUrl?: string | null
+    attendees?: JsonNullValueInput | InputJsonValue
+    isRecurring?: boolean
+    syncedAt?: Date | string
+  }
+
+  export type CachedCalendarEventUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    homeAccountId?: StringFieldUpdateOperationsInput | string
+    subject?: StringFieldUpdateOperationsInput | string
+    bodyPreview?: StringFieldUpdateOperationsInput | string
+    startDateTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    endDateTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    isAllDay?: BoolFieldUpdateOperationsInput | boolean
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    organizerName?: NullableStringFieldUpdateOperationsInput | string | null
+    organizerEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    responseStatus?: StringFieldUpdateOperationsInput | string
+    onlineMeetingUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    attendees?: JsonNullValueInput | InputJsonValue
+    isRecurring?: BoolFieldUpdateOperationsInput | boolean
+    syncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CachedCalendarEventUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    homeAccountId?: StringFieldUpdateOperationsInput | string
+    subject?: StringFieldUpdateOperationsInput | string
+    bodyPreview?: StringFieldUpdateOperationsInput | string
+    startDateTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    endDateTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    isAllDay?: BoolFieldUpdateOperationsInput | boolean
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    organizerName?: NullableStringFieldUpdateOperationsInput | string | null
+    organizerEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    responseStatus?: StringFieldUpdateOperationsInput | string
+    onlineMeetingUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    attendees?: JsonNullValueInput | InputJsonValue
+    isRecurring?: BoolFieldUpdateOperationsInput | boolean
+    syncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CachedContactCreateInput = {
+    id: string
+    homeAccountId: string
+    displayName?: string
+    emailAddress?: string
+    phone?: string
+    jobTitle?: string
+    company?: string
+    syncedAt?: Date | string
+    user: UserCreateNestedOneWithoutCachedContactsInput
+  }
+
+  export type CachedContactUncheckedCreateInput = {
+    id: string
+    userId: string
+    homeAccountId: string
+    displayName?: string
+    emailAddress?: string
+    phone?: string
+    jobTitle?: string
+    company?: string
+    syncedAt?: Date | string
+  }
+
+  export type CachedContactUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    homeAccountId?: StringFieldUpdateOperationsInput | string
+    displayName?: StringFieldUpdateOperationsInput | string
+    emailAddress?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    jobTitle?: StringFieldUpdateOperationsInput | string
+    company?: StringFieldUpdateOperationsInput | string
+    syncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutCachedContactsNestedInput
+  }
+
+  export type CachedContactUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    homeAccountId?: StringFieldUpdateOperationsInput | string
+    displayName?: StringFieldUpdateOperationsInput | string
+    emailAddress?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    jobTitle?: StringFieldUpdateOperationsInput | string
+    company?: StringFieldUpdateOperationsInput | string
+    syncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CachedContactCreateManyInput = {
+    id: string
+    userId: string
+    homeAccountId: string
+    displayName?: string
+    emailAddress?: string
+    phone?: string
+    jobTitle?: string
+    company?: string
+    syncedAt?: Date | string
+  }
+
+  export type CachedContactUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    homeAccountId?: StringFieldUpdateOperationsInput | string
+    displayName?: StringFieldUpdateOperationsInput | string
+    emailAddress?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    jobTitle?: StringFieldUpdateOperationsInput | string
+    company?: StringFieldUpdateOperationsInput | string
+    syncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CachedContactUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    homeAccountId?: StringFieldUpdateOperationsInput | string
+    displayName?: StringFieldUpdateOperationsInput | string
+    emailAddress?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    jobTitle?: StringFieldUpdateOperationsInput | string
+    company?: StringFieldUpdateOperationsInput | string
+    syncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type EmailRuleCreateInput = {
     id?: string
     name: string
@@ -13634,6 +19698,30 @@ export namespace Prisma {
     none?: SignatureWhereInput
   }
 
+  export type CachedFolderListRelationFilter = {
+    every?: CachedFolderWhereInput
+    some?: CachedFolderWhereInput
+    none?: CachedFolderWhereInput
+  }
+
+  export type CachedEmailListRelationFilter = {
+    every?: CachedEmailWhereInput
+    some?: CachedEmailWhereInput
+    none?: CachedEmailWhereInput
+  }
+
+  export type CachedCalendarEventListRelationFilter = {
+    every?: CachedCalendarEventWhereInput
+    some?: CachedCalendarEventWhereInput
+    none?: CachedCalendarEventWhereInput
+  }
+
+  export type CachedContactListRelationFilter = {
+    every?: CachedContactWhereInput
+    some?: CachedContactWhereInput
+    none?: CachedContactWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -13660,6 +19748,22 @@ export namespace Prisma {
   }
 
   export type SignatureOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type CachedFolderOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type CachedEmailOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type CachedCalendarEventOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type CachedContactOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -14024,6 +20128,212 @@ export namespace Prisma {
     not?: NestedIntFilter<$PrismaModel> | number
   }
 
+  export type CachedFolderCountOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    homeAccountId?: SortOrder
+    displayName?: SortOrder
+    parentFolderId?: SortOrder
+    unreadCount?: SortOrder
+    totalCount?: SortOrder
+    wellKnownName?: SortOrder
+    syncedAt?: SortOrder
+  }
+
+  export type CachedFolderAvgOrderByAggregateInput = {
+    unreadCount?: SortOrder
+    totalCount?: SortOrder
+  }
+
+  export type CachedFolderMaxOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    homeAccountId?: SortOrder
+    displayName?: SortOrder
+    parentFolderId?: SortOrder
+    unreadCount?: SortOrder
+    totalCount?: SortOrder
+    wellKnownName?: SortOrder
+    syncedAt?: SortOrder
+  }
+
+  export type CachedFolderMinOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    homeAccountId?: SortOrder
+    displayName?: SortOrder
+    parentFolderId?: SortOrder
+    unreadCount?: SortOrder
+    totalCount?: SortOrder
+    wellKnownName?: SortOrder
+    syncedAt?: SortOrder
+  }
+
+  export type CachedFolderSumOrderByAggregateInput = {
+    unreadCount?: SortOrder
+    totalCount?: SortOrder
+  }
+
+  export type IntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
+  }
+
+  export type CachedEmailCountOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    homeAccountId?: SortOrder
+    folderId?: SortOrder
+    subject?: SortOrder
+    bodyPreview?: SortOrder
+    fromName?: SortOrder
+    fromAddress?: SortOrder
+    toRecipients?: SortOrder
+    receivedDateTime?: SortOrder
+    sentDateTime?: SortOrder
+    isRead?: SortOrder
+    hasAttachments?: SortOrder
+    flagStatus?: SortOrder
+    categories?: SortOrder
+    syncedAt?: SortOrder
+  }
+
+  export type CachedEmailMaxOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    homeAccountId?: SortOrder
+    folderId?: SortOrder
+    subject?: SortOrder
+    bodyPreview?: SortOrder
+    fromName?: SortOrder
+    fromAddress?: SortOrder
+    receivedDateTime?: SortOrder
+    sentDateTime?: SortOrder
+    isRead?: SortOrder
+    hasAttachments?: SortOrder
+    flagStatus?: SortOrder
+    syncedAt?: SortOrder
+  }
+
+  export type CachedEmailMinOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    homeAccountId?: SortOrder
+    folderId?: SortOrder
+    subject?: SortOrder
+    bodyPreview?: SortOrder
+    fromName?: SortOrder
+    fromAddress?: SortOrder
+    receivedDateTime?: SortOrder
+    sentDateTime?: SortOrder
+    isRead?: SortOrder
+    hasAttachments?: SortOrder
+    flagStatus?: SortOrder
+    syncedAt?: SortOrder
+  }
+
+  export type CachedCalendarEventCountOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    homeAccountId?: SortOrder
+    subject?: SortOrder
+    bodyPreview?: SortOrder
+    startDateTime?: SortOrder
+    endDateTime?: SortOrder
+    isAllDay?: SortOrder
+    location?: SortOrder
+    organizerName?: SortOrder
+    organizerEmail?: SortOrder
+    responseStatus?: SortOrder
+    onlineMeetingUrl?: SortOrder
+    attendees?: SortOrder
+    isRecurring?: SortOrder
+    syncedAt?: SortOrder
+  }
+
+  export type CachedCalendarEventMaxOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    homeAccountId?: SortOrder
+    subject?: SortOrder
+    bodyPreview?: SortOrder
+    startDateTime?: SortOrder
+    endDateTime?: SortOrder
+    isAllDay?: SortOrder
+    location?: SortOrder
+    organizerName?: SortOrder
+    organizerEmail?: SortOrder
+    responseStatus?: SortOrder
+    onlineMeetingUrl?: SortOrder
+    isRecurring?: SortOrder
+    syncedAt?: SortOrder
+  }
+
+  export type CachedCalendarEventMinOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    homeAccountId?: SortOrder
+    subject?: SortOrder
+    bodyPreview?: SortOrder
+    startDateTime?: SortOrder
+    endDateTime?: SortOrder
+    isAllDay?: SortOrder
+    location?: SortOrder
+    organizerName?: SortOrder
+    organizerEmail?: SortOrder
+    responseStatus?: SortOrder
+    onlineMeetingUrl?: SortOrder
+    isRecurring?: SortOrder
+    syncedAt?: SortOrder
+  }
+
+  export type CachedContactCountOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    homeAccountId?: SortOrder
+    displayName?: SortOrder
+    emailAddress?: SortOrder
+    phone?: SortOrder
+    jobTitle?: SortOrder
+    company?: SortOrder
+    syncedAt?: SortOrder
+  }
+
+  export type CachedContactMaxOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    homeAccountId?: SortOrder
+    displayName?: SortOrder
+    emailAddress?: SortOrder
+    phone?: SortOrder
+    jobTitle?: SortOrder
+    company?: SortOrder
+    syncedAt?: SortOrder
+  }
+
+  export type CachedContactMinOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    homeAccountId?: SortOrder
+    displayName?: SortOrder
+    emailAddress?: SortOrder
+    phone?: SortOrder
+    jobTitle?: SortOrder
+    company?: SortOrder
+    syncedAt?: SortOrder
+  }
+
   export type EmailRuleCountOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
@@ -14070,22 +20380,6 @@ export namespace Prisma {
   export type EmailRuleSumOrderByAggregateInput = {
     priority?: SortOrder
     emailCount?: SortOrder
-  }
-
-  export type IntWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
-    _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedFloatFilter<$PrismaModel>
-    _sum?: NestedIntFilter<$PrismaModel>
-    _min?: NestedIntFilter<$PrismaModel>
-    _max?: NestedIntFilter<$PrismaModel>
   }
 
   export type UserCreateNestedManyWithoutOrgInput = {
@@ -14192,6 +20486,34 @@ export namespace Prisma {
     connect?: SignatureWhereUniqueInput | SignatureWhereUniqueInput[]
   }
 
+  export type CachedFolderCreateNestedManyWithoutUserInput = {
+    create?: XOR<CachedFolderCreateWithoutUserInput, CachedFolderUncheckedCreateWithoutUserInput> | CachedFolderCreateWithoutUserInput[] | CachedFolderUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: CachedFolderCreateOrConnectWithoutUserInput | CachedFolderCreateOrConnectWithoutUserInput[]
+    createMany?: CachedFolderCreateManyUserInputEnvelope
+    connect?: CachedFolderWhereUniqueInput | CachedFolderWhereUniqueInput[]
+  }
+
+  export type CachedEmailCreateNestedManyWithoutUserInput = {
+    create?: XOR<CachedEmailCreateWithoutUserInput, CachedEmailUncheckedCreateWithoutUserInput> | CachedEmailCreateWithoutUserInput[] | CachedEmailUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: CachedEmailCreateOrConnectWithoutUserInput | CachedEmailCreateOrConnectWithoutUserInput[]
+    createMany?: CachedEmailCreateManyUserInputEnvelope
+    connect?: CachedEmailWhereUniqueInput | CachedEmailWhereUniqueInput[]
+  }
+
+  export type CachedCalendarEventCreateNestedManyWithoutUserInput = {
+    create?: XOR<CachedCalendarEventCreateWithoutUserInput, CachedCalendarEventUncheckedCreateWithoutUserInput> | CachedCalendarEventCreateWithoutUserInput[] | CachedCalendarEventUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: CachedCalendarEventCreateOrConnectWithoutUserInput | CachedCalendarEventCreateOrConnectWithoutUserInput[]
+    createMany?: CachedCalendarEventCreateManyUserInputEnvelope
+    connect?: CachedCalendarEventWhereUniqueInput | CachedCalendarEventWhereUniqueInput[]
+  }
+
+  export type CachedContactCreateNestedManyWithoutUserInput = {
+    create?: XOR<CachedContactCreateWithoutUserInput, CachedContactUncheckedCreateWithoutUserInput> | CachedContactCreateWithoutUserInput[] | CachedContactUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: CachedContactCreateOrConnectWithoutUserInput | CachedContactCreateOrConnectWithoutUserInput[]
+    createMany?: CachedContactCreateManyUserInputEnvelope
+    connect?: CachedContactWhereUniqueInput | CachedContactWhereUniqueInput[]
+  }
+
   export type MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<MsConnectedAccountCreateWithoutUserInput, MsConnectedAccountUncheckedCreateWithoutUserInput> | MsConnectedAccountCreateWithoutUserInput[] | MsConnectedAccountUncheckedCreateWithoutUserInput[]
     connectOrCreate?: MsConnectedAccountCreateOrConnectWithoutUserInput | MsConnectedAccountCreateOrConnectWithoutUserInput[]
@@ -14238,6 +20560,34 @@ export namespace Prisma {
     connectOrCreate?: SignatureCreateOrConnectWithoutUserInput | SignatureCreateOrConnectWithoutUserInput[]
     createMany?: SignatureCreateManyUserInputEnvelope
     connect?: SignatureWhereUniqueInput | SignatureWhereUniqueInput[]
+  }
+
+  export type CachedFolderUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<CachedFolderCreateWithoutUserInput, CachedFolderUncheckedCreateWithoutUserInput> | CachedFolderCreateWithoutUserInput[] | CachedFolderUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: CachedFolderCreateOrConnectWithoutUserInput | CachedFolderCreateOrConnectWithoutUserInput[]
+    createMany?: CachedFolderCreateManyUserInputEnvelope
+    connect?: CachedFolderWhereUniqueInput | CachedFolderWhereUniqueInput[]
+  }
+
+  export type CachedEmailUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<CachedEmailCreateWithoutUserInput, CachedEmailUncheckedCreateWithoutUserInput> | CachedEmailCreateWithoutUserInput[] | CachedEmailUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: CachedEmailCreateOrConnectWithoutUserInput | CachedEmailCreateOrConnectWithoutUserInput[]
+    createMany?: CachedEmailCreateManyUserInputEnvelope
+    connect?: CachedEmailWhereUniqueInput | CachedEmailWhereUniqueInput[]
+  }
+
+  export type CachedCalendarEventUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<CachedCalendarEventCreateWithoutUserInput, CachedCalendarEventUncheckedCreateWithoutUserInput> | CachedCalendarEventCreateWithoutUserInput[] | CachedCalendarEventUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: CachedCalendarEventCreateOrConnectWithoutUserInput | CachedCalendarEventCreateOrConnectWithoutUserInput[]
+    createMany?: CachedCalendarEventCreateManyUserInputEnvelope
+    connect?: CachedCalendarEventWhereUniqueInput | CachedCalendarEventWhereUniqueInput[]
+  }
+
+  export type CachedContactUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<CachedContactCreateWithoutUserInput, CachedContactUncheckedCreateWithoutUserInput> | CachedContactCreateWithoutUserInput[] | CachedContactUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: CachedContactCreateOrConnectWithoutUserInput | CachedContactCreateOrConnectWithoutUserInput[]
+    createMany?: CachedContactCreateManyUserInputEnvelope
+    connect?: CachedContactWhereUniqueInput | CachedContactWhereUniqueInput[]
   }
 
   export type NullableStringFieldUpdateOperationsInput = {
@@ -14346,6 +20696,62 @@ export namespace Prisma {
     deleteMany?: SignatureScalarWhereInput | SignatureScalarWhereInput[]
   }
 
+  export type CachedFolderUpdateManyWithoutUserNestedInput = {
+    create?: XOR<CachedFolderCreateWithoutUserInput, CachedFolderUncheckedCreateWithoutUserInput> | CachedFolderCreateWithoutUserInput[] | CachedFolderUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: CachedFolderCreateOrConnectWithoutUserInput | CachedFolderCreateOrConnectWithoutUserInput[]
+    upsert?: CachedFolderUpsertWithWhereUniqueWithoutUserInput | CachedFolderUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: CachedFolderCreateManyUserInputEnvelope
+    set?: CachedFolderWhereUniqueInput | CachedFolderWhereUniqueInput[]
+    disconnect?: CachedFolderWhereUniqueInput | CachedFolderWhereUniqueInput[]
+    delete?: CachedFolderWhereUniqueInput | CachedFolderWhereUniqueInput[]
+    connect?: CachedFolderWhereUniqueInput | CachedFolderWhereUniqueInput[]
+    update?: CachedFolderUpdateWithWhereUniqueWithoutUserInput | CachedFolderUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: CachedFolderUpdateManyWithWhereWithoutUserInput | CachedFolderUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: CachedFolderScalarWhereInput | CachedFolderScalarWhereInput[]
+  }
+
+  export type CachedEmailUpdateManyWithoutUserNestedInput = {
+    create?: XOR<CachedEmailCreateWithoutUserInput, CachedEmailUncheckedCreateWithoutUserInput> | CachedEmailCreateWithoutUserInput[] | CachedEmailUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: CachedEmailCreateOrConnectWithoutUserInput | CachedEmailCreateOrConnectWithoutUserInput[]
+    upsert?: CachedEmailUpsertWithWhereUniqueWithoutUserInput | CachedEmailUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: CachedEmailCreateManyUserInputEnvelope
+    set?: CachedEmailWhereUniqueInput | CachedEmailWhereUniqueInput[]
+    disconnect?: CachedEmailWhereUniqueInput | CachedEmailWhereUniqueInput[]
+    delete?: CachedEmailWhereUniqueInput | CachedEmailWhereUniqueInput[]
+    connect?: CachedEmailWhereUniqueInput | CachedEmailWhereUniqueInput[]
+    update?: CachedEmailUpdateWithWhereUniqueWithoutUserInput | CachedEmailUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: CachedEmailUpdateManyWithWhereWithoutUserInput | CachedEmailUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: CachedEmailScalarWhereInput | CachedEmailScalarWhereInput[]
+  }
+
+  export type CachedCalendarEventUpdateManyWithoutUserNestedInput = {
+    create?: XOR<CachedCalendarEventCreateWithoutUserInput, CachedCalendarEventUncheckedCreateWithoutUserInput> | CachedCalendarEventCreateWithoutUserInput[] | CachedCalendarEventUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: CachedCalendarEventCreateOrConnectWithoutUserInput | CachedCalendarEventCreateOrConnectWithoutUserInput[]
+    upsert?: CachedCalendarEventUpsertWithWhereUniqueWithoutUserInput | CachedCalendarEventUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: CachedCalendarEventCreateManyUserInputEnvelope
+    set?: CachedCalendarEventWhereUniqueInput | CachedCalendarEventWhereUniqueInput[]
+    disconnect?: CachedCalendarEventWhereUniqueInput | CachedCalendarEventWhereUniqueInput[]
+    delete?: CachedCalendarEventWhereUniqueInput | CachedCalendarEventWhereUniqueInput[]
+    connect?: CachedCalendarEventWhereUniqueInput | CachedCalendarEventWhereUniqueInput[]
+    update?: CachedCalendarEventUpdateWithWhereUniqueWithoutUserInput | CachedCalendarEventUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: CachedCalendarEventUpdateManyWithWhereWithoutUserInput | CachedCalendarEventUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: CachedCalendarEventScalarWhereInput | CachedCalendarEventScalarWhereInput[]
+  }
+
+  export type CachedContactUpdateManyWithoutUserNestedInput = {
+    create?: XOR<CachedContactCreateWithoutUserInput, CachedContactUncheckedCreateWithoutUserInput> | CachedContactCreateWithoutUserInput[] | CachedContactUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: CachedContactCreateOrConnectWithoutUserInput | CachedContactCreateOrConnectWithoutUserInput[]
+    upsert?: CachedContactUpsertWithWhereUniqueWithoutUserInput | CachedContactUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: CachedContactCreateManyUserInputEnvelope
+    set?: CachedContactWhereUniqueInput | CachedContactWhereUniqueInput[]
+    disconnect?: CachedContactWhereUniqueInput | CachedContactWhereUniqueInput[]
+    delete?: CachedContactWhereUniqueInput | CachedContactWhereUniqueInput[]
+    connect?: CachedContactWhereUniqueInput | CachedContactWhereUniqueInput[]
+    update?: CachedContactUpdateWithWhereUniqueWithoutUserInput | CachedContactUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: CachedContactUpdateManyWithWhereWithoutUserInput | CachedContactUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: CachedContactScalarWhereInput | CachedContactScalarWhereInput[]
+  }
+
   export type MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput = {
     create?: XOR<MsConnectedAccountCreateWithoutUserInput, MsConnectedAccountUncheckedCreateWithoutUserInput> | MsConnectedAccountCreateWithoutUserInput[] | MsConnectedAccountUncheckedCreateWithoutUserInput[]
     connectOrCreate?: MsConnectedAccountCreateOrConnectWithoutUserInput | MsConnectedAccountCreateOrConnectWithoutUserInput[]
@@ -14440,6 +20846,62 @@ export namespace Prisma {
     deleteMany?: SignatureScalarWhereInput | SignatureScalarWhereInput[]
   }
 
+  export type CachedFolderUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<CachedFolderCreateWithoutUserInput, CachedFolderUncheckedCreateWithoutUserInput> | CachedFolderCreateWithoutUserInput[] | CachedFolderUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: CachedFolderCreateOrConnectWithoutUserInput | CachedFolderCreateOrConnectWithoutUserInput[]
+    upsert?: CachedFolderUpsertWithWhereUniqueWithoutUserInput | CachedFolderUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: CachedFolderCreateManyUserInputEnvelope
+    set?: CachedFolderWhereUniqueInput | CachedFolderWhereUniqueInput[]
+    disconnect?: CachedFolderWhereUniqueInput | CachedFolderWhereUniqueInput[]
+    delete?: CachedFolderWhereUniqueInput | CachedFolderWhereUniqueInput[]
+    connect?: CachedFolderWhereUniqueInput | CachedFolderWhereUniqueInput[]
+    update?: CachedFolderUpdateWithWhereUniqueWithoutUserInput | CachedFolderUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: CachedFolderUpdateManyWithWhereWithoutUserInput | CachedFolderUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: CachedFolderScalarWhereInput | CachedFolderScalarWhereInput[]
+  }
+
+  export type CachedEmailUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<CachedEmailCreateWithoutUserInput, CachedEmailUncheckedCreateWithoutUserInput> | CachedEmailCreateWithoutUserInput[] | CachedEmailUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: CachedEmailCreateOrConnectWithoutUserInput | CachedEmailCreateOrConnectWithoutUserInput[]
+    upsert?: CachedEmailUpsertWithWhereUniqueWithoutUserInput | CachedEmailUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: CachedEmailCreateManyUserInputEnvelope
+    set?: CachedEmailWhereUniqueInput | CachedEmailWhereUniqueInput[]
+    disconnect?: CachedEmailWhereUniqueInput | CachedEmailWhereUniqueInput[]
+    delete?: CachedEmailWhereUniqueInput | CachedEmailWhereUniqueInput[]
+    connect?: CachedEmailWhereUniqueInput | CachedEmailWhereUniqueInput[]
+    update?: CachedEmailUpdateWithWhereUniqueWithoutUserInput | CachedEmailUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: CachedEmailUpdateManyWithWhereWithoutUserInput | CachedEmailUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: CachedEmailScalarWhereInput | CachedEmailScalarWhereInput[]
+  }
+
+  export type CachedCalendarEventUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<CachedCalendarEventCreateWithoutUserInput, CachedCalendarEventUncheckedCreateWithoutUserInput> | CachedCalendarEventCreateWithoutUserInput[] | CachedCalendarEventUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: CachedCalendarEventCreateOrConnectWithoutUserInput | CachedCalendarEventCreateOrConnectWithoutUserInput[]
+    upsert?: CachedCalendarEventUpsertWithWhereUniqueWithoutUserInput | CachedCalendarEventUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: CachedCalendarEventCreateManyUserInputEnvelope
+    set?: CachedCalendarEventWhereUniqueInput | CachedCalendarEventWhereUniqueInput[]
+    disconnect?: CachedCalendarEventWhereUniqueInput | CachedCalendarEventWhereUniqueInput[]
+    delete?: CachedCalendarEventWhereUniqueInput | CachedCalendarEventWhereUniqueInput[]
+    connect?: CachedCalendarEventWhereUniqueInput | CachedCalendarEventWhereUniqueInput[]
+    update?: CachedCalendarEventUpdateWithWhereUniqueWithoutUserInput | CachedCalendarEventUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: CachedCalendarEventUpdateManyWithWhereWithoutUserInput | CachedCalendarEventUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: CachedCalendarEventScalarWhereInput | CachedCalendarEventScalarWhereInput[]
+  }
+
+  export type CachedContactUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<CachedContactCreateWithoutUserInput, CachedContactUncheckedCreateWithoutUserInput> | CachedContactCreateWithoutUserInput[] | CachedContactUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: CachedContactCreateOrConnectWithoutUserInput | CachedContactCreateOrConnectWithoutUserInput[]
+    upsert?: CachedContactUpsertWithWhereUniqueWithoutUserInput | CachedContactUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: CachedContactCreateManyUserInputEnvelope
+    set?: CachedContactWhereUniqueInput | CachedContactWhereUniqueInput[]
+    disconnect?: CachedContactWhereUniqueInput | CachedContactWhereUniqueInput[]
+    delete?: CachedContactWhereUniqueInput | CachedContactWhereUniqueInput[]
+    connect?: CachedContactWhereUniqueInput | CachedContactWhereUniqueInput[]
+    update?: CachedContactUpdateWithWhereUniqueWithoutUserInput | CachedContactUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: CachedContactUpdateManyWithWhereWithoutUserInput | CachedContactUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: CachedContactScalarWhereInput | CachedContactScalarWhereInput[]
+  }
+
   export type UserCreateNestedOneWithoutMsAccountsInput = {
     create?: XOR<UserCreateWithoutMsAccountsInput, UserUncheckedCreateWithoutMsAccountsInput>
     connectOrCreate?: UserCreateOrConnectWithoutMsAccountsInput
@@ -14532,9 +20994,9 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutSignaturesInput, UserUpdateWithoutSignaturesInput>, UserUncheckedUpdateWithoutSignaturesInput>
   }
 
-  export type UserCreateNestedOneWithoutEmailRulesInput = {
-    create?: XOR<UserCreateWithoutEmailRulesInput, UserUncheckedCreateWithoutEmailRulesInput>
-    connectOrCreate?: UserCreateOrConnectWithoutEmailRulesInput
+  export type UserCreateNestedOneWithoutCachedFoldersInput = {
+    create?: XOR<UserCreateWithoutCachedFoldersInput, UserUncheckedCreateWithoutCachedFoldersInput>
+    connectOrCreate?: UserCreateOrConnectWithoutCachedFoldersInput
     connect?: UserWhereUniqueInput
   }
 
@@ -14544,6 +21006,62 @@ export namespace Prisma {
     decrement?: number
     multiply?: number
     divide?: number
+  }
+
+  export type UserUpdateOneRequiredWithoutCachedFoldersNestedInput = {
+    create?: XOR<UserCreateWithoutCachedFoldersInput, UserUncheckedCreateWithoutCachedFoldersInput>
+    connectOrCreate?: UserCreateOrConnectWithoutCachedFoldersInput
+    upsert?: UserUpsertWithoutCachedFoldersInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutCachedFoldersInput, UserUpdateWithoutCachedFoldersInput>, UserUncheckedUpdateWithoutCachedFoldersInput>
+  }
+
+  export type UserCreateNestedOneWithoutCachedEmailsInput = {
+    create?: XOR<UserCreateWithoutCachedEmailsInput, UserUncheckedCreateWithoutCachedEmailsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutCachedEmailsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserUpdateOneRequiredWithoutCachedEmailsNestedInput = {
+    create?: XOR<UserCreateWithoutCachedEmailsInput, UserUncheckedCreateWithoutCachedEmailsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutCachedEmailsInput
+    upsert?: UserUpsertWithoutCachedEmailsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutCachedEmailsInput, UserUpdateWithoutCachedEmailsInput>, UserUncheckedUpdateWithoutCachedEmailsInput>
+  }
+
+  export type UserCreateNestedOneWithoutCachedCalEventsInput = {
+    create?: XOR<UserCreateWithoutCachedCalEventsInput, UserUncheckedCreateWithoutCachedCalEventsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutCachedCalEventsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserUpdateOneRequiredWithoutCachedCalEventsNestedInput = {
+    create?: XOR<UserCreateWithoutCachedCalEventsInput, UserUncheckedCreateWithoutCachedCalEventsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutCachedCalEventsInput
+    upsert?: UserUpsertWithoutCachedCalEventsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutCachedCalEventsInput, UserUpdateWithoutCachedCalEventsInput>, UserUncheckedUpdateWithoutCachedCalEventsInput>
+  }
+
+  export type UserCreateNestedOneWithoutCachedContactsInput = {
+    create?: XOR<UserCreateWithoutCachedContactsInput, UserUncheckedCreateWithoutCachedContactsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutCachedContactsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserUpdateOneRequiredWithoutCachedContactsNestedInput = {
+    create?: XOR<UserCreateWithoutCachedContactsInput, UserUncheckedCreateWithoutCachedContactsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutCachedContactsInput
+    upsert?: UserUpsertWithoutCachedContactsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutCachedContactsInput, UserUpdateWithoutCachedContactsInput>, UserUncheckedUpdateWithoutCachedContactsInput>
+  }
+
+  export type UserCreateNestedOneWithoutEmailRulesInput = {
+    create?: XOR<UserCreateWithoutEmailRulesInput, UserUncheckedCreateWithoutEmailRulesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutEmailRulesInput
+    connect?: UserWhereUniqueInput
   }
 
   export type UserUpdateOneRequiredWithoutEmailRulesNestedInput = {
@@ -14765,6 +21283,10 @@ export namespace Prisma {
     drafts?: DraftCreateNestedManyWithoutUserInput
     emailRules?: EmailRuleCreateNestedManyWithoutUserInput
     signatures?: SignatureCreateNestedManyWithoutUserInput
+    cachedFolders?: CachedFolderCreateNestedManyWithoutUserInput
+    cachedEmails?: CachedEmailCreateNestedManyWithoutUserInput
+    cachedCalEvents?: CachedCalendarEventCreateNestedManyWithoutUserInput
+    cachedContacts?: CachedContactCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutOrgInput = {
@@ -14781,6 +21303,10 @@ export namespace Prisma {
     drafts?: DraftUncheckedCreateNestedManyWithoutUserInput
     emailRules?: EmailRuleUncheckedCreateNestedManyWithoutUserInput
     signatures?: SignatureUncheckedCreateNestedManyWithoutUserInput
+    cachedFolders?: CachedFolderUncheckedCreateNestedManyWithoutUserInput
+    cachedEmails?: CachedEmailUncheckedCreateNestedManyWithoutUserInput
+    cachedCalEvents?: CachedCalendarEventUncheckedCreateNestedManyWithoutUserInput
+    cachedContacts?: CachedContactUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutOrgInput = {
@@ -15060,6 +21586,162 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type CachedFolderCreateWithoutUserInput = {
+    id: string
+    homeAccountId: string
+    displayName: string
+    parentFolderId?: string | null
+    unreadCount?: number
+    totalCount?: number
+    wellKnownName?: string | null
+    syncedAt?: Date | string
+  }
+
+  export type CachedFolderUncheckedCreateWithoutUserInput = {
+    id: string
+    homeAccountId: string
+    displayName: string
+    parentFolderId?: string | null
+    unreadCount?: number
+    totalCount?: number
+    wellKnownName?: string | null
+    syncedAt?: Date | string
+  }
+
+  export type CachedFolderCreateOrConnectWithoutUserInput = {
+    where: CachedFolderWhereUniqueInput
+    create: XOR<CachedFolderCreateWithoutUserInput, CachedFolderUncheckedCreateWithoutUserInput>
+  }
+
+  export type CachedFolderCreateManyUserInputEnvelope = {
+    data: CachedFolderCreateManyUserInput | CachedFolderCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type CachedEmailCreateWithoutUserInput = {
+    id: string
+    homeAccountId: string
+    folderId: string
+    subject?: string
+    bodyPreview?: string
+    fromName?: string
+    fromAddress?: string
+    toRecipients?: JsonNullValueInput | InputJsonValue
+    receivedDateTime: Date | string
+    sentDateTime?: Date | string | null
+    isRead?: boolean
+    hasAttachments?: boolean
+    flagStatus?: string
+    categories?: JsonNullValueInput | InputJsonValue
+    syncedAt?: Date | string
+  }
+
+  export type CachedEmailUncheckedCreateWithoutUserInput = {
+    id: string
+    homeAccountId: string
+    folderId: string
+    subject?: string
+    bodyPreview?: string
+    fromName?: string
+    fromAddress?: string
+    toRecipients?: JsonNullValueInput | InputJsonValue
+    receivedDateTime: Date | string
+    sentDateTime?: Date | string | null
+    isRead?: boolean
+    hasAttachments?: boolean
+    flagStatus?: string
+    categories?: JsonNullValueInput | InputJsonValue
+    syncedAt?: Date | string
+  }
+
+  export type CachedEmailCreateOrConnectWithoutUserInput = {
+    where: CachedEmailWhereUniqueInput
+    create: XOR<CachedEmailCreateWithoutUserInput, CachedEmailUncheckedCreateWithoutUserInput>
+  }
+
+  export type CachedEmailCreateManyUserInputEnvelope = {
+    data: CachedEmailCreateManyUserInput | CachedEmailCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type CachedCalendarEventCreateWithoutUserInput = {
+    id: string
+    homeAccountId: string
+    subject?: string
+    bodyPreview?: string
+    startDateTime: Date | string
+    endDateTime: Date | string
+    isAllDay?: boolean
+    location?: string | null
+    organizerName?: string | null
+    organizerEmail?: string | null
+    responseStatus?: string
+    onlineMeetingUrl?: string | null
+    attendees?: JsonNullValueInput | InputJsonValue
+    isRecurring?: boolean
+    syncedAt?: Date | string
+  }
+
+  export type CachedCalendarEventUncheckedCreateWithoutUserInput = {
+    id: string
+    homeAccountId: string
+    subject?: string
+    bodyPreview?: string
+    startDateTime: Date | string
+    endDateTime: Date | string
+    isAllDay?: boolean
+    location?: string | null
+    organizerName?: string | null
+    organizerEmail?: string | null
+    responseStatus?: string
+    onlineMeetingUrl?: string | null
+    attendees?: JsonNullValueInput | InputJsonValue
+    isRecurring?: boolean
+    syncedAt?: Date | string
+  }
+
+  export type CachedCalendarEventCreateOrConnectWithoutUserInput = {
+    where: CachedCalendarEventWhereUniqueInput
+    create: XOR<CachedCalendarEventCreateWithoutUserInput, CachedCalendarEventUncheckedCreateWithoutUserInput>
+  }
+
+  export type CachedCalendarEventCreateManyUserInputEnvelope = {
+    data: CachedCalendarEventCreateManyUserInput | CachedCalendarEventCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type CachedContactCreateWithoutUserInput = {
+    id: string
+    homeAccountId: string
+    displayName?: string
+    emailAddress?: string
+    phone?: string
+    jobTitle?: string
+    company?: string
+    syncedAt?: Date | string
+  }
+
+  export type CachedContactUncheckedCreateWithoutUserInput = {
+    id: string
+    homeAccountId: string
+    displayName?: string
+    emailAddress?: string
+    phone?: string
+    jobTitle?: string
+    company?: string
+    syncedAt?: Date | string
+  }
+
+  export type CachedContactCreateOrConnectWithoutUserInput = {
+    where: CachedContactWhereUniqueInput
+    create: XOR<CachedContactCreateWithoutUserInput, CachedContactUncheckedCreateWithoutUserInput>
+  }
+
+  export type CachedContactCreateManyUserInputEnvelope = {
+    data: CachedContactCreateManyUserInput | CachedContactCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
   export type OrganizationUpsertWithoutUsersInput = {
     update: XOR<OrganizationUpdateWithoutUsersInput, OrganizationUncheckedUpdateWithoutUsersInput>
     create: XOR<OrganizationCreateWithoutUsersInput, OrganizationUncheckedCreateWithoutUsersInput>
@@ -15300,6 +21982,144 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Signature"> | Date | string
   }
 
+  export type CachedFolderUpsertWithWhereUniqueWithoutUserInput = {
+    where: CachedFolderWhereUniqueInput
+    update: XOR<CachedFolderUpdateWithoutUserInput, CachedFolderUncheckedUpdateWithoutUserInput>
+    create: XOR<CachedFolderCreateWithoutUserInput, CachedFolderUncheckedCreateWithoutUserInput>
+  }
+
+  export type CachedFolderUpdateWithWhereUniqueWithoutUserInput = {
+    where: CachedFolderWhereUniqueInput
+    data: XOR<CachedFolderUpdateWithoutUserInput, CachedFolderUncheckedUpdateWithoutUserInput>
+  }
+
+  export type CachedFolderUpdateManyWithWhereWithoutUserInput = {
+    where: CachedFolderScalarWhereInput
+    data: XOR<CachedFolderUpdateManyMutationInput, CachedFolderUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type CachedFolderScalarWhereInput = {
+    AND?: CachedFolderScalarWhereInput | CachedFolderScalarWhereInput[]
+    OR?: CachedFolderScalarWhereInput[]
+    NOT?: CachedFolderScalarWhereInput | CachedFolderScalarWhereInput[]
+    id?: StringFilter<"CachedFolder"> | string
+    userId?: StringFilter<"CachedFolder"> | string
+    homeAccountId?: StringFilter<"CachedFolder"> | string
+    displayName?: StringFilter<"CachedFolder"> | string
+    parentFolderId?: StringNullableFilter<"CachedFolder"> | string | null
+    unreadCount?: IntFilter<"CachedFolder"> | number
+    totalCount?: IntFilter<"CachedFolder"> | number
+    wellKnownName?: StringNullableFilter<"CachedFolder"> | string | null
+    syncedAt?: DateTimeFilter<"CachedFolder"> | Date | string
+  }
+
+  export type CachedEmailUpsertWithWhereUniqueWithoutUserInput = {
+    where: CachedEmailWhereUniqueInput
+    update: XOR<CachedEmailUpdateWithoutUserInput, CachedEmailUncheckedUpdateWithoutUserInput>
+    create: XOR<CachedEmailCreateWithoutUserInput, CachedEmailUncheckedCreateWithoutUserInput>
+  }
+
+  export type CachedEmailUpdateWithWhereUniqueWithoutUserInput = {
+    where: CachedEmailWhereUniqueInput
+    data: XOR<CachedEmailUpdateWithoutUserInput, CachedEmailUncheckedUpdateWithoutUserInput>
+  }
+
+  export type CachedEmailUpdateManyWithWhereWithoutUserInput = {
+    where: CachedEmailScalarWhereInput
+    data: XOR<CachedEmailUpdateManyMutationInput, CachedEmailUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type CachedEmailScalarWhereInput = {
+    AND?: CachedEmailScalarWhereInput | CachedEmailScalarWhereInput[]
+    OR?: CachedEmailScalarWhereInput[]
+    NOT?: CachedEmailScalarWhereInput | CachedEmailScalarWhereInput[]
+    id?: StringFilter<"CachedEmail"> | string
+    userId?: StringFilter<"CachedEmail"> | string
+    homeAccountId?: StringFilter<"CachedEmail"> | string
+    folderId?: StringFilter<"CachedEmail"> | string
+    subject?: StringFilter<"CachedEmail"> | string
+    bodyPreview?: StringFilter<"CachedEmail"> | string
+    fromName?: StringFilter<"CachedEmail"> | string
+    fromAddress?: StringFilter<"CachedEmail"> | string
+    toRecipients?: JsonFilter<"CachedEmail">
+    receivedDateTime?: DateTimeFilter<"CachedEmail"> | Date | string
+    sentDateTime?: DateTimeNullableFilter<"CachedEmail"> | Date | string | null
+    isRead?: BoolFilter<"CachedEmail"> | boolean
+    hasAttachments?: BoolFilter<"CachedEmail"> | boolean
+    flagStatus?: StringFilter<"CachedEmail"> | string
+    categories?: JsonFilter<"CachedEmail">
+    syncedAt?: DateTimeFilter<"CachedEmail"> | Date | string
+  }
+
+  export type CachedCalendarEventUpsertWithWhereUniqueWithoutUserInput = {
+    where: CachedCalendarEventWhereUniqueInput
+    update: XOR<CachedCalendarEventUpdateWithoutUserInput, CachedCalendarEventUncheckedUpdateWithoutUserInput>
+    create: XOR<CachedCalendarEventCreateWithoutUserInput, CachedCalendarEventUncheckedCreateWithoutUserInput>
+  }
+
+  export type CachedCalendarEventUpdateWithWhereUniqueWithoutUserInput = {
+    where: CachedCalendarEventWhereUniqueInput
+    data: XOR<CachedCalendarEventUpdateWithoutUserInput, CachedCalendarEventUncheckedUpdateWithoutUserInput>
+  }
+
+  export type CachedCalendarEventUpdateManyWithWhereWithoutUserInput = {
+    where: CachedCalendarEventScalarWhereInput
+    data: XOR<CachedCalendarEventUpdateManyMutationInput, CachedCalendarEventUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type CachedCalendarEventScalarWhereInput = {
+    AND?: CachedCalendarEventScalarWhereInput | CachedCalendarEventScalarWhereInput[]
+    OR?: CachedCalendarEventScalarWhereInput[]
+    NOT?: CachedCalendarEventScalarWhereInput | CachedCalendarEventScalarWhereInput[]
+    id?: StringFilter<"CachedCalendarEvent"> | string
+    userId?: StringFilter<"CachedCalendarEvent"> | string
+    homeAccountId?: StringFilter<"CachedCalendarEvent"> | string
+    subject?: StringFilter<"CachedCalendarEvent"> | string
+    bodyPreview?: StringFilter<"CachedCalendarEvent"> | string
+    startDateTime?: DateTimeFilter<"CachedCalendarEvent"> | Date | string
+    endDateTime?: DateTimeFilter<"CachedCalendarEvent"> | Date | string
+    isAllDay?: BoolFilter<"CachedCalendarEvent"> | boolean
+    location?: StringNullableFilter<"CachedCalendarEvent"> | string | null
+    organizerName?: StringNullableFilter<"CachedCalendarEvent"> | string | null
+    organizerEmail?: StringNullableFilter<"CachedCalendarEvent"> | string | null
+    responseStatus?: StringFilter<"CachedCalendarEvent"> | string
+    onlineMeetingUrl?: StringNullableFilter<"CachedCalendarEvent"> | string | null
+    attendees?: JsonFilter<"CachedCalendarEvent">
+    isRecurring?: BoolFilter<"CachedCalendarEvent"> | boolean
+    syncedAt?: DateTimeFilter<"CachedCalendarEvent"> | Date | string
+  }
+
+  export type CachedContactUpsertWithWhereUniqueWithoutUserInput = {
+    where: CachedContactWhereUniqueInput
+    update: XOR<CachedContactUpdateWithoutUserInput, CachedContactUncheckedUpdateWithoutUserInput>
+    create: XOR<CachedContactCreateWithoutUserInput, CachedContactUncheckedCreateWithoutUserInput>
+  }
+
+  export type CachedContactUpdateWithWhereUniqueWithoutUserInput = {
+    where: CachedContactWhereUniqueInput
+    data: XOR<CachedContactUpdateWithoutUserInput, CachedContactUncheckedUpdateWithoutUserInput>
+  }
+
+  export type CachedContactUpdateManyWithWhereWithoutUserInput = {
+    where: CachedContactScalarWhereInput
+    data: XOR<CachedContactUpdateManyMutationInput, CachedContactUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type CachedContactScalarWhereInput = {
+    AND?: CachedContactScalarWhereInput | CachedContactScalarWhereInput[]
+    OR?: CachedContactScalarWhereInput[]
+    NOT?: CachedContactScalarWhereInput | CachedContactScalarWhereInput[]
+    id?: StringFilter<"CachedContact"> | string
+    userId?: StringFilter<"CachedContact"> | string
+    homeAccountId?: StringFilter<"CachedContact"> | string
+    displayName?: StringFilter<"CachedContact"> | string
+    emailAddress?: StringFilter<"CachedContact"> | string
+    phone?: StringFilter<"CachedContact"> | string
+    jobTitle?: StringFilter<"CachedContact"> | string
+    company?: StringFilter<"CachedContact"> | string
+    syncedAt?: DateTimeFilter<"CachedContact"> | Date | string
+  }
+
   export type UserCreateWithoutMsAccountsInput = {
     id: string
     email: string
@@ -15314,6 +22134,10 @@ export namespace Prisma {
     drafts?: DraftCreateNestedManyWithoutUserInput
     emailRules?: EmailRuleCreateNestedManyWithoutUserInput
     signatures?: SignatureCreateNestedManyWithoutUserInput
+    cachedFolders?: CachedFolderCreateNestedManyWithoutUserInput
+    cachedEmails?: CachedEmailCreateNestedManyWithoutUserInput
+    cachedCalEvents?: CachedCalendarEventCreateNestedManyWithoutUserInput
+    cachedContacts?: CachedContactCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutMsAccountsInput = {
@@ -15330,6 +22154,10 @@ export namespace Prisma {
     drafts?: DraftUncheckedCreateNestedManyWithoutUserInput
     emailRules?: EmailRuleUncheckedCreateNestedManyWithoutUserInput
     signatures?: SignatureUncheckedCreateNestedManyWithoutUserInput
+    cachedFolders?: CachedFolderUncheckedCreateNestedManyWithoutUserInput
+    cachedEmails?: CachedEmailUncheckedCreateNestedManyWithoutUserInput
+    cachedCalEvents?: CachedCalendarEventUncheckedCreateNestedManyWithoutUserInput
+    cachedContacts?: CachedContactUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutMsAccountsInput = {
@@ -15362,6 +22190,10 @@ export namespace Prisma {
     drafts?: DraftUpdateManyWithoutUserNestedInput
     emailRules?: EmailRuleUpdateManyWithoutUserNestedInput
     signatures?: SignatureUpdateManyWithoutUserNestedInput
+    cachedFolders?: CachedFolderUpdateManyWithoutUserNestedInput
+    cachedEmails?: CachedEmailUpdateManyWithoutUserNestedInput
+    cachedCalEvents?: CachedCalendarEventUpdateManyWithoutUserNestedInput
+    cachedContacts?: CachedContactUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutMsAccountsInput = {
@@ -15378,6 +22210,10 @@ export namespace Prisma {
     drafts?: DraftUncheckedUpdateManyWithoutUserNestedInput
     emailRules?: EmailRuleUncheckedUpdateManyWithoutUserNestedInput
     signatures?: SignatureUncheckedUpdateManyWithoutUserNestedInput
+    cachedFolders?: CachedFolderUncheckedUpdateManyWithoutUserNestedInput
+    cachedEmails?: CachedEmailUncheckedUpdateManyWithoutUserNestedInput
+    cachedCalEvents?: CachedCalendarEventUncheckedUpdateManyWithoutUserNestedInput
+    cachedContacts?: CachedContactUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutMsalCacheInput = {
@@ -15394,6 +22230,10 @@ export namespace Prisma {
     drafts?: DraftCreateNestedManyWithoutUserInput
     emailRules?: EmailRuleCreateNestedManyWithoutUserInput
     signatures?: SignatureCreateNestedManyWithoutUserInput
+    cachedFolders?: CachedFolderCreateNestedManyWithoutUserInput
+    cachedEmails?: CachedEmailCreateNestedManyWithoutUserInput
+    cachedCalEvents?: CachedCalendarEventCreateNestedManyWithoutUserInput
+    cachedContacts?: CachedContactCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutMsalCacheInput = {
@@ -15410,6 +22250,10 @@ export namespace Prisma {
     drafts?: DraftUncheckedCreateNestedManyWithoutUserInput
     emailRules?: EmailRuleUncheckedCreateNestedManyWithoutUserInput
     signatures?: SignatureUncheckedCreateNestedManyWithoutUserInput
+    cachedFolders?: CachedFolderUncheckedCreateNestedManyWithoutUserInput
+    cachedEmails?: CachedEmailUncheckedCreateNestedManyWithoutUserInput
+    cachedCalEvents?: CachedCalendarEventUncheckedCreateNestedManyWithoutUserInput
+    cachedContacts?: CachedContactUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutMsalCacheInput = {
@@ -15442,6 +22286,10 @@ export namespace Prisma {
     drafts?: DraftUpdateManyWithoutUserNestedInput
     emailRules?: EmailRuleUpdateManyWithoutUserNestedInput
     signatures?: SignatureUpdateManyWithoutUserNestedInput
+    cachedFolders?: CachedFolderUpdateManyWithoutUserNestedInput
+    cachedEmails?: CachedEmailUpdateManyWithoutUserNestedInput
+    cachedCalEvents?: CachedCalendarEventUpdateManyWithoutUserNestedInput
+    cachedContacts?: CachedContactUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutMsalCacheInput = {
@@ -15458,6 +22306,10 @@ export namespace Prisma {
     drafts?: DraftUncheckedUpdateManyWithoutUserNestedInput
     emailRules?: EmailRuleUncheckedUpdateManyWithoutUserNestedInput
     signatures?: SignatureUncheckedUpdateManyWithoutUserNestedInput
+    cachedFolders?: CachedFolderUncheckedUpdateManyWithoutUserNestedInput
+    cachedEmails?: CachedEmailUncheckedUpdateManyWithoutUserNestedInput
+    cachedCalEvents?: CachedCalendarEventUncheckedUpdateManyWithoutUserNestedInput
+    cachedContacts?: CachedContactUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutDeltaLinksInput = {
@@ -15474,6 +22326,10 @@ export namespace Prisma {
     drafts?: DraftCreateNestedManyWithoutUserInput
     emailRules?: EmailRuleCreateNestedManyWithoutUserInput
     signatures?: SignatureCreateNestedManyWithoutUserInput
+    cachedFolders?: CachedFolderCreateNestedManyWithoutUserInput
+    cachedEmails?: CachedEmailCreateNestedManyWithoutUserInput
+    cachedCalEvents?: CachedCalendarEventCreateNestedManyWithoutUserInput
+    cachedContacts?: CachedContactCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutDeltaLinksInput = {
@@ -15490,6 +22346,10 @@ export namespace Prisma {
     drafts?: DraftUncheckedCreateNestedManyWithoutUserInput
     emailRules?: EmailRuleUncheckedCreateNestedManyWithoutUserInput
     signatures?: SignatureUncheckedCreateNestedManyWithoutUserInput
+    cachedFolders?: CachedFolderUncheckedCreateNestedManyWithoutUserInput
+    cachedEmails?: CachedEmailUncheckedCreateNestedManyWithoutUserInput
+    cachedCalEvents?: CachedCalendarEventUncheckedCreateNestedManyWithoutUserInput
+    cachedContacts?: CachedContactUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutDeltaLinksInput = {
@@ -15522,6 +22382,10 @@ export namespace Prisma {
     drafts?: DraftUpdateManyWithoutUserNestedInput
     emailRules?: EmailRuleUpdateManyWithoutUserNestedInput
     signatures?: SignatureUpdateManyWithoutUserNestedInput
+    cachedFolders?: CachedFolderUpdateManyWithoutUserNestedInput
+    cachedEmails?: CachedEmailUpdateManyWithoutUserNestedInput
+    cachedCalEvents?: CachedCalendarEventUpdateManyWithoutUserNestedInput
+    cachedContacts?: CachedContactUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutDeltaLinksInput = {
@@ -15538,6 +22402,10 @@ export namespace Prisma {
     drafts?: DraftUncheckedUpdateManyWithoutUserNestedInput
     emailRules?: EmailRuleUncheckedUpdateManyWithoutUserNestedInput
     signatures?: SignatureUncheckedUpdateManyWithoutUserNestedInput
+    cachedFolders?: CachedFolderUncheckedUpdateManyWithoutUserNestedInput
+    cachedEmails?: CachedEmailUncheckedUpdateManyWithoutUserNestedInput
+    cachedCalEvents?: CachedCalendarEventUncheckedUpdateManyWithoutUserNestedInput
+    cachedContacts?: CachedContactUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutWebhookSubsInput = {
@@ -15554,6 +22422,10 @@ export namespace Prisma {
     drafts?: DraftCreateNestedManyWithoutUserInput
     emailRules?: EmailRuleCreateNestedManyWithoutUserInput
     signatures?: SignatureCreateNestedManyWithoutUserInput
+    cachedFolders?: CachedFolderCreateNestedManyWithoutUserInput
+    cachedEmails?: CachedEmailCreateNestedManyWithoutUserInput
+    cachedCalEvents?: CachedCalendarEventCreateNestedManyWithoutUserInput
+    cachedContacts?: CachedContactCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutWebhookSubsInput = {
@@ -15570,6 +22442,10 @@ export namespace Prisma {
     drafts?: DraftUncheckedCreateNestedManyWithoutUserInput
     emailRules?: EmailRuleUncheckedCreateNestedManyWithoutUserInput
     signatures?: SignatureUncheckedCreateNestedManyWithoutUserInput
+    cachedFolders?: CachedFolderUncheckedCreateNestedManyWithoutUserInput
+    cachedEmails?: CachedEmailUncheckedCreateNestedManyWithoutUserInput
+    cachedCalEvents?: CachedCalendarEventUncheckedCreateNestedManyWithoutUserInput
+    cachedContacts?: CachedContactUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutWebhookSubsInput = {
@@ -15602,6 +22478,10 @@ export namespace Prisma {
     drafts?: DraftUpdateManyWithoutUserNestedInput
     emailRules?: EmailRuleUpdateManyWithoutUserNestedInput
     signatures?: SignatureUpdateManyWithoutUserNestedInput
+    cachedFolders?: CachedFolderUpdateManyWithoutUserNestedInput
+    cachedEmails?: CachedEmailUpdateManyWithoutUserNestedInput
+    cachedCalEvents?: CachedCalendarEventUpdateManyWithoutUserNestedInput
+    cachedContacts?: CachedContactUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutWebhookSubsInput = {
@@ -15618,6 +22498,10 @@ export namespace Prisma {
     drafts?: DraftUncheckedUpdateManyWithoutUserNestedInput
     emailRules?: EmailRuleUncheckedUpdateManyWithoutUserNestedInput
     signatures?: SignatureUncheckedUpdateManyWithoutUserNestedInput
+    cachedFolders?: CachedFolderUncheckedUpdateManyWithoutUserNestedInput
+    cachedEmails?: CachedEmailUncheckedUpdateManyWithoutUserNestedInput
+    cachedCalEvents?: CachedCalendarEventUncheckedUpdateManyWithoutUserNestedInput
+    cachedContacts?: CachedContactUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutDraftsInput = {
@@ -15634,6 +22518,10 @@ export namespace Prisma {
     webhookSubs?: WebhookSubscriptionCreateNestedManyWithoutUserInput
     emailRules?: EmailRuleCreateNestedManyWithoutUserInput
     signatures?: SignatureCreateNestedManyWithoutUserInput
+    cachedFolders?: CachedFolderCreateNestedManyWithoutUserInput
+    cachedEmails?: CachedEmailCreateNestedManyWithoutUserInput
+    cachedCalEvents?: CachedCalendarEventCreateNestedManyWithoutUserInput
+    cachedContacts?: CachedContactCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutDraftsInput = {
@@ -15650,6 +22538,10 @@ export namespace Prisma {
     webhookSubs?: WebhookSubscriptionUncheckedCreateNestedManyWithoutUserInput
     emailRules?: EmailRuleUncheckedCreateNestedManyWithoutUserInput
     signatures?: SignatureUncheckedCreateNestedManyWithoutUserInput
+    cachedFolders?: CachedFolderUncheckedCreateNestedManyWithoutUserInput
+    cachedEmails?: CachedEmailUncheckedCreateNestedManyWithoutUserInput
+    cachedCalEvents?: CachedCalendarEventUncheckedCreateNestedManyWithoutUserInput
+    cachedContacts?: CachedContactUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutDraftsInput = {
@@ -15682,6 +22574,10 @@ export namespace Prisma {
     webhookSubs?: WebhookSubscriptionUpdateManyWithoutUserNestedInput
     emailRules?: EmailRuleUpdateManyWithoutUserNestedInput
     signatures?: SignatureUpdateManyWithoutUserNestedInput
+    cachedFolders?: CachedFolderUpdateManyWithoutUserNestedInput
+    cachedEmails?: CachedEmailUpdateManyWithoutUserNestedInput
+    cachedCalEvents?: CachedCalendarEventUpdateManyWithoutUserNestedInput
+    cachedContacts?: CachedContactUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutDraftsInput = {
@@ -15698,6 +22594,10 @@ export namespace Prisma {
     webhookSubs?: WebhookSubscriptionUncheckedUpdateManyWithoutUserNestedInput
     emailRules?: EmailRuleUncheckedUpdateManyWithoutUserNestedInput
     signatures?: SignatureUncheckedUpdateManyWithoutUserNestedInput
+    cachedFolders?: CachedFolderUncheckedUpdateManyWithoutUserNestedInput
+    cachedEmails?: CachedEmailUncheckedUpdateManyWithoutUserNestedInput
+    cachedCalEvents?: CachedCalendarEventUncheckedUpdateManyWithoutUserNestedInput
+    cachedContacts?: CachedContactUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutSignaturesInput = {
@@ -15714,6 +22614,10 @@ export namespace Prisma {
     webhookSubs?: WebhookSubscriptionCreateNestedManyWithoutUserInput
     drafts?: DraftCreateNestedManyWithoutUserInput
     emailRules?: EmailRuleCreateNestedManyWithoutUserInput
+    cachedFolders?: CachedFolderCreateNestedManyWithoutUserInput
+    cachedEmails?: CachedEmailCreateNestedManyWithoutUserInput
+    cachedCalEvents?: CachedCalendarEventCreateNestedManyWithoutUserInput
+    cachedContacts?: CachedContactCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutSignaturesInput = {
@@ -15730,6 +22634,10 @@ export namespace Prisma {
     webhookSubs?: WebhookSubscriptionUncheckedCreateNestedManyWithoutUserInput
     drafts?: DraftUncheckedCreateNestedManyWithoutUserInput
     emailRules?: EmailRuleUncheckedCreateNestedManyWithoutUserInput
+    cachedFolders?: CachedFolderUncheckedCreateNestedManyWithoutUserInput
+    cachedEmails?: CachedEmailUncheckedCreateNestedManyWithoutUserInput
+    cachedCalEvents?: CachedCalendarEventUncheckedCreateNestedManyWithoutUserInput
+    cachedContacts?: CachedContactUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutSignaturesInput = {
@@ -15762,6 +22670,10 @@ export namespace Prisma {
     webhookSubs?: WebhookSubscriptionUpdateManyWithoutUserNestedInput
     drafts?: DraftUpdateManyWithoutUserNestedInput
     emailRules?: EmailRuleUpdateManyWithoutUserNestedInput
+    cachedFolders?: CachedFolderUpdateManyWithoutUserNestedInput
+    cachedEmails?: CachedEmailUpdateManyWithoutUserNestedInput
+    cachedCalEvents?: CachedCalendarEventUpdateManyWithoutUserNestedInput
+    cachedContacts?: CachedContactUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSignaturesInput = {
@@ -15778,6 +22690,394 @@ export namespace Prisma {
     webhookSubs?: WebhookSubscriptionUncheckedUpdateManyWithoutUserNestedInput
     drafts?: DraftUncheckedUpdateManyWithoutUserNestedInput
     emailRules?: EmailRuleUncheckedUpdateManyWithoutUserNestedInput
+    cachedFolders?: CachedFolderUncheckedUpdateManyWithoutUserNestedInput
+    cachedEmails?: CachedEmailUncheckedUpdateManyWithoutUserNestedInput
+    cachedCalEvents?: CachedCalendarEventUncheckedUpdateManyWithoutUserNestedInput
+    cachedContacts?: CachedContactUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserCreateWithoutCachedFoldersInput = {
+    id: string
+    email: string
+    name?: string | null
+    avatarUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    org: OrganizationCreateNestedOneWithoutUsersInput
+    msAccounts?: MsConnectedAccountCreateNestedManyWithoutUserInput
+    msalCache?: MsalTokenCacheCreateNestedOneWithoutUserInput
+    deltaLinks?: EmailDeltaLinkCreateNestedManyWithoutUserInput
+    webhookSubs?: WebhookSubscriptionCreateNestedManyWithoutUserInput
+    drafts?: DraftCreateNestedManyWithoutUserInput
+    emailRules?: EmailRuleCreateNestedManyWithoutUserInput
+    signatures?: SignatureCreateNestedManyWithoutUserInput
+    cachedEmails?: CachedEmailCreateNestedManyWithoutUserInput
+    cachedCalEvents?: CachedCalendarEventCreateNestedManyWithoutUserInput
+    cachedContacts?: CachedContactCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutCachedFoldersInput = {
+    id: string
+    email: string
+    name?: string | null
+    avatarUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    orgId: string
+    msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
+    msalCache?: MsalTokenCacheUncheckedCreateNestedOneWithoutUserInput
+    deltaLinks?: EmailDeltaLinkUncheckedCreateNestedManyWithoutUserInput
+    webhookSubs?: WebhookSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    drafts?: DraftUncheckedCreateNestedManyWithoutUserInput
+    emailRules?: EmailRuleUncheckedCreateNestedManyWithoutUserInput
+    signatures?: SignatureUncheckedCreateNestedManyWithoutUserInput
+    cachedEmails?: CachedEmailUncheckedCreateNestedManyWithoutUserInput
+    cachedCalEvents?: CachedCalendarEventUncheckedCreateNestedManyWithoutUserInput
+    cachedContacts?: CachedContactUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutCachedFoldersInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutCachedFoldersInput, UserUncheckedCreateWithoutCachedFoldersInput>
+  }
+
+  export type UserUpsertWithoutCachedFoldersInput = {
+    update: XOR<UserUpdateWithoutCachedFoldersInput, UserUncheckedUpdateWithoutCachedFoldersInput>
+    create: XOR<UserCreateWithoutCachedFoldersInput, UserUncheckedCreateWithoutCachedFoldersInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutCachedFoldersInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutCachedFoldersInput, UserUncheckedUpdateWithoutCachedFoldersInput>
+  }
+
+  export type UserUpdateWithoutCachedFoldersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
+    msAccounts?: MsConnectedAccountUpdateManyWithoutUserNestedInput
+    msalCache?: MsalTokenCacheUpdateOneWithoutUserNestedInput
+    deltaLinks?: EmailDeltaLinkUpdateManyWithoutUserNestedInput
+    webhookSubs?: WebhookSubscriptionUpdateManyWithoutUserNestedInput
+    drafts?: DraftUpdateManyWithoutUserNestedInput
+    emailRules?: EmailRuleUpdateManyWithoutUserNestedInput
+    signatures?: SignatureUpdateManyWithoutUserNestedInput
+    cachedEmails?: CachedEmailUpdateManyWithoutUserNestedInput
+    cachedCalEvents?: CachedCalendarEventUpdateManyWithoutUserNestedInput
+    cachedContacts?: CachedContactUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutCachedFoldersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    orgId?: StringFieldUpdateOperationsInput | string
+    msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
+    msalCache?: MsalTokenCacheUncheckedUpdateOneWithoutUserNestedInput
+    deltaLinks?: EmailDeltaLinkUncheckedUpdateManyWithoutUserNestedInput
+    webhookSubs?: WebhookSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    drafts?: DraftUncheckedUpdateManyWithoutUserNestedInput
+    emailRules?: EmailRuleUncheckedUpdateManyWithoutUserNestedInput
+    signatures?: SignatureUncheckedUpdateManyWithoutUserNestedInput
+    cachedEmails?: CachedEmailUncheckedUpdateManyWithoutUserNestedInput
+    cachedCalEvents?: CachedCalendarEventUncheckedUpdateManyWithoutUserNestedInput
+    cachedContacts?: CachedContactUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserCreateWithoutCachedEmailsInput = {
+    id: string
+    email: string
+    name?: string | null
+    avatarUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    org: OrganizationCreateNestedOneWithoutUsersInput
+    msAccounts?: MsConnectedAccountCreateNestedManyWithoutUserInput
+    msalCache?: MsalTokenCacheCreateNestedOneWithoutUserInput
+    deltaLinks?: EmailDeltaLinkCreateNestedManyWithoutUserInput
+    webhookSubs?: WebhookSubscriptionCreateNestedManyWithoutUserInput
+    drafts?: DraftCreateNestedManyWithoutUserInput
+    emailRules?: EmailRuleCreateNestedManyWithoutUserInput
+    signatures?: SignatureCreateNestedManyWithoutUserInput
+    cachedFolders?: CachedFolderCreateNestedManyWithoutUserInput
+    cachedCalEvents?: CachedCalendarEventCreateNestedManyWithoutUserInput
+    cachedContacts?: CachedContactCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutCachedEmailsInput = {
+    id: string
+    email: string
+    name?: string | null
+    avatarUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    orgId: string
+    msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
+    msalCache?: MsalTokenCacheUncheckedCreateNestedOneWithoutUserInput
+    deltaLinks?: EmailDeltaLinkUncheckedCreateNestedManyWithoutUserInput
+    webhookSubs?: WebhookSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    drafts?: DraftUncheckedCreateNestedManyWithoutUserInput
+    emailRules?: EmailRuleUncheckedCreateNestedManyWithoutUserInput
+    signatures?: SignatureUncheckedCreateNestedManyWithoutUserInput
+    cachedFolders?: CachedFolderUncheckedCreateNestedManyWithoutUserInput
+    cachedCalEvents?: CachedCalendarEventUncheckedCreateNestedManyWithoutUserInput
+    cachedContacts?: CachedContactUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutCachedEmailsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutCachedEmailsInput, UserUncheckedCreateWithoutCachedEmailsInput>
+  }
+
+  export type UserUpsertWithoutCachedEmailsInput = {
+    update: XOR<UserUpdateWithoutCachedEmailsInput, UserUncheckedUpdateWithoutCachedEmailsInput>
+    create: XOR<UserCreateWithoutCachedEmailsInput, UserUncheckedCreateWithoutCachedEmailsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutCachedEmailsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutCachedEmailsInput, UserUncheckedUpdateWithoutCachedEmailsInput>
+  }
+
+  export type UserUpdateWithoutCachedEmailsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
+    msAccounts?: MsConnectedAccountUpdateManyWithoutUserNestedInput
+    msalCache?: MsalTokenCacheUpdateOneWithoutUserNestedInput
+    deltaLinks?: EmailDeltaLinkUpdateManyWithoutUserNestedInput
+    webhookSubs?: WebhookSubscriptionUpdateManyWithoutUserNestedInput
+    drafts?: DraftUpdateManyWithoutUserNestedInput
+    emailRules?: EmailRuleUpdateManyWithoutUserNestedInput
+    signatures?: SignatureUpdateManyWithoutUserNestedInput
+    cachedFolders?: CachedFolderUpdateManyWithoutUserNestedInput
+    cachedCalEvents?: CachedCalendarEventUpdateManyWithoutUserNestedInput
+    cachedContacts?: CachedContactUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutCachedEmailsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    orgId?: StringFieldUpdateOperationsInput | string
+    msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
+    msalCache?: MsalTokenCacheUncheckedUpdateOneWithoutUserNestedInput
+    deltaLinks?: EmailDeltaLinkUncheckedUpdateManyWithoutUserNestedInput
+    webhookSubs?: WebhookSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    drafts?: DraftUncheckedUpdateManyWithoutUserNestedInput
+    emailRules?: EmailRuleUncheckedUpdateManyWithoutUserNestedInput
+    signatures?: SignatureUncheckedUpdateManyWithoutUserNestedInput
+    cachedFolders?: CachedFolderUncheckedUpdateManyWithoutUserNestedInput
+    cachedCalEvents?: CachedCalendarEventUncheckedUpdateManyWithoutUserNestedInput
+    cachedContacts?: CachedContactUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserCreateWithoutCachedCalEventsInput = {
+    id: string
+    email: string
+    name?: string | null
+    avatarUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    org: OrganizationCreateNestedOneWithoutUsersInput
+    msAccounts?: MsConnectedAccountCreateNestedManyWithoutUserInput
+    msalCache?: MsalTokenCacheCreateNestedOneWithoutUserInput
+    deltaLinks?: EmailDeltaLinkCreateNestedManyWithoutUserInput
+    webhookSubs?: WebhookSubscriptionCreateNestedManyWithoutUserInput
+    drafts?: DraftCreateNestedManyWithoutUserInput
+    emailRules?: EmailRuleCreateNestedManyWithoutUserInput
+    signatures?: SignatureCreateNestedManyWithoutUserInput
+    cachedFolders?: CachedFolderCreateNestedManyWithoutUserInput
+    cachedEmails?: CachedEmailCreateNestedManyWithoutUserInput
+    cachedContacts?: CachedContactCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutCachedCalEventsInput = {
+    id: string
+    email: string
+    name?: string | null
+    avatarUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    orgId: string
+    msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
+    msalCache?: MsalTokenCacheUncheckedCreateNestedOneWithoutUserInput
+    deltaLinks?: EmailDeltaLinkUncheckedCreateNestedManyWithoutUserInput
+    webhookSubs?: WebhookSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    drafts?: DraftUncheckedCreateNestedManyWithoutUserInput
+    emailRules?: EmailRuleUncheckedCreateNestedManyWithoutUserInput
+    signatures?: SignatureUncheckedCreateNestedManyWithoutUserInput
+    cachedFolders?: CachedFolderUncheckedCreateNestedManyWithoutUserInput
+    cachedEmails?: CachedEmailUncheckedCreateNestedManyWithoutUserInput
+    cachedContacts?: CachedContactUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutCachedCalEventsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutCachedCalEventsInput, UserUncheckedCreateWithoutCachedCalEventsInput>
+  }
+
+  export type UserUpsertWithoutCachedCalEventsInput = {
+    update: XOR<UserUpdateWithoutCachedCalEventsInput, UserUncheckedUpdateWithoutCachedCalEventsInput>
+    create: XOR<UserCreateWithoutCachedCalEventsInput, UserUncheckedCreateWithoutCachedCalEventsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutCachedCalEventsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutCachedCalEventsInput, UserUncheckedUpdateWithoutCachedCalEventsInput>
+  }
+
+  export type UserUpdateWithoutCachedCalEventsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
+    msAccounts?: MsConnectedAccountUpdateManyWithoutUserNestedInput
+    msalCache?: MsalTokenCacheUpdateOneWithoutUserNestedInput
+    deltaLinks?: EmailDeltaLinkUpdateManyWithoutUserNestedInput
+    webhookSubs?: WebhookSubscriptionUpdateManyWithoutUserNestedInput
+    drafts?: DraftUpdateManyWithoutUserNestedInput
+    emailRules?: EmailRuleUpdateManyWithoutUserNestedInput
+    signatures?: SignatureUpdateManyWithoutUserNestedInput
+    cachedFolders?: CachedFolderUpdateManyWithoutUserNestedInput
+    cachedEmails?: CachedEmailUpdateManyWithoutUserNestedInput
+    cachedContacts?: CachedContactUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutCachedCalEventsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    orgId?: StringFieldUpdateOperationsInput | string
+    msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
+    msalCache?: MsalTokenCacheUncheckedUpdateOneWithoutUserNestedInput
+    deltaLinks?: EmailDeltaLinkUncheckedUpdateManyWithoutUserNestedInput
+    webhookSubs?: WebhookSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    drafts?: DraftUncheckedUpdateManyWithoutUserNestedInput
+    emailRules?: EmailRuleUncheckedUpdateManyWithoutUserNestedInput
+    signatures?: SignatureUncheckedUpdateManyWithoutUserNestedInput
+    cachedFolders?: CachedFolderUncheckedUpdateManyWithoutUserNestedInput
+    cachedEmails?: CachedEmailUncheckedUpdateManyWithoutUserNestedInput
+    cachedContacts?: CachedContactUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserCreateWithoutCachedContactsInput = {
+    id: string
+    email: string
+    name?: string | null
+    avatarUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    org: OrganizationCreateNestedOneWithoutUsersInput
+    msAccounts?: MsConnectedAccountCreateNestedManyWithoutUserInput
+    msalCache?: MsalTokenCacheCreateNestedOneWithoutUserInput
+    deltaLinks?: EmailDeltaLinkCreateNestedManyWithoutUserInput
+    webhookSubs?: WebhookSubscriptionCreateNestedManyWithoutUserInput
+    drafts?: DraftCreateNestedManyWithoutUserInput
+    emailRules?: EmailRuleCreateNestedManyWithoutUserInput
+    signatures?: SignatureCreateNestedManyWithoutUserInput
+    cachedFolders?: CachedFolderCreateNestedManyWithoutUserInput
+    cachedEmails?: CachedEmailCreateNestedManyWithoutUserInput
+    cachedCalEvents?: CachedCalendarEventCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutCachedContactsInput = {
+    id: string
+    email: string
+    name?: string | null
+    avatarUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    orgId: string
+    msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
+    msalCache?: MsalTokenCacheUncheckedCreateNestedOneWithoutUserInput
+    deltaLinks?: EmailDeltaLinkUncheckedCreateNestedManyWithoutUserInput
+    webhookSubs?: WebhookSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    drafts?: DraftUncheckedCreateNestedManyWithoutUserInput
+    emailRules?: EmailRuleUncheckedCreateNestedManyWithoutUserInput
+    signatures?: SignatureUncheckedCreateNestedManyWithoutUserInput
+    cachedFolders?: CachedFolderUncheckedCreateNestedManyWithoutUserInput
+    cachedEmails?: CachedEmailUncheckedCreateNestedManyWithoutUserInput
+    cachedCalEvents?: CachedCalendarEventUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutCachedContactsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutCachedContactsInput, UserUncheckedCreateWithoutCachedContactsInput>
+  }
+
+  export type UserUpsertWithoutCachedContactsInput = {
+    update: XOR<UserUpdateWithoutCachedContactsInput, UserUncheckedUpdateWithoutCachedContactsInput>
+    create: XOR<UserCreateWithoutCachedContactsInput, UserUncheckedCreateWithoutCachedContactsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutCachedContactsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutCachedContactsInput, UserUncheckedUpdateWithoutCachedContactsInput>
+  }
+
+  export type UserUpdateWithoutCachedContactsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
+    msAccounts?: MsConnectedAccountUpdateManyWithoutUserNestedInput
+    msalCache?: MsalTokenCacheUpdateOneWithoutUserNestedInput
+    deltaLinks?: EmailDeltaLinkUpdateManyWithoutUserNestedInput
+    webhookSubs?: WebhookSubscriptionUpdateManyWithoutUserNestedInput
+    drafts?: DraftUpdateManyWithoutUserNestedInput
+    emailRules?: EmailRuleUpdateManyWithoutUserNestedInput
+    signatures?: SignatureUpdateManyWithoutUserNestedInput
+    cachedFolders?: CachedFolderUpdateManyWithoutUserNestedInput
+    cachedEmails?: CachedEmailUpdateManyWithoutUserNestedInput
+    cachedCalEvents?: CachedCalendarEventUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutCachedContactsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    orgId?: StringFieldUpdateOperationsInput | string
+    msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
+    msalCache?: MsalTokenCacheUncheckedUpdateOneWithoutUserNestedInput
+    deltaLinks?: EmailDeltaLinkUncheckedUpdateManyWithoutUserNestedInput
+    webhookSubs?: WebhookSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    drafts?: DraftUncheckedUpdateManyWithoutUserNestedInput
+    emailRules?: EmailRuleUncheckedUpdateManyWithoutUserNestedInput
+    signatures?: SignatureUncheckedUpdateManyWithoutUserNestedInput
+    cachedFolders?: CachedFolderUncheckedUpdateManyWithoutUserNestedInput
+    cachedEmails?: CachedEmailUncheckedUpdateManyWithoutUserNestedInput
+    cachedCalEvents?: CachedCalendarEventUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutEmailRulesInput = {
@@ -15794,6 +23094,10 @@ export namespace Prisma {
     webhookSubs?: WebhookSubscriptionCreateNestedManyWithoutUserInput
     drafts?: DraftCreateNestedManyWithoutUserInput
     signatures?: SignatureCreateNestedManyWithoutUserInput
+    cachedFolders?: CachedFolderCreateNestedManyWithoutUserInput
+    cachedEmails?: CachedEmailCreateNestedManyWithoutUserInput
+    cachedCalEvents?: CachedCalendarEventCreateNestedManyWithoutUserInput
+    cachedContacts?: CachedContactCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutEmailRulesInput = {
@@ -15810,6 +23114,10 @@ export namespace Prisma {
     webhookSubs?: WebhookSubscriptionUncheckedCreateNestedManyWithoutUserInput
     drafts?: DraftUncheckedCreateNestedManyWithoutUserInput
     signatures?: SignatureUncheckedCreateNestedManyWithoutUserInput
+    cachedFolders?: CachedFolderUncheckedCreateNestedManyWithoutUserInput
+    cachedEmails?: CachedEmailUncheckedCreateNestedManyWithoutUserInput
+    cachedCalEvents?: CachedCalendarEventUncheckedCreateNestedManyWithoutUserInput
+    cachedContacts?: CachedContactUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutEmailRulesInput = {
@@ -15842,6 +23150,10 @@ export namespace Prisma {
     webhookSubs?: WebhookSubscriptionUpdateManyWithoutUserNestedInput
     drafts?: DraftUpdateManyWithoutUserNestedInput
     signatures?: SignatureUpdateManyWithoutUserNestedInput
+    cachedFolders?: CachedFolderUpdateManyWithoutUserNestedInput
+    cachedEmails?: CachedEmailUpdateManyWithoutUserNestedInput
+    cachedCalEvents?: CachedCalendarEventUpdateManyWithoutUserNestedInput
+    cachedContacts?: CachedContactUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutEmailRulesInput = {
@@ -15858,6 +23170,10 @@ export namespace Prisma {
     webhookSubs?: WebhookSubscriptionUncheckedUpdateManyWithoutUserNestedInput
     drafts?: DraftUncheckedUpdateManyWithoutUserNestedInput
     signatures?: SignatureUncheckedUpdateManyWithoutUserNestedInput
+    cachedFolders?: CachedFolderUncheckedUpdateManyWithoutUserNestedInput
+    cachedEmails?: CachedEmailUncheckedUpdateManyWithoutUserNestedInput
+    cachedCalEvents?: CachedCalendarEventUncheckedUpdateManyWithoutUserNestedInput
+    cachedContacts?: CachedContactUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateManyOrgInput = {
@@ -15883,6 +23199,10 @@ export namespace Prisma {
     drafts?: DraftUpdateManyWithoutUserNestedInput
     emailRules?: EmailRuleUpdateManyWithoutUserNestedInput
     signatures?: SignatureUpdateManyWithoutUserNestedInput
+    cachedFolders?: CachedFolderUpdateManyWithoutUserNestedInput
+    cachedEmails?: CachedEmailUpdateManyWithoutUserNestedInput
+    cachedCalEvents?: CachedCalendarEventUpdateManyWithoutUserNestedInput
+    cachedContacts?: CachedContactUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutOrgInput = {
@@ -15899,6 +23219,10 @@ export namespace Prisma {
     drafts?: DraftUncheckedUpdateManyWithoutUserNestedInput
     emailRules?: EmailRuleUncheckedUpdateManyWithoutUserNestedInput
     signatures?: SignatureUncheckedUpdateManyWithoutUserNestedInput
+    cachedFolders?: CachedFolderUncheckedUpdateManyWithoutUserNestedInput
+    cachedEmails?: CachedEmailUncheckedUpdateManyWithoutUserNestedInput
+    cachedCalEvents?: CachedCalendarEventUncheckedUpdateManyWithoutUserNestedInput
+    cachedContacts?: CachedContactUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutOrgInput = {
@@ -15978,6 +23302,64 @@ export namespace Prisma {
     isDefault?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+  }
+
+  export type CachedFolderCreateManyUserInput = {
+    id: string
+    homeAccountId: string
+    displayName: string
+    parentFolderId?: string | null
+    unreadCount?: number
+    totalCount?: number
+    wellKnownName?: string | null
+    syncedAt?: Date | string
+  }
+
+  export type CachedEmailCreateManyUserInput = {
+    id: string
+    homeAccountId: string
+    folderId: string
+    subject?: string
+    bodyPreview?: string
+    fromName?: string
+    fromAddress?: string
+    toRecipients?: JsonNullValueInput | InputJsonValue
+    receivedDateTime: Date | string
+    sentDateTime?: Date | string | null
+    isRead?: boolean
+    hasAttachments?: boolean
+    flagStatus?: string
+    categories?: JsonNullValueInput | InputJsonValue
+    syncedAt?: Date | string
+  }
+
+  export type CachedCalendarEventCreateManyUserInput = {
+    id: string
+    homeAccountId: string
+    subject?: string
+    bodyPreview?: string
+    startDateTime: Date | string
+    endDateTime: Date | string
+    isAllDay?: boolean
+    location?: string | null
+    organizerName?: string | null
+    organizerEmail?: string | null
+    responseStatus?: string
+    onlineMeetingUrl?: string | null
+    attendees?: JsonNullValueInput | InputJsonValue
+    isRecurring?: boolean
+    syncedAt?: Date | string
+  }
+
+  export type CachedContactCreateManyUserInput = {
+    id: string
+    homeAccountId: string
+    displayName?: string
+    emailAddress?: string
+    phone?: string
+    jobTitle?: string
+    company?: string
+    syncedAt?: Date | string
   }
 
   export type MsConnectedAccountUpdateWithoutUserInput = {
@@ -16188,6 +23570,180 @@ export namespace Prisma {
     isDefault?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CachedFolderUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    homeAccountId?: StringFieldUpdateOperationsInput | string
+    displayName?: StringFieldUpdateOperationsInput | string
+    parentFolderId?: NullableStringFieldUpdateOperationsInput | string | null
+    unreadCount?: IntFieldUpdateOperationsInput | number
+    totalCount?: IntFieldUpdateOperationsInput | number
+    wellKnownName?: NullableStringFieldUpdateOperationsInput | string | null
+    syncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CachedFolderUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    homeAccountId?: StringFieldUpdateOperationsInput | string
+    displayName?: StringFieldUpdateOperationsInput | string
+    parentFolderId?: NullableStringFieldUpdateOperationsInput | string | null
+    unreadCount?: IntFieldUpdateOperationsInput | number
+    totalCount?: IntFieldUpdateOperationsInput | number
+    wellKnownName?: NullableStringFieldUpdateOperationsInput | string | null
+    syncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CachedFolderUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    homeAccountId?: StringFieldUpdateOperationsInput | string
+    displayName?: StringFieldUpdateOperationsInput | string
+    parentFolderId?: NullableStringFieldUpdateOperationsInput | string | null
+    unreadCount?: IntFieldUpdateOperationsInput | number
+    totalCount?: IntFieldUpdateOperationsInput | number
+    wellKnownName?: NullableStringFieldUpdateOperationsInput | string | null
+    syncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CachedEmailUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    homeAccountId?: StringFieldUpdateOperationsInput | string
+    folderId?: StringFieldUpdateOperationsInput | string
+    subject?: StringFieldUpdateOperationsInput | string
+    bodyPreview?: StringFieldUpdateOperationsInput | string
+    fromName?: StringFieldUpdateOperationsInput | string
+    fromAddress?: StringFieldUpdateOperationsInput | string
+    toRecipients?: JsonNullValueInput | InputJsonValue
+    receivedDateTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    sentDateTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isRead?: BoolFieldUpdateOperationsInput | boolean
+    hasAttachments?: BoolFieldUpdateOperationsInput | boolean
+    flagStatus?: StringFieldUpdateOperationsInput | string
+    categories?: JsonNullValueInput | InputJsonValue
+    syncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CachedEmailUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    homeAccountId?: StringFieldUpdateOperationsInput | string
+    folderId?: StringFieldUpdateOperationsInput | string
+    subject?: StringFieldUpdateOperationsInput | string
+    bodyPreview?: StringFieldUpdateOperationsInput | string
+    fromName?: StringFieldUpdateOperationsInput | string
+    fromAddress?: StringFieldUpdateOperationsInput | string
+    toRecipients?: JsonNullValueInput | InputJsonValue
+    receivedDateTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    sentDateTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isRead?: BoolFieldUpdateOperationsInput | boolean
+    hasAttachments?: BoolFieldUpdateOperationsInput | boolean
+    flagStatus?: StringFieldUpdateOperationsInput | string
+    categories?: JsonNullValueInput | InputJsonValue
+    syncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CachedEmailUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    homeAccountId?: StringFieldUpdateOperationsInput | string
+    folderId?: StringFieldUpdateOperationsInput | string
+    subject?: StringFieldUpdateOperationsInput | string
+    bodyPreview?: StringFieldUpdateOperationsInput | string
+    fromName?: StringFieldUpdateOperationsInput | string
+    fromAddress?: StringFieldUpdateOperationsInput | string
+    toRecipients?: JsonNullValueInput | InputJsonValue
+    receivedDateTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    sentDateTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isRead?: BoolFieldUpdateOperationsInput | boolean
+    hasAttachments?: BoolFieldUpdateOperationsInput | boolean
+    flagStatus?: StringFieldUpdateOperationsInput | string
+    categories?: JsonNullValueInput | InputJsonValue
+    syncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CachedCalendarEventUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    homeAccountId?: StringFieldUpdateOperationsInput | string
+    subject?: StringFieldUpdateOperationsInput | string
+    bodyPreview?: StringFieldUpdateOperationsInput | string
+    startDateTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    endDateTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    isAllDay?: BoolFieldUpdateOperationsInput | boolean
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    organizerName?: NullableStringFieldUpdateOperationsInput | string | null
+    organizerEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    responseStatus?: StringFieldUpdateOperationsInput | string
+    onlineMeetingUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    attendees?: JsonNullValueInput | InputJsonValue
+    isRecurring?: BoolFieldUpdateOperationsInput | boolean
+    syncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CachedCalendarEventUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    homeAccountId?: StringFieldUpdateOperationsInput | string
+    subject?: StringFieldUpdateOperationsInput | string
+    bodyPreview?: StringFieldUpdateOperationsInput | string
+    startDateTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    endDateTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    isAllDay?: BoolFieldUpdateOperationsInput | boolean
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    organizerName?: NullableStringFieldUpdateOperationsInput | string | null
+    organizerEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    responseStatus?: StringFieldUpdateOperationsInput | string
+    onlineMeetingUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    attendees?: JsonNullValueInput | InputJsonValue
+    isRecurring?: BoolFieldUpdateOperationsInput | boolean
+    syncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CachedCalendarEventUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    homeAccountId?: StringFieldUpdateOperationsInput | string
+    subject?: StringFieldUpdateOperationsInput | string
+    bodyPreview?: StringFieldUpdateOperationsInput | string
+    startDateTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    endDateTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    isAllDay?: BoolFieldUpdateOperationsInput | boolean
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    organizerName?: NullableStringFieldUpdateOperationsInput | string | null
+    organizerEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    responseStatus?: StringFieldUpdateOperationsInput | string
+    onlineMeetingUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    attendees?: JsonNullValueInput | InputJsonValue
+    isRecurring?: BoolFieldUpdateOperationsInput | boolean
+    syncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CachedContactUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    homeAccountId?: StringFieldUpdateOperationsInput | string
+    displayName?: StringFieldUpdateOperationsInput | string
+    emailAddress?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    jobTitle?: StringFieldUpdateOperationsInput | string
+    company?: StringFieldUpdateOperationsInput | string
+    syncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CachedContactUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    homeAccountId?: StringFieldUpdateOperationsInput | string
+    displayName?: StringFieldUpdateOperationsInput | string
+    emailAddress?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    jobTitle?: StringFieldUpdateOperationsInput | string
+    company?: StringFieldUpdateOperationsInput | string
+    syncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CachedContactUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    homeAccountId?: StringFieldUpdateOperationsInput | string
+    displayName?: StringFieldUpdateOperationsInput | string
+    emailAddress?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    jobTitle?: StringFieldUpdateOperationsInput | string
+    company?: StringFieldUpdateOperationsInput | string
+    syncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
 

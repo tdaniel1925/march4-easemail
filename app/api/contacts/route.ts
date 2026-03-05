@@ -23,7 +23,7 @@ interface GraphContact {
 }
 
 // ─── GET /api/contacts?q=searchTerm ──────────────────────────────────────────
-// Returns up to 8 contacts matching the query via MS Graph /me/people.
+// Returns up to 8 contacts matching the query. Cache-first, falls back to Graph.
 
 export async function GET(req: NextRequest) {
   const supabase = await createClient();
@@ -32,6 +32,28 @@ export async function GET(req: NextRequest) {
 
   const q = req.nextUrl.searchParams.get("q")?.trim() ?? "";
   if (q.length < 2) return NextResponse.json([]);
+
+  try {
+    // Try DB cache first
+    const cached = await prisma.cachedContact.findMany({
+      where: {
+        userId: user.id,
+        OR: [
+          { displayName: { contains: q, mode: "insensitive" } },
+          { emailAddress: { contains: q, mode: "insensitive" } },
+        ],
+      },
+      take: 8,
+    });
+
+    if (cached.length > 0) {
+      return NextResponse.json(
+        cached.map((c) => ({ name: c.displayName, email: c.emailAddress })).filter((c) => c.email)
+      );
+    }
+  } catch {
+    // Cache query failed — fall through to Graph
+  }
 
   const account = await prisma.msConnectedAccount.findFirst({
     where: { userId: user.id, isDefault: true },

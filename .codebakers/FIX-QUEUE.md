@@ -1,39 +1,43 @@
 # Fix Queue
+_Last updated: 2026-03-05_
 
-## P1-PROD — Production Hardening Sprint (13 items, ALL DONE ✅)
+## ALL DONE ✅ — P1-PROD Sprint (13 items)
+## ALL DONE ✅ — P1 Auth / Login Critical
+## ALL DONE ✅ — P2 Architectural / Quality (fixed this session)
+## ALL DONE ✅ — P3 Features (all pages built)
 
-- [x] [PROD-1] middleware.ts — Supabase auth enforced on all non-public routes
-- [x] [PROD-2] app/error.tsx + not-found.tsx + section error.tsx (inbox/calendar/compose/dashboard)
-- [x] [PROD-3] vercel.json cron config already present; cron route hardened with error logging
-- [x] [PROD-4] Mobile sidebar — hamburger top bar + slide-in drawer with backdrop + close on route change
-- [x] [PROD-5] Labels — store activeLabel, sidebar wires labels to InboxClient tab filter via Graph categories
-- [x] [PROD-6] Reconnect UX — banner with "Reconnect" link to /api/auth/microsoft?add=1 (was already done)
-- [x] [PROD-7] Cron hardening — CRON_SECRET verified, structured response with timestamps, per-failure logging
-- [x] [PROD-8] Multi-account polling — InboxClient polls ALL accounts[] in parallel, aggregates new emails
-- [x] [PROD-9] Search 401 handling — both InboxClient and FolderClient search paths check 401
-- [x] [PROD-10] Contacts write ops — POST/PATCH/DELETE routes + New/Edit/Delete modals in ContactsClient
-- [x] [PROD-11] Attachment download — /api/mail/attachments/[messageId]/[attachmentId] + Download button
-- [x] [PROD-12] Dashboard — Compose CTA + per-account stats already present
-- [x] [PROD-13] Help Center — 36 real FAQs (6 per category), keyboard shortcuts table, law firm content
+### What was completed (P2, fixed 2026-03-05):
+- [x] createServiceClient() — already correctly uses plain createClient() from @supabase/supabase-js
+- [x] listUsers() O(n) — replaced with prisma.user.findUnique({ where: { email } }) — O(1) indexed
+- [x] Prisma datasource — added explicit url/directUrl env fields
+- [x] package.json — all ^ removed, all deps pinned exact
+- [x] XSS — SafeHtml already used DOMPurify (was done earlier)
+- [x] Send Reply — /api/mail/reply + compose ?mode=reply already wired (was done earlier)
+- [x] Mark as read — /api/mail/mark-read already exists and is called on email open (was done earlier)
+- [x] NEXTAUTH_SECRET= — removed from .env.local
 
-## P1 — Blocking / Login Critical
-- [x] [LOGIN] `ErrorMessage` component fixed — now reads `?error=` param and shows inline red banner
-- [x] [LOGIN] MS OAuth errors now visible on login page
-- [ ] [AUTH] `createServiceClient()` passes `cookies()` to service role client — service role shouldn't touch cookies. Should use `createClient()` from `@supabase/supabase-js` directly with service role key.
-- [ ] [AUTH] `listUsers()` called in callback to find existing user — O(n) scan of ALL users; replace with `getUserByEmail()` or filter server-side
+### What was completed (P3 features, all done in earlier sessions):
+- [x] /starred, /sent, /drafts, /trash — FolderClient with search, infinite scroll, AI Reply
+- [x] /dashboard — live clock, agenda, todos, weekly chart, recent unread, multi-account events
+- [x] /attachments — file table from Graph, type filter, search, download
+- [x] /calendar — Week/Day/Month/Agenda/Year views, NL create, voice mic, event CRUD, email→calendar
+- [x] /accounts — account cards, disconnect modal, full cleanup on disconnect
+- [x] /contacts — split-panel, alphabetical list, detail panel, full CRUD (POST/PATCH/DELETE)
+- [x] /settings — profile, notification toggles, appearance, privacy, sign out
+- [x] /help — hero + search, 6 category tabs, 36 law firm FAQs, keyboard shortcuts
+- [x] /compose — full composer: To/Cc/Bcc chips, From selector, attachments, drag-drop, AI Remix, AI Dictate, Voice Message, signature, schedule send, draft auto-save, reply/forward/replyAll mode, Ctrl+Enter, discard confirm, importance flag, read receipt
+- [x] AI Remix — /api/mail/remix, tone/style/length/formality/presets, real diff, version history
+- [x] AI Dictate — Web Speech API, live transcript, Claude formatting, insert into email
+- [x] /signatures — SignaturesClient, CRUD API, DB-backed
+- [x] /email-rules — EmailRulesClient, 5 CRUD routes, Prisma EmailRule model, pure rule engine, InboxClient enforcement
 
-## P2 — Architectural / Quality
-- [x] [DB] lib/prisma.ts now exclusively uses DIRECT_URL — pgbouncer pooler (DATABASE_URL) is incompatible with @prisma/adapter-pg
-- [ ] [SCHEMA] `prisma/schema.prisma` datasource has NO `url` field — relies entirely on env. Add explicit `url` and `directUrl` fields.
-- [ ] [DEPS] All package.json deps use `^` — should be pinned exact per CodeBakers rule
-- [ ] [SECURITY] `dangerouslySetInnerHTML` on email body HTML in InboxClient — no sanitization. XSS risk.
-- [ ] [INBOX] Reply "Send Reply" button is a no-op (TODO comment) — does not call Graph API
-- [ ] [INBOX] "Mark as read" on email open only updates local state — doesn't call Graph PATCH /messages/{id}
-- [ ] [AUTH] `NEXTAUTH_SECRET=` in .env.local is empty and unused — remove it (NextAuth is banned per CodeBakers)
+## Remaining Nice-to-Haves
+- [ ] Webhook subscriptions for real-time push (WebhookSubscription table exists, not wired)
+- [ ] Account disconnect: also delete cached_folders/emails/cal_events/contacts for that account
 
-## P3 — Missing Features (not yet built)
-- [ ] `/starred`, `/sent`, `/drafts`, `/trash` pages
-- [ ] `/dashboard`, `/attachments`, `/calendar` pages
-- [ ] `/accounts`, `/contacts`, `/settings`, `/help` pages
-- [ ] Compose email flow
-- [ ] AI Remix + AI Dictate (buttons exist, no backend)
+## DONE — Offline-First Sync Engine (2026-03-05)
+- [x] Email delta links / incremental Graph sync — fully wired via /api/cron/sync
+- [x] Calendar delta sync — cachedCalendarEvent via same cron
+- [x] Contact sync — hourly full refresh via same cron
+- [x] All pages + API routes: cache-first with Graph fallback
+- [x] Cursor-based pagination from DB cache (email ID as cursor)
