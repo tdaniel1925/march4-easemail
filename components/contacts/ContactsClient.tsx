@@ -4,6 +4,30 @@ import { useState, useMemo } from "react";
 import Link from "next/link";
 import type { Contact } from "@/app/contacts/page";
 
+// ─── Presence helpers ─────────────────────────────────────────────────────────
+
+type PresenceAvailability =
+  | "Available" | "AvailableIdle" | "Away" | "BeRightBack"
+  | "Busy" | "BusyIdle" | "DoNotDisturb" | "Offline" | "PresenceUnknown";
+
+function presenceColor(a: PresenceAvailability): string {
+  if (a === "Available") return "#22c55e";
+  if (a === "Busy" || a === "DoNotDisturb") return "#ef4444";
+  if (a === "Away" || a === "BeRightBack" || a === "AvailableIdle" || a === "BusyIdle") return "#f59e0b";
+  return "#9ca3af";
+}
+
+function presenceLabel(a: PresenceAvailability): string {
+  const map: Record<string, string> = {
+    Available: "Available", AvailableIdle: "Available (idle)",
+    Away: "Away", BeRightBack: "Be right back",
+    Busy: "Busy", BusyIdle: "Busy (idle)",
+    DoNotDisturb: "Do not disturb", Offline: "Offline",
+    PresenceUnknown: "Unknown",
+  };
+  return map[a] ?? a;
+}
+
 // ─── Avatar colors ────────────────────────────────────────────────────────────
 
 const AVATAR_COLORS = [
@@ -410,11 +434,28 @@ interface ContactRowProps {
 
 function ContactRow({ contact, color, isSelected, onSelect }: ContactRowProps) {
   const [hovered, setHovered] = useState(false);
+  const [presence, setPresence] = useState<PresenceAvailability | null>(null);
+  const [presenceFetched, setPresenceFetched] = useState(false);
+
+  function handleMouseEnter() {
+    setHovered(true);
+    if (!presenceFetched && contact.email) {
+      setPresenceFetched(true);
+      fetch(`/api/teams/presence?userId=${encodeURIComponent(contact.email)}`)
+        .then((r) => r.ok ? r.json() : null)
+        .then((data: { presence?: { availability: PresenceAvailability } } | null) => {
+          if (data?.presence?.availability && data.presence.availability !== "PresenceUnknown") {
+            setPresence(data.presence.availability);
+          }
+        })
+        .catch(() => { /* presence is best-effort */ });
+    }
+  }
 
   return (
     <button
       onClick={onSelect}
-      onMouseEnter={() => setHovered(true)}
+      onMouseEnter={handleMouseEnter}
       onMouseLeave={() => setHovered(false)}
       className="w-full flex items-center gap-3 px-4 py-3 text-left transition-colors"
       style={{
@@ -425,12 +466,21 @@ function ContactRow({ contact, color, isSelected, onSelect }: ContactRowProps) {
           : "transparent",
       }}
     >
-      {/* Avatar */}
-      <div
-        className="w-9 h-9 rounded-[10px] flex-shrink-0 flex items-center justify-center text-sm font-bold"
-        style={{ backgroundColor: color.bg, color: color.text }}
-      >
-        {contact.initials}
+      {/* Avatar with presence dot */}
+      <div className="relative flex-shrink-0">
+        <div
+          className="w-9 h-9 rounded-[10px] flex items-center justify-center text-sm font-bold"
+          style={{ backgroundColor: color.bg, color: color.text }}
+        >
+          {contact.initials}
+        </div>
+        {presence && (
+          <span
+            className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full border-2 border-white"
+            style={{ backgroundColor: presenceColor(presence) }}
+            title={presenceLabel(presence)}
+          />
+        )}
       </div>
 
       {/* Name + email */}

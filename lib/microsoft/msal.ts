@@ -65,6 +65,14 @@ export const GRAPH_SCOPES = [
   "https://graph.microsoft.com/Calendars.ReadWrite",
   "https://graph.microsoft.com/Contacts.ReadWrite",
   "https://graph.microsoft.com/User.Read",
+  // Teams
+  "https://graph.microsoft.com/Chat.ReadWrite",
+  "https://graph.microsoft.com/ChannelMessage.Read.All",
+  "https://graph.microsoft.com/ChannelMessage.Send",
+  "https://graph.microsoft.com/Team.ReadBasic.All",
+  "https://graph.microsoft.com/Channel.ReadBasic.All",
+  "https://graph.microsoft.com/Presence.Read.All",
+  "https://graph.microsoft.com/OnlineMeetings.ReadWrite",
 ];
 
 // ─── Auth URL Builder ─────────────────────────────────────────────────────────

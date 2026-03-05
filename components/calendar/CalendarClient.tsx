@@ -367,6 +367,8 @@ export default function CalendarClient({ weekStart: initialWeekStart, events: in
   const [nlText, setNlText] = useState("");
   const [nlLoading, setNlLoading] = useState(false);
   const [nlError, setNlError] = useState<string | null>(null);
+  const [teamsMeetingLoading, setTeamsMeetingLoading] = useState(false);
+  const [teamsMeetingUrl, setTeamsMeetingUrl] = useState<string | null>(null);
   const [nlPrefill, setNlPrefill] = useState<NlCreateResponse | null>(null);
 
   // Voice + confirmation
@@ -856,6 +858,60 @@ export default function CalendarClient({ weekStart: initialWeekStart, events: in
               </svg>
               New Event
             </button>
+          )}
+
+          {/* Teams Meeting quick-create */}
+          <button
+            disabled={teamsMeetingLoading}
+            onClick={async () => {
+              setTeamsMeetingLoading(true);
+              setTeamsMeetingUrl(null);
+              try {
+                const now = new Date();
+                const end = new Date(now.getTime() + 60 * 60 * 1000);
+                const res = await fetch("/api/calendar/teams-meeting", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({
+                    subject: "Teams Meeting",
+                    startDateTime: now.toISOString(),
+                    endDateTime: end.toISOString(),
+                  }),
+                });
+                if (res.ok) {
+                  const data = await res.json() as { joinWebUrl: string };
+                  setTeamsMeetingUrl(data.joinWebUrl);
+                }
+              } finally {
+                setTeamsMeetingLoading(false);
+              }
+            }}
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-[8px] transition-colors"
+            style={{ backgroundColor: "rgb(237 233 254)", color: "rgb(76 29 149)" }}
+            title="Create instant Teams meeting"
+          >
+            {teamsMeetingLoading ? (
+              <div className="w-3 h-3 rounded-full border-2 animate-spin" style={{ borderColor: "rgb(167 139 250)", borderTopColor: "rgb(76 29 149)" }} />
+            ) : (
+              <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15 10l4.553-2.069A1 1 0 0121 8.868v6.264a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+              </svg>
+            )}
+            Teams Meeting
+          </button>
+          {teamsMeetingUrl && (
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-[8px] text-xs" style={{ backgroundColor: "rgb(237 233 254)", color: "rgb(76 29 149)" }}>
+              <span className="font-medium">Meeting ready —</span>
+              <a href={teamsMeetingUrl} target="_blank" rel="noopener noreferrer" className="underline font-semibold">
+                Join now
+              </a>
+              <button onClick={() => { navigator.clipboard.writeText(teamsMeetingUrl); }} title="Copy link" className="opacity-60 hover:opacity-100">
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                </svg>
+              </button>
+              <button onClick={() => setTeamsMeetingUrl(null)} className="opacity-60 hover:opacity-100 ml-1">✕</button>
+            </div>
           )}
 
           {fetchError && <span className="text-xs font-medium" style={{ color: BRAND }}>{fetchError}</span>}
