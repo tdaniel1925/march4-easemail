@@ -137,7 +137,7 @@ Client: `AccountsClient` calls `removeAccount()` on Zustand store → sidebar up
 - Admins: tdaniel@bundlefly.com, david@dmillerlaw.com, marcela@dmillerlaw.com, shall@botmakers.ai, info@tonnerow.com
 - Sidebar: `isAdmin` prop added → red shield icon → /admin; greyed Teams placeholder → will be activated next
 
-## MS Teams Integration — Planned (2026-03-05)
+## MS Teams Integration — Complete (2026-03-05)
 - Approved scope: Option B (full page — chats + channels + meetings + presence)
 - New OAuth scopes needed: Chat.ReadWrite, ChannelMessage.Read.All, ChannelMessage.Send, Team.ReadBasic.All, Channel.ReadBasic.All, Presence.Read.All, OnlineMeetings.ReadWrite
 - NOTE: Existing users must re-auth (disconnect + reconnect MS account) to grant new scopes

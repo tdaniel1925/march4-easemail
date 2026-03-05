@@ -1,8 +1,20 @@
 # Build Log
 
-## 2026-03-05 — MS Teams Integration — PLANNED (not yet started)
-- Scope: Option B (full page). Plan logged to FIX-QUEUE.md + BRAIN.md.
-- Awaiting go signal from user to begin Step 1 (OAuth scopes).
+## 2026-03-05 — MS Teams Integration — COMPLETE
+- [Scopes] lib/microsoft/msal.ts: +7 Teams scopes added to GRAPH_SCOPES
+- [API] /api/teams/chats — GET list, GET messages, POST send
+- [API] /api/teams/teams — GET joined teams, GET channels
+- [API] /api/teams/channels — GET messages, POST send
+- [API] /api/teams/presence — GET user presence, graceful PresenceUnknown fallback
+- [API] /api/calendar/teams-meeting — POST instant meeting, returns joinWebUrl
+- [Page] app/teams/page.tsx — server component, auth guard
+- [Component] components/teams/TeamsClient.tsx — split panel, Chats+Teams tabs, 30s polling, compose bar
+- [Calendar] CalendarClient: Teams Meeting button → instant meeting + join link + copy link
+- [Contacts] ContactsClient: presence dot on avatar, fetched on first hover
+- [Sidebar] Teams icon activated → /teams (purple), no longer greyed out
+- [TS] tsc --noEmit clean
+- [DepMap] npm run dep:map regenerated + committed
+- NOTE: Existing users must disconnect + reconnect MS account to consent to new scopes
 
 ## 2026-03-05 — Admin Page Complete
 - [Env] ADMIN_EMAILS + NEXT_PUBLIC_ADMIN_EMAILS added to .env.local + Vercel production

@@ -35,7 +35,7 @@ _Last updated: 2026-03-05_
 - [ ] Webhook subscriptions for real-time push (WebhookSubscription table exists, not wired)
 - [ ] Account disconnect: also delete cached_folders/emails/cal_events/contacts for that account
 
-## IN PROGRESS — MS Teams Integration (Option B — Full Page)
+## DONE ✅ — MS Teams Integration (Option B — Full Page)
 _Approved by user 2026-03-05_
 
 ### Step 1 — OAuth Scopes
