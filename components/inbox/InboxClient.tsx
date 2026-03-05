@@ -198,8 +198,9 @@ export default function InboxClient({
     fetch(`/api/mail/inbox?homeAccountId=${encodeURIComponent(activeAccount.homeAccountId)}`)
       .then(async (r) => {
         if (r.status === 401) {
-          const body = await r.json() as { error: string };
-          if (body.error === "account_requires_reauth") { setRequiresReauth(true); return null; }
+          const body = await r.json().catch(() => ({} as { error?: string })) as { error?: string };
+          if (body.error === "Unauthorized") { window.location.href = "/login"; return null; }
+          setRequiresReauth(true); return null;
         }
         if (!r.ok) throw new Error(`inbox ${r.status}`);
         return r.json() as Promise<{ emails: EmailMessage[]; nextLink: string | null }>;
@@ -220,8 +221,12 @@ export default function InboxClient({
     setLoadingTab(true);
     setTabEmails(null);
     fetch(`/api/mail/inbox?homeAccountId=${encodeURIComponent(activeAccount.homeAccountId)}&tab=${activeTab}`)
-      .then((r) => { if (!r.ok) throw new Error(`inbox-tab ${r.status}`); return r.json(); })
-      .then((data: { emails: EmailMessage[] }) => setTabEmails(data.emails))
+      .then(async (r) => {
+        if (r.status === 401) { setRequiresReauth(true); return null; }
+        if (!r.ok) throw new Error(`inbox-tab ${r.status}`);
+        return r.json() as Promise<{ emails: EmailMessage[] }>;
+      })
+      .then((data) => { if (data) setTabEmails(data.emails); })
       .catch(console.error)
       .finally(() => setLoadingTab(false));
   }, [activeTab, activeAccount?.homeAccountId]);
