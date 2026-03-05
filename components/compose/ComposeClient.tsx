@@ -90,6 +90,78 @@ const TONE_CARDS: { key: Tone; label: string; sub: string; iconPath: string; ico
   },
 ];
 
+// ─── Toolbar helpers ──────────────────────────────────────────────────────────
+
+function ToolBtn({
+  onClick, title, active, children,
+}: {
+  onClick: () => void;
+  title: string;
+  active?: boolean;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      onMouseDown={(e) => { e.preventDefault(); onClick(); }}
+      title={title}
+      className={`toolbar-btn${active ? " active" : ""}`}
+    >
+      {children}
+    </button>
+  );
+}
+
+const TEXT_COLORS = [
+  "#000000","#374151","#6b7280","#9ca3af","#d1d5db",
+  "#dc2626","#ea580c","#d97706","#ca8a04","#16a34a",
+  "#0891b2","#2563eb","#7c3aed","#db2777","#ffffff",
+  "#fca5a5","#fed7aa","#fef08a","#bbf7d0","#bfdbfe",
+];
+
+const HIGHLIGHT_COLORS = [
+  "transparent","#fef08a","#bbf7d0","#bfdbfe","#ddd6fe",
+  "#fbcfe8","#fed7aa","#fca5a5","#e0f2fe","#f0fdf4",
+];
+
+function ColorPicker({
+  colors, onSelect, onClose, label,
+}: {
+  colors: string[];
+  onSelect: (c: string) => void;
+  onClose: () => void;
+  label: string;
+}) {
+  return (
+    <div
+      className="absolute top-full left-0 mt-1 z-50 bg-white border border-neutral-200 rounded-[10px] p-3 shadow-custom-hover"
+      style={{ minWidth: 176 }}
+      onMouseDown={(e) => e.preventDefault()}
+    >
+      <p className="text-xs font-semibold text-neutral-500 mb-2">{label}</p>
+      <div className="grid grid-cols-5 gap-1.5 mb-2">
+        {colors.map((c) => (
+          <button
+            key={c}
+            onClick={() => { onSelect(c); onClose(); }}
+            className="w-7 h-7 rounded-[6px] border border-neutral-200 transition-transform hover:scale-110 flex-shrink-0"
+            style={{ backgroundColor: c === "transparent" ? "white" : c, backgroundImage: c === "transparent" ? "linear-gradient(45deg, #ccc 25%, transparent 25%, transparent 75%, #ccc 75%), linear-gradient(45deg, #ccc 25%, transparent 25%, transparent 75%, #ccc 75%)" : "none", backgroundSize: "8px 8px", backgroundPosition: "0 0, 4px 4px" }}
+            title={c}
+          />
+        ))}
+      </div>
+      <div className="flex items-center gap-2 pt-2 border-t border-neutral-100">
+        <span className="text-xs text-neutral-400">Custom</span>
+        <input
+          type="color"
+          className="w-7 h-7 rounded cursor-pointer border-0 p-0"
+          onChange={(e) => onSelect(e.target.value)}
+          onBlur={onClose}
+        />
+      </div>
+    </div>
+  );
+}
+
 // ─── ComposeClient ────────────────────────────────────────────────────────────
 
 export default function ComposeClient({
@@ -154,6 +226,12 @@ export default function ComposeClient({
   const voiceTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const voiceTimeRef = useRef(0);
 
+  // ── Toolbar formatting state ─────────────────────────────────────────────────
+  const [activeFormats, setActiveFormats] = useState<Set<string>>(new Set());
+  const [showTextColorPicker, setShowTextColorPicker] = useState(false);
+  const [showHighlightPicker, setShowHighlightPicker] = useState(false);
+  const savedSelectionRef = useRef<Range | null>(null);
+
   // ── Draft indicator ─────────────────────────────────────────────────────────
   const onBodyChange = useCallback(() => {
     setDraftSaved(false);
@@ -161,9 +239,53 @@ export default function ComposeClient({
     draftTimer.current = setTimeout(() => setDraftSaved(true), 2000);
   }, []);
 
+  // ── Track active formats at cursor ───────────────────────────────────────────
+  useEffect(() => {
+    function update() {
+      if (!bodyRef.current?.contains(document.getSelection()?.anchorNode ?? null)) return;
+      const s = new Set<string>();
+      const cmds = ["bold","italic","underline","strikeThrough","insertUnorderedList","insertOrderedList","justifyLeft","justifyCenter","justifyRight","justifyFull","superscript","subscript"];
+      for (const c of cmds) { try { if (document.queryCommandState(c)) s.add(c); } catch {} }
+      setActiveFormats(s);
+    }
+    document.addEventListener("selectionchange", update);
+    return () => document.removeEventListener("selectionchange", update);
+  }, []);
+
   // ── Rich text format ────────────────────────────────────────────────────────
   function execFormat(cmd: string, value?: string) {
     document.execCommand(cmd, false, value);
+    bodyRef.current?.focus();
+  }
+
+  function saveSelection() {
+    const sel = window.getSelection();
+    if (sel && sel.rangeCount > 0) savedSelectionRef.current = sel.getRangeAt(0).cloneRange();
+  }
+
+  function restoreAndExec(cmd: string, value: string) {
+    const sel = window.getSelection();
+    if (savedSelectionRef.current && sel) {
+      sel.removeAllRanges();
+      sel.addRange(savedSelectionRef.current);
+    }
+    bodyRef.current?.focus();
+    document.execCommand(cmd, false, value);
+  }
+
+  function insertLink() {
+    const url = window.prompt("Enter URL (include https://):");
+    if (url?.trim()) execFormat("createLink", url.trim());
+  }
+
+  function insertCode() {
+    const sel = window.getSelection();
+    const text = sel?.toString() ?? "";
+    if (text) {
+      document.execCommand("insertHTML", false, `<code style="font-family:monospace;background:rgb(245 245 245);padding:1px 4px;border-radius:4px;font-size:0.875em">${text.replace(/</g,"&lt;")}</code>`);
+    } else {
+      document.execCommand("insertHTML", false, `<code style="font-family:monospace;background:rgb(245 245 245);padding:1px 4px;border-radius:4px;font-size:0.875em">code</code>`);
+    }
     bodyRef.current?.focus();
   }
 
@@ -646,50 +768,188 @@ export default function ComposeClient({
           </div>
 
           {/* RICH TEXT TOOLBAR */}
-          <div className="flex items-center gap-1 px-5 py-2.5 border-b border-neutral-200 bg-background-50 flex-wrap flex-shrink-0">
-            <button className="toolbar-btn" title="Bold" onClick={() => execFormat("bold")}>
-              <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M6 4h8a4 4 0 014 4 4 4 0 01-4 4H6z" />
-                <path strokeLinecap="round" strokeLinejoin="round" d="M6 12h9a4 4 0 014 4 4 4 0 01-4 4H6z" />
-              </svg>
-            </button>
-            <button className="toolbar-btn" title="Italic" onClick={() => execFormat("italic")}>
-              <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M10 4h4M8 20h4M12 4l-4 16" />
-              </svg>
-            </button>
-            <button className="toolbar-btn" title="Underline" onClick={() => execFormat("underline")}>
-              <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M7 4v6a5 5 0 0010 0V4M5 20h14" />
-              </svg>
-            </button>
-            <button className="toolbar-btn" title="Strikethrough" onClick={() => execFormat("strikeThrough")}>
-              <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M9 15s1.5 2 4.5 2 4.5-2 4.5-2M9 9s1.5-2 4.5-2 4.5 2 4.5 2M4 12h16" />
-              </svg>
-            </button>
-            <div className="format-divider" />
-            <button className="toolbar-btn" title="Bullet List" onClick={() => execFormat("insertUnorderedList")}>
-              <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-            </button>
-            <button className="toolbar-btn" title="Numbered List" onClick={() => execFormat("insertOrderedList")}>
-              <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01" />
-              </svg>
-            </button>
-            <div className="format-divider" />
-            <button className="toolbar-btn" title="Align Left" onClick={() => execFormat("justifyLeft")}>
-              <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M3 6h18M3 12h12M3 18h15" />
-              </svg>
-            </button>
-            <button className="toolbar-btn" title="Align Center" onClick={() => execFormat("justifyCenter")}>
-              <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M3 6h18M6 12h12M4 18h16" />
-              </svg>
-            </button>
+          <div className="border-b border-neutral-200 bg-background-50 flex-shrink-0">
+            <div className="flex items-center gap-0.5 px-3 py-1.5 flex-wrap">
+
+              {/* Undo / Redo */}
+              <ToolBtn title="Undo" onClick={() => execFormat("undo")}>
+                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" /></svg>
+              </ToolBtn>
+              <ToolBtn title="Redo" onClick={() => execFormat("redo")}>
+                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M21 10H11a8 8 0 00-8 8v2m18-10l-6 6m6-6l-6-6" /></svg>
+              </ToolBtn>
+
+              <div className="format-divider mx-1" />
+
+              {/* Paragraph / Heading style */}
+              <select
+                className="toolbar-select"
+                title="Paragraph style"
+                onMouseDown={saveSelection}
+                onChange={(e) => { restoreAndExec("formatBlock", e.target.value); e.target.value = "div"; }}
+                defaultValue="div"
+              >
+                <option value="div">Normal</option>
+                <option value="h1">Heading 1</option>
+                <option value="h2">Heading 2</option>
+                <option value="h3">Heading 3</option>
+                <option value="h4">Heading 4</option>
+                <option value="blockquote">Quote</option>
+                <option value="pre">Preformatted</option>
+              </select>
+
+              {/* Font family */}
+              <select
+                className="toolbar-select"
+                title="Font family"
+                onMouseDown={saveSelection}
+                onChange={(e) => { restoreAndExec("fontName", e.target.value); }}
+                defaultValue=""
+              >
+                <option value="" disabled>Font</option>
+                <option value="Arial, sans-serif">Arial</option>
+                <option value="Georgia, serif">Georgia</option>
+                <option value="'Times New Roman', serif">Times New Roman</option>
+                <option value="'Courier New', monospace">Courier New</option>
+                <option value="Verdana, sans-serif">Verdana</option>
+                <option value="Tahoma, sans-serif">Tahoma</option>
+                <option value="'Trebuchet MS', sans-serif">Trebuchet</option>
+              </select>
+
+              {/* Font size */}
+              <select
+                className="toolbar-select"
+                title="Font size"
+                onMouseDown={saveSelection}
+                onChange={(e) => { restoreAndExec("fontSize", e.target.value); }}
+                defaultValue=""
+              >
+                <option value="" disabled>Size</option>
+                <option value="1">Tiny</option>
+                <option value="2">Small</option>
+                <option value="3">Normal</option>
+                <option value="4">Large</option>
+                <option value="5">X-Large</option>
+                <option value="6">Huge</option>
+                <option value="7">Massive</option>
+              </select>
+
+              <div className="format-divider mx-1" />
+
+              {/* Bold / Italic / Underline / Strikethrough */}
+              <ToolBtn title="Bold (Ctrl+B)" active={activeFormats.has("bold")} onClick={() => execFormat("bold")}>
+                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M6 4h8a4 4 0 014 4 4 4 0 01-4 4H6z" /><path strokeLinecap="round" strokeLinejoin="round" d="M6 12h9a4 4 0 014 4 4 4 0 01-4 4H6z" /></svg>
+              </ToolBtn>
+              <ToolBtn title="Italic (Ctrl+I)" active={activeFormats.has("italic")} onClick={() => execFormat("italic")}>
+                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M10 4h4M8 20h4M12 4l-4 16" /></svg>
+              </ToolBtn>
+              <ToolBtn title="Underline (Ctrl+U)" active={activeFormats.has("underline")} onClick={() => execFormat("underline")}>
+                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M7 4v6a5 5 0 0010 0V4M5 20h14" /></svg>
+              </ToolBtn>
+              <ToolBtn title="Strikethrough" active={activeFormats.has("strikeThrough")} onClick={() => execFormat("strikeThrough")}>
+                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 15s1.5 2 4.5 2 4.5-2 4.5-2M9 9s1.5-2 4.5-2 4.5 2 4.5 2M4 12h16" /></svg>
+              </ToolBtn>
+              <ToolBtn title="Superscript" active={activeFormats.has("superscript")} onClick={() => execFormat("superscript")}>
+                <span className="text-xs font-bold leading-none">x<sup style={{ fontSize: "0.6em" }}>2</sup></span>
+              </ToolBtn>
+              <ToolBtn title="Subscript" active={activeFormats.has("subscript")} onClick={() => execFormat("subscript")}>
+                <span className="text-xs font-bold leading-none">x<sub style={{ fontSize: "0.6em" }}>2</sub></span>
+              </ToolBtn>
+
+              <div className="format-divider mx-1" />
+
+              {/* Text color */}
+              <div className="relative">
+                <ToolBtn title="Text color" onClick={() => { setShowHighlightPicker(false); setShowTextColorPicker((v) => !v); }}>
+                  <span className="flex flex-col items-center gap-0.5">
+                    <span className="text-xs font-bold leading-none" style={{ color: "rgb(58 58 58)" }}>A</span>
+                    <span className="w-3.5 h-1 rounded-sm" style={{ backgroundColor: "rgb(138 9 9)" }} />
+                  </span>
+                </ToolBtn>
+                {showTextColorPicker && (
+                  <ColorPicker
+                    label="Text color"
+                    colors={TEXT_COLORS}
+                    onSelect={(c) => execFormat("foreColor", c)}
+                    onClose={() => setShowTextColorPicker(false)}
+                  />
+                )}
+              </div>
+
+              {/* Highlight color */}
+              <div className="relative">
+                <ToolBtn title="Highlight color" onClick={() => { setShowTextColorPicker(false); setShowHighlightPicker((v) => !v); }}>
+                  <span className="flex flex-col items-center gap-0.5">
+                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
+                    <span className="w-3.5 h-1 rounded-sm" style={{ backgroundColor: "#fef08a" }} />
+                  </span>
+                </ToolBtn>
+                {showHighlightPicker && (
+                  <ColorPicker
+                    label="Highlight"
+                    colors={HIGHLIGHT_COLORS}
+                    onSelect={(c) => execFormat("hiliteColor", c === "transparent" ? "transparent" : c)}
+                    onClose={() => setShowHighlightPicker(false)}
+                  />
+                )}
+              </div>
+
+              <div className="format-divider mx-1" />
+
+              {/* Alignment */}
+              <ToolBtn title="Align left" active={activeFormats.has("justifyLeft")} onClick={() => execFormat("justifyLeft")}>
+                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M3 6h18M3 12h12M3 18h15" /></svg>
+              </ToolBtn>
+              <ToolBtn title="Align center" active={activeFormats.has("justifyCenter")} onClick={() => execFormat("justifyCenter")}>
+                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M3 6h18M6 12h12M4 18h16" /></svg>
+              </ToolBtn>
+              <ToolBtn title="Align right" active={activeFormats.has("justifyRight")} onClick={() => execFormat("justifyRight")}>
+                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M3 6h18M9 12h12M6 18h15" /></svg>
+              </ToolBtn>
+              <ToolBtn title="Justify" active={activeFormats.has("justifyFull")} onClick={() => execFormat("justifyFull")}>
+                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M3 6h18M3 12h18M3 18h18" /></svg>
+              </ToolBtn>
+
+              <div className="format-divider mx-1" />
+
+              {/* Lists + indent */}
+              <ToolBtn title="Bullet list" active={activeFormats.has("insertUnorderedList")} onClick={() => execFormat("insertUnorderedList")}>
+                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" /><circle cx="1.5" cy="6" r="1" fill="currentColor" /><circle cx="1.5" cy="12" r="1" fill="currentColor" /><circle cx="1.5" cy="18" r="1" fill="currentColor" /></svg>
+              </ToolBtn>
+              <ToolBtn title="Numbered list" active={activeFormats.has("insertOrderedList")} onClick={() => execFormat("insertOrderedList")}>
+                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01" /></svg>
+              </ToolBtn>
+              <ToolBtn title="Indent" onClick={() => execFormat("indent")}>
+                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M3 6h18M9 12h12M9 18h12M3 12l4-3v6l-4-3z" /></svg>
+              </ToolBtn>
+              <ToolBtn title="Outdent" onClick={() => execFormat("outdent")}>
+                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M3 6h18M9 12h12M9 18h12M7 12l-4 3V9l4 3z" /></svg>
+              </ToolBtn>
+
+              <div className="format-divider mx-1" />
+
+              {/* Blockquote / Code / Link / HR */}
+              <ToolBtn title="Blockquote" onClick={() => execFormat("formatBlock", "blockquote")}>
+                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg>
+              </ToolBtn>
+              <ToolBtn title="Inline code" onClick={insertCode}>
+                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" /></svg>
+              </ToolBtn>
+              <ToolBtn title="Insert link" onClick={insertLink}>
+                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" /></svg>
+              </ToolBtn>
+              <ToolBtn title="Horizontal rule" onClick={() => execFormat("insertHorizontalRule")}>
+                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M4 12h16" /></svg>
+              </ToolBtn>
+
+              <div className="format-divider mx-1" />
+
+              {/* Clear formatting */}
+              <ToolBtn title="Clear formatting" onClick={() => execFormat("removeFormat")}>
+                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L17.94 6M17.94 18L6 6" /><path strokeLinecap="round" strokeLinejoin="round" d="M4 20h7" /></svg>
+              </ToolBtn>
+
+            </div>
           </div>
 
           {/* EMAIL BODY */}
