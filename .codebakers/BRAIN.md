@@ -27,7 +27,8 @@ _Last updated: 2026-03-04_
 - `msal_token_cache` — serialized MSAL cache per user
 - `email_delta_links` — for incremental Graph sync (not yet wired)
 - `webhook_subscriptions` — MS Graph change notifications (not yet wired)
-- `drafts` — email drafts (not yet wired to UI)
+- `drafts` — email drafts (graphDraftId, scheduledAt, scheduledSent — fully wired)
+- `signatures` — email signatures (name, title, company, phone, isDefault) — replaces localStorage
 - `email_rules` — inbox automation rules (conditions/actions as Json, priority, emailCount, stopProcessing)
 
 ## Pages / Routes
@@ -76,9 +77,23 @@ _Last updated: 2026-03-04_
 - **Rule engine:** pure function, `Promise.allSettled` for side effects, never throws to inbox
 
 ## Current Focus
-- Session start: 2026-03-04 (session 3)
-- Last completed: AI Dictate formatting + spacing fix, dep map + error log update
+- Session start: 2026-03-04 (session 3 continued)
+- Last completed: Composer gap analysis + full feature build (P0+P1+P2)
 - Next: TBD by user
+
+## Composer Features Built (session 3 continued)
+- File attachments: file picker → base64 → Graph send (inline ≤4MB, array)
+- Draft auto-save: debounced 5s → /api/drafts → MS Graph Drafts folder sync
+- Reply/Forward mode: ?mode=reply|replyAll|forward&messageId=X → pre-fill To/Subject/quoted banner
+- From account selector: dropdown when multiple accounts, single label when one
+- Recipient chips + autocomplete: /api/contacts → /me/people debounced 300ms
+- Signature DB migration: /api/signatures CRUD, localStorage → DB on first load
+- Voice attachment wired: addVoiceAttachment() base64 → attachments[] → send
+- Schedule Send: dropdown (1hr/4hr/tomorrow/monday/custom) → saves draft with scheduledAt → /api/cron/send-scheduled (Vercel cron every minute)
+- Ctrl+Enter to send: global keydown listener
+- AI quality score: real calculation based on word count ratio (not hardcoded 88%)
+- Real diff: fast-diff word-level diff shown in AI Remix panel
+- Full Compose button in ReadingPane toolbar: links to /compose?mode=reply&messageId=X
 
 ## Session Artifacts
 - `codebakers-suggestions.md` — improvements to the CodeBakers framework captured during this build. Update it whenever a protocol gap or recurring friction point is identified.

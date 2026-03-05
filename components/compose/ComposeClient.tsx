@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import diff from "fast-diff";
 
 // ─── Browser Speech API types ─────────────────────────────────────────────────
 declare global {
@@ -43,6 +44,28 @@ interface ISpeechRecognitionResult {
 type Tone = "professional" | "casual" | "persuasive" | "concise";
 type Length = "shorter" | "same" | "longer";
 type ActivePanel = "remix" | "dictate" | "voice" | null;
+type ComposeMode = "reply" | "replyAll" | "forward";
+
+interface FileAttachment {
+  id: string;
+  name: string;
+  type: string;
+  size: number;
+  data: string; // base64
+}
+
+interface ContactSuggestion {
+  name: string;
+  email: string;
+}
+
+interface Account {
+  id: string;
+  homeAccountId: string;
+  msEmail: string;
+  displayName: string | null;
+  isDefault: boolean;
+}
 
 const STYLE_PRESETS = [
   "Executive Brief",
@@ -221,13 +244,16 @@ function formatEmailSpacing(text: string): string {
 // ─── ComposeClient ────────────────────────────────────────────────────────────
 
 export default function ComposeClient({
-  fromName,
-  fromEmail,
+  accounts,
+  mode,
+  messageId,
 }: {
-  fromName: string;
-  fromEmail: string;
+  accounts: Account[];
+  mode?: ComposeMode;
+  messageId?: string;
 }) {
   const router = useRouter();
+  const defaultAccount = accounts.find((a) => a.isDefault) ?? accounts[0];
 
   // ── Composer state ──────────────────────────────────────────────────────────
   const [to, setTo] = useState<string[]>([]);
@@ -244,6 +270,41 @@ export default function ComposeClient({
   const [draftSaved, setDraftSaved] = useState(false);
   const bodyRef = useRef<HTMLDivElement>(null);
   const draftTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // ── From / Account selector ──────────────────────────────────────────────────
+  const [fromAccountId, setFromAccountId] = useState(defaultAccount?.homeAccountId ?? "");
+
+  // ── File Attachments ─────────────────────────────────────────────────────────
+  const [attachments, setAttachments] = useState<FileAttachment[]>([]);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // ── Draft auto-save ──────────────────────────────────────────────────────────
+  const draftIdRef = useRef<string | null>(null);
+  const autoSaveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [draftSaving, setDraftSaving] = useState(false);
+  const [lastSaved, setLastSaved] = useState<Date | null>(null);
+
+  // ── Reply/Forward context ────────────────────────────────────────────────────
+  const [replyContext, setReplyContext] = useState<{
+    originalFrom: string;
+    originalSubject: string;
+    originalBodyHtml: string;
+  } | null>(null);
+
+  // ── Schedule Send ────────────────────────────────────────────────────────────
+  const [scheduledAt, setScheduledAt] = useState<Date | null>(null);
+  const [showScheduleMenu, setShowScheduleMenu] = useState(false);
+
+  // ── Contact Autocomplete ─────────────────────────────────────────────────────
+  const [toSuggestions, setToSuggestions] = useState<ContactSuggestion[]>([]);
+  const [ccSuggestions, setCcSuggestions] = useState<ContactSuggestion[]>([]);
+  const [bccSuggestions, setBccSuggestions] = useState<ContactSuggestion[]>([]);
+  const toSuggestTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const ccSuggestTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const bccSuggestTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // ── For real diff in AI Remix ────────────────────────────────────────────────
+  const originalBodyRef = useRef<string>("");
 
   // ── Panel state ─────────────────────────────────────────────────────────────
   const [activePanel, setActivePanel] = useState<ActivePanel>(null);
@@ -302,12 +363,17 @@ export default function ComposeClient({
   const [sigTitle, setSigTitle] = useState("");
   const [sigInserted, setSigInserted] = useState(false);
 
-  // ── Draft indicator ─────────────────────────────────────────────────────────
-  const onBodyChange = useCallback(() => {
+  // ── Draft auto-save helpers ──────────────────────────────────────────────────
+  const triggerAutoSave = useCallback(() => {
     setDraftSaved(false);
-    if (draftTimer.current) clearTimeout(draftTimer.current);
-    draftTimer.current = setTimeout(() => setDraftSaved(true), 2000);
+    if (autoSaveTimerRef.current) clearTimeout(autoSaveTimerRef.current);
+    autoSaveTimerRef.current = setTimeout(() => void saveDraftFn(), 5000);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const onBodyChange = useCallback(() => {
+    triggerAutoSave();
+  }, [triggerAutoSave]);
 
   // ── Track active formats at cursor ───────────────────────────────────────────
   useEffect(() => {
@@ -389,21 +455,45 @@ export default function ComposeClient({
   }
 
   // ── Send ────────────────────────────────────────────────────────────────────
-  async function handleSend() {
+  async function handleSend(scheduleAt?: Date | null) {
     if (!to.length) { setSendError("Add at least one recipient."); return; }
     setSending(true);
     setSendError(null);
+
+    // Schedule path: save as draft with scheduledAt, then navigate away
+    const sendAt = scheduleAt ?? scheduledAt;
+    if (sendAt) {
+      try {
+        await saveDraftFn(sendAt);
+        router.push("/drafts");
+      } catch {
+        setSendError("Failed to schedule. Please try again.");
+      } finally {
+        setSending(false);
+        setShowScheduleMenu(false);
+      }
+      return;
+    }
+
     try {
       const bodyHtml = bodyRef.current?.innerHTML ?? "";
-      let voiceAttachment: { name: string; contentType: string; data: string } | undefined;
+
+      // Collect all attachments: file attachments + voice blob (if any)
+      const allAttachments = [...attachments.map((a) => ({
+        name: a.name,
+        contentType: a.type,
+        data: a.data,
+      }))];
+
       if (voiceBlob) {
         const buf = await voiceBlob.arrayBuffer();
         const bytes = new Uint8Array(buf);
         let binary = "";
         for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
         const ext = voiceBlob.type.includes("ogg") ? "ogg" : "webm";
-        voiceAttachment = { name: `voice-message.${ext}`, contentType: voiceBlob.type, data: btoa(binary) };
+        allAttachments.push({ name: `voice-message.${ext}`, contentType: voiceBlob.type, data: btoa(binary) });
       }
+
       const res = await fetch("/api/mail/send", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -413,7 +503,9 @@ export default function ComposeClient({
           bcc: bcc.map((addr) => ({ emailAddress: { address: addr } })),
           subject,
           body: { contentType: "HTML", content: bodyHtml },
-          ...(voiceAttachment ? { attachment: voiceAttachment } : {}),
+          attachments: allAttachments,
+          fromHomeAccountId: fromAccountId,
+          draftId: draftIdRef.current ?? undefined,
         }),
       });
       if (!res.ok) {
@@ -429,12 +521,127 @@ export default function ComposeClient({
     }
   }
 
+  // ── Draft save ───────────────────────────────────────────────────────────────
+  async function saveDraftFn(scheduleAt?: Date | null) {
+    const bodyHtml = bodyRef.current?.innerHTML ?? "";
+    const hasContent = to.length > 0 || subject.trim() || (bodyHtml.length > 20);
+    if (!hasContent) return;
+
+    setDraftSaving(true);
+    try {
+      const res = await fetch("/api/drafts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          draftId: draftIdRef.current ?? undefined,
+          homeAccountId: fromAccountId || defaultAccount?.homeAccountId,
+          toRecipients: to.map((addr) => ({ emailAddress: { address: addr } })),
+          ccRecipients: cc.map((addr) => ({ emailAddress: { address: addr } })),
+          bccRecipients: bcc.map((addr) => ({ emailAddress: { address: addr } })),
+          subject,
+          bodyHtml,
+          attachments: attachments.map(({ name, type, size }) => ({ name, type, size })),
+          scheduledAt: scheduleAt !== undefined ? scheduleAt?.toISOString() ?? null : null,
+        }),
+      });
+      const data = await res.json() as { id?: string };
+      if (data.id) draftIdRef.current = data.id;
+      setDraftSaved(true);
+      setLastSaved(new Date());
+    } catch {
+      // Non-fatal — draft save failure silently ignored
+    } finally {
+      setDraftSaving(false);
+    }
+  }
+
+  // ── File attachments ─────────────────────────────────────────────────────────
+  async function handleFileSelect(e: React.ChangeEvent<HTMLInputElement>) {
+    const files = Array.from(e.target.files ?? []);
+    if (!files.length) return;
+
+    for (const file of files) {
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        const base64 = (ev.target?.result as string).split(",")[1] ?? "";
+        setAttachments((prev) => [
+          ...prev,
+          { id: crypto.randomUUID(), name: file.name, type: file.type, size: file.size, data: base64 },
+        ]);
+      };
+      reader.readAsDataURL(file);
+    }
+    // Reset file input so same file can be re-selected
+    e.target.value = "";
+  }
+
+  function removeAttachment(id: string) {
+    setAttachments((prev) => prev.filter((a) => a.id !== id));
+  }
+
+  // ── Voice → attachments ───────────────────────────────────────────────────────
+  async function addVoiceAttachment() {
+    if (!voiceBlob) return;
+    const buf = await voiceBlob.arrayBuffer();
+    const bytes = new Uint8Array(buf);
+    let binary = "";
+    for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
+    const ext = voiceBlob.type.includes("ogg") ? "ogg" : "webm";
+    setAttachments((prev) => [
+      ...prev,
+      { id: crypto.randomUUID(), name: `voice-message.${ext}`, type: voiceBlob.type, size: voiceBlob.size, data: btoa(binary) },
+    ]);
+    clearVoiceRecording();
+    setActivePanel(null);
+  }
+
+  // ── Contact suggestions ───────────────────────────────────────────────────────
+  function fetchSuggestions(
+    q: string,
+    setter: (s: ContactSuggestion[]) => void,
+    timerRef: React.MutableRefObject<ReturnType<typeof setTimeout> | null>
+  ) {
+    if (timerRef.current) clearTimeout(timerRef.current);
+    if (q.trim().length < 2) { setter([]); return; }
+    timerRef.current = setTimeout(() => {
+      fetch(`/api/contacts?q=${encodeURIComponent(q)}`)
+        .then((r) => r.json() as Promise<ContactSuggestion[]>)
+        .then(setter)
+        .catch(() => setter([]));
+    }, 300);
+  }
+
+  // ── AI quality score (real calculation) ──────────────────────────────────────
+  function computeQualityScore(original: string, remixed: string): number {
+    if (!original || !remixed) return 0;
+    const origWords = original.trim().split(/\s+/).filter(Boolean).length;
+    const remixWords = remixed.trim().split(/\s+/).filter(Boolean).length;
+    if (original.trim() === remixed.trim()) return 48; // identical = low score
+    const ratio = Math.min(origWords, remixWords) / Math.max(origWords, remixWords, 1);
+    return Math.min(97, Math.round(68 + ratio * 24));
+  }
+
+  // ── Diff for AI Remix (word-level using fast-diff) ───────────────────────────
+  function computeDiff(original: string, remixed: string): string {
+    const changes = diff(original, remixed);
+    return changes
+      .map(([type, text]) => {
+        const esc = text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        const lines = esc.replace(/\n/g, "<br>");
+        if (type === 1) return `<span class="diff-added">${lines}</span>`;
+        if (type === -1) return `<span class="diff-removed">${lines}</span>`;
+        return lines;
+      })
+      .join("");
+  }
+
   // ── AI Remix ────────────────────────────────────────────────────────────────
   async function handleRemix() {
     const bodyText = remixTarget === "selection" && remixRangeRef.current
       ? remixRangeRef.current.toString()
       : (bodyRef.current?.innerText ?? "");
     if (!bodyText.trim()) { setRemixError("Write something in the email body first."); return; }
+    originalBodyRef.current = bodyText; // capture for diff
     setRemixing(true);
     setRemixError(null);
     setRemixedBody(null);
@@ -666,17 +873,109 @@ export default function ComposeClient({
     voiceChunksRef.current = [];
   }
 
-  // Load signature from localStorage
+  // Load signature from DB (fallback to localStorage for migration)
   useEffect(() => {
-    try {
-      const stored = localStorage.getItem("easemail_sig");
-      if (stored) {
-        const s = JSON.parse(stored) as { name: string; title: string };
-        setSig(s);
-        setSigName(s.name);
-        setSigTitle(s.title);
+    fetch("/api/signatures")
+      .then((r) => r.json() as Promise<{ name: string; title?: string | null; isDefault: boolean }[]>)
+      .then((sigs) => {
+        const defaultSig = sigs.find((s) => s.isDefault) ?? sigs[0];
+        if (defaultSig) {
+          setSig({ name: defaultSig.name, title: defaultSig.title ?? "" });
+          setSigName(defaultSig.name);
+          setSigTitle(defaultSig.title ?? "");
+        } else {
+          // Migrate from localStorage if DB has none
+          try {
+            const stored = localStorage.getItem("easemail_sig");
+            if (stored) {
+              const s = JSON.parse(stored) as { name: string; title: string };
+              setSig(s);
+              setSigName(s.name);
+              setSigTitle(s.title);
+              // Migrate to DB silently
+              void fetch("/api/signatures", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ name: s.name, title: s.title, isDefault: true }),
+              }).then(() => localStorage.removeItem("easemail_sig"));
+            }
+          } catch {}
+        }
+      })
+      .catch(() => {
+        // API failed — try localStorage fallback
+        try {
+          const stored = localStorage.getItem("easemail_sig");
+          if (stored) {
+            const s = JSON.parse(stored) as { name: string; title: string };
+            setSig(s);
+            setSigName(s.name);
+            setSigTitle(s.title);
+          }
+        } catch {}
+      });
+  }, []);
+
+  // ── Auto-save when header fields change ─────────────────────────────────────
+  useEffect(() => {
+    const hasContent = to.length > 0 || cc.length > 0 || bcc.length > 0 || subject.trim();
+    if (!hasContent) return;
+    triggerAutoSave();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [to, cc, bcc, subject, attachments]);
+
+  // ── Keyboard shortcut: Ctrl/Cmd+Enter to send ────────────────────────────────
+  useEffect(() => {
+    function onKeyDown(e: KeyboardEvent) {
+      if ((e.metaKey || e.ctrlKey) && e.key === "Enter") {
+        e.preventDefault();
+        void handleSend();
       }
-    } catch {}
+    }
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // ── Reply/Forward context: fetch original message on mount ───────────────────
+  useEffect(() => {
+    if (!mode || !messageId) return;
+    fetch(`/api/mail/message/${messageId}`)
+      .then((r) => r.json() as Promise<{
+        subject?: string;
+        from?: { emailAddress?: { name?: string; address?: string } };
+        body?: { contentType?: string; content?: string };
+        toRecipients?: { emailAddress?: { address?: string } }[];
+        ccRecipients?: { emailAddress?: { address?: string } }[];
+      }>)
+      .then((msg) => {
+        const fromName = msg.from?.emailAddress?.name ?? "";
+        const fromAddr = msg.from?.emailAddress?.address ?? "";
+        const origSubject = msg.subject ?? "";
+        const prefix = mode === "forward" ? "Fwd: " : "Re: ";
+
+        // Pre-fill To (not for forward — user enters recipient manually)
+        if (mode === "reply" && fromAddr) setTo([fromAddr]);
+        if (mode === "replyAll") {
+          const allTo = (msg.toRecipients ?? []).map((r) => r.emailAddress?.address ?? "").filter(Boolean);
+          const allCc = (msg.ccRecipients ?? []).map((r) => r.emailAddress?.address ?? "").filter(Boolean);
+          setTo([fromAddr]);
+          if (allCc.length) { setCc(allCc); setShowCc(true); }
+          if (allTo.length > 1) {
+            const rest = allTo.filter((a) => a !== fromAddr);
+            if (rest.length) { setCc((p) => [...new Set([...p, ...rest])]); setShowCc(true); }
+          }
+        }
+
+        setSubject(prefix + origSubject);
+        setReplyContext({
+          originalFrom: `${fromName} <${fromAddr}>`,
+          originalSubject: origSubject,
+          originalBodyHtml: msg.body?.content ?? "",
+        });
+      })
+      .catch(() => {});
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Cleanup on unmount
@@ -685,6 +984,7 @@ export default function ComposeClient({
       recognitionRef.current?.stop();
       if (timerRef.current) clearInterval(timerRef.current);
       if (draftTimer.current) clearTimeout(draftTimer.current);
+      if (autoSaveTimerRef.current) clearTimeout(autoSaveTimerRef.current);
     };
   }, []);
 
@@ -693,7 +993,12 @@ export default function ComposeClient({
     if (!sigName.trim()) return;
     const s = { name: sigName.trim(), title: sigTitle.trim() };
     setSig(s);
-    localStorage.setItem("easemail_sig", JSON.stringify(s));
+    // Save to DB (best-effort)
+    void fetch("/api/signatures", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name: s.name, title: s.title, isDefault: true }),
+    });
     setShowSigEditor(false);
   }
 
@@ -730,17 +1035,27 @@ export default function ComposeClient({
             Back to Inbox
           </Link>
           <span className="text-neutral-300">/</span>
-          <h1 className="font-heading font-semibold text-neutral-900 text-base">New Message</h1>
-          {draftSaved && (
+          <h1 className="font-heading font-semibold text-neutral-900 text-base">
+            {mode === "reply" ? "Reply" : mode === "replyAll" ? "Reply All" : mode === "forward" ? "Forward" : "New Message"}
+          </h1>
+          {draftSaving && (
+            <div className="flex items-center gap-1.5 px-2.5 py-1 bg-background-100 border border-neutral-200 rounded-small">
+              <svg className="w-3 h-3 animate-spin text-neutral-400" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth={4}/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/></svg>
+              <span className="text-xs text-neutral-400">Saving…</span>
+            </div>
+          )}
+          {!draftSaving && draftSaved && lastSaved && (
             <div className="flex items-center gap-1.5 px-2.5 py-1 bg-tertiary-50 border border-tertiary-200 rounded-small">
               <span className="draft-saved-dot w-1.5 h-1.5 rounded-full bg-tertiary-500 flex-shrink-0" />
-              <span className="text-xs font-medium text-tertiary-700">Draft saved</span>
+              <span className="text-xs font-medium text-tertiary-700">
+                Saved {lastSaved.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+              </span>
             </div>
           )}
         </div>
         <button
           className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-neutral-600 border border-neutral-200 rounded-small hover:bg-background-100 transition-colors shadow-custom"
-          onClick={() => setDraftSaved(true)}
+          onClick={() => void saveDraftFn()}
         >
           <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
@@ -761,7 +1076,9 @@ export default function ComposeClient({
                   <path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                 </svg>
               </div>
-              <h2 className="font-heading font-semibold text-neutral-900 text-sm">Compose New Email</h2>
+              <h2 className="font-heading font-semibold text-neutral-900 text-sm">
+                {mode === "reply" ? "Reply" : mode === "replyAll" ? "Reply All" : mode === "forward" ? "Forward Email" : "Compose New Email"}
+              </h2>
             </div>
             <div className="flex items-center gap-1">
               <Link href="/inbox" className="p-1.5 text-neutral-400 hover:text-neutral-600 hover:bg-background-100 rounded-small transition-colors" title="Close">
@@ -772,10 +1089,42 @@ export default function ComposeClient({
             </div>
           </div>
 
+          {/* REPLY CONTEXT BANNER */}
+          {replyContext && (
+            <div className="flex items-start gap-3 px-6 py-3 border-b border-neutral-100 bg-background-100">
+              <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5 text-neutral-400 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
+              </svg>
+              <div className="min-w-0">
+                <p className="text-xs text-neutral-500">
+                  {mode === "forward" ? "Forwarding" : "Replying to"}: <span className="font-medium text-neutral-700">{replyContext.originalFrom}</span>
+                </p>
+                <p className="text-xs text-neutral-400 truncate">{replyContext.originalSubject}</p>
+              </div>
+            </div>
+          )}
+
           {/* FROM */}
           <div className="flex items-center gap-3 px-6 py-3 border-b border-neutral-100">
             <span className="text-xs font-semibold text-neutral-400 w-14 flex-shrink-0">From</span>
-            <span className="text-sm text-neutral-700">{fromName} &lt;{fromEmail}&gt;</span>
+            {accounts.length > 1 ? (
+              <select
+                className="toolbar-select flex-1 text-sm"
+                value={fromAccountId}
+                onChange={(e) => setFromAccountId(e.target.value)}
+              >
+                {accounts.map((acc) => (
+                  <option key={acc.homeAccountId} value={acc.homeAccountId}>
+                    {acc.displayName ? `${acc.displayName} <${acc.msEmail}>` : acc.msEmail}
+                    {acc.isDefault ? " (default)" : ""}
+                  </option>
+                ))}
+              </select>
+            ) : (
+              <span className="text-sm text-neutral-700">
+                {defaultAccount?.displayName ? `${defaultAccount.displayName} <${defaultAccount.msEmail}>` : defaultAccount?.msEmail}
+              </span>
+            )}
           </div>
 
           {/* TO */}
@@ -792,14 +1141,31 @@ export default function ComposeClient({
                   </button>
                 </span>
               ))}
-              <input
-                type="text"
-                placeholder="Add recipient…"
-                className="flex-1 min-w-32 text-sm text-neutral-700 placeholder-neutral-400 bg-transparent border-none outline-none"
-                value={toInput}
-                onChange={(e) => setToInput(e.target.value)}
-                onKeyDown={commitTo}
-              />
+              <div className="relative flex-1 min-w-32">
+                <input
+                  type="text"
+                  placeholder="Add recipient…"
+                  className="w-full text-sm text-neutral-700 placeholder-neutral-400 bg-transparent border-none outline-none"
+                  value={toInput}
+                  onChange={(e) => { setToInput(e.target.value); fetchSuggestions(e.target.value, setToSuggestions, toSuggestTimer); }}
+                  onKeyDown={commitTo}
+                  onBlur={() => setTimeout(() => setToSuggestions([]), 150)}
+                />
+                {toSuggestions.length > 0 && (
+                  <div className="absolute top-full left-0 mt-1 z-50 bg-white border border-neutral-200 rounded-[10px] shadow-custom-hover min-w-64 py-1">
+                    {toSuggestions.map((s) => (
+                      <button
+                        key={s.email}
+                        className="w-full text-left px-3 py-2 hover:bg-background-100 flex items-center gap-2"
+                        onMouseDown={(e) => { e.preventDefault(); setTo((p) => [...p, s.email]); setToInput(""); setToSuggestions([]); }}
+                      >
+                        <span className="text-xs font-medium text-neutral-700 truncate">{s.name}</span>
+                        <span className="text-xs text-neutral-400 truncate">{s.email}</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
             <div className="flex items-center gap-2 flex-shrink-0">
               {!showCc && (
@@ -826,14 +1192,28 @@ export default function ComposeClient({
                     </button>
                   </span>
                 ))}
-                <input
-                  type="text"
-                  placeholder="Add CC…"
-                  className="flex-1 min-w-32 text-sm text-neutral-700 placeholder-neutral-400 bg-transparent border-none outline-none"
-                  value={ccInput}
-                  onChange={(e) => setCcInput(e.target.value)}
-                  onKeyDown={commitCc}
-                />
+                <div className="relative flex-1 min-w-32">
+                  <input
+                    type="text"
+                    placeholder="Add CC…"
+                    className="w-full text-sm text-neutral-700 placeholder-neutral-400 bg-transparent border-none outline-none"
+                    value={ccInput}
+                    onChange={(e) => { setCcInput(e.target.value); fetchSuggestions(e.target.value, setCcSuggestions, ccSuggestTimer); }}
+                    onKeyDown={commitCc}
+                    onBlur={() => setTimeout(() => setCcSuggestions([]), 150)}
+                  />
+                  {ccSuggestions.length > 0 && (
+                    <div className="absolute top-full left-0 mt-1 z-50 bg-white border border-neutral-200 rounded-[10px] shadow-custom-hover min-w-64 py-1">
+                      {ccSuggestions.map((s) => (
+                        <button key={s.email} className="w-full text-left px-3 py-2 hover:bg-background-100 flex items-center gap-2"
+                          onMouseDown={(e) => { e.preventDefault(); setCc((p) => [...p, s.email]); setCcInput(""); setCcSuggestions([]); }}>
+                          <span className="text-xs font-medium text-neutral-700 truncate">{s.name}</span>
+                          <span className="text-xs text-neutral-400 truncate">{s.email}</span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           )}
@@ -853,14 +1233,28 @@ export default function ComposeClient({
                     </button>
                   </span>
                 ))}
-                <input
-                  type="text"
-                  placeholder="Add BCC…"
-                  className="flex-1 min-w-32 text-sm text-neutral-700 placeholder-neutral-400 bg-transparent border-none outline-none"
-                  value={bccInput}
-                  onChange={(e) => setBccInput(e.target.value)}
-                  onKeyDown={commitBcc}
-                />
+                <div className="relative flex-1 min-w-32">
+                  <input
+                    type="text"
+                    placeholder="Add BCC…"
+                    className="w-full text-sm text-neutral-700 placeholder-neutral-400 bg-transparent border-none outline-none"
+                    value={bccInput}
+                    onChange={(e) => { setBccInput(e.target.value); fetchSuggestions(e.target.value, setBccSuggestions, bccSuggestTimer); }}
+                    onKeyDown={commitBcc}
+                    onBlur={() => setTimeout(() => setBccSuggestions([]), 150)}
+                  />
+                  {bccSuggestions.length > 0 && (
+                    <div className="absolute top-full left-0 mt-1 z-50 bg-white border border-neutral-200 rounded-[10px] shadow-custom-hover min-w-64 py-1">
+                      {bccSuggestions.map((s) => (
+                        <button key={s.email} className="w-full text-left px-3 py-2 hover:bg-background-100 flex items-center gap-2"
+                          onMouseDown={(e) => { e.preventDefault(); setBcc((p) => [...p, s.email]); setBccInput(""); setBccSuggestions([]); }}>
+                          <span className="text-xs font-medium text-neutral-700 truncate">{s.name}</span>
+                          <span className="text-xs text-neutral-400 truncate">{s.email}</span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           )}
@@ -876,6 +1270,26 @@ export default function ComposeClient({
               onChange={(e) => setSubject(e.target.value)}
             />
           </div>
+
+          {/* ATTACHMENTS */}
+          {attachments.length > 0 && (
+            <div className="flex flex-wrap items-center gap-2 px-6 py-2.5 border-b border-neutral-100 bg-background-50">
+              {attachments.map((att) => (
+                <div key={att.id} className="inline-flex items-center gap-2 px-2.5 py-1.5 bg-background-100 border border-neutral-200 rounded-small text-xs">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5 text-neutral-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
+                  </svg>
+                  <span className="text-neutral-700 font-medium truncate max-w-[160px]">{att.name}</span>
+                  <span className="text-neutral-400">{att.size < 1048576 ? `${Math.round(att.size / 1024)} KB` : `${(att.size / 1048576).toFixed(1)} MB`}</span>
+                  <button onClick={() => removeAttachment(att.id)} className="text-neutral-400 hover:text-neutral-700 transition-colors ml-0.5">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
 
           {/* AI FEATURE BUTTONS */}
           {!bodyExpanded && <div className="px-6 py-3 border-b border-neutral-200 ai-section-glow flex-shrink-0">
@@ -1312,8 +1726,30 @@ export default function ComposeClient({
           {/* FOOTER / SEND BAR */}
           <div className="flex items-center justify-between px-6 py-4 border-t border-neutral-200 bg-background-50 flex-shrink-0">
             <div className="flex items-center gap-2">
+              {/* Hidden file input */}
+              <input
+                ref={fileInputRef}
+                type="file"
+                multiple
+                className="hidden"
+                onChange={(e) => void handleFileSelect(e)}
+              />
+
+              {/* Attach files button */}
               <button
-                onClick={handleSend}
+                onClick={() => fileInputRef.current?.click()}
+                title="Attach files"
+                className="flex items-center gap-1.5 px-2.5 py-2 text-xs font-medium text-neutral-600 border border-neutral-200 rounded-small hover:bg-background-100 hover:border-neutral-300 transition-all shadow-custom"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
+                </svg>
+                {attachments.length > 0 ? `${attachments.length} file${attachments.length > 1 ? "s" : ""}` : "Attach"}
+              </button>
+
+              {/* Send button */}
+              <button
+                onClick={() => void handleSend()}
                 disabled={sending}
                 className="flex items-center gap-2 ai-gradient-bg compose-btn-glow text-white font-semibold text-sm py-2.5 px-5 rounded-small transition-all disabled:opacity-60"
               >
@@ -1329,6 +1765,67 @@ export default function ComposeClient({
                 )}
                 {sending ? "Sending…" : "Send"}
               </button>
+
+              {/* Schedule Send dropdown */}
+              <div className="relative">
+                <button
+                  onClick={() => setShowScheduleMenu((v) => !v)}
+                  title="Schedule send"
+                  className="flex items-center gap-1 px-2 py-2.5 text-xs font-medium text-neutral-600 border border-neutral-200 rounded-small hover:bg-background-100 transition-all shadow-custom"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" className="w-2.5 h-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+                {showScheduleMenu && (
+                  <div className="absolute bottom-full left-0 mb-2 z-50 bg-white border border-neutral-200 rounded-[10px] shadow-custom-hover min-w-52 py-1.5">
+                    <p className="px-3 py-1.5 text-xs font-semibold text-neutral-500 uppercase tracking-wider">Schedule Send</p>
+                    {[
+                      { label: "In 1 hour", ms: 60 * 60 * 1000 },
+                      { label: "In 4 hours", ms: 4 * 60 * 60 * 1000 },
+                      { label: "Tomorrow 9 AM", ms: (() => { const t = new Date(); t.setDate(t.getDate() + 1); t.setHours(9, 0, 0, 0); return t.getTime() - Date.now(); })() },
+                      { label: "Next Monday 9 AM", ms: (() => { const t = new Date(); const daysUntilMon = (8 - t.getDay()) % 7 || 7; t.setDate(t.getDate() + daysUntilMon); t.setHours(9, 0, 0, 0); return t.getTime() - Date.now(); })() },
+                    ].map(({ label, ms }) => (
+                      <button
+                        key={label}
+                        className="w-full text-left px-3 py-2 text-xs text-neutral-700 hover:bg-background-100 transition-colors"
+                        onClick={() => { const at = new Date(Date.now() + ms); setScheduledAt(at); setShowScheduleMenu(false); void handleSend(at); }}
+                      >
+                        {label}
+                      </button>
+                    ))}
+                    <div className="border-t border-neutral-100 mt-1 pt-1 px-3 py-1.5">
+                      <label className="text-xs text-neutral-500 mb-1 block">Custom date & time</label>
+                      <input
+                        type="datetime-local"
+                        className="w-full text-xs border border-neutral-200 rounded-[6px] px-2 py-1 focus:outline-none focus:border-primary-300"
+                        min={new Date().toISOString().slice(0, 16)}
+                        onChange={(e) => { if (e.target.value) { const at = new Date(e.target.value); setScheduledAt(at); setShowScheduleMenu(false); void handleSend(at); } }}
+                      />
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Scheduled indicator */}
+              {scheduledAt && (
+                <div className="flex items-center gap-1.5 px-2.5 py-1 bg-secondary-50 border border-secondary-200 rounded-small">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="w-3 h-3 text-secondary-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <span className="text-xs font-medium text-secondary-700">
+                    Sending {scheduledAt.toLocaleString([], { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}
+                  </span>
+                  <button onClick={() => setScheduledAt(null)} className="text-secondary-400 hover:text-secondary-700 ml-0.5">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+              )}
             </div>
             <div className="flex items-center gap-3">
               <span className="text-xs text-neutral-400">{wordCount} words</span>
@@ -1603,11 +2100,15 @@ export default function ComposeClient({
                         </svg>
                         <span className="text-xs text-neutral-500">AI Quality Score</span>
                         <div className="flex-1 h-1.5 bg-neutral-200 rounded-small overflow-hidden">
-                          <div className="remix-shimmer h-full rounded-small" style={{ width: "88%" }} />
+                          <div className="remix-shimmer h-full rounded-small" style={{ width: `${computeQualityScore(originalBodyRef.current, remixedBody ?? "")}%` }} />
                         </div>
-                        <span className="text-xs font-semibold text-primary-600">88%</span>
+                        <span className="text-xs font-semibold text-primary-600">{computeQualityScore(originalBodyRef.current, remixedBody ?? "")}%</span>
                       </div>
-                      <p className="text-sm text-neutral-700 leading-relaxed whitespace-pre-wrap">{remixedBody}</p>
+                      {showDiff && originalBodyRef.current ? (
+                        <div className="text-sm text-neutral-700 leading-relaxed" dangerouslySetInnerHTML={{ __html: computeDiff(originalBodyRef.current, remixedBody ?? "") }} />
+                      ) : (
+                        <p className="text-sm text-neutral-700 leading-relaxed whitespace-pre-wrap">{remixedBody}</p>
+                      )}
                     </div>
 
                     {showDiff && (
@@ -2179,7 +2680,7 @@ export default function ComposeClient({
                   Cancel
                 </button>
                 <button
-                  onClick={() => setActivePanel(null)}
+                  onClick={() => void addVoiceAttachment()}
                   disabled={!voiceBlob}
                   className="flex-1 flex items-center justify-center gap-2 text-white font-semibold text-sm py-2.5 px-5 rounded-small transition-all shadow-custom hover:shadow-custom-hover disabled:opacity-40"
                   style={{ backgroundColor: "rgb(138 9 9)" }}

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import Link from "next/link";
 import type { EmailMessage } from "@/lib/types/email";
 import { getInitials, getAvatarColor } from "@/lib/utils/email-helpers";
 
@@ -190,6 +191,21 @@ export function ReadingPane({
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
             </svg>
           </button>
+
+          {/* Open reply in full composer */}
+          {email && (
+            <Link
+              href={`/compose?mode=reply&messageId=${email.id}`}
+              title="Open in full composer (AI features + attachments)"
+              className="flex items-center gap-1 px-2.5 py-1.5 rounded-[8px] text-xs font-medium transition-colors ml-1"
+              style={{ color: "rgb(138 9 9)", border: "1px solid rgb(252 216 216)", backgroundColor: "rgb(253 235 235)" }}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+              </svg>
+              Full Compose
+            </Link>
+          )}
         </div>
       </div>
 

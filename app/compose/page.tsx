@@ -5,7 +5,16 @@ import Sidebar from "@/components/Sidebar";
 import { StoreInitializer } from "@/components/StoreInitializer";
 import ComposeClient from "@/components/compose/ComposeClient";
 
-export default async function ComposePage() {
+type SearchParams = Promise<{
+  mode?: string;
+  messageId?: string;
+}>;
+
+export default async function ComposePage({
+  searchParams,
+}: {
+  searchParams: SearchParams;
+}) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
@@ -16,9 +25,11 @@ export default async function ComposePage() {
   });
 
   if (!dbUser) redirect("/onboarding");
+  if (!dbUser.msAccounts.length) redirect("/onboarding");
 
   const defaultAccount = dbUser.msAccounts.find((a) => a.isDefault) ?? dbUser.msAccounts[0];
-  if (!defaultAccount) redirect("/onboarding");
+  const params = await searchParams;
+  const mode = params.mode as "reply" | "replyAll" | "forward" | undefined;
 
   return (
     <div className="flex" style={{ height: "100vh", overflow: "hidden" }}>
@@ -28,8 +39,15 @@ export default async function ComposePage() {
         userEmail={defaultAccount.msEmail}
       />
       <ComposeClient
-        fromName={dbUser.name ?? user.email ?? "You"}
-        fromEmail={defaultAccount.msEmail}
+        accounts={dbUser.msAccounts.map((a) => ({
+          id: a.id,
+          homeAccountId: a.homeAccountId,
+          msEmail: a.msEmail,
+          displayName: a.displayName,
+          isDefault: a.isDefault,
+        }))}
+        mode={mode}
+        messageId={params.messageId}
       />
     </div>
   );

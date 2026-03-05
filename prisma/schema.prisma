@@ -41,6 +41,7 @@ model User {
   webhookSubs WebhookSubscription[]
   drafts      Draft[]
   emailRules  EmailRule[]
+  signatures  Signature[]
 
   @@map("users")
 }
@@ -111,20 +112,40 @@ model WebhookSubscription {
 // ─── Drafts ───────────────────────────────────────────────────────────────────
 
 model Draft {
-  id            String   @id @default(cuid())
+  id            String    @id @default(cuid())
   userId        String
-  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   homeAccountId String?
-  toRecipients  Json     @default("[]")
-  ccRecipients  Json     @default("[]")
-  bccRecipients Json     @default("[]")
+  graphDraftId  String?   // MS Graph message ID — set when draft synced to Outlook
+  toRecipients  Json      @default("[]")
+  ccRecipients  Json      @default("[]")
+  bccRecipients Json      @default("[]")
   subject       String?
-  bodyHtml      String?  @db.Text
-  attachments   Json     @default("[]")
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  bodyHtml      String?   @db.Text
+  attachments   Json      @default("[]")
+  scheduledAt   DateTime? // null = send immediately; set = scheduled send
+  scheduledSent Boolean   @default(false)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
 
   @@map("drafts")
+}
+
+// ─── Signatures ───────────────────────────────────────────────────────────────
+
+model Signature {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name      String
+  title     String?
+  company   String?
+  phone     String?
+  isDefault Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("signatures")
 }
 
 // ─── Email Rules ──────────────────────────────────────────────────────────────
