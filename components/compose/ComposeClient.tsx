@@ -1209,7 +1209,7 @@ export default function ComposeClient({
       </header>
 
       {/* SCROLLABLE BODY */}
-      <div className="flex-1 overflow-hidden px-6 py-5 flex flex-col">
+      <div className="flex-1 overflow-y-auto px-6 py-5 flex flex-col">
         <div
           className={`relative max-w-4xl w-full mx-auto bg-background-50 rounded-large composer-shadow flex flex-col overflow-hidden flex-1 min-h-0 transition-all ${isDragOver ? "border-2 border-primary-400 ring-2 ring-primary-100" : "border border-neutral-200"}`}
           onDragOver={handleCardDragOver}
@@ -1250,16 +1250,14 @@ export default function ComposeClient({
 
           {/* REPLY CONTEXT BANNER */}
           {replyContext && (
-            <div className="flex items-start gap-3 px-6 py-3 border-b border-neutral-100 bg-background-100">
-              <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5 text-neutral-400 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <div className="flex items-center gap-3 px-6 py-2.5 border-b border-neutral-100 bg-background-100 flex-shrink-0 min-w-0">
+              <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5 text-neutral-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
               </svg>
-              <div className="min-w-0">
-                <p className="text-xs text-neutral-500">
-                  {mode === "forward" ? "Forwarding" : "Replying to"}: <span className="font-medium text-neutral-700">{replyContext.originalFrom}</span>
-                </p>
-                <p className="text-xs text-neutral-400 truncate">{replyContext.originalSubject}</p>
-              </div>
+              <p className="text-xs text-neutral-500 truncate min-w-0">
+                {mode === "forward" ? "Forwarding" : "Replying to"}: <span className="font-medium text-neutral-700">{replyContext.originalFrom}</span>
+                {replyContext.originalSubject && <span className="text-neutral-400"> — {replyContext.originalSubject}</span>}
+              </p>
             </div>
           )}
 
