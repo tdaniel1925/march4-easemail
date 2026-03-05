@@ -1,5 +1,9 @@
 # Build Log
 
+## 2026-03-05 — AI Dictate panel layout fix
+- [Fix] ComposeClient: AI Dictate scrollable content area — added `min-h-0` to `flex-1 overflow-y-auto` div. Without it, flex items default to `min-height: auto` and grow past parent bounds, pushing footer buttons (Discard / Generate Email, Retake / Insert) out of viewport when transcript is long.
+- TypeScript: CLEAN
+
 ## 2026-03-05 — Calendar E2E Tests (19/19)
 - [Tests] calendar.spec.ts: all 19 tests passing
 - [Fix] EventFormModal: added noValidate to form — browser native HTML5 min-attribute validation was silently blocking handleSubmit (root cause of test 8b failure)

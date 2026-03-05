@@ -59,7 +59,7 @@ export async function POST(req: NextRequest) {
   const graphAttachments = (attachments ?? []).map((att) => ({
     "@odata.type": "#microsoft.graph.fileAttachment",
     name: att.name,
-    contentType: att.contentType,
+    contentType: att.contentType || "application/octet-stream",
     contentBytes: att.data,
   }));
 

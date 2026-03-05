@@ -8,6 +8,7 @@ import { formatDate, getInitials, getAvatarColor } from "@/lib/utils/email-helpe
 import { applyRules } from "@/lib/utils/rule-engine";
 import type { SideEffect } from "@/lib/utils/rule-engine";
 import type { Rule } from "@/lib/types/rules";
+import AiReplyModal from "@/components/inbox/AiReplyModal";
 
 // Re-export so existing imports from this file still work
 export type { EmailMessage };
@@ -19,16 +20,18 @@ type FilterTab = "all" | "unread" | "starred" | "attachments";
 function EmailRow({
   email,
   onClick,
+  onAiReply,
 }: {
   email: EmailMessage;
   onClick: () => void;
+  onAiReply: (e: React.MouseEvent) => void;
 }) {
   const color = getAvatarColor(email.from.name);
 
   return (
     <div
       onClick={onClick}
-      className="relative flex items-start gap-3 px-4 py-3.5 cursor-pointer transition-colors hover:bg-neutral-50 border-l-2 border-transparent"
+      className="group relative flex items-start gap-3 px-4 py-3.5 cursor-pointer transition-colors hover:bg-neutral-50 border-l-2 border-transparent"
     >
       {/* Avatar */}
       <div
@@ -50,9 +53,16 @@ function EmailRow({
           >
             {email.from.name}
           </span>
-          <span className="text-xs flex-shrink-0" style={{ color: "rgb(155 155 155)" }}>
-            {formatDate(email.receivedDateTime)}
-          </span>
+          <div className="flex items-center gap-1.5 flex-shrink-0">
+            {email.hasAttachments && (
+              <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" style={{ color: "rgb(155 155 155)" }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
+              </svg>
+            )}
+            <span className="text-xs" style={{ color: "rgb(155 155 155)" }}>
+              {formatDate(email.receivedDateTime)}
+            </span>
+          </div>
         </div>
         <p
           className="text-sm truncate"
@@ -68,10 +78,23 @@ function EmailRow({
         </p>
       </div>
 
-      {/* Unread dot */}
-      {!email.isRead && (
-        <span className="w-2 h-2 rounded-full flex-shrink-0 mt-2" style={{ backgroundColor: "rgb(138 9 9)" }} />
-      )}
+      {/* Right side: AI reply button (hover) + unread dot */}
+      <div className="flex flex-col items-center gap-1.5 flex-shrink-0 mt-0.5">
+        <button
+          onClick={onAiReply}
+          className="hidden group-hover:flex items-center gap-1 text-xs font-medium px-2 py-1 rounded-[6px] transition-colors"
+          style={{ backgroundColor: "rgb(254 242 242)", color: "rgb(138 9 9)" }}
+          title="AI Reply"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+          </svg>
+          AI Reply
+        </button>
+        {!email.isRead && (
+          <span className="w-2 h-2 rounded-full" style={{ backgroundColor: "rgb(138 9 9)" }} />
+        )}
+      </div>
     </div>
   );
 }
@@ -87,6 +110,7 @@ export default function InboxClient({
 }) {
   const router = useRouter();
   const [emails, setEmails] = useState<EmailMessage[]>(initialEmails);
+  const [aiReplyEmail, setAiReplyEmail] = useState<EmailMessage | null>(null);
   const [activeTab, setActiveTab] = useState<FilterTab>("all");
   const [search, setSearch] = useState("");
   const [loadingEmails, setLoadingEmails] = useState(false);
@@ -264,6 +288,7 @@ export default function InboxClient({
   ];
 
   return (
+    <>
     <div className="flex flex-1" style={{ overflow: "hidden" }}>
       {/* Email List — full width */}
       <div className="flex flex-col w-full bg-white flex-shrink-0" style={{ height: "100vh", overflow: "hidden" }}>
@@ -402,6 +427,7 @@ export default function InboxClient({
                   }
                   router.push(`/inbox/${email.id}`);
                 }}
+                onAiReply={(e) => { e.stopPropagation(); setAiReplyEmail(email); }}
               />
             ))
           )}
@@ -417,5 +443,18 @@ export default function InboxClient({
       </div>
 
     </div>
+
+    {aiReplyEmail && (
+      <AiReplyModal
+        email={aiReplyEmail}
+        onClose={() => setAiReplyEmail(null)}
+        onSelectOption={(body) => {
+          sessionStorage.setItem(`ai-reply-${aiReplyEmail.id}`, body);
+          router.push(`/inbox/${aiReplyEmail.id}`);
+          setAiReplyEmail(null);
+        }}
+      />
+    )}
+    </>
   );
 }

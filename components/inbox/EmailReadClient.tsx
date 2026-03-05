@@ -100,6 +100,18 @@ export default function EmailReadClient({ email, homeAccountId }: { email: Email
   const [calPrefill, setCalPrefill] = useState<ParseInviteResponse | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
+  // Pre-fill reply text from AI Reply modal (stored in sessionStorage)
+  useEffect(() => {
+    const key = `ai-reply-${email.id}`;
+    const prefill = sessionStorage.getItem(key);
+    if (prefill) {
+      setReplyText(prefill);
+      setComposeMode("reply");
+      sessionStorage.removeItem(key);
+      setTimeout(() => textareaRef.current?.focus(), 100);
+    }
+  }, [email.id]);
+
   const isInvite = isLikelyInvite(email);
 
   // Mark as read on mount

@@ -483,7 +483,15 @@ export default function ComposeClient({
 
   // ── Send ────────────────────────────────────────────────────────────────────
   async function handleSend(scheduleAt?: Date | null) {
-    if (!to.length) { setSendError("Add at least one recipient."); return; }
+    // Auto-commit any pending typed-but-not-chipped recipients
+    const finalTo = toInput.trim() ? [...to, toInput.trim()] : to;
+    const finalCc = ccInput.trim() ? [...cc, ccInput.trim()] : cc;
+    const finalBcc = bccInput.trim() ? [...bcc, bccInput.trim()] : bcc;
+    if (toInput.trim()) { setTo(finalTo); setToInput(""); }
+    if (ccInput.trim()) { setCc(finalCc); setCcInput(""); }
+    if (bccInput.trim()) { setBcc(finalBcc); setBccInput(""); }
+
+    if (!finalTo.length) { setSendError("Add at least one recipient."); return; }
     setSending(true);
     setSendError(null);
 
@@ -525,9 +533,9 @@ export default function ComposeClient({
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          to: to.map((addr) => ({ emailAddress: { address: addr } })),
-          cc: cc.map((addr) => ({ emailAddress: { address: addr } })),
-          bcc: bcc.map((addr) => ({ emailAddress: { address: addr } })),
+          to: finalTo.map((addr) => ({ emailAddress: { address: addr } })),
+          cc: finalCc.map((addr) => ({ emailAddress: { address: addr } })),
+          bcc: finalBcc.map((addr) => ({ emailAddress: { address: addr } })),
           subject,
           body: { contentType: "HTML", content: bodyHtml },
           attachments: allAttachments,
@@ -2431,7 +2439,7 @@ export default function ComposeClient({
             </div>
 
             {/* Scrollable content */}
-            <div className="flex-1 overflow-y-auto">
+            <div className="flex-1 overflow-y-auto min-h-0">
 
               {/* Waveform — always visible */}
               <div className="px-6 py-5 border-b border-neutral-200 bg-background-50">
@@ -2545,64 +2553,6 @@ export default function ComposeClient({
                 )}
               </div>
 
-              {/* Mic Controls */}
-              <div className="px-6 py-6 border-b border-neutral-200 bg-background-50">
-                <div className="flex items-center justify-center gap-6">
-                  {/* Restart */}
-                  <button onClick={restartRecording} className="flex flex-col items-center gap-2 group">
-                    <div className="w-12 h-12 rounded-large border-2 border-neutral-200 group-hover:border-neutral-300 bg-background-50 group-hover:bg-background-100 flex items-center justify-center transition-all shadow-custom">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-neutral-500 group-hover:text-neutral-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                      </svg>
-                    </div>
-                    <span className="text-xs text-neutral-500 group-hover:text-neutral-700 font-medium">Restart</span>
-                  </button>
-
-                  {/* Pause */}
-                  <button onClick={pauseRecording} className="flex flex-col items-center gap-2 group">
-                    <div className="w-14 h-14 rounded-large border-2 border-secondary-300 group-hover:border-secondary-400 bg-secondary-50 group-hover:bg-secondary-100 flex items-center justify-center transition-all shadow-custom">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6 text-secondary-600 group-hover:text-secondary-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                    </div>
-                    <span className="text-xs text-secondary-600 font-medium">Pause</span>
-                  </button>
-
-                  {/* Main mic button */}
-                  <button
-                    onClick={isRecording ? stopRecording : startRecording}
-                    className="flex flex-col items-center gap-2 group relative"
-                  >
-                    <div className="relative flex items-center justify-center">
-                      {isRecording && (
-                        <>
-                          <div className="mic-pulse absolute w-20 h-20 rounded-large border-2 border-primary-400 opacity-40" />
-                          <div className="mic-pulse-2 absolute w-20 h-20 rounded-large border-2 border-primary-300 opacity-30" />
-                          <div className="mic-pulse-3 absolute w-20 h-20 rounded-large border-2 border-primary-200 opacity-20" />
-                        </>
-                      )}
-                      <div className="w-20 h-20 rounded-large ai-gradient-bg flex items-center justify-center shadow-custom-hover relative z-10 group-hover:opacity-90 transition-opacity">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="w-8 h-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
-                        </svg>
-                      </div>
-                    </div>
-                    <span className="text-xs text-primary-600 font-semibold">{isRecording ? "Recording…" : "Record"}</span>
-                  </button>
-
-                  {/* Stop */}
-                  <button onClick={stopRecording} className="flex flex-col items-center gap-2 group">
-                    <div className="w-14 h-14 rounded-large border-2 border-primary-200 group-hover:border-primary-300 bg-primary-50 group-hover:bg-primary-100 flex items-center justify-center transition-all shadow-custom">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6 text-primary-500 group-hover:text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M9 10a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z" />
-                      </svg>
-                    </div>
-                    <span className="text-xs text-primary-500 font-medium">Stop</span>
-                  </button>
-                </div>
-              </div>
-
               {/* Dictation Settings */}
               <div className="px-6 py-4 border-b border-neutral-200 bg-background-100">
                 <h3 className="font-heading text-sm font-semibold text-neutral-800 mb-3">Dictation Settings</h3>
@@ -2668,6 +2618,60 @@ export default function ComposeClient({
               </>)}
 
             </div>
+
+            {/* Mic Controls — fixed outside scroll area so they never leave viewport */}
+            {!dictateFormatting && dictateFormatted === null && (
+              <div className="flex-shrink-0 px-6 py-5 border-t border-neutral-200 bg-background-50">
+                <div className="flex items-center justify-center gap-6">
+                  {/* Restart */}
+                  <button onClick={restartRecording} className="flex flex-col items-center gap-2 group">
+                    <div className="w-12 h-12 rounded-large border-2 border-neutral-200 group-hover:border-neutral-300 bg-background-50 group-hover:bg-background-100 flex items-center justify-center transition-all shadow-custom">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-neutral-500 group-hover:text-neutral-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                      </svg>
+                    </div>
+                    <span className="text-xs text-neutral-500 group-hover:text-neutral-700 font-medium">Restart</span>
+                  </button>
+                  {/* Pause */}
+                  <button onClick={pauseRecording} className="flex flex-col items-center gap-2 group">
+                    <div className="w-14 h-14 rounded-large border-2 border-secondary-300 group-hover:border-secondary-400 bg-secondary-50 group-hover:bg-secondary-100 flex items-center justify-center transition-all shadow-custom">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6 text-secondary-600 group-hover:text-secondary-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    </div>
+                    <span className="text-xs text-secondary-600 font-medium">Pause</span>
+                  </button>
+                  {/* Main mic button */}
+                  <button onClick={isRecording ? stopRecording : startRecording} className="flex flex-col items-center gap-2 group relative">
+                    <div className="relative flex items-center justify-center">
+                      {isRecording && (
+                        <>
+                          <div className="mic-pulse absolute w-20 h-20 rounded-large border-2 border-primary-400 opacity-40" />
+                          <div className="mic-pulse-2 absolute w-20 h-20 rounded-large border-2 border-primary-300 opacity-30" />
+                          <div className="mic-pulse-3 absolute w-20 h-20 rounded-large border-2 border-primary-200 opacity-20" />
+                        </>
+                      )}
+                      <div className="w-20 h-20 rounded-large ai-gradient-bg flex items-center justify-center shadow-custom-hover relative z-10 group-hover:opacity-90 transition-opacity">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="w-8 h-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+                        </svg>
+                      </div>
+                    </div>
+                    <span className="text-xs text-primary-600 font-semibold">{isRecording ? "Recording…" : "Record"}</span>
+                  </button>
+                  {/* Stop */}
+                  <button onClick={stopRecording} className="flex flex-col items-center gap-2 group">
+                    <div className="w-14 h-14 rounded-large border-2 border-primary-200 group-hover:border-primary-300 bg-primary-50 group-hover:bg-primary-100 flex items-center justify-center transition-all shadow-custom">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6 text-primary-500 group-hover:text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M9 10a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z" />
+                      </svg>
+                    </div>
+                    <span className="text-xs text-primary-500 font-medium">Stop</span>
+                  </button>
+                </div>
+              </div>
+            )}
 
             {/* Footer */}
             <div className="flex-shrink-0 border-t border-neutral-200 bg-background-50 px-6 py-4">
