@@ -167,7 +167,7 @@ export default function EventFormModal({ prefill, onClose, onSaved, editEvent }:
         </div>
 
         {/* Form */}
-        <form onSubmit={(e) => void handleSubmit(e)} className="px-6 py-5 overflow-y-auto space-y-4" style={{ maxHeight: "65vh" }}>
+        <form id="event-form" noValidate onSubmit={(e) => void handleSubmit(e)} className="px-6 py-5 overflow-y-auto space-y-4" style={{ maxHeight: "65vh" }}>
 
           {/* Subject */}
           <div>
@@ -203,6 +203,7 @@ export default function EventFormModal({ prefill, onClose, onSaved, editEvent }:
             <div>
               <label className="text-xs text-neutral-400 mb-1 block">Start</label>
               <input
+                data-testid="event-start"
                 type={isAllDay ? "date" : "datetime-local"}
                 value={isAllDay ? start.split("T")[0] : start}
                 onChange={(e) => handleStartChange(e.target.value)}
@@ -212,6 +213,7 @@ export default function EventFormModal({ prefill, onClose, onSaved, editEvent }:
             <div>
               <label className="text-xs text-neutral-400 mb-1 block">End</label>
               <input
+                data-testid="event-end"
                 type={isAllDay ? "date" : "datetime-local"}
                 value={isAllDay ? end.split("T")[0] : end}
                 onChange={(e) => setEnd(e.target.value)}
@@ -297,6 +299,7 @@ export default function EventFormModal({ prefill, onClose, onSaved, editEvent }:
           </button>
           <button
             type="submit"
+            form="event-form"
             disabled={loading}
             className="px-4 py-2 text-sm font-semibold rounded-[8px] text-white transition-colors"
             style={{ backgroundColor: loading ? "rgb(180 30 30)" : BRAND }}

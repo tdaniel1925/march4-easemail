@@ -182,17 +182,18 @@ test("8b. End time before start time shows a validation error", async ({ page })
   // Fill a subject so we get past the first validation
   await page.locator('input[placeholder="Event title"]').fill("Test Meeting");
 
-  // Set end before start using the date inputs
-  // Start: tomorrow at 14:00, End: tomorrow at 13:00
-  const tomorrow = new Date();
-  tomorrow.setDate(tomorrow.getDate() + 1);
-  const dateStr = tomorrow.toISOString().slice(0, 10);
+  // Set end to a well-past datetime — default start is always "next full hour" (future).
+  // React 18 exposes props directly via __reactProps$<hash> on the DOM node.
+  await page.locator('[data-testid="event-end"]').evaluate((el, value) => {
+    const propsKey = Object.keys(el).find((k) => k.startsWith("__reactProps$"));
+    if (!propsKey) throw new Error("__reactProps$ not found on event-end input");
+    const onChange = (el as any)[propsKey].onChange;
+    if (typeof onChange !== "function") throw new Error("onChange is not a function");
+    onChange({ target: { value } });
+  }, "2020-01-01T00:00");
 
-  const startInput = page.locator('input[type="datetime-local"]').nth(0);
-  const endInput   = page.locator('input[type="datetime-local"]').nth(1);
-
-  await startInput.fill(`${dateStr}T14:00`);
-  await endInput.fill(`${dateStr}T13:00`);
+  // Confirm React re-rendered with the new end value before submitting
+  await expect(page.locator('[data-testid="event-end"]')).toHaveValue("2020-01-01T00:00", { timeout: 2000 });
 
   await page.locator("button", { hasText: "Create Event" }).click();
 
@@ -294,8 +295,8 @@ test("11b. NL input bar Create button becomes enabled when text is typed", async
 test("12. Week view is active by default; Day and Week buttons are present", async ({ page }) => {
   await goToCalendar(page);
 
-  const weekBtn = page.locator("button", { hasText: "Week" });
-  const dayBtn  = page.locator("button", { hasText: "Day" });
+  const weekBtn = page.locator("button", { hasText: /^Week$/ });
+  const dayBtn  = page.locator("button", { hasText: /^Day$/ });
 
   await expect(weekBtn).toBeVisible();
   await expect(dayBtn).toBeVisible();
@@ -309,12 +310,12 @@ test("12. Week view is active by default; Day and Week buttons are present", asy
 test("12b. Clicking Day sets it as the active view", async ({ page }) => {
   await goToCalendar(page);
 
-  const dayBtn = page.locator("button", { hasText: "Day" });
+  const dayBtn = page.locator("button", { hasText: /^Day$/ });
   await dayBtn.click();
 
   // After clicking, Day button should have the active style (white text — background rgb(138,9,9))
   // We verify by re-clicking Week and checking store round-trips cleanly (no crash)
-  const weekBtn = page.locator("button", { hasText: "Week" });
+  const weekBtn = page.locator("button", { hasText: /^Week$/ });
   await weekBtn.click();
 
   // Calendar heading still visible — no error thrown
