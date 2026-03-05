@@ -122,11 +122,14 @@ export default function InboxClient({
   const [loadingTab, setLoadingTab] = useState(false);
   const [requiresReauth, setRequiresReauth] = useState(false);
 
+  const [pendingNewEmails, setPendingNewEmails] = useState<EmailMessage[]>([]);
+
   const activeAccount = useAccountStore((s) => s.activeAccount);
   const setInboxUnread = useAccountStore((s) => s.setInboxUnread);
   const firstRender = useRef(true);
   const sentinelRef = useRef<HTMLDivElement>(null);
   const rulesRef = useRef<Rule[]>([]);
+  const knownIdsRef = useRef<Set<string>>(new Set(initialEmails.map((e) => e.id)));
 
   // ── Rule engine helpers ──
 
@@ -222,6 +225,54 @@ export default function InboxClient({
       .catch(console.error)
       .finally(() => setLoadingTab(false));
   }, [activeTab, activeAccount?.homeAccountId]);
+
+  // Keep knownIds in sync as emails are added
+  useEffect(() => {
+    emails.forEach((e) => knownIdsRef.current.add(e.id));
+  }, [emails]);
+
+  // Poll every 30s for new emails — pauses when tab hidden or search/filter active
+  useEffect(() => {
+    if (!activeAccount) return;
+    const poll = async () => {
+      if (document.hidden || activeTab !== "all" || search) return;
+      try {
+        const res = await fetch(
+          `/api/mail/inbox?homeAccountId=${encodeURIComponent(activeAccount.homeAccountId)}`
+        );
+        if (!res.ok) return;
+        const data: { emails: EmailMessage[] } = await res.json();
+        const fresh = data.emails.filter((e) => !knownIdsRef.current.has(e.id));
+        if (fresh.length > 0) {
+          setPendingNewEmails((prev) => {
+            const existingIds = new Set(prev.map((e) => e.id));
+            return [...fresh.filter((e) => !existingIds.has(e.id)), ...prev];
+          });
+        }
+      } catch {
+        // fail silently — inbox still works
+      }
+    };
+    const id = setInterval(poll, 30_000);
+    return () => clearInterval(id);
+  }, [activeAccount?.homeAccountId, activeTab, search]);
+
+  // Clear pending banner when account switches
+  useEffect(() => {
+    setPendingNewEmails([]);
+    knownIdsRef.current = new Set(emails.map((e) => e.id));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeAccount?.homeAccountId]);
+
+  function showNewEmails() {
+    pendingNewEmails.forEach((e) => knownIdsRef.current.add(e.id));
+    setEmails((prev) => {
+      const existingIds = new Set(prev.map((e) => e.id));
+      const toAdd = pendingNewEmails.filter((e) => !existingIds.has(e.id));
+      return [...toAdd, ...prev];
+    });
+    setPendingNewEmails([]);
+  }
 
   // Infinite scroll: load next page
   const loadMore = useCallback(async () => {
@@ -401,6 +452,20 @@ export default function InboxClient({
               Reconnect
             </a>
           </div>
+        )}
+
+        {/* New emails banner */}
+        {pendingNewEmails.length > 0 && (
+          <button
+            onClick={showNewEmails}
+            className="w-full flex items-center justify-center gap-2 py-2 text-xs font-semibold flex-shrink-0 transition-colors"
+            style={{ backgroundColor: "rgb(138 9 9)", color: "white" }}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+            </svg>
+            {pendingNewEmails.length} new email{pendingNewEmails.length !== 1 ? "s" : ""} — tap to show
+          </button>
         )}
 
         {/* Email rows */}
