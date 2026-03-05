@@ -463,7 +463,8 @@ export default function ComposeClient({
 
   function remixTextToHtml(text: string) {
     const escaped = text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-    return escaped.split(/\n\n+/).map((p) => `<div>${p.replace(/\n/g, "<br>")}</div>`).join("") || "<div><br></div>";
+    // Join sections with <div><br></div> so blank lines are visible in contenteditable
+    return escaped.split(/\n\n+/).map((p) => `<div>${p.replace(/\n/g, "<br>")}</div>`).join("<div><br></div>") || "<div><br></div>";
   }
 
   function acceptRemix() {
