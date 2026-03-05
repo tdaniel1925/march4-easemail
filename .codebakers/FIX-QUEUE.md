@@ -35,6 +35,47 @@ _Last updated: 2026-03-05_
 - [ ] Webhook subscriptions for real-time push (WebhookSubscription table exists, not wired)
 - [ ] Account disconnect: also delete cached_folders/emails/cal_events/contacts for that account
 
+## IN PROGRESS — MS Teams Integration (Option B — Full Page)
+_Approved by user 2026-03-05_
+
+### Step 1 — OAuth Scopes
+- [ ] Add Teams scopes to MSAL auth flow: Chat.ReadWrite, ChannelMessage.Read.All, ChannelMessage.Send, Team.ReadBasic.All, Channel.ReadBasic.All, Presence.Read.All, OnlineMeetings.ReadWrite
+- [ ] Update /api/auth/microsoft scope array
+
+### Step 2 — API Routes (/api/teams/...)
+- [ ] GET /api/teams/chats — list user's chats (1:1 + group)
+- [ ] GET /api/teams/chats/[id]/messages — messages in a chat
+- [ ] POST /api/teams/chats/[id]/send — send message to a chat
+- [ ] GET /api/teams/teams — list joined teams
+- [ ] GET /api/teams/teams/[id]/channels — channels in a team
+- [ ] GET /api/teams/channels/[id]/messages — messages in a channel
+- [ ] POST /api/teams/channels/[id]/send — send to a channel
+- [ ] GET /api/teams/presence?userId=... — presence for a user
+- [ ] POST /api/calendar/teams-meeting — create online Teams meeting
+
+### Step 3 — /teams Page + TeamsClient
+- [ ] app/teams/page.tsx — server component, auth guard, pass initial data
+- [ ] components/teams/TeamsClient.tsx — split panel:
+  - Left: tabs (Chats | Teams), chat list, team→channel browser
+  - Right: message thread, compose bar, presence dots on senders
+  - Polling every 30s for new messages
+
+### Step 4 — Calendar Update
+- [ ] "New Teams Meeting" button in CalendarClient
+- [ ] Calls POST /api/calendar/teams-meeting → returns joinUrl
+- [ ] Shows join link in EventFormModal / confirmation banner
+
+### Step 5 — Contacts Presence
+- [ ] Hover on contact card → fetch GET /api/teams/presence → show availability dot
+
+### Step 6 — Sidebar
+- [ ] Activate the greyed-out Teams icon in Sidebar footer → link to /teams
+
+### Step 7 — Verify + Commit
+- [ ] tsc --noEmit clean
+- [ ] npm run dep:map
+- [ ] Commit all Teams work
+
 ## DONE — Offline-First Sync Engine (2026-03-05)
 - [x] Email delta links / incremental Graph sync — fully wired via /api/cron/sync
 - [x] Calendar delta sync — cachedCalendarEvent via same cron

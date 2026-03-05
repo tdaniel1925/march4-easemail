@@ -125,8 +125,26 @@ Client: `AccountsClient` calls `removeAccount()` on Zustand store → sidebar up
 
 ## Current Focus
 - Session: 2026-03-05 (continued)
-- Last completed: Full production hardening sprint — all 13 P1-PROD items done
-- Status: App is production-ready. All 13 production items complete.
+- Last completed: Admin page — users/sync/rules/signatures CRUD, Sidebar shield icon, Vercel env vars
+- Next: MS Teams integration (Option B — full page). See FIX-QUEUE.md for step-by-step plan.
+
+## Admin Panel (2026-03-05)
+- `/admin` — server page, isAdminEmail() guard (redirects non-admins to /inbox)
+- `lib/admin.ts` — reads ADMIN_EMAILS env var, isAdminEmail() helper
+- `components/admin/AdminClient.tsx` — 4-tab UI: Users, Sync Status, Email Rules, Signatures
+- `/api/admin/signatures` (GET/POST) + `/api/admin/signatures/[id]` (PATCH/DELETE) — admin-only CRUD
+- `ADMIN_EMAILS` + `NEXT_PUBLIC_ADMIN_EMAILS` set in .env.local AND Vercel production
+- Admins: tdaniel@bundlefly.com, david@dmillerlaw.com, marcela@dmillerlaw.com, shall@botmakers.ai, info@tonnerow.com
+- Sidebar: `isAdmin` prop added → red shield icon → /admin; greyed Teams placeholder → will be activated next
+
+## MS Teams Integration — Planned (2026-03-05)
+- Approved scope: Option B (full page — chats + channels + meetings + presence)
+- New OAuth scopes needed: Chat.ReadWrite, ChannelMessage.Read.All, ChannelMessage.Send, Team.ReadBasic.All, Channel.ReadBasic.All, Presence.Read.All, OnlineMeetings.ReadWrite
+- NOTE: Existing users must re-auth (disconnect + reconnect MS account) to grant new scopes
+- New routes: /api/teams/chats, /api/teams/chats/[id]/messages+send, /api/teams/teams, /api/teams/teams/[id]/channels, /api/teams/channels/[id]/messages+send, /api/teams/presence, /api/calendar/teams-meeting
+- New page: /teams — split panel, Chats + Teams tabs, 30s polling
+- Calendar update: "New Teams Meeting" button → joinUrl
+- Contacts: presence dot on hover
 
 ## Production Hardening — Completed (2026-03-05)
 - middleware.ts: Supabase auth at edge, public routes whitelisted

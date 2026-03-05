@@ -1,5 +1,20 @@
 # Build Log
 
+## 2026-03-05 — MS Teams Integration — PLANNED (not yet started)
+- Scope: Option B (full page). Plan logged to FIX-QUEUE.md + BRAIN.md.
+- Awaiting go signal from user to begin Step 1 (OAuth scopes).
+
+## 2026-03-05 — Admin Page Complete
+- [Env] ADMIN_EMAILS + NEXT_PUBLIC_ADMIN_EMAILS added to .env.local + Vercel production
+- [Lib] lib/admin.ts — isAdminEmail() reads ADMIN_EMAILS env var
+- [Page] app/admin/page.tsx — server component, isAdminEmail guard, queries users/sync/rules/sigs
+- [Component] components/admin/AdminClient.tsx — 4-tab UI: Users, Sync Status, Email Rules, Signatures CRUD
+- [Routes] app/api/admin/signatures/route.ts — GET all, POST create for any userId
+- [Routes] app/api/admin/signatures/[id]/route.ts — PATCH, DELETE, both admin-guarded
+- [Sidebar] components/Sidebar.tsx — isAdmin prop, red shield → /admin, greyed Teams placeholder
+- [TS] tsc --noEmit clean
+- [DepMap] npm run dep:map regenerated + committed
+
 ## 2026-03-05 — Offline-First Sync Engine
 - [Schema] 4 new models: CachedFolder, CachedEmail, CachedCalendarEvent, CachedContact — pushed via `prisma db push`
 - [Sync] lib/sync/folder-sync.ts — full folder tree upsert (top-level + child folders)
