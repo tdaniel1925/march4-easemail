@@ -9,6 +9,20 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        // Background scale — white-based
+        background: {
+          50:  "rgb(255 255 255)",
+          100: "rgb(250 250 250)",
+          200: "rgb(245 245 245)",
+          300: "rgb(235 235 235)",
+          400: "rgb(220 220 220)",
+          500: "rgb(200 200 200)",
+          600: "rgb(170 170 170)",
+          700: "rgb(130 130 130)",
+          800: "rgb(90 90 90)",
+          900: "rgb(50 50 50)",
+          DEFAULT: "rgb(255 255 255)",
+        },
         // Brand primary — red #8A0909
         primary: {
           50:  "rgb(253 235 235)",
@@ -73,12 +87,16 @@ const config: Config = {
       },
       borderRadius: {
         sm: "10px",
+        small: "10px",
         DEFAULT: "10px",
-        lg: "10px",
+        lg: "14px",
+        large: "14px",
       },
       boxShadow: {
-        card:       "0px 4px 4px 0px rgba(27,29,29,0.10)",
-        "card-hover": "0px 6px 8px 0px rgba(27,29,29,0.16)",
+        card:           "0px 4px 4px 0px rgba(27,29,29,0.10)",
+        "card-hover":   "0px 6px 8px 0px rgba(27,29,29,0.16)",
+        custom:         "0px 4px 4px 0px rgba(27,29,29,0.10)",
+        "custom-hover": "0px 6px 8px 0px rgba(27,29,29,0.16)",
       },
       spacing: {
         base: "10px",

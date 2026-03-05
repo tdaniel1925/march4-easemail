@@ -118,6 +118,7 @@ export default function Sidebar({ userName = "You", userEmail = "" }: SidebarPro
     .slice(0, 2);
 
   return (
+    <>
     <aside className="hidden lg:flex flex-col w-64 bg-white border-r border-neutral-200 flex-shrink-0" style={{ height: "100vh" }}>
       {/* Logo */}
       <div className="flex items-center gap-3 px-6 py-5 border-b border-neutral-200 flex-shrink-0">
@@ -274,6 +275,50 @@ export default function Sidebar({ userName = "You", userEmail = "" }: SidebarPro
           })}
         </ul>
 
+        {/* AI Tools */}
+        <p className="text-xs font-semibold text-neutral-400 uppercase tracking-wider px-3 mt-6 mb-2">AI Tools</p>
+        <ul className="space-y-0.5">
+          {[
+            { href: "/compose", label: "AI Composer", icon: <path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /> },
+            { href: "/compose?panel=remix", label: "AI Remix", icon: <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /> },
+            { href: "/compose?panel=dictate", label: "AI Dictate", icon: <path strokeLinecap="round" strokeLinejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" /> },
+          ].map((item) => {
+            const active = pathname === item.href;
+            return (
+              <li key={item.label}>
+                <Link
+                  href={item.href}
+                  className="flex items-center gap-3 px-3 py-2 rounded-[10px] text-sm transition-colors"
+                  style={{
+                    backgroundColor: active ? "rgb(253 235 235)" : "transparent",
+                    color: active ? "rgb(83 5 5)" : "rgb(82 82 82)",
+                  }}
+                >
+                  <NavIcon>{item.icon}</NavIcon>
+                  {item.label}
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+
+        {/* Labels */}
+        <p className="text-xs font-semibold text-neutral-400 uppercase tracking-wider px-3 mt-6 mb-2">Labels</p>
+        <ul className="space-y-0.5">
+          {[
+            { label: "Work", color: "rgb(138 9 9)" },
+            { label: "Personal", color: "rgb(16 185 129)" },
+            { label: "Newsletters", color: "rgb(82 82 82)" },
+          ].map((item) => (
+            <li key={item.label}>
+              <button className="w-full flex items-center gap-3 px-3 py-2 rounded-[10px] text-sm transition-colors hover:bg-background-100 text-neutral-600">
+                <span className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: item.color }} />
+                {item.label}
+              </button>
+            </li>
+          ))}
+        </ul>
+
         {/* Support */}
         <p className="text-xs font-semibold text-neutral-400 uppercase tracking-wider px-3 mt-6 mb-2">Support</p>
         <ul className="space-y-0.5">
@@ -292,6 +337,7 @@ export default function Sidebar({ userName = "You", userEmail = "" }: SidebarPro
         </ul>
       </nav>
 
+      {/* Mobile floating compose FAB — outside aside, rendered at root level below */}
       {/* User Footer */}
       <div className="px-4 py-4 border-t border-neutral-200 flex-shrink-0">
         <div className="flex items-center gap-3">
@@ -311,5 +357,17 @@ export default function Sidebar({ userName = "You", userEmail = "" }: SidebarPro
         </div>
       </div>
     </aside>
+
+    {/* Mobile floating compose FAB */}
+    <Link
+      href="/compose"
+      className="lg:hidden fixed bottom-6 right-6 z-50 w-14 h-14 ai-gradient-bg text-white rounded-[14px] flex items-center justify-center shadow-custom-hover transition-transform hover:scale-105"
+      aria-label="Compose new email"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+      </svg>
+    </Link>
+  </>
   );
 }

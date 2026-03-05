@@ -243,6 +243,25 @@ export default function InboxClient({
     <div className="flex flex-1" style={{ overflow: "hidden" }}>
       {/* Email List Panel */}
       <div className="flex flex-col w-full lg:w-80 xl:w-96 bg-white border-r border-neutral-200 flex-shrink-0" style={{ height: "100vh", overflow: "hidden" }}>
+        {/* AI Compose Banner */}
+        <div className="flex items-center justify-between px-4 py-3 bg-primary-50 border-b border-primary-200 flex-shrink-0">
+          <div className="flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-primary-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+            <span className="text-xs font-semibold text-primary-700">AI-powered email, ready when you are</span>
+          </div>
+          <a
+            href="/compose"
+            className="flex items-center gap-1.5 ai-gradient-bg text-white text-xs font-semibold px-3 py-1.5 rounded-small transition-all compose-btn-glow flex-shrink-0"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+            </svg>
+            New Email
+          </a>
+        </div>
+
         {/* Header */}
         <div className="px-4 pt-5 pb-3 border-b border-neutral-200 flex-shrink-0">
           <div className="flex items-center justify-between mb-3">
