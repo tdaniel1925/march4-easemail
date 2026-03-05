@@ -9,6 +9,7 @@ interface GraphFolder {
   displayName: string;
   unreadItemCount: number;
   totalItemCount: number;
+  wellKnownName?: string | null;
 }
 
 export async function GET(req: NextRequest) {
@@ -20,14 +21,15 @@ export async function GET(req: NextRequest) {
   if (!homeAccountId) return NextResponse.json({ error: "homeAccountId required" }, { status: 400 });
 
   try {
-    // $filter=wellKnownName eq null returns only custom (non-system) folders.
-    // wellKnownName cannot appear in $select (Graph 400) but is valid in $filter.
+    // Fetch all folders; filter client-side to exclude system well-known folders.
+    // $filter=wellKnownName eq null fails on some account/tenant types (Graph 400/500).
     const data = await graphGet<{ value: GraphFolder[] }>(
       user.id, homeAccountId,
-      "/me/mailFolders?$filter=wellKnownName eq null&$select=id,displayName,unreadItemCount,totalItemCount&$top=100"
+      "/me/mailFolders?$select=id,displayName,unreadItemCount,totalItemCount,wellKnownName&$top=100"
     );
 
     const folders: MailFolder[] = data.value
+      .filter((f) => !f.wellKnownName)   // exclude inbox, drafts, sent, deleted, etc.
       .map((f) => ({
         id: f.id,
         displayName: f.displayName,

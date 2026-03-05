@@ -5,12 +5,14 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import diff from "fast-diff";
 
-// Lazy DOMPurify sanitizer — avoids SSR issues
+// Lazy DOMPurify sanitizer — avoids SSR issues.
+// require() interop varies by bundler: .default may or may not exist.
 function sanitize(html: string): string {
   if (typeof window === "undefined") return html;
   // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const DOMPurify = (require("dompurify") as { default: { sanitize: (s: string) => string } }).default;
-  return DOMPurify.sanitize(html);
+  const mod = require("dompurify") as any;
+  const DP = mod?.default ?? mod;
+  return typeof DP?.sanitize === "function" ? DP.sanitize(html) : html;
 }
 
 // ─── Browser Speech API types ─────────────────────────────────────────────────

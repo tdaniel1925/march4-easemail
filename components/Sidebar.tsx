@@ -103,11 +103,11 @@ export default function Sidebar({ userName = "You", userEmail = "" }: SidebarPro
   useEffect(() => {
     if (!activeAccount) return;
     fetch(`/api/mail/folders?homeAccountId=${encodeURIComponent(activeAccount.homeAccountId)}`)
-      .then((r) => r.json())
+      .then((r) => r.ok ? r.json() : r.json().then((e: { error?: string }) => { throw new Error(e.error ?? `folders ${r.status}`); }))
       .then((data: { folders?: MailFolder[] }) => {
         if (data.folders) setMailFolders(data.folders);
       })
-      .catch(console.error);
+      .catch((err: unknown) => console.warn("[Sidebar] folders fetch failed:", err));
   }, [activeAccount?.homeAccountId, setMailFolders]);
 
   const initials = userName
