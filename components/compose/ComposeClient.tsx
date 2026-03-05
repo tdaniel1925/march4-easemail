@@ -594,6 +594,29 @@ export default function ComposeClient({
     setAttachments((prev) => prev.filter((a) => a.id !== id));
   }
 
+  // ── Inline image paste ───────────────────────────────────────────────────────
+  function handleBodyPaste(e: React.ClipboardEvent<HTMLDivElement>) {
+    const items = Array.from(e.clipboardData.items);
+    const imageItem = items.find((item) => item.type.startsWith("image/"));
+    if (!imageItem) return; // non-image paste: let browser handle normally
+
+    e.preventDefault();
+    const file = imageItem.getAsFile();
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const dataUrl = ev.target?.result as string;
+      document.execCommand(
+        "insertHTML",
+        false,
+        `<img src="${dataUrl}" style="max-width:100%;height:auto" alt="pasted image">`
+      );
+      triggerAutoSave();
+    };
+    reader.readAsDataURL(file);
+  }
+
   // ── Voice → attachments ───────────────────────────────────────────────────────
   async function addVoiceAttachment() {
     if (!voiceBlob) return;
@@ -1627,6 +1650,7 @@ export default function ComposeClient({
               contentEditable
               suppressContentEditableWarning
               onInput={onBodyChange}
+              onPaste={handleBodyPaste}
               className="text-sm text-neutral-700 leading-relaxed outline-none min-h-[200px]"
               data-placeholder="Write your email…"
               style={{ caretColor: "rgb(138 9 9)" }}
