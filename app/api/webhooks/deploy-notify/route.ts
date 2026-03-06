@@ -182,7 +182,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     .split(",").map((e) => e.trim()).filter(Boolean);
   if (!adminEmails.length) return NextResponse.json({ error: "No admin emails configured" }, { status: 500 });
 
-  const fromEmail = process.env.NOTIFY_FROM_EMAIL ?? "noreply@dmillerlaw.com";
+  const fromEmail = process.env.NOTIFY_FROM_EMAIL ?? "noreply@easemail.app";
   const branch = payload.ref.replace("refs/heads/", "");
   const headMsg = payload.head_commit?.message.split("\n")[0] ?? "Updates pushed";
 
