@@ -1,5 +1,5 @@
 # Fix Queue
-_Last updated: 2026-03-05_
+_Last updated: 2026-03-05 (latest session)_
 
 ## ALL DONE ✅ — P1-PROD Sprint (13 items)
 ## ALL DONE ✅ — P1 Auth / Login Critical
@@ -31,7 +31,16 @@ _Last updated: 2026-03-05_
 - [x] /signatures — SignaturesClient, CRUD API, DB-backed
 - [x] /email-rules — EmailRulesClient, 5 CRUD routes, Prisma EmailRule model, pure rule engine, InboxClient enforcement
 
+## DONE ✅ — Latest Session (2026-03-05)
+- [x] Domain gate: middleware + OAuth callback block non-dmillerlaw.com / non-admin emails
+- [x] Compose send: router.back() instead of router.push("/sent")
+- [x] Search: DB cache-first (cachedEmail contains), Graph fallback with $top=50
+- [x] AI prompts: system prompts + law firm context for all 4 routes (ai-reply, remix, dictate, nl-create)
+- [x] Sidebar: isAdmin computed internally (no longer needs prop from each page)
+- [x] ALLOWED_DOMAINS=dmillerlaw.com added to .env.local (⚠️ still needs adding to Vercel)
+
 ## Remaining Nice-to-Haves
+- [ ] Add ALLOWED_DOMAINS=dmillerlaw.com to Vercel environment variables
 - [ ] Webhook subscriptions for real-time push (WebhookSubscription table exists, not wired)
 - [ ] Account disconnect: also delete cached_folders/emails/cal_events/contacts for that account
 
@@ -39,42 +48,42 @@ _Last updated: 2026-03-05_
 _Approved by user 2026-03-05_
 
 ### Step 1 — OAuth Scopes
-- [ ] Add Teams scopes to MSAL auth flow: Chat.ReadWrite, ChannelMessage.Read.All, ChannelMessage.Send, Team.ReadBasic.All, Channel.ReadBasic.All, Presence.Read.All, OnlineMeetings.ReadWrite
-- [ ] Update /api/auth/microsoft scope array
+- [x] Add Teams scopes to MSAL auth flow: Chat.ReadWrite, ChannelMessage.Send, Team.ReadBasic.All, Channel.ReadBasic.All, OnlineMeetings.ReadWrite (TEAMS_SCOPES — separate from GRAPH_SCOPES)
+- [x] Update /api/auth/microsoft scope array
 
 ### Step 2 — API Routes (/api/teams/...)
-- [ ] GET /api/teams/chats — list user's chats (1:1 + group)
-- [ ] GET /api/teams/chats/[id]/messages — messages in a chat
-- [ ] POST /api/teams/chats/[id]/send — send message to a chat
-- [ ] GET /api/teams/teams — list joined teams
-- [ ] GET /api/teams/teams/[id]/channels — channels in a team
-- [ ] GET /api/teams/channels/[id]/messages — messages in a channel
-- [ ] POST /api/teams/channels/[id]/send — send to a channel
-- [ ] GET /api/teams/presence?userId=... — presence for a user
-- [ ] POST /api/calendar/teams-meeting — create online Teams meeting
+- [x] GET /api/teams/chats — list user's chats (1:1 + group)
+- [x] GET /api/teams/chats/[id]/messages — messages in a chat
+- [x] POST /api/teams/chats/[id]/send — send message to a chat
+- [x] GET /api/teams/teams — list joined teams
+- [x] GET /api/teams/teams/[id]/channels — channels in a team
+- [x] GET /api/teams/channels/[id]/messages — messages in a channel
+- [x] POST /api/teams/channels/[id]/send — send to a channel
+- [x] GET /api/teams/presence?userId=... — presence for a user
+- [x] POST /api/calendar/teams-meeting — create online Teams meeting
 
 ### Step 3 — /teams Page + TeamsClient
-- [ ] app/teams/page.tsx — server component, auth guard, pass initial data
-- [ ] components/teams/TeamsClient.tsx — split panel:
+- [x] app/teams/page.tsx — server component, auth guard, pass initial data
+- [x] components/teams/TeamsClient.tsx — split panel:
   - Left: tabs (Chats | Teams), chat list, team→channel browser
   - Right: message thread, compose bar, presence dots on senders
   - Polling every 30s for new messages
 
 ### Step 4 — Calendar Update
-- [ ] "New Teams Meeting" button in CalendarClient
-- [ ] Calls POST /api/calendar/teams-meeting → returns joinUrl
-- [ ] Shows join link in EventFormModal / confirmation banner
+- [x] "New Teams Meeting" button in CalendarClient
+- [x] Calls POST /api/calendar/teams-meeting → returns joinUrl
+- [x] Shows join link in confirmation banner
 
 ### Step 5 — Contacts Presence
-- [ ] Hover on contact card → fetch GET /api/teams/presence → show availability dot
+- [x] Hover on contact card → fetch GET /api/teams/presence → show availability dot
 
 ### Step 6 — Sidebar
-- [ ] Activate the greyed-out Teams icon in Sidebar footer → link to /teams
+- [x] Activate the greyed-out Teams icon in Sidebar footer → link to /teams
 
 ### Step 7 — Verify + Commit
-- [ ] tsc --noEmit clean
-- [ ] npm run dep:map
-- [ ] Commit all Teams work
+- [x] tsc --noEmit clean
+- [x] npm run dep:map
+- [x] Commit all Teams work
 
 ## DONE — Offline-First Sync Engine (2026-03-05)
 - [x] Email delta links / incremental Graph sync — fully wired via /api/cron/sync

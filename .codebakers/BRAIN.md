@@ -124,9 +124,9 @@ Client: `AccountsClient` calls `removeAccount()` on Zustand store → sidebar up
 - `/api/mail/folders` uses `$filter=wellKnownName eq null` (NOT `$select=wellKnownName` — Graph rejects that)
 
 ## Current Focus
-- Session: 2026-03-05 (continued)
-- Last completed: Admin page — users/sync/rules/signatures CRUD, Sidebar shield icon, Vercel env vars
-- Next: MS Teams integration (Option B — full page). See FIX-QUEUE.md for step-by-step plan.
+- Session: 2026-03-05 (latest)
+- Last completed: Domain gate, compose send fix, search cache-first, AI prompt improvements
+- Next: Nothing critical pending. Nice-to-haves remain (webhooks, per-account cache cleanup on disconnect)
 
 ## Admin Panel (2026-03-05)
 - `/admin` — server page, isAdminEmail() guard (redirects non-admins to /inbox)
@@ -135,7 +135,37 @@ Client: `AccountsClient` calls `removeAccount()` on Zustand store → sidebar up
 - `/api/admin/signatures` (GET/POST) + `/api/admin/signatures/[id]` (PATCH/DELETE) — admin-only CRUD
 - `ADMIN_EMAILS` + `NEXT_PUBLIC_ADMIN_EMAILS` set in .env.local AND Vercel production
 - Admins: tdaniel@bundlefly.com, david@dmillerlaw.com, marcela@dmillerlaw.com, shall@botmakers.ai, info@tonnerow.com
-- Sidebar: `isAdmin` prop added → red shield icon → /admin; greyed Teams placeholder → will be activated next
+- Sidebar: `isAdmin` computed internally from NEXT_PUBLIC_ADMIN_EMAILS + userEmail (no longer needs prop)
+
+## Domain/Access Gate (2026-03-05)
+- `ALLOWED_DOMAINS=dmillerlaw.com` in .env.local (add to Vercel)
+- `ADMIN_EMAILS` — additional non-domain users allowed (see above)
+- **middleware.ts** — checks every authenticated session. Non-allowed → 403 (API) or redirect /login?error=unauthorized_domain
+- **OAuth callback** — `isEmailAllowed()` helper checks after token exchange. Blocks at creation time for both LOGIN + ADD flows
+- Login page shows friendly message for `unauthorized_domain` error
+
+## MS Teams Integration (2026-03-05)
+- GRAPH_SCOPES and TEAMS_SCOPES are separate constants in lib/microsoft/msal.ts
+- acquireTokenSilent accepts optional scopes param (default GRAPH_SCOPES) — prevents token conflict
+- All /api/teams/* routes pass TEAMS_SCOPES explicitly to graphGet/graphPost
+- /api/auth/microsoft/teams-consent — incremental consent route (prompt=consent, state=teams_consent:{userId})
+- OAuth callback handles teams_consent: state — updates MSAL cache, redirects /teams
+- /teams page — TeamsClient: Chats tab (DMs/groups) + Teams tab (team→channel browser), 30s polling
+- Calendar: Teams Meeting button → POST /api/calendar/teams-meeting → joinWebUrl
+- Contacts: presence dot on hover → GET /api/teams/presence
+
+## AI Features (2026-03-05)
+- All AI routes use claude-haiku-4-5-20251001 (cheapest model)
+- All routes now use system parameter for persona separation
+- ai-reply: firm context, sender first name in greeting, 3 prescribed reply roles, max_tokens 1500
+- remix: preserves legal terms/case names/dates, never paraphrases legal specifics
+- dictate: legal vocabulary context, preserves case details verbatim
+- nl-create: law firm event types, smart durations, legal subject naming, max_tokens 400
+
+## Search Architecture (2026-03-05)
+- /api/mail/search: DB cache-first (cachedEmail contains insensitive, take 100)
+- Falls back to Graph only if cache returns 0 results ($top=50, down from 250)
+- Result count = actual DB matches, not Graph page size limit
 
 ## MS Teams Integration — Complete (2026-03-05)
 - Approved scope: Option B (full page — chats + channels + meetings + presence)

@@ -1,5 +1,36 @@
 # Build Log
 
+## 2026-03-05 — Session: Security, UX Fixes, AI Prompt Improvements
+
+### Domain/Admin Access Gate
+- [Security] middleware.ts — added domain+admin allowlist check on every authenticated request. Reads ALLOWED_DOMAINS + ADMIN_EMAILS env vars. Unauthorized → 403 (API) or /login?error=unauthorized_domain (page)
+- [Security] app/api/auth/microsoft/callback/route.ts — isEmailAllowed() helper added. Gate fires after token exchange in both LOGIN and ADD flows. Blocks non-dmillerlaw.com, non-admin accounts before any user/account is created
+- [UX] app/login/page.tsx — added "unauthorized_domain" to ERROR_LABELS with friendly message
+- [Env] .env.local — added ALLOWED_DOMAINS=dmillerlaw.com. Need to add to Vercel too.
+
+### Compose: Send Navigation Fix
+- [Fix] components/compose/ComposeClient.tsx:553 — changed router.push("/sent") → router.back(). After send, user returns to wherever they came from (inbox, email thread, etc.) instead of being dumped to /sent
+
+### Search: DB Cache-First (Performance + Accurate Count)
+- [Fix] app/api/mail/search/route.ts — rewrote to query cachedEmail table first (contains insensitive on subject/fromName/fromAddress/bodyPreview, take 100, ordered by receivedDateTime desc). Falls back to Graph only if cache returns 0 results. Reduced Graph $top from 250 → 50. Result count now reflects actual matches.
+
+### MS Teams: Scope Separation (Loop Fix)
+- [Fix] lib/microsoft/msal.ts — split into GRAPH_SCOPES (mail/calendar/contacts) and TEAMS_SCOPES (Chat.ReadWrite, ChannelMessage.Send, Team.ReadBasic.All, Channel.ReadBasic.All, OnlineMeetings.ReadWrite). acquireTokenSilent accepts optional scopes param defaulting to GRAPH_SCOPES
+- [Fix] lib/microsoft/graph.ts — graphGet/graphPost/graphFetch accept optional scopes param. All Teams routes pass TEAMS_SCOPES explicitly
+- [Fix] app/api/auth/microsoft/teams-consent/route.ts — new route, initiates OAuth with TEAMS_SCOPES + prompt=consent + state=teams_consent:{userId}
+- [Fix] OAuth callback — added teams_consent: state handler: acquireTokenByCode with TEAMS_SCOPES → updates MSAL cache → redirects /teams
+
+### Sidebar Admin: Self-Computing isAdmin
+- [Fix] components/Sidebar.tsx — isAdmin now computed internally from NEXT_PUBLIC_ADMIN_EMAILS + userEmail prop. No longer needs to be passed from every page. Falls back to isAdminProp if provided.
+
+### AI Prompts: Law Firm Context + System Prompts
+- [Improve] app/api/mail/ai-reply/route.ts — system prompt with firm identity; extracts sender first name for greeting; prescribed reply roles (acknowledgment/clarification/substantive); max_tokens 1024→1500; body limit 3k→4k
+- [Improve] app/api/mail/remix/route.ts — system prompt; preserve legal terms/case names/dates exactly; never paraphrase legal specifics
+- [Improve] app/api/mail/dictate/route.ts — system prompt; legal vocabulary (depositions, motions, Latin phrases); preserve case details verbatim
+- [Improve] app/api/calendar/nl-create/route.ts — system prompt; law firm event types (depositions→2hr, hearings→1hr); legal subject naming ("Deposition — Smith v. Jones"); max_tokens 256→400
+- All routes: model stays claude-haiku-4-5-20251001 (cheapest)
+- [TS] tsc --noEmit clean on all changes
+
 ## 2026-03-05 — MS Teams Integration — COMPLETE
 - [Scopes] lib/microsoft/msal.ts: +7 Teams scopes added to GRAPH_SCOPES
 - [API] /api/teams/chats — GET list, GET messages, POST send
