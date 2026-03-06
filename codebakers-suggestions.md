@@ -208,3 +208,179 @@ Or simpler: **fold the BUILD-LOG entry into the feature commit itself** — alwa
 - General rule: **search APIs should always accept a scope parameter** — even if the first implementation only uses one scope, the parameter should exist from day one so adding scoping later doesn't require a breaking change
 
 *Last updated: 2026-03-05 | EaseMail session 2*
+
+---
+
+## 17. MSAL Scope Conflict — Token Cache Poisoning
+
+**What went wrong:** After adding Teams scopes to `GRAPH_SCOPES`, `acquireTokenSilent` kept returning the old cached mail-only token (still technically valid), causing Graph to return 403 on Teams endpoints. The loop was: request Teams scopes → MSAL returns cached mail token (valid, no Teams scopes) → Graph 403 → trigger consent → user consents → MSAL caches new token but still returns old one on next call → repeat.
+
+**Root cause:** MSAL's in-memory cache returns the first valid token it finds for an account. If a token exists that satisfies the account match but not the scope match, MSAL may still return it rather than using the refresh token to get a new one — especially when scope sets overlap.
+
+**Fix:** Separate scope constants per feature domain. Never mix mail and Teams scopes in one array. Each domain requests only its own scopes:
+```typescript
+export const GRAPH_SCOPES = ["Mail.ReadWrite", "Calendars.ReadWrite", ...];
+export const TEAMS_SCOPES = ["Chat.ReadWrite", "ChannelMessage.Send", ...];
+// acquireTokenSilent accepts scopes param, defaults to GRAPH_SCOPES
+```
+
+**Suggestion:**
+- Add to `agents/patterns/external-oauth-token-cache.md`: scope set separation rule
+- Error Sniffer: detect a single `GRAPH_SCOPES` array with >2 distinct API surface areas → warn to split by domain
+- Interview agent: "Will this app use multiple Microsoft API surfaces (mail + Teams, mail + SharePoint)?" → if yes, auto-prescribe separate scope constants
+
+---
+
+## 18. Incremental OAuth Consent — Adding Scopes Without Disconnect
+
+**What went wrong:** When Teams scopes were added after users had already connected their MS accounts, the options were: (a) force everyone to disconnect and reconnect (bad UX), or (b) build an incremental consent flow. Neither pattern existed in the framework.
+
+**The pattern that worked:** A dedicated consent route that initiates OAuth with `prompt=consent` and the new scopes only, with a custom `state` value (`teams_consent:{userId}`) so the callback knows to update the MSAL cache without touching the user's account.
+
+```
+GET /api/auth/microsoft/teams-consent
+  → getAuthCodeUrl({ scopes: TEAMS_SCOPES, prompt: "consent", state: "teams_consent:{userId}" })
+  → redirect to MS
+
+GET /api/auth/microsoft/callback (state = "teams_consent:...")
+  → acquireTokenByCode({ scopes: TEAMS_SCOPES })
+  → MSAL cache updated
+  → redirect to /feature-page (no account changes)
+```
+
+**Suggestion:**
+- Add pattern: `agents/patterns/incremental-oauth-consent.md`
+- Rule: any time a feature requires new OAuth scopes on an existing provider connection, never force full disconnect — build an incremental consent route
+- Interview agent: "Does this feature add new OAuth scopes to an existing provider?" → auto-scaffold the consent route + callback handler
+- Error Sniffer: if a route returns 403 from an external OAuth API and the user is already connected → suggest incremental consent before suggesting reconnect
+
+---
+
+## 19. Admin-Consent vs User-Consent Scopes (MS Graph)
+
+**What went wrong:** `ChannelMessage.Read.All` and `Presence.Read.All` were added to `GRAPH_SCOPES` but both require **tenant admin consent** — not user consent. Including them caused `acquireTokenSilent` to throw `consent_required` in an infinite loop even after the user consented, because the user *cannot* grant these scopes themselves.
+
+**The distinction:**
+- **User-consent scopes**: `Mail.ReadWrite`, `Chat.ReadWrite`, `ChannelMessage.Send`, `Calendars.ReadWrite` — any user can grant these
+- **Admin-consent scopes**: `ChannelMessage.Read.All`, `Presence.Read.All`, `User.Read.All` — require the tenant admin to grant via Azure portal
+
+**Fix:** Remove admin-consent scopes from all user-facing consent flows. Handle 403 from Graph gracefully at the route level — return a specific error code so the UI can show an informative message instead of a broken state.
+
+**Suggestion:**
+- Add to `agents/patterns/external-oauth-token-cache.md`: table of common Graph scopes with consent level (user vs admin)
+- Error Sniffer: flag any scope containing `.All` or `Read.All` suffix as likely admin-consent → warn to verify in MS docs before including in user consent flow
+- Interview agent: "Will you need org-wide data access (all users' presence, all channel messages)?" → if yes, warn that admin consent is required and may not be grantable in all customer tenants
+
+---
+
+## 20. AI Prompts — System Parameter Separation
+
+**What went wrong:** All AI routes had persona context embedded in the user message turn rather than the `system` parameter. This is less effective — the model doesn't weight it as strongly and the boundary between "who I am" and "what to do" is blurred.
+
+**The pattern that works:**
+```typescript
+// Bad — context buried in user message
+const prompt = `You are an AI assistant for a law firm. Analyze this email...`;
+client.messages.create({ messages: [{ role: "user", content: prompt }] });
+
+// Good — persona in system, task in user
+const system = `You are an email assistant for Darren Miller Law Firm. You understand legal context...`;
+const prompt = `Analyze this email and return JSON...`;
+client.messages.create({ system, messages: [{ role: "user", content: prompt }] });
+```
+
+**Additional lessons:**
+- Industry/domain context in the system prompt dramatically improves output quality (legal terms preserved, appropriate formality, correct event durations)
+- Prescribe reply option roles explicitly ("Option 1 must be a brief acknowledgment, Option 2 must request clarification") rather than asking the model to "be different" — vague differentiation instructions produce similar outputs
+- Extract contextual data (sender first name, firm name) and inject into prompts rather than leaving the model to guess
+
+**Suggestion:**
+- Add pattern: `agents/patterns/ai-prompt-structure.md`
+- Rule: always use `system` for persona/context, `messages` for the specific task
+- Interview agent: "Will you have AI features?" → if yes, ask for industry/domain context → store in BRAIN.md → auto-inject into all AI prompt system strings
+- Completeness Verifier: check that all AI routes use `system` parameter, not persona-in-user-message
+
+---
+
+## 21. Post-Action Navigation — router.back() vs router.push()
+
+**What went wrong:** After sending an email, `router.push("/sent")` was hardcoded. This dumped the user into the sent folder regardless of where they came from — if they opened compose from inbox, they ended up in sent instead of returning to inbox. Felt broken.
+
+**The rule:** After any "complete and close" action (send email, save form, submit), use `router.back()` to return the user to their prior context — not a hardcoded destination. The exception is when the action *creates* something the user should then view (e.g., creating a new record → navigate to that record's page).
+
+```typescript
+// Bad — ignores where user came from
+router.push("/sent");
+
+// Good — returns to prior context
+router.back();
+
+// Also good — when you need to control destination, use a returnTo param
+// /compose?returnTo=/inbox → router.push(searchParams.get("returnTo") ?? "/inbox")
+```
+
+**Suggestion:**
+- Add to `agents/patterns/atomic-unit.md`: post-action navigation rule
+- Completeness Verifier: check that form submission / send / delete actions use `router.back()` or a `returnTo` param — not hardcoded destination routes
+- Error Sniffer: flag `router.push("/[folder|page]")` inside submit/send handlers as a likely UX issue
+
+---
+
+## 22. Search: Cache-First Before External API
+
+**What went wrong:** The search route always hit the MS Graph API (`/me/messages?$search=...`). This was slow (500ms–2s per query), had a hardcoded `$top=250` that showed as a fake result count ("250 results for 'godaddy'"), and burned API quota on every keystroke.
+
+**The pattern that fixed it:**
+1. Query the local DB cache first (fast, <50ms, `contains` insensitive)
+2. If cache has results → return them immediately with accurate count
+3. If cache is empty → fall back to external API with a reduced page size
+
+```typescript
+const cached = await prisma.cachedEmail.findMany({
+  where: { userId, homeAccountId, OR: [
+    { subject: { contains: q, mode: "insensitive" } },
+    { fromName: { contains: q, mode: "insensitive" } },
+    { bodyPreview: { contains: q, mode: "insensitive" } },
+  ]},
+  take: 100,
+});
+if (cached.length > 0) return cached; // fast path
+// else fall back to Graph with $top=50
+```
+
+**Suggestion:**
+- Add to `agents/patterns/mutation-handler.md` or a new `agents/patterns/cache-first-reads.md`: the cache-first search pattern
+- Rule: any feature with a search input that queries an external API should route through local cache first if a cache table exists
+- Interview agent: "Will users search across large datasets from an external API?" → if yes, auto-prescribe a cache table + cache-first search route
+- Completeness Verifier: if a project has cached tables and a search route that hits the external API directly → flag as a performance gap
+
+---
+
+## 23. Env-Var Domain Gate vs DB-Based Access Control
+
+**What was built:** A domain allowlist using `ALLOWED_DOMAINS` env var + `ADMIN_EMAILS` env var, checked in both middleware and the OAuth callback. Works well for single-tenant / known-user-set apps.
+
+**Why this doesn't scale:** For multi-tenant SaaS, the allowed domains are per-org and stored in the DB — not in env vars. Baking access control into env vars means every new customer requires a deployment. The gate must move to the DB when going multi-tenant.
+
+**The two patterns:**
+```
+Single-tenant (env-var gate):
+  ALLOWED_DOMAINS=dmillerlaw.com
+  Middleware reads env → checks user.email domain
+  ✓ Simple, zero DB queries, good for one customer
+
+Multi-tenant (DB gate):
+  organizations table has allowedDomains: string[]
+  Middleware reads org from DB → checks user.email domain
+  ✓ Self-serve, each org controls its own domain list
+```
+
+**Suggestion:**
+- Add to `agents/patterns/auth-access-control.md`: document both patterns with clear "use this when" guidance
+- Interview agent: "Is this app for one customer or multiple?" → single customer → env-var gate pattern → multiple customers → DB gate pattern
+- BRAIN.md should explicitly record which pattern is in use so future sessions don't accidentally mix them
+- When generating the env-var gate pattern, always add a comment: `// For multi-tenant: move this to organizations.allowedDomains in DB`
+
+---
+
+*Last updated: 2026-03-05 | EaseMail session 3*
