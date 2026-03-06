@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 import { createHmac, timingSafeEqual } from "crypto";
 import Anthropic from "@anthropic-ai/sdk";
+import { prisma } from "@/lib/prisma";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
@@ -123,27 +124,13 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
   // Skip branch deletions (no commits)
   if (!payload.commits?.length) return NextResponse.json({ ok: true, skipped: true });
 
-  const adminEmails = (process.env.ADMIN_EMAILS ?? "")
-    .split(",").map((e) => e.trim()).filter(Boolean);
-  if (!adminEmails.length) return NextResponse.json({ error: "No admin emails configured" }, { status: 500 });
+  // Save commits to DB — digest cron sends once per day
+  await prisma.deployLog.create({
+    data: {
+      pusher: payload.pusher.name,
+      commits: payload.commits.map((c) => c.message.split("\n")[0]),
+    },
+  });
 
-  const fromEmail = process.env.NOTIFY_FROM_EMAIL ?? "noreply@easemail.app";
-  const pusher = payload.pusher.name;
-  const date = new Date().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
-
-  const summary = await generatePlainEnglishSummary(payload.commits);
-  if (!summary) return NextResponse.json({ ok: true, skipped: "no user-facing changes" });
-
-  try {
-    await resend.emails.send({
-      from: `EaseMail Updates <${fromEmail}>`,
-      to: adminEmails,
-      subject: `EaseMail update — ${date}`,
-      html: buildEmailHtml(summary, pusher, date),
-    });
-  } catch (err) {
-    return NextResponse.json({ error: `Resend error: ${String(err)}` }, { status: 500 });
-  }
-
-  return NextResponse.json({ ok: true, sent: adminEmails.length });
+  return NextResponse.json({ ok: true, queued: payload.commits.length });
 }

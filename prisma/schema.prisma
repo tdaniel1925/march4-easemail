@@ -234,6 +234,19 @@ model CachedContact {
   @@map("cached_contacts")
 }
 
+// ─── Deploy Log ───────────────────────────────────────────────────────────────
+
+model DeployLog {
+  id           String    @id @default(cuid())
+  pusher       String
+  commits      Json      // string[] of commit messages
+  createdAt    DateTime  @default(now())
+  digestSentAt DateTime?
+
+  @@index([digestSentAt, createdAt])
+  @@map("deploy_log")
+}
+
 // ─── Email Rules ──────────────────────────────────────────────────────────────
 
 model EmailRule {
