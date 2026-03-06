@@ -21,34 +21,38 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
   const { text, now } = await req.json() as { text: string; now: string };
   if (!text?.trim()) return NextResponse.json({ error: "text required" }, { status: 400 });
 
-  const prompt = `You are a calendar assistant. Convert the following natural language into a structured calendar event. Respond with ONLY valid JSON — no markdown, no explanation.
+  const system = `You are a calendar assistant for Darren Miller Law Firm. You create structured calendar events from natural language. You understand legal event types: client consultations, depositions, court hearings, mediations, settlement conferences, filing deadlines, and opposing counsel calls. Return ONLY valid JSON with no markdown or explanation.`;
+
+  const prompt = `Convert this natural language into a structured calendar event.
 
 Current date/time: ${now}
 
-Return this exact JSON structure:
+Return this exact JSON:
 {
-  "subject": "Event title",
+  "subject": "Clear, specific event title",
   "start": "ISO datetime like 2026-03-10T14:00:00 or empty string if unclear",
   "end": "ISO datetime like 2026-03-10T15:00:00 or empty string if unclear",
-  "location": "Location or meeting URL or empty string",
+  "location": "Courtroom/address/video link or empty string",
   "attendees": ["email@example.com"],
-  "body": "Optional description or empty string"
+  "body": "Relevant notes, case number, or description — empty string if none"
 }
 
 Rules:
-- Resolve relative dates using the current date/time above (e.g. "tomorrow", "next Monday", "in 3 days")
-- Default duration: 1 hour if end not specified and start is found
-- If no time specified but date is clear, use 09:00 as default start time
-- Extract email addresses from text for attendees; if names only (no emails), leave attendees empty
-- If time is ambiguous (e.g. "3" with no AM/PM), assume PM for times < 8, AM for 8+
+- Resolve relative dates from the current date/time (tomorrow, next Monday, in 3 days)
+- Default duration: 1 hour unless the type implies otherwise (depositions → 2 hours, hearings → 1 hour)
+- No time given but date is clear → use 09:00 as default
+- Ambiguous time (e.g. "3") → PM if < 8, AM if 8+, unless context says otherwise
+- Extract email addresses for attendees; names only → leave attendees empty
+- For legal events, include the event type in the subject (e.g. "Deposition — Smith v. Jones")
 
-Natural language input: "${text.slice(0, 500)}"`;
+Input: "${text.slice(0, 600)}"`;
 
   let message;
   try {
     message = await client.messages.create({
       model: "claude-haiku-4-5-20251001",
-      max_tokens: 256,
+      max_tokens: 400,
+      system,
       messages: [{ role: "user", content: prompt }],
     });
   } catch (e) {

@@ -23,37 +23,41 @@ export async function POST(req: NextRequest) {
   };
 
   const emailContent = body?.trim() || bodyPreview?.trim() || "(no content)";
+  // Extract sender first name for greeting (e.g. "John Smith <john@firm.com>" → "John")
+  const senderName = from.replace(/<[^>]+>/, "").trim().split(/\s+/)[0] ?? "there";
 
-  const prompt = `You are an AI assistant for a law firm email client. Analyze this email and respond with ONLY valid JSON — no markdown, no explanation, just the JSON object.
+  const system = `You are an email assistant for Darren Miller Law Firm. You help attorneys and staff draft professional, precise replies to emails. You understand legal context: court deadlines, client matters, opposing counsel, depositions, hearings, motions, and billing. Always maintain a tone appropriate for a law firm — formal with clients and courts, collegial with colleagues. Return ONLY valid JSON with no markdown or explanation.`;
 
-Return this exact structure:
+  const prompt = `Analyze this email and return this exact JSON structure:
 {
-  "summary": "2-3 sentences: what the email is about and what action (if any) is required",
+  "summary": "2-3 sentences explaining what this email is about and what action (if any) is needed",
   "urgency": "high | medium | low",
   "options": [
-    { "title": "Short title (3-5 words)", "body": "Full professional reply draft" },
-    { "title": "Short title (3-5 words)", "body": "Full professional reply draft" },
-    { "title": "Short title (3-5 words)", "body": "Full professional reply draft" }
+    { "title": "Brief Acknowledgment", "body": "A short 2-3 sentence reply confirming receipt and setting expectations" },
+    { "title": "Request More Info", "body": "A reply asking for clarification, additional documents, or more time" },
+    { "title": "Substantive Reply", "body": "A complete, detailed professional response addressing all points raised" }
   ]
 }
 
-Urgency guide:
-- high: legal deadlines, court dates, urgent client matters, time-sensitive actions
-- medium: requires response within a few days, client questions, follow-ups
-- low: informational, newsletters, automated notifications, no action required
+Urgency rules:
+- high: court deadlines, statute of limitations, hearing dates, urgent client crises, opposing counsel demands with deadlines
+- medium: client questions needing a response within a few days, follow-ups, scheduling requests
+- low: informational updates, newsletters, automated notifications, FYI emails requiring no action
 
-The 3 reply options should be meaningfully different (e.g. one brief acknowledgement, one requesting more info, one substantive response). Write as a professional at a law firm.
+Each reply option must be meaningfully different. Start each reply body with an appropriate greeting (e.g. "Dear ${senderName},"). Close with "Best regards," — do not add a name. Keep the tone professional and precise.
 
-Email:
+Email to analyze:
 From: ${from}
 Subject: ${subject}
-Body: ${emailContent.slice(0, 3000)}`;
+Body:
+${emailContent.slice(0, 4000)}`;
 
   let message;
   try {
     message = await client.messages.create({
       model: "claude-haiku-4-5-20251001",
-      max_tokens: 1024,
+      max_tokens: 1500,
+      system,
       messages: [{ role: "user", content: prompt }],
     });
   } catch (e) {

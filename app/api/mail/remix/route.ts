@@ -45,12 +45,14 @@ export async function POST(req: NextRequest) {
     })
     .join(", ");
 
+  const system = `You are an email writing assistant for Darren Miller Law Firm. You rewrite emails for attorneys and staff. Always preserve legal terminology, case references, client names, dates, and any specific legal language exactly as written — never paraphrase or omit legal details. Return ONLY the rewritten email body with no explanation, no subject line, and no meta-commentary.`;
+
   const prompt = `Rewrite the following email with these requirements:
 - Tone: ${toneMap[tone] ?? tone}
 - Length: ${lengthMap[length] ?? length}
 - Formality: ${formality}${extrasInstructions ? `\n- Additional: ${extrasInstructions}` : ""}${customInstruction?.trim() ? `\n- Custom instruction: ${customInstruction.trim()}` : ""}
 
-Return ONLY the rewritten email body text. No explanation, no subject line, no preamble. Start directly with the greeting or opening line.
+Important: Preserve all legal terms, case names, court references, dates, dollar amounts, and party names exactly. Start directly with the greeting or first line.
 
 Original email:
 ${body.slice(0, 4000)}`;
@@ -60,6 +62,7 @@ ${body.slice(0, 4000)}`;
     message = await client.messages.create({
       model: "claude-haiku-4-5-20251001",
       max_tokens: 2048,
+      system,
       messages: [{ role: "user", content: prompt }],
     });
   } catch (e) {
