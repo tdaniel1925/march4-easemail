@@ -1,8 +1,28 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 import { createHmac, timingSafeEqual } from "crypto";
+import Anthropic from "@anthropic-ai/sdk";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
+const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+
+async function generatePlainEnglishSummary(commits: GitHubCommit[]): Promise<string> {
+  const messages = commits.map((c) => c.message.split("\n")[0]).join("\n");
+  try {
+    const response = await anthropic.messages.create({
+      model: "claude-haiku-4-5-20251001",
+      max_tokens: 300,
+      system: "You summarize software updates for non-technical stakeholders at a law firm. Be concise, friendly, and focus only on things that affect how users experience the app. Skip technical details, bug fixes to internal code, and developer tooling. Use plain English bullet points. If there are no user-facing feature additions, say so briefly.",
+      messages: [{
+        role: "user",
+        content: `Summarize only the NEW FEATURES added in this push in plain English for the law firm team. Each bullet should start with what changed and why it helps them. Skip anything that is purely a bug fix, chore, or technical refactor.\n\nCommits:\n${messages}`,
+      }],
+    });
+    return response.content[0].type === "text" ? response.content[0].text.trim() : "";
+  } catch {
+    return "";
+  }
+}
 
 // GitHub push event shape (partial)
 interface GitHubCommit {
@@ -35,7 +55,7 @@ function verifySignature(body: string, signature: string | null): boolean {
   }
 }
 
-function buildEmailHtml(payload: GitHubPushPayload): string {
+function buildEmailHtml(payload: GitHubPushPayload, summary: string): string {
   const brand = "rgb(138, 9, 9)";
   const branch = payload.ref.replace("refs/heads/", "");
   const commits = payload.commits.slice(0, 10);
@@ -112,9 +132,18 @@ function buildEmailHtml(payload: GitHubPushPayload): string {
           </td>
         </tr>
 
+        <!-- Plain English Summary -->
+        ${summary ? `
+        <tr>
+          <td style="padding:24px 32px 16px;">
+            <h2 style="margin:0 0 10px;font-size:13px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:0.5px;">What's New</h2>
+            <div style="background:#fff8f8;border-left:3px solid ${brand};border-radius:0 8px 8px 0;padding:14px 16px;font-size:14px;color:#1a1a1a;line-height:1.7;white-space:pre-line;">${escHtml(summary)}</div>
+          </td>
+        </tr>` : ""}
+
         <!-- Commits table -->
         <tr>
-          <td style="padding:24px 32px 0;">
+          <td style="padding:0 32px 0;">
             <h2 style="margin:0 0 12px;font-size:13px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:0.5px;">Commits</h2>
             <table width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #eee;border-radius:8px;overflow:hidden;">
               <thead>
@@ -186,12 +215,14 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
   const branch = payload.ref.replace("refs/heads/", "");
   const headMsg = payload.head_commit?.message.split("\n")[0] ?? "Updates pushed";
 
+  const summary = await generatePlainEnglishSummary(payload.commits);
+
   try {
     await resend.emails.send({
       from: `EaseMail Updates <${fromEmail}>`,
       to: adminEmails,
       subject: `[EaseMail] ${branch}: ${headMsg}`,
-      html: buildEmailHtml(payload),
+      html: buildEmailHtml(payload, summary),
     });
   } catch (err) {
     return NextResponse.json({ error: `Resend error: ${String(err)}` }, { status: 500 });
