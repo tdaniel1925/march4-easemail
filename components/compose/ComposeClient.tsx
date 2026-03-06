@@ -16,13 +16,6 @@ function sanitize(html: string): string {
 }
 
 // ─── Browser Speech API types ─────────────────────────────────────────────────
-declare global {
-  interface Window {
-    SpeechRecognition: new () => ISpeechRecognition;
-    webkitSpeechRecognition: new () => ISpeechRecognition;
-  }
-}
-
 interface ISpeechRecognition extends EventTarget {
   continuous: boolean;
   interimResults: boolean;
@@ -840,7 +833,9 @@ export default function ComposeClient({
 
   // ── AI Dictate ──────────────────────────────────────────────────────────────
   function startRecording() {
-    const SR = window.SpeechRecognition ?? window.webkitSpeechRecognition;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const w = window as any;
+    const SR = w.SpeechRecognition ?? w.webkitSpeechRecognition;
     if (!SR) { setDictateError("Speech recognition not supported in this browser."); return; }
 
     const rec = new SR();
