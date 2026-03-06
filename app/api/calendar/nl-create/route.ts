@@ -18,14 +18,14 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { text, now } = await req.json() as { text: string; now: string };
+  const { text, now, timeZone } = await req.json() as { text: string; now: string; timeZone?: string };
   if (!text?.trim()) return NextResponse.json({ error: "text required" }, { status: 400 });
 
   const system = `You are a calendar assistant for Darren Miller Law Firm. You create structured calendar events from natural language. You understand legal event types: client consultations, depositions, court hearings, mediations, settlement conferences, filing deadlines, and opposing counsel calls. Return ONLY valid JSON with no markdown or explanation.`;
 
   const prompt = `Convert this natural language into a structured calendar event.
 
-Current date/time: ${now}
+Current local date/time: ${now}${timeZone ? ` (${timeZone})` : ""}
 
 Return this exact JSON:
 {

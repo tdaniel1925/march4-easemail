@@ -177,14 +177,19 @@ export default function EventFormModal({ prefill, onClose, onSaved, editEvent }:
   }
 
   // ── NL parse ─────────────────────────────────────────────────────────────────
-  async function handleParseFill() {
-    if (!nlText.trim()) return;
+  // Pass text explicitly so voice can call this with the captured transcript
+  // before React state has flushed.
+  async function parseFill(text: string) {
+    if (!text.trim()) return;
     setNlLoading(true);
+    // Send LOCAL time so AI resolves "tomorrow / next Monday" in the user's timezone
+    const d = new Date();
+    const localNow = `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}:00`;
     try {
       const res = await fetch("/api/calendar/nl-create", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text: nlText, now: new Date().toISOString() }),
+        body: JSON.stringify({ text, now: localNow, timeZone: tz }),
       });
       const data = await res.json() as { ok?: boolean; prefill?: { subject: string; start: string; end: string; location: string; attendees: string[]; body: string } };
       if (data.prefill) {
@@ -200,6 +205,8 @@ export default function EventFormModal({ prefill, onClose, onSaved, editEvent }:
     setNlLoading(false);
   }
 
+  async function handleParseFill() { await parseFill(nlText); }
+
   // ── Voice input ───────────────────────────────────────────────────────────────
   function toggleVoice() {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -211,13 +218,24 @@ export default function EventFormModal({ prefill, onClose, onSaved, editEvent }:
     rec.continuous = true;
     rec.interimResults = true;
     rec.lang = "en-US";
+
+    // Collect final transcript in a closure variable — avoids React state staleness
+    // when onend fires before the last setState call has flushed.
+    let finalTranscript = "";
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     rec.onresult = (e: any) => {
-      let transcript = "";
-      for (let i = e.resultIndex; i < e.results.length; i++) transcript += e.results[i][0].transcript;
-      setNlText((prev) => prev + transcript);
+      let interim = "";
+      for (let i = e.resultIndex; i < e.results.length; i++) {
+        if (e.results[i].isFinal) finalTranscript += e.results[i][0].transcript + " ";
+        else interim += e.results[i][0].transcript;
+      }
+      setNlText(finalTranscript + interim);
     };
-    rec.onend = () => setIsListening(false);
+    rec.onend = () => {
+      setIsListening(false);
+      // Auto-parse as soon as speech ends — no need to click Parse & Fill
+      if (finalTranscript.trim()) void parseFill(finalTranscript.trim());
+    };
     rec.onerror = () => setIsListening(false);
     rec.start();
     speechRef.current = rec;
