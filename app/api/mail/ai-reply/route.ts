@@ -46,6 +46,22 @@ Urgency rules:
 
 Each reply option must be meaningfully different. Start each reply body with an appropriate greeting (e.g. "Dear ${senderName},"). Close with "Best regards," — do not add a name. Keep the tone professional and precise.
 
+IMPORTANT FORMATTING: Each reply body must have:
+- Greeting on its own line
+- A blank line after the greeting
+- Body paragraphs separated by blank lines
+- A blank line before the closing
+- Closing on its own line
+
+Example format:
+Dear ${senderName},
+
+[Body paragraph 1]
+
+[Body paragraph 2 if needed]
+
+Best regards,
+
 Email to analyze:
 From: ${from}
 Subject: ${subject}

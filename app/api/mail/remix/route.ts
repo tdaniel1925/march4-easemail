@@ -52,7 +52,7 @@ export async function POST(req: NextRequest) {
 - Length: ${lengthMap[length] ?? length}
 - Formality: ${formality}${extrasInstructions ? `\n- Additional: ${extrasInstructions}` : ""}${customInstruction?.trim() ? `\n- Custom instruction: ${customInstruction.trim()}` : ""}
 
-Important: Preserve all legal terms, case names, court references, dates, dollar amounts, and party names exactly. Start directly with the greeting or first line.
+Important: Preserve all legal terms, case names, court references, dates, dollar amounts, and party names exactly. Start directly with the greeting or first line. Maintain professional email formatting with blank lines after greetings and before closings.
 
 Original email:
 ${body.slice(0, 4000)}`;

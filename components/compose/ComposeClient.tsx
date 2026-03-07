@@ -798,8 +798,38 @@ export default function ComposeClient({
     }
   }
 
+  function formatEmailSpacing(text: string): string {
+    // Add professional spacing: blank line after greeting, blank line before closing
+    const greetingPattern = /^(Dear .+?|Hi .+?|Hello .+?|Good (?:morning|afternoon|evening) .+?|Hey .+?),?\s*$/im;
+    const closingPattern = /^(Best regards|Best|Sincerely|Regards|Thank you|Thanks|Respectfully|Cordially|Warm regards|Kind regards|Cheers),?\s*$/im;
+
+    let lines = text.split('\n');
+    let result: string[] = [];
+
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+      const nextLine = i < lines.length - 1 ? lines[i + 1] : '';
+
+      result.push(line);
+
+      // Add blank line after greeting if next line isn't blank
+      if (greetingPattern.test(line) && nextLine.trim() !== '') {
+        result.push('');
+      }
+
+      // Add blank line before closing if previous line isn't blank
+      if (closingPattern.test(line) && i > 0 && lines[i - 1].trim() !== '') {
+        result.splice(result.length - 1, 0, ''); // Insert blank line before closing
+      }
+    }
+
+    return result.join('\n');
+  }
+
   function remixTextToHtml(text: string) {
-    const escaped = text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    // First apply professional email spacing
+    const formatted = formatEmailSpacing(text);
+    const escaped = formatted.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
     // Join sections with <div><br></div> so blank lines are visible in contenteditable
     return escaped.split(/\n\n+/).map((p) => `<div>${p.replace(/\n/g, "<br>")}</div>`).join("<div><br></div>") || "<div><br></div>";
   }

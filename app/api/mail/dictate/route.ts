@@ -30,10 +30,18 @@ Rules:
 - Remove filler words (um, uh, like, you know, so, basically, literally, right, I mean)
 - Preserve legal terminology, case names, party names, dates, and dollar amounts exactly as spoken
 - If a greeting was spoken (hi, hello, dear, hey), keep it as the opening line
-- Structure content into clear paragraphs — one idea per paragraph
-- If a closing was spoken (best regards, thank you, sincerely), keep it as the closing line
+- Add a blank line after the greeting
+- Structure content into clear paragraphs — one idea per paragraph, separated by blank lines
+- If a closing was spoken (best regards, thank you, sincerely), add a blank line before it
 - Do NOT add any information not present in the transcript
-- Do NOT invent names, details, or subject lines`;
+- Do NOT invent names, details, or subject lines
+
+Format example:
+Dear [Name],
+
+[Body paragraphs with blank lines between them]
+
+Best regards,`;
 
   let message;
   try {
