@@ -37,6 +37,11 @@ export async function POST(req: NextRequest) {
     subject,
     bodyHtml,
     attachments,
+    importance,
+    requestReadReceipt,
+    draftType,
+    inReplyToMessageId,
+    forwardedMessageId,
     scheduledAt,
   } = await req.json() as {
     draftId?: string;
@@ -47,6 +52,11 @@ export async function POST(req: NextRequest) {
     subject?: string;
     bodyHtml?: string;
     attachments?: { name: string; type: string; size: number }[];
+    importance?: string;
+    requestReadReceipt?: boolean;
+    draftType?: string;
+    inReplyToMessageId?: string | null;
+    forwardedMessageId?: string | null;
     scheduledAt?: string | null;
   };
 
@@ -60,6 +70,11 @@ export async function POST(req: NextRequest) {
     subject: subject ?? null,
     bodyHtml: bodyHtml ?? null,
     attachments: JSON.parse(JSON.stringify(attachments ?? [])),
+    importance: importance ?? "normal",
+    requestReadReceipt: requestReadReceipt ?? false,
+    draftType: draftType ?? "new",
+    inReplyToMessageId: inReplyToMessageId ?? null,
+    forwardedMessageId: forwardedMessageId ?? null,
     scheduledAt: scheduledAt ? new Date(scheduledAt) : null,
   };
 

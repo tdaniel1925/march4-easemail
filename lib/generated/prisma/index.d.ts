@@ -74,6 +74,11 @@ export type CachedCalendarEvent = $Result.DefaultSelection<Prisma.$CachedCalenda
  */
 export type CachedContact = $Result.DefaultSelection<Prisma.$CachedContactPayload>
 /**
+ * Model DeployLog
+ * 
+ */
+export type DeployLog = $Result.DefaultSelection<Prisma.$DeployLogPayload>
+/**
  * Model EmailRule
  * 
  */
@@ -319,6 +324,16 @@ export class PrismaClient<
     * ```
     */
   get cachedContact(): Prisma.CachedContactDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.deployLog`: Exposes CRUD operations for the **DeployLog** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more DeployLogs
+    * const deployLogs = await prisma.deployLog.findMany()
+    * ```
+    */
+  get deployLog(): Prisma.DeployLogDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.emailRule`: Exposes CRUD operations for the **EmailRule** model.
@@ -775,6 +790,7 @@ export namespace Prisma {
     CachedEmail: 'CachedEmail',
     CachedCalendarEvent: 'CachedCalendarEvent',
     CachedContact: 'CachedContact',
+    DeployLog: 'DeployLog',
     EmailRule: 'EmailRule'
   };
 
@@ -791,7 +807,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "organization" | "user" | "msConnectedAccount" | "msalTokenCache" | "emailDeltaLink" | "webhookSubscription" | "draft" | "signature" | "cachedFolder" | "cachedEmail" | "cachedCalendarEvent" | "cachedContact" | "emailRule"
+      modelProps: "organization" | "user" | "msConnectedAccount" | "msalTokenCache" | "emailDeltaLink" | "webhookSubscription" | "draft" | "signature" | "cachedFolder" | "cachedEmail" | "cachedCalendarEvent" | "cachedContact" | "deployLog" | "emailRule"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1683,6 +1699,80 @@ export namespace Prisma {
           }
         }
       }
+      DeployLog: {
+        payload: Prisma.$DeployLogPayload<ExtArgs>
+        fields: Prisma.DeployLogFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.DeployLogFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DeployLogPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.DeployLogFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DeployLogPayload>
+          }
+          findFirst: {
+            args: Prisma.DeployLogFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DeployLogPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.DeployLogFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DeployLogPayload>
+          }
+          findMany: {
+            args: Prisma.DeployLogFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DeployLogPayload>[]
+          }
+          create: {
+            args: Prisma.DeployLogCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DeployLogPayload>
+          }
+          createMany: {
+            args: Prisma.DeployLogCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.DeployLogCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DeployLogPayload>[]
+          }
+          delete: {
+            args: Prisma.DeployLogDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DeployLogPayload>
+          }
+          update: {
+            args: Prisma.DeployLogUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DeployLogPayload>
+          }
+          deleteMany: {
+            args: Prisma.DeployLogDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.DeployLogUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.DeployLogUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DeployLogPayload>[]
+          }
+          upsert: {
+            args: Prisma.DeployLogUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DeployLogPayload>
+          }
+          aggregate: {
+            args: Prisma.DeployLogAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateDeployLog>
+          }
+          groupBy: {
+            args: Prisma.DeployLogGroupByArgs<ExtArgs>
+            result: $Utils.Optional<DeployLogGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.DeployLogCountArgs<ExtArgs>
+            result: $Utils.Optional<DeployLogCountAggregateOutputType> | number
+          }
+        }
+      }
       EmailRule: {
         payload: Prisma.$EmailRulePayload<ExtArgs>
         fields: Prisma.EmailRuleFieldRefs
@@ -1877,6 +1967,7 @@ export namespace Prisma {
     cachedEmail?: CachedEmailOmit
     cachedCalendarEvent?: CachedCalendarEventOmit
     cachedContact?: CachedContactOmit
+    deployLog?: DeployLogOmit
     emailRule?: EmailRuleOmit
   }
 
@@ -8912,6 +9003,11 @@ export namespace Prisma {
     graphDraftId: string | null
     subject: string | null
     bodyHtml: string | null
+    importance: string | null
+    requestReadReceipt: boolean | null
+    draftType: string | null
+    inReplyToMessageId: string | null
+    forwardedMessageId: string | null
     scheduledAt: Date | null
     scheduledSent: boolean | null
     createdAt: Date | null
@@ -8925,6 +9021,11 @@ export namespace Prisma {
     graphDraftId: string | null
     subject: string | null
     bodyHtml: string | null
+    importance: string | null
+    requestReadReceipt: boolean | null
+    draftType: string | null
+    inReplyToMessageId: string | null
+    forwardedMessageId: string | null
     scheduledAt: Date | null
     scheduledSent: boolean | null
     createdAt: Date | null
@@ -8942,6 +9043,11 @@ export namespace Prisma {
     subject: number
     bodyHtml: number
     attachments: number
+    importance: number
+    requestReadReceipt: number
+    draftType: number
+    inReplyToMessageId: number
+    forwardedMessageId: number
     scheduledAt: number
     scheduledSent: number
     createdAt: number
@@ -8957,6 +9063,11 @@ export namespace Prisma {
     graphDraftId?: true
     subject?: true
     bodyHtml?: true
+    importance?: true
+    requestReadReceipt?: true
+    draftType?: true
+    inReplyToMessageId?: true
+    forwardedMessageId?: true
     scheduledAt?: true
     scheduledSent?: true
     createdAt?: true
@@ -8970,6 +9081,11 @@ export namespace Prisma {
     graphDraftId?: true
     subject?: true
     bodyHtml?: true
+    importance?: true
+    requestReadReceipt?: true
+    draftType?: true
+    inReplyToMessageId?: true
+    forwardedMessageId?: true
     scheduledAt?: true
     scheduledSent?: true
     createdAt?: true
@@ -8987,6 +9103,11 @@ export namespace Prisma {
     subject?: true
     bodyHtml?: true
     attachments?: true
+    importance?: true
+    requestReadReceipt?: true
+    draftType?: true
+    inReplyToMessageId?: true
+    forwardedMessageId?: true
     scheduledAt?: true
     scheduledSent?: true
     createdAt?: true
@@ -9077,6 +9198,11 @@ export namespace Prisma {
     subject: string | null
     bodyHtml: string | null
     attachments: JsonValue
+    importance: string
+    requestReadReceipt: boolean
+    draftType: string
+    inReplyToMessageId: string | null
+    forwardedMessageId: string | null
     scheduledAt: Date | null
     scheduledSent: boolean
     createdAt: Date
@@ -9111,6 +9237,11 @@ export namespace Prisma {
     subject?: boolean
     bodyHtml?: boolean
     attachments?: boolean
+    importance?: boolean
+    requestReadReceipt?: boolean
+    draftType?: boolean
+    inReplyToMessageId?: boolean
+    forwardedMessageId?: boolean
     scheduledAt?: boolean
     scheduledSent?: boolean
     createdAt?: boolean
@@ -9129,6 +9260,11 @@ export namespace Prisma {
     subject?: boolean
     bodyHtml?: boolean
     attachments?: boolean
+    importance?: boolean
+    requestReadReceipt?: boolean
+    draftType?: boolean
+    inReplyToMessageId?: boolean
+    forwardedMessageId?: boolean
     scheduledAt?: boolean
     scheduledSent?: boolean
     createdAt?: boolean
@@ -9147,6 +9283,11 @@ export namespace Prisma {
     subject?: boolean
     bodyHtml?: boolean
     attachments?: boolean
+    importance?: boolean
+    requestReadReceipt?: boolean
+    draftType?: boolean
+    inReplyToMessageId?: boolean
+    forwardedMessageId?: boolean
     scheduledAt?: boolean
     scheduledSent?: boolean
     createdAt?: boolean
@@ -9165,13 +9306,18 @@ export namespace Prisma {
     subject?: boolean
     bodyHtml?: boolean
     attachments?: boolean
+    importance?: boolean
+    requestReadReceipt?: boolean
+    draftType?: boolean
+    inReplyToMessageId?: boolean
+    forwardedMessageId?: boolean
     scheduledAt?: boolean
     scheduledSent?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type DraftOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "homeAccountId" | "graphDraftId" | "toRecipients" | "ccRecipients" | "bccRecipients" | "subject" | "bodyHtml" | "attachments" | "scheduledAt" | "scheduledSent" | "createdAt" | "updatedAt", ExtArgs["result"]["draft"]>
+  export type DraftOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "homeAccountId" | "graphDraftId" | "toRecipients" | "ccRecipients" | "bccRecipients" | "subject" | "bodyHtml" | "attachments" | "importance" | "requestReadReceipt" | "draftType" | "inReplyToMessageId" | "forwardedMessageId" | "scheduledAt" | "scheduledSent" | "createdAt" | "updatedAt", ExtArgs["result"]["draft"]>
   export type DraftInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
   }
@@ -9198,6 +9344,11 @@ export namespace Prisma {
       subject: string | null
       bodyHtml: string | null
       attachments: Prisma.JsonValue
+      importance: string
+      requestReadReceipt: boolean
+      draftType: string
+      inReplyToMessageId: string | null
+      forwardedMessageId: string | null
       scheduledAt: Date | null
       scheduledSent: boolean
       createdAt: Date
@@ -9636,6 +9787,11 @@ export namespace Prisma {
     readonly subject: FieldRef<"Draft", 'String'>
     readonly bodyHtml: FieldRef<"Draft", 'String'>
     readonly attachments: FieldRef<"Draft", 'Json'>
+    readonly importance: FieldRef<"Draft", 'String'>
+    readonly requestReadReceipt: FieldRef<"Draft", 'Boolean'>
+    readonly draftType: FieldRef<"Draft", 'String'>
+    readonly inReplyToMessageId: FieldRef<"Draft", 'String'>
+    readonly forwardedMessageId: FieldRef<"Draft", 'String'>
     readonly scheduledAt: FieldRef<"Draft", 'DateTime'>
     readonly scheduledSent: FieldRef<"Draft", 'Boolean'>
     readonly createdAt: FieldRef<"Draft", 'DateTime'>
@@ -10068,9 +10224,13 @@ export namespace Prisma {
     id: string | null
     userId: string | null
     name: string | null
+    html: string | null
     title: string | null
     company: string | null
     phone: string | null
+    defaultNew: boolean | null
+    defaultReplies: boolean | null
+    account: string | null
     isDefault: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -10080,9 +10240,13 @@ export namespace Prisma {
     id: string | null
     userId: string | null
     name: string | null
+    html: string | null
     title: string | null
     company: string | null
     phone: string | null
+    defaultNew: boolean | null
+    defaultReplies: boolean | null
+    account: string | null
     isDefault: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -10092,9 +10256,13 @@ export namespace Prisma {
     id: number
     userId: number
     name: number
+    html: number
     title: number
     company: number
     phone: number
+    defaultNew: number
+    defaultReplies: number
+    account: number
     isDefault: number
     createdAt: number
     updatedAt: number
@@ -10106,9 +10274,13 @@ export namespace Prisma {
     id?: true
     userId?: true
     name?: true
+    html?: true
     title?: true
     company?: true
     phone?: true
+    defaultNew?: true
+    defaultReplies?: true
+    account?: true
     isDefault?: true
     createdAt?: true
     updatedAt?: true
@@ -10118,9 +10290,13 @@ export namespace Prisma {
     id?: true
     userId?: true
     name?: true
+    html?: true
     title?: true
     company?: true
     phone?: true
+    defaultNew?: true
+    defaultReplies?: true
+    account?: true
     isDefault?: true
     createdAt?: true
     updatedAt?: true
@@ -10130,9 +10306,13 @@ export namespace Prisma {
     id?: true
     userId?: true
     name?: true
+    html?: true
     title?: true
     company?: true
     phone?: true
+    defaultNew?: true
+    defaultReplies?: true
+    account?: true
     isDefault?: true
     createdAt?: true
     updatedAt?: true
@@ -10215,9 +10395,13 @@ export namespace Prisma {
     id: string
     userId: string
     name: string
+    html: string
     title: string | null
     company: string | null
     phone: string | null
+    defaultNew: boolean
+    defaultReplies: boolean
+    account: string
     isDefault: boolean
     createdAt: Date
     updatedAt: Date
@@ -10244,9 +10428,13 @@ export namespace Prisma {
     id?: boolean
     userId?: boolean
     name?: boolean
+    html?: boolean
     title?: boolean
     company?: boolean
     phone?: boolean
+    defaultNew?: boolean
+    defaultReplies?: boolean
+    account?: boolean
     isDefault?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -10257,9 +10445,13 @@ export namespace Prisma {
     id?: boolean
     userId?: boolean
     name?: boolean
+    html?: boolean
     title?: boolean
     company?: boolean
     phone?: boolean
+    defaultNew?: boolean
+    defaultReplies?: boolean
+    account?: boolean
     isDefault?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -10270,9 +10462,13 @@ export namespace Prisma {
     id?: boolean
     userId?: boolean
     name?: boolean
+    html?: boolean
     title?: boolean
     company?: boolean
     phone?: boolean
+    defaultNew?: boolean
+    defaultReplies?: boolean
+    account?: boolean
     isDefault?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -10283,15 +10479,19 @@ export namespace Prisma {
     id?: boolean
     userId?: boolean
     name?: boolean
+    html?: boolean
     title?: boolean
     company?: boolean
     phone?: boolean
+    defaultNew?: boolean
+    defaultReplies?: boolean
+    account?: boolean
     isDefault?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type SignatureOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "name" | "title" | "company" | "phone" | "isDefault" | "createdAt" | "updatedAt", ExtArgs["result"]["signature"]>
+  export type SignatureOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "name" | "html" | "title" | "company" | "phone" | "defaultNew" | "defaultReplies" | "account" | "isDefault" | "createdAt" | "updatedAt", ExtArgs["result"]["signature"]>
   export type SignatureInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
   }
@@ -10311,9 +10511,13 @@ export namespace Prisma {
       id: string
       userId: string
       name: string
+      html: string
       title: string | null
       company: string | null
       phone: string | null
+      defaultNew: boolean
+      defaultReplies: boolean
+      account: string
       isDefault: boolean
       createdAt: Date
       updatedAt: Date
@@ -10744,9 +10948,13 @@ export namespace Prisma {
     readonly id: FieldRef<"Signature", 'String'>
     readonly userId: FieldRef<"Signature", 'String'>
     readonly name: FieldRef<"Signature", 'String'>
+    readonly html: FieldRef<"Signature", 'String'>
     readonly title: FieldRef<"Signature", 'String'>
     readonly company: FieldRef<"Signature", 'String'>
     readonly phone: FieldRef<"Signature", 'String'>
+    readonly defaultNew: FieldRef<"Signature", 'Boolean'>
+    readonly defaultReplies: FieldRef<"Signature", 'Boolean'>
+    readonly account: FieldRef<"Signature", 'String'>
     readonly isDefault: FieldRef<"Signature", 'Boolean'>
     readonly createdAt: FieldRef<"Signature", 'DateTime'>
     readonly updatedAt: FieldRef<"Signature", 'DateTime'>
@@ -13511,8 +13719,18 @@ export namespace Prisma {
 
   export type AggregateCachedCalendarEvent = {
     _count: CachedCalendarEventCountAggregateOutputType | null
+    _avg: CachedCalendarEventAvgAggregateOutputType | null
+    _sum: CachedCalendarEventSumAggregateOutputType | null
     _min: CachedCalendarEventMinAggregateOutputType | null
     _max: CachedCalendarEventMaxAggregateOutputType | null
+  }
+
+  export type CachedCalendarEventAvgAggregateOutputType = {
+    reminderMinutes: number | null
+  }
+
+  export type CachedCalendarEventSumAggregateOutputType = {
+    reminderMinutes: number | null
   }
 
   export type CachedCalendarEventMinAggregateOutputType = {
@@ -13530,6 +13748,9 @@ export namespace Prisma {
     responseStatus: string | null
     onlineMeetingUrl: string | null
     isRecurring: boolean | null
+    reminderMinutes: number | null
+    showAs: string | null
+    recurrence: string | null
     syncedAt: Date | null
   }
 
@@ -13548,6 +13769,9 @@ export namespace Prisma {
     responseStatus: string | null
     onlineMeetingUrl: string | null
     isRecurring: boolean | null
+    reminderMinutes: number | null
+    showAs: string | null
+    recurrence: string | null
     syncedAt: Date | null
   }
 
@@ -13567,10 +13791,21 @@ export namespace Prisma {
     onlineMeetingUrl: number
     attendees: number
     isRecurring: number
+    reminderMinutes: number
+    showAs: number
+    recurrence: number
     syncedAt: number
     _all: number
   }
 
+
+  export type CachedCalendarEventAvgAggregateInputType = {
+    reminderMinutes?: true
+  }
+
+  export type CachedCalendarEventSumAggregateInputType = {
+    reminderMinutes?: true
+  }
 
   export type CachedCalendarEventMinAggregateInputType = {
     id?: true
@@ -13587,6 +13822,9 @@ export namespace Prisma {
     responseStatus?: true
     onlineMeetingUrl?: true
     isRecurring?: true
+    reminderMinutes?: true
+    showAs?: true
+    recurrence?: true
     syncedAt?: true
   }
 
@@ -13605,6 +13843,9 @@ export namespace Prisma {
     responseStatus?: true
     onlineMeetingUrl?: true
     isRecurring?: true
+    reminderMinutes?: true
+    showAs?: true
+    recurrence?: true
     syncedAt?: true
   }
 
@@ -13624,6 +13865,9 @@ export namespace Prisma {
     onlineMeetingUrl?: true
     attendees?: true
     isRecurring?: true
+    reminderMinutes?: true
+    showAs?: true
+    recurrence?: true
     syncedAt?: true
     _all?: true
   }
@@ -13666,6 +13910,18 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
+     * Select which fields to average
+    **/
+    _avg?: CachedCalendarEventAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: CachedCalendarEventSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
      * Select which fields to find the minimum value
     **/
     _min?: CachedCalendarEventMinAggregateInputType
@@ -13696,6 +13952,8 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: CachedCalendarEventCountAggregateInputType | true
+    _avg?: CachedCalendarEventAvgAggregateInputType
+    _sum?: CachedCalendarEventSumAggregateInputType
     _min?: CachedCalendarEventMinAggregateInputType
     _max?: CachedCalendarEventMaxAggregateInputType
   }
@@ -13716,8 +13974,13 @@ export namespace Prisma {
     onlineMeetingUrl: string | null
     attendees: JsonValue
     isRecurring: boolean
+    reminderMinutes: number | null
+    showAs: string
+    recurrence: string | null
     syncedAt: Date
     _count: CachedCalendarEventCountAggregateOutputType | null
+    _avg: CachedCalendarEventAvgAggregateOutputType | null
+    _sum: CachedCalendarEventSumAggregateOutputType | null
     _min: CachedCalendarEventMinAggregateOutputType | null
     _max: CachedCalendarEventMaxAggregateOutputType | null
   }
@@ -13752,6 +14015,9 @@ export namespace Prisma {
     onlineMeetingUrl?: boolean
     attendees?: boolean
     isRecurring?: boolean
+    reminderMinutes?: boolean
+    showAs?: boolean
+    recurrence?: boolean
     syncedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["cachedCalendarEvent"]>
@@ -13772,6 +14038,9 @@ export namespace Prisma {
     onlineMeetingUrl?: boolean
     attendees?: boolean
     isRecurring?: boolean
+    reminderMinutes?: boolean
+    showAs?: boolean
+    recurrence?: boolean
     syncedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["cachedCalendarEvent"]>
@@ -13792,6 +14061,9 @@ export namespace Prisma {
     onlineMeetingUrl?: boolean
     attendees?: boolean
     isRecurring?: boolean
+    reminderMinutes?: boolean
+    showAs?: boolean
+    recurrence?: boolean
     syncedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["cachedCalendarEvent"]>
@@ -13812,10 +14084,13 @@ export namespace Prisma {
     onlineMeetingUrl?: boolean
     attendees?: boolean
     isRecurring?: boolean
+    reminderMinutes?: boolean
+    showAs?: boolean
+    recurrence?: boolean
     syncedAt?: boolean
   }
 
-  export type CachedCalendarEventOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "homeAccountId" | "subject" | "bodyPreview" | "startDateTime" | "endDateTime" | "isAllDay" | "location" | "organizerName" | "organizerEmail" | "responseStatus" | "onlineMeetingUrl" | "attendees" | "isRecurring" | "syncedAt", ExtArgs["result"]["cachedCalendarEvent"]>
+  export type CachedCalendarEventOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "homeAccountId" | "subject" | "bodyPreview" | "startDateTime" | "endDateTime" | "isAllDay" | "location" | "organizerName" | "organizerEmail" | "responseStatus" | "onlineMeetingUrl" | "attendees" | "isRecurring" | "reminderMinutes" | "showAs" | "recurrence" | "syncedAt", ExtArgs["result"]["cachedCalendarEvent"]>
   export type CachedCalendarEventInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
   }
@@ -13847,6 +14122,9 @@ export namespace Prisma {
       onlineMeetingUrl: string | null
       attendees: Prisma.JsonValue
       isRecurring: boolean
+      reminderMinutes: number | null
+      showAs: string
+      recurrence: string | null
       syncedAt: Date
     }, ExtArgs["result"]["cachedCalendarEvent"]>
     composites: {}
@@ -14287,6 +14565,9 @@ export namespace Prisma {
     readonly onlineMeetingUrl: FieldRef<"CachedCalendarEvent", 'String'>
     readonly attendees: FieldRef<"CachedCalendarEvent", 'Json'>
     readonly isRecurring: FieldRef<"CachedCalendarEvent", 'Boolean'>
+    readonly reminderMinutes: FieldRef<"CachedCalendarEvent", 'Int'>
+    readonly showAs: FieldRef<"CachedCalendarEvent", 'String'>
+    readonly recurrence: FieldRef<"CachedCalendarEvent", 'String'>
     readonly syncedAt: FieldRef<"CachedCalendarEvent", 'DateTime'>
   }
     
@@ -15813,6 +16094,997 @@ export namespace Prisma {
 
 
   /**
+   * Model DeployLog
+   */
+
+  export type AggregateDeployLog = {
+    _count: DeployLogCountAggregateOutputType | null
+    _min: DeployLogMinAggregateOutputType | null
+    _max: DeployLogMaxAggregateOutputType | null
+  }
+
+  export type DeployLogMinAggregateOutputType = {
+    id: string | null
+    pusher: string | null
+    createdAt: Date | null
+    digestSentAt: Date | null
+  }
+
+  export type DeployLogMaxAggregateOutputType = {
+    id: string | null
+    pusher: string | null
+    createdAt: Date | null
+    digestSentAt: Date | null
+  }
+
+  export type DeployLogCountAggregateOutputType = {
+    id: number
+    pusher: number
+    commits: number
+    createdAt: number
+    digestSentAt: number
+    _all: number
+  }
+
+
+  export type DeployLogMinAggregateInputType = {
+    id?: true
+    pusher?: true
+    createdAt?: true
+    digestSentAt?: true
+  }
+
+  export type DeployLogMaxAggregateInputType = {
+    id?: true
+    pusher?: true
+    createdAt?: true
+    digestSentAt?: true
+  }
+
+  export type DeployLogCountAggregateInputType = {
+    id?: true
+    pusher?: true
+    commits?: true
+    createdAt?: true
+    digestSentAt?: true
+    _all?: true
+  }
+
+  export type DeployLogAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which DeployLog to aggregate.
+     */
+    where?: DeployLogWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DeployLogs to fetch.
+     */
+    orderBy?: DeployLogOrderByWithRelationInput | DeployLogOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: DeployLogWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DeployLogs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DeployLogs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned DeployLogs
+    **/
+    _count?: true | DeployLogCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: DeployLogMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: DeployLogMaxAggregateInputType
+  }
+
+  export type GetDeployLogAggregateType<T extends DeployLogAggregateArgs> = {
+        [P in keyof T & keyof AggregateDeployLog]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateDeployLog[P]>
+      : GetScalarType<T[P], AggregateDeployLog[P]>
+  }
+
+
+
+
+  export type DeployLogGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: DeployLogWhereInput
+    orderBy?: DeployLogOrderByWithAggregationInput | DeployLogOrderByWithAggregationInput[]
+    by: DeployLogScalarFieldEnum[] | DeployLogScalarFieldEnum
+    having?: DeployLogScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: DeployLogCountAggregateInputType | true
+    _min?: DeployLogMinAggregateInputType
+    _max?: DeployLogMaxAggregateInputType
+  }
+
+  export type DeployLogGroupByOutputType = {
+    id: string
+    pusher: string
+    commits: JsonValue
+    createdAt: Date
+    digestSentAt: Date | null
+    _count: DeployLogCountAggregateOutputType | null
+    _min: DeployLogMinAggregateOutputType | null
+    _max: DeployLogMaxAggregateOutputType | null
+  }
+
+  type GetDeployLogGroupByPayload<T extends DeployLogGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<DeployLogGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof DeployLogGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], DeployLogGroupByOutputType[P]>
+            : GetScalarType<T[P], DeployLogGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type DeployLogSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    pusher?: boolean
+    commits?: boolean
+    createdAt?: boolean
+    digestSentAt?: boolean
+  }, ExtArgs["result"]["deployLog"]>
+
+  export type DeployLogSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    pusher?: boolean
+    commits?: boolean
+    createdAt?: boolean
+    digestSentAt?: boolean
+  }, ExtArgs["result"]["deployLog"]>
+
+  export type DeployLogSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    pusher?: boolean
+    commits?: boolean
+    createdAt?: boolean
+    digestSentAt?: boolean
+  }, ExtArgs["result"]["deployLog"]>
+
+  export type DeployLogSelectScalar = {
+    id?: boolean
+    pusher?: boolean
+    commits?: boolean
+    createdAt?: boolean
+    digestSentAt?: boolean
+  }
+
+  export type DeployLogOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "pusher" | "commits" | "createdAt" | "digestSentAt", ExtArgs["result"]["deployLog"]>
+
+  export type $DeployLogPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "DeployLog"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      pusher: string
+      commits: Prisma.JsonValue
+      createdAt: Date
+      digestSentAt: Date | null
+    }, ExtArgs["result"]["deployLog"]>
+    composites: {}
+  }
+
+  type DeployLogGetPayload<S extends boolean | null | undefined | DeployLogDefaultArgs> = $Result.GetResult<Prisma.$DeployLogPayload, S>
+
+  type DeployLogCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<DeployLogFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: DeployLogCountAggregateInputType | true
+    }
+
+  export interface DeployLogDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['DeployLog'], meta: { name: 'DeployLog' } }
+    /**
+     * Find zero or one DeployLog that matches the filter.
+     * @param {DeployLogFindUniqueArgs} args - Arguments to find a DeployLog
+     * @example
+     * // Get one DeployLog
+     * const deployLog = await prisma.deployLog.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends DeployLogFindUniqueArgs>(args: SelectSubset<T, DeployLogFindUniqueArgs<ExtArgs>>): Prisma__DeployLogClient<$Result.GetResult<Prisma.$DeployLogPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one DeployLog that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {DeployLogFindUniqueOrThrowArgs} args - Arguments to find a DeployLog
+     * @example
+     * // Get one DeployLog
+     * const deployLog = await prisma.deployLog.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends DeployLogFindUniqueOrThrowArgs>(args: SelectSubset<T, DeployLogFindUniqueOrThrowArgs<ExtArgs>>): Prisma__DeployLogClient<$Result.GetResult<Prisma.$DeployLogPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first DeployLog that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DeployLogFindFirstArgs} args - Arguments to find a DeployLog
+     * @example
+     * // Get one DeployLog
+     * const deployLog = await prisma.deployLog.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends DeployLogFindFirstArgs>(args?: SelectSubset<T, DeployLogFindFirstArgs<ExtArgs>>): Prisma__DeployLogClient<$Result.GetResult<Prisma.$DeployLogPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first DeployLog that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DeployLogFindFirstOrThrowArgs} args - Arguments to find a DeployLog
+     * @example
+     * // Get one DeployLog
+     * const deployLog = await prisma.deployLog.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends DeployLogFindFirstOrThrowArgs>(args?: SelectSubset<T, DeployLogFindFirstOrThrowArgs<ExtArgs>>): Prisma__DeployLogClient<$Result.GetResult<Prisma.$DeployLogPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more DeployLogs that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DeployLogFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all DeployLogs
+     * const deployLogs = await prisma.deployLog.findMany()
+     * 
+     * // Get first 10 DeployLogs
+     * const deployLogs = await prisma.deployLog.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const deployLogWithIdOnly = await prisma.deployLog.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends DeployLogFindManyArgs>(args?: SelectSubset<T, DeployLogFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DeployLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a DeployLog.
+     * @param {DeployLogCreateArgs} args - Arguments to create a DeployLog.
+     * @example
+     * // Create one DeployLog
+     * const DeployLog = await prisma.deployLog.create({
+     *   data: {
+     *     // ... data to create a DeployLog
+     *   }
+     * })
+     * 
+     */
+    create<T extends DeployLogCreateArgs>(args: SelectSubset<T, DeployLogCreateArgs<ExtArgs>>): Prisma__DeployLogClient<$Result.GetResult<Prisma.$DeployLogPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many DeployLogs.
+     * @param {DeployLogCreateManyArgs} args - Arguments to create many DeployLogs.
+     * @example
+     * // Create many DeployLogs
+     * const deployLog = await prisma.deployLog.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends DeployLogCreateManyArgs>(args?: SelectSubset<T, DeployLogCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many DeployLogs and returns the data saved in the database.
+     * @param {DeployLogCreateManyAndReturnArgs} args - Arguments to create many DeployLogs.
+     * @example
+     * // Create many DeployLogs
+     * const deployLog = await prisma.deployLog.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many DeployLogs and only return the `id`
+     * const deployLogWithIdOnly = await prisma.deployLog.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends DeployLogCreateManyAndReturnArgs>(args?: SelectSubset<T, DeployLogCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DeployLogPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a DeployLog.
+     * @param {DeployLogDeleteArgs} args - Arguments to delete one DeployLog.
+     * @example
+     * // Delete one DeployLog
+     * const DeployLog = await prisma.deployLog.delete({
+     *   where: {
+     *     // ... filter to delete one DeployLog
+     *   }
+     * })
+     * 
+     */
+    delete<T extends DeployLogDeleteArgs>(args: SelectSubset<T, DeployLogDeleteArgs<ExtArgs>>): Prisma__DeployLogClient<$Result.GetResult<Prisma.$DeployLogPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one DeployLog.
+     * @param {DeployLogUpdateArgs} args - Arguments to update one DeployLog.
+     * @example
+     * // Update one DeployLog
+     * const deployLog = await prisma.deployLog.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends DeployLogUpdateArgs>(args: SelectSubset<T, DeployLogUpdateArgs<ExtArgs>>): Prisma__DeployLogClient<$Result.GetResult<Prisma.$DeployLogPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more DeployLogs.
+     * @param {DeployLogDeleteManyArgs} args - Arguments to filter DeployLogs to delete.
+     * @example
+     * // Delete a few DeployLogs
+     * const { count } = await prisma.deployLog.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends DeployLogDeleteManyArgs>(args?: SelectSubset<T, DeployLogDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more DeployLogs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DeployLogUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many DeployLogs
+     * const deployLog = await prisma.deployLog.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends DeployLogUpdateManyArgs>(args: SelectSubset<T, DeployLogUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more DeployLogs and returns the data updated in the database.
+     * @param {DeployLogUpdateManyAndReturnArgs} args - Arguments to update many DeployLogs.
+     * @example
+     * // Update many DeployLogs
+     * const deployLog = await prisma.deployLog.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more DeployLogs and only return the `id`
+     * const deployLogWithIdOnly = await prisma.deployLog.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends DeployLogUpdateManyAndReturnArgs>(args: SelectSubset<T, DeployLogUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DeployLogPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one DeployLog.
+     * @param {DeployLogUpsertArgs} args - Arguments to update or create a DeployLog.
+     * @example
+     * // Update or create a DeployLog
+     * const deployLog = await prisma.deployLog.upsert({
+     *   create: {
+     *     // ... data to create a DeployLog
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the DeployLog we want to update
+     *   }
+     * })
+     */
+    upsert<T extends DeployLogUpsertArgs>(args: SelectSubset<T, DeployLogUpsertArgs<ExtArgs>>): Prisma__DeployLogClient<$Result.GetResult<Prisma.$DeployLogPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of DeployLogs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DeployLogCountArgs} args - Arguments to filter DeployLogs to count.
+     * @example
+     * // Count the number of DeployLogs
+     * const count = await prisma.deployLog.count({
+     *   where: {
+     *     // ... the filter for the DeployLogs we want to count
+     *   }
+     * })
+    **/
+    count<T extends DeployLogCountArgs>(
+      args?: Subset<T, DeployLogCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], DeployLogCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a DeployLog.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DeployLogAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends DeployLogAggregateArgs>(args: Subset<T, DeployLogAggregateArgs>): Prisma.PrismaPromise<GetDeployLogAggregateType<T>>
+
+    /**
+     * Group by DeployLog.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DeployLogGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends DeployLogGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: DeployLogGroupByArgs['orderBy'] }
+        : { orderBy?: DeployLogGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, DeployLogGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetDeployLogGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the DeployLog model
+   */
+  readonly fields: DeployLogFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for DeployLog.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__DeployLogClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the DeployLog model
+   */
+  interface DeployLogFieldRefs {
+    readonly id: FieldRef<"DeployLog", 'String'>
+    readonly pusher: FieldRef<"DeployLog", 'String'>
+    readonly commits: FieldRef<"DeployLog", 'Json'>
+    readonly createdAt: FieldRef<"DeployLog", 'DateTime'>
+    readonly digestSentAt: FieldRef<"DeployLog", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * DeployLog findUnique
+   */
+  export type DeployLogFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeployLog
+     */
+    select?: DeployLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeployLog
+     */
+    omit?: DeployLogOmit<ExtArgs> | null
+    /**
+     * Filter, which DeployLog to fetch.
+     */
+    where: DeployLogWhereUniqueInput
+  }
+
+  /**
+   * DeployLog findUniqueOrThrow
+   */
+  export type DeployLogFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeployLog
+     */
+    select?: DeployLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeployLog
+     */
+    omit?: DeployLogOmit<ExtArgs> | null
+    /**
+     * Filter, which DeployLog to fetch.
+     */
+    where: DeployLogWhereUniqueInput
+  }
+
+  /**
+   * DeployLog findFirst
+   */
+  export type DeployLogFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeployLog
+     */
+    select?: DeployLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeployLog
+     */
+    omit?: DeployLogOmit<ExtArgs> | null
+    /**
+     * Filter, which DeployLog to fetch.
+     */
+    where?: DeployLogWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DeployLogs to fetch.
+     */
+    orderBy?: DeployLogOrderByWithRelationInput | DeployLogOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for DeployLogs.
+     */
+    cursor?: DeployLogWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DeployLogs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DeployLogs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of DeployLogs.
+     */
+    distinct?: DeployLogScalarFieldEnum | DeployLogScalarFieldEnum[]
+  }
+
+  /**
+   * DeployLog findFirstOrThrow
+   */
+  export type DeployLogFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeployLog
+     */
+    select?: DeployLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeployLog
+     */
+    omit?: DeployLogOmit<ExtArgs> | null
+    /**
+     * Filter, which DeployLog to fetch.
+     */
+    where?: DeployLogWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DeployLogs to fetch.
+     */
+    orderBy?: DeployLogOrderByWithRelationInput | DeployLogOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for DeployLogs.
+     */
+    cursor?: DeployLogWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DeployLogs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DeployLogs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of DeployLogs.
+     */
+    distinct?: DeployLogScalarFieldEnum | DeployLogScalarFieldEnum[]
+  }
+
+  /**
+   * DeployLog findMany
+   */
+  export type DeployLogFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeployLog
+     */
+    select?: DeployLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeployLog
+     */
+    omit?: DeployLogOmit<ExtArgs> | null
+    /**
+     * Filter, which DeployLogs to fetch.
+     */
+    where?: DeployLogWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DeployLogs to fetch.
+     */
+    orderBy?: DeployLogOrderByWithRelationInput | DeployLogOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing DeployLogs.
+     */
+    cursor?: DeployLogWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DeployLogs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DeployLogs.
+     */
+    skip?: number
+    distinct?: DeployLogScalarFieldEnum | DeployLogScalarFieldEnum[]
+  }
+
+  /**
+   * DeployLog create
+   */
+  export type DeployLogCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeployLog
+     */
+    select?: DeployLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeployLog
+     */
+    omit?: DeployLogOmit<ExtArgs> | null
+    /**
+     * The data needed to create a DeployLog.
+     */
+    data: XOR<DeployLogCreateInput, DeployLogUncheckedCreateInput>
+  }
+
+  /**
+   * DeployLog createMany
+   */
+  export type DeployLogCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many DeployLogs.
+     */
+    data: DeployLogCreateManyInput | DeployLogCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * DeployLog createManyAndReturn
+   */
+  export type DeployLogCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeployLog
+     */
+    select?: DeployLogSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeployLog
+     */
+    omit?: DeployLogOmit<ExtArgs> | null
+    /**
+     * The data used to create many DeployLogs.
+     */
+    data: DeployLogCreateManyInput | DeployLogCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * DeployLog update
+   */
+  export type DeployLogUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeployLog
+     */
+    select?: DeployLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeployLog
+     */
+    omit?: DeployLogOmit<ExtArgs> | null
+    /**
+     * The data needed to update a DeployLog.
+     */
+    data: XOR<DeployLogUpdateInput, DeployLogUncheckedUpdateInput>
+    /**
+     * Choose, which DeployLog to update.
+     */
+    where: DeployLogWhereUniqueInput
+  }
+
+  /**
+   * DeployLog updateMany
+   */
+  export type DeployLogUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update DeployLogs.
+     */
+    data: XOR<DeployLogUpdateManyMutationInput, DeployLogUncheckedUpdateManyInput>
+    /**
+     * Filter which DeployLogs to update
+     */
+    where?: DeployLogWhereInput
+    /**
+     * Limit how many DeployLogs to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * DeployLog updateManyAndReturn
+   */
+  export type DeployLogUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeployLog
+     */
+    select?: DeployLogSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeployLog
+     */
+    omit?: DeployLogOmit<ExtArgs> | null
+    /**
+     * The data used to update DeployLogs.
+     */
+    data: XOR<DeployLogUpdateManyMutationInput, DeployLogUncheckedUpdateManyInput>
+    /**
+     * Filter which DeployLogs to update
+     */
+    where?: DeployLogWhereInput
+    /**
+     * Limit how many DeployLogs to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * DeployLog upsert
+   */
+  export type DeployLogUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeployLog
+     */
+    select?: DeployLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeployLog
+     */
+    omit?: DeployLogOmit<ExtArgs> | null
+    /**
+     * The filter to search for the DeployLog to update in case it exists.
+     */
+    where: DeployLogWhereUniqueInput
+    /**
+     * In case the DeployLog found by the `where` argument doesn't exist, create a new DeployLog with this data.
+     */
+    create: XOR<DeployLogCreateInput, DeployLogUncheckedCreateInput>
+    /**
+     * In case the DeployLog was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<DeployLogUpdateInput, DeployLogUncheckedUpdateInput>
+  }
+
+  /**
+   * DeployLog delete
+   */
+  export type DeployLogDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeployLog
+     */
+    select?: DeployLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeployLog
+     */
+    omit?: DeployLogOmit<ExtArgs> | null
+    /**
+     * Filter which DeployLog to delete.
+     */
+    where: DeployLogWhereUniqueInput
+  }
+
+  /**
+   * DeployLog deleteMany
+   */
+  export type DeployLogDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which DeployLogs to delete
+     */
+    where?: DeployLogWhereInput
+    /**
+     * Limit how many DeployLogs to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * DeployLog without action
+   */
+  export type DeployLogDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeployLog
+     */
+    select?: DeployLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeployLog
+     */
+    omit?: DeployLogOmit<ExtArgs> | null
+  }
+
+
+  /**
    * Model EmailRule
    */
 
@@ -17079,6 +18351,11 @@ export namespace Prisma {
     subject: 'subject',
     bodyHtml: 'bodyHtml',
     attachments: 'attachments',
+    importance: 'importance',
+    requestReadReceipt: 'requestReadReceipt',
+    draftType: 'draftType',
+    inReplyToMessageId: 'inReplyToMessageId',
+    forwardedMessageId: 'forwardedMessageId',
     scheduledAt: 'scheduledAt',
     scheduledSent: 'scheduledSent',
     createdAt: 'createdAt',
@@ -17092,9 +18369,13 @@ export namespace Prisma {
     id: 'id',
     userId: 'userId',
     name: 'name',
+    html: 'html',
     title: 'title',
     company: 'company',
     phone: 'phone',
+    defaultNew: 'defaultNew',
+    defaultReplies: 'defaultReplies',
+    account: 'account',
     isDefault: 'isDefault',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
@@ -17156,6 +18437,9 @@ export namespace Prisma {
     onlineMeetingUrl: 'onlineMeetingUrl',
     attendees: 'attendees',
     isRecurring: 'isRecurring',
+    reminderMinutes: 'reminderMinutes',
+    showAs: 'showAs',
+    recurrence: 'recurrence',
     syncedAt: 'syncedAt'
   };
 
@@ -17175,6 +18459,17 @@ export namespace Prisma {
   };
 
   export type CachedContactScalarFieldEnum = (typeof CachedContactScalarFieldEnum)[keyof typeof CachedContactScalarFieldEnum]
+
+
+  export const DeployLogScalarFieldEnum: {
+    id: 'id',
+    pusher: 'pusher',
+    commits: 'commits',
+    createdAt: 'createdAt',
+    digestSentAt: 'digestSentAt'
+  };
+
+  export type DeployLogScalarFieldEnum = (typeof DeployLogScalarFieldEnum)[keyof typeof DeployLogScalarFieldEnum]
 
 
   export const EmailRuleScalarFieldEnum: {
@@ -17748,6 +19043,11 @@ export namespace Prisma {
     subject?: StringNullableFilter<"Draft"> | string | null
     bodyHtml?: StringNullableFilter<"Draft"> | string | null
     attachments?: JsonFilter<"Draft">
+    importance?: StringFilter<"Draft"> | string
+    requestReadReceipt?: BoolFilter<"Draft"> | boolean
+    draftType?: StringFilter<"Draft"> | string
+    inReplyToMessageId?: StringNullableFilter<"Draft"> | string | null
+    forwardedMessageId?: StringNullableFilter<"Draft"> | string | null
     scheduledAt?: DateTimeNullableFilter<"Draft"> | Date | string | null
     scheduledSent?: BoolFilter<"Draft"> | boolean
     createdAt?: DateTimeFilter<"Draft"> | Date | string
@@ -17766,6 +19066,11 @@ export namespace Prisma {
     subject?: SortOrderInput | SortOrder
     bodyHtml?: SortOrderInput | SortOrder
     attachments?: SortOrder
+    importance?: SortOrder
+    requestReadReceipt?: SortOrder
+    draftType?: SortOrder
+    inReplyToMessageId?: SortOrderInput | SortOrder
+    forwardedMessageId?: SortOrderInput | SortOrder
     scheduledAt?: SortOrderInput | SortOrder
     scheduledSent?: SortOrder
     createdAt?: SortOrder
@@ -17787,6 +19092,11 @@ export namespace Prisma {
     subject?: StringNullableFilter<"Draft"> | string | null
     bodyHtml?: StringNullableFilter<"Draft"> | string | null
     attachments?: JsonFilter<"Draft">
+    importance?: StringFilter<"Draft"> | string
+    requestReadReceipt?: BoolFilter<"Draft"> | boolean
+    draftType?: StringFilter<"Draft"> | string
+    inReplyToMessageId?: StringNullableFilter<"Draft"> | string | null
+    forwardedMessageId?: StringNullableFilter<"Draft"> | string | null
     scheduledAt?: DateTimeNullableFilter<"Draft"> | Date | string | null
     scheduledSent?: BoolFilter<"Draft"> | boolean
     createdAt?: DateTimeFilter<"Draft"> | Date | string
@@ -17805,6 +19115,11 @@ export namespace Prisma {
     subject?: SortOrderInput | SortOrder
     bodyHtml?: SortOrderInput | SortOrder
     attachments?: SortOrder
+    importance?: SortOrder
+    requestReadReceipt?: SortOrder
+    draftType?: SortOrder
+    inReplyToMessageId?: SortOrderInput | SortOrder
+    forwardedMessageId?: SortOrderInput | SortOrder
     scheduledAt?: SortOrderInput | SortOrder
     scheduledSent?: SortOrder
     createdAt?: SortOrder
@@ -17828,6 +19143,11 @@ export namespace Prisma {
     subject?: StringNullableWithAggregatesFilter<"Draft"> | string | null
     bodyHtml?: StringNullableWithAggregatesFilter<"Draft"> | string | null
     attachments?: JsonWithAggregatesFilter<"Draft">
+    importance?: StringWithAggregatesFilter<"Draft"> | string
+    requestReadReceipt?: BoolWithAggregatesFilter<"Draft"> | boolean
+    draftType?: StringWithAggregatesFilter<"Draft"> | string
+    inReplyToMessageId?: StringNullableWithAggregatesFilter<"Draft"> | string | null
+    forwardedMessageId?: StringNullableWithAggregatesFilter<"Draft"> | string | null
     scheduledAt?: DateTimeNullableWithAggregatesFilter<"Draft"> | Date | string | null
     scheduledSent?: BoolWithAggregatesFilter<"Draft"> | boolean
     createdAt?: DateTimeWithAggregatesFilter<"Draft"> | Date | string
@@ -17841,9 +19161,13 @@ export namespace Prisma {
     id?: StringFilter<"Signature"> | string
     userId?: StringFilter<"Signature"> | string
     name?: StringFilter<"Signature"> | string
+    html?: StringFilter<"Signature"> | string
     title?: StringNullableFilter<"Signature"> | string | null
     company?: StringNullableFilter<"Signature"> | string | null
     phone?: StringNullableFilter<"Signature"> | string | null
+    defaultNew?: BoolFilter<"Signature"> | boolean
+    defaultReplies?: BoolFilter<"Signature"> | boolean
+    account?: StringFilter<"Signature"> | string
     isDefault?: BoolFilter<"Signature"> | boolean
     createdAt?: DateTimeFilter<"Signature"> | Date | string
     updatedAt?: DateTimeFilter<"Signature"> | Date | string
@@ -17854,9 +19178,13 @@ export namespace Prisma {
     id?: SortOrder
     userId?: SortOrder
     name?: SortOrder
+    html?: SortOrder
     title?: SortOrderInput | SortOrder
     company?: SortOrderInput | SortOrder
     phone?: SortOrderInput | SortOrder
+    defaultNew?: SortOrder
+    defaultReplies?: SortOrder
+    account?: SortOrder
     isDefault?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -17870,9 +19198,13 @@ export namespace Prisma {
     NOT?: SignatureWhereInput | SignatureWhereInput[]
     userId?: StringFilter<"Signature"> | string
     name?: StringFilter<"Signature"> | string
+    html?: StringFilter<"Signature"> | string
     title?: StringNullableFilter<"Signature"> | string | null
     company?: StringNullableFilter<"Signature"> | string | null
     phone?: StringNullableFilter<"Signature"> | string | null
+    defaultNew?: BoolFilter<"Signature"> | boolean
+    defaultReplies?: BoolFilter<"Signature"> | boolean
+    account?: StringFilter<"Signature"> | string
     isDefault?: BoolFilter<"Signature"> | boolean
     createdAt?: DateTimeFilter<"Signature"> | Date | string
     updatedAt?: DateTimeFilter<"Signature"> | Date | string
@@ -17883,9 +19215,13 @@ export namespace Prisma {
     id?: SortOrder
     userId?: SortOrder
     name?: SortOrder
+    html?: SortOrder
     title?: SortOrderInput | SortOrder
     company?: SortOrderInput | SortOrder
     phone?: SortOrderInput | SortOrder
+    defaultNew?: SortOrder
+    defaultReplies?: SortOrder
+    account?: SortOrder
     isDefault?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -17901,9 +19237,13 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"Signature"> | string
     userId?: StringWithAggregatesFilter<"Signature"> | string
     name?: StringWithAggregatesFilter<"Signature"> | string
+    html?: StringWithAggregatesFilter<"Signature"> | string
     title?: StringNullableWithAggregatesFilter<"Signature"> | string | null
     company?: StringNullableWithAggregatesFilter<"Signature"> | string | null
     phone?: StringNullableWithAggregatesFilter<"Signature"> | string | null
+    defaultNew?: BoolWithAggregatesFilter<"Signature"> | boolean
+    defaultReplies?: BoolWithAggregatesFilter<"Signature"> | boolean
+    account?: StringWithAggregatesFilter<"Signature"> | string
     isDefault?: BoolWithAggregatesFilter<"Signature"> | boolean
     createdAt?: DateTimeWithAggregatesFilter<"Signature"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Signature"> | Date | string
@@ -18115,6 +19455,9 @@ export namespace Prisma {
     onlineMeetingUrl?: StringNullableFilter<"CachedCalendarEvent"> | string | null
     attendees?: JsonFilter<"CachedCalendarEvent">
     isRecurring?: BoolFilter<"CachedCalendarEvent"> | boolean
+    reminderMinutes?: IntNullableFilter<"CachedCalendarEvent"> | number | null
+    showAs?: StringFilter<"CachedCalendarEvent"> | string
+    recurrence?: StringNullableFilter<"CachedCalendarEvent"> | string | null
     syncedAt?: DateTimeFilter<"CachedCalendarEvent"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }
@@ -18135,6 +19478,9 @@ export namespace Prisma {
     onlineMeetingUrl?: SortOrderInput | SortOrder
     attendees?: SortOrder
     isRecurring?: SortOrder
+    reminderMinutes?: SortOrderInput | SortOrder
+    showAs?: SortOrder
+    recurrence?: SortOrderInput | SortOrder
     syncedAt?: SortOrder
     user?: UserOrderByWithRelationInput
   }
@@ -18158,6 +19504,9 @@ export namespace Prisma {
     onlineMeetingUrl?: StringNullableFilter<"CachedCalendarEvent"> | string | null
     attendees?: JsonFilter<"CachedCalendarEvent">
     isRecurring?: BoolFilter<"CachedCalendarEvent"> | boolean
+    reminderMinutes?: IntNullableFilter<"CachedCalendarEvent"> | number | null
+    showAs?: StringFilter<"CachedCalendarEvent"> | string
+    recurrence?: StringNullableFilter<"CachedCalendarEvent"> | string | null
     syncedAt?: DateTimeFilter<"CachedCalendarEvent"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }, "id">
@@ -18178,10 +19527,15 @@ export namespace Prisma {
     onlineMeetingUrl?: SortOrderInput | SortOrder
     attendees?: SortOrder
     isRecurring?: SortOrder
+    reminderMinutes?: SortOrderInput | SortOrder
+    showAs?: SortOrder
+    recurrence?: SortOrderInput | SortOrder
     syncedAt?: SortOrder
     _count?: CachedCalendarEventCountOrderByAggregateInput
+    _avg?: CachedCalendarEventAvgOrderByAggregateInput
     _max?: CachedCalendarEventMaxOrderByAggregateInput
     _min?: CachedCalendarEventMinOrderByAggregateInput
+    _sum?: CachedCalendarEventSumOrderByAggregateInput
   }
 
   export type CachedCalendarEventScalarWhereWithAggregatesInput = {
@@ -18203,6 +19557,9 @@ export namespace Prisma {
     onlineMeetingUrl?: StringNullableWithAggregatesFilter<"CachedCalendarEvent"> | string | null
     attendees?: JsonWithAggregatesFilter<"CachedCalendarEvent">
     isRecurring?: BoolWithAggregatesFilter<"CachedCalendarEvent"> | boolean
+    reminderMinutes?: IntNullableWithAggregatesFilter<"CachedCalendarEvent"> | number | null
+    showAs?: StringWithAggregatesFilter<"CachedCalendarEvent"> | string
+    recurrence?: StringNullableWithAggregatesFilter<"CachedCalendarEvent"> | string | null
     syncedAt?: DateTimeWithAggregatesFilter<"CachedCalendarEvent"> | Date | string
   }
 
@@ -18279,6 +19636,58 @@ export namespace Prisma {
     jobTitle?: StringWithAggregatesFilter<"CachedContact"> | string
     company?: StringWithAggregatesFilter<"CachedContact"> | string
     syncedAt?: DateTimeWithAggregatesFilter<"CachedContact"> | Date | string
+  }
+
+  export type DeployLogWhereInput = {
+    AND?: DeployLogWhereInput | DeployLogWhereInput[]
+    OR?: DeployLogWhereInput[]
+    NOT?: DeployLogWhereInput | DeployLogWhereInput[]
+    id?: StringFilter<"DeployLog"> | string
+    pusher?: StringFilter<"DeployLog"> | string
+    commits?: JsonFilter<"DeployLog">
+    createdAt?: DateTimeFilter<"DeployLog"> | Date | string
+    digestSentAt?: DateTimeNullableFilter<"DeployLog"> | Date | string | null
+  }
+
+  export type DeployLogOrderByWithRelationInput = {
+    id?: SortOrder
+    pusher?: SortOrder
+    commits?: SortOrder
+    createdAt?: SortOrder
+    digestSentAt?: SortOrderInput | SortOrder
+  }
+
+  export type DeployLogWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: DeployLogWhereInput | DeployLogWhereInput[]
+    OR?: DeployLogWhereInput[]
+    NOT?: DeployLogWhereInput | DeployLogWhereInput[]
+    pusher?: StringFilter<"DeployLog"> | string
+    commits?: JsonFilter<"DeployLog">
+    createdAt?: DateTimeFilter<"DeployLog"> | Date | string
+    digestSentAt?: DateTimeNullableFilter<"DeployLog"> | Date | string | null
+  }, "id">
+
+  export type DeployLogOrderByWithAggregationInput = {
+    id?: SortOrder
+    pusher?: SortOrder
+    commits?: SortOrder
+    createdAt?: SortOrder
+    digestSentAt?: SortOrderInput | SortOrder
+    _count?: DeployLogCountOrderByAggregateInput
+    _max?: DeployLogMaxOrderByAggregateInput
+    _min?: DeployLogMinOrderByAggregateInput
+  }
+
+  export type DeployLogScalarWhereWithAggregatesInput = {
+    AND?: DeployLogScalarWhereWithAggregatesInput | DeployLogScalarWhereWithAggregatesInput[]
+    OR?: DeployLogScalarWhereWithAggregatesInput[]
+    NOT?: DeployLogScalarWhereWithAggregatesInput | DeployLogScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"DeployLog"> | string
+    pusher?: StringWithAggregatesFilter<"DeployLog"> | string
+    commits?: JsonWithAggregatesFilter<"DeployLog">
+    createdAt?: DateTimeWithAggregatesFilter<"DeployLog"> | Date | string
+    digestSentAt?: DateTimeNullableWithAggregatesFilter<"DeployLog"> | Date | string | null
   }
 
   export type EmailRuleWhereInput = {
@@ -18827,6 +20236,11 @@ export namespace Prisma {
     subject?: string | null
     bodyHtml?: string | null
     attachments?: JsonNullValueInput | InputJsonValue
+    importance?: string
+    requestReadReceipt?: boolean
+    draftType?: string
+    inReplyToMessageId?: string | null
+    forwardedMessageId?: string | null
     scheduledAt?: Date | string | null
     scheduledSent?: boolean
     createdAt?: Date | string
@@ -18845,6 +20259,11 @@ export namespace Prisma {
     subject?: string | null
     bodyHtml?: string | null
     attachments?: JsonNullValueInput | InputJsonValue
+    importance?: string
+    requestReadReceipt?: boolean
+    draftType?: string
+    inReplyToMessageId?: string | null
+    forwardedMessageId?: string | null
     scheduledAt?: Date | string | null
     scheduledSent?: boolean
     createdAt?: Date | string
@@ -18861,6 +20280,11 @@ export namespace Prisma {
     subject?: NullableStringFieldUpdateOperationsInput | string | null
     bodyHtml?: NullableStringFieldUpdateOperationsInput | string | null
     attachments?: JsonNullValueInput | InputJsonValue
+    importance?: StringFieldUpdateOperationsInput | string
+    requestReadReceipt?: BoolFieldUpdateOperationsInput | boolean
+    draftType?: StringFieldUpdateOperationsInput | string
+    inReplyToMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    forwardedMessageId?: NullableStringFieldUpdateOperationsInput | string | null
     scheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     scheduledSent?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -18879,6 +20303,11 @@ export namespace Prisma {
     subject?: NullableStringFieldUpdateOperationsInput | string | null
     bodyHtml?: NullableStringFieldUpdateOperationsInput | string | null
     attachments?: JsonNullValueInput | InputJsonValue
+    importance?: StringFieldUpdateOperationsInput | string
+    requestReadReceipt?: BoolFieldUpdateOperationsInput | boolean
+    draftType?: StringFieldUpdateOperationsInput | string
+    inReplyToMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    forwardedMessageId?: NullableStringFieldUpdateOperationsInput | string | null
     scheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     scheduledSent?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -18896,6 +20325,11 @@ export namespace Prisma {
     subject?: string | null
     bodyHtml?: string | null
     attachments?: JsonNullValueInput | InputJsonValue
+    importance?: string
+    requestReadReceipt?: boolean
+    draftType?: string
+    inReplyToMessageId?: string | null
+    forwardedMessageId?: string | null
     scheduledAt?: Date | string | null
     scheduledSent?: boolean
     createdAt?: Date | string
@@ -18912,6 +20346,11 @@ export namespace Prisma {
     subject?: NullableStringFieldUpdateOperationsInput | string | null
     bodyHtml?: NullableStringFieldUpdateOperationsInput | string | null
     attachments?: JsonNullValueInput | InputJsonValue
+    importance?: StringFieldUpdateOperationsInput | string
+    requestReadReceipt?: BoolFieldUpdateOperationsInput | boolean
+    draftType?: StringFieldUpdateOperationsInput | string
+    inReplyToMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    forwardedMessageId?: NullableStringFieldUpdateOperationsInput | string | null
     scheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     scheduledSent?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -18929,6 +20368,11 @@ export namespace Prisma {
     subject?: NullableStringFieldUpdateOperationsInput | string | null
     bodyHtml?: NullableStringFieldUpdateOperationsInput | string | null
     attachments?: JsonNullValueInput | InputJsonValue
+    importance?: StringFieldUpdateOperationsInput | string
+    requestReadReceipt?: BoolFieldUpdateOperationsInput | boolean
+    draftType?: StringFieldUpdateOperationsInput | string
+    inReplyToMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    forwardedMessageId?: NullableStringFieldUpdateOperationsInput | string | null
     scheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     scheduledSent?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -18938,9 +20382,13 @@ export namespace Prisma {
   export type SignatureCreateInput = {
     id?: string
     name: string
+    html?: string
     title?: string | null
     company?: string | null
     phone?: string | null
+    defaultNew?: boolean
+    defaultReplies?: boolean
+    account?: string
     isDefault?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -18951,9 +20399,13 @@ export namespace Prisma {
     id?: string
     userId: string
     name: string
+    html?: string
     title?: string | null
     company?: string | null
     phone?: string | null
+    defaultNew?: boolean
+    defaultReplies?: boolean
+    account?: string
     isDefault?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -18962,9 +20414,13 @@ export namespace Prisma {
   export type SignatureUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    html?: StringFieldUpdateOperationsInput | string
     title?: NullableStringFieldUpdateOperationsInput | string | null
     company?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
+    defaultNew?: BoolFieldUpdateOperationsInput | boolean
+    defaultReplies?: BoolFieldUpdateOperationsInput | boolean
+    account?: StringFieldUpdateOperationsInput | string
     isDefault?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -18975,9 +20431,13 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    html?: StringFieldUpdateOperationsInput | string
     title?: NullableStringFieldUpdateOperationsInput | string | null
     company?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
+    defaultNew?: BoolFieldUpdateOperationsInput | boolean
+    defaultReplies?: BoolFieldUpdateOperationsInput | boolean
+    account?: StringFieldUpdateOperationsInput | string
     isDefault?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -18987,9 +20447,13 @@ export namespace Prisma {
     id?: string
     userId: string
     name: string
+    html?: string
     title?: string | null
     company?: string | null
     phone?: string | null
+    defaultNew?: boolean
+    defaultReplies?: boolean
+    account?: string
     isDefault?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -18998,9 +20462,13 @@ export namespace Prisma {
   export type SignatureUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    html?: StringFieldUpdateOperationsInput | string
     title?: NullableStringFieldUpdateOperationsInput | string | null
     company?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
+    defaultNew?: BoolFieldUpdateOperationsInput | boolean
+    defaultReplies?: BoolFieldUpdateOperationsInput | boolean
+    account?: StringFieldUpdateOperationsInput | string
     isDefault?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -19010,9 +20478,13 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    html?: StringFieldUpdateOperationsInput | string
     title?: NullableStringFieldUpdateOperationsInput | string | null
     company?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
+    defaultNew?: BoolFieldUpdateOperationsInput | boolean
+    defaultReplies?: BoolFieldUpdateOperationsInput | boolean
+    account?: StringFieldUpdateOperationsInput | string
     isDefault?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -19248,6 +20720,9 @@ export namespace Prisma {
     onlineMeetingUrl?: string | null
     attendees?: JsonNullValueInput | InputJsonValue
     isRecurring?: boolean
+    reminderMinutes?: number | null
+    showAs?: string
+    recurrence?: string | null
     syncedAt?: Date | string
     user: UserCreateNestedOneWithoutCachedCalEventsInput
   }
@@ -19268,6 +20743,9 @@ export namespace Prisma {
     onlineMeetingUrl?: string | null
     attendees?: JsonNullValueInput | InputJsonValue
     isRecurring?: boolean
+    reminderMinutes?: number | null
+    showAs?: string
+    recurrence?: string | null
     syncedAt?: Date | string
   }
 
@@ -19286,6 +20764,9 @@ export namespace Prisma {
     onlineMeetingUrl?: NullableStringFieldUpdateOperationsInput | string | null
     attendees?: JsonNullValueInput | InputJsonValue
     isRecurring?: BoolFieldUpdateOperationsInput | boolean
+    reminderMinutes?: NullableIntFieldUpdateOperationsInput | number | null
+    showAs?: StringFieldUpdateOperationsInput | string
+    recurrence?: NullableStringFieldUpdateOperationsInput | string | null
     syncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutCachedCalEventsNestedInput
   }
@@ -19306,6 +20787,9 @@ export namespace Prisma {
     onlineMeetingUrl?: NullableStringFieldUpdateOperationsInput | string | null
     attendees?: JsonNullValueInput | InputJsonValue
     isRecurring?: BoolFieldUpdateOperationsInput | boolean
+    reminderMinutes?: NullableIntFieldUpdateOperationsInput | number | null
+    showAs?: StringFieldUpdateOperationsInput | string
+    recurrence?: NullableStringFieldUpdateOperationsInput | string | null
     syncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -19325,6 +20809,9 @@ export namespace Prisma {
     onlineMeetingUrl?: string | null
     attendees?: JsonNullValueInput | InputJsonValue
     isRecurring?: boolean
+    reminderMinutes?: number | null
+    showAs?: string
+    recurrence?: string | null
     syncedAt?: Date | string
   }
 
@@ -19343,6 +20830,9 @@ export namespace Prisma {
     onlineMeetingUrl?: NullableStringFieldUpdateOperationsInput | string | null
     attendees?: JsonNullValueInput | InputJsonValue
     isRecurring?: BoolFieldUpdateOperationsInput | boolean
+    reminderMinutes?: NullableIntFieldUpdateOperationsInput | number | null
+    showAs?: StringFieldUpdateOperationsInput | string
+    recurrence?: NullableStringFieldUpdateOperationsInput | string | null
     syncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -19362,6 +20852,9 @@ export namespace Prisma {
     onlineMeetingUrl?: NullableStringFieldUpdateOperationsInput | string | null
     attendees?: JsonNullValueInput | InputJsonValue
     isRecurring?: BoolFieldUpdateOperationsInput | boolean
+    reminderMinutes?: NullableIntFieldUpdateOperationsInput | number | null
+    showAs?: StringFieldUpdateOperationsInput | string
+    recurrence?: NullableStringFieldUpdateOperationsInput | string | null
     syncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -19446,6 +20939,62 @@ export namespace Prisma {
     jobTitle?: StringFieldUpdateOperationsInput | string
     company?: StringFieldUpdateOperationsInput | string
     syncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DeployLogCreateInput = {
+    id?: string
+    pusher: string
+    commits: JsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    digestSentAt?: Date | string | null
+  }
+
+  export type DeployLogUncheckedCreateInput = {
+    id?: string
+    pusher: string
+    commits: JsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    digestSentAt?: Date | string | null
+  }
+
+  export type DeployLogUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    pusher?: StringFieldUpdateOperationsInput | string
+    commits?: JsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    digestSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type DeployLogUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    pusher?: StringFieldUpdateOperationsInput | string
+    commits?: JsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    digestSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type DeployLogCreateManyInput = {
+    id?: string
+    pusher: string
+    commits: JsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    digestSentAt?: Date | string | null
+  }
+
+  export type DeployLogUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    pusher?: StringFieldUpdateOperationsInput | string
+    commits?: JsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    digestSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type DeployLogUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    pusher?: StringFieldUpdateOperationsInput | string
+    commits?: JsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    digestSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type EmailRuleCreateInput = {
@@ -20009,6 +21558,11 @@ export namespace Prisma {
     subject?: SortOrder
     bodyHtml?: SortOrder
     attachments?: SortOrder
+    importance?: SortOrder
+    requestReadReceipt?: SortOrder
+    draftType?: SortOrder
+    inReplyToMessageId?: SortOrder
+    forwardedMessageId?: SortOrder
     scheduledAt?: SortOrder
     scheduledSent?: SortOrder
     createdAt?: SortOrder
@@ -20022,6 +21576,11 @@ export namespace Prisma {
     graphDraftId?: SortOrder
     subject?: SortOrder
     bodyHtml?: SortOrder
+    importance?: SortOrder
+    requestReadReceipt?: SortOrder
+    draftType?: SortOrder
+    inReplyToMessageId?: SortOrder
+    forwardedMessageId?: SortOrder
     scheduledAt?: SortOrder
     scheduledSent?: SortOrder
     createdAt?: SortOrder
@@ -20035,6 +21594,11 @@ export namespace Prisma {
     graphDraftId?: SortOrder
     subject?: SortOrder
     bodyHtml?: SortOrder
+    importance?: SortOrder
+    requestReadReceipt?: SortOrder
+    draftType?: SortOrder
+    inReplyToMessageId?: SortOrder
+    forwardedMessageId?: SortOrder
     scheduledAt?: SortOrder
     scheduledSent?: SortOrder
     createdAt?: SortOrder
@@ -20085,9 +21649,13 @@ export namespace Prisma {
     id?: SortOrder
     userId?: SortOrder
     name?: SortOrder
+    html?: SortOrder
     title?: SortOrder
     company?: SortOrder
     phone?: SortOrder
+    defaultNew?: SortOrder
+    defaultReplies?: SortOrder
+    account?: SortOrder
     isDefault?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -20097,9 +21665,13 @@ export namespace Prisma {
     id?: SortOrder
     userId?: SortOrder
     name?: SortOrder
+    html?: SortOrder
     title?: SortOrder
     company?: SortOrder
     phone?: SortOrder
+    defaultNew?: SortOrder
+    defaultReplies?: SortOrder
+    account?: SortOrder
     isDefault?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -20109,9 +21681,13 @@ export namespace Prisma {
     id?: SortOrder
     userId?: SortOrder
     name?: SortOrder
+    html?: SortOrder
     title?: SortOrder
     company?: SortOrder
     phone?: SortOrder
+    defaultNew?: SortOrder
+    defaultReplies?: SortOrder
+    account?: SortOrder
     isDefault?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -20243,6 +21819,17 @@ export namespace Prisma {
     syncedAt?: SortOrder
   }
 
+  export type IntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
+
   export type CachedCalendarEventCountOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
@@ -20259,7 +21846,14 @@ export namespace Prisma {
     onlineMeetingUrl?: SortOrder
     attendees?: SortOrder
     isRecurring?: SortOrder
+    reminderMinutes?: SortOrder
+    showAs?: SortOrder
+    recurrence?: SortOrder
     syncedAt?: SortOrder
+  }
+
+  export type CachedCalendarEventAvgOrderByAggregateInput = {
+    reminderMinutes?: SortOrder
   }
 
   export type CachedCalendarEventMaxOrderByAggregateInput = {
@@ -20277,6 +21871,9 @@ export namespace Prisma {
     responseStatus?: SortOrder
     onlineMeetingUrl?: SortOrder
     isRecurring?: SortOrder
+    reminderMinutes?: SortOrder
+    showAs?: SortOrder
+    recurrence?: SortOrder
     syncedAt?: SortOrder
   }
 
@@ -20295,7 +21892,30 @@ export namespace Prisma {
     responseStatus?: SortOrder
     onlineMeetingUrl?: SortOrder
     isRecurring?: SortOrder
+    reminderMinutes?: SortOrder
+    showAs?: SortOrder
+    recurrence?: SortOrder
     syncedAt?: SortOrder
+  }
+
+  export type CachedCalendarEventSumOrderByAggregateInput = {
+    reminderMinutes?: SortOrder
+  }
+
+  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
   }
 
   export type CachedContactCountOrderByAggregateInput = {
@@ -20332,6 +21952,28 @@ export namespace Prisma {
     jobTitle?: SortOrder
     company?: SortOrder
     syncedAt?: SortOrder
+  }
+
+  export type DeployLogCountOrderByAggregateInput = {
+    id?: SortOrder
+    pusher?: SortOrder
+    commits?: SortOrder
+    createdAt?: SortOrder
+    digestSentAt?: SortOrder
+  }
+
+  export type DeployLogMaxOrderByAggregateInput = {
+    id?: SortOrder
+    pusher?: SortOrder
+    createdAt?: SortOrder
+    digestSentAt?: SortOrder
+  }
+
+  export type DeployLogMinOrderByAggregateInput = {
+    id?: SortOrder
+    pusher?: SortOrder
+    createdAt?: SortOrder
+    digestSentAt?: SortOrder
   }
 
   export type EmailRuleCountOrderByAggregateInput = {
@@ -21036,6 +22678,14 @@ export namespace Prisma {
     connect?: UserWhereUniqueInput
   }
 
+  export type NullableIntFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
   export type UserUpdateOneRequiredWithoutCachedCalEventsNestedInput = {
     create?: XOR<UserCreateWithoutCachedCalEventsInput, UserUncheckedCreateWithoutCachedCalEventsInput>
     connectOrCreate?: UserCreateOrConnectWithoutCachedCalEventsInput
@@ -21269,6 +22919,33 @@ export namespace Prisma {
     not?: NestedFloatFilter<$PrismaModel> | number
   }
 
+  export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
+  }
+
+  export type NestedFloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
+
   export type UserCreateWithoutOrgInput = {
     id: string
     email: string
@@ -21486,6 +23163,11 @@ export namespace Prisma {
     subject?: string | null
     bodyHtml?: string | null
     attachments?: JsonNullValueInput | InputJsonValue
+    importance?: string
+    requestReadReceipt?: boolean
+    draftType?: string
+    inReplyToMessageId?: string | null
+    forwardedMessageId?: string | null
     scheduledAt?: Date | string | null
     scheduledSent?: boolean
     createdAt?: Date | string
@@ -21502,6 +23184,11 @@ export namespace Prisma {
     subject?: string | null
     bodyHtml?: string | null
     attachments?: JsonNullValueInput | InputJsonValue
+    importance?: string
+    requestReadReceipt?: boolean
+    draftType?: string
+    inReplyToMessageId?: string | null
+    forwardedMessageId?: string | null
     scheduledAt?: Date | string | null
     scheduledSent?: boolean
     createdAt?: Date | string
@@ -21557,9 +23244,13 @@ export namespace Prisma {
   export type SignatureCreateWithoutUserInput = {
     id?: string
     name: string
+    html?: string
     title?: string | null
     company?: string | null
     phone?: string | null
+    defaultNew?: boolean
+    defaultReplies?: boolean
+    account?: string
     isDefault?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -21568,9 +23259,13 @@ export namespace Prisma {
   export type SignatureUncheckedCreateWithoutUserInput = {
     id?: string
     name: string
+    html?: string
     title?: string | null
     company?: string | null
     phone?: string | null
+    defaultNew?: boolean
+    defaultReplies?: boolean
+    account?: string
     isDefault?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -21679,6 +23374,9 @@ export namespace Prisma {
     onlineMeetingUrl?: string | null
     attendees?: JsonNullValueInput | InputJsonValue
     isRecurring?: boolean
+    reminderMinutes?: number | null
+    showAs?: string
+    recurrence?: string | null
     syncedAt?: Date | string
   }
 
@@ -21697,6 +23395,9 @@ export namespace Prisma {
     onlineMeetingUrl?: string | null
     attendees?: JsonNullValueInput | InputJsonValue
     isRecurring?: boolean
+    reminderMinutes?: number | null
+    showAs?: string
+    recurrence?: string | null
     syncedAt?: Date | string
   }
 
@@ -21912,6 +23613,11 @@ export namespace Prisma {
     subject?: StringNullableFilter<"Draft"> | string | null
     bodyHtml?: StringNullableFilter<"Draft"> | string | null
     attachments?: JsonFilter<"Draft">
+    importance?: StringFilter<"Draft"> | string
+    requestReadReceipt?: BoolFilter<"Draft"> | boolean
+    draftType?: StringFilter<"Draft"> | string
+    inReplyToMessageId?: StringNullableFilter<"Draft"> | string | null
+    forwardedMessageId?: StringNullableFilter<"Draft"> | string | null
     scheduledAt?: DateTimeNullableFilter<"Draft"> | Date | string | null
     scheduledSent?: BoolFilter<"Draft"> | boolean
     createdAt?: DateTimeFilter<"Draft"> | Date | string
@@ -21974,9 +23680,13 @@ export namespace Prisma {
     id?: StringFilter<"Signature"> | string
     userId?: StringFilter<"Signature"> | string
     name?: StringFilter<"Signature"> | string
+    html?: StringFilter<"Signature"> | string
     title?: StringNullableFilter<"Signature"> | string | null
     company?: StringNullableFilter<"Signature"> | string | null
     phone?: StringNullableFilter<"Signature"> | string | null
+    defaultNew?: BoolFilter<"Signature"> | boolean
+    defaultReplies?: BoolFilter<"Signature"> | boolean
+    account?: StringFilter<"Signature"> | string
     isDefault?: BoolFilter<"Signature"> | boolean
     createdAt?: DateTimeFilter<"Signature"> | Date | string
     updatedAt?: DateTimeFilter<"Signature"> | Date | string
@@ -22086,6 +23796,9 @@ export namespace Prisma {
     onlineMeetingUrl?: StringNullableFilter<"CachedCalendarEvent"> | string | null
     attendees?: JsonFilter<"CachedCalendarEvent">
     isRecurring?: BoolFilter<"CachedCalendarEvent"> | boolean
+    reminderMinutes?: IntNullableFilter<"CachedCalendarEvent"> | number | null
+    showAs?: StringFilter<"CachedCalendarEvent"> | string
+    recurrence?: StringNullableFilter<"CachedCalendarEvent"> | string | null
     syncedAt?: DateTimeFilter<"CachedCalendarEvent"> | Date | string
   }
 
@@ -23274,6 +24987,11 @@ export namespace Prisma {
     subject?: string | null
     bodyHtml?: string | null
     attachments?: JsonNullValueInput | InputJsonValue
+    importance?: string
+    requestReadReceipt?: boolean
+    draftType?: string
+    inReplyToMessageId?: string | null
+    forwardedMessageId?: string | null
     scheduledAt?: Date | string | null
     scheduledSent?: boolean
     createdAt?: Date | string
@@ -23296,9 +25014,13 @@ export namespace Prisma {
   export type SignatureCreateManyUserInput = {
     id?: string
     name: string
+    html?: string
     title?: string | null
     company?: string | null
     phone?: string | null
+    defaultNew?: boolean
+    defaultReplies?: boolean
+    account?: string
     isDefault?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -23348,6 +25070,9 @@ export namespace Prisma {
     onlineMeetingUrl?: string | null
     attendees?: JsonNullValueInput | InputJsonValue
     isRecurring?: boolean
+    reminderMinutes?: number | null
+    showAs?: string
+    recurrence?: string | null
     syncedAt?: Date | string
   }
 
@@ -23462,6 +25187,11 @@ export namespace Prisma {
     subject?: NullableStringFieldUpdateOperationsInput | string | null
     bodyHtml?: NullableStringFieldUpdateOperationsInput | string | null
     attachments?: JsonNullValueInput | InputJsonValue
+    importance?: StringFieldUpdateOperationsInput | string
+    requestReadReceipt?: BoolFieldUpdateOperationsInput | boolean
+    draftType?: StringFieldUpdateOperationsInput | string
+    inReplyToMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    forwardedMessageId?: NullableStringFieldUpdateOperationsInput | string | null
     scheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     scheduledSent?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -23478,6 +25208,11 @@ export namespace Prisma {
     subject?: NullableStringFieldUpdateOperationsInput | string | null
     bodyHtml?: NullableStringFieldUpdateOperationsInput | string | null
     attachments?: JsonNullValueInput | InputJsonValue
+    importance?: StringFieldUpdateOperationsInput | string
+    requestReadReceipt?: BoolFieldUpdateOperationsInput | boolean
+    draftType?: StringFieldUpdateOperationsInput | string
+    inReplyToMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    forwardedMessageId?: NullableStringFieldUpdateOperationsInput | string | null
     scheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     scheduledSent?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -23494,6 +25229,11 @@ export namespace Prisma {
     subject?: NullableStringFieldUpdateOperationsInput | string | null
     bodyHtml?: NullableStringFieldUpdateOperationsInput | string | null
     attachments?: JsonNullValueInput | InputJsonValue
+    importance?: StringFieldUpdateOperationsInput | string
+    requestReadReceipt?: BoolFieldUpdateOperationsInput | boolean
+    draftType?: StringFieldUpdateOperationsInput | string
+    inReplyToMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    forwardedMessageId?: NullableStringFieldUpdateOperationsInput | string | null
     scheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     scheduledSent?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -23542,9 +25282,13 @@ export namespace Prisma {
   export type SignatureUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    html?: StringFieldUpdateOperationsInput | string
     title?: NullableStringFieldUpdateOperationsInput | string | null
     company?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
+    defaultNew?: BoolFieldUpdateOperationsInput | boolean
+    defaultReplies?: BoolFieldUpdateOperationsInput | boolean
+    account?: StringFieldUpdateOperationsInput | string
     isDefault?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -23553,9 +25297,13 @@ export namespace Prisma {
   export type SignatureUncheckedUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    html?: StringFieldUpdateOperationsInput | string
     title?: NullableStringFieldUpdateOperationsInput | string | null
     company?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
+    defaultNew?: BoolFieldUpdateOperationsInput | boolean
+    defaultReplies?: BoolFieldUpdateOperationsInput | boolean
+    account?: StringFieldUpdateOperationsInput | string
     isDefault?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -23564,9 +25312,13 @@ export namespace Prisma {
   export type SignatureUncheckedUpdateManyWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    html?: StringFieldUpdateOperationsInput | string
     title?: NullableStringFieldUpdateOperationsInput | string | null
     company?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
+    defaultNew?: BoolFieldUpdateOperationsInput | boolean
+    defaultReplies?: BoolFieldUpdateOperationsInput | boolean
+    account?: StringFieldUpdateOperationsInput | string
     isDefault?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -23674,6 +25426,9 @@ export namespace Prisma {
     onlineMeetingUrl?: NullableStringFieldUpdateOperationsInput | string | null
     attendees?: JsonNullValueInput | InputJsonValue
     isRecurring?: BoolFieldUpdateOperationsInput | boolean
+    reminderMinutes?: NullableIntFieldUpdateOperationsInput | number | null
+    showAs?: StringFieldUpdateOperationsInput | string
+    recurrence?: NullableStringFieldUpdateOperationsInput | string | null
     syncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -23692,6 +25447,9 @@ export namespace Prisma {
     onlineMeetingUrl?: NullableStringFieldUpdateOperationsInput | string | null
     attendees?: JsonNullValueInput | InputJsonValue
     isRecurring?: BoolFieldUpdateOperationsInput | boolean
+    reminderMinutes?: NullableIntFieldUpdateOperationsInput | number | null
+    showAs?: StringFieldUpdateOperationsInput | string
+    recurrence?: NullableStringFieldUpdateOperationsInput | string | null
     syncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -23710,6 +25468,9 @@ export namespace Prisma {
     onlineMeetingUrl?: NullableStringFieldUpdateOperationsInput | string | null
     attendees?: JsonNullValueInput | InputJsonValue
     isRecurring?: BoolFieldUpdateOperationsInput | boolean
+    reminderMinutes?: NullableIntFieldUpdateOperationsInput | number | null
+    showAs?: StringFieldUpdateOperationsInput | string
+    recurrence?: NullableStringFieldUpdateOperationsInput | string | null
     syncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 

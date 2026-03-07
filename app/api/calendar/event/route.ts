@@ -13,6 +13,9 @@ interface EventBody {
   body?: string;
   attendees?: string[];   // email addresses
   timeZone?: string;
+  reminderMinutes?: number | null; // Reminder in minutes (null = no reminder)
+  showAs?: string;        // busy | free | tentative
+  recurrence?: string | null;    // daily | weekly | monthly | null
 }
 
 function buildGraphPayload(data: EventBody) {
@@ -32,6 +35,15 @@ function buildGraphPayload(data: EventBody) {
           })),
         }
       : {}),
+    ...(data.reminderMinutes !== undefined && data.reminderMinutes !== null
+      ? {
+          isReminderOn: true,
+          reminderMinutesBeforeStart: data.reminderMinutes,
+        }
+      : { isReminderOn: false }),
+    ...(data.showAs ? { showAs: data.showAs } : {}),
+    // Note: recurrence is handled separately in Microsoft Graph API
+    // For now, we store it in our DB but Graph needs specific recurrence pattern object
   };
 }
 

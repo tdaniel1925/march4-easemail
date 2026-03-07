@@ -116,21 +116,26 @@ model WebhookSubscription {
 // ─── Drafts ───────────────────────────────────────────────────────────────────
 
 model Draft {
-  id            String    @id @default(cuid())
-  userId        String
-  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  homeAccountId String?
-  graphDraftId  String? // MS Graph message ID — set when draft synced to Outlook
-  toRecipients  Json      @default("[]")
-  ccRecipients  Json      @default("[]")
-  bccRecipients Json      @default("[]")
-  subject       String?
-  bodyHtml      String?   @db.Text
-  attachments   Json      @default("[]")
-  scheduledAt   DateTime? // null = send immediately; set = scheduled send
-  scheduledSent Boolean   @default(false)
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  id                 String    @id @default(cuid())
+  userId             String
+  user               User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  homeAccountId      String?
+  graphDraftId       String? // MS Graph message ID — set when draft synced to Outlook
+  toRecipients       Json      @default("[]")
+  ccRecipients       Json      @default("[]")
+  bccRecipients      Json      @default("[]")
+  subject            String?
+  bodyHtml           String?   @db.Text
+  attachments        Json      @default("[]")
+  importance         String    @default("normal") // normal | high
+  requestReadReceipt Boolean   @default(false)
+  draftType          String    @default("new") // new | reply | forward
+  inReplyToMessageId String? // Original message ID for replies
+  forwardedMessageId String? // Original message ID for forwards
+  scheduledAt        DateTime? // null = send immediately; set = scheduled send
+  scheduledSent      Boolean   @default(false)
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
 
   @@map("drafts")
 }
@@ -138,16 +143,20 @@ model Draft {
 // ─── Signatures ───────────────────────────────────────────────────────────────
 
 model Signature {
-  id        String   @id @default(cuid())
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  name      String
-  title     String?
-  company   String?
-  phone     String?
-  isDefault Boolean  @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id             String   @id @default(cuid())
+  userId         String
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name           String
+  html           String   @default("") @db.Text // Rich HTML signature body
+  title          String?
+  company        String?
+  phone          String?
+  defaultNew     Boolean  @default(false) // Use for new emails
+  defaultReplies Boolean  @default(false) // Use for replies/forwards
+  account        String   @default("all") // Account scope: "all" or specific email
+  isDefault      Boolean  @default(false)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 
   @@map("signatures")
 }
@@ -212,6 +221,9 @@ model CachedCalendarEvent {
   onlineMeetingUrl String?
   attendees        Json     @default("[]")
   isRecurring      Boolean  @default(false)
+  reminderMinutes  Int? // Reminder time in minutes (null = no reminder)
+  showAs           String   @default("busy") // busy | free | tentative
+  recurrence       String? // daily | weekly | monthly | null
   syncedAt         DateTime @default(now())
 
   @@index([userId, startDateTime, endDateTime])
@@ -232,6 +244,19 @@ model CachedContact {
 
   @@index([userId, homeAccountId, displayName])
   @@map("cached_contacts")
+}
+
+// ─── Deploy Log ───────────────────────────────────────────────────────────────
+
+model DeployLog {
+  id           String    @id @default(cuid())
+  pusher       String
+  commits      Json // string[] of commit messages
+  createdAt    DateTime  @default(now())
+  digestSentAt DateTime?
+
+  @@index([digestSentAt, createdAt])
+  @@map("deploy_log")
 }
 
 // ─── Email Rules ──────────────────────────────────────────────────────────────

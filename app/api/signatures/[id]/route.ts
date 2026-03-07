@@ -15,11 +15,15 @@ export async function PUT(req: NextRequest, { params }: Params) {
   const sig = await prisma.signature.findFirst({ where: { id, userId: user.id } });
   if (!sig) return NextResponse.json({ error: "Not found" }, { status: 404 });
 
-  const { name, title, company, phone, isDefault } = await req.json() as {
+  const { name, html, title, company, phone, defaultNew, defaultReplies, account, isDefault } = await req.json() as {
     name?: string;
+    html?: string;
     title?: string;
     company?: string;
     phone?: string;
+    defaultNew?: boolean;
+    defaultReplies?: boolean;
+    account?: string;
     isDefault?: boolean;
   };
 
@@ -30,13 +34,31 @@ export async function PUT(req: NextRequest, { params }: Params) {
     });
   }
 
+  if (defaultNew) {
+    await prisma.signature.updateMany({
+      where: { userId: user.id },
+      data: { defaultNew: false },
+    });
+  }
+
+  if (defaultReplies) {
+    await prisma.signature.updateMany({
+      where: { userId: user.id },
+      data: { defaultReplies: false },
+    });
+  }
+
   const updated = await prisma.signature.update({
     where: { id },
     data: {
       ...(name !== undefined && { name: name.trim() }),
+      ...(html !== undefined && { html: html.trim() }),
       ...(title !== undefined && { title: title.trim() || null }),
       ...(company !== undefined && { company: company.trim() || null }),
       ...(phone !== undefined && { phone: phone.trim() || null }),
+      ...(defaultNew !== undefined && { defaultNew }),
+      ...(defaultReplies !== undefined && { defaultReplies }),
+      ...(account !== undefined && { account }),
       ...(isDefault !== undefined && { isDefault }),
     },
   });
