@@ -32,6 +32,8 @@ export interface Contact {
   company: string;
   phone: string;
   initials: string;
+  isVIP: boolean;
+  frequencyScore: number;
 }
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
@@ -67,6 +69,8 @@ export default async function ContactsPage() {
         company: c.company,
         phone: c.phone,
         initials: c.displayName.slice(0, 2).toUpperCase(),
+        isVIP: c.isVIP,
+        frequencyScore: c.frequencyScore,
       }));
     } else {
       const data = await graphGet<GraphContactList>(
@@ -84,6 +88,8 @@ export default async function ContactsPage() {
           company: c.companyName ?? "",
           phone: c.mobilePhone ?? "",
           initials: c.displayName.slice(0, 2).toUpperCase(),
+          isVIP: false,
+          frequencyScore: 0,
         }));
     }
   } catch {

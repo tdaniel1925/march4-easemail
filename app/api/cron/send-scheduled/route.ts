@@ -45,6 +45,9 @@ export async function GET(req: NextRequest) {
           toRecipients: to,
           ...(cc?.length ? { ccRecipients: cc } : {}),
           ...(bcc?.length ? { bccRecipients: bcc } : {}),
+          // FIX: Include importance and read receipt settings
+          ...(draft.importance === "high" ? { importance: "high" } : {}),
+          ...(draft.requestReadReceipt ? { isReadReceiptRequested: true } : {}),
         },
         saveToSentItems: true,
       };

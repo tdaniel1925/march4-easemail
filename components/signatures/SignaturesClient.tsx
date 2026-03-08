@@ -171,29 +171,36 @@ export default function SignaturesClient({ userEmail }: { userEmail: string }) {
 
   const editorRef = useRef<HTMLDivElement>(null);
 
-  // ── Load from localStorage ──
+  // ── Load from API ──
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) {
-        const parsed: Signature[] = JSON.parse(raw);
-        setSignatures(parsed);
-        if (parsed.length > 0) selectSig(parsed[0], false);
-      } else {
+    fetch("/api/signatures")
+      .then((res) => res.json())
+      .then((data) => {
+        if (Array.isArray(data) && data.length > 0) {
+          // Map API response to client format
+          const mapped: Signature[] = data.map((s: any) => ({
+            id: s.id,
+            name: s.name,
+            html: s.html || "",
+            defaultNew: s.defaultNew,
+            defaultReplies: s.defaultReplies,
+            account: s.account,
+          }));
+          setSignatures(mapped);
+          selectSig(mapped[0], false);
+        } else {
+          // No signatures in database - show sample
+          setSignatures(SAMPLE);
+          selectSig(SAMPLE[0], false);
+        }
+      })
+      .catch(() => {
+        // API error - fallback to sample
         setSignatures(SAMPLE);
         selectSig(SAMPLE[0], false);
-      }
-    } catch {
-      setSignatures(SAMPLE);
-      selectSig(SAMPLE[0], false);
-    }
+      });
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  function persist(sigs: Signature[]) {
-    setSignatures(sigs);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(sigs));
-  }
 
   function selectSig(sig: Signature, focus = true) {
     setSelectedId(sig.id);
@@ -214,48 +221,109 @@ export default function SignaturesClient({ userEmail }: { userEmail: string }) {
     }
   }, [selectedId, signatures]);
 
-  function handleSave() {
+  async function handleSave() {
     if (!selectedId) return;
     const html = editorRef.current?.innerHTML ?? "";
-    const updated = signatures.map((s) => {
-      if (s.id !== selectedId) return s;
-      return { ...s, name: editName.trim() || s.name, html, defaultNew: editDefaultNew, defaultReplies: editDefaultReplies, account: editAccount };
-    });
-    persist(updated);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2000);
+
+    try {
+      // Update via API
+      const res = await fetch(`/api/signatures/${selectedId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: editName.trim(),
+          html,
+          defaultNew: editDefaultNew,
+          defaultReplies: editDefaultReplies,
+          account: editAccount,
+        }),
+      });
+
+      if (res.ok) {
+        const updatedSig = await res.json();
+        // Update local state
+        const updated = signatures.map((s) => {
+          if (s.id !== selectedId) return s;
+          return {
+            id: updatedSig.id,
+            name: updatedSig.name,
+            html: updatedSig.html,
+            defaultNew: updatedSig.defaultNew,
+            defaultReplies: updatedSig.defaultReplies,
+            account: updatedSig.account,
+          };
+        });
+        setSignatures(updated);
+        setSaved(true);
+        setTimeout(() => setSaved(false), 2000);
+      }
+    } catch (err) {
+      console.error("Failed to save signature:", err);
+    }
   }
 
-  function handleCreate() {
+  async function handleCreate() {
     if (!newSigName.trim()) return;
     const src = newFrom === "copy" && copySrcId ? signatures.find((s) => s.id === copySrcId) : null;
-    const newSig: Signature = {
-      id: makeId(),
-      name: newSigName.trim(),
-      html: src ? src.html : `<p><strong>${newSigName.trim()}</strong></p>`,
-      defaultNew: false,
-      defaultReplies: false,
-      account: "all",
-    };
-    const updated = [...signatures, newSig];
-    persist(updated);
-    setShowNewModal(false);
-    setNewSigName("");
-    setNewFrom("blank");
-    setCopySrcId("");
-    selectSig(newSig);
+
+    try {
+      // Create via API
+      const res = await fetch("/api/signatures", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: newSigName.trim(),
+          html: src ? src.html : `<p><strong>${newSigName.trim()}</strong></p>`,
+          defaultNew: false,
+          defaultReplies: false,
+          account: "all",
+        }),
+      });
+
+      if (res.ok) {
+        const created = await res.json();
+        const newSig: Signature = {
+          id: created.id,
+          name: created.name,
+          html: created.html,
+          defaultNew: created.defaultNew,
+          defaultReplies: created.defaultReplies,
+          account: created.account,
+        };
+        const updated = [...signatures, newSig];
+        setSignatures(updated);
+        setShowNewModal(false);
+        setNewSigName("");
+        setNewFrom("blank");
+        setCopySrcId("");
+        selectSig(newSig);
+      }
+    } catch (err) {
+      console.error("Failed to create signature:", err);
+    }
   }
 
-  function handleDelete(id: string) {
-    const updated = signatures.filter((s) => s.id !== id);
-    persist(updated);
-    setDeleteConfirmId(null);
-    if (selectedId === id) {
-      if (updated.length > 0) {
-        selectSig(updated[0]);
-      } else {
-        setSelectedId(null);
+  async function handleDelete(id: string) {
+    try {
+      // Delete via API
+      const res = await fetch(`/api/signatures/${id}`, {
+        method: "DELETE",
+      });
+
+      if (res.ok) {
+        const updated = signatures.filter((s) => s.id !== id);
+        setSignatures(updated);
+        setDeleteConfirmId(null);
+        if (selectedId === id) {
+          if (updated.length > 0) {
+            selectSig(updated[0]);
+          } else {
+            setSelectedId(null);
+          }
+        }
       }
+    } catch (err) {
+      console.error("Failed to delete signature:", err);
     }
   }
 

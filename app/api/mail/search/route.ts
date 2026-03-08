@@ -79,7 +79,27 @@ export async function GET(req: NextRequest) {
     // cache miss or DB error — fall through to Graph
   }
 
-  // ── 2. Fall back to Graph search ─────────────────────────────────────────────
+  // ── 2. Check cached search results (Graph API cache) ────────────────────────
+  try {
+    const cachedSearch = await prisma.cachedSearchResult.findUnique({
+      where: {
+        userId_homeAccountId_query: {
+          userId: user.id,
+          homeAccountId,
+          query: q.trim(),
+        },
+      },
+    });
+
+    if (cachedSearch && cachedSearch.expiresAt > new Date()) {
+      // Return cached Graph search results
+      return NextResponse.json({ emails: cachedSearch.results });
+    }
+  } catch {
+    // Cache miss or DB error — fall through to Graph
+  }
+
+  // ── 3. Fall back to Graph search ─────────────────────────────────────────────
   const search = encodeURIComponent(q);
   const wellKnown = WELL_KNOWN_FOLDER_PATHS[folder];
   const path = (folder === "starred" || (!wellKnown && !folder))
@@ -106,6 +126,36 @@ export async function GET(req: NextRequest) {
       })),
       body: { content: m.body?.content ?? m.bodyPreview ?? "", contentType: (m.body?.contentType as "html" | "text") ?? "text" },
     }));
+
+    // ── 4. Cache the Graph search results (1hr TTL) ─────────────────────────────
+    try {
+      const expiresAt = new Date();
+      expiresAt.setHours(expiresAt.getHours() + 1);
+
+      await prisma.cachedSearchResult.upsert({
+        where: {
+          userId_homeAccountId_query: {
+            userId: user.id,
+            homeAccountId,
+            query: q.trim(),
+          },
+        },
+        create: {
+          userId: user.id,
+          homeAccountId,
+          query: q.trim(),
+          results: emails as any,
+          expiresAt,
+        },
+        update: {
+          results: emails as any,
+          expiresAt,
+        },
+      });
+    } catch (cacheErr) {
+      // Cache save failed — not critical, continue
+      console.error("[search] Failed to cache results:", cacheErr);
+    }
 
     return NextResponse.json({ emails });
   } catch (err) {

@@ -71,11 +71,13 @@ function ContactModal({
   onClose,
   onSave,
   saving,
+  errorMsg,
 }: {
   initial?: Contact;
   onClose: () => void;
   onSave: (data: ContactFormData) => void;
   saving: boolean;
+  errorMsg?: string | null;
 }) {
   const [form, setForm] = useState<ContactFormData>({
     displayName: initial?.displayName ?? "",
@@ -93,6 +95,12 @@ function ContactModal({
         <h2 className="text-base font-semibold mb-5" style={{ color: "rgb(27 29 29)" }}>
           {initial ? "Edit Contact" : "New Contact"}
         </h2>
+        {/* FIX: Show error message to user */}
+        {errorMsg && (
+          <div className="mb-4 p-3 rounded-[10px] bg-red-50 border border-red-200">
+            <p className="text-sm text-red-700">{errorMsg}</p>
+          </div>
+        )}
         <div className="space-y-3">
           {(["displayName", "email", "phone", "company", "title"] as (keyof ContactFormData)[]).map((k) => (
             <div key={k}>
@@ -139,17 +147,28 @@ export default function ContactsClient({ contacts: initialContacts }: Props) {
   const [deleteTarget, setDeleteTarget] = useState<Contact | null>(null);
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  // FIX: Add error state for user feedback
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   async function handleCreate(data: ContactFormData) {
     setSaving(true);
+    setErrorMsg(null); // Clear previous errors
     try {
       const res = await fetch("/api/contacts", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ displayName: data.displayName, email: data.email, phone: data.phone, company: data.company, title: data.title }),
       });
-      if (!res.ok) throw new Error("Failed to create contact");
+
+      // FIX: Check response before updating UI
+      if (!res.ok) {
+        const error = await res.json().catch(() => ({ error: "Failed to create contact" }));
+        throw new Error(error.error || "Failed to create contact");
+      }
+
       const { contact } = await res.json() as { contact: { id: string; displayName: string; emailAddresses?: { address: string }[]; mobilePhone?: string; jobTitle?: string; companyName?: string } };
+
+      // Only update UI after confirming save succeeded
       const newContact: Contact = {
         id: contact.id,
         displayName: contact.displayName,
@@ -158,10 +177,15 @@ export default function ContactsClient({ contacts: initialContacts }: Props) {
         jobTitle: contact.jobTitle ?? data.title,
         company: contact.companyName ?? data.company,
         initials: contact.displayName.slice(0, 2).toUpperCase(),
+        isVIP: false,
+        frequencyScore: 0,
       };
       setContacts((prev) => [...prev, newContact].sort((a, b) => a.displayName.localeCompare(b.displayName)));
       setShowNewModal(false);
     } catch (err) {
+      // FIX: Show error to user instead of just logging
+      const message = err instanceof Error ? err.message : "Failed to create contact";
+      setErrorMsg(message);
       console.error(err);
     } finally {
       setSaving(false);
@@ -171,12 +195,22 @@ export default function ContactsClient({ contacts: initialContacts }: Props) {
   async function handleEdit(data: ContactFormData) {
     if (!editContact) return;
     setSaving(true);
+    setErrorMsg(null); // Clear previous errors
     try {
-      await fetch(`/api/contacts/${encodeURIComponent(editContact.id)}`, {
+      // FIX: Wait for response and validate before updating UI
+      const res = await fetch(`/api/contacts/${encodeURIComponent(editContact.id)}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ displayName: data.displayName, email: data.email, phone: data.phone, company: data.company, title: data.title }),
       });
+
+      // FIX: Check if save succeeded before updating UI
+      if (!res.ok) {
+        const error = await res.json().catch(() => ({ error: "Failed to update contact" }));
+        throw new Error(error.error || "Failed to update contact");
+      }
+
+      // Only update UI after confirming save succeeded
       const updated: Contact = {
         ...editContact,
         displayName: data.displayName,
@@ -190,7 +224,11 @@ export default function ContactsClient({ contacts: initialContacts }: Props) {
       setSelectedContact(updated);
       setEditContact(null);
     } catch (err) {
+      // FIX: Show error to user instead of just logging
+      const message = err instanceof Error ? err.message : "Failed to update contact";
+      setErrorMsg(message);
       console.error(err);
+      // Don't close modal on error - let user try again
     } finally {
       setSaving(false);
     }
@@ -199,27 +237,50 @@ export default function ContactsClient({ contacts: initialContacts }: Props) {
   async function handleDelete() {
     if (!deleteTarget) return;
     setDeleting(true);
+    setErrorMsg(null); // Clear previous errors
     try {
-      await fetch(`/api/contacts/${encodeURIComponent(deleteTarget.id)}`, { method: "DELETE" });
+      // FIX: Wait for response and validate before updating UI
+      const res = await fetch(`/api/contacts/${encodeURIComponent(deleteTarget.id)}`, { method: "DELETE" });
+
+      // FIX: Check if delete succeeded before updating UI
+      if (!res.ok) {
+        const error = await res.json().catch(() => ({ error: "Failed to delete contact" }));
+        throw new Error(error.error || "Failed to delete contact");
+      }
+
+      // Only update UI after confirming delete succeeded
       setContacts((prev) => prev.filter((c) => c.id !== deleteTarget.id));
       if (selectedContact?.id === deleteTarget.id) setSelectedContact(null);
       setDeleteTarget(null);
     } catch (err) {
+      // FIX: Show error to user instead of just logging
+      const message = err instanceof Error ? err.message : "Failed to delete contact";
+      setErrorMsg(message);
       console.error(err);
+      // Don't close dialog on error - let user try again
     } finally {
       setDeleting(false);
     }
   }
 
   const filtered = useMemo(() => {
+    // Filter by tab first
+    let tabFiltered = contacts;
+    if (activeTab === "vip") {
+      tabFiltered = contacts.filter((c) => c.isVIP);
+    } else if (activeTab === "frequent") {
+      tabFiltered = contacts.filter((c) => c.frequencyScore > 0);
+    }
+
+    // Then filter by search query
     const q = query.trim().toLowerCase();
-    if (!q) return contacts;
-    return contacts.filter(
+    if (!q) return tabFiltered;
+    return tabFiltered.filter(
       (c) =>
         c.displayName.toLowerCase().includes(q) ||
         c.email.toLowerCase().includes(q)
     );
-  }, [contacts, query]);
+  }, [contacts, query, activeTab]);
 
   const groups = useMemo(() => groupByLetter(filtered), [filtered]);
 
@@ -361,10 +422,10 @@ export default function ContactsClient({ contacts: initialContacts }: Props) {
 
       {/* Modals */}
       {showNewModal && (
-        <ContactModal onClose={() => setShowNewModal(false)} onSave={handleCreate} saving={saving} />
+        <ContactModal onClose={() => setShowNewModal(false)} onSave={handleCreate} saving={saving} errorMsg={errorMsg} />
       )}
       {editContact && (
-        <ContactModal initial={editContact} onClose={() => setEditContact(null)} onSave={handleEdit} saving={saving} />
+        <ContactModal initial={editContact} onClose={() => setEditContact(null)} onSave={handleEdit} saving={saving} errorMsg={errorMsg} />
       )}
       {deleteTarget && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40" onClick={() => setDeleteTarget(null)}>

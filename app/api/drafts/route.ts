@@ -42,6 +42,7 @@ export async function POST(req: NextRequest) {
     draftType,
     inReplyToMessageId,
     forwardedMessageId,
+    originalMessageBody,
     scheduledAt,
   } = await req.json() as {
     draftId?: string;
@@ -51,12 +52,13 @@ export async function POST(req: NextRequest) {
     bccRecipients?: { emailAddress: { address: string } }[];
     subject?: string;
     bodyHtml?: string;
-    attachments?: { name: string; type: string; size: number }[];
+    attachments?: { name: string; type: string; size: number; data?: string }[];
     importance?: string;
     requestReadReceipt?: boolean;
     draftType?: string;
     inReplyToMessageId?: string | null;
     forwardedMessageId?: string | null;
+    originalMessageBody?: string | null;
     scheduledAt?: string | null;
   };
 
@@ -75,6 +77,7 @@ export async function POST(req: NextRequest) {
     draftType: draftType ?? "new",
     inReplyToMessageId: inReplyToMessageId ?? null,
     forwardedMessageId: forwardedMessageId ?? null,
+    originalMessageBody: originalMessageBody ?? null,
     scheduledAt: scheduledAt ? new Date(scheduledAt) : null,
   };
 

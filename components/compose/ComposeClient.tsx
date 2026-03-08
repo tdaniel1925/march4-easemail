@@ -570,8 +570,15 @@ export default function ComposeClient({
           bccRecipients: bcc.map((addr) => ({ emailAddress: { address: addr } })),
           subject,
           bodyHtml,
-          attachments: attachments.map(({ name, type, size }) => ({ name, type, size })),
+          attachments: attachments.map(({ name, type, size, data }) => ({ name, type, size, data })), // FIX: Include data for voice attachments
           scheduledAt: scheduleAt !== undefined ? scheduleAt?.toISOString() ?? null : null,
+          // FIX: Add missing fields that were collected but never saved
+          importance,
+          requestReadReceipt,
+          draftType: mode ?? "new", // new | reply | replyAll | forward
+          inReplyToMessageId: mode === "reply" || mode === "replyAll" ? messageId : undefined,
+          forwardedMessageId: mode === "forward" ? messageId : undefined,
+          originalMessageBody: replyContext?.originalBodyHtml,
         }),
       });
       const data = await res.json() as { id?: string };
@@ -1136,12 +1143,15 @@ export default function ComposeClient({
           originalBodyHtml: msg.body?.content ?? "",
         });
 
-        // Pre-fill body from AI Reply selection (stored by InboxClient)
-        const aiBody = sessionStorage.getItem(`ai-reply-body-${messageId}`);
-        if (aiBody && bodyRef.current) {
-          bodyRef.current.innerHTML = aiBody;
-          sessionStorage.removeItem(`ai-reply-body-${messageId}`);
-        }
+        // FIX: Pre-fill body from AI Reply (database instead of sessionStorage)
+        fetch(`/api/ai-replies?messageId=${encodeURIComponent(messageId)}`)
+          .then((res) => res.json())
+          .then((data) => {
+            if (data.reply && bodyRef.current) {
+              bodyRef.current.innerHTML = data.reply;
+            }
+          })
+          .catch((err) => console.error("Failed to load AI reply:", err));
       })
       .catch(() => {});
   // eslint-disable-next-line react-hooks/exhaustive-deps

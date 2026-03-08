@@ -41,14 +41,29 @@ export async function GET(req: NextRequest) {
           try {
             // 1. Sync folders → get folder list for email sync
             const folderRefs = await syncFolders(userId, homeAccountId);
+            await prisma.syncStatus.upsert({
+              where: { userId_homeAccountId_resourceType: { userId, homeAccountId, resourceType: "folders" } },
+              create: { userId, homeAccountId, resourceType: "folders", status: "success", lastSyncedAt: new Date() },
+              update: { status: "success", lastSyncedAt: new Date(), errorMessage: null },
+            }).catch(() => {});
 
             // 2. Sync emails in each folder (failures are isolated)
             await Promise.allSettled(
               folderRefs.map((f) => syncEmails(userId, homeAccountId, f.folderId))
             );
+            await prisma.syncStatus.upsert({
+              where: { userId_homeAccountId_resourceType: { userId, homeAccountId, resourceType: "emails" } },
+              create: { userId, homeAccountId, resourceType: "emails", status: "success", lastSyncedAt: new Date() },
+              update: { status: "success", lastSyncedAt: new Date(), errorMessage: null },
+            }).catch(() => {});
 
             // 3. Sync calendar
             await syncCalendar(userId, homeAccountId);
+            await prisma.syncStatus.upsert({
+              where: { userId_homeAccountId_resourceType: { userId, homeAccountId, resourceType: "calendar" } },
+              create: { userId, homeAccountId, resourceType: "calendar", status: "success", lastSyncedAt: new Date() },
+              update: { status: "success", lastSyncedAt: new Date(), errorMessage: null },
+            }).catch(() => {});
 
             // 4. Sync contacts — gated to once per hour
             const lastContact = await prisma.cachedContact.findFirst({
@@ -61,27 +76,52 @@ export async function GET(req: NextRequest) {
               Date.now() - lastContact.syncedAt.getTime() > CONTACT_SYNC_INTERVAL_MS;
 
             if (needsContactSync) {
-              await syncContacts(userId, homeAccountId).catch((err) => {
+              await syncContacts(userId, homeAccountId).catch(async (err) => {
                 // Swallow 403 — Contacts scope may not be consented
                 const msg = String(err);
-                if (!msg.includes("403")) throw err;
+                if (!msg.includes("403")) {
+                  await prisma.syncStatus.upsert({
+                    where: { userId_homeAccountId_resourceType: { userId, homeAccountId, resourceType: "contacts" } },
+                    create: { userId, homeAccountId, resourceType: "contacts", status: "error", lastSyncedAt: new Date(), errorMessage: msg },
+                    update: { status: "error", lastSyncedAt: new Date(), errorMessage: msg },
+                  }).catch(() => {});
+                  throw err;
+                }
               });
+              await prisma.syncStatus.upsert({
+                where: { userId_homeAccountId_resourceType: { userId, homeAccountId, resourceType: "contacts" } },
+                create: { userId, homeAccountId, resourceType: "contacts", status: "success", lastSyncedAt: new Date() },
+                update: { status: "success", lastSyncedAt: new Date(), errorMessage: null },
+              }).catch(() => {});
             }
 
             synced++;
           } catch (err) {
+            const errorMsg = err instanceof Error ? err.message : String(err);
             if (isReauthError(err)) {
               reauth++;
               console.warn(
                 `[sync] reauth required for ${userId}/${homeAccountId}:`,
-                String(err)
+                errorMsg
               );
+              // Track reauth status
+              await prisma.syncStatus.upsert({
+                where: { userId_homeAccountId_resourceType: { userId, homeAccountId, resourceType: "all" } },
+                create: { userId, homeAccountId, resourceType: "all", status: "reauth_required", lastSyncedAt: new Date(), errorMessage: errorMsg },
+                update: { status: "reauth_required", lastSyncedAt: new Date(), errorMessage: errorMsg },
+              }).catch(() => {});
             } else {
               errors++;
               console.error(
                 `[sync] error for ${userId}/${homeAccountId}:`,
                 err
               );
+              // Track error status
+              await prisma.syncStatus.upsert({
+                where: { userId_homeAccountId_resourceType: { userId, homeAccountId, resourceType: "all" } },
+                create: { userId, homeAccountId, resourceType: "all", status: "error", lastSyncedAt: new Date(), errorMessage: errorMsg },
+                update: { status: "error", lastSyncedAt: new Date(), errorMessage: errorMsg },
+              }).catch(() => {});
             }
           }
         })

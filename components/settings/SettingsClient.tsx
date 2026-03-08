@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -251,9 +251,56 @@ function NotificationsSection() {
     calendarReminders: true,
     weeklyReport: false,
   });
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+
+  // Load preferences from API on mount
+  useEffect(() => {
+    fetch("/api/user/preferences")
+      .then((res) => res.json())
+      .then((data) => {
+        if (!data.error) {
+          setSettings({
+            newEmail: data.notificationNewEmail,
+            dailyDigest: data.notificationDailyDigest,
+            aiReplySuggestions: data.notificationAiReplies,
+            calendarReminders: data.notificationCalendarReminders,
+            weeklyReport: data.notificationWeeklyReport,
+          });
+        }
+      })
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  }, []);
+
+  // Save to API whenever settings change
+  const saveSettings = useCallback(async (newSettings: NotificationSettings) => {
+    setSaving(true);
+    try {
+      await fetch("/api/user/preferences", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          notificationNewEmail: newSettings.newEmail,
+          notificationDailyDigest: newSettings.dailyDigest,
+          notificationAiReplies: newSettings.aiReplySuggestions,
+          notificationCalendarReminders: newSettings.calendarReminders,
+          notificationWeeklyReport: newSettings.weeklyReport,
+        }),
+      });
+    } catch (err) {
+      console.error("Failed to save notification settings:", err);
+    } finally {
+      setSaving(false);
+    }
+  }, []);
 
   function toggle(key: keyof NotificationSettings) {
-    setSettings((prev) => ({ ...prev, [key]: !prev[key] }));
+    setSettings((prev) => {
+      const updated = { ...prev, [key]: !prev[key] };
+      saveSettings(updated);
+      return updated;
+    });
   }
 
   const rows: {
@@ -335,6 +382,49 @@ function NotificationsSection() {
 function AppearanceSection() {
   const [fontSize, setFontSize] = useState<FontSize>("default");
   const [density, setDensity] = useState<EmailDensity>("comfortable");
+  const [loading, setLoading] = useState(true);
+
+  // Load preferences from API on mount
+  useEffect(() => {
+    fetch("/api/user/preferences")
+      .then((res) => res.json())
+      .then((data) => {
+        if (!data.error) {
+          setFontSize(data.fontSize as FontSize);
+          setDensity(data.emailDensity as EmailDensity);
+        }
+      })
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  }, []);
+
+  // Save fontSize to API
+  const saveFontSize = async (newSize: FontSize) => {
+    setFontSize(newSize);
+    try {
+      await fetch("/api/user/preferences", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ fontSize: newSize }),
+      });
+    } catch (err) {
+      console.error("Failed to save fontSize:", err);
+    }
+  };
+
+  // Save density to API
+  const saveDensity = async (newDensity: EmailDensity) => {
+    setDensity(newDensity);
+    try {
+      await fetch("/api/user/preferences", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ emailDensity: newDensity }),
+      });
+    } catch (err) {
+      console.error("Failed to save emailDensity:", err);
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -413,7 +503,7 @@ function AppearanceSection() {
           {(["default", "compact", "comfortable"] as FontSize[]).map((size) => (
             <button
               key={size}
-              onClick={() => setFontSize(size)}
+              onClick={() => saveFontSize(size)}
               className="flex items-center gap-2 px-4 py-2 rounded-[10px] text-sm font-medium transition-colors border"
               style={{
                 borderColor:
@@ -455,7 +545,7 @@ function AppearanceSection() {
           {(["comfortable", "compact"] as EmailDensity[]).map((d) => (
             <button
               key={d}
-              onClick={() => setDensity(d)}
+              onClick={() => saveDensity(d)}
               className="flex items-center gap-2 px-4 py-2 rounded-[10px] text-sm font-medium transition-colors border"
               style={{
                 borderColor:

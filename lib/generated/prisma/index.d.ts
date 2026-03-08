@@ -83,6 +83,36 @@ export type DeployLog = $Result.DefaultSelection<Prisma.$DeployLogPayload>
  * 
  */
 export type EmailRule = $Result.DefaultSelection<Prisma.$EmailRulePayload>
+/**
+ * Model EmailAttachment
+ * 
+ */
+export type EmailAttachment = $Result.DefaultSelection<Prisma.$EmailAttachmentPayload>
+/**
+ * Model AiGeneratedReply
+ * 
+ */
+export type AiGeneratedReply = $Result.DefaultSelection<Prisma.$AiGeneratedReplyPayload>
+/**
+ * Model CachedSearchResult
+ * 
+ */
+export type CachedSearchResult = $Result.DefaultSelection<Prisma.$CachedSearchResultPayload>
+/**
+ * Model SyncStatus
+ * 
+ */
+export type SyncStatus = $Result.DefaultSelection<Prisma.$SyncStatusPayload>
+/**
+ * Model NotificationLog
+ * 
+ */
+export type NotificationLog = $Result.DefaultSelection<Prisma.$NotificationLogPayload>
+/**
+ * Model MigrationStatus
+ * 
+ */
+export type MigrationStatus = $Result.DefaultSelection<Prisma.$MigrationStatusPayload>
 
 /**
  * ##  Prisma Client ʲˢ
@@ -344,6 +374,66 @@ export class PrismaClient<
     * ```
     */
   get emailRule(): Prisma.EmailRuleDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.emailAttachment`: Exposes CRUD operations for the **EmailAttachment** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more EmailAttachments
+    * const emailAttachments = await prisma.emailAttachment.findMany()
+    * ```
+    */
+  get emailAttachment(): Prisma.EmailAttachmentDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.aiGeneratedReply`: Exposes CRUD operations for the **AiGeneratedReply** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more AiGeneratedReplies
+    * const aiGeneratedReplies = await prisma.aiGeneratedReply.findMany()
+    * ```
+    */
+  get aiGeneratedReply(): Prisma.AiGeneratedReplyDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.cachedSearchResult`: Exposes CRUD operations for the **CachedSearchResult** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more CachedSearchResults
+    * const cachedSearchResults = await prisma.cachedSearchResult.findMany()
+    * ```
+    */
+  get cachedSearchResult(): Prisma.CachedSearchResultDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.syncStatus`: Exposes CRUD operations for the **SyncStatus** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more SyncStatuses
+    * const syncStatuses = await prisma.syncStatus.findMany()
+    * ```
+    */
+  get syncStatus(): Prisma.SyncStatusDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.notificationLog`: Exposes CRUD operations for the **NotificationLog** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more NotificationLogs
+    * const notificationLogs = await prisma.notificationLog.findMany()
+    * ```
+    */
+  get notificationLog(): Prisma.NotificationLogDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.migrationStatus`: Exposes CRUD operations for the **MigrationStatus** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more MigrationStatuses
+    * const migrationStatuses = await prisma.migrationStatus.findMany()
+    * ```
+    */
+  get migrationStatus(): Prisma.MigrationStatusDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -791,7 +881,13 @@ export namespace Prisma {
     CachedCalendarEvent: 'CachedCalendarEvent',
     CachedContact: 'CachedContact',
     DeployLog: 'DeployLog',
-    EmailRule: 'EmailRule'
+    EmailRule: 'EmailRule',
+    EmailAttachment: 'EmailAttachment',
+    AiGeneratedReply: 'AiGeneratedReply',
+    CachedSearchResult: 'CachedSearchResult',
+    SyncStatus: 'SyncStatus',
+    NotificationLog: 'NotificationLog',
+    MigrationStatus: 'MigrationStatus'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -807,7 +903,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "organization" | "user" | "msConnectedAccount" | "msalTokenCache" | "emailDeltaLink" | "webhookSubscription" | "draft" | "signature" | "cachedFolder" | "cachedEmail" | "cachedCalendarEvent" | "cachedContact" | "deployLog" | "emailRule"
+      modelProps: "organization" | "user" | "msConnectedAccount" | "msalTokenCache" | "emailDeltaLink" | "webhookSubscription" | "draft" | "signature" | "cachedFolder" | "cachedEmail" | "cachedCalendarEvent" | "cachedContact" | "deployLog" | "emailRule" | "emailAttachment" | "aiGeneratedReply" | "cachedSearchResult" | "syncStatus" | "notificationLog" | "migrationStatus"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1847,6 +1943,450 @@ export namespace Prisma {
           }
         }
       }
+      EmailAttachment: {
+        payload: Prisma.$EmailAttachmentPayload<ExtArgs>
+        fields: Prisma.EmailAttachmentFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.EmailAttachmentFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmailAttachmentPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.EmailAttachmentFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmailAttachmentPayload>
+          }
+          findFirst: {
+            args: Prisma.EmailAttachmentFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmailAttachmentPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.EmailAttachmentFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmailAttachmentPayload>
+          }
+          findMany: {
+            args: Prisma.EmailAttachmentFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmailAttachmentPayload>[]
+          }
+          create: {
+            args: Prisma.EmailAttachmentCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmailAttachmentPayload>
+          }
+          createMany: {
+            args: Prisma.EmailAttachmentCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.EmailAttachmentCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmailAttachmentPayload>[]
+          }
+          delete: {
+            args: Prisma.EmailAttachmentDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmailAttachmentPayload>
+          }
+          update: {
+            args: Prisma.EmailAttachmentUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmailAttachmentPayload>
+          }
+          deleteMany: {
+            args: Prisma.EmailAttachmentDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.EmailAttachmentUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.EmailAttachmentUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmailAttachmentPayload>[]
+          }
+          upsert: {
+            args: Prisma.EmailAttachmentUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmailAttachmentPayload>
+          }
+          aggregate: {
+            args: Prisma.EmailAttachmentAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateEmailAttachment>
+          }
+          groupBy: {
+            args: Prisma.EmailAttachmentGroupByArgs<ExtArgs>
+            result: $Utils.Optional<EmailAttachmentGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.EmailAttachmentCountArgs<ExtArgs>
+            result: $Utils.Optional<EmailAttachmentCountAggregateOutputType> | number
+          }
+        }
+      }
+      AiGeneratedReply: {
+        payload: Prisma.$AiGeneratedReplyPayload<ExtArgs>
+        fields: Prisma.AiGeneratedReplyFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.AiGeneratedReplyFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AiGeneratedReplyPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.AiGeneratedReplyFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AiGeneratedReplyPayload>
+          }
+          findFirst: {
+            args: Prisma.AiGeneratedReplyFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AiGeneratedReplyPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.AiGeneratedReplyFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AiGeneratedReplyPayload>
+          }
+          findMany: {
+            args: Prisma.AiGeneratedReplyFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AiGeneratedReplyPayload>[]
+          }
+          create: {
+            args: Prisma.AiGeneratedReplyCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AiGeneratedReplyPayload>
+          }
+          createMany: {
+            args: Prisma.AiGeneratedReplyCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.AiGeneratedReplyCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AiGeneratedReplyPayload>[]
+          }
+          delete: {
+            args: Prisma.AiGeneratedReplyDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AiGeneratedReplyPayload>
+          }
+          update: {
+            args: Prisma.AiGeneratedReplyUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AiGeneratedReplyPayload>
+          }
+          deleteMany: {
+            args: Prisma.AiGeneratedReplyDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.AiGeneratedReplyUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.AiGeneratedReplyUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AiGeneratedReplyPayload>[]
+          }
+          upsert: {
+            args: Prisma.AiGeneratedReplyUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AiGeneratedReplyPayload>
+          }
+          aggregate: {
+            args: Prisma.AiGeneratedReplyAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateAiGeneratedReply>
+          }
+          groupBy: {
+            args: Prisma.AiGeneratedReplyGroupByArgs<ExtArgs>
+            result: $Utils.Optional<AiGeneratedReplyGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.AiGeneratedReplyCountArgs<ExtArgs>
+            result: $Utils.Optional<AiGeneratedReplyCountAggregateOutputType> | number
+          }
+        }
+      }
+      CachedSearchResult: {
+        payload: Prisma.$CachedSearchResultPayload<ExtArgs>
+        fields: Prisma.CachedSearchResultFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.CachedSearchResultFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CachedSearchResultPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.CachedSearchResultFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CachedSearchResultPayload>
+          }
+          findFirst: {
+            args: Prisma.CachedSearchResultFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CachedSearchResultPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.CachedSearchResultFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CachedSearchResultPayload>
+          }
+          findMany: {
+            args: Prisma.CachedSearchResultFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CachedSearchResultPayload>[]
+          }
+          create: {
+            args: Prisma.CachedSearchResultCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CachedSearchResultPayload>
+          }
+          createMany: {
+            args: Prisma.CachedSearchResultCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.CachedSearchResultCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CachedSearchResultPayload>[]
+          }
+          delete: {
+            args: Prisma.CachedSearchResultDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CachedSearchResultPayload>
+          }
+          update: {
+            args: Prisma.CachedSearchResultUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CachedSearchResultPayload>
+          }
+          deleteMany: {
+            args: Prisma.CachedSearchResultDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.CachedSearchResultUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.CachedSearchResultUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CachedSearchResultPayload>[]
+          }
+          upsert: {
+            args: Prisma.CachedSearchResultUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CachedSearchResultPayload>
+          }
+          aggregate: {
+            args: Prisma.CachedSearchResultAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateCachedSearchResult>
+          }
+          groupBy: {
+            args: Prisma.CachedSearchResultGroupByArgs<ExtArgs>
+            result: $Utils.Optional<CachedSearchResultGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.CachedSearchResultCountArgs<ExtArgs>
+            result: $Utils.Optional<CachedSearchResultCountAggregateOutputType> | number
+          }
+        }
+      }
+      SyncStatus: {
+        payload: Prisma.$SyncStatusPayload<ExtArgs>
+        fields: Prisma.SyncStatusFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.SyncStatusFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SyncStatusPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.SyncStatusFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SyncStatusPayload>
+          }
+          findFirst: {
+            args: Prisma.SyncStatusFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SyncStatusPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.SyncStatusFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SyncStatusPayload>
+          }
+          findMany: {
+            args: Prisma.SyncStatusFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SyncStatusPayload>[]
+          }
+          create: {
+            args: Prisma.SyncStatusCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SyncStatusPayload>
+          }
+          createMany: {
+            args: Prisma.SyncStatusCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.SyncStatusCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SyncStatusPayload>[]
+          }
+          delete: {
+            args: Prisma.SyncStatusDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SyncStatusPayload>
+          }
+          update: {
+            args: Prisma.SyncStatusUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SyncStatusPayload>
+          }
+          deleteMany: {
+            args: Prisma.SyncStatusDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.SyncStatusUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.SyncStatusUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SyncStatusPayload>[]
+          }
+          upsert: {
+            args: Prisma.SyncStatusUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SyncStatusPayload>
+          }
+          aggregate: {
+            args: Prisma.SyncStatusAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateSyncStatus>
+          }
+          groupBy: {
+            args: Prisma.SyncStatusGroupByArgs<ExtArgs>
+            result: $Utils.Optional<SyncStatusGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.SyncStatusCountArgs<ExtArgs>
+            result: $Utils.Optional<SyncStatusCountAggregateOutputType> | number
+          }
+        }
+      }
+      NotificationLog: {
+        payload: Prisma.$NotificationLogPayload<ExtArgs>
+        fields: Prisma.NotificationLogFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.NotificationLogFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NotificationLogPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.NotificationLogFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NotificationLogPayload>
+          }
+          findFirst: {
+            args: Prisma.NotificationLogFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NotificationLogPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.NotificationLogFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NotificationLogPayload>
+          }
+          findMany: {
+            args: Prisma.NotificationLogFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NotificationLogPayload>[]
+          }
+          create: {
+            args: Prisma.NotificationLogCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NotificationLogPayload>
+          }
+          createMany: {
+            args: Prisma.NotificationLogCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.NotificationLogCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NotificationLogPayload>[]
+          }
+          delete: {
+            args: Prisma.NotificationLogDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NotificationLogPayload>
+          }
+          update: {
+            args: Prisma.NotificationLogUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NotificationLogPayload>
+          }
+          deleteMany: {
+            args: Prisma.NotificationLogDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.NotificationLogUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.NotificationLogUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NotificationLogPayload>[]
+          }
+          upsert: {
+            args: Prisma.NotificationLogUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NotificationLogPayload>
+          }
+          aggregate: {
+            args: Prisma.NotificationLogAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateNotificationLog>
+          }
+          groupBy: {
+            args: Prisma.NotificationLogGroupByArgs<ExtArgs>
+            result: $Utils.Optional<NotificationLogGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.NotificationLogCountArgs<ExtArgs>
+            result: $Utils.Optional<NotificationLogCountAggregateOutputType> | number
+          }
+        }
+      }
+      MigrationStatus: {
+        payload: Prisma.$MigrationStatusPayload<ExtArgs>
+        fields: Prisma.MigrationStatusFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.MigrationStatusFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MigrationStatusPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.MigrationStatusFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MigrationStatusPayload>
+          }
+          findFirst: {
+            args: Prisma.MigrationStatusFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MigrationStatusPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.MigrationStatusFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MigrationStatusPayload>
+          }
+          findMany: {
+            args: Prisma.MigrationStatusFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MigrationStatusPayload>[]
+          }
+          create: {
+            args: Prisma.MigrationStatusCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MigrationStatusPayload>
+          }
+          createMany: {
+            args: Prisma.MigrationStatusCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.MigrationStatusCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MigrationStatusPayload>[]
+          }
+          delete: {
+            args: Prisma.MigrationStatusDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MigrationStatusPayload>
+          }
+          update: {
+            args: Prisma.MigrationStatusUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MigrationStatusPayload>
+          }
+          deleteMany: {
+            args: Prisma.MigrationStatusDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.MigrationStatusUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.MigrationStatusUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MigrationStatusPayload>[]
+          }
+          upsert: {
+            args: Prisma.MigrationStatusUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MigrationStatusPayload>
+          }
+          aggregate: {
+            args: Prisma.MigrationStatusAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateMigrationStatus>
+          }
+          groupBy: {
+            args: Prisma.MigrationStatusGroupByArgs<ExtArgs>
+            result: $Utils.Optional<MigrationStatusGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.MigrationStatusCountArgs<ExtArgs>
+            result: $Utils.Optional<MigrationStatusCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1969,6 +2509,12 @@ export namespace Prisma {
     cachedContact?: CachedContactOmit
     deployLog?: DeployLogOmit
     emailRule?: EmailRuleOmit
+    emailAttachment?: EmailAttachmentOmit
+    aiGeneratedReply?: AiGeneratedReplyOmit
+    cachedSearchResult?: CachedSearchResultOmit
+    syncStatus?: SyncStatusOmit
+    notificationLog?: NotificationLogOmit
+    migrationStatus?: MigrationStatusOmit
   }
 
   /* Types for Logging */
@@ -2090,6 +2636,12 @@ export namespace Prisma {
     cachedEmails: number
     cachedCalEvents: number
     cachedContacts: number
+    emailAttachments: number
+    aiGeneratedReplies: number
+    cachedSearchResults: number
+    syncStatuses: number
+    notificationLogs: number
+    migrationStatuses: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2103,6 +2655,12 @@ export namespace Prisma {
     cachedEmails?: boolean | UserCountOutputTypeCountCachedEmailsArgs
     cachedCalEvents?: boolean | UserCountOutputTypeCountCachedCalEventsArgs
     cachedContacts?: boolean | UserCountOutputTypeCountCachedContactsArgs
+    emailAttachments?: boolean | UserCountOutputTypeCountEmailAttachmentsArgs
+    aiGeneratedReplies?: boolean | UserCountOutputTypeCountAiGeneratedRepliesArgs
+    cachedSearchResults?: boolean | UserCountOutputTypeCountCachedSearchResultsArgs
+    syncStatuses?: boolean | UserCountOutputTypeCountSyncStatusesArgs
+    notificationLogs?: boolean | UserCountOutputTypeCountNotificationLogsArgs
+    migrationStatuses?: boolean | UserCountOutputTypeCountMigrationStatusesArgs
   }
 
   // Custom InputTypes
@@ -2184,6 +2742,48 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountCachedContactsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: CachedContactWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountEmailAttachmentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: EmailAttachmentWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountAiGeneratedRepliesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AiGeneratedReplyWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountCachedSearchResultsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CachedSearchResultWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountSyncStatusesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SyncStatusWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountNotificationLogsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: NotificationLogWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountMigrationStatusesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: MigrationStatusWhereInput
   }
 
 
@@ -3279,6 +3879,15 @@ export namespace Prisma {
     createdAt: Date | null
     updatedAt: Date | null
     orgId: string | null
+    notificationNewEmail: boolean | null
+    notificationDailyDigest: boolean | null
+    notificationAiReplies: boolean | null
+    notificationCalendarReminders: boolean | null
+    notificationWeeklyReport: boolean | null
+    appTheme: string | null
+    fontSize: string | null
+    emailDensity: string | null
+    lastActiveAccountId: string | null
   }
 
   export type UserMaxAggregateOutputType = {
@@ -3289,6 +3898,15 @@ export namespace Prisma {
     createdAt: Date | null
     updatedAt: Date | null
     orgId: string | null
+    notificationNewEmail: boolean | null
+    notificationDailyDigest: boolean | null
+    notificationAiReplies: boolean | null
+    notificationCalendarReminders: boolean | null
+    notificationWeeklyReport: boolean | null
+    appTheme: string | null
+    fontSize: string | null
+    emailDensity: string | null
+    lastActiveAccountId: string | null
   }
 
   export type UserCountAggregateOutputType = {
@@ -3299,6 +3917,15 @@ export namespace Prisma {
     createdAt: number
     updatedAt: number
     orgId: number
+    notificationNewEmail: number
+    notificationDailyDigest: number
+    notificationAiReplies: number
+    notificationCalendarReminders: number
+    notificationWeeklyReport: number
+    appTheme: number
+    fontSize: number
+    emailDensity: number
+    lastActiveAccountId: number
     _all: number
   }
 
@@ -3311,6 +3938,15 @@ export namespace Prisma {
     createdAt?: true
     updatedAt?: true
     orgId?: true
+    notificationNewEmail?: true
+    notificationDailyDigest?: true
+    notificationAiReplies?: true
+    notificationCalendarReminders?: true
+    notificationWeeklyReport?: true
+    appTheme?: true
+    fontSize?: true
+    emailDensity?: true
+    lastActiveAccountId?: true
   }
 
   export type UserMaxAggregateInputType = {
@@ -3321,6 +3957,15 @@ export namespace Prisma {
     createdAt?: true
     updatedAt?: true
     orgId?: true
+    notificationNewEmail?: true
+    notificationDailyDigest?: true
+    notificationAiReplies?: true
+    notificationCalendarReminders?: true
+    notificationWeeklyReport?: true
+    appTheme?: true
+    fontSize?: true
+    emailDensity?: true
+    lastActiveAccountId?: true
   }
 
   export type UserCountAggregateInputType = {
@@ -3331,6 +3976,15 @@ export namespace Prisma {
     createdAt?: true
     updatedAt?: true
     orgId?: true
+    notificationNewEmail?: true
+    notificationDailyDigest?: true
+    notificationAiReplies?: true
+    notificationCalendarReminders?: true
+    notificationWeeklyReport?: true
+    appTheme?: true
+    fontSize?: true
+    emailDensity?: true
+    lastActiveAccountId?: true
     _all?: true
   }
 
@@ -3414,6 +4068,15 @@ export namespace Prisma {
     createdAt: Date
     updatedAt: Date
     orgId: string
+    notificationNewEmail: boolean
+    notificationDailyDigest: boolean
+    notificationAiReplies: boolean
+    notificationCalendarReminders: boolean
+    notificationWeeklyReport: boolean
+    appTheme: string
+    fontSize: string
+    emailDensity: string
+    lastActiveAccountId: string | null
     _count: UserCountAggregateOutputType | null
     _min: UserMinAggregateOutputType | null
     _max: UserMaxAggregateOutputType | null
@@ -3441,6 +4104,15 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     orgId?: boolean
+    notificationNewEmail?: boolean
+    notificationDailyDigest?: boolean
+    notificationAiReplies?: boolean
+    notificationCalendarReminders?: boolean
+    notificationWeeklyReport?: boolean
+    appTheme?: boolean
+    fontSize?: boolean
+    emailDensity?: boolean
+    lastActiveAccountId?: boolean
     org?: boolean | OrganizationDefaultArgs<ExtArgs>
     msAccounts?: boolean | User$msAccountsArgs<ExtArgs>
     msalCache?: boolean | User$msalCacheArgs<ExtArgs>
@@ -3453,6 +4125,12 @@ export namespace Prisma {
     cachedEmails?: boolean | User$cachedEmailsArgs<ExtArgs>
     cachedCalEvents?: boolean | User$cachedCalEventsArgs<ExtArgs>
     cachedContacts?: boolean | User$cachedContactsArgs<ExtArgs>
+    emailAttachments?: boolean | User$emailAttachmentsArgs<ExtArgs>
+    aiGeneratedReplies?: boolean | User$aiGeneratedRepliesArgs<ExtArgs>
+    cachedSearchResults?: boolean | User$cachedSearchResultsArgs<ExtArgs>
+    syncStatuses?: boolean | User$syncStatusesArgs<ExtArgs>
+    notificationLogs?: boolean | User$notificationLogsArgs<ExtArgs>
+    migrationStatuses?: boolean | User$migrationStatusesArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -3464,6 +4142,15 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     orgId?: boolean
+    notificationNewEmail?: boolean
+    notificationDailyDigest?: boolean
+    notificationAiReplies?: boolean
+    notificationCalendarReminders?: boolean
+    notificationWeeklyReport?: boolean
+    appTheme?: boolean
+    fontSize?: boolean
+    emailDensity?: boolean
+    lastActiveAccountId?: boolean
     org?: boolean | OrganizationDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -3475,6 +4162,15 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     orgId?: boolean
+    notificationNewEmail?: boolean
+    notificationDailyDigest?: boolean
+    notificationAiReplies?: boolean
+    notificationCalendarReminders?: boolean
+    notificationWeeklyReport?: boolean
+    appTheme?: boolean
+    fontSize?: boolean
+    emailDensity?: boolean
+    lastActiveAccountId?: boolean
     org?: boolean | OrganizationDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -3486,9 +4182,18 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     orgId?: boolean
+    notificationNewEmail?: boolean
+    notificationDailyDigest?: boolean
+    notificationAiReplies?: boolean
+    notificationCalendarReminders?: boolean
+    notificationWeeklyReport?: boolean
+    appTheme?: boolean
+    fontSize?: boolean
+    emailDensity?: boolean
+    lastActiveAccountId?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "name" | "avatarUrl" | "createdAt" | "updatedAt" | "orgId", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "name" | "avatarUrl" | "createdAt" | "updatedAt" | "orgId" | "notificationNewEmail" | "notificationDailyDigest" | "notificationAiReplies" | "notificationCalendarReminders" | "notificationWeeklyReport" | "appTheme" | "fontSize" | "emailDensity" | "lastActiveAccountId", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     org?: boolean | OrganizationDefaultArgs<ExtArgs>
     msAccounts?: boolean | User$msAccountsArgs<ExtArgs>
@@ -3502,6 +4207,12 @@ export namespace Prisma {
     cachedEmails?: boolean | User$cachedEmailsArgs<ExtArgs>
     cachedCalEvents?: boolean | User$cachedCalEventsArgs<ExtArgs>
     cachedContacts?: boolean | User$cachedContactsArgs<ExtArgs>
+    emailAttachments?: boolean | User$emailAttachmentsArgs<ExtArgs>
+    aiGeneratedReplies?: boolean | User$aiGeneratedRepliesArgs<ExtArgs>
+    cachedSearchResults?: boolean | User$cachedSearchResultsArgs<ExtArgs>
+    syncStatuses?: boolean | User$syncStatusesArgs<ExtArgs>
+    notificationLogs?: boolean | User$notificationLogsArgs<ExtArgs>
+    migrationStatuses?: boolean | User$migrationStatusesArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -3526,6 +4237,12 @@ export namespace Prisma {
       cachedEmails: Prisma.$CachedEmailPayload<ExtArgs>[]
       cachedCalEvents: Prisma.$CachedCalendarEventPayload<ExtArgs>[]
       cachedContacts: Prisma.$CachedContactPayload<ExtArgs>[]
+      emailAttachments: Prisma.$EmailAttachmentPayload<ExtArgs>[]
+      aiGeneratedReplies: Prisma.$AiGeneratedReplyPayload<ExtArgs>[]
+      cachedSearchResults: Prisma.$CachedSearchResultPayload<ExtArgs>[]
+      syncStatuses: Prisma.$SyncStatusPayload<ExtArgs>[]
+      notificationLogs: Prisma.$NotificationLogPayload<ExtArgs>[]
+      migrationStatuses: Prisma.$MigrationStatusPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -3535,6 +4252,15 @@ export namespace Prisma {
       createdAt: Date
       updatedAt: Date
       orgId: string
+      notificationNewEmail: boolean
+      notificationDailyDigest: boolean
+      notificationAiReplies: boolean
+      notificationCalendarReminders: boolean
+      notificationWeeklyReport: boolean
+      appTheme: string
+      fontSize: string
+      emailDensity: string
+      lastActiveAccountId: string | null
     }, ExtArgs["result"]["user"]>
     composites: {}
   }
@@ -3941,6 +4667,12 @@ export namespace Prisma {
     cachedEmails<T extends User$cachedEmailsArgs<ExtArgs> = {}>(args?: Subset<T, User$cachedEmailsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CachedEmailPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     cachedCalEvents<T extends User$cachedCalEventsArgs<ExtArgs> = {}>(args?: Subset<T, User$cachedCalEventsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CachedCalendarEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     cachedContacts<T extends User$cachedContactsArgs<ExtArgs> = {}>(args?: Subset<T, User$cachedContactsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CachedContactPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    emailAttachments<T extends User$emailAttachmentsArgs<ExtArgs> = {}>(args?: Subset<T, User$emailAttachmentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EmailAttachmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    aiGeneratedReplies<T extends User$aiGeneratedRepliesArgs<ExtArgs> = {}>(args?: Subset<T, User$aiGeneratedRepliesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AiGeneratedReplyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    cachedSearchResults<T extends User$cachedSearchResultsArgs<ExtArgs> = {}>(args?: Subset<T, User$cachedSearchResultsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CachedSearchResultPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    syncStatuses<T extends User$syncStatusesArgs<ExtArgs> = {}>(args?: Subset<T, User$syncStatusesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SyncStatusPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    notificationLogs<T extends User$notificationLogsArgs<ExtArgs> = {}>(args?: Subset<T, User$notificationLogsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$NotificationLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    migrationStatuses<T extends User$migrationStatusesArgs<ExtArgs> = {}>(args?: Subset<T, User$migrationStatusesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MigrationStatusPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3977,6 +4709,15 @@ export namespace Prisma {
     readonly createdAt: FieldRef<"User", 'DateTime'>
     readonly updatedAt: FieldRef<"User", 'DateTime'>
     readonly orgId: FieldRef<"User", 'String'>
+    readonly notificationNewEmail: FieldRef<"User", 'Boolean'>
+    readonly notificationDailyDigest: FieldRef<"User", 'Boolean'>
+    readonly notificationAiReplies: FieldRef<"User", 'Boolean'>
+    readonly notificationCalendarReminders: FieldRef<"User", 'Boolean'>
+    readonly notificationWeeklyReport: FieldRef<"User", 'Boolean'>
+    readonly appTheme: FieldRef<"User", 'String'>
+    readonly fontSize: FieldRef<"User", 'String'>
+    readonly emailDensity: FieldRef<"User", 'String'>
+    readonly lastActiveAccountId: FieldRef<"User", 'String'>
   }
     
 
@@ -4629,6 +5370,150 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: CachedContactScalarFieldEnum | CachedContactScalarFieldEnum[]
+  }
+
+  /**
+   * User.emailAttachments
+   */
+  export type User$emailAttachmentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmailAttachment
+     */
+    select?: EmailAttachmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmailAttachment
+     */
+    omit?: EmailAttachmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmailAttachmentInclude<ExtArgs> | null
+    where?: EmailAttachmentWhereInput
+    orderBy?: EmailAttachmentOrderByWithRelationInput | EmailAttachmentOrderByWithRelationInput[]
+    cursor?: EmailAttachmentWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: EmailAttachmentScalarFieldEnum | EmailAttachmentScalarFieldEnum[]
+  }
+
+  /**
+   * User.aiGeneratedReplies
+   */
+  export type User$aiGeneratedRepliesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiGeneratedReply
+     */
+    select?: AiGeneratedReplySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiGeneratedReply
+     */
+    omit?: AiGeneratedReplyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AiGeneratedReplyInclude<ExtArgs> | null
+    where?: AiGeneratedReplyWhereInput
+    orderBy?: AiGeneratedReplyOrderByWithRelationInput | AiGeneratedReplyOrderByWithRelationInput[]
+    cursor?: AiGeneratedReplyWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: AiGeneratedReplyScalarFieldEnum | AiGeneratedReplyScalarFieldEnum[]
+  }
+
+  /**
+   * User.cachedSearchResults
+   */
+  export type User$cachedSearchResultsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CachedSearchResult
+     */
+    select?: CachedSearchResultSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CachedSearchResult
+     */
+    omit?: CachedSearchResultOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CachedSearchResultInclude<ExtArgs> | null
+    where?: CachedSearchResultWhereInput
+    orderBy?: CachedSearchResultOrderByWithRelationInput | CachedSearchResultOrderByWithRelationInput[]
+    cursor?: CachedSearchResultWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: CachedSearchResultScalarFieldEnum | CachedSearchResultScalarFieldEnum[]
+  }
+
+  /**
+   * User.syncStatuses
+   */
+  export type User$syncStatusesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SyncStatus
+     */
+    select?: SyncStatusSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SyncStatus
+     */
+    omit?: SyncStatusOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SyncStatusInclude<ExtArgs> | null
+    where?: SyncStatusWhereInput
+    orderBy?: SyncStatusOrderByWithRelationInput | SyncStatusOrderByWithRelationInput[]
+    cursor?: SyncStatusWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: SyncStatusScalarFieldEnum | SyncStatusScalarFieldEnum[]
+  }
+
+  /**
+   * User.notificationLogs
+   */
+  export type User$notificationLogsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NotificationLog
+     */
+    select?: NotificationLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the NotificationLog
+     */
+    omit?: NotificationLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NotificationLogInclude<ExtArgs> | null
+    where?: NotificationLogWhereInput
+    orderBy?: NotificationLogOrderByWithRelationInput | NotificationLogOrderByWithRelationInput[]
+    cursor?: NotificationLogWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: NotificationLogScalarFieldEnum | NotificationLogScalarFieldEnum[]
+  }
+
+  /**
+   * User.migrationStatuses
+   */
+  export type User$migrationStatusesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MigrationStatus
+     */
+    select?: MigrationStatusSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MigrationStatus
+     */
+    omit?: MigrationStatusOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MigrationStatusInclude<ExtArgs> | null
+    where?: MigrationStatusWhereInput
+    orderBy?: MigrationStatusOrderByWithRelationInput | MigrationStatusOrderByWithRelationInput[]
+    cursor?: MigrationStatusWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: MigrationStatusScalarFieldEnum | MigrationStatusScalarFieldEnum[]
   }
 
   /**
@@ -8992,8 +9877,18 @@ export namespace Prisma {
 
   export type AggregateDraft = {
     _count: DraftCountAggregateOutputType | null
+    _avg: DraftAvgAggregateOutputType | null
+    _sum: DraftSumAggregateOutputType | null
     _min: DraftMinAggregateOutputType | null
     _max: DraftMaxAggregateOutputType | null
+  }
+
+  export type DraftAvgAggregateOutputType = {
+    scheduleAttemptCount: number | null
+  }
+
+  export type DraftSumAggregateOutputType = {
+    scheduleAttemptCount: number | null
   }
 
   export type DraftMinAggregateOutputType = {
@@ -9004,12 +9899,18 @@ export namespace Prisma {
     subject: string | null
     bodyHtml: string | null
     importance: string | null
+    sensitivity: string | null
     requestReadReceipt: boolean | null
+    requestDeliveryReceipt: boolean | null
     draftType: string | null
     inReplyToMessageId: string | null
     forwardedMessageId: string | null
+    originalMessageBody: string | null
     scheduledAt: Date | null
     scheduledSent: boolean | null
+    scheduledNotificationSent: boolean | null
+    lastScheduleAttemptAt: Date | null
+    scheduleAttemptCount: number | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -9022,12 +9923,18 @@ export namespace Prisma {
     subject: string | null
     bodyHtml: string | null
     importance: string | null
+    sensitivity: string | null
     requestReadReceipt: boolean | null
+    requestDeliveryReceipt: boolean | null
     draftType: string | null
     inReplyToMessageId: string | null
     forwardedMessageId: string | null
+    originalMessageBody: string | null
     scheduledAt: Date | null
     scheduledSent: boolean | null
+    scheduledNotificationSent: boolean | null
+    lastScheduleAttemptAt: Date | null
+    scheduleAttemptCount: number | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -9044,17 +9951,32 @@ export namespace Prisma {
     bodyHtml: number
     attachments: number
     importance: number
+    sensitivity: number
     requestReadReceipt: number
+    requestDeliveryReceipt: number
+    categories: number
     draftType: number
     inReplyToMessageId: number
     forwardedMessageId: number
+    originalMessageBody: number
     scheduledAt: number
     scheduledSent: number
+    scheduledNotificationSent: number
+    lastScheduleAttemptAt: number
+    scheduleAttemptCount: number
     createdAt: number
     updatedAt: number
     _all: number
   }
 
+
+  export type DraftAvgAggregateInputType = {
+    scheduleAttemptCount?: true
+  }
+
+  export type DraftSumAggregateInputType = {
+    scheduleAttemptCount?: true
+  }
 
   export type DraftMinAggregateInputType = {
     id?: true
@@ -9064,12 +9986,18 @@ export namespace Prisma {
     subject?: true
     bodyHtml?: true
     importance?: true
+    sensitivity?: true
     requestReadReceipt?: true
+    requestDeliveryReceipt?: true
     draftType?: true
     inReplyToMessageId?: true
     forwardedMessageId?: true
+    originalMessageBody?: true
     scheduledAt?: true
     scheduledSent?: true
+    scheduledNotificationSent?: true
+    lastScheduleAttemptAt?: true
+    scheduleAttemptCount?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -9082,12 +10010,18 @@ export namespace Prisma {
     subject?: true
     bodyHtml?: true
     importance?: true
+    sensitivity?: true
     requestReadReceipt?: true
+    requestDeliveryReceipt?: true
     draftType?: true
     inReplyToMessageId?: true
     forwardedMessageId?: true
+    originalMessageBody?: true
     scheduledAt?: true
     scheduledSent?: true
+    scheduledNotificationSent?: true
+    lastScheduleAttemptAt?: true
+    scheduleAttemptCount?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -9104,12 +10038,19 @@ export namespace Prisma {
     bodyHtml?: true
     attachments?: true
     importance?: true
+    sensitivity?: true
     requestReadReceipt?: true
+    requestDeliveryReceipt?: true
+    categories?: true
     draftType?: true
     inReplyToMessageId?: true
     forwardedMessageId?: true
+    originalMessageBody?: true
     scheduledAt?: true
     scheduledSent?: true
+    scheduledNotificationSent?: true
+    lastScheduleAttemptAt?: true
+    scheduleAttemptCount?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -9153,6 +10094,18 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
+     * Select which fields to average
+    **/
+    _avg?: DraftAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: DraftSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
      * Select which fields to find the minimum value
     **/
     _min?: DraftMinAggregateInputType
@@ -9183,6 +10136,8 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: DraftCountAggregateInputType | true
+    _avg?: DraftAvgAggregateInputType
+    _sum?: DraftSumAggregateInputType
     _min?: DraftMinAggregateInputType
     _max?: DraftMaxAggregateInputType
   }
@@ -9199,15 +10154,24 @@ export namespace Prisma {
     bodyHtml: string | null
     attachments: JsonValue
     importance: string
+    sensitivity: string
     requestReadReceipt: boolean
+    requestDeliveryReceipt: boolean
+    categories: JsonValue
     draftType: string
     inReplyToMessageId: string | null
     forwardedMessageId: string | null
+    originalMessageBody: string | null
     scheduledAt: Date | null
     scheduledSent: boolean
+    scheduledNotificationSent: boolean
+    lastScheduleAttemptAt: Date | null
+    scheduleAttemptCount: number
     createdAt: Date
     updatedAt: Date
     _count: DraftCountAggregateOutputType | null
+    _avg: DraftAvgAggregateOutputType | null
+    _sum: DraftSumAggregateOutputType | null
     _min: DraftMinAggregateOutputType | null
     _max: DraftMaxAggregateOutputType | null
   }
@@ -9238,12 +10202,19 @@ export namespace Prisma {
     bodyHtml?: boolean
     attachments?: boolean
     importance?: boolean
+    sensitivity?: boolean
     requestReadReceipt?: boolean
+    requestDeliveryReceipt?: boolean
+    categories?: boolean
     draftType?: boolean
     inReplyToMessageId?: boolean
     forwardedMessageId?: boolean
+    originalMessageBody?: boolean
     scheduledAt?: boolean
     scheduledSent?: boolean
+    scheduledNotificationSent?: boolean
+    lastScheduleAttemptAt?: boolean
+    scheduleAttemptCount?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -9261,12 +10232,19 @@ export namespace Prisma {
     bodyHtml?: boolean
     attachments?: boolean
     importance?: boolean
+    sensitivity?: boolean
     requestReadReceipt?: boolean
+    requestDeliveryReceipt?: boolean
+    categories?: boolean
     draftType?: boolean
     inReplyToMessageId?: boolean
     forwardedMessageId?: boolean
+    originalMessageBody?: boolean
     scheduledAt?: boolean
     scheduledSent?: boolean
+    scheduledNotificationSent?: boolean
+    lastScheduleAttemptAt?: boolean
+    scheduleAttemptCount?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -9284,12 +10262,19 @@ export namespace Prisma {
     bodyHtml?: boolean
     attachments?: boolean
     importance?: boolean
+    sensitivity?: boolean
     requestReadReceipt?: boolean
+    requestDeliveryReceipt?: boolean
+    categories?: boolean
     draftType?: boolean
     inReplyToMessageId?: boolean
     forwardedMessageId?: boolean
+    originalMessageBody?: boolean
     scheduledAt?: boolean
     scheduledSent?: boolean
+    scheduledNotificationSent?: boolean
+    lastScheduleAttemptAt?: boolean
+    scheduleAttemptCount?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -9307,17 +10292,24 @@ export namespace Prisma {
     bodyHtml?: boolean
     attachments?: boolean
     importance?: boolean
+    sensitivity?: boolean
     requestReadReceipt?: boolean
+    requestDeliveryReceipt?: boolean
+    categories?: boolean
     draftType?: boolean
     inReplyToMessageId?: boolean
     forwardedMessageId?: boolean
+    originalMessageBody?: boolean
     scheduledAt?: boolean
     scheduledSent?: boolean
+    scheduledNotificationSent?: boolean
+    lastScheduleAttemptAt?: boolean
+    scheduleAttemptCount?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type DraftOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "homeAccountId" | "graphDraftId" | "toRecipients" | "ccRecipients" | "bccRecipients" | "subject" | "bodyHtml" | "attachments" | "importance" | "requestReadReceipt" | "draftType" | "inReplyToMessageId" | "forwardedMessageId" | "scheduledAt" | "scheduledSent" | "createdAt" | "updatedAt", ExtArgs["result"]["draft"]>
+  export type DraftOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "homeAccountId" | "graphDraftId" | "toRecipients" | "ccRecipients" | "bccRecipients" | "subject" | "bodyHtml" | "attachments" | "importance" | "sensitivity" | "requestReadReceipt" | "requestDeliveryReceipt" | "categories" | "draftType" | "inReplyToMessageId" | "forwardedMessageId" | "originalMessageBody" | "scheduledAt" | "scheduledSent" | "scheduledNotificationSent" | "lastScheduleAttemptAt" | "scheduleAttemptCount" | "createdAt" | "updatedAt", ExtArgs["result"]["draft"]>
   export type DraftInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
   }
@@ -9345,12 +10337,19 @@ export namespace Prisma {
       bodyHtml: string | null
       attachments: Prisma.JsonValue
       importance: string
+      sensitivity: string
       requestReadReceipt: boolean
+      requestDeliveryReceipt: boolean
+      categories: Prisma.JsonValue
       draftType: string
       inReplyToMessageId: string | null
       forwardedMessageId: string | null
+      originalMessageBody: string | null
       scheduledAt: Date | null
       scheduledSent: boolean
+      scheduledNotificationSent: boolean
+      lastScheduleAttemptAt: Date | null
+      scheduleAttemptCount: number
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["draft"]>
@@ -9788,12 +10787,19 @@ export namespace Prisma {
     readonly bodyHtml: FieldRef<"Draft", 'String'>
     readonly attachments: FieldRef<"Draft", 'Json'>
     readonly importance: FieldRef<"Draft", 'String'>
+    readonly sensitivity: FieldRef<"Draft", 'String'>
     readonly requestReadReceipt: FieldRef<"Draft", 'Boolean'>
+    readonly requestDeliveryReceipt: FieldRef<"Draft", 'Boolean'>
+    readonly categories: FieldRef<"Draft", 'Json'>
     readonly draftType: FieldRef<"Draft", 'String'>
     readonly inReplyToMessageId: FieldRef<"Draft", 'String'>
     readonly forwardedMessageId: FieldRef<"Draft", 'String'>
+    readonly originalMessageBody: FieldRef<"Draft", 'String'>
     readonly scheduledAt: FieldRef<"Draft", 'DateTime'>
     readonly scheduledSent: FieldRef<"Draft", 'Boolean'>
+    readonly scheduledNotificationSent: FieldRef<"Draft", 'Boolean'>
+    readonly lastScheduleAttemptAt: FieldRef<"Draft", 'DateTime'>
+    readonly scheduleAttemptCount: FieldRef<"Draft", 'Int'>
     readonly createdAt: FieldRef<"Draft", 'DateTime'>
     readonly updatedAt: FieldRef<"Draft", 'DateTime'>
   }
@@ -12544,6 +13550,13 @@ export namespace Prisma {
     isRead: boolean | null
     hasAttachments: boolean | null
     flagStatus: string | null
+    importance: string | null
+    sensitivity: string | null
+    inferenceClassification: string | null
+    conversationId: string | null
+    isDraft: boolean | null
+    syncStatus: string | null
+    lastModifiedDateTime: Date | null
     syncedAt: Date | null
   }
 
@@ -12561,6 +13574,13 @@ export namespace Prisma {
     isRead: boolean | null
     hasAttachments: boolean | null
     flagStatus: string | null
+    importance: string | null
+    sensitivity: string | null
+    inferenceClassification: string | null
+    conversationId: string | null
+    isDraft: boolean | null
+    syncStatus: string | null
+    lastModifiedDateTime: Date | null
     syncedAt: Date | null
   }
 
@@ -12580,6 +13600,13 @@ export namespace Prisma {
     hasAttachments: number
     flagStatus: number
     categories: number
+    importance: number
+    sensitivity: number
+    inferenceClassification: number
+    conversationId: number
+    isDraft: number
+    syncStatus: number
+    lastModifiedDateTime: number
     syncedAt: number
     _all: number
   }
@@ -12599,6 +13626,13 @@ export namespace Prisma {
     isRead?: true
     hasAttachments?: true
     flagStatus?: true
+    importance?: true
+    sensitivity?: true
+    inferenceClassification?: true
+    conversationId?: true
+    isDraft?: true
+    syncStatus?: true
+    lastModifiedDateTime?: true
     syncedAt?: true
   }
 
@@ -12616,6 +13650,13 @@ export namespace Prisma {
     isRead?: true
     hasAttachments?: true
     flagStatus?: true
+    importance?: true
+    sensitivity?: true
+    inferenceClassification?: true
+    conversationId?: true
+    isDraft?: true
+    syncStatus?: true
+    lastModifiedDateTime?: true
     syncedAt?: true
   }
 
@@ -12635,6 +13676,13 @@ export namespace Prisma {
     hasAttachments?: true
     flagStatus?: true
     categories?: true
+    importance?: true
+    sensitivity?: true
+    inferenceClassification?: true
+    conversationId?: true
+    isDraft?: true
+    syncStatus?: true
+    lastModifiedDateTime?: true
     syncedAt?: true
     _all?: true
   }
@@ -12727,6 +13775,13 @@ export namespace Prisma {
     hasAttachments: boolean
     flagStatus: string
     categories: JsonValue
+    importance: string
+    sensitivity: string
+    inferenceClassification: string
+    conversationId: string | null
+    isDraft: boolean
+    syncStatus: string
+    lastModifiedDateTime: Date | null
     syncedAt: Date
     _count: CachedEmailCountAggregateOutputType | null
     _min: CachedEmailMinAggregateOutputType | null
@@ -12763,6 +13818,13 @@ export namespace Prisma {
     hasAttachments?: boolean
     flagStatus?: boolean
     categories?: boolean
+    importance?: boolean
+    sensitivity?: boolean
+    inferenceClassification?: boolean
+    conversationId?: boolean
+    isDraft?: boolean
+    syncStatus?: boolean
+    lastModifiedDateTime?: boolean
     syncedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["cachedEmail"]>
@@ -12783,6 +13845,13 @@ export namespace Prisma {
     hasAttachments?: boolean
     flagStatus?: boolean
     categories?: boolean
+    importance?: boolean
+    sensitivity?: boolean
+    inferenceClassification?: boolean
+    conversationId?: boolean
+    isDraft?: boolean
+    syncStatus?: boolean
+    lastModifiedDateTime?: boolean
     syncedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["cachedEmail"]>
@@ -12803,6 +13872,13 @@ export namespace Prisma {
     hasAttachments?: boolean
     flagStatus?: boolean
     categories?: boolean
+    importance?: boolean
+    sensitivity?: boolean
+    inferenceClassification?: boolean
+    conversationId?: boolean
+    isDraft?: boolean
+    syncStatus?: boolean
+    lastModifiedDateTime?: boolean
     syncedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["cachedEmail"]>
@@ -12823,10 +13899,17 @@ export namespace Prisma {
     hasAttachments?: boolean
     flagStatus?: boolean
     categories?: boolean
+    importance?: boolean
+    sensitivity?: boolean
+    inferenceClassification?: boolean
+    conversationId?: boolean
+    isDraft?: boolean
+    syncStatus?: boolean
+    lastModifiedDateTime?: boolean
     syncedAt?: boolean
   }
 
-  export type CachedEmailOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "homeAccountId" | "folderId" | "subject" | "bodyPreview" | "fromName" | "fromAddress" | "toRecipients" | "receivedDateTime" | "sentDateTime" | "isRead" | "hasAttachments" | "flagStatus" | "categories" | "syncedAt", ExtArgs["result"]["cachedEmail"]>
+  export type CachedEmailOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "homeAccountId" | "folderId" | "subject" | "bodyPreview" | "fromName" | "fromAddress" | "toRecipients" | "receivedDateTime" | "sentDateTime" | "isRead" | "hasAttachments" | "flagStatus" | "categories" | "importance" | "sensitivity" | "inferenceClassification" | "conversationId" | "isDraft" | "syncStatus" | "lastModifiedDateTime" | "syncedAt", ExtArgs["result"]["cachedEmail"]>
   export type CachedEmailInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
   }
@@ -12858,6 +13941,13 @@ export namespace Prisma {
       hasAttachments: boolean
       flagStatus: string
       categories: Prisma.JsonValue
+      importance: string
+      sensitivity: string
+      inferenceClassification: string
+      conversationId: string | null
+      isDraft: boolean
+      syncStatus: string
+      lastModifiedDateTime: Date | null
       syncedAt: Date
     }, ExtArgs["result"]["cachedEmail"]>
     composites: {}
@@ -13298,6 +14388,13 @@ export namespace Prisma {
     readonly hasAttachments: FieldRef<"CachedEmail", 'Boolean'>
     readonly flagStatus: FieldRef<"CachedEmail", 'String'>
     readonly categories: FieldRef<"CachedEmail", 'Json'>
+    readonly importance: FieldRef<"CachedEmail", 'String'>
+    readonly sensitivity: FieldRef<"CachedEmail", 'String'>
+    readonly inferenceClassification: FieldRef<"CachedEmail", 'String'>
+    readonly conversationId: FieldRef<"CachedEmail", 'String'>
+    readonly isDraft: FieldRef<"CachedEmail", 'Boolean'>
+    readonly syncStatus: FieldRef<"CachedEmail", 'String'>
+    readonly lastModifiedDateTime: FieldRef<"CachedEmail", 'DateTime'>
     readonly syncedAt: FieldRef<"CachedEmail", 'DateTime'>
   }
     
@@ -13739,18 +14836,29 @@ export namespace Prisma {
     homeAccountId: string | null
     subject: string | null
     bodyPreview: string | null
+    bodyHtml: string | null
     startDateTime: Date | null
     endDateTime: Date | null
     isAllDay: boolean | null
     location: string | null
     organizerName: string | null
     organizerEmail: string | null
+    organizerType: string | null
     responseStatus: string | null
     onlineMeetingUrl: string | null
     isRecurring: boolean | null
     reminderMinutes: number | null
     showAs: string | null
     recurrence: string | null
+    eventColor: string | null
+    timeZone: string | null
+    teamsMeetingUrl: string | null
+    teamsMeetingId: string | null
+    seriesMasterId: string | null
+    iCalUId: string | null
+    calendarId: string | null
+    createdDateTime: Date | null
+    lastModifiedDateTime: Date | null
     syncedAt: Date | null
   }
 
@@ -13760,18 +14868,29 @@ export namespace Prisma {
     homeAccountId: string | null
     subject: string | null
     bodyPreview: string | null
+    bodyHtml: string | null
     startDateTime: Date | null
     endDateTime: Date | null
     isAllDay: boolean | null
     location: string | null
     organizerName: string | null
     organizerEmail: string | null
+    organizerType: string | null
     responseStatus: string | null
     onlineMeetingUrl: string | null
     isRecurring: boolean | null
     reminderMinutes: number | null
     showAs: string | null
     recurrence: string | null
+    eventColor: string | null
+    timeZone: string | null
+    teamsMeetingUrl: string | null
+    teamsMeetingId: string | null
+    seriesMasterId: string | null
+    iCalUId: string | null
+    calendarId: string | null
+    createdDateTime: Date | null
+    lastModifiedDateTime: Date | null
     syncedAt: Date | null
   }
 
@@ -13781,12 +14900,14 @@ export namespace Prisma {
     homeAccountId: number
     subject: number
     bodyPreview: number
+    bodyHtml: number
     startDateTime: number
     endDateTime: number
     isAllDay: number
     location: number
     organizerName: number
     organizerEmail: number
+    organizerType: number
     responseStatus: number
     onlineMeetingUrl: number
     attendees: number
@@ -13794,6 +14915,15 @@ export namespace Prisma {
     reminderMinutes: number
     showAs: number
     recurrence: number
+    eventColor: number
+    timeZone: number
+    teamsMeetingUrl: number
+    teamsMeetingId: number
+    seriesMasterId: number
+    iCalUId: number
+    calendarId: number
+    createdDateTime: number
+    lastModifiedDateTime: number
     syncedAt: number
     _all: number
   }
@@ -13813,18 +14943,29 @@ export namespace Prisma {
     homeAccountId?: true
     subject?: true
     bodyPreview?: true
+    bodyHtml?: true
     startDateTime?: true
     endDateTime?: true
     isAllDay?: true
     location?: true
     organizerName?: true
     organizerEmail?: true
+    organizerType?: true
     responseStatus?: true
     onlineMeetingUrl?: true
     isRecurring?: true
     reminderMinutes?: true
     showAs?: true
     recurrence?: true
+    eventColor?: true
+    timeZone?: true
+    teamsMeetingUrl?: true
+    teamsMeetingId?: true
+    seriesMasterId?: true
+    iCalUId?: true
+    calendarId?: true
+    createdDateTime?: true
+    lastModifiedDateTime?: true
     syncedAt?: true
   }
 
@@ -13834,18 +14975,29 @@ export namespace Prisma {
     homeAccountId?: true
     subject?: true
     bodyPreview?: true
+    bodyHtml?: true
     startDateTime?: true
     endDateTime?: true
     isAllDay?: true
     location?: true
     organizerName?: true
     organizerEmail?: true
+    organizerType?: true
     responseStatus?: true
     onlineMeetingUrl?: true
     isRecurring?: true
     reminderMinutes?: true
     showAs?: true
     recurrence?: true
+    eventColor?: true
+    timeZone?: true
+    teamsMeetingUrl?: true
+    teamsMeetingId?: true
+    seriesMasterId?: true
+    iCalUId?: true
+    calendarId?: true
+    createdDateTime?: true
+    lastModifiedDateTime?: true
     syncedAt?: true
   }
 
@@ -13855,12 +15007,14 @@ export namespace Prisma {
     homeAccountId?: true
     subject?: true
     bodyPreview?: true
+    bodyHtml?: true
     startDateTime?: true
     endDateTime?: true
     isAllDay?: true
     location?: true
     organizerName?: true
     organizerEmail?: true
+    organizerType?: true
     responseStatus?: true
     onlineMeetingUrl?: true
     attendees?: true
@@ -13868,6 +15022,15 @@ export namespace Prisma {
     reminderMinutes?: true
     showAs?: true
     recurrence?: true
+    eventColor?: true
+    timeZone?: true
+    teamsMeetingUrl?: true
+    teamsMeetingId?: true
+    seriesMasterId?: true
+    iCalUId?: true
+    calendarId?: true
+    createdDateTime?: true
+    lastModifiedDateTime?: true
     syncedAt?: true
     _all?: true
   }
@@ -13964,12 +15127,14 @@ export namespace Prisma {
     homeAccountId: string
     subject: string
     bodyPreview: string
+    bodyHtml: string | null
     startDateTime: Date
     endDateTime: Date
     isAllDay: boolean
     location: string | null
     organizerName: string | null
     organizerEmail: string | null
+    organizerType: string
     responseStatus: string
     onlineMeetingUrl: string | null
     attendees: JsonValue
@@ -13977,6 +15142,15 @@ export namespace Prisma {
     reminderMinutes: number | null
     showAs: string
     recurrence: string | null
+    eventColor: string | null
+    timeZone: string
+    teamsMeetingUrl: string | null
+    teamsMeetingId: string | null
+    seriesMasterId: string | null
+    iCalUId: string | null
+    calendarId: string | null
+    createdDateTime: Date | null
+    lastModifiedDateTime: Date | null
     syncedAt: Date
     _count: CachedCalendarEventCountAggregateOutputType | null
     _avg: CachedCalendarEventAvgAggregateOutputType | null
@@ -14005,12 +15179,14 @@ export namespace Prisma {
     homeAccountId?: boolean
     subject?: boolean
     bodyPreview?: boolean
+    bodyHtml?: boolean
     startDateTime?: boolean
     endDateTime?: boolean
     isAllDay?: boolean
     location?: boolean
     organizerName?: boolean
     organizerEmail?: boolean
+    organizerType?: boolean
     responseStatus?: boolean
     onlineMeetingUrl?: boolean
     attendees?: boolean
@@ -14018,6 +15194,15 @@ export namespace Prisma {
     reminderMinutes?: boolean
     showAs?: boolean
     recurrence?: boolean
+    eventColor?: boolean
+    timeZone?: boolean
+    teamsMeetingUrl?: boolean
+    teamsMeetingId?: boolean
+    seriesMasterId?: boolean
+    iCalUId?: boolean
+    calendarId?: boolean
+    createdDateTime?: boolean
+    lastModifiedDateTime?: boolean
     syncedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["cachedCalendarEvent"]>
@@ -14028,12 +15213,14 @@ export namespace Prisma {
     homeAccountId?: boolean
     subject?: boolean
     bodyPreview?: boolean
+    bodyHtml?: boolean
     startDateTime?: boolean
     endDateTime?: boolean
     isAllDay?: boolean
     location?: boolean
     organizerName?: boolean
     organizerEmail?: boolean
+    organizerType?: boolean
     responseStatus?: boolean
     onlineMeetingUrl?: boolean
     attendees?: boolean
@@ -14041,6 +15228,15 @@ export namespace Prisma {
     reminderMinutes?: boolean
     showAs?: boolean
     recurrence?: boolean
+    eventColor?: boolean
+    timeZone?: boolean
+    teamsMeetingUrl?: boolean
+    teamsMeetingId?: boolean
+    seriesMasterId?: boolean
+    iCalUId?: boolean
+    calendarId?: boolean
+    createdDateTime?: boolean
+    lastModifiedDateTime?: boolean
     syncedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["cachedCalendarEvent"]>
@@ -14051,12 +15247,14 @@ export namespace Prisma {
     homeAccountId?: boolean
     subject?: boolean
     bodyPreview?: boolean
+    bodyHtml?: boolean
     startDateTime?: boolean
     endDateTime?: boolean
     isAllDay?: boolean
     location?: boolean
     organizerName?: boolean
     organizerEmail?: boolean
+    organizerType?: boolean
     responseStatus?: boolean
     onlineMeetingUrl?: boolean
     attendees?: boolean
@@ -14064,6 +15262,15 @@ export namespace Prisma {
     reminderMinutes?: boolean
     showAs?: boolean
     recurrence?: boolean
+    eventColor?: boolean
+    timeZone?: boolean
+    teamsMeetingUrl?: boolean
+    teamsMeetingId?: boolean
+    seriesMasterId?: boolean
+    iCalUId?: boolean
+    calendarId?: boolean
+    createdDateTime?: boolean
+    lastModifiedDateTime?: boolean
     syncedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["cachedCalendarEvent"]>
@@ -14074,12 +15281,14 @@ export namespace Prisma {
     homeAccountId?: boolean
     subject?: boolean
     bodyPreview?: boolean
+    bodyHtml?: boolean
     startDateTime?: boolean
     endDateTime?: boolean
     isAllDay?: boolean
     location?: boolean
     organizerName?: boolean
     organizerEmail?: boolean
+    organizerType?: boolean
     responseStatus?: boolean
     onlineMeetingUrl?: boolean
     attendees?: boolean
@@ -14087,10 +15296,19 @@ export namespace Prisma {
     reminderMinutes?: boolean
     showAs?: boolean
     recurrence?: boolean
+    eventColor?: boolean
+    timeZone?: boolean
+    teamsMeetingUrl?: boolean
+    teamsMeetingId?: boolean
+    seriesMasterId?: boolean
+    iCalUId?: boolean
+    calendarId?: boolean
+    createdDateTime?: boolean
+    lastModifiedDateTime?: boolean
     syncedAt?: boolean
   }
 
-  export type CachedCalendarEventOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "homeAccountId" | "subject" | "bodyPreview" | "startDateTime" | "endDateTime" | "isAllDay" | "location" | "organizerName" | "organizerEmail" | "responseStatus" | "onlineMeetingUrl" | "attendees" | "isRecurring" | "reminderMinutes" | "showAs" | "recurrence" | "syncedAt", ExtArgs["result"]["cachedCalendarEvent"]>
+  export type CachedCalendarEventOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "homeAccountId" | "subject" | "bodyPreview" | "bodyHtml" | "startDateTime" | "endDateTime" | "isAllDay" | "location" | "organizerName" | "organizerEmail" | "organizerType" | "responseStatus" | "onlineMeetingUrl" | "attendees" | "isRecurring" | "reminderMinutes" | "showAs" | "recurrence" | "eventColor" | "timeZone" | "teamsMeetingUrl" | "teamsMeetingId" | "seriesMasterId" | "iCalUId" | "calendarId" | "createdDateTime" | "lastModifiedDateTime" | "syncedAt", ExtArgs["result"]["cachedCalendarEvent"]>
   export type CachedCalendarEventInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
   }
@@ -14112,12 +15330,14 @@ export namespace Prisma {
       homeAccountId: string
       subject: string
       bodyPreview: string
+      bodyHtml: string | null
       startDateTime: Date
       endDateTime: Date
       isAllDay: boolean
       location: string | null
       organizerName: string | null
       organizerEmail: string | null
+      organizerType: string
       responseStatus: string
       onlineMeetingUrl: string | null
       attendees: Prisma.JsonValue
@@ -14125,6 +15345,15 @@ export namespace Prisma {
       reminderMinutes: number | null
       showAs: string
       recurrence: string | null
+      eventColor: string | null
+      timeZone: string
+      teamsMeetingUrl: string | null
+      teamsMeetingId: string | null
+      seriesMasterId: string | null
+      iCalUId: string | null
+      calendarId: string | null
+      createdDateTime: Date | null
+      lastModifiedDateTime: Date | null
       syncedAt: Date
     }, ExtArgs["result"]["cachedCalendarEvent"]>
     composites: {}
@@ -14555,12 +15784,14 @@ export namespace Prisma {
     readonly homeAccountId: FieldRef<"CachedCalendarEvent", 'String'>
     readonly subject: FieldRef<"CachedCalendarEvent", 'String'>
     readonly bodyPreview: FieldRef<"CachedCalendarEvent", 'String'>
+    readonly bodyHtml: FieldRef<"CachedCalendarEvent", 'String'>
     readonly startDateTime: FieldRef<"CachedCalendarEvent", 'DateTime'>
     readonly endDateTime: FieldRef<"CachedCalendarEvent", 'DateTime'>
     readonly isAllDay: FieldRef<"CachedCalendarEvent", 'Boolean'>
     readonly location: FieldRef<"CachedCalendarEvent", 'String'>
     readonly organizerName: FieldRef<"CachedCalendarEvent", 'String'>
     readonly organizerEmail: FieldRef<"CachedCalendarEvent", 'String'>
+    readonly organizerType: FieldRef<"CachedCalendarEvent", 'String'>
     readonly responseStatus: FieldRef<"CachedCalendarEvent", 'String'>
     readonly onlineMeetingUrl: FieldRef<"CachedCalendarEvent", 'String'>
     readonly attendees: FieldRef<"CachedCalendarEvent", 'Json'>
@@ -14568,6 +15799,15 @@ export namespace Prisma {
     readonly reminderMinutes: FieldRef<"CachedCalendarEvent", 'Int'>
     readonly showAs: FieldRef<"CachedCalendarEvent", 'String'>
     readonly recurrence: FieldRef<"CachedCalendarEvent", 'String'>
+    readonly eventColor: FieldRef<"CachedCalendarEvent", 'String'>
+    readonly timeZone: FieldRef<"CachedCalendarEvent", 'String'>
+    readonly teamsMeetingUrl: FieldRef<"CachedCalendarEvent", 'String'>
+    readonly teamsMeetingId: FieldRef<"CachedCalendarEvent", 'String'>
+    readonly seriesMasterId: FieldRef<"CachedCalendarEvent", 'String'>
+    readonly iCalUId: FieldRef<"CachedCalendarEvent", 'String'>
+    readonly calendarId: FieldRef<"CachedCalendarEvent", 'String'>
+    readonly createdDateTime: FieldRef<"CachedCalendarEvent", 'DateTime'>
+    readonly lastModifiedDateTime: FieldRef<"CachedCalendarEvent", 'DateTime'>
     readonly syncedAt: FieldRef<"CachedCalendarEvent", 'DateTime'>
   }
     
@@ -14989,8 +16229,18 @@ export namespace Prisma {
 
   export type AggregateCachedContact = {
     _count: CachedContactCountAggregateOutputType | null
+    _avg: CachedContactAvgAggregateOutputType | null
+    _sum: CachedContactSumAggregateOutputType | null
     _min: CachedContactMinAggregateOutputType | null
     _max: CachedContactMaxAggregateOutputType | null
+  }
+
+  export type CachedContactAvgAggregateOutputType = {
+    frequencyScore: number | null
+  }
+
+  export type CachedContactSumAggregateOutputType = {
+    frequencyScore: number | null
   }
 
   export type CachedContactMinAggregateOutputType = {
@@ -15002,6 +16252,17 @@ export namespace Prisma {
     phone: string | null
     jobTitle: string | null
     company: string | null
+    department: string | null
+    givenName: string | null
+    surname: string | null
+    middleName: string | null
+    notes: string | null
+    birthday: Date | null
+    anniversary: Date | null
+    manager: string | null
+    frequencyScore: number | null
+    isVIP: boolean | null
+    isFavorite: boolean | null
     syncedAt: Date | null
   }
 
@@ -15014,6 +16275,17 @@ export namespace Prisma {
     phone: string | null
     jobTitle: string | null
     company: string | null
+    department: string | null
+    givenName: string | null
+    surname: string | null
+    middleName: string | null
+    notes: string | null
+    birthday: Date | null
+    anniversary: Date | null
+    manager: string | null
+    frequencyScore: number | null
+    isVIP: boolean | null
+    isFavorite: boolean | null
     syncedAt: Date | null
   }
 
@@ -15026,10 +16298,35 @@ export namespace Prisma {
     phone: number
     jobTitle: number
     company: number
+    department: number
+    emailAddresses: number
+    phones: number
+    givenName: number
+    surname: number
+    middleName: number
+    addresses: number
+    imAddresses: number
+    categories: number
+    notes: number
+    birthday: number
+    anniversary: number
+    manager: number
+    directReports: number
+    frequencyScore: number
+    isVIP: number
+    isFavorite: number
     syncedAt: number
     _all: number
   }
 
+
+  export type CachedContactAvgAggregateInputType = {
+    frequencyScore?: true
+  }
+
+  export type CachedContactSumAggregateInputType = {
+    frequencyScore?: true
+  }
 
   export type CachedContactMinAggregateInputType = {
     id?: true
@@ -15040,6 +16337,17 @@ export namespace Prisma {
     phone?: true
     jobTitle?: true
     company?: true
+    department?: true
+    givenName?: true
+    surname?: true
+    middleName?: true
+    notes?: true
+    birthday?: true
+    anniversary?: true
+    manager?: true
+    frequencyScore?: true
+    isVIP?: true
+    isFavorite?: true
     syncedAt?: true
   }
 
@@ -15052,6 +16360,17 @@ export namespace Prisma {
     phone?: true
     jobTitle?: true
     company?: true
+    department?: true
+    givenName?: true
+    surname?: true
+    middleName?: true
+    notes?: true
+    birthday?: true
+    anniversary?: true
+    manager?: true
+    frequencyScore?: true
+    isVIP?: true
+    isFavorite?: true
     syncedAt?: true
   }
 
@@ -15064,6 +16383,23 @@ export namespace Prisma {
     phone?: true
     jobTitle?: true
     company?: true
+    department?: true
+    emailAddresses?: true
+    phones?: true
+    givenName?: true
+    surname?: true
+    middleName?: true
+    addresses?: true
+    imAddresses?: true
+    categories?: true
+    notes?: true
+    birthday?: true
+    anniversary?: true
+    manager?: true
+    directReports?: true
+    frequencyScore?: true
+    isVIP?: true
+    isFavorite?: true
     syncedAt?: true
     _all?: true
   }
@@ -15106,6 +16442,18 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
+     * Select which fields to average
+    **/
+    _avg?: CachedContactAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: CachedContactSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
      * Select which fields to find the minimum value
     **/
     _min?: CachedContactMinAggregateInputType
@@ -15136,6 +16484,8 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: CachedContactCountAggregateInputType | true
+    _avg?: CachedContactAvgAggregateInputType
+    _sum?: CachedContactSumAggregateInputType
     _min?: CachedContactMinAggregateInputType
     _max?: CachedContactMaxAggregateInputType
   }
@@ -15149,8 +16499,27 @@ export namespace Prisma {
     phone: string
     jobTitle: string
     company: string
+    department: string
+    emailAddresses: JsonValue
+    phones: JsonValue
+    givenName: string
+    surname: string
+    middleName: string
+    addresses: JsonValue
+    imAddresses: JsonValue
+    categories: JsonValue
+    notes: string
+    birthday: Date | null
+    anniversary: Date | null
+    manager: string | null
+    directReports: JsonValue
+    frequencyScore: number
+    isVIP: boolean
+    isFavorite: boolean
     syncedAt: Date
     _count: CachedContactCountAggregateOutputType | null
+    _avg: CachedContactAvgAggregateOutputType | null
+    _sum: CachedContactSumAggregateOutputType | null
     _min: CachedContactMinAggregateOutputType | null
     _max: CachedContactMaxAggregateOutputType | null
   }
@@ -15178,6 +16547,23 @@ export namespace Prisma {
     phone?: boolean
     jobTitle?: boolean
     company?: boolean
+    department?: boolean
+    emailAddresses?: boolean
+    phones?: boolean
+    givenName?: boolean
+    surname?: boolean
+    middleName?: boolean
+    addresses?: boolean
+    imAddresses?: boolean
+    categories?: boolean
+    notes?: boolean
+    birthday?: boolean
+    anniversary?: boolean
+    manager?: boolean
+    directReports?: boolean
+    frequencyScore?: boolean
+    isVIP?: boolean
+    isFavorite?: boolean
     syncedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["cachedContact"]>
@@ -15191,6 +16577,23 @@ export namespace Prisma {
     phone?: boolean
     jobTitle?: boolean
     company?: boolean
+    department?: boolean
+    emailAddresses?: boolean
+    phones?: boolean
+    givenName?: boolean
+    surname?: boolean
+    middleName?: boolean
+    addresses?: boolean
+    imAddresses?: boolean
+    categories?: boolean
+    notes?: boolean
+    birthday?: boolean
+    anniversary?: boolean
+    manager?: boolean
+    directReports?: boolean
+    frequencyScore?: boolean
+    isVIP?: boolean
+    isFavorite?: boolean
     syncedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["cachedContact"]>
@@ -15204,6 +16607,23 @@ export namespace Prisma {
     phone?: boolean
     jobTitle?: boolean
     company?: boolean
+    department?: boolean
+    emailAddresses?: boolean
+    phones?: boolean
+    givenName?: boolean
+    surname?: boolean
+    middleName?: boolean
+    addresses?: boolean
+    imAddresses?: boolean
+    categories?: boolean
+    notes?: boolean
+    birthday?: boolean
+    anniversary?: boolean
+    manager?: boolean
+    directReports?: boolean
+    frequencyScore?: boolean
+    isVIP?: boolean
+    isFavorite?: boolean
     syncedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["cachedContact"]>
@@ -15217,10 +16637,27 @@ export namespace Prisma {
     phone?: boolean
     jobTitle?: boolean
     company?: boolean
+    department?: boolean
+    emailAddresses?: boolean
+    phones?: boolean
+    givenName?: boolean
+    surname?: boolean
+    middleName?: boolean
+    addresses?: boolean
+    imAddresses?: boolean
+    categories?: boolean
+    notes?: boolean
+    birthday?: boolean
+    anniversary?: boolean
+    manager?: boolean
+    directReports?: boolean
+    frequencyScore?: boolean
+    isVIP?: boolean
+    isFavorite?: boolean
     syncedAt?: boolean
   }
 
-  export type CachedContactOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "homeAccountId" | "displayName" | "emailAddress" | "phone" | "jobTitle" | "company" | "syncedAt", ExtArgs["result"]["cachedContact"]>
+  export type CachedContactOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "homeAccountId" | "displayName" | "emailAddress" | "phone" | "jobTitle" | "company" | "department" | "emailAddresses" | "phones" | "givenName" | "surname" | "middleName" | "addresses" | "imAddresses" | "categories" | "notes" | "birthday" | "anniversary" | "manager" | "directReports" | "frequencyScore" | "isVIP" | "isFavorite" | "syncedAt", ExtArgs["result"]["cachedContact"]>
   export type CachedContactInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
   }
@@ -15245,6 +16682,23 @@ export namespace Prisma {
       phone: string
       jobTitle: string
       company: string
+      department: string
+      emailAddresses: Prisma.JsonValue
+      phones: Prisma.JsonValue
+      givenName: string
+      surname: string
+      middleName: string
+      addresses: Prisma.JsonValue
+      imAddresses: Prisma.JsonValue
+      categories: Prisma.JsonValue
+      notes: string
+      birthday: Date | null
+      anniversary: Date | null
+      manager: string | null
+      directReports: Prisma.JsonValue
+      frequencyScore: number
+      isVIP: boolean
+      isFavorite: boolean
       syncedAt: Date
     }, ExtArgs["result"]["cachedContact"]>
     composites: {}
@@ -15678,6 +17132,23 @@ export namespace Prisma {
     readonly phone: FieldRef<"CachedContact", 'String'>
     readonly jobTitle: FieldRef<"CachedContact", 'String'>
     readonly company: FieldRef<"CachedContact", 'String'>
+    readonly department: FieldRef<"CachedContact", 'String'>
+    readonly emailAddresses: FieldRef<"CachedContact", 'Json'>
+    readonly phones: FieldRef<"CachedContact", 'Json'>
+    readonly givenName: FieldRef<"CachedContact", 'String'>
+    readonly surname: FieldRef<"CachedContact", 'String'>
+    readonly middleName: FieldRef<"CachedContact", 'String'>
+    readonly addresses: FieldRef<"CachedContact", 'Json'>
+    readonly imAddresses: FieldRef<"CachedContact", 'Json'>
+    readonly categories: FieldRef<"CachedContact", 'Json'>
+    readonly notes: FieldRef<"CachedContact", 'String'>
+    readonly birthday: FieldRef<"CachedContact", 'DateTime'>
+    readonly anniversary: FieldRef<"CachedContact", 'DateTime'>
+    readonly manager: FieldRef<"CachedContact", 'String'>
+    readonly directReports: FieldRef<"CachedContact", 'Json'>
+    readonly frequencyScore: FieldRef<"CachedContact", 'Int'>
+    readonly isVIP: FieldRef<"CachedContact", 'Boolean'>
+    readonly isFavorite: FieldRef<"CachedContact", 'Boolean'>
     readonly syncedAt: FieldRef<"CachedContact", 'DateTime'>
   }
     
@@ -17099,11 +18570,13 @@ export namespace Prisma {
   export type EmailRuleAvgAggregateOutputType = {
     priority: number | null
     emailCount: number | null
+    failureCount: number | null
   }
 
   export type EmailRuleSumAggregateOutputType = {
     priority: number | null
     emailCount: number | null
+    failureCount: number | null
   }
 
   export type EmailRuleMinAggregateOutputType = {
@@ -17114,6 +18587,10 @@ export namespace Prisma {
     active: boolean | null
     emailCount: number | null
     stopProcessing: boolean | null
+    lastExecutedAt: Date | null
+    lastExecutionStatus: string | null
+    lastExecutionError: string | null
+    failureCount: number | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -17126,6 +18603,10 @@ export namespace Prisma {
     active: boolean | null
     emailCount: number | null
     stopProcessing: boolean | null
+    lastExecutedAt: Date | null
+    lastExecutionStatus: string | null
+    lastExecutionError: string | null
+    failureCount: number | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -17140,6 +18621,10 @@ export namespace Prisma {
     actions: number
     emailCount: number
     stopProcessing: number
+    lastExecutedAt: number
+    lastExecutionStatus: number
+    lastExecutionError: number
+    failureCount: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -17149,11 +18634,13 @@ export namespace Prisma {
   export type EmailRuleAvgAggregateInputType = {
     priority?: true
     emailCount?: true
+    failureCount?: true
   }
 
   export type EmailRuleSumAggregateInputType = {
     priority?: true
     emailCount?: true
+    failureCount?: true
   }
 
   export type EmailRuleMinAggregateInputType = {
@@ -17164,6 +18651,10 @@ export namespace Prisma {
     active?: true
     emailCount?: true
     stopProcessing?: true
+    lastExecutedAt?: true
+    lastExecutionStatus?: true
+    lastExecutionError?: true
+    failureCount?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -17176,6 +18667,10 @@ export namespace Prisma {
     active?: true
     emailCount?: true
     stopProcessing?: true
+    lastExecutedAt?: true
+    lastExecutionStatus?: true
+    lastExecutionError?: true
+    failureCount?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -17190,6 +18685,10 @@ export namespace Prisma {
     actions?: true
     emailCount?: true
     stopProcessing?: true
+    lastExecutedAt?: true
+    lastExecutionStatus?: true
+    lastExecutionError?: true
+    failureCount?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -17291,6 +18790,10 @@ export namespace Prisma {
     actions: JsonValue
     emailCount: number
     stopProcessing: boolean
+    lastExecutedAt: Date | null
+    lastExecutionStatus: string | null
+    lastExecutionError: string | null
+    failureCount: number
     createdAt: Date
     updatedAt: Date
     _count: EmailRuleCountAggregateOutputType | null
@@ -17324,6 +18827,10 @@ export namespace Prisma {
     actions?: boolean
     emailCount?: boolean
     stopProcessing?: boolean
+    lastExecutedAt?: boolean
+    lastExecutionStatus?: boolean
+    lastExecutionError?: boolean
+    failureCount?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -17339,6 +18846,10 @@ export namespace Prisma {
     actions?: boolean
     emailCount?: boolean
     stopProcessing?: boolean
+    lastExecutedAt?: boolean
+    lastExecutionStatus?: boolean
+    lastExecutionError?: boolean
+    failureCount?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -17354,6 +18865,10 @@ export namespace Prisma {
     actions?: boolean
     emailCount?: boolean
     stopProcessing?: boolean
+    lastExecutedAt?: boolean
+    lastExecutionStatus?: boolean
+    lastExecutionError?: boolean
+    failureCount?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -17369,11 +18884,15 @@ export namespace Prisma {
     actions?: boolean
     emailCount?: boolean
     stopProcessing?: boolean
+    lastExecutedAt?: boolean
+    lastExecutionStatus?: boolean
+    lastExecutionError?: boolean
+    failureCount?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type EmailRuleOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "name" | "priority" | "active" | "conditions" | "actions" | "emailCount" | "stopProcessing" | "createdAt" | "updatedAt", ExtArgs["result"]["emailRule"]>
+  export type EmailRuleOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "name" | "priority" | "active" | "conditions" | "actions" | "emailCount" | "stopProcessing" | "lastExecutedAt" | "lastExecutionStatus" | "lastExecutionError" | "failureCount" | "createdAt" | "updatedAt", ExtArgs["result"]["emailRule"]>
   export type EmailRuleInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
   }
@@ -17399,6 +18918,10 @@ export namespace Prisma {
       actions: Prisma.JsonValue
       emailCount: number
       stopProcessing: boolean
+      lastExecutedAt: Date | null
+      lastExecutionStatus: string | null
+      lastExecutionError: string | null
+      failureCount: number
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["emailRule"]>
@@ -17834,6 +19357,10 @@ export namespace Prisma {
     readonly actions: FieldRef<"EmailRule", 'Json'>
     readonly emailCount: FieldRef<"EmailRule", 'Int'>
     readonly stopProcessing: FieldRef<"EmailRule", 'Boolean'>
+    readonly lastExecutedAt: FieldRef<"EmailRule", 'DateTime'>
+    readonly lastExecutionStatus: FieldRef<"EmailRule", 'String'>
+    readonly lastExecutionError: FieldRef<"EmailRule", 'String'>
+    readonly failureCount: FieldRef<"EmailRule", 'Int'>
     readonly createdAt: FieldRef<"EmailRule", 'DateTime'>
     readonly updatedAt: FieldRef<"EmailRule", 'DateTime'>
   }
@@ -18251,6 +19778,6584 @@ export namespace Prisma {
 
 
   /**
+   * Model EmailAttachment
+   */
+
+  export type AggregateEmailAttachment = {
+    _count: EmailAttachmentCountAggregateOutputType | null
+    _avg: EmailAttachmentAvgAggregateOutputType | null
+    _sum: EmailAttachmentSumAggregateOutputType | null
+    _min: EmailAttachmentMinAggregateOutputType | null
+    _max: EmailAttachmentMaxAggregateOutputType | null
+  }
+
+  export type EmailAttachmentAvgAggregateOutputType = {
+    size: number | null
+  }
+
+  export type EmailAttachmentSumAggregateOutputType = {
+    size: number | null
+  }
+
+  export type EmailAttachmentMinAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    messageId: string | null
+    graphMessageId: string | null
+    fileName: string | null
+    contentType: string | null
+    size: number | null
+    contentHash: string | null
+    isInline: boolean | null
+    contentId: string | null
+    uploadedAt: Date | null
+    createdAt: Date | null
+  }
+
+  export type EmailAttachmentMaxAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    messageId: string | null
+    graphMessageId: string | null
+    fileName: string | null
+    contentType: string | null
+    size: number | null
+    contentHash: string | null
+    isInline: boolean | null
+    contentId: string | null
+    uploadedAt: Date | null
+    createdAt: Date | null
+  }
+
+  export type EmailAttachmentCountAggregateOutputType = {
+    id: number
+    userId: number
+    messageId: number
+    graphMessageId: number
+    fileName: number
+    contentType: number
+    size: number
+    contentHash: number
+    isInline: number
+    contentId: number
+    uploadedAt: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type EmailAttachmentAvgAggregateInputType = {
+    size?: true
+  }
+
+  export type EmailAttachmentSumAggregateInputType = {
+    size?: true
+  }
+
+  export type EmailAttachmentMinAggregateInputType = {
+    id?: true
+    userId?: true
+    messageId?: true
+    graphMessageId?: true
+    fileName?: true
+    contentType?: true
+    size?: true
+    contentHash?: true
+    isInline?: true
+    contentId?: true
+    uploadedAt?: true
+    createdAt?: true
+  }
+
+  export type EmailAttachmentMaxAggregateInputType = {
+    id?: true
+    userId?: true
+    messageId?: true
+    graphMessageId?: true
+    fileName?: true
+    contentType?: true
+    size?: true
+    contentHash?: true
+    isInline?: true
+    contentId?: true
+    uploadedAt?: true
+    createdAt?: true
+  }
+
+  export type EmailAttachmentCountAggregateInputType = {
+    id?: true
+    userId?: true
+    messageId?: true
+    graphMessageId?: true
+    fileName?: true
+    contentType?: true
+    size?: true
+    contentHash?: true
+    isInline?: true
+    contentId?: true
+    uploadedAt?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type EmailAttachmentAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which EmailAttachment to aggregate.
+     */
+    where?: EmailAttachmentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EmailAttachments to fetch.
+     */
+    orderBy?: EmailAttachmentOrderByWithRelationInput | EmailAttachmentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: EmailAttachmentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EmailAttachments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EmailAttachments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned EmailAttachments
+    **/
+    _count?: true | EmailAttachmentCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: EmailAttachmentAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: EmailAttachmentSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: EmailAttachmentMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: EmailAttachmentMaxAggregateInputType
+  }
+
+  export type GetEmailAttachmentAggregateType<T extends EmailAttachmentAggregateArgs> = {
+        [P in keyof T & keyof AggregateEmailAttachment]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateEmailAttachment[P]>
+      : GetScalarType<T[P], AggregateEmailAttachment[P]>
+  }
+
+
+
+
+  export type EmailAttachmentGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: EmailAttachmentWhereInput
+    orderBy?: EmailAttachmentOrderByWithAggregationInput | EmailAttachmentOrderByWithAggregationInput[]
+    by: EmailAttachmentScalarFieldEnum[] | EmailAttachmentScalarFieldEnum
+    having?: EmailAttachmentScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: EmailAttachmentCountAggregateInputType | true
+    _avg?: EmailAttachmentAvgAggregateInputType
+    _sum?: EmailAttachmentSumAggregateInputType
+    _min?: EmailAttachmentMinAggregateInputType
+    _max?: EmailAttachmentMaxAggregateInputType
+  }
+
+  export type EmailAttachmentGroupByOutputType = {
+    id: string
+    userId: string
+    messageId: string
+    graphMessageId: string | null
+    fileName: string
+    contentType: string
+    size: number
+    contentHash: string | null
+    isInline: boolean
+    contentId: string | null
+    uploadedAt: Date
+    createdAt: Date
+    _count: EmailAttachmentCountAggregateOutputType | null
+    _avg: EmailAttachmentAvgAggregateOutputType | null
+    _sum: EmailAttachmentSumAggregateOutputType | null
+    _min: EmailAttachmentMinAggregateOutputType | null
+    _max: EmailAttachmentMaxAggregateOutputType | null
+  }
+
+  type GetEmailAttachmentGroupByPayload<T extends EmailAttachmentGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<EmailAttachmentGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof EmailAttachmentGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], EmailAttachmentGroupByOutputType[P]>
+            : GetScalarType<T[P], EmailAttachmentGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type EmailAttachmentSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    messageId?: boolean
+    graphMessageId?: boolean
+    fileName?: boolean
+    contentType?: boolean
+    size?: boolean
+    contentHash?: boolean
+    isInline?: boolean
+    contentId?: boolean
+    uploadedAt?: boolean
+    createdAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["emailAttachment"]>
+
+  export type EmailAttachmentSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    messageId?: boolean
+    graphMessageId?: boolean
+    fileName?: boolean
+    contentType?: boolean
+    size?: boolean
+    contentHash?: boolean
+    isInline?: boolean
+    contentId?: boolean
+    uploadedAt?: boolean
+    createdAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["emailAttachment"]>
+
+  export type EmailAttachmentSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    messageId?: boolean
+    graphMessageId?: boolean
+    fileName?: boolean
+    contentType?: boolean
+    size?: boolean
+    contentHash?: boolean
+    isInline?: boolean
+    contentId?: boolean
+    uploadedAt?: boolean
+    createdAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["emailAttachment"]>
+
+  export type EmailAttachmentSelectScalar = {
+    id?: boolean
+    userId?: boolean
+    messageId?: boolean
+    graphMessageId?: boolean
+    fileName?: boolean
+    contentType?: boolean
+    size?: boolean
+    contentHash?: boolean
+    isInline?: boolean
+    contentId?: boolean
+    uploadedAt?: boolean
+    createdAt?: boolean
+  }
+
+  export type EmailAttachmentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "messageId" | "graphMessageId" | "fileName" | "contentType" | "size" | "contentHash" | "isInline" | "contentId" | "uploadedAt" | "createdAt", ExtArgs["result"]["emailAttachment"]>
+  export type EmailAttachmentInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type EmailAttachmentIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type EmailAttachmentIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $EmailAttachmentPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "EmailAttachment"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      userId: string
+      messageId: string
+      graphMessageId: string | null
+      fileName: string
+      contentType: string
+      size: number
+      contentHash: string | null
+      isInline: boolean
+      contentId: string | null
+      uploadedAt: Date
+      createdAt: Date
+    }, ExtArgs["result"]["emailAttachment"]>
+    composites: {}
+  }
+
+  type EmailAttachmentGetPayload<S extends boolean | null | undefined | EmailAttachmentDefaultArgs> = $Result.GetResult<Prisma.$EmailAttachmentPayload, S>
+
+  type EmailAttachmentCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<EmailAttachmentFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: EmailAttachmentCountAggregateInputType | true
+    }
+
+  export interface EmailAttachmentDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['EmailAttachment'], meta: { name: 'EmailAttachment' } }
+    /**
+     * Find zero or one EmailAttachment that matches the filter.
+     * @param {EmailAttachmentFindUniqueArgs} args - Arguments to find a EmailAttachment
+     * @example
+     * // Get one EmailAttachment
+     * const emailAttachment = await prisma.emailAttachment.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends EmailAttachmentFindUniqueArgs>(args: SelectSubset<T, EmailAttachmentFindUniqueArgs<ExtArgs>>): Prisma__EmailAttachmentClient<$Result.GetResult<Prisma.$EmailAttachmentPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one EmailAttachment that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {EmailAttachmentFindUniqueOrThrowArgs} args - Arguments to find a EmailAttachment
+     * @example
+     * // Get one EmailAttachment
+     * const emailAttachment = await prisma.emailAttachment.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends EmailAttachmentFindUniqueOrThrowArgs>(args: SelectSubset<T, EmailAttachmentFindUniqueOrThrowArgs<ExtArgs>>): Prisma__EmailAttachmentClient<$Result.GetResult<Prisma.$EmailAttachmentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first EmailAttachment that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmailAttachmentFindFirstArgs} args - Arguments to find a EmailAttachment
+     * @example
+     * // Get one EmailAttachment
+     * const emailAttachment = await prisma.emailAttachment.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends EmailAttachmentFindFirstArgs>(args?: SelectSubset<T, EmailAttachmentFindFirstArgs<ExtArgs>>): Prisma__EmailAttachmentClient<$Result.GetResult<Prisma.$EmailAttachmentPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first EmailAttachment that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmailAttachmentFindFirstOrThrowArgs} args - Arguments to find a EmailAttachment
+     * @example
+     * // Get one EmailAttachment
+     * const emailAttachment = await prisma.emailAttachment.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends EmailAttachmentFindFirstOrThrowArgs>(args?: SelectSubset<T, EmailAttachmentFindFirstOrThrowArgs<ExtArgs>>): Prisma__EmailAttachmentClient<$Result.GetResult<Prisma.$EmailAttachmentPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more EmailAttachments that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmailAttachmentFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all EmailAttachments
+     * const emailAttachments = await prisma.emailAttachment.findMany()
+     * 
+     * // Get first 10 EmailAttachments
+     * const emailAttachments = await prisma.emailAttachment.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const emailAttachmentWithIdOnly = await prisma.emailAttachment.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends EmailAttachmentFindManyArgs>(args?: SelectSubset<T, EmailAttachmentFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EmailAttachmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a EmailAttachment.
+     * @param {EmailAttachmentCreateArgs} args - Arguments to create a EmailAttachment.
+     * @example
+     * // Create one EmailAttachment
+     * const EmailAttachment = await prisma.emailAttachment.create({
+     *   data: {
+     *     // ... data to create a EmailAttachment
+     *   }
+     * })
+     * 
+     */
+    create<T extends EmailAttachmentCreateArgs>(args: SelectSubset<T, EmailAttachmentCreateArgs<ExtArgs>>): Prisma__EmailAttachmentClient<$Result.GetResult<Prisma.$EmailAttachmentPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many EmailAttachments.
+     * @param {EmailAttachmentCreateManyArgs} args - Arguments to create many EmailAttachments.
+     * @example
+     * // Create many EmailAttachments
+     * const emailAttachment = await prisma.emailAttachment.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends EmailAttachmentCreateManyArgs>(args?: SelectSubset<T, EmailAttachmentCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many EmailAttachments and returns the data saved in the database.
+     * @param {EmailAttachmentCreateManyAndReturnArgs} args - Arguments to create many EmailAttachments.
+     * @example
+     * // Create many EmailAttachments
+     * const emailAttachment = await prisma.emailAttachment.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many EmailAttachments and only return the `id`
+     * const emailAttachmentWithIdOnly = await prisma.emailAttachment.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends EmailAttachmentCreateManyAndReturnArgs>(args?: SelectSubset<T, EmailAttachmentCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EmailAttachmentPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a EmailAttachment.
+     * @param {EmailAttachmentDeleteArgs} args - Arguments to delete one EmailAttachment.
+     * @example
+     * // Delete one EmailAttachment
+     * const EmailAttachment = await prisma.emailAttachment.delete({
+     *   where: {
+     *     // ... filter to delete one EmailAttachment
+     *   }
+     * })
+     * 
+     */
+    delete<T extends EmailAttachmentDeleteArgs>(args: SelectSubset<T, EmailAttachmentDeleteArgs<ExtArgs>>): Prisma__EmailAttachmentClient<$Result.GetResult<Prisma.$EmailAttachmentPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one EmailAttachment.
+     * @param {EmailAttachmentUpdateArgs} args - Arguments to update one EmailAttachment.
+     * @example
+     * // Update one EmailAttachment
+     * const emailAttachment = await prisma.emailAttachment.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends EmailAttachmentUpdateArgs>(args: SelectSubset<T, EmailAttachmentUpdateArgs<ExtArgs>>): Prisma__EmailAttachmentClient<$Result.GetResult<Prisma.$EmailAttachmentPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more EmailAttachments.
+     * @param {EmailAttachmentDeleteManyArgs} args - Arguments to filter EmailAttachments to delete.
+     * @example
+     * // Delete a few EmailAttachments
+     * const { count } = await prisma.emailAttachment.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends EmailAttachmentDeleteManyArgs>(args?: SelectSubset<T, EmailAttachmentDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more EmailAttachments.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmailAttachmentUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many EmailAttachments
+     * const emailAttachment = await prisma.emailAttachment.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends EmailAttachmentUpdateManyArgs>(args: SelectSubset<T, EmailAttachmentUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more EmailAttachments and returns the data updated in the database.
+     * @param {EmailAttachmentUpdateManyAndReturnArgs} args - Arguments to update many EmailAttachments.
+     * @example
+     * // Update many EmailAttachments
+     * const emailAttachment = await prisma.emailAttachment.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more EmailAttachments and only return the `id`
+     * const emailAttachmentWithIdOnly = await prisma.emailAttachment.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends EmailAttachmentUpdateManyAndReturnArgs>(args: SelectSubset<T, EmailAttachmentUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EmailAttachmentPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one EmailAttachment.
+     * @param {EmailAttachmentUpsertArgs} args - Arguments to update or create a EmailAttachment.
+     * @example
+     * // Update or create a EmailAttachment
+     * const emailAttachment = await prisma.emailAttachment.upsert({
+     *   create: {
+     *     // ... data to create a EmailAttachment
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the EmailAttachment we want to update
+     *   }
+     * })
+     */
+    upsert<T extends EmailAttachmentUpsertArgs>(args: SelectSubset<T, EmailAttachmentUpsertArgs<ExtArgs>>): Prisma__EmailAttachmentClient<$Result.GetResult<Prisma.$EmailAttachmentPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of EmailAttachments.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmailAttachmentCountArgs} args - Arguments to filter EmailAttachments to count.
+     * @example
+     * // Count the number of EmailAttachments
+     * const count = await prisma.emailAttachment.count({
+     *   where: {
+     *     // ... the filter for the EmailAttachments we want to count
+     *   }
+     * })
+    **/
+    count<T extends EmailAttachmentCountArgs>(
+      args?: Subset<T, EmailAttachmentCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], EmailAttachmentCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a EmailAttachment.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmailAttachmentAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends EmailAttachmentAggregateArgs>(args: Subset<T, EmailAttachmentAggregateArgs>): Prisma.PrismaPromise<GetEmailAttachmentAggregateType<T>>
+
+    /**
+     * Group by EmailAttachment.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmailAttachmentGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends EmailAttachmentGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: EmailAttachmentGroupByArgs['orderBy'] }
+        : { orderBy?: EmailAttachmentGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, EmailAttachmentGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetEmailAttachmentGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the EmailAttachment model
+   */
+  readonly fields: EmailAttachmentFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for EmailAttachment.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__EmailAttachmentClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the EmailAttachment model
+   */
+  interface EmailAttachmentFieldRefs {
+    readonly id: FieldRef<"EmailAttachment", 'String'>
+    readonly userId: FieldRef<"EmailAttachment", 'String'>
+    readonly messageId: FieldRef<"EmailAttachment", 'String'>
+    readonly graphMessageId: FieldRef<"EmailAttachment", 'String'>
+    readonly fileName: FieldRef<"EmailAttachment", 'String'>
+    readonly contentType: FieldRef<"EmailAttachment", 'String'>
+    readonly size: FieldRef<"EmailAttachment", 'Int'>
+    readonly contentHash: FieldRef<"EmailAttachment", 'String'>
+    readonly isInline: FieldRef<"EmailAttachment", 'Boolean'>
+    readonly contentId: FieldRef<"EmailAttachment", 'String'>
+    readonly uploadedAt: FieldRef<"EmailAttachment", 'DateTime'>
+    readonly createdAt: FieldRef<"EmailAttachment", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * EmailAttachment findUnique
+   */
+  export type EmailAttachmentFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmailAttachment
+     */
+    select?: EmailAttachmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmailAttachment
+     */
+    omit?: EmailAttachmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmailAttachmentInclude<ExtArgs> | null
+    /**
+     * Filter, which EmailAttachment to fetch.
+     */
+    where: EmailAttachmentWhereUniqueInput
+  }
+
+  /**
+   * EmailAttachment findUniqueOrThrow
+   */
+  export type EmailAttachmentFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmailAttachment
+     */
+    select?: EmailAttachmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmailAttachment
+     */
+    omit?: EmailAttachmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmailAttachmentInclude<ExtArgs> | null
+    /**
+     * Filter, which EmailAttachment to fetch.
+     */
+    where: EmailAttachmentWhereUniqueInput
+  }
+
+  /**
+   * EmailAttachment findFirst
+   */
+  export type EmailAttachmentFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmailAttachment
+     */
+    select?: EmailAttachmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmailAttachment
+     */
+    omit?: EmailAttachmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmailAttachmentInclude<ExtArgs> | null
+    /**
+     * Filter, which EmailAttachment to fetch.
+     */
+    where?: EmailAttachmentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EmailAttachments to fetch.
+     */
+    orderBy?: EmailAttachmentOrderByWithRelationInput | EmailAttachmentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for EmailAttachments.
+     */
+    cursor?: EmailAttachmentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EmailAttachments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EmailAttachments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of EmailAttachments.
+     */
+    distinct?: EmailAttachmentScalarFieldEnum | EmailAttachmentScalarFieldEnum[]
+  }
+
+  /**
+   * EmailAttachment findFirstOrThrow
+   */
+  export type EmailAttachmentFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmailAttachment
+     */
+    select?: EmailAttachmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmailAttachment
+     */
+    omit?: EmailAttachmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmailAttachmentInclude<ExtArgs> | null
+    /**
+     * Filter, which EmailAttachment to fetch.
+     */
+    where?: EmailAttachmentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EmailAttachments to fetch.
+     */
+    orderBy?: EmailAttachmentOrderByWithRelationInput | EmailAttachmentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for EmailAttachments.
+     */
+    cursor?: EmailAttachmentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EmailAttachments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EmailAttachments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of EmailAttachments.
+     */
+    distinct?: EmailAttachmentScalarFieldEnum | EmailAttachmentScalarFieldEnum[]
+  }
+
+  /**
+   * EmailAttachment findMany
+   */
+  export type EmailAttachmentFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmailAttachment
+     */
+    select?: EmailAttachmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmailAttachment
+     */
+    omit?: EmailAttachmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmailAttachmentInclude<ExtArgs> | null
+    /**
+     * Filter, which EmailAttachments to fetch.
+     */
+    where?: EmailAttachmentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EmailAttachments to fetch.
+     */
+    orderBy?: EmailAttachmentOrderByWithRelationInput | EmailAttachmentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing EmailAttachments.
+     */
+    cursor?: EmailAttachmentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EmailAttachments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EmailAttachments.
+     */
+    skip?: number
+    distinct?: EmailAttachmentScalarFieldEnum | EmailAttachmentScalarFieldEnum[]
+  }
+
+  /**
+   * EmailAttachment create
+   */
+  export type EmailAttachmentCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmailAttachment
+     */
+    select?: EmailAttachmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmailAttachment
+     */
+    omit?: EmailAttachmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmailAttachmentInclude<ExtArgs> | null
+    /**
+     * The data needed to create a EmailAttachment.
+     */
+    data: XOR<EmailAttachmentCreateInput, EmailAttachmentUncheckedCreateInput>
+  }
+
+  /**
+   * EmailAttachment createMany
+   */
+  export type EmailAttachmentCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many EmailAttachments.
+     */
+    data: EmailAttachmentCreateManyInput | EmailAttachmentCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * EmailAttachment createManyAndReturn
+   */
+  export type EmailAttachmentCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmailAttachment
+     */
+    select?: EmailAttachmentSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmailAttachment
+     */
+    omit?: EmailAttachmentOmit<ExtArgs> | null
+    /**
+     * The data used to create many EmailAttachments.
+     */
+    data: EmailAttachmentCreateManyInput | EmailAttachmentCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmailAttachmentIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * EmailAttachment update
+   */
+  export type EmailAttachmentUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmailAttachment
+     */
+    select?: EmailAttachmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmailAttachment
+     */
+    omit?: EmailAttachmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmailAttachmentInclude<ExtArgs> | null
+    /**
+     * The data needed to update a EmailAttachment.
+     */
+    data: XOR<EmailAttachmentUpdateInput, EmailAttachmentUncheckedUpdateInput>
+    /**
+     * Choose, which EmailAttachment to update.
+     */
+    where: EmailAttachmentWhereUniqueInput
+  }
+
+  /**
+   * EmailAttachment updateMany
+   */
+  export type EmailAttachmentUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update EmailAttachments.
+     */
+    data: XOR<EmailAttachmentUpdateManyMutationInput, EmailAttachmentUncheckedUpdateManyInput>
+    /**
+     * Filter which EmailAttachments to update
+     */
+    where?: EmailAttachmentWhereInput
+    /**
+     * Limit how many EmailAttachments to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * EmailAttachment updateManyAndReturn
+   */
+  export type EmailAttachmentUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmailAttachment
+     */
+    select?: EmailAttachmentSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmailAttachment
+     */
+    omit?: EmailAttachmentOmit<ExtArgs> | null
+    /**
+     * The data used to update EmailAttachments.
+     */
+    data: XOR<EmailAttachmentUpdateManyMutationInput, EmailAttachmentUncheckedUpdateManyInput>
+    /**
+     * Filter which EmailAttachments to update
+     */
+    where?: EmailAttachmentWhereInput
+    /**
+     * Limit how many EmailAttachments to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmailAttachmentIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * EmailAttachment upsert
+   */
+  export type EmailAttachmentUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmailAttachment
+     */
+    select?: EmailAttachmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmailAttachment
+     */
+    omit?: EmailAttachmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmailAttachmentInclude<ExtArgs> | null
+    /**
+     * The filter to search for the EmailAttachment to update in case it exists.
+     */
+    where: EmailAttachmentWhereUniqueInput
+    /**
+     * In case the EmailAttachment found by the `where` argument doesn't exist, create a new EmailAttachment with this data.
+     */
+    create: XOR<EmailAttachmentCreateInput, EmailAttachmentUncheckedCreateInput>
+    /**
+     * In case the EmailAttachment was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<EmailAttachmentUpdateInput, EmailAttachmentUncheckedUpdateInput>
+  }
+
+  /**
+   * EmailAttachment delete
+   */
+  export type EmailAttachmentDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmailAttachment
+     */
+    select?: EmailAttachmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmailAttachment
+     */
+    omit?: EmailAttachmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmailAttachmentInclude<ExtArgs> | null
+    /**
+     * Filter which EmailAttachment to delete.
+     */
+    where: EmailAttachmentWhereUniqueInput
+  }
+
+  /**
+   * EmailAttachment deleteMany
+   */
+  export type EmailAttachmentDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which EmailAttachments to delete
+     */
+    where?: EmailAttachmentWhereInput
+    /**
+     * Limit how many EmailAttachments to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * EmailAttachment without action
+   */
+  export type EmailAttachmentDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmailAttachment
+     */
+    select?: EmailAttachmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmailAttachment
+     */
+    omit?: EmailAttachmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmailAttachmentInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model AiGeneratedReply
+   */
+
+  export type AggregateAiGeneratedReply = {
+    _count: AiGeneratedReplyCountAggregateOutputType | null
+    _min: AiGeneratedReplyMinAggregateOutputType | null
+    _max: AiGeneratedReplyMaxAggregateOutputType | null
+  }
+
+  export type AiGeneratedReplyMinAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    messageId: string | null
+    generatedBody: string | null
+    createdAt: Date | null
+    expiresAt: Date | null
+  }
+
+  export type AiGeneratedReplyMaxAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    messageId: string | null
+    generatedBody: string | null
+    createdAt: Date | null
+    expiresAt: Date | null
+  }
+
+  export type AiGeneratedReplyCountAggregateOutputType = {
+    id: number
+    userId: number
+    messageId: number
+    generatedBody: number
+    createdAt: number
+    expiresAt: number
+    _all: number
+  }
+
+
+  export type AiGeneratedReplyMinAggregateInputType = {
+    id?: true
+    userId?: true
+    messageId?: true
+    generatedBody?: true
+    createdAt?: true
+    expiresAt?: true
+  }
+
+  export type AiGeneratedReplyMaxAggregateInputType = {
+    id?: true
+    userId?: true
+    messageId?: true
+    generatedBody?: true
+    createdAt?: true
+    expiresAt?: true
+  }
+
+  export type AiGeneratedReplyCountAggregateInputType = {
+    id?: true
+    userId?: true
+    messageId?: true
+    generatedBody?: true
+    createdAt?: true
+    expiresAt?: true
+    _all?: true
+  }
+
+  export type AiGeneratedReplyAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which AiGeneratedReply to aggregate.
+     */
+    where?: AiGeneratedReplyWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AiGeneratedReplies to fetch.
+     */
+    orderBy?: AiGeneratedReplyOrderByWithRelationInput | AiGeneratedReplyOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: AiGeneratedReplyWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AiGeneratedReplies from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AiGeneratedReplies.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned AiGeneratedReplies
+    **/
+    _count?: true | AiGeneratedReplyCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: AiGeneratedReplyMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: AiGeneratedReplyMaxAggregateInputType
+  }
+
+  export type GetAiGeneratedReplyAggregateType<T extends AiGeneratedReplyAggregateArgs> = {
+        [P in keyof T & keyof AggregateAiGeneratedReply]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateAiGeneratedReply[P]>
+      : GetScalarType<T[P], AggregateAiGeneratedReply[P]>
+  }
+
+
+
+
+  export type AiGeneratedReplyGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AiGeneratedReplyWhereInput
+    orderBy?: AiGeneratedReplyOrderByWithAggregationInput | AiGeneratedReplyOrderByWithAggregationInput[]
+    by: AiGeneratedReplyScalarFieldEnum[] | AiGeneratedReplyScalarFieldEnum
+    having?: AiGeneratedReplyScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: AiGeneratedReplyCountAggregateInputType | true
+    _min?: AiGeneratedReplyMinAggregateInputType
+    _max?: AiGeneratedReplyMaxAggregateInputType
+  }
+
+  export type AiGeneratedReplyGroupByOutputType = {
+    id: string
+    userId: string
+    messageId: string
+    generatedBody: string
+    createdAt: Date
+    expiresAt: Date
+    _count: AiGeneratedReplyCountAggregateOutputType | null
+    _min: AiGeneratedReplyMinAggregateOutputType | null
+    _max: AiGeneratedReplyMaxAggregateOutputType | null
+  }
+
+  type GetAiGeneratedReplyGroupByPayload<T extends AiGeneratedReplyGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<AiGeneratedReplyGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof AiGeneratedReplyGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], AiGeneratedReplyGroupByOutputType[P]>
+            : GetScalarType<T[P], AiGeneratedReplyGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type AiGeneratedReplySelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    messageId?: boolean
+    generatedBody?: boolean
+    createdAt?: boolean
+    expiresAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["aiGeneratedReply"]>
+
+  export type AiGeneratedReplySelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    messageId?: boolean
+    generatedBody?: boolean
+    createdAt?: boolean
+    expiresAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["aiGeneratedReply"]>
+
+  export type AiGeneratedReplySelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    messageId?: boolean
+    generatedBody?: boolean
+    createdAt?: boolean
+    expiresAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["aiGeneratedReply"]>
+
+  export type AiGeneratedReplySelectScalar = {
+    id?: boolean
+    userId?: boolean
+    messageId?: boolean
+    generatedBody?: boolean
+    createdAt?: boolean
+    expiresAt?: boolean
+  }
+
+  export type AiGeneratedReplyOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "messageId" | "generatedBody" | "createdAt" | "expiresAt", ExtArgs["result"]["aiGeneratedReply"]>
+  export type AiGeneratedReplyInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type AiGeneratedReplyIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type AiGeneratedReplyIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $AiGeneratedReplyPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "AiGeneratedReply"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      userId: string
+      messageId: string
+      generatedBody: string
+      createdAt: Date
+      expiresAt: Date
+    }, ExtArgs["result"]["aiGeneratedReply"]>
+    composites: {}
+  }
+
+  type AiGeneratedReplyGetPayload<S extends boolean | null | undefined | AiGeneratedReplyDefaultArgs> = $Result.GetResult<Prisma.$AiGeneratedReplyPayload, S>
+
+  type AiGeneratedReplyCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<AiGeneratedReplyFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: AiGeneratedReplyCountAggregateInputType | true
+    }
+
+  export interface AiGeneratedReplyDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['AiGeneratedReply'], meta: { name: 'AiGeneratedReply' } }
+    /**
+     * Find zero or one AiGeneratedReply that matches the filter.
+     * @param {AiGeneratedReplyFindUniqueArgs} args - Arguments to find a AiGeneratedReply
+     * @example
+     * // Get one AiGeneratedReply
+     * const aiGeneratedReply = await prisma.aiGeneratedReply.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends AiGeneratedReplyFindUniqueArgs>(args: SelectSubset<T, AiGeneratedReplyFindUniqueArgs<ExtArgs>>): Prisma__AiGeneratedReplyClient<$Result.GetResult<Prisma.$AiGeneratedReplyPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one AiGeneratedReply that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {AiGeneratedReplyFindUniqueOrThrowArgs} args - Arguments to find a AiGeneratedReply
+     * @example
+     * // Get one AiGeneratedReply
+     * const aiGeneratedReply = await prisma.aiGeneratedReply.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends AiGeneratedReplyFindUniqueOrThrowArgs>(args: SelectSubset<T, AiGeneratedReplyFindUniqueOrThrowArgs<ExtArgs>>): Prisma__AiGeneratedReplyClient<$Result.GetResult<Prisma.$AiGeneratedReplyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first AiGeneratedReply that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AiGeneratedReplyFindFirstArgs} args - Arguments to find a AiGeneratedReply
+     * @example
+     * // Get one AiGeneratedReply
+     * const aiGeneratedReply = await prisma.aiGeneratedReply.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends AiGeneratedReplyFindFirstArgs>(args?: SelectSubset<T, AiGeneratedReplyFindFirstArgs<ExtArgs>>): Prisma__AiGeneratedReplyClient<$Result.GetResult<Prisma.$AiGeneratedReplyPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first AiGeneratedReply that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AiGeneratedReplyFindFirstOrThrowArgs} args - Arguments to find a AiGeneratedReply
+     * @example
+     * // Get one AiGeneratedReply
+     * const aiGeneratedReply = await prisma.aiGeneratedReply.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends AiGeneratedReplyFindFirstOrThrowArgs>(args?: SelectSubset<T, AiGeneratedReplyFindFirstOrThrowArgs<ExtArgs>>): Prisma__AiGeneratedReplyClient<$Result.GetResult<Prisma.$AiGeneratedReplyPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more AiGeneratedReplies that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AiGeneratedReplyFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all AiGeneratedReplies
+     * const aiGeneratedReplies = await prisma.aiGeneratedReply.findMany()
+     * 
+     * // Get first 10 AiGeneratedReplies
+     * const aiGeneratedReplies = await prisma.aiGeneratedReply.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const aiGeneratedReplyWithIdOnly = await prisma.aiGeneratedReply.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends AiGeneratedReplyFindManyArgs>(args?: SelectSubset<T, AiGeneratedReplyFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AiGeneratedReplyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a AiGeneratedReply.
+     * @param {AiGeneratedReplyCreateArgs} args - Arguments to create a AiGeneratedReply.
+     * @example
+     * // Create one AiGeneratedReply
+     * const AiGeneratedReply = await prisma.aiGeneratedReply.create({
+     *   data: {
+     *     // ... data to create a AiGeneratedReply
+     *   }
+     * })
+     * 
+     */
+    create<T extends AiGeneratedReplyCreateArgs>(args: SelectSubset<T, AiGeneratedReplyCreateArgs<ExtArgs>>): Prisma__AiGeneratedReplyClient<$Result.GetResult<Prisma.$AiGeneratedReplyPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many AiGeneratedReplies.
+     * @param {AiGeneratedReplyCreateManyArgs} args - Arguments to create many AiGeneratedReplies.
+     * @example
+     * // Create many AiGeneratedReplies
+     * const aiGeneratedReply = await prisma.aiGeneratedReply.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends AiGeneratedReplyCreateManyArgs>(args?: SelectSubset<T, AiGeneratedReplyCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many AiGeneratedReplies and returns the data saved in the database.
+     * @param {AiGeneratedReplyCreateManyAndReturnArgs} args - Arguments to create many AiGeneratedReplies.
+     * @example
+     * // Create many AiGeneratedReplies
+     * const aiGeneratedReply = await prisma.aiGeneratedReply.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many AiGeneratedReplies and only return the `id`
+     * const aiGeneratedReplyWithIdOnly = await prisma.aiGeneratedReply.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends AiGeneratedReplyCreateManyAndReturnArgs>(args?: SelectSubset<T, AiGeneratedReplyCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AiGeneratedReplyPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a AiGeneratedReply.
+     * @param {AiGeneratedReplyDeleteArgs} args - Arguments to delete one AiGeneratedReply.
+     * @example
+     * // Delete one AiGeneratedReply
+     * const AiGeneratedReply = await prisma.aiGeneratedReply.delete({
+     *   where: {
+     *     // ... filter to delete one AiGeneratedReply
+     *   }
+     * })
+     * 
+     */
+    delete<T extends AiGeneratedReplyDeleteArgs>(args: SelectSubset<T, AiGeneratedReplyDeleteArgs<ExtArgs>>): Prisma__AiGeneratedReplyClient<$Result.GetResult<Prisma.$AiGeneratedReplyPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one AiGeneratedReply.
+     * @param {AiGeneratedReplyUpdateArgs} args - Arguments to update one AiGeneratedReply.
+     * @example
+     * // Update one AiGeneratedReply
+     * const aiGeneratedReply = await prisma.aiGeneratedReply.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends AiGeneratedReplyUpdateArgs>(args: SelectSubset<T, AiGeneratedReplyUpdateArgs<ExtArgs>>): Prisma__AiGeneratedReplyClient<$Result.GetResult<Prisma.$AiGeneratedReplyPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more AiGeneratedReplies.
+     * @param {AiGeneratedReplyDeleteManyArgs} args - Arguments to filter AiGeneratedReplies to delete.
+     * @example
+     * // Delete a few AiGeneratedReplies
+     * const { count } = await prisma.aiGeneratedReply.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends AiGeneratedReplyDeleteManyArgs>(args?: SelectSubset<T, AiGeneratedReplyDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more AiGeneratedReplies.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AiGeneratedReplyUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many AiGeneratedReplies
+     * const aiGeneratedReply = await prisma.aiGeneratedReply.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends AiGeneratedReplyUpdateManyArgs>(args: SelectSubset<T, AiGeneratedReplyUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more AiGeneratedReplies and returns the data updated in the database.
+     * @param {AiGeneratedReplyUpdateManyAndReturnArgs} args - Arguments to update many AiGeneratedReplies.
+     * @example
+     * // Update many AiGeneratedReplies
+     * const aiGeneratedReply = await prisma.aiGeneratedReply.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more AiGeneratedReplies and only return the `id`
+     * const aiGeneratedReplyWithIdOnly = await prisma.aiGeneratedReply.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends AiGeneratedReplyUpdateManyAndReturnArgs>(args: SelectSubset<T, AiGeneratedReplyUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AiGeneratedReplyPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one AiGeneratedReply.
+     * @param {AiGeneratedReplyUpsertArgs} args - Arguments to update or create a AiGeneratedReply.
+     * @example
+     * // Update or create a AiGeneratedReply
+     * const aiGeneratedReply = await prisma.aiGeneratedReply.upsert({
+     *   create: {
+     *     // ... data to create a AiGeneratedReply
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the AiGeneratedReply we want to update
+     *   }
+     * })
+     */
+    upsert<T extends AiGeneratedReplyUpsertArgs>(args: SelectSubset<T, AiGeneratedReplyUpsertArgs<ExtArgs>>): Prisma__AiGeneratedReplyClient<$Result.GetResult<Prisma.$AiGeneratedReplyPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of AiGeneratedReplies.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AiGeneratedReplyCountArgs} args - Arguments to filter AiGeneratedReplies to count.
+     * @example
+     * // Count the number of AiGeneratedReplies
+     * const count = await prisma.aiGeneratedReply.count({
+     *   where: {
+     *     // ... the filter for the AiGeneratedReplies we want to count
+     *   }
+     * })
+    **/
+    count<T extends AiGeneratedReplyCountArgs>(
+      args?: Subset<T, AiGeneratedReplyCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], AiGeneratedReplyCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a AiGeneratedReply.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AiGeneratedReplyAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends AiGeneratedReplyAggregateArgs>(args: Subset<T, AiGeneratedReplyAggregateArgs>): Prisma.PrismaPromise<GetAiGeneratedReplyAggregateType<T>>
+
+    /**
+     * Group by AiGeneratedReply.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AiGeneratedReplyGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends AiGeneratedReplyGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: AiGeneratedReplyGroupByArgs['orderBy'] }
+        : { orderBy?: AiGeneratedReplyGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, AiGeneratedReplyGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetAiGeneratedReplyGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the AiGeneratedReply model
+   */
+  readonly fields: AiGeneratedReplyFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for AiGeneratedReply.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__AiGeneratedReplyClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the AiGeneratedReply model
+   */
+  interface AiGeneratedReplyFieldRefs {
+    readonly id: FieldRef<"AiGeneratedReply", 'String'>
+    readonly userId: FieldRef<"AiGeneratedReply", 'String'>
+    readonly messageId: FieldRef<"AiGeneratedReply", 'String'>
+    readonly generatedBody: FieldRef<"AiGeneratedReply", 'String'>
+    readonly createdAt: FieldRef<"AiGeneratedReply", 'DateTime'>
+    readonly expiresAt: FieldRef<"AiGeneratedReply", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * AiGeneratedReply findUnique
+   */
+  export type AiGeneratedReplyFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiGeneratedReply
+     */
+    select?: AiGeneratedReplySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiGeneratedReply
+     */
+    omit?: AiGeneratedReplyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AiGeneratedReplyInclude<ExtArgs> | null
+    /**
+     * Filter, which AiGeneratedReply to fetch.
+     */
+    where: AiGeneratedReplyWhereUniqueInput
+  }
+
+  /**
+   * AiGeneratedReply findUniqueOrThrow
+   */
+  export type AiGeneratedReplyFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiGeneratedReply
+     */
+    select?: AiGeneratedReplySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiGeneratedReply
+     */
+    omit?: AiGeneratedReplyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AiGeneratedReplyInclude<ExtArgs> | null
+    /**
+     * Filter, which AiGeneratedReply to fetch.
+     */
+    where: AiGeneratedReplyWhereUniqueInput
+  }
+
+  /**
+   * AiGeneratedReply findFirst
+   */
+  export type AiGeneratedReplyFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiGeneratedReply
+     */
+    select?: AiGeneratedReplySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiGeneratedReply
+     */
+    omit?: AiGeneratedReplyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AiGeneratedReplyInclude<ExtArgs> | null
+    /**
+     * Filter, which AiGeneratedReply to fetch.
+     */
+    where?: AiGeneratedReplyWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AiGeneratedReplies to fetch.
+     */
+    orderBy?: AiGeneratedReplyOrderByWithRelationInput | AiGeneratedReplyOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for AiGeneratedReplies.
+     */
+    cursor?: AiGeneratedReplyWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AiGeneratedReplies from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AiGeneratedReplies.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AiGeneratedReplies.
+     */
+    distinct?: AiGeneratedReplyScalarFieldEnum | AiGeneratedReplyScalarFieldEnum[]
+  }
+
+  /**
+   * AiGeneratedReply findFirstOrThrow
+   */
+  export type AiGeneratedReplyFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiGeneratedReply
+     */
+    select?: AiGeneratedReplySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiGeneratedReply
+     */
+    omit?: AiGeneratedReplyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AiGeneratedReplyInclude<ExtArgs> | null
+    /**
+     * Filter, which AiGeneratedReply to fetch.
+     */
+    where?: AiGeneratedReplyWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AiGeneratedReplies to fetch.
+     */
+    orderBy?: AiGeneratedReplyOrderByWithRelationInput | AiGeneratedReplyOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for AiGeneratedReplies.
+     */
+    cursor?: AiGeneratedReplyWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AiGeneratedReplies from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AiGeneratedReplies.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AiGeneratedReplies.
+     */
+    distinct?: AiGeneratedReplyScalarFieldEnum | AiGeneratedReplyScalarFieldEnum[]
+  }
+
+  /**
+   * AiGeneratedReply findMany
+   */
+  export type AiGeneratedReplyFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiGeneratedReply
+     */
+    select?: AiGeneratedReplySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiGeneratedReply
+     */
+    omit?: AiGeneratedReplyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AiGeneratedReplyInclude<ExtArgs> | null
+    /**
+     * Filter, which AiGeneratedReplies to fetch.
+     */
+    where?: AiGeneratedReplyWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AiGeneratedReplies to fetch.
+     */
+    orderBy?: AiGeneratedReplyOrderByWithRelationInput | AiGeneratedReplyOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing AiGeneratedReplies.
+     */
+    cursor?: AiGeneratedReplyWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AiGeneratedReplies from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AiGeneratedReplies.
+     */
+    skip?: number
+    distinct?: AiGeneratedReplyScalarFieldEnum | AiGeneratedReplyScalarFieldEnum[]
+  }
+
+  /**
+   * AiGeneratedReply create
+   */
+  export type AiGeneratedReplyCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiGeneratedReply
+     */
+    select?: AiGeneratedReplySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiGeneratedReply
+     */
+    omit?: AiGeneratedReplyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AiGeneratedReplyInclude<ExtArgs> | null
+    /**
+     * The data needed to create a AiGeneratedReply.
+     */
+    data: XOR<AiGeneratedReplyCreateInput, AiGeneratedReplyUncheckedCreateInput>
+  }
+
+  /**
+   * AiGeneratedReply createMany
+   */
+  export type AiGeneratedReplyCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many AiGeneratedReplies.
+     */
+    data: AiGeneratedReplyCreateManyInput | AiGeneratedReplyCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * AiGeneratedReply createManyAndReturn
+   */
+  export type AiGeneratedReplyCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiGeneratedReply
+     */
+    select?: AiGeneratedReplySelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiGeneratedReply
+     */
+    omit?: AiGeneratedReplyOmit<ExtArgs> | null
+    /**
+     * The data used to create many AiGeneratedReplies.
+     */
+    data: AiGeneratedReplyCreateManyInput | AiGeneratedReplyCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AiGeneratedReplyIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * AiGeneratedReply update
+   */
+  export type AiGeneratedReplyUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiGeneratedReply
+     */
+    select?: AiGeneratedReplySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiGeneratedReply
+     */
+    omit?: AiGeneratedReplyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AiGeneratedReplyInclude<ExtArgs> | null
+    /**
+     * The data needed to update a AiGeneratedReply.
+     */
+    data: XOR<AiGeneratedReplyUpdateInput, AiGeneratedReplyUncheckedUpdateInput>
+    /**
+     * Choose, which AiGeneratedReply to update.
+     */
+    where: AiGeneratedReplyWhereUniqueInput
+  }
+
+  /**
+   * AiGeneratedReply updateMany
+   */
+  export type AiGeneratedReplyUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update AiGeneratedReplies.
+     */
+    data: XOR<AiGeneratedReplyUpdateManyMutationInput, AiGeneratedReplyUncheckedUpdateManyInput>
+    /**
+     * Filter which AiGeneratedReplies to update
+     */
+    where?: AiGeneratedReplyWhereInput
+    /**
+     * Limit how many AiGeneratedReplies to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * AiGeneratedReply updateManyAndReturn
+   */
+  export type AiGeneratedReplyUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiGeneratedReply
+     */
+    select?: AiGeneratedReplySelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiGeneratedReply
+     */
+    omit?: AiGeneratedReplyOmit<ExtArgs> | null
+    /**
+     * The data used to update AiGeneratedReplies.
+     */
+    data: XOR<AiGeneratedReplyUpdateManyMutationInput, AiGeneratedReplyUncheckedUpdateManyInput>
+    /**
+     * Filter which AiGeneratedReplies to update
+     */
+    where?: AiGeneratedReplyWhereInput
+    /**
+     * Limit how many AiGeneratedReplies to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AiGeneratedReplyIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * AiGeneratedReply upsert
+   */
+  export type AiGeneratedReplyUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiGeneratedReply
+     */
+    select?: AiGeneratedReplySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiGeneratedReply
+     */
+    omit?: AiGeneratedReplyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AiGeneratedReplyInclude<ExtArgs> | null
+    /**
+     * The filter to search for the AiGeneratedReply to update in case it exists.
+     */
+    where: AiGeneratedReplyWhereUniqueInput
+    /**
+     * In case the AiGeneratedReply found by the `where` argument doesn't exist, create a new AiGeneratedReply with this data.
+     */
+    create: XOR<AiGeneratedReplyCreateInput, AiGeneratedReplyUncheckedCreateInput>
+    /**
+     * In case the AiGeneratedReply was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<AiGeneratedReplyUpdateInput, AiGeneratedReplyUncheckedUpdateInput>
+  }
+
+  /**
+   * AiGeneratedReply delete
+   */
+  export type AiGeneratedReplyDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiGeneratedReply
+     */
+    select?: AiGeneratedReplySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiGeneratedReply
+     */
+    omit?: AiGeneratedReplyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AiGeneratedReplyInclude<ExtArgs> | null
+    /**
+     * Filter which AiGeneratedReply to delete.
+     */
+    where: AiGeneratedReplyWhereUniqueInput
+  }
+
+  /**
+   * AiGeneratedReply deleteMany
+   */
+  export type AiGeneratedReplyDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which AiGeneratedReplies to delete
+     */
+    where?: AiGeneratedReplyWhereInput
+    /**
+     * Limit how many AiGeneratedReplies to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * AiGeneratedReply without action
+   */
+  export type AiGeneratedReplyDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiGeneratedReply
+     */
+    select?: AiGeneratedReplySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiGeneratedReply
+     */
+    omit?: AiGeneratedReplyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AiGeneratedReplyInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model CachedSearchResult
+   */
+
+  export type AggregateCachedSearchResult = {
+    _count: CachedSearchResultCountAggregateOutputType | null
+    _min: CachedSearchResultMinAggregateOutputType | null
+    _max: CachedSearchResultMaxAggregateOutputType | null
+  }
+
+  export type CachedSearchResultMinAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    homeAccountId: string | null
+    query: string | null
+    createdAt: Date | null
+    expiresAt: Date | null
+  }
+
+  export type CachedSearchResultMaxAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    homeAccountId: string | null
+    query: string | null
+    createdAt: Date | null
+    expiresAt: Date | null
+  }
+
+  export type CachedSearchResultCountAggregateOutputType = {
+    id: number
+    userId: number
+    homeAccountId: number
+    query: number
+    results: number
+    createdAt: number
+    expiresAt: number
+    _all: number
+  }
+
+
+  export type CachedSearchResultMinAggregateInputType = {
+    id?: true
+    userId?: true
+    homeAccountId?: true
+    query?: true
+    createdAt?: true
+    expiresAt?: true
+  }
+
+  export type CachedSearchResultMaxAggregateInputType = {
+    id?: true
+    userId?: true
+    homeAccountId?: true
+    query?: true
+    createdAt?: true
+    expiresAt?: true
+  }
+
+  export type CachedSearchResultCountAggregateInputType = {
+    id?: true
+    userId?: true
+    homeAccountId?: true
+    query?: true
+    results?: true
+    createdAt?: true
+    expiresAt?: true
+    _all?: true
+  }
+
+  export type CachedSearchResultAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which CachedSearchResult to aggregate.
+     */
+    where?: CachedSearchResultWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CachedSearchResults to fetch.
+     */
+    orderBy?: CachedSearchResultOrderByWithRelationInput | CachedSearchResultOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: CachedSearchResultWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CachedSearchResults from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CachedSearchResults.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned CachedSearchResults
+    **/
+    _count?: true | CachedSearchResultCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: CachedSearchResultMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: CachedSearchResultMaxAggregateInputType
+  }
+
+  export type GetCachedSearchResultAggregateType<T extends CachedSearchResultAggregateArgs> = {
+        [P in keyof T & keyof AggregateCachedSearchResult]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateCachedSearchResult[P]>
+      : GetScalarType<T[P], AggregateCachedSearchResult[P]>
+  }
+
+
+
+
+  export type CachedSearchResultGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CachedSearchResultWhereInput
+    orderBy?: CachedSearchResultOrderByWithAggregationInput | CachedSearchResultOrderByWithAggregationInput[]
+    by: CachedSearchResultScalarFieldEnum[] | CachedSearchResultScalarFieldEnum
+    having?: CachedSearchResultScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: CachedSearchResultCountAggregateInputType | true
+    _min?: CachedSearchResultMinAggregateInputType
+    _max?: CachedSearchResultMaxAggregateInputType
+  }
+
+  export type CachedSearchResultGroupByOutputType = {
+    id: string
+    userId: string
+    homeAccountId: string
+    query: string
+    results: JsonValue
+    createdAt: Date
+    expiresAt: Date
+    _count: CachedSearchResultCountAggregateOutputType | null
+    _min: CachedSearchResultMinAggregateOutputType | null
+    _max: CachedSearchResultMaxAggregateOutputType | null
+  }
+
+  type GetCachedSearchResultGroupByPayload<T extends CachedSearchResultGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<CachedSearchResultGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof CachedSearchResultGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], CachedSearchResultGroupByOutputType[P]>
+            : GetScalarType<T[P], CachedSearchResultGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type CachedSearchResultSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    homeAccountId?: boolean
+    query?: boolean
+    results?: boolean
+    createdAt?: boolean
+    expiresAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["cachedSearchResult"]>
+
+  export type CachedSearchResultSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    homeAccountId?: boolean
+    query?: boolean
+    results?: boolean
+    createdAt?: boolean
+    expiresAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["cachedSearchResult"]>
+
+  export type CachedSearchResultSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    homeAccountId?: boolean
+    query?: boolean
+    results?: boolean
+    createdAt?: boolean
+    expiresAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["cachedSearchResult"]>
+
+  export type CachedSearchResultSelectScalar = {
+    id?: boolean
+    userId?: boolean
+    homeAccountId?: boolean
+    query?: boolean
+    results?: boolean
+    createdAt?: boolean
+    expiresAt?: boolean
+  }
+
+  export type CachedSearchResultOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "homeAccountId" | "query" | "results" | "createdAt" | "expiresAt", ExtArgs["result"]["cachedSearchResult"]>
+  export type CachedSearchResultInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type CachedSearchResultIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type CachedSearchResultIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $CachedSearchResultPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "CachedSearchResult"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      userId: string
+      homeAccountId: string
+      query: string
+      results: Prisma.JsonValue
+      createdAt: Date
+      expiresAt: Date
+    }, ExtArgs["result"]["cachedSearchResult"]>
+    composites: {}
+  }
+
+  type CachedSearchResultGetPayload<S extends boolean | null | undefined | CachedSearchResultDefaultArgs> = $Result.GetResult<Prisma.$CachedSearchResultPayload, S>
+
+  type CachedSearchResultCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<CachedSearchResultFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: CachedSearchResultCountAggregateInputType | true
+    }
+
+  export interface CachedSearchResultDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['CachedSearchResult'], meta: { name: 'CachedSearchResult' } }
+    /**
+     * Find zero or one CachedSearchResult that matches the filter.
+     * @param {CachedSearchResultFindUniqueArgs} args - Arguments to find a CachedSearchResult
+     * @example
+     * // Get one CachedSearchResult
+     * const cachedSearchResult = await prisma.cachedSearchResult.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends CachedSearchResultFindUniqueArgs>(args: SelectSubset<T, CachedSearchResultFindUniqueArgs<ExtArgs>>): Prisma__CachedSearchResultClient<$Result.GetResult<Prisma.$CachedSearchResultPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one CachedSearchResult that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {CachedSearchResultFindUniqueOrThrowArgs} args - Arguments to find a CachedSearchResult
+     * @example
+     * // Get one CachedSearchResult
+     * const cachedSearchResult = await prisma.cachedSearchResult.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends CachedSearchResultFindUniqueOrThrowArgs>(args: SelectSubset<T, CachedSearchResultFindUniqueOrThrowArgs<ExtArgs>>): Prisma__CachedSearchResultClient<$Result.GetResult<Prisma.$CachedSearchResultPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first CachedSearchResult that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CachedSearchResultFindFirstArgs} args - Arguments to find a CachedSearchResult
+     * @example
+     * // Get one CachedSearchResult
+     * const cachedSearchResult = await prisma.cachedSearchResult.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends CachedSearchResultFindFirstArgs>(args?: SelectSubset<T, CachedSearchResultFindFirstArgs<ExtArgs>>): Prisma__CachedSearchResultClient<$Result.GetResult<Prisma.$CachedSearchResultPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first CachedSearchResult that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CachedSearchResultFindFirstOrThrowArgs} args - Arguments to find a CachedSearchResult
+     * @example
+     * // Get one CachedSearchResult
+     * const cachedSearchResult = await prisma.cachedSearchResult.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends CachedSearchResultFindFirstOrThrowArgs>(args?: SelectSubset<T, CachedSearchResultFindFirstOrThrowArgs<ExtArgs>>): Prisma__CachedSearchResultClient<$Result.GetResult<Prisma.$CachedSearchResultPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more CachedSearchResults that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CachedSearchResultFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all CachedSearchResults
+     * const cachedSearchResults = await prisma.cachedSearchResult.findMany()
+     * 
+     * // Get first 10 CachedSearchResults
+     * const cachedSearchResults = await prisma.cachedSearchResult.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const cachedSearchResultWithIdOnly = await prisma.cachedSearchResult.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends CachedSearchResultFindManyArgs>(args?: SelectSubset<T, CachedSearchResultFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CachedSearchResultPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a CachedSearchResult.
+     * @param {CachedSearchResultCreateArgs} args - Arguments to create a CachedSearchResult.
+     * @example
+     * // Create one CachedSearchResult
+     * const CachedSearchResult = await prisma.cachedSearchResult.create({
+     *   data: {
+     *     // ... data to create a CachedSearchResult
+     *   }
+     * })
+     * 
+     */
+    create<T extends CachedSearchResultCreateArgs>(args: SelectSubset<T, CachedSearchResultCreateArgs<ExtArgs>>): Prisma__CachedSearchResultClient<$Result.GetResult<Prisma.$CachedSearchResultPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many CachedSearchResults.
+     * @param {CachedSearchResultCreateManyArgs} args - Arguments to create many CachedSearchResults.
+     * @example
+     * // Create many CachedSearchResults
+     * const cachedSearchResult = await prisma.cachedSearchResult.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends CachedSearchResultCreateManyArgs>(args?: SelectSubset<T, CachedSearchResultCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many CachedSearchResults and returns the data saved in the database.
+     * @param {CachedSearchResultCreateManyAndReturnArgs} args - Arguments to create many CachedSearchResults.
+     * @example
+     * // Create many CachedSearchResults
+     * const cachedSearchResult = await prisma.cachedSearchResult.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many CachedSearchResults and only return the `id`
+     * const cachedSearchResultWithIdOnly = await prisma.cachedSearchResult.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends CachedSearchResultCreateManyAndReturnArgs>(args?: SelectSubset<T, CachedSearchResultCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CachedSearchResultPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a CachedSearchResult.
+     * @param {CachedSearchResultDeleteArgs} args - Arguments to delete one CachedSearchResult.
+     * @example
+     * // Delete one CachedSearchResult
+     * const CachedSearchResult = await prisma.cachedSearchResult.delete({
+     *   where: {
+     *     // ... filter to delete one CachedSearchResult
+     *   }
+     * })
+     * 
+     */
+    delete<T extends CachedSearchResultDeleteArgs>(args: SelectSubset<T, CachedSearchResultDeleteArgs<ExtArgs>>): Prisma__CachedSearchResultClient<$Result.GetResult<Prisma.$CachedSearchResultPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one CachedSearchResult.
+     * @param {CachedSearchResultUpdateArgs} args - Arguments to update one CachedSearchResult.
+     * @example
+     * // Update one CachedSearchResult
+     * const cachedSearchResult = await prisma.cachedSearchResult.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends CachedSearchResultUpdateArgs>(args: SelectSubset<T, CachedSearchResultUpdateArgs<ExtArgs>>): Prisma__CachedSearchResultClient<$Result.GetResult<Prisma.$CachedSearchResultPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more CachedSearchResults.
+     * @param {CachedSearchResultDeleteManyArgs} args - Arguments to filter CachedSearchResults to delete.
+     * @example
+     * // Delete a few CachedSearchResults
+     * const { count } = await prisma.cachedSearchResult.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends CachedSearchResultDeleteManyArgs>(args?: SelectSubset<T, CachedSearchResultDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more CachedSearchResults.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CachedSearchResultUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many CachedSearchResults
+     * const cachedSearchResult = await prisma.cachedSearchResult.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends CachedSearchResultUpdateManyArgs>(args: SelectSubset<T, CachedSearchResultUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more CachedSearchResults and returns the data updated in the database.
+     * @param {CachedSearchResultUpdateManyAndReturnArgs} args - Arguments to update many CachedSearchResults.
+     * @example
+     * // Update many CachedSearchResults
+     * const cachedSearchResult = await prisma.cachedSearchResult.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more CachedSearchResults and only return the `id`
+     * const cachedSearchResultWithIdOnly = await prisma.cachedSearchResult.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends CachedSearchResultUpdateManyAndReturnArgs>(args: SelectSubset<T, CachedSearchResultUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CachedSearchResultPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one CachedSearchResult.
+     * @param {CachedSearchResultUpsertArgs} args - Arguments to update or create a CachedSearchResult.
+     * @example
+     * // Update or create a CachedSearchResult
+     * const cachedSearchResult = await prisma.cachedSearchResult.upsert({
+     *   create: {
+     *     // ... data to create a CachedSearchResult
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the CachedSearchResult we want to update
+     *   }
+     * })
+     */
+    upsert<T extends CachedSearchResultUpsertArgs>(args: SelectSubset<T, CachedSearchResultUpsertArgs<ExtArgs>>): Prisma__CachedSearchResultClient<$Result.GetResult<Prisma.$CachedSearchResultPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of CachedSearchResults.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CachedSearchResultCountArgs} args - Arguments to filter CachedSearchResults to count.
+     * @example
+     * // Count the number of CachedSearchResults
+     * const count = await prisma.cachedSearchResult.count({
+     *   where: {
+     *     // ... the filter for the CachedSearchResults we want to count
+     *   }
+     * })
+    **/
+    count<T extends CachedSearchResultCountArgs>(
+      args?: Subset<T, CachedSearchResultCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], CachedSearchResultCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a CachedSearchResult.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CachedSearchResultAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends CachedSearchResultAggregateArgs>(args: Subset<T, CachedSearchResultAggregateArgs>): Prisma.PrismaPromise<GetCachedSearchResultAggregateType<T>>
+
+    /**
+     * Group by CachedSearchResult.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CachedSearchResultGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends CachedSearchResultGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: CachedSearchResultGroupByArgs['orderBy'] }
+        : { orderBy?: CachedSearchResultGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, CachedSearchResultGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetCachedSearchResultGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the CachedSearchResult model
+   */
+  readonly fields: CachedSearchResultFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for CachedSearchResult.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__CachedSearchResultClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the CachedSearchResult model
+   */
+  interface CachedSearchResultFieldRefs {
+    readonly id: FieldRef<"CachedSearchResult", 'String'>
+    readonly userId: FieldRef<"CachedSearchResult", 'String'>
+    readonly homeAccountId: FieldRef<"CachedSearchResult", 'String'>
+    readonly query: FieldRef<"CachedSearchResult", 'String'>
+    readonly results: FieldRef<"CachedSearchResult", 'Json'>
+    readonly createdAt: FieldRef<"CachedSearchResult", 'DateTime'>
+    readonly expiresAt: FieldRef<"CachedSearchResult", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * CachedSearchResult findUnique
+   */
+  export type CachedSearchResultFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CachedSearchResult
+     */
+    select?: CachedSearchResultSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CachedSearchResult
+     */
+    omit?: CachedSearchResultOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CachedSearchResultInclude<ExtArgs> | null
+    /**
+     * Filter, which CachedSearchResult to fetch.
+     */
+    where: CachedSearchResultWhereUniqueInput
+  }
+
+  /**
+   * CachedSearchResult findUniqueOrThrow
+   */
+  export type CachedSearchResultFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CachedSearchResult
+     */
+    select?: CachedSearchResultSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CachedSearchResult
+     */
+    omit?: CachedSearchResultOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CachedSearchResultInclude<ExtArgs> | null
+    /**
+     * Filter, which CachedSearchResult to fetch.
+     */
+    where: CachedSearchResultWhereUniqueInput
+  }
+
+  /**
+   * CachedSearchResult findFirst
+   */
+  export type CachedSearchResultFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CachedSearchResult
+     */
+    select?: CachedSearchResultSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CachedSearchResult
+     */
+    omit?: CachedSearchResultOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CachedSearchResultInclude<ExtArgs> | null
+    /**
+     * Filter, which CachedSearchResult to fetch.
+     */
+    where?: CachedSearchResultWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CachedSearchResults to fetch.
+     */
+    orderBy?: CachedSearchResultOrderByWithRelationInput | CachedSearchResultOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for CachedSearchResults.
+     */
+    cursor?: CachedSearchResultWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CachedSearchResults from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CachedSearchResults.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CachedSearchResults.
+     */
+    distinct?: CachedSearchResultScalarFieldEnum | CachedSearchResultScalarFieldEnum[]
+  }
+
+  /**
+   * CachedSearchResult findFirstOrThrow
+   */
+  export type CachedSearchResultFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CachedSearchResult
+     */
+    select?: CachedSearchResultSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CachedSearchResult
+     */
+    omit?: CachedSearchResultOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CachedSearchResultInclude<ExtArgs> | null
+    /**
+     * Filter, which CachedSearchResult to fetch.
+     */
+    where?: CachedSearchResultWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CachedSearchResults to fetch.
+     */
+    orderBy?: CachedSearchResultOrderByWithRelationInput | CachedSearchResultOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for CachedSearchResults.
+     */
+    cursor?: CachedSearchResultWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CachedSearchResults from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CachedSearchResults.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CachedSearchResults.
+     */
+    distinct?: CachedSearchResultScalarFieldEnum | CachedSearchResultScalarFieldEnum[]
+  }
+
+  /**
+   * CachedSearchResult findMany
+   */
+  export type CachedSearchResultFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CachedSearchResult
+     */
+    select?: CachedSearchResultSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CachedSearchResult
+     */
+    omit?: CachedSearchResultOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CachedSearchResultInclude<ExtArgs> | null
+    /**
+     * Filter, which CachedSearchResults to fetch.
+     */
+    where?: CachedSearchResultWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CachedSearchResults to fetch.
+     */
+    orderBy?: CachedSearchResultOrderByWithRelationInput | CachedSearchResultOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing CachedSearchResults.
+     */
+    cursor?: CachedSearchResultWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CachedSearchResults from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CachedSearchResults.
+     */
+    skip?: number
+    distinct?: CachedSearchResultScalarFieldEnum | CachedSearchResultScalarFieldEnum[]
+  }
+
+  /**
+   * CachedSearchResult create
+   */
+  export type CachedSearchResultCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CachedSearchResult
+     */
+    select?: CachedSearchResultSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CachedSearchResult
+     */
+    omit?: CachedSearchResultOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CachedSearchResultInclude<ExtArgs> | null
+    /**
+     * The data needed to create a CachedSearchResult.
+     */
+    data: XOR<CachedSearchResultCreateInput, CachedSearchResultUncheckedCreateInput>
+  }
+
+  /**
+   * CachedSearchResult createMany
+   */
+  export type CachedSearchResultCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many CachedSearchResults.
+     */
+    data: CachedSearchResultCreateManyInput | CachedSearchResultCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * CachedSearchResult createManyAndReturn
+   */
+  export type CachedSearchResultCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CachedSearchResult
+     */
+    select?: CachedSearchResultSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the CachedSearchResult
+     */
+    omit?: CachedSearchResultOmit<ExtArgs> | null
+    /**
+     * The data used to create many CachedSearchResults.
+     */
+    data: CachedSearchResultCreateManyInput | CachedSearchResultCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CachedSearchResultIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * CachedSearchResult update
+   */
+  export type CachedSearchResultUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CachedSearchResult
+     */
+    select?: CachedSearchResultSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CachedSearchResult
+     */
+    omit?: CachedSearchResultOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CachedSearchResultInclude<ExtArgs> | null
+    /**
+     * The data needed to update a CachedSearchResult.
+     */
+    data: XOR<CachedSearchResultUpdateInput, CachedSearchResultUncheckedUpdateInput>
+    /**
+     * Choose, which CachedSearchResult to update.
+     */
+    where: CachedSearchResultWhereUniqueInput
+  }
+
+  /**
+   * CachedSearchResult updateMany
+   */
+  export type CachedSearchResultUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update CachedSearchResults.
+     */
+    data: XOR<CachedSearchResultUpdateManyMutationInput, CachedSearchResultUncheckedUpdateManyInput>
+    /**
+     * Filter which CachedSearchResults to update
+     */
+    where?: CachedSearchResultWhereInput
+    /**
+     * Limit how many CachedSearchResults to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * CachedSearchResult updateManyAndReturn
+   */
+  export type CachedSearchResultUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CachedSearchResult
+     */
+    select?: CachedSearchResultSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the CachedSearchResult
+     */
+    omit?: CachedSearchResultOmit<ExtArgs> | null
+    /**
+     * The data used to update CachedSearchResults.
+     */
+    data: XOR<CachedSearchResultUpdateManyMutationInput, CachedSearchResultUncheckedUpdateManyInput>
+    /**
+     * Filter which CachedSearchResults to update
+     */
+    where?: CachedSearchResultWhereInput
+    /**
+     * Limit how many CachedSearchResults to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CachedSearchResultIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * CachedSearchResult upsert
+   */
+  export type CachedSearchResultUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CachedSearchResult
+     */
+    select?: CachedSearchResultSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CachedSearchResult
+     */
+    omit?: CachedSearchResultOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CachedSearchResultInclude<ExtArgs> | null
+    /**
+     * The filter to search for the CachedSearchResult to update in case it exists.
+     */
+    where: CachedSearchResultWhereUniqueInput
+    /**
+     * In case the CachedSearchResult found by the `where` argument doesn't exist, create a new CachedSearchResult with this data.
+     */
+    create: XOR<CachedSearchResultCreateInput, CachedSearchResultUncheckedCreateInput>
+    /**
+     * In case the CachedSearchResult was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<CachedSearchResultUpdateInput, CachedSearchResultUncheckedUpdateInput>
+  }
+
+  /**
+   * CachedSearchResult delete
+   */
+  export type CachedSearchResultDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CachedSearchResult
+     */
+    select?: CachedSearchResultSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CachedSearchResult
+     */
+    omit?: CachedSearchResultOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CachedSearchResultInclude<ExtArgs> | null
+    /**
+     * Filter which CachedSearchResult to delete.
+     */
+    where: CachedSearchResultWhereUniqueInput
+  }
+
+  /**
+   * CachedSearchResult deleteMany
+   */
+  export type CachedSearchResultDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which CachedSearchResults to delete
+     */
+    where?: CachedSearchResultWhereInput
+    /**
+     * Limit how many CachedSearchResults to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * CachedSearchResult without action
+   */
+  export type CachedSearchResultDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CachedSearchResult
+     */
+    select?: CachedSearchResultSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CachedSearchResult
+     */
+    omit?: CachedSearchResultOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CachedSearchResultInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model SyncStatus
+   */
+
+  export type AggregateSyncStatus = {
+    _count: SyncStatusCountAggregateOutputType | null
+    _min: SyncStatusMinAggregateOutputType | null
+    _max: SyncStatusMaxAggregateOutputType | null
+  }
+
+  export type SyncStatusMinAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    homeAccountId: string | null
+    resourceType: string | null
+    lastSyncedAt: Date | null
+    status: string | null
+    errorMessage: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type SyncStatusMaxAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    homeAccountId: string | null
+    resourceType: string | null
+    lastSyncedAt: Date | null
+    status: string | null
+    errorMessage: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type SyncStatusCountAggregateOutputType = {
+    id: number
+    userId: number
+    homeAccountId: number
+    resourceType: number
+    lastSyncedAt: number
+    status: number
+    errorMessage: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type SyncStatusMinAggregateInputType = {
+    id?: true
+    userId?: true
+    homeAccountId?: true
+    resourceType?: true
+    lastSyncedAt?: true
+    status?: true
+    errorMessage?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type SyncStatusMaxAggregateInputType = {
+    id?: true
+    userId?: true
+    homeAccountId?: true
+    resourceType?: true
+    lastSyncedAt?: true
+    status?: true
+    errorMessage?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type SyncStatusCountAggregateInputType = {
+    id?: true
+    userId?: true
+    homeAccountId?: true
+    resourceType?: true
+    lastSyncedAt?: true
+    status?: true
+    errorMessage?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type SyncStatusAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SyncStatus to aggregate.
+     */
+    where?: SyncStatusWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SyncStatuses to fetch.
+     */
+    orderBy?: SyncStatusOrderByWithRelationInput | SyncStatusOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: SyncStatusWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SyncStatuses from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SyncStatuses.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned SyncStatuses
+    **/
+    _count?: true | SyncStatusCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: SyncStatusMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: SyncStatusMaxAggregateInputType
+  }
+
+  export type GetSyncStatusAggregateType<T extends SyncStatusAggregateArgs> = {
+        [P in keyof T & keyof AggregateSyncStatus]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateSyncStatus[P]>
+      : GetScalarType<T[P], AggregateSyncStatus[P]>
+  }
+
+
+
+
+  export type SyncStatusGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SyncStatusWhereInput
+    orderBy?: SyncStatusOrderByWithAggregationInput | SyncStatusOrderByWithAggregationInput[]
+    by: SyncStatusScalarFieldEnum[] | SyncStatusScalarFieldEnum
+    having?: SyncStatusScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: SyncStatusCountAggregateInputType | true
+    _min?: SyncStatusMinAggregateInputType
+    _max?: SyncStatusMaxAggregateInputType
+  }
+
+  export type SyncStatusGroupByOutputType = {
+    id: string
+    userId: string
+    homeAccountId: string
+    resourceType: string
+    lastSyncedAt: Date
+    status: string
+    errorMessage: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: SyncStatusCountAggregateOutputType | null
+    _min: SyncStatusMinAggregateOutputType | null
+    _max: SyncStatusMaxAggregateOutputType | null
+  }
+
+  type GetSyncStatusGroupByPayload<T extends SyncStatusGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<SyncStatusGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof SyncStatusGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], SyncStatusGroupByOutputType[P]>
+            : GetScalarType<T[P], SyncStatusGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type SyncStatusSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    homeAccountId?: boolean
+    resourceType?: boolean
+    lastSyncedAt?: boolean
+    status?: boolean
+    errorMessage?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["syncStatus"]>
+
+  export type SyncStatusSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    homeAccountId?: boolean
+    resourceType?: boolean
+    lastSyncedAt?: boolean
+    status?: boolean
+    errorMessage?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["syncStatus"]>
+
+  export type SyncStatusSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    homeAccountId?: boolean
+    resourceType?: boolean
+    lastSyncedAt?: boolean
+    status?: boolean
+    errorMessage?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["syncStatus"]>
+
+  export type SyncStatusSelectScalar = {
+    id?: boolean
+    userId?: boolean
+    homeAccountId?: boolean
+    resourceType?: boolean
+    lastSyncedAt?: boolean
+    status?: boolean
+    errorMessage?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type SyncStatusOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "homeAccountId" | "resourceType" | "lastSyncedAt" | "status" | "errorMessage" | "createdAt" | "updatedAt", ExtArgs["result"]["syncStatus"]>
+  export type SyncStatusInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type SyncStatusIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type SyncStatusIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $SyncStatusPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "SyncStatus"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      userId: string
+      homeAccountId: string
+      resourceType: string
+      lastSyncedAt: Date
+      status: string
+      errorMessage: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["syncStatus"]>
+    composites: {}
+  }
+
+  type SyncStatusGetPayload<S extends boolean | null | undefined | SyncStatusDefaultArgs> = $Result.GetResult<Prisma.$SyncStatusPayload, S>
+
+  type SyncStatusCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<SyncStatusFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: SyncStatusCountAggregateInputType | true
+    }
+
+  export interface SyncStatusDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['SyncStatus'], meta: { name: 'SyncStatus' } }
+    /**
+     * Find zero or one SyncStatus that matches the filter.
+     * @param {SyncStatusFindUniqueArgs} args - Arguments to find a SyncStatus
+     * @example
+     * // Get one SyncStatus
+     * const syncStatus = await prisma.syncStatus.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends SyncStatusFindUniqueArgs>(args: SelectSubset<T, SyncStatusFindUniqueArgs<ExtArgs>>): Prisma__SyncStatusClient<$Result.GetResult<Prisma.$SyncStatusPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one SyncStatus that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {SyncStatusFindUniqueOrThrowArgs} args - Arguments to find a SyncStatus
+     * @example
+     * // Get one SyncStatus
+     * const syncStatus = await prisma.syncStatus.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends SyncStatusFindUniqueOrThrowArgs>(args: SelectSubset<T, SyncStatusFindUniqueOrThrowArgs<ExtArgs>>): Prisma__SyncStatusClient<$Result.GetResult<Prisma.$SyncStatusPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first SyncStatus that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SyncStatusFindFirstArgs} args - Arguments to find a SyncStatus
+     * @example
+     * // Get one SyncStatus
+     * const syncStatus = await prisma.syncStatus.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends SyncStatusFindFirstArgs>(args?: SelectSubset<T, SyncStatusFindFirstArgs<ExtArgs>>): Prisma__SyncStatusClient<$Result.GetResult<Prisma.$SyncStatusPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first SyncStatus that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SyncStatusFindFirstOrThrowArgs} args - Arguments to find a SyncStatus
+     * @example
+     * // Get one SyncStatus
+     * const syncStatus = await prisma.syncStatus.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends SyncStatusFindFirstOrThrowArgs>(args?: SelectSubset<T, SyncStatusFindFirstOrThrowArgs<ExtArgs>>): Prisma__SyncStatusClient<$Result.GetResult<Prisma.$SyncStatusPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more SyncStatuses that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SyncStatusFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all SyncStatuses
+     * const syncStatuses = await prisma.syncStatus.findMany()
+     * 
+     * // Get first 10 SyncStatuses
+     * const syncStatuses = await prisma.syncStatus.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const syncStatusWithIdOnly = await prisma.syncStatus.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends SyncStatusFindManyArgs>(args?: SelectSubset<T, SyncStatusFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SyncStatusPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a SyncStatus.
+     * @param {SyncStatusCreateArgs} args - Arguments to create a SyncStatus.
+     * @example
+     * // Create one SyncStatus
+     * const SyncStatus = await prisma.syncStatus.create({
+     *   data: {
+     *     // ... data to create a SyncStatus
+     *   }
+     * })
+     * 
+     */
+    create<T extends SyncStatusCreateArgs>(args: SelectSubset<T, SyncStatusCreateArgs<ExtArgs>>): Prisma__SyncStatusClient<$Result.GetResult<Prisma.$SyncStatusPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many SyncStatuses.
+     * @param {SyncStatusCreateManyArgs} args - Arguments to create many SyncStatuses.
+     * @example
+     * // Create many SyncStatuses
+     * const syncStatus = await prisma.syncStatus.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends SyncStatusCreateManyArgs>(args?: SelectSubset<T, SyncStatusCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many SyncStatuses and returns the data saved in the database.
+     * @param {SyncStatusCreateManyAndReturnArgs} args - Arguments to create many SyncStatuses.
+     * @example
+     * // Create many SyncStatuses
+     * const syncStatus = await prisma.syncStatus.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many SyncStatuses and only return the `id`
+     * const syncStatusWithIdOnly = await prisma.syncStatus.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends SyncStatusCreateManyAndReturnArgs>(args?: SelectSubset<T, SyncStatusCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SyncStatusPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a SyncStatus.
+     * @param {SyncStatusDeleteArgs} args - Arguments to delete one SyncStatus.
+     * @example
+     * // Delete one SyncStatus
+     * const SyncStatus = await prisma.syncStatus.delete({
+     *   where: {
+     *     // ... filter to delete one SyncStatus
+     *   }
+     * })
+     * 
+     */
+    delete<T extends SyncStatusDeleteArgs>(args: SelectSubset<T, SyncStatusDeleteArgs<ExtArgs>>): Prisma__SyncStatusClient<$Result.GetResult<Prisma.$SyncStatusPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one SyncStatus.
+     * @param {SyncStatusUpdateArgs} args - Arguments to update one SyncStatus.
+     * @example
+     * // Update one SyncStatus
+     * const syncStatus = await prisma.syncStatus.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends SyncStatusUpdateArgs>(args: SelectSubset<T, SyncStatusUpdateArgs<ExtArgs>>): Prisma__SyncStatusClient<$Result.GetResult<Prisma.$SyncStatusPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more SyncStatuses.
+     * @param {SyncStatusDeleteManyArgs} args - Arguments to filter SyncStatuses to delete.
+     * @example
+     * // Delete a few SyncStatuses
+     * const { count } = await prisma.syncStatus.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends SyncStatusDeleteManyArgs>(args?: SelectSubset<T, SyncStatusDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more SyncStatuses.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SyncStatusUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many SyncStatuses
+     * const syncStatus = await prisma.syncStatus.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends SyncStatusUpdateManyArgs>(args: SelectSubset<T, SyncStatusUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more SyncStatuses and returns the data updated in the database.
+     * @param {SyncStatusUpdateManyAndReturnArgs} args - Arguments to update many SyncStatuses.
+     * @example
+     * // Update many SyncStatuses
+     * const syncStatus = await prisma.syncStatus.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more SyncStatuses and only return the `id`
+     * const syncStatusWithIdOnly = await prisma.syncStatus.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends SyncStatusUpdateManyAndReturnArgs>(args: SelectSubset<T, SyncStatusUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SyncStatusPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one SyncStatus.
+     * @param {SyncStatusUpsertArgs} args - Arguments to update or create a SyncStatus.
+     * @example
+     * // Update or create a SyncStatus
+     * const syncStatus = await prisma.syncStatus.upsert({
+     *   create: {
+     *     // ... data to create a SyncStatus
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the SyncStatus we want to update
+     *   }
+     * })
+     */
+    upsert<T extends SyncStatusUpsertArgs>(args: SelectSubset<T, SyncStatusUpsertArgs<ExtArgs>>): Prisma__SyncStatusClient<$Result.GetResult<Prisma.$SyncStatusPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of SyncStatuses.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SyncStatusCountArgs} args - Arguments to filter SyncStatuses to count.
+     * @example
+     * // Count the number of SyncStatuses
+     * const count = await prisma.syncStatus.count({
+     *   where: {
+     *     // ... the filter for the SyncStatuses we want to count
+     *   }
+     * })
+    **/
+    count<T extends SyncStatusCountArgs>(
+      args?: Subset<T, SyncStatusCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], SyncStatusCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a SyncStatus.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SyncStatusAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends SyncStatusAggregateArgs>(args: Subset<T, SyncStatusAggregateArgs>): Prisma.PrismaPromise<GetSyncStatusAggregateType<T>>
+
+    /**
+     * Group by SyncStatus.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SyncStatusGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends SyncStatusGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: SyncStatusGroupByArgs['orderBy'] }
+        : { orderBy?: SyncStatusGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, SyncStatusGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetSyncStatusGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the SyncStatus model
+   */
+  readonly fields: SyncStatusFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for SyncStatus.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__SyncStatusClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the SyncStatus model
+   */
+  interface SyncStatusFieldRefs {
+    readonly id: FieldRef<"SyncStatus", 'String'>
+    readonly userId: FieldRef<"SyncStatus", 'String'>
+    readonly homeAccountId: FieldRef<"SyncStatus", 'String'>
+    readonly resourceType: FieldRef<"SyncStatus", 'String'>
+    readonly lastSyncedAt: FieldRef<"SyncStatus", 'DateTime'>
+    readonly status: FieldRef<"SyncStatus", 'String'>
+    readonly errorMessage: FieldRef<"SyncStatus", 'String'>
+    readonly createdAt: FieldRef<"SyncStatus", 'DateTime'>
+    readonly updatedAt: FieldRef<"SyncStatus", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * SyncStatus findUnique
+   */
+  export type SyncStatusFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SyncStatus
+     */
+    select?: SyncStatusSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SyncStatus
+     */
+    omit?: SyncStatusOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SyncStatusInclude<ExtArgs> | null
+    /**
+     * Filter, which SyncStatus to fetch.
+     */
+    where: SyncStatusWhereUniqueInput
+  }
+
+  /**
+   * SyncStatus findUniqueOrThrow
+   */
+  export type SyncStatusFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SyncStatus
+     */
+    select?: SyncStatusSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SyncStatus
+     */
+    omit?: SyncStatusOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SyncStatusInclude<ExtArgs> | null
+    /**
+     * Filter, which SyncStatus to fetch.
+     */
+    where: SyncStatusWhereUniqueInput
+  }
+
+  /**
+   * SyncStatus findFirst
+   */
+  export type SyncStatusFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SyncStatus
+     */
+    select?: SyncStatusSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SyncStatus
+     */
+    omit?: SyncStatusOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SyncStatusInclude<ExtArgs> | null
+    /**
+     * Filter, which SyncStatus to fetch.
+     */
+    where?: SyncStatusWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SyncStatuses to fetch.
+     */
+    orderBy?: SyncStatusOrderByWithRelationInput | SyncStatusOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SyncStatuses.
+     */
+    cursor?: SyncStatusWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SyncStatuses from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SyncStatuses.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SyncStatuses.
+     */
+    distinct?: SyncStatusScalarFieldEnum | SyncStatusScalarFieldEnum[]
+  }
+
+  /**
+   * SyncStatus findFirstOrThrow
+   */
+  export type SyncStatusFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SyncStatus
+     */
+    select?: SyncStatusSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SyncStatus
+     */
+    omit?: SyncStatusOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SyncStatusInclude<ExtArgs> | null
+    /**
+     * Filter, which SyncStatus to fetch.
+     */
+    where?: SyncStatusWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SyncStatuses to fetch.
+     */
+    orderBy?: SyncStatusOrderByWithRelationInput | SyncStatusOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SyncStatuses.
+     */
+    cursor?: SyncStatusWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SyncStatuses from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SyncStatuses.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SyncStatuses.
+     */
+    distinct?: SyncStatusScalarFieldEnum | SyncStatusScalarFieldEnum[]
+  }
+
+  /**
+   * SyncStatus findMany
+   */
+  export type SyncStatusFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SyncStatus
+     */
+    select?: SyncStatusSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SyncStatus
+     */
+    omit?: SyncStatusOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SyncStatusInclude<ExtArgs> | null
+    /**
+     * Filter, which SyncStatuses to fetch.
+     */
+    where?: SyncStatusWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SyncStatuses to fetch.
+     */
+    orderBy?: SyncStatusOrderByWithRelationInput | SyncStatusOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing SyncStatuses.
+     */
+    cursor?: SyncStatusWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SyncStatuses from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SyncStatuses.
+     */
+    skip?: number
+    distinct?: SyncStatusScalarFieldEnum | SyncStatusScalarFieldEnum[]
+  }
+
+  /**
+   * SyncStatus create
+   */
+  export type SyncStatusCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SyncStatus
+     */
+    select?: SyncStatusSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SyncStatus
+     */
+    omit?: SyncStatusOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SyncStatusInclude<ExtArgs> | null
+    /**
+     * The data needed to create a SyncStatus.
+     */
+    data: XOR<SyncStatusCreateInput, SyncStatusUncheckedCreateInput>
+  }
+
+  /**
+   * SyncStatus createMany
+   */
+  export type SyncStatusCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many SyncStatuses.
+     */
+    data: SyncStatusCreateManyInput | SyncStatusCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * SyncStatus createManyAndReturn
+   */
+  export type SyncStatusCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SyncStatus
+     */
+    select?: SyncStatusSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the SyncStatus
+     */
+    omit?: SyncStatusOmit<ExtArgs> | null
+    /**
+     * The data used to create many SyncStatuses.
+     */
+    data: SyncStatusCreateManyInput | SyncStatusCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SyncStatusIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * SyncStatus update
+   */
+  export type SyncStatusUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SyncStatus
+     */
+    select?: SyncStatusSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SyncStatus
+     */
+    omit?: SyncStatusOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SyncStatusInclude<ExtArgs> | null
+    /**
+     * The data needed to update a SyncStatus.
+     */
+    data: XOR<SyncStatusUpdateInput, SyncStatusUncheckedUpdateInput>
+    /**
+     * Choose, which SyncStatus to update.
+     */
+    where: SyncStatusWhereUniqueInput
+  }
+
+  /**
+   * SyncStatus updateMany
+   */
+  export type SyncStatusUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update SyncStatuses.
+     */
+    data: XOR<SyncStatusUpdateManyMutationInput, SyncStatusUncheckedUpdateManyInput>
+    /**
+     * Filter which SyncStatuses to update
+     */
+    where?: SyncStatusWhereInput
+    /**
+     * Limit how many SyncStatuses to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * SyncStatus updateManyAndReturn
+   */
+  export type SyncStatusUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SyncStatus
+     */
+    select?: SyncStatusSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the SyncStatus
+     */
+    omit?: SyncStatusOmit<ExtArgs> | null
+    /**
+     * The data used to update SyncStatuses.
+     */
+    data: XOR<SyncStatusUpdateManyMutationInput, SyncStatusUncheckedUpdateManyInput>
+    /**
+     * Filter which SyncStatuses to update
+     */
+    where?: SyncStatusWhereInput
+    /**
+     * Limit how many SyncStatuses to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SyncStatusIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * SyncStatus upsert
+   */
+  export type SyncStatusUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SyncStatus
+     */
+    select?: SyncStatusSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SyncStatus
+     */
+    omit?: SyncStatusOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SyncStatusInclude<ExtArgs> | null
+    /**
+     * The filter to search for the SyncStatus to update in case it exists.
+     */
+    where: SyncStatusWhereUniqueInput
+    /**
+     * In case the SyncStatus found by the `where` argument doesn't exist, create a new SyncStatus with this data.
+     */
+    create: XOR<SyncStatusCreateInput, SyncStatusUncheckedCreateInput>
+    /**
+     * In case the SyncStatus was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<SyncStatusUpdateInput, SyncStatusUncheckedUpdateInput>
+  }
+
+  /**
+   * SyncStatus delete
+   */
+  export type SyncStatusDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SyncStatus
+     */
+    select?: SyncStatusSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SyncStatus
+     */
+    omit?: SyncStatusOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SyncStatusInclude<ExtArgs> | null
+    /**
+     * Filter which SyncStatus to delete.
+     */
+    where: SyncStatusWhereUniqueInput
+  }
+
+  /**
+   * SyncStatus deleteMany
+   */
+  export type SyncStatusDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SyncStatuses to delete
+     */
+    where?: SyncStatusWhereInput
+    /**
+     * Limit how many SyncStatuses to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * SyncStatus without action
+   */
+  export type SyncStatusDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SyncStatus
+     */
+    select?: SyncStatusSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SyncStatus
+     */
+    omit?: SyncStatusOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SyncStatusInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model NotificationLog
+   */
+
+  export type AggregateNotificationLog = {
+    _count: NotificationLogCountAggregateOutputType | null
+    _min: NotificationLogMinAggregateOutputType | null
+    _max: NotificationLogMaxAggregateOutputType | null
+  }
+
+  export type NotificationLogMinAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    type: string | null
+    sentAt: Date | null
+    status: string | null
+    errorMessage: string | null
+  }
+
+  export type NotificationLogMaxAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    type: string | null
+    sentAt: Date | null
+    status: string | null
+    errorMessage: string | null
+  }
+
+  export type NotificationLogCountAggregateOutputType = {
+    id: number
+    userId: number
+    type: number
+    sentAt: number
+    status: number
+    errorMessage: number
+    metadata: number
+    _all: number
+  }
+
+
+  export type NotificationLogMinAggregateInputType = {
+    id?: true
+    userId?: true
+    type?: true
+    sentAt?: true
+    status?: true
+    errorMessage?: true
+  }
+
+  export type NotificationLogMaxAggregateInputType = {
+    id?: true
+    userId?: true
+    type?: true
+    sentAt?: true
+    status?: true
+    errorMessage?: true
+  }
+
+  export type NotificationLogCountAggregateInputType = {
+    id?: true
+    userId?: true
+    type?: true
+    sentAt?: true
+    status?: true
+    errorMessage?: true
+    metadata?: true
+    _all?: true
+  }
+
+  export type NotificationLogAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which NotificationLog to aggregate.
+     */
+    where?: NotificationLogWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of NotificationLogs to fetch.
+     */
+    orderBy?: NotificationLogOrderByWithRelationInput | NotificationLogOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: NotificationLogWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` NotificationLogs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` NotificationLogs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned NotificationLogs
+    **/
+    _count?: true | NotificationLogCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: NotificationLogMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: NotificationLogMaxAggregateInputType
+  }
+
+  export type GetNotificationLogAggregateType<T extends NotificationLogAggregateArgs> = {
+        [P in keyof T & keyof AggregateNotificationLog]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateNotificationLog[P]>
+      : GetScalarType<T[P], AggregateNotificationLog[P]>
+  }
+
+
+
+
+  export type NotificationLogGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: NotificationLogWhereInput
+    orderBy?: NotificationLogOrderByWithAggregationInput | NotificationLogOrderByWithAggregationInput[]
+    by: NotificationLogScalarFieldEnum[] | NotificationLogScalarFieldEnum
+    having?: NotificationLogScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: NotificationLogCountAggregateInputType | true
+    _min?: NotificationLogMinAggregateInputType
+    _max?: NotificationLogMaxAggregateInputType
+  }
+
+  export type NotificationLogGroupByOutputType = {
+    id: string
+    userId: string
+    type: string
+    sentAt: Date
+    status: string
+    errorMessage: string | null
+    metadata: JsonValue
+    _count: NotificationLogCountAggregateOutputType | null
+    _min: NotificationLogMinAggregateOutputType | null
+    _max: NotificationLogMaxAggregateOutputType | null
+  }
+
+  type GetNotificationLogGroupByPayload<T extends NotificationLogGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<NotificationLogGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof NotificationLogGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], NotificationLogGroupByOutputType[P]>
+            : GetScalarType<T[P], NotificationLogGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type NotificationLogSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    type?: boolean
+    sentAt?: boolean
+    status?: boolean
+    errorMessage?: boolean
+    metadata?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["notificationLog"]>
+
+  export type NotificationLogSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    type?: boolean
+    sentAt?: boolean
+    status?: boolean
+    errorMessage?: boolean
+    metadata?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["notificationLog"]>
+
+  export type NotificationLogSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    type?: boolean
+    sentAt?: boolean
+    status?: boolean
+    errorMessage?: boolean
+    metadata?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["notificationLog"]>
+
+  export type NotificationLogSelectScalar = {
+    id?: boolean
+    userId?: boolean
+    type?: boolean
+    sentAt?: boolean
+    status?: boolean
+    errorMessage?: boolean
+    metadata?: boolean
+  }
+
+  export type NotificationLogOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "type" | "sentAt" | "status" | "errorMessage" | "metadata", ExtArgs["result"]["notificationLog"]>
+  export type NotificationLogInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type NotificationLogIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type NotificationLogIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $NotificationLogPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "NotificationLog"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      userId: string
+      type: string
+      sentAt: Date
+      status: string
+      errorMessage: string | null
+      metadata: Prisma.JsonValue
+    }, ExtArgs["result"]["notificationLog"]>
+    composites: {}
+  }
+
+  type NotificationLogGetPayload<S extends boolean | null | undefined | NotificationLogDefaultArgs> = $Result.GetResult<Prisma.$NotificationLogPayload, S>
+
+  type NotificationLogCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<NotificationLogFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: NotificationLogCountAggregateInputType | true
+    }
+
+  export interface NotificationLogDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['NotificationLog'], meta: { name: 'NotificationLog' } }
+    /**
+     * Find zero or one NotificationLog that matches the filter.
+     * @param {NotificationLogFindUniqueArgs} args - Arguments to find a NotificationLog
+     * @example
+     * // Get one NotificationLog
+     * const notificationLog = await prisma.notificationLog.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends NotificationLogFindUniqueArgs>(args: SelectSubset<T, NotificationLogFindUniqueArgs<ExtArgs>>): Prisma__NotificationLogClient<$Result.GetResult<Prisma.$NotificationLogPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one NotificationLog that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {NotificationLogFindUniqueOrThrowArgs} args - Arguments to find a NotificationLog
+     * @example
+     * // Get one NotificationLog
+     * const notificationLog = await prisma.notificationLog.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends NotificationLogFindUniqueOrThrowArgs>(args: SelectSubset<T, NotificationLogFindUniqueOrThrowArgs<ExtArgs>>): Prisma__NotificationLogClient<$Result.GetResult<Prisma.$NotificationLogPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first NotificationLog that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NotificationLogFindFirstArgs} args - Arguments to find a NotificationLog
+     * @example
+     * // Get one NotificationLog
+     * const notificationLog = await prisma.notificationLog.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends NotificationLogFindFirstArgs>(args?: SelectSubset<T, NotificationLogFindFirstArgs<ExtArgs>>): Prisma__NotificationLogClient<$Result.GetResult<Prisma.$NotificationLogPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first NotificationLog that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NotificationLogFindFirstOrThrowArgs} args - Arguments to find a NotificationLog
+     * @example
+     * // Get one NotificationLog
+     * const notificationLog = await prisma.notificationLog.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends NotificationLogFindFirstOrThrowArgs>(args?: SelectSubset<T, NotificationLogFindFirstOrThrowArgs<ExtArgs>>): Prisma__NotificationLogClient<$Result.GetResult<Prisma.$NotificationLogPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more NotificationLogs that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NotificationLogFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all NotificationLogs
+     * const notificationLogs = await prisma.notificationLog.findMany()
+     * 
+     * // Get first 10 NotificationLogs
+     * const notificationLogs = await prisma.notificationLog.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const notificationLogWithIdOnly = await prisma.notificationLog.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends NotificationLogFindManyArgs>(args?: SelectSubset<T, NotificationLogFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$NotificationLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a NotificationLog.
+     * @param {NotificationLogCreateArgs} args - Arguments to create a NotificationLog.
+     * @example
+     * // Create one NotificationLog
+     * const NotificationLog = await prisma.notificationLog.create({
+     *   data: {
+     *     // ... data to create a NotificationLog
+     *   }
+     * })
+     * 
+     */
+    create<T extends NotificationLogCreateArgs>(args: SelectSubset<T, NotificationLogCreateArgs<ExtArgs>>): Prisma__NotificationLogClient<$Result.GetResult<Prisma.$NotificationLogPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many NotificationLogs.
+     * @param {NotificationLogCreateManyArgs} args - Arguments to create many NotificationLogs.
+     * @example
+     * // Create many NotificationLogs
+     * const notificationLog = await prisma.notificationLog.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends NotificationLogCreateManyArgs>(args?: SelectSubset<T, NotificationLogCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many NotificationLogs and returns the data saved in the database.
+     * @param {NotificationLogCreateManyAndReturnArgs} args - Arguments to create many NotificationLogs.
+     * @example
+     * // Create many NotificationLogs
+     * const notificationLog = await prisma.notificationLog.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many NotificationLogs and only return the `id`
+     * const notificationLogWithIdOnly = await prisma.notificationLog.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends NotificationLogCreateManyAndReturnArgs>(args?: SelectSubset<T, NotificationLogCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$NotificationLogPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a NotificationLog.
+     * @param {NotificationLogDeleteArgs} args - Arguments to delete one NotificationLog.
+     * @example
+     * // Delete one NotificationLog
+     * const NotificationLog = await prisma.notificationLog.delete({
+     *   where: {
+     *     // ... filter to delete one NotificationLog
+     *   }
+     * })
+     * 
+     */
+    delete<T extends NotificationLogDeleteArgs>(args: SelectSubset<T, NotificationLogDeleteArgs<ExtArgs>>): Prisma__NotificationLogClient<$Result.GetResult<Prisma.$NotificationLogPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one NotificationLog.
+     * @param {NotificationLogUpdateArgs} args - Arguments to update one NotificationLog.
+     * @example
+     * // Update one NotificationLog
+     * const notificationLog = await prisma.notificationLog.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends NotificationLogUpdateArgs>(args: SelectSubset<T, NotificationLogUpdateArgs<ExtArgs>>): Prisma__NotificationLogClient<$Result.GetResult<Prisma.$NotificationLogPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more NotificationLogs.
+     * @param {NotificationLogDeleteManyArgs} args - Arguments to filter NotificationLogs to delete.
+     * @example
+     * // Delete a few NotificationLogs
+     * const { count } = await prisma.notificationLog.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends NotificationLogDeleteManyArgs>(args?: SelectSubset<T, NotificationLogDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more NotificationLogs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NotificationLogUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many NotificationLogs
+     * const notificationLog = await prisma.notificationLog.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends NotificationLogUpdateManyArgs>(args: SelectSubset<T, NotificationLogUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more NotificationLogs and returns the data updated in the database.
+     * @param {NotificationLogUpdateManyAndReturnArgs} args - Arguments to update many NotificationLogs.
+     * @example
+     * // Update many NotificationLogs
+     * const notificationLog = await prisma.notificationLog.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more NotificationLogs and only return the `id`
+     * const notificationLogWithIdOnly = await prisma.notificationLog.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends NotificationLogUpdateManyAndReturnArgs>(args: SelectSubset<T, NotificationLogUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$NotificationLogPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one NotificationLog.
+     * @param {NotificationLogUpsertArgs} args - Arguments to update or create a NotificationLog.
+     * @example
+     * // Update or create a NotificationLog
+     * const notificationLog = await prisma.notificationLog.upsert({
+     *   create: {
+     *     // ... data to create a NotificationLog
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the NotificationLog we want to update
+     *   }
+     * })
+     */
+    upsert<T extends NotificationLogUpsertArgs>(args: SelectSubset<T, NotificationLogUpsertArgs<ExtArgs>>): Prisma__NotificationLogClient<$Result.GetResult<Prisma.$NotificationLogPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of NotificationLogs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NotificationLogCountArgs} args - Arguments to filter NotificationLogs to count.
+     * @example
+     * // Count the number of NotificationLogs
+     * const count = await prisma.notificationLog.count({
+     *   where: {
+     *     // ... the filter for the NotificationLogs we want to count
+     *   }
+     * })
+    **/
+    count<T extends NotificationLogCountArgs>(
+      args?: Subset<T, NotificationLogCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], NotificationLogCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a NotificationLog.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NotificationLogAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends NotificationLogAggregateArgs>(args: Subset<T, NotificationLogAggregateArgs>): Prisma.PrismaPromise<GetNotificationLogAggregateType<T>>
+
+    /**
+     * Group by NotificationLog.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NotificationLogGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends NotificationLogGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: NotificationLogGroupByArgs['orderBy'] }
+        : { orderBy?: NotificationLogGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, NotificationLogGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetNotificationLogGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the NotificationLog model
+   */
+  readonly fields: NotificationLogFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for NotificationLog.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__NotificationLogClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the NotificationLog model
+   */
+  interface NotificationLogFieldRefs {
+    readonly id: FieldRef<"NotificationLog", 'String'>
+    readonly userId: FieldRef<"NotificationLog", 'String'>
+    readonly type: FieldRef<"NotificationLog", 'String'>
+    readonly sentAt: FieldRef<"NotificationLog", 'DateTime'>
+    readonly status: FieldRef<"NotificationLog", 'String'>
+    readonly errorMessage: FieldRef<"NotificationLog", 'String'>
+    readonly metadata: FieldRef<"NotificationLog", 'Json'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * NotificationLog findUnique
+   */
+  export type NotificationLogFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NotificationLog
+     */
+    select?: NotificationLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the NotificationLog
+     */
+    omit?: NotificationLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NotificationLogInclude<ExtArgs> | null
+    /**
+     * Filter, which NotificationLog to fetch.
+     */
+    where: NotificationLogWhereUniqueInput
+  }
+
+  /**
+   * NotificationLog findUniqueOrThrow
+   */
+  export type NotificationLogFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NotificationLog
+     */
+    select?: NotificationLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the NotificationLog
+     */
+    omit?: NotificationLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NotificationLogInclude<ExtArgs> | null
+    /**
+     * Filter, which NotificationLog to fetch.
+     */
+    where: NotificationLogWhereUniqueInput
+  }
+
+  /**
+   * NotificationLog findFirst
+   */
+  export type NotificationLogFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NotificationLog
+     */
+    select?: NotificationLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the NotificationLog
+     */
+    omit?: NotificationLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NotificationLogInclude<ExtArgs> | null
+    /**
+     * Filter, which NotificationLog to fetch.
+     */
+    where?: NotificationLogWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of NotificationLogs to fetch.
+     */
+    orderBy?: NotificationLogOrderByWithRelationInput | NotificationLogOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for NotificationLogs.
+     */
+    cursor?: NotificationLogWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` NotificationLogs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` NotificationLogs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of NotificationLogs.
+     */
+    distinct?: NotificationLogScalarFieldEnum | NotificationLogScalarFieldEnum[]
+  }
+
+  /**
+   * NotificationLog findFirstOrThrow
+   */
+  export type NotificationLogFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NotificationLog
+     */
+    select?: NotificationLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the NotificationLog
+     */
+    omit?: NotificationLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NotificationLogInclude<ExtArgs> | null
+    /**
+     * Filter, which NotificationLog to fetch.
+     */
+    where?: NotificationLogWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of NotificationLogs to fetch.
+     */
+    orderBy?: NotificationLogOrderByWithRelationInput | NotificationLogOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for NotificationLogs.
+     */
+    cursor?: NotificationLogWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` NotificationLogs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` NotificationLogs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of NotificationLogs.
+     */
+    distinct?: NotificationLogScalarFieldEnum | NotificationLogScalarFieldEnum[]
+  }
+
+  /**
+   * NotificationLog findMany
+   */
+  export type NotificationLogFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NotificationLog
+     */
+    select?: NotificationLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the NotificationLog
+     */
+    omit?: NotificationLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NotificationLogInclude<ExtArgs> | null
+    /**
+     * Filter, which NotificationLogs to fetch.
+     */
+    where?: NotificationLogWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of NotificationLogs to fetch.
+     */
+    orderBy?: NotificationLogOrderByWithRelationInput | NotificationLogOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing NotificationLogs.
+     */
+    cursor?: NotificationLogWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` NotificationLogs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` NotificationLogs.
+     */
+    skip?: number
+    distinct?: NotificationLogScalarFieldEnum | NotificationLogScalarFieldEnum[]
+  }
+
+  /**
+   * NotificationLog create
+   */
+  export type NotificationLogCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NotificationLog
+     */
+    select?: NotificationLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the NotificationLog
+     */
+    omit?: NotificationLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NotificationLogInclude<ExtArgs> | null
+    /**
+     * The data needed to create a NotificationLog.
+     */
+    data: XOR<NotificationLogCreateInput, NotificationLogUncheckedCreateInput>
+  }
+
+  /**
+   * NotificationLog createMany
+   */
+  export type NotificationLogCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many NotificationLogs.
+     */
+    data: NotificationLogCreateManyInput | NotificationLogCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * NotificationLog createManyAndReturn
+   */
+  export type NotificationLogCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NotificationLog
+     */
+    select?: NotificationLogSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the NotificationLog
+     */
+    omit?: NotificationLogOmit<ExtArgs> | null
+    /**
+     * The data used to create many NotificationLogs.
+     */
+    data: NotificationLogCreateManyInput | NotificationLogCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NotificationLogIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * NotificationLog update
+   */
+  export type NotificationLogUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NotificationLog
+     */
+    select?: NotificationLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the NotificationLog
+     */
+    omit?: NotificationLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NotificationLogInclude<ExtArgs> | null
+    /**
+     * The data needed to update a NotificationLog.
+     */
+    data: XOR<NotificationLogUpdateInput, NotificationLogUncheckedUpdateInput>
+    /**
+     * Choose, which NotificationLog to update.
+     */
+    where: NotificationLogWhereUniqueInput
+  }
+
+  /**
+   * NotificationLog updateMany
+   */
+  export type NotificationLogUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update NotificationLogs.
+     */
+    data: XOR<NotificationLogUpdateManyMutationInput, NotificationLogUncheckedUpdateManyInput>
+    /**
+     * Filter which NotificationLogs to update
+     */
+    where?: NotificationLogWhereInput
+    /**
+     * Limit how many NotificationLogs to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * NotificationLog updateManyAndReturn
+   */
+  export type NotificationLogUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NotificationLog
+     */
+    select?: NotificationLogSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the NotificationLog
+     */
+    omit?: NotificationLogOmit<ExtArgs> | null
+    /**
+     * The data used to update NotificationLogs.
+     */
+    data: XOR<NotificationLogUpdateManyMutationInput, NotificationLogUncheckedUpdateManyInput>
+    /**
+     * Filter which NotificationLogs to update
+     */
+    where?: NotificationLogWhereInput
+    /**
+     * Limit how many NotificationLogs to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NotificationLogIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * NotificationLog upsert
+   */
+  export type NotificationLogUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NotificationLog
+     */
+    select?: NotificationLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the NotificationLog
+     */
+    omit?: NotificationLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NotificationLogInclude<ExtArgs> | null
+    /**
+     * The filter to search for the NotificationLog to update in case it exists.
+     */
+    where: NotificationLogWhereUniqueInput
+    /**
+     * In case the NotificationLog found by the `where` argument doesn't exist, create a new NotificationLog with this data.
+     */
+    create: XOR<NotificationLogCreateInput, NotificationLogUncheckedCreateInput>
+    /**
+     * In case the NotificationLog was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<NotificationLogUpdateInput, NotificationLogUncheckedUpdateInput>
+  }
+
+  /**
+   * NotificationLog delete
+   */
+  export type NotificationLogDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NotificationLog
+     */
+    select?: NotificationLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the NotificationLog
+     */
+    omit?: NotificationLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NotificationLogInclude<ExtArgs> | null
+    /**
+     * Filter which NotificationLog to delete.
+     */
+    where: NotificationLogWhereUniqueInput
+  }
+
+  /**
+   * NotificationLog deleteMany
+   */
+  export type NotificationLogDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which NotificationLogs to delete
+     */
+    where?: NotificationLogWhereInput
+    /**
+     * Limit how many NotificationLogs to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * NotificationLog without action
+   */
+  export type NotificationLogDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NotificationLog
+     */
+    select?: NotificationLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the NotificationLog
+     */
+    omit?: NotificationLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NotificationLogInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model MigrationStatus
+   */
+
+  export type AggregateMigrationStatus = {
+    _count: MigrationStatusCountAggregateOutputType | null
+    _min: MigrationStatusMinAggregateOutputType | null
+    _max: MigrationStatusMaxAggregateOutputType | null
+  }
+
+  export type MigrationStatusMinAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    migrationType: string | null
+    completedAt: Date | null
+  }
+
+  export type MigrationStatusMaxAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    migrationType: string | null
+    completedAt: Date | null
+  }
+
+  export type MigrationStatusCountAggregateOutputType = {
+    id: number
+    userId: number
+    migrationType: number
+    completedAt: number
+    metadata: number
+    _all: number
+  }
+
+
+  export type MigrationStatusMinAggregateInputType = {
+    id?: true
+    userId?: true
+    migrationType?: true
+    completedAt?: true
+  }
+
+  export type MigrationStatusMaxAggregateInputType = {
+    id?: true
+    userId?: true
+    migrationType?: true
+    completedAt?: true
+  }
+
+  export type MigrationStatusCountAggregateInputType = {
+    id?: true
+    userId?: true
+    migrationType?: true
+    completedAt?: true
+    metadata?: true
+    _all?: true
+  }
+
+  export type MigrationStatusAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which MigrationStatus to aggregate.
+     */
+    where?: MigrationStatusWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of MigrationStatuses to fetch.
+     */
+    orderBy?: MigrationStatusOrderByWithRelationInput | MigrationStatusOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: MigrationStatusWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` MigrationStatuses from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` MigrationStatuses.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned MigrationStatuses
+    **/
+    _count?: true | MigrationStatusCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: MigrationStatusMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: MigrationStatusMaxAggregateInputType
+  }
+
+  export type GetMigrationStatusAggregateType<T extends MigrationStatusAggregateArgs> = {
+        [P in keyof T & keyof AggregateMigrationStatus]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateMigrationStatus[P]>
+      : GetScalarType<T[P], AggregateMigrationStatus[P]>
+  }
+
+
+
+
+  export type MigrationStatusGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: MigrationStatusWhereInput
+    orderBy?: MigrationStatusOrderByWithAggregationInput | MigrationStatusOrderByWithAggregationInput[]
+    by: MigrationStatusScalarFieldEnum[] | MigrationStatusScalarFieldEnum
+    having?: MigrationStatusScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: MigrationStatusCountAggregateInputType | true
+    _min?: MigrationStatusMinAggregateInputType
+    _max?: MigrationStatusMaxAggregateInputType
+  }
+
+  export type MigrationStatusGroupByOutputType = {
+    id: string
+    userId: string
+    migrationType: string
+    completedAt: Date
+    metadata: JsonValue
+    _count: MigrationStatusCountAggregateOutputType | null
+    _min: MigrationStatusMinAggregateOutputType | null
+    _max: MigrationStatusMaxAggregateOutputType | null
+  }
+
+  type GetMigrationStatusGroupByPayload<T extends MigrationStatusGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<MigrationStatusGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof MigrationStatusGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], MigrationStatusGroupByOutputType[P]>
+            : GetScalarType<T[P], MigrationStatusGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type MigrationStatusSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    migrationType?: boolean
+    completedAt?: boolean
+    metadata?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["migrationStatus"]>
+
+  export type MigrationStatusSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    migrationType?: boolean
+    completedAt?: boolean
+    metadata?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["migrationStatus"]>
+
+  export type MigrationStatusSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    migrationType?: boolean
+    completedAt?: boolean
+    metadata?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["migrationStatus"]>
+
+  export type MigrationStatusSelectScalar = {
+    id?: boolean
+    userId?: boolean
+    migrationType?: boolean
+    completedAt?: boolean
+    metadata?: boolean
+  }
+
+  export type MigrationStatusOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "migrationType" | "completedAt" | "metadata", ExtArgs["result"]["migrationStatus"]>
+  export type MigrationStatusInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type MigrationStatusIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type MigrationStatusIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $MigrationStatusPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "MigrationStatus"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      userId: string
+      migrationType: string
+      completedAt: Date
+      metadata: Prisma.JsonValue
+    }, ExtArgs["result"]["migrationStatus"]>
+    composites: {}
+  }
+
+  type MigrationStatusGetPayload<S extends boolean | null | undefined | MigrationStatusDefaultArgs> = $Result.GetResult<Prisma.$MigrationStatusPayload, S>
+
+  type MigrationStatusCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<MigrationStatusFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: MigrationStatusCountAggregateInputType | true
+    }
+
+  export interface MigrationStatusDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['MigrationStatus'], meta: { name: 'MigrationStatus' } }
+    /**
+     * Find zero or one MigrationStatus that matches the filter.
+     * @param {MigrationStatusFindUniqueArgs} args - Arguments to find a MigrationStatus
+     * @example
+     * // Get one MigrationStatus
+     * const migrationStatus = await prisma.migrationStatus.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends MigrationStatusFindUniqueArgs>(args: SelectSubset<T, MigrationStatusFindUniqueArgs<ExtArgs>>): Prisma__MigrationStatusClient<$Result.GetResult<Prisma.$MigrationStatusPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one MigrationStatus that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {MigrationStatusFindUniqueOrThrowArgs} args - Arguments to find a MigrationStatus
+     * @example
+     * // Get one MigrationStatus
+     * const migrationStatus = await prisma.migrationStatus.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends MigrationStatusFindUniqueOrThrowArgs>(args: SelectSubset<T, MigrationStatusFindUniqueOrThrowArgs<ExtArgs>>): Prisma__MigrationStatusClient<$Result.GetResult<Prisma.$MigrationStatusPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first MigrationStatus that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MigrationStatusFindFirstArgs} args - Arguments to find a MigrationStatus
+     * @example
+     * // Get one MigrationStatus
+     * const migrationStatus = await prisma.migrationStatus.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends MigrationStatusFindFirstArgs>(args?: SelectSubset<T, MigrationStatusFindFirstArgs<ExtArgs>>): Prisma__MigrationStatusClient<$Result.GetResult<Prisma.$MigrationStatusPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first MigrationStatus that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MigrationStatusFindFirstOrThrowArgs} args - Arguments to find a MigrationStatus
+     * @example
+     * // Get one MigrationStatus
+     * const migrationStatus = await prisma.migrationStatus.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends MigrationStatusFindFirstOrThrowArgs>(args?: SelectSubset<T, MigrationStatusFindFirstOrThrowArgs<ExtArgs>>): Prisma__MigrationStatusClient<$Result.GetResult<Prisma.$MigrationStatusPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more MigrationStatuses that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MigrationStatusFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all MigrationStatuses
+     * const migrationStatuses = await prisma.migrationStatus.findMany()
+     * 
+     * // Get first 10 MigrationStatuses
+     * const migrationStatuses = await prisma.migrationStatus.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const migrationStatusWithIdOnly = await prisma.migrationStatus.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends MigrationStatusFindManyArgs>(args?: SelectSubset<T, MigrationStatusFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MigrationStatusPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a MigrationStatus.
+     * @param {MigrationStatusCreateArgs} args - Arguments to create a MigrationStatus.
+     * @example
+     * // Create one MigrationStatus
+     * const MigrationStatus = await prisma.migrationStatus.create({
+     *   data: {
+     *     // ... data to create a MigrationStatus
+     *   }
+     * })
+     * 
+     */
+    create<T extends MigrationStatusCreateArgs>(args: SelectSubset<T, MigrationStatusCreateArgs<ExtArgs>>): Prisma__MigrationStatusClient<$Result.GetResult<Prisma.$MigrationStatusPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many MigrationStatuses.
+     * @param {MigrationStatusCreateManyArgs} args - Arguments to create many MigrationStatuses.
+     * @example
+     * // Create many MigrationStatuses
+     * const migrationStatus = await prisma.migrationStatus.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends MigrationStatusCreateManyArgs>(args?: SelectSubset<T, MigrationStatusCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many MigrationStatuses and returns the data saved in the database.
+     * @param {MigrationStatusCreateManyAndReturnArgs} args - Arguments to create many MigrationStatuses.
+     * @example
+     * // Create many MigrationStatuses
+     * const migrationStatus = await prisma.migrationStatus.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many MigrationStatuses and only return the `id`
+     * const migrationStatusWithIdOnly = await prisma.migrationStatus.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends MigrationStatusCreateManyAndReturnArgs>(args?: SelectSubset<T, MigrationStatusCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MigrationStatusPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a MigrationStatus.
+     * @param {MigrationStatusDeleteArgs} args - Arguments to delete one MigrationStatus.
+     * @example
+     * // Delete one MigrationStatus
+     * const MigrationStatus = await prisma.migrationStatus.delete({
+     *   where: {
+     *     // ... filter to delete one MigrationStatus
+     *   }
+     * })
+     * 
+     */
+    delete<T extends MigrationStatusDeleteArgs>(args: SelectSubset<T, MigrationStatusDeleteArgs<ExtArgs>>): Prisma__MigrationStatusClient<$Result.GetResult<Prisma.$MigrationStatusPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one MigrationStatus.
+     * @param {MigrationStatusUpdateArgs} args - Arguments to update one MigrationStatus.
+     * @example
+     * // Update one MigrationStatus
+     * const migrationStatus = await prisma.migrationStatus.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends MigrationStatusUpdateArgs>(args: SelectSubset<T, MigrationStatusUpdateArgs<ExtArgs>>): Prisma__MigrationStatusClient<$Result.GetResult<Prisma.$MigrationStatusPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more MigrationStatuses.
+     * @param {MigrationStatusDeleteManyArgs} args - Arguments to filter MigrationStatuses to delete.
+     * @example
+     * // Delete a few MigrationStatuses
+     * const { count } = await prisma.migrationStatus.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends MigrationStatusDeleteManyArgs>(args?: SelectSubset<T, MigrationStatusDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more MigrationStatuses.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MigrationStatusUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many MigrationStatuses
+     * const migrationStatus = await prisma.migrationStatus.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends MigrationStatusUpdateManyArgs>(args: SelectSubset<T, MigrationStatusUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more MigrationStatuses and returns the data updated in the database.
+     * @param {MigrationStatusUpdateManyAndReturnArgs} args - Arguments to update many MigrationStatuses.
+     * @example
+     * // Update many MigrationStatuses
+     * const migrationStatus = await prisma.migrationStatus.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more MigrationStatuses and only return the `id`
+     * const migrationStatusWithIdOnly = await prisma.migrationStatus.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends MigrationStatusUpdateManyAndReturnArgs>(args: SelectSubset<T, MigrationStatusUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MigrationStatusPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one MigrationStatus.
+     * @param {MigrationStatusUpsertArgs} args - Arguments to update or create a MigrationStatus.
+     * @example
+     * // Update or create a MigrationStatus
+     * const migrationStatus = await prisma.migrationStatus.upsert({
+     *   create: {
+     *     // ... data to create a MigrationStatus
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the MigrationStatus we want to update
+     *   }
+     * })
+     */
+    upsert<T extends MigrationStatusUpsertArgs>(args: SelectSubset<T, MigrationStatusUpsertArgs<ExtArgs>>): Prisma__MigrationStatusClient<$Result.GetResult<Prisma.$MigrationStatusPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of MigrationStatuses.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MigrationStatusCountArgs} args - Arguments to filter MigrationStatuses to count.
+     * @example
+     * // Count the number of MigrationStatuses
+     * const count = await prisma.migrationStatus.count({
+     *   where: {
+     *     // ... the filter for the MigrationStatuses we want to count
+     *   }
+     * })
+    **/
+    count<T extends MigrationStatusCountArgs>(
+      args?: Subset<T, MigrationStatusCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], MigrationStatusCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a MigrationStatus.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MigrationStatusAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends MigrationStatusAggregateArgs>(args: Subset<T, MigrationStatusAggregateArgs>): Prisma.PrismaPromise<GetMigrationStatusAggregateType<T>>
+
+    /**
+     * Group by MigrationStatus.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MigrationStatusGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends MigrationStatusGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: MigrationStatusGroupByArgs['orderBy'] }
+        : { orderBy?: MigrationStatusGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, MigrationStatusGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetMigrationStatusGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the MigrationStatus model
+   */
+  readonly fields: MigrationStatusFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for MigrationStatus.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__MigrationStatusClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the MigrationStatus model
+   */
+  interface MigrationStatusFieldRefs {
+    readonly id: FieldRef<"MigrationStatus", 'String'>
+    readonly userId: FieldRef<"MigrationStatus", 'String'>
+    readonly migrationType: FieldRef<"MigrationStatus", 'String'>
+    readonly completedAt: FieldRef<"MigrationStatus", 'DateTime'>
+    readonly metadata: FieldRef<"MigrationStatus", 'Json'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * MigrationStatus findUnique
+   */
+  export type MigrationStatusFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MigrationStatus
+     */
+    select?: MigrationStatusSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MigrationStatus
+     */
+    omit?: MigrationStatusOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MigrationStatusInclude<ExtArgs> | null
+    /**
+     * Filter, which MigrationStatus to fetch.
+     */
+    where: MigrationStatusWhereUniqueInput
+  }
+
+  /**
+   * MigrationStatus findUniqueOrThrow
+   */
+  export type MigrationStatusFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MigrationStatus
+     */
+    select?: MigrationStatusSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MigrationStatus
+     */
+    omit?: MigrationStatusOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MigrationStatusInclude<ExtArgs> | null
+    /**
+     * Filter, which MigrationStatus to fetch.
+     */
+    where: MigrationStatusWhereUniqueInput
+  }
+
+  /**
+   * MigrationStatus findFirst
+   */
+  export type MigrationStatusFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MigrationStatus
+     */
+    select?: MigrationStatusSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MigrationStatus
+     */
+    omit?: MigrationStatusOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MigrationStatusInclude<ExtArgs> | null
+    /**
+     * Filter, which MigrationStatus to fetch.
+     */
+    where?: MigrationStatusWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of MigrationStatuses to fetch.
+     */
+    orderBy?: MigrationStatusOrderByWithRelationInput | MigrationStatusOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for MigrationStatuses.
+     */
+    cursor?: MigrationStatusWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` MigrationStatuses from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` MigrationStatuses.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of MigrationStatuses.
+     */
+    distinct?: MigrationStatusScalarFieldEnum | MigrationStatusScalarFieldEnum[]
+  }
+
+  /**
+   * MigrationStatus findFirstOrThrow
+   */
+  export type MigrationStatusFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MigrationStatus
+     */
+    select?: MigrationStatusSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MigrationStatus
+     */
+    omit?: MigrationStatusOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MigrationStatusInclude<ExtArgs> | null
+    /**
+     * Filter, which MigrationStatus to fetch.
+     */
+    where?: MigrationStatusWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of MigrationStatuses to fetch.
+     */
+    orderBy?: MigrationStatusOrderByWithRelationInput | MigrationStatusOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for MigrationStatuses.
+     */
+    cursor?: MigrationStatusWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` MigrationStatuses from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` MigrationStatuses.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of MigrationStatuses.
+     */
+    distinct?: MigrationStatusScalarFieldEnum | MigrationStatusScalarFieldEnum[]
+  }
+
+  /**
+   * MigrationStatus findMany
+   */
+  export type MigrationStatusFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MigrationStatus
+     */
+    select?: MigrationStatusSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MigrationStatus
+     */
+    omit?: MigrationStatusOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MigrationStatusInclude<ExtArgs> | null
+    /**
+     * Filter, which MigrationStatuses to fetch.
+     */
+    where?: MigrationStatusWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of MigrationStatuses to fetch.
+     */
+    orderBy?: MigrationStatusOrderByWithRelationInput | MigrationStatusOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing MigrationStatuses.
+     */
+    cursor?: MigrationStatusWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` MigrationStatuses from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` MigrationStatuses.
+     */
+    skip?: number
+    distinct?: MigrationStatusScalarFieldEnum | MigrationStatusScalarFieldEnum[]
+  }
+
+  /**
+   * MigrationStatus create
+   */
+  export type MigrationStatusCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MigrationStatus
+     */
+    select?: MigrationStatusSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MigrationStatus
+     */
+    omit?: MigrationStatusOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MigrationStatusInclude<ExtArgs> | null
+    /**
+     * The data needed to create a MigrationStatus.
+     */
+    data: XOR<MigrationStatusCreateInput, MigrationStatusUncheckedCreateInput>
+  }
+
+  /**
+   * MigrationStatus createMany
+   */
+  export type MigrationStatusCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many MigrationStatuses.
+     */
+    data: MigrationStatusCreateManyInput | MigrationStatusCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * MigrationStatus createManyAndReturn
+   */
+  export type MigrationStatusCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MigrationStatus
+     */
+    select?: MigrationStatusSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the MigrationStatus
+     */
+    omit?: MigrationStatusOmit<ExtArgs> | null
+    /**
+     * The data used to create many MigrationStatuses.
+     */
+    data: MigrationStatusCreateManyInput | MigrationStatusCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MigrationStatusIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * MigrationStatus update
+   */
+  export type MigrationStatusUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MigrationStatus
+     */
+    select?: MigrationStatusSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MigrationStatus
+     */
+    omit?: MigrationStatusOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MigrationStatusInclude<ExtArgs> | null
+    /**
+     * The data needed to update a MigrationStatus.
+     */
+    data: XOR<MigrationStatusUpdateInput, MigrationStatusUncheckedUpdateInput>
+    /**
+     * Choose, which MigrationStatus to update.
+     */
+    where: MigrationStatusWhereUniqueInput
+  }
+
+  /**
+   * MigrationStatus updateMany
+   */
+  export type MigrationStatusUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update MigrationStatuses.
+     */
+    data: XOR<MigrationStatusUpdateManyMutationInput, MigrationStatusUncheckedUpdateManyInput>
+    /**
+     * Filter which MigrationStatuses to update
+     */
+    where?: MigrationStatusWhereInput
+    /**
+     * Limit how many MigrationStatuses to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * MigrationStatus updateManyAndReturn
+   */
+  export type MigrationStatusUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MigrationStatus
+     */
+    select?: MigrationStatusSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the MigrationStatus
+     */
+    omit?: MigrationStatusOmit<ExtArgs> | null
+    /**
+     * The data used to update MigrationStatuses.
+     */
+    data: XOR<MigrationStatusUpdateManyMutationInput, MigrationStatusUncheckedUpdateManyInput>
+    /**
+     * Filter which MigrationStatuses to update
+     */
+    where?: MigrationStatusWhereInput
+    /**
+     * Limit how many MigrationStatuses to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MigrationStatusIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * MigrationStatus upsert
+   */
+  export type MigrationStatusUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MigrationStatus
+     */
+    select?: MigrationStatusSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MigrationStatus
+     */
+    omit?: MigrationStatusOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MigrationStatusInclude<ExtArgs> | null
+    /**
+     * The filter to search for the MigrationStatus to update in case it exists.
+     */
+    where: MigrationStatusWhereUniqueInput
+    /**
+     * In case the MigrationStatus found by the `where` argument doesn't exist, create a new MigrationStatus with this data.
+     */
+    create: XOR<MigrationStatusCreateInput, MigrationStatusUncheckedCreateInput>
+    /**
+     * In case the MigrationStatus was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<MigrationStatusUpdateInput, MigrationStatusUncheckedUpdateInput>
+  }
+
+  /**
+   * MigrationStatus delete
+   */
+  export type MigrationStatusDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MigrationStatus
+     */
+    select?: MigrationStatusSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MigrationStatus
+     */
+    omit?: MigrationStatusOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MigrationStatusInclude<ExtArgs> | null
+    /**
+     * Filter which MigrationStatus to delete.
+     */
+    where: MigrationStatusWhereUniqueInput
+  }
+
+  /**
+   * MigrationStatus deleteMany
+   */
+  export type MigrationStatusDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which MigrationStatuses to delete
+     */
+    where?: MigrationStatusWhereInput
+    /**
+     * Limit how many MigrationStatuses to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * MigrationStatus without action
+   */
+  export type MigrationStatusDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MigrationStatus
+     */
+    select?: MigrationStatusSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MigrationStatus
+     */
+    omit?: MigrationStatusOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MigrationStatusInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -18282,7 +26387,16 @@ export namespace Prisma {
     avatarUrl: 'avatarUrl',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
-    orgId: 'orgId'
+    orgId: 'orgId',
+    notificationNewEmail: 'notificationNewEmail',
+    notificationDailyDigest: 'notificationDailyDigest',
+    notificationAiReplies: 'notificationAiReplies',
+    notificationCalendarReminders: 'notificationCalendarReminders',
+    notificationWeeklyReport: 'notificationWeeklyReport',
+    appTheme: 'appTheme',
+    fontSize: 'fontSize',
+    emailDensity: 'emailDensity',
+    lastActiveAccountId: 'lastActiveAccountId'
   };
 
   export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -18352,12 +26466,19 @@ export namespace Prisma {
     bodyHtml: 'bodyHtml',
     attachments: 'attachments',
     importance: 'importance',
+    sensitivity: 'sensitivity',
     requestReadReceipt: 'requestReadReceipt',
+    requestDeliveryReceipt: 'requestDeliveryReceipt',
+    categories: 'categories',
     draftType: 'draftType',
     inReplyToMessageId: 'inReplyToMessageId',
     forwardedMessageId: 'forwardedMessageId',
+    originalMessageBody: 'originalMessageBody',
     scheduledAt: 'scheduledAt',
     scheduledSent: 'scheduledSent',
+    scheduledNotificationSent: 'scheduledNotificationSent',
+    lastScheduleAttemptAt: 'lastScheduleAttemptAt',
+    scheduleAttemptCount: 'scheduleAttemptCount',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -18415,6 +26536,13 @@ export namespace Prisma {
     hasAttachments: 'hasAttachments',
     flagStatus: 'flagStatus',
     categories: 'categories',
+    importance: 'importance',
+    sensitivity: 'sensitivity',
+    inferenceClassification: 'inferenceClassification',
+    conversationId: 'conversationId',
+    isDraft: 'isDraft',
+    syncStatus: 'syncStatus',
+    lastModifiedDateTime: 'lastModifiedDateTime',
     syncedAt: 'syncedAt'
   };
 
@@ -18427,12 +26555,14 @@ export namespace Prisma {
     homeAccountId: 'homeAccountId',
     subject: 'subject',
     bodyPreview: 'bodyPreview',
+    bodyHtml: 'bodyHtml',
     startDateTime: 'startDateTime',
     endDateTime: 'endDateTime',
     isAllDay: 'isAllDay',
     location: 'location',
     organizerName: 'organizerName',
     organizerEmail: 'organizerEmail',
+    organizerType: 'organizerType',
     responseStatus: 'responseStatus',
     onlineMeetingUrl: 'onlineMeetingUrl',
     attendees: 'attendees',
@@ -18440,6 +26570,15 @@ export namespace Prisma {
     reminderMinutes: 'reminderMinutes',
     showAs: 'showAs',
     recurrence: 'recurrence',
+    eventColor: 'eventColor',
+    timeZone: 'timeZone',
+    teamsMeetingUrl: 'teamsMeetingUrl',
+    teamsMeetingId: 'teamsMeetingId',
+    seriesMasterId: 'seriesMasterId',
+    iCalUId: 'iCalUId',
+    calendarId: 'calendarId',
+    createdDateTime: 'createdDateTime',
+    lastModifiedDateTime: 'lastModifiedDateTime',
     syncedAt: 'syncedAt'
   };
 
@@ -18455,6 +26594,23 @@ export namespace Prisma {
     phone: 'phone',
     jobTitle: 'jobTitle',
     company: 'company',
+    department: 'department',
+    emailAddresses: 'emailAddresses',
+    phones: 'phones',
+    givenName: 'givenName',
+    surname: 'surname',
+    middleName: 'middleName',
+    addresses: 'addresses',
+    imAddresses: 'imAddresses',
+    categories: 'categories',
+    notes: 'notes',
+    birthday: 'birthday',
+    anniversary: 'anniversary',
+    manager: 'manager',
+    directReports: 'directReports',
+    frequencyScore: 'frequencyScore',
+    isVIP: 'isVIP',
+    isFavorite: 'isFavorite',
     syncedAt: 'syncedAt'
   };
 
@@ -18482,11 +26638,97 @@ export namespace Prisma {
     actions: 'actions',
     emailCount: 'emailCount',
     stopProcessing: 'stopProcessing',
+    lastExecutedAt: 'lastExecutedAt',
+    lastExecutionStatus: 'lastExecutionStatus',
+    lastExecutionError: 'lastExecutionError',
+    failureCount: 'failureCount',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
 
   export type EmailRuleScalarFieldEnum = (typeof EmailRuleScalarFieldEnum)[keyof typeof EmailRuleScalarFieldEnum]
+
+
+  export const EmailAttachmentScalarFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    messageId: 'messageId',
+    graphMessageId: 'graphMessageId',
+    fileName: 'fileName',
+    contentType: 'contentType',
+    size: 'size',
+    contentHash: 'contentHash',
+    isInline: 'isInline',
+    contentId: 'contentId',
+    uploadedAt: 'uploadedAt',
+    createdAt: 'createdAt'
+  };
+
+  export type EmailAttachmentScalarFieldEnum = (typeof EmailAttachmentScalarFieldEnum)[keyof typeof EmailAttachmentScalarFieldEnum]
+
+
+  export const AiGeneratedReplyScalarFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    messageId: 'messageId',
+    generatedBody: 'generatedBody',
+    createdAt: 'createdAt',
+    expiresAt: 'expiresAt'
+  };
+
+  export type AiGeneratedReplyScalarFieldEnum = (typeof AiGeneratedReplyScalarFieldEnum)[keyof typeof AiGeneratedReplyScalarFieldEnum]
+
+
+  export const CachedSearchResultScalarFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    homeAccountId: 'homeAccountId',
+    query: 'query',
+    results: 'results',
+    createdAt: 'createdAt',
+    expiresAt: 'expiresAt'
+  };
+
+  export type CachedSearchResultScalarFieldEnum = (typeof CachedSearchResultScalarFieldEnum)[keyof typeof CachedSearchResultScalarFieldEnum]
+
+
+  export const SyncStatusScalarFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    homeAccountId: 'homeAccountId',
+    resourceType: 'resourceType',
+    lastSyncedAt: 'lastSyncedAt',
+    status: 'status',
+    errorMessage: 'errorMessage',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type SyncStatusScalarFieldEnum = (typeof SyncStatusScalarFieldEnum)[keyof typeof SyncStatusScalarFieldEnum]
+
+
+  export const NotificationLogScalarFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    type: 'type',
+    sentAt: 'sentAt',
+    status: 'status',
+    errorMessage: 'errorMessage',
+    metadata: 'metadata'
+  };
+
+  export type NotificationLogScalarFieldEnum = (typeof NotificationLogScalarFieldEnum)[keyof typeof NotificationLogScalarFieldEnum]
+
+
+  export const MigrationStatusScalarFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    migrationType: 'migrationType',
+    completedAt: 'completedAt',
+    metadata: 'metadata'
+  };
+
+  export type MigrationStatusScalarFieldEnum = (typeof MigrationStatusScalarFieldEnum)[keyof typeof MigrationStatusScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -18680,6 +26922,15 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
     orgId?: StringFilter<"User"> | string
+    notificationNewEmail?: BoolFilter<"User"> | boolean
+    notificationDailyDigest?: BoolFilter<"User"> | boolean
+    notificationAiReplies?: BoolFilter<"User"> | boolean
+    notificationCalendarReminders?: BoolFilter<"User"> | boolean
+    notificationWeeklyReport?: BoolFilter<"User"> | boolean
+    appTheme?: StringFilter<"User"> | string
+    fontSize?: StringFilter<"User"> | string
+    emailDensity?: StringFilter<"User"> | string
+    lastActiveAccountId?: StringNullableFilter<"User"> | string | null
     org?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
     msAccounts?: MsConnectedAccountListRelationFilter
     msalCache?: XOR<MsalTokenCacheNullableScalarRelationFilter, MsalTokenCacheWhereInput> | null
@@ -18692,6 +26943,12 @@ export namespace Prisma {
     cachedEmails?: CachedEmailListRelationFilter
     cachedCalEvents?: CachedCalendarEventListRelationFilter
     cachedContacts?: CachedContactListRelationFilter
+    emailAttachments?: EmailAttachmentListRelationFilter
+    aiGeneratedReplies?: AiGeneratedReplyListRelationFilter
+    cachedSearchResults?: CachedSearchResultListRelationFilter
+    syncStatuses?: SyncStatusListRelationFilter
+    notificationLogs?: NotificationLogListRelationFilter
+    migrationStatuses?: MigrationStatusListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -18702,6 +26959,15 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     orgId?: SortOrder
+    notificationNewEmail?: SortOrder
+    notificationDailyDigest?: SortOrder
+    notificationAiReplies?: SortOrder
+    notificationCalendarReminders?: SortOrder
+    notificationWeeklyReport?: SortOrder
+    appTheme?: SortOrder
+    fontSize?: SortOrder
+    emailDensity?: SortOrder
+    lastActiveAccountId?: SortOrderInput | SortOrder
     org?: OrganizationOrderByWithRelationInput
     msAccounts?: MsConnectedAccountOrderByRelationAggregateInput
     msalCache?: MsalTokenCacheOrderByWithRelationInput
@@ -18714,6 +26980,12 @@ export namespace Prisma {
     cachedEmails?: CachedEmailOrderByRelationAggregateInput
     cachedCalEvents?: CachedCalendarEventOrderByRelationAggregateInput
     cachedContacts?: CachedContactOrderByRelationAggregateInput
+    emailAttachments?: EmailAttachmentOrderByRelationAggregateInput
+    aiGeneratedReplies?: AiGeneratedReplyOrderByRelationAggregateInput
+    cachedSearchResults?: CachedSearchResultOrderByRelationAggregateInput
+    syncStatuses?: SyncStatusOrderByRelationAggregateInput
+    notificationLogs?: NotificationLogOrderByRelationAggregateInput
+    migrationStatuses?: MigrationStatusOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -18727,6 +26999,15 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
     orgId?: StringFilter<"User"> | string
+    notificationNewEmail?: BoolFilter<"User"> | boolean
+    notificationDailyDigest?: BoolFilter<"User"> | boolean
+    notificationAiReplies?: BoolFilter<"User"> | boolean
+    notificationCalendarReminders?: BoolFilter<"User"> | boolean
+    notificationWeeklyReport?: BoolFilter<"User"> | boolean
+    appTheme?: StringFilter<"User"> | string
+    fontSize?: StringFilter<"User"> | string
+    emailDensity?: StringFilter<"User"> | string
+    lastActiveAccountId?: StringNullableFilter<"User"> | string | null
     org?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
     msAccounts?: MsConnectedAccountListRelationFilter
     msalCache?: XOR<MsalTokenCacheNullableScalarRelationFilter, MsalTokenCacheWhereInput> | null
@@ -18739,6 +27020,12 @@ export namespace Prisma {
     cachedEmails?: CachedEmailListRelationFilter
     cachedCalEvents?: CachedCalendarEventListRelationFilter
     cachedContacts?: CachedContactListRelationFilter
+    emailAttachments?: EmailAttachmentListRelationFilter
+    aiGeneratedReplies?: AiGeneratedReplyListRelationFilter
+    cachedSearchResults?: CachedSearchResultListRelationFilter
+    syncStatuses?: SyncStatusListRelationFilter
+    notificationLogs?: NotificationLogListRelationFilter
+    migrationStatuses?: MigrationStatusListRelationFilter
   }, "id" | "email">
 
   export type UserOrderByWithAggregationInput = {
@@ -18749,6 +27036,15 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     orgId?: SortOrder
+    notificationNewEmail?: SortOrder
+    notificationDailyDigest?: SortOrder
+    notificationAiReplies?: SortOrder
+    notificationCalendarReminders?: SortOrder
+    notificationWeeklyReport?: SortOrder
+    appTheme?: SortOrder
+    fontSize?: SortOrder
+    emailDensity?: SortOrder
+    lastActiveAccountId?: SortOrderInput | SortOrder
     _count?: UserCountOrderByAggregateInput
     _max?: UserMaxOrderByAggregateInput
     _min?: UserMinOrderByAggregateInput
@@ -18765,6 +27061,15 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
     orgId?: StringWithAggregatesFilter<"User"> | string
+    notificationNewEmail?: BoolWithAggregatesFilter<"User"> | boolean
+    notificationDailyDigest?: BoolWithAggregatesFilter<"User"> | boolean
+    notificationAiReplies?: BoolWithAggregatesFilter<"User"> | boolean
+    notificationCalendarReminders?: BoolWithAggregatesFilter<"User"> | boolean
+    notificationWeeklyReport?: BoolWithAggregatesFilter<"User"> | boolean
+    appTheme?: StringWithAggregatesFilter<"User"> | string
+    fontSize?: StringWithAggregatesFilter<"User"> | string
+    emailDensity?: StringWithAggregatesFilter<"User"> | string
+    lastActiveAccountId?: StringNullableWithAggregatesFilter<"User"> | string | null
   }
 
   export type MsConnectedAccountWhereInput = {
@@ -19044,12 +27349,19 @@ export namespace Prisma {
     bodyHtml?: StringNullableFilter<"Draft"> | string | null
     attachments?: JsonFilter<"Draft">
     importance?: StringFilter<"Draft"> | string
+    sensitivity?: StringFilter<"Draft"> | string
     requestReadReceipt?: BoolFilter<"Draft"> | boolean
+    requestDeliveryReceipt?: BoolFilter<"Draft"> | boolean
+    categories?: JsonFilter<"Draft">
     draftType?: StringFilter<"Draft"> | string
     inReplyToMessageId?: StringNullableFilter<"Draft"> | string | null
     forwardedMessageId?: StringNullableFilter<"Draft"> | string | null
+    originalMessageBody?: StringNullableFilter<"Draft"> | string | null
     scheduledAt?: DateTimeNullableFilter<"Draft"> | Date | string | null
     scheduledSent?: BoolFilter<"Draft"> | boolean
+    scheduledNotificationSent?: BoolFilter<"Draft"> | boolean
+    lastScheduleAttemptAt?: DateTimeNullableFilter<"Draft"> | Date | string | null
+    scheduleAttemptCount?: IntFilter<"Draft"> | number
     createdAt?: DateTimeFilter<"Draft"> | Date | string
     updatedAt?: DateTimeFilter<"Draft"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -19067,12 +27379,19 @@ export namespace Prisma {
     bodyHtml?: SortOrderInput | SortOrder
     attachments?: SortOrder
     importance?: SortOrder
+    sensitivity?: SortOrder
     requestReadReceipt?: SortOrder
+    requestDeliveryReceipt?: SortOrder
+    categories?: SortOrder
     draftType?: SortOrder
     inReplyToMessageId?: SortOrderInput | SortOrder
     forwardedMessageId?: SortOrderInput | SortOrder
+    originalMessageBody?: SortOrderInput | SortOrder
     scheduledAt?: SortOrderInput | SortOrder
     scheduledSent?: SortOrder
+    scheduledNotificationSent?: SortOrder
+    lastScheduleAttemptAt?: SortOrderInput | SortOrder
+    scheduleAttemptCount?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     user?: UserOrderByWithRelationInput
@@ -19093,12 +27412,19 @@ export namespace Prisma {
     bodyHtml?: StringNullableFilter<"Draft"> | string | null
     attachments?: JsonFilter<"Draft">
     importance?: StringFilter<"Draft"> | string
+    sensitivity?: StringFilter<"Draft"> | string
     requestReadReceipt?: BoolFilter<"Draft"> | boolean
+    requestDeliveryReceipt?: BoolFilter<"Draft"> | boolean
+    categories?: JsonFilter<"Draft">
     draftType?: StringFilter<"Draft"> | string
     inReplyToMessageId?: StringNullableFilter<"Draft"> | string | null
     forwardedMessageId?: StringNullableFilter<"Draft"> | string | null
+    originalMessageBody?: StringNullableFilter<"Draft"> | string | null
     scheduledAt?: DateTimeNullableFilter<"Draft"> | Date | string | null
     scheduledSent?: BoolFilter<"Draft"> | boolean
+    scheduledNotificationSent?: BoolFilter<"Draft"> | boolean
+    lastScheduleAttemptAt?: DateTimeNullableFilter<"Draft"> | Date | string | null
+    scheduleAttemptCount?: IntFilter<"Draft"> | number
     createdAt?: DateTimeFilter<"Draft"> | Date | string
     updatedAt?: DateTimeFilter<"Draft"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -19116,17 +27442,26 @@ export namespace Prisma {
     bodyHtml?: SortOrderInput | SortOrder
     attachments?: SortOrder
     importance?: SortOrder
+    sensitivity?: SortOrder
     requestReadReceipt?: SortOrder
+    requestDeliveryReceipt?: SortOrder
+    categories?: SortOrder
     draftType?: SortOrder
     inReplyToMessageId?: SortOrderInput | SortOrder
     forwardedMessageId?: SortOrderInput | SortOrder
+    originalMessageBody?: SortOrderInput | SortOrder
     scheduledAt?: SortOrderInput | SortOrder
     scheduledSent?: SortOrder
+    scheduledNotificationSent?: SortOrder
+    lastScheduleAttemptAt?: SortOrderInput | SortOrder
+    scheduleAttemptCount?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: DraftCountOrderByAggregateInput
+    _avg?: DraftAvgOrderByAggregateInput
     _max?: DraftMaxOrderByAggregateInput
     _min?: DraftMinOrderByAggregateInput
+    _sum?: DraftSumOrderByAggregateInput
   }
 
   export type DraftScalarWhereWithAggregatesInput = {
@@ -19144,12 +27479,19 @@ export namespace Prisma {
     bodyHtml?: StringNullableWithAggregatesFilter<"Draft"> | string | null
     attachments?: JsonWithAggregatesFilter<"Draft">
     importance?: StringWithAggregatesFilter<"Draft"> | string
+    sensitivity?: StringWithAggregatesFilter<"Draft"> | string
     requestReadReceipt?: BoolWithAggregatesFilter<"Draft"> | boolean
+    requestDeliveryReceipt?: BoolWithAggregatesFilter<"Draft"> | boolean
+    categories?: JsonWithAggregatesFilter<"Draft">
     draftType?: StringWithAggregatesFilter<"Draft"> | string
     inReplyToMessageId?: StringNullableWithAggregatesFilter<"Draft"> | string | null
     forwardedMessageId?: StringNullableWithAggregatesFilter<"Draft"> | string | null
+    originalMessageBody?: StringNullableWithAggregatesFilter<"Draft"> | string | null
     scheduledAt?: DateTimeNullableWithAggregatesFilter<"Draft"> | Date | string | null
     scheduledSent?: BoolWithAggregatesFilter<"Draft"> | boolean
+    scheduledNotificationSent?: BoolWithAggregatesFilter<"Draft"> | boolean
+    lastScheduleAttemptAt?: DateTimeNullableWithAggregatesFilter<"Draft"> | Date | string | null
+    scheduleAttemptCount?: IntWithAggregatesFilter<"Draft"> | number
     createdAt?: DateTimeWithAggregatesFilter<"Draft"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Draft"> | Date | string
   }
@@ -19345,6 +27687,13 @@ export namespace Prisma {
     hasAttachments?: BoolFilter<"CachedEmail"> | boolean
     flagStatus?: StringFilter<"CachedEmail"> | string
     categories?: JsonFilter<"CachedEmail">
+    importance?: StringFilter<"CachedEmail"> | string
+    sensitivity?: StringFilter<"CachedEmail"> | string
+    inferenceClassification?: StringFilter<"CachedEmail"> | string
+    conversationId?: StringNullableFilter<"CachedEmail"> | string | null
+    isDraft?: BoolFilter<"CachedEmail"> | boolean
+    syncStatus?: StringFilter<"CachedEmail"> | string
+    lastModifiedDateTime?: DateTimeNullableFilter<"CachedEmail"> | Date | string | null
     syncedAt?: DateTimeFilter<"CachedEmail"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }
@@ -19365,6 +27714,13 @@ export namespace Prisma {
     hasAttachments?: SortOrder
     flagStatus?: SortOrder
     categories?: SortOrder
+    importance?: SortOrder
+    sensitivity?: SortOrder
+    inferenceClassification?: SortOrder
+    conversationId?: SortOrderInput | SortOrder
+    isDraft?: SortOrder
+    syncStatus?: SortOrder
+    lastModifiedDateTime?: SortOrderInput | SortOrder
     syncedAt?: SortOrder
     user?: UserOrderByWithRelationInput
   }
@@ -19388,6 +27744,13 @@ export namespace Prisma {
     hasAttachments?: BoolFilter<"CachedEmail"> | boolean
     flagStatus?: StringFilter<"CachedEmail"> | string
     categories?: JsonFilter<"CachedEmail">
+    importance?: StringFilter<"CachedEmail"> | string
+    sensitivity?: StringFilter<"CachedEmail"> | string
+    inferenceClassification?: StringFilter<"CachedEmail"> | string
+    conversationId?: StringNullableFilter<"CachedEmail"> | string | null
+    isDraft?: BoolFilter<"CachedEmail"> | boolean
+    syncStatus?: StringFilter<"CachedEmail"> | string
+    lastModifiedDateTime?: DateTimeNullableFilter<"CachedEmail"> | Date | string | null
     syncedAt?: DateTimeFilter<"CachedEmail"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }, "id">
@@ -19408,6 +27771,13 @@ export namespace Prisma {
     hasAttachments?: SortOrder
     flagStatus?: SortOrder
     categories?: SortOrder
+    importance?: SortOrder
+    sensitivity?: SortOrder
+    inferenceClassification?: SortOrder
+    conversationId?: SortOrderInput | SortOrder
+    isDraft?: SortOrder
+    syncStatus?: SortOrder
+    lastModifiedDateTime?: SortOrderInput | SortOrder
     syncedAt?: SortOrder
     _count?: CachedEmailCountOrderByAggregateInput
     _max?: CachedEmailMaxOrderByAggregateInput
@@ -19433,6 +27803,13 @@ export namespace Prisma {
     hasAttachments?: BoolWithAggregatesFilter<"CachedEmail"> | boolean
     flagStatus?: StringWithAggregatesFilter<"CachedEmail"> | string
     categories?: JsonWithAggregatesFilter<"CachedEmail">
+    importance?: StringWithAggregatesFilter<"CachedEmail"> | string
+    sensitivity?: StringWithAggregatesFilter<"CachedEmail"> | string
+    inferenceClassification?: StringWithAggregatesFilter<"CachedEmail"> | string
+    conversationId?: StringNullableWithAggregatesFilter<"CachedEmail"> | string | null
+    isDraft?: BoolWithAggregatesFilter<"CachedEmail"> | boolean
+    syncStatus?: StringWithAggregatesFilter<"CachedEmail"> | string
+    lastModifiedDateTime?: DateTimeNullableWithAggregatesFilter<"CachedEmail"> | Date | string | null
     syncedAt?: DateTimeWithAggregatesFilter<"CachedEmail"> | Date | string
   }
 
@@ -19445,12 +27822,14 @@ export namespace Prisma {
     homeAccountId?: StringFilter<"CachedCalendarEvent"> | string
     subject?: StringFilter<"CachedCalendarEvent"> | string
     bodyPreview?: StringFilter<"CachedCalendarEvent"> | string
+    bodyHtml?: StringNullableFilter<"CachedCalendarEvent"> | string | null
     startDateTime?: DateTimeFilter<"CachedCalendarEvent"> | Date | string
     endDateTime?: DateTimeFilter<"CachedCalendarEvent"> | Date | string
     isAllDay?: BoolFilter<"CachedCalendarEvent"> | boolean
     location?: StringNullableFilter<"CachedCalendarEvent"> | string | null
     organizerName?: StringNullableFilter<"CachedCalendarEvent"> | string | null
     organizerEmail?: StringNullableFilter<"CachedCalendarEvent"> | string | null
+    organizerType?: StringFilter<"CachedCalendarEvent"> | string
     responseStatus?: StringFilter<"CachedCalendarEvent"> | string
     onlineMeetingUrl?: StringNullableFilter<"CachedCalendarEvent"> | string | null
     attendees?: JsonFilter<"CachedCalendarEvent">
@@ -19458,6 +27837,15 @@ export namespace Prisma {
     reminderMinutes?: IntNullableFilter<"CachedCalendarEvent"> | number | null
     showAs?: StringFilter<"CachedCalendarEvent"> | string
     recurrence?: StringNullableFilter<"CachedCalendarEvent"> | string | null
+    eventColor?: StringNullableFilter<"CachedCalendarEvent"> | string | null
+    timeZone?: StringFilter<"CachedCalendarEvent"> | string
+    teamsMeetingUrl?: StringNullableFilter<"CachedCalendarEvent"> | string | null
+    teamsMeetingId?: StringNullableFilter<"CachedCalendarEvent"> | string | null
+    seriesMasterId?: StringNullableFilter<"CachedCalendarEvent"> | string | null
+    iCalUId?: StringNullableFilter<"CachedCalendarEvent"> | string | null
+    calendarId?: StringNullableFilter<"CachedCalendarEvent"> | string | null
+    createdDateTime?: DateTimeNullableFilter<"CachedCalendarEvent"> | Date | string | null
+    lastModifiedDateTime?: DateTimeNullableFilter<"CachedCalendarEvent"> | Date | string | null
     syncedAt?: DateTimeFilter<"CachedCalendarEvent"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }
@@ -19468,12 +27856,14 @@ export namespace Prisma {
     homeAccountId?: SortOrder
     subject?: SortOrder
     bodyPreview?: SortOrder
+    bodyHtml?: SortOrderInput | SortOrder
     startDateTime?: SortOrder
     endDateTime?: SortOrder
     isAllDay?: SortOrder
     location?: SortOrderInput | SortOrder
     organizerName?: SortOrderInput | SortOrder
     organizerEmail?: SortOrderInput | SortOrder
+    organizerType?: SortOrder
     responseStatus?: SortOrder
     onlineMeetingUrl?: SortOrderInput | SortOrder
     attendees?: SortOrder
@@ -19481,6 +27871,15 @@ export namespace Prisma {
     reminderMinutes?: SortOrderInput | SortOrder
     showAs?: SortOrder
     recurrence?: SortOrderInput | SortOrder
+    eventColor?: SortOrderInput | SortOrder
+    timeZone?: SortOrder
+    teamsMeetingUrl?: SortOrderInput | SortOrder
+    teamsMeetingId?: SortOrderInput | SortOrder
+    seriesMasterId?: SortOrderInput | SortOrder
+    iCalUId?: SortOrderInput | SortOrder
+    calendarId?: SortOrderInput | SortOrder
+    createdDateTime?: SortOrderInput | SortOrder
+    lastModifiedDateTime?: SortOrderInput | SortOrder
     syncedAt?: SortOrder
     user?: UserOrderByWithRelationInput
   }
@@ -19494,12 +27893,14 @@ export namespace Prisma {
     homeAccountId?: StringFilter<"CachedCalendarEvent"> | string
     subject?: StringFilter<"CachedCalendarEvent"> | string
     bodyPreview?: StringFilter<"CachedCalendarEvent"> | string
+    bodyHtml?: StringNullableFilter<"CachedCalendarEvent"> | string | null
     startDateTime?: DateTimeFilter<"CachedCalendarEvent"> | Date | string
     endDateTime?: DateTimeFilter<"CachedCalendarEvent"> | Date | string
     isAllDay?: BoolFilter<"CachedCalendarEvent"> | boolean
     location?: StringNullableFilter<"CachedCalendarEvent"> | string | null
     organizerName?: StringNullableFilter<"CachedCalendarEvent"> | string | null
     organizerEmail?: StringNullableFilter<"CachedCalendarEvent"> | string | null
+    organizerType?: StringFilter<"CachedCalendarEvent"> | string
     responseStatus?: StringFilter<"CachedCalendarEvent"> | string
     onlineMeetingUrl?: StringNullableFilter<"CachedCalendarEvent"> | string | null
     attendees?: JsonFilter<"CachedCalendarEvent">
@@ -19507,6 +27908,15 @@ export namespace Prisma {
     reminderMinutes?: IntNullableFilter<"CachedCalendarEvent"> | number | null
     showAs?: StringFilter<"CachedCalendarEvent"> | string
     recurrence?: StringNullableFilter<"CachedCalendarEvent"> | string | null
+    eventColor?: StringNullableFilter<"CachedCalendarEvent"> | string | null
+    timeZone?: StringFilter<"CachedCalendarEvent"> | string
+    teamsMeetingUrl?: StringNullableFilter<"CachedCalendarEvent"> | string | null
+    teamsMeetingId?: StringNullableFilter<"CachedCalendarEvent"> | string | null
+    seriesMasterId?: StringNullableFilter<"CachedCalendarEvent"> | string | null
+    iCalUId?: StringNullableFilter<"CachedCalendarEvent"> | string | null
+    calendarId?: StringNullableFilter<"CachedCalendarEvent"> | string | null
+    createdDateTime?: DateTimeNullableFilter<"CachedCalendarEvent"> | Date | string | null
+    lastModifiedDateTime?: DateTimeNullableFilter<"CachedCalendarEvent"> | Date | string | null
     syncedAt?: DateTimeFilter<"CachedCalendarEvent"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }, "id">
@@ -19517,12 +27927,14 @@ export namespace Prisma {
     homeAccountId?: SortOrder
     subject?: SortOrder
     bodyPreview?: SortOrder
+    bodyHtml?: SortOrderInput | SortOrder
     startDateTime?: SortOrder
     endDateTime?: SortOrder
     isAllDay?: SortOrder
     location?: SortOrderInput | SortOrder
     organizerName?: SortOrderInput | SortOrder
     organizerEmail?: SortOrderInput | SortOrder
+    organizerType?: SortOrder
     responseStatus?: SortOrder
     onlineMeetingUrl?: SortOrderInput | SortOrder
     attendees?: SortOrder
@@ -19530,6 +27942,15 @@ export namespace Prisma {
     reminderMinutes?: SortOrderInput | SortOrder
     showAs?: SortOrder
     recurrence?: SortOrderInput | SortOrder
+    eventColor?: SortOrderInput | SortOrder
+    timeZone?: SortOrder
+    teamsMeetingUrl?: SortOrderInput | SortOrder
+    teamsMeetingId?: SortOrderInput | SortOrder
+    seriesMasterId?: SortOrderInput | SortOrder
+    iCalUId?: SortOrderInput | SortOrder
+    calendarId?: SortOrderInput | SortOrder
+    createdDateTime?: SortOrderInput | SortOrder
+    lastModifiedDateTime?: SortOrderInput | SortOrder
     syncedAt?: SortOrder
     _count?: CachedCalendarEventCountOrderByAggregateInput
     _avg?: CachedCalendarEventAvgOrderByAggregateInput
@@ -19547,12 +27968,14 @@ export namespace Prisma {
     homeAccountId?: StringWithAggregatesFilter<"CachedCalendarEvent"> | string
     subject?: StringWithAggregatesFilter<"CachedCalendarEvent"> | string
     bodyPreview?: StringWithAggregatesFilter<"CachedCalendarEvent"> | string
+    bodyHtml?: StringNullableWithAggregatesFilter<"CachedCalendarEvent"> | string | null
     startDateTime?: DateTimeWithAggregatesFilter<"CachedCalendarEvent"> | Date | string
     endDateTime?: DateTimeWithAggregatesFilter<"CachedCalendarEvent"> | Date | string
     isAllDay?: BoolWithAggregatesFilter<"CachedCalendarEvent"> | boolean
     location?: StringNullableWithAggregatesFilter<"CachedCalendarEvent"> | string | null
     organizerName?: StringNullableWithAggregatesFilter<"CachedCalendarEvent"> | string | null
     organizerEmail?: StringNullableWithAggregatesFilter<"CachedCalendarEvent"> | string | null
+    organizerType?: StringWithAggregatesFilter<"CachedCalendarEvent"> | string
     responseStatus?: StringWithAggregatesFilter<"CachedCalendarEvent"> | string
     onlineMeetingUrl?: StringNullableWithAggregatesFilter<"CachedCalendarEvent"> | string | null
     attendees?: JsonWithAggregatesFilter<"CachedCalendarEvent">
@@ -19560,6 +27983,15 @@ export namespace Prisma {
     reminderMinutes?: IntNullableWithAggregatesFilter<"CachedCalendarEvent"> | number | null
     showAs?: StringWithAggregatesFilter<"CachedCalendarEvent"> | string
     recurrence?: StringNullableWithAggregatesFilter<"CachedCalendarEvent"> | string | null
+    eventColor?: StringNullableWithAggregatesFilter<"CachedCalendarEvent"> | string | null
+    timeZone?: StringWithAggregatesFilter<"CachedCalendarEvent"> | string
+    teamsMeetingUrl?: StringNullableWithAggregatesFilter<"CachedCalendarEvent"> | string | null
+    teamsMeetingId?: StringNullableWithAggregatesFilter<"CachedCalendarEvent"> | string | null
+    seriesMasterId?: StringNullableWithAggregatesFilter<"CachedCalendarEvent"> | string | null
+    iCalUId?: StringNullableWithAggregatesFilter<"CachedCalendarEvent"> | string | null
+    calendarId?: StringNullableWithAggregatesFilter<"CachedCalendarEvent"> | string | null
+    createdDateTime?: DateTimeNullableWithAggregatesFilter<"CachedCalendarEvent"> | Date | string | null
+    lastModifiedDateTime?: DateTimeNullableWithAggregatesFilter<"CachedCalendarEvent"> | Date | string | null
     syncedAt?: DateTimeWithAggregatesFilter<"CachedCalendarEvent"> | Date | string
   }
 
@@ -19575,6 +28007,23 @@ export namespace Prisma {
     phone?: StringFilter<"CachedContact"> | string
     jobTitle?: StringFilter<"CachedContact"> | string
     company?: StringFilter<"CachedContact"> | string
+    department?: StringFilter<"CachedContact"> | string
+    emailAddresses?: JsonFilter<"CachedContact">
+    phones?: JsonFilter<"CachedContact">
+    givenName?: StringFilter<"CachedContact"> | string
+    surname?: StringFilter<"CachedContact"> | string
+    middleName?: StringFilter<"CachedContact"> | string
+    addresses?: JsonFilter<"CachedContact">
+    imAddresses?: JsonFilter<"CachedContact">
+    categories?: JsonFilter<"CachedContact">
+    notes?: StringFilter<"CachedContact"> | string
+    birthday?: DateTimeNullableFilter<"CachedContact"> | Date | string | null
+    anniversary?: DateTimeNullableFilter<"CachedContact"> | Date | string | null
+    manager?: StringNullableFilter<"CachedContact"> | string | null
+    directReports?: JsonFilter<"CachedContact">
+    frequencyScore?: IntFilter<"CachedContact"> | number
+    isVIP?: BoolFilter<"CachedContact"> | boolean
+    isFavorite?: BoolFilter<"CachedContact"> | boolean
     syncedAt?: DateTimeFilter<"CachedContact"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }
@@ -19588,6 +28037,23 @@ export namespace Prisma {
     phone?: SortOrder
     jobTitle?: SortOrder
     company?: SortOrder
+    department?: SortOrder
+    emailAddresses?: SortOrder
+    phones?: SortOrder
+    givenName?: SortOrder
+    surname?: SortOrder
+    middleName?: SortOrder
+    addresses?: SortOrder
+    imAddresses?: SortOrder
+    categories?: SortOrder
+    notes?: SortOrder
+    birthday?: SortOrderInput | SortOrder
+    anniversary?: SortOrderInput | SortOrder
+    manager?: SortOrderInput | SortOrder
+    directReports?: SortOrder
+    frequencyScore?: SortOrder
+    isVIP?: SortOrder
+    isFavorite?: SortOrder
     syncedAt?: SortOrder
     user?: UserOrderByWithRelationInput
   }
@@ -19604,6 +28070,23 @@ export namespace Prisma {
     phone?: StringFilter<"CachedContact"> | string
     jobTitle?: StringFilter<"CachedContact"> | string
     company?: StringFilter<"CachedContact"> | string
+    department?: StringFilter<"CachedContact"> | string
+    emailAddresses?: JsonFilter<"CachedContact">
+    phones?: JsonFilter<"CachedContact">
+    givenName?: StringFilter<"CachedContact"> | string
+    surname?: StringFilter<"CachedContact"> | string
+    middleName?: StringFilter<"CachedContact"> | string
+    addresses?: JsonFilter<"CachedContact">
+    imAddresses?: JsonFilter<"CachedContact">
+    categories?: JsonFilter<"CachedContact">
+    notes?: StringFilter<"CachedContact"> | string
+    birthday?: DateTimeNullableFilter<"CachedContact"> | Date | string | null
+    anniversary?: DateTimeNullableFilter<"CachedContact"> | Date | string | null
+    manager?: StringNullableFilter<"CachedContact"> | string | null
+    directReports?: JsonFilter<"CachedContact">
+    frequencyScore?: IntFilter<"CachedContact"> | number
+    isVIP?: BoolFilter<"CachedContact"> | boolean
+    isFavorite?: BoolFilter<"CachedContact"> | boolean
     syncedAt?: DateTimeFilter<"CachedContact"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }, "id">
@@ -19617,10 +28100,29 @@ export namespace Prisma {
     phone?: SortOrder
     jobTitle?: SortOrder
     company?: SortOrder
+    department?: SortOrder
+    emailAddresses?: SortOrder
+    phones?: SortOrder
+    givenName?: SortOrder
+    surname?: SortOrder
+    middleName?: SortOrder
+    addresses?: SortOrder
+    imAddresses?: SortOrder
+    categories?: SortOrder
+    notes?: SortOrder
+    birthday?: SortOrderInput | SortOrder
+    anniversary?: SortOrderInput | SortOrder
+    manager?: SortOrderInput | SortOrder
+    directReports?: SortOrder
+    frequencyScore?: SortOrder
+    isVIP?: SortOrder
+    isFavorite?: SortOrder
     syncedAt?: SortOrder
     _count?: CachedContactCountOrderByAggregateInput
+    _avg?: CachedContactAvgOrderByAggregateInput
     _max?: CachedContactMaxOrderByAggregateInput
     _min?: CachedContactMinOrderByAggregateInput
+    _sum?: CachedContactSumOrderByAggregateInput
   }
 
   export type CachedContactScalarWhereWithAggregatesInput = {
@@ -19635,6 +28137,23 @@ export namespace Prisma {
     phone?: StringWithAggregatesFilter<"CachedContact"> | string
     jobTitle?: StringWithAggregatesFilter<"CachedContact"> | string
     company?: StringWithAggregatesFilter<"CachedContact"> | string
+    department?: StringWithAggregatesFilter<"CachedContact"> | string
+    emailAddresses?: JsonWithAggregatesFilter<"CachedContact">
+    phones?: JsonWithAggregatesFilter<"CachedContact">
+    givenName?: StringWithAggregatesFilter<"CachedContact"> | string
+    surname?: StringWithAggregatesFilter<"CachedContact"> | string
+    middleName?: StringWithAggregatesFilter<"CachedContact"> | string
+    addresses?: JsonWithAggregatesFilter<"CachedContact">
+    imAddresses?: JsonWithAggregatesFilter<"CachedContact">
+    categories?: JsonWithAggregatesFilter<"CachedContact">
+    notes?: StringWithAggregatesFilter<"CachedContact"> | string
+    birthday?: DateTimeNullableWithAggregatesFilter<"CachedContact"> | Date | string | null
+    anniversary?: DateTimeNullableWithAggregatesFilter<"CachedContact"> | Date | string | null
+    manager?: StringNullableWithAggregatesFilter<"CachedContact"> | string | null
+    directReports?: JsonWithAggregatesFilter<"CachedContact">
+    frequencyScore?: IntWithAggregatesFilter<"CachedContact"> | number
+    isVIP?: BoolWithAggregatesFilter<"CachedContact"> | boolean
+    isFavorite?: BoolWithAggregatesFilter<"CachedContact"> | boolean
     syncedAt?: DateTimeWithAggregatesFilter<"CachedContact"> | Date | string
   }
 
@@ -19703,6 +28222,10 @@ export namespace Prisma {
     actions?: JsonFilter<"EmailRule">
     emailCount?: IntFilter<"EmailRule"> | number
     stopProcessing?: BoolFilter<"EmailRule"> | boolean
+    lastExecutedAt?: DateTimeNullableFilter<"EmailRule"> | Date | string | null
+    lastExecutionStatus?: StringNullableFilter<"EmailRule"> | string | null
+    lastExecutionError?: StringNullableFilter<"EmailRule"> | string | null
+    failureCount?: IntFilter<"EmailRule"> | number
     createdAt?: DateTimeFilter<"EmailRule"> | Date | string
     updatedAt?: DateTimeFilter<"EmailRule"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -19718,6 +28241,10 @@ export namespace Prisma {
     actions?: SortOrder
     emailCount?: SortOrder
     stopProcessing?: SortOrder
+    lastExecutedAt?: SortOrderInput | SortOrder
+    lastExecutionStatus?: SortOrderInput | SortOrder
+    lastExecutionError?: SortOrderInput | SortOrder
+    failureCount?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     user?: UserOrderByWithRelationInput
@@ -19736,6 +28263,10 @@ export namespace Prisma {
     actions?: JsonFilter<"EmailRule">
     emailCount?: IntFilter<"EmailRule"> | number
     stopProcessing?: BoolFilter<"EmailRule"> | boolean
+    lastExecutedAt?: DateTimeNullableFilter<"EmailRule"> | Date | string | null
+    lastExecutionStatus?: StringNullableFilter<"EmailRule"> | string | null
+    lastExecutionError?: StringNullableFilter<"EmailRule"> | string | null
+    failureCount?: IntFilter<"EmailRule"> | number
     createdAt?: DateTimeFilter<"EmailRule"> | Date | string
     updatedAt?: DateTimeFilter<"EmailRule"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -19751,6 +28282,10 @@ export namespace Prisma {
     actions?: SortOrder
     emailCount?: SortOrder
     stopProcessing?: SortOrder
+    lastExecutedAt?: SortOrderInput | SortOrder
+    lastExecutionStatus?: SortOrderInput | SortOrder
+    lastExecutionError?: SortOrderInput | SortOrder
+    failureCount?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: EmailRuleCountOrderByAggregateInput
@@ -19773,8 +28308,427 @@ export namespace Prisma {
     actions?: JsonWithAggregatesFilter<"EmailRule">
     emailCount?: IntWithAggregatesFilter<"EmailRule"> | number
     stopProcessing?: BoolWithAggregatesFilter<"EmailRule"> | boolean
+    lastExecutedAt?: DateTimeNullableWithAggregatesFilter<"EmailRule"> | Date | string | null
+    lastExecutionStatus?: StringNullableWithAggregatesFilter<"EmailRule"> | string | null
+    lastExecutionError?: StringNullableWithAggregatesFilter<"EmailRule"> | string | null
+    failureCount?: IntWithAggregatesFilter<"EmailRule"> | number
     createdAt?: DateTimeWithAggregatesFilter<"EmailRule"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"EmailRule"> | Date | string
+  }
+
+  export type EmailAttachmentWhereInput = {
+    AND?: EmailAttachmentWhereInput | EmailAttachmentWhereInput[]
+    OR?: EmailAttachmentWhereInput[]
+    NOT?: EmailAttachmentWhereInput | EmailAttachmentWhereInput[]
+    id?: StringFilter<"EmailAttachment"> | string
+    userId?: StringFilter<"EmailAttachment"> | string
+    messageId?: StringFilter<"EmailAttachment"> | string
+    graphMessageId?: StringNullableFilter<"EmailAttachment"> | string | null
+    fileName?: StringFilter<"EmailAttachment"> | string
+    contentType?: StringFilter<"EmailAttachment"> | string
+    size?: IntFilter<"EmailAttachment"> | number
+    contentHash?: StringNullableFilter<"EmailAttachment"> | string | null
+    isInline?: BoolFilter<"EmailAttachment"> | boolean
+    contentId?: StringNullableFilter<"EmailAttachment"> | string | null
+    uploadedAt?: DateTimeFilter<"EmailAttachment"> | Date | string
+    createdAt?: DateTimeFilter<"EmailAttachment"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type EmailAttachmentOrderByWithRelationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    messageId?: SortOrder
+    graphMessageId?: SortOrderInput | SortOrder
+    fileName?: SortOrder
+    contentType?: SortOrder
+    size?: SortOrder
+    contentHash?: SortOrderInput | SortOrder
+    isInline?: SortOrder
+    contentId?: SortOrderInput | SortOrder
+    uploadedAt?: SortOrder
+    createdAt?: SortOrder
+    user?: UserOrderByWithRelationInput
+  }
+
+  export type EmailAttachmentWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: EmailAttachmentWhereInput | EmailAttachmentWhereInput[]
+    OR?: EmailAttachmentWhereInput[]
+    NOT?: EmailAttachmentWhereInput | EmailAttachmentWhereInput[]
+    userId?: StringFilter<"EmailAttachment"> | string
+    messageId?: StringFilter<"EmailAttachment"> | string
+    graphMessageId?: StringNullableFilter<"EmailAttachment"> | string | null
+    fileName?: StringFilter<"EmailAttachment"> | string
+    contentType?: StringFilter<"EmailAttachment"> | string
+    size?: IntFilter<"EmailAttachment"> | number
+    contentHash?: StringNullableFilter<"EmailAttachment"> | string | null
+    isInline?: BoolFilter<"EmailAttachment"> | boolean
+    contentId?: StringNullableFilter<"EmailAttachment"> | string | null
+    uploadedAt?: DateTimeFilter<"EmailAttachment"> | Date | string
+    createdAt?: DateTimeFilter<"EmailAttachment"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id">
+
+  export type EmailAttachmentOrderByWithAggregationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    messageId?: SortOrder
+    graphMessageId?: SortOrderInput | SortOrder
+    fileName?: SortOrder
+    contentType?: SortOrder
+    size?: SortOrder
+    contentHash?: SortOrderInput | SortOrder
+    isInline?: SortOrder
+    contentId?: SortOrderInput | SortOrder
+    uploadedAt?: SortOrder
+    createdAt?: SortOrder
+    _count?: EmailAttachmentCountOrderByAggregateInput
+    _avg?: EmailAttachmentAvgOrderByAggregateInput
+    _max?: EmailAttachmentMaxOrderByAggregateInput
+    _min?: EmailAttachmentMinOrderByAggregateInput
+    _sum?: EmailAttachmentSumOrderByAggregateInput
+  }
+
+  export type EmailAttachmentScalarWhereWithAggregatesInput = {
+    AND?: EmailAttachmentScalarWhereWithAggregatesInput | EmailAttachmentScalarWhereWithAggregatesInput[]
+    OR?: EmailAttachmentScalarWhereWithAggregatesInput[]
+    NOT?: EmailAttachmentScalarWhereWithAggregatesInput | EmailAttachmentScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"EmailAttachment"> | string
+    userId?: StringWithAggregatesFilter<"EmailAttachment"> | string
+    messageId?: StringWithAggregatesFilter<"EmailAttachment"> | string
+    graphMessageId?: StringNullableWithAggregatesFilter<"EmailAttachment"> | string | null
+    fileName?: StringWithAggregatesFilter<"EmailAttachment"> | string
+    contentType?: StringWithAggregatesFilter<"EmailAttachment"> | string
+    size?: IntWithAggregatesFilter<"EmailAttachment"> | number
+    contentHash?: StringNullableWithAggregatesFilter<"EmailAttachment"> | string | null
+    isInline?: BoolWithAggregatesFilter<"EmailAttachment"> | boolean
+    contentId?: StringNullableWithAggregatesFilter<"EmailAttachment"> | string | null
+    uploadedAt?: DateTimeWithAggregatesFilter<"EmailAttachment"> | Date | string
+    createdAt?: DateTimeWithAggregatesFilter<"EmailAttachment"> | Date | string
+  }
+
+  export type AiGeneratedReplyWhereInput = {
+    AND?: AiGeneratedReplyWhereInput | AiGeneratedReplyWhereInput[]
+    OR?: AiGeneratedReplyWhereInput[]
+    NOT?: AiGeneratedReplyWhereInput | AiGeneratedReplyWhereInput[]
+    id?: StringFilter<"AiGeneratedReply"> | string
+    userId?: StringFilter<"AiGeneratedReply"> | string
+    messageId?: StringFilter<"AiGeneratedReply"> | string
+    generatedBody?: StringFilter<"AiGeneratedReply"> | string
+    createdAt?: DateTimeFilter<"AiGeneratedReply"> | Date | string
+    expiresAt?: DateTimeFilter<"AiGeneratedReply"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type AiGeneratedReplyOrderByWithRelationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    messageId?: SortOrder
+    generatedBody?: SortOrder
+    createdAt?: SortOrder
+    expiresAt?: SortOrder
+    user?: UserOrderByWithRelationInput
+  }
+
+  export type AiGeneratedReplyWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: AiGeneratedReplyWhereInput | AiGeneratedReplyWhereInput[]
+    OR?: AiGeneratedReplyWhereInput[]
+    NOT?: AiGeneratedReplyWhereInput | AiGeneratedReplyWhereInput[]
+    userId?: StringFilter<"AiGeneratedReply"> | string
+    messageId?: StringFilter<"AiGeneratedReply"> | string
+    generatedBody?: StringFilter<"AiGeneratedReply"> | string
+    createdAt?: DateTimeFilter<"AiGeneratedReply"> | Date | string
+    expiresAt?: DateTimeFilter<"AiGeneratedReply"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id">
+
+  export type AiGeneratedReplyOrderByWithAggregationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    messageId?: SortOrder
+    generatedBody?: SortOrder
+    createdAt?: SortOrder
+    expiresAt?: SortOrder
+    _count?: AiGeneratedReplyCountOrderByAggregateInput
+    _max?: AiGeneratedReplyMaxOrderByAggregateInput
+    _min?: AiGeneratedReplyMinOrderByAggregateInput
+  }
+
+  export type AiGeneratedReplyScalarWhereWithAggregatesInput = {
+    AND?: AiGeneratedReplyScalarWhereWithAggregatesInput | AiGeneratedReplyScalarWhereWithAggregatesInput[]
+    OR?: AiGeneratedReplyScalarWhereWithAggregatesInput[]
+    NOT?: AiGeneratedReplyScalarWhereWithAggregatesInput | AiGeneratedReplyScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"AiGeneratedReply"> | string
+    userId?: StringWithAggregatesFilter<"AiGeneratedReply"> | string
+    messageId?: StringWithAggregatesFilter<"AiGeneratedReply"> | string
+    generatedBody?: StringWithAggregatesFilter<"AiGeneratedReply"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"AiGeneratedReply"> | Date | string
+    expiresAt?: DateTimeWithAggregatesFilter<"AiGeneratedReply"> | Date | string
+  }
+
+  export type CachedSearchResultWhereInput = {
+    AND?: CachedSearchResultWhereInput | CachedSearchResultWhereInput[]
+    OR?: CachedSearchResultWhereInput[]
+    NOT?: CachedSearchResultWhereInput | CachedSearchResultWhereInput[]
+    id?: StringFilter<"CachedSearchResult"> | string
+    userId?: StringFilter<"CachedSearchResult"> | string
+    homeAccountId?: StringFilter<"CachedSearchResult"> | string
+    query?: StringFilter<"CachedSearchResult"> | string
+    results?: JsonFilter<"CachedSearchResult">
+    createdAt?: DateTimeFilter<"CachedSearchResult"> | Date | string
+    expiresAt?: DateTimeFilter<"CachedSearchResult"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type CachedSearchResultOrderByWithRelationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    homeAccountId?: SortOrder
+    query?: SortOrder
+    results?: SortOrder
+    createdAt?: SortOrder
+    expiresAt?: SortOrder
+    user?: UserOrderByWithRelationInput
+  }
+
+  export type CachedSearchResultWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    userId_homeAccountId_query?: CachedSearchResultUserIdHomeAccountIdQueryCompoundUniqueInput
+    AND?: CachedSearchResultWhereInput | CachedSearchResultWhereInput[]
+    OR?: CachedSearchResultWhereInput[]
+    NOT?: CachedSearchResultWhereInput | CachedSearchResultWhereInput[]
+    userId?: StringFilter<"CachedSearchResult"> | string
+    homeAccountId?: StringFilter<"CachedSearchResult"> | string
+    query?: StringFilter<"CachedSearchResult"> | string
+    results?: JsonFilter<"CachedSearchResult">
+    createdAt?: DateTimeFilter<"CachedSearchResult"> | Date | string
+    expiresAt?: DateTimeFilter<"CachedSearchResult"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id" | "userId_homeAccountId_query">
+
+  export type CachedSearchResultOrderByWithAggregationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    homeAccountId?: SortOrder
+    query?: SortOrder
+    results?: SortOrder
+    createdAt?: SortOrder
+    expiresAt?: SortOrder
+    _count?: CachedSearchResultCountOrderByAggregateInput
+    _max?: CachedSearchResultMaxOrderByAggregateInput
+    _min?: CachedSearchResultMinOrderByAggregateInput
+  }
+
+  export type CachedSearchResultScalarWhereWithAggregatesInput = {
+    AND?: CachedSearchResultScalarWhereWithAggregatesInput | CachedSearchResultScalarWhereWithAggregatesInput[]
+    OR?: CachedSearchResultScalarWhereWithAggregatesInput[]
+    NOT?: CachedSearchResultScalarWhereWithAggregatesInput | CachedSearchResultScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"CachedSearchResult"> | string
+    userId?: StringWithAggregatesFilter<"CachedSearchResult"> | string
+    homeAccountId?: StringWithAggregatesFilter<"CachedSearchResult"> | string
+    query?: StringWithAggregatesFilter<"CachedSearchResult"> | string
+    results?: JsonWithAggregatesFilter<"CachedSearchResult">
+    createdAt?: DateTimeWithAggregatesFilter<"CachedSearchResult"> | Date | string
+    expiresAt?: DateTimeWithAggregatesFilter<"CachedSearchResult"> | Date | string
+  }
+
+  export type SyncStatusWhereInput = {
+    AND?: SyncStatusWhereInput | SyncStatusWhereInput[]
+    OR?: SyncStatusWhereInput[]
+    NOT?: SyncStatusWhereInput | SyncStatusWhereInput[]
+    id?: StringFilter<"SyncStatus"> | string
+    userId?: StringFilter<"SyncStatus"> | string
+    homeAccountId?: StringFilter<"SyncStatus"> | string
+    resourceType?: StringFilter<"SyncStatus"> | string
+    lastSyncedAt?: DateTimeFilter<"SyncStatus"> | Date | string
+    status?: StringFilter<"SyncStatus"> | string
+    errorMessage?: StringNullableFilter<"SyncStatus"> | string | null
+    createdAt?: DateTimeFilter<"SyncStatus"> | Date | string
+    updatedAt?: DateTimeFilter<"SyncStatus"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type SyncStatusOrderByWithRelationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    homeAccountId?: SortOrder
+    resourceType?: SortOrder
+    lastSyncedAt?: SortOrder
+    status?: SortOrder
+    errorMessage?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    user?: UserOrderByWithRelationInput
+  }
+
+  export type SyncStatusWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    userId_homeAccountId_resourceType?: SyncStatusUserIdHomeAccountIdResourceTypeCompoundUniqueInput
+    AND?: SyncStatusWhereInput | SyncStatusWhereInput[]
+    OR?: SyncStatusWhereInput[]
+    NOT?: SyncStatusWhereInput | SyncStatusWhereInput[]
+    userId?: StringFilter<"SyncStatus"> | string
+    homeAccountId?: StringFilter<"SyncStatus"> | string
+    resourceType?: StringFilter<"SyncStatus"> | string
+    lastSyncedAt?: DateTimeFilter<"SyncStatus"> | Date | string
+    status?: StringFilter<"SyncStatus"> | string
+    errorMessage?: StringNullableFilter<"SyncStatus"> | string | null
+    createdAt?: DateTimeFilter<"SyncStatus"> | Date | string
+    updatedAt?: DateTimeFilter<"SyncStatus"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id" | "userId_homeAccountId_resourceType">
+
+  export type SyncStatusOrderByWithAggregationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    homeAccountId?: SortOrder
+    resourceType?: SortOrder
+    lastSyncedAt?: SortOrder
+    status?: SortOrder
+    errorMessage?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: SyncStatusCountOrderByAggregateInput
+    _max?: SyncStatusMaxOrderByAggregateInput
+    _min?: SyncStatusMinOrderByAggregateInput
+  }
+
+  export type SyncStatusScalarWhereWithAggregatesInput = {
+    AND?: SyncStatusScalarWhereWithAggregatesInput | SyncStatusScalarWhereWithAggregatesInput[]
+    OR?: SyncStatusScalarWhereWithAggregatesInput[]
+    NOT?: SyncStatusScalarWhereWithAggregatesInput | SyncStatusScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"SyncStatus"> | string
+    userId?: StringWithAggregatesFilter<"SyncStatus"> | string
+    homeAccountId?: StringWithAggregatesFilter<"SyncStatus"> | string
+    resourceType?: StringWithAggregatesFilter<"SyncStatus"> | string
+    lastSyncedAt?: DateTimeWithAggregatesFilter<"SyncStatus"> | Date | string
+    status?: StringWithAggregatesFilter<"SyncStatus"> | string
+    errorMessage?: StringNullableWithAggregatesFilter<"SyncStatus"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"SyncStatus"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"SyncStatus"> | Date | string
+  }
+
+  export type NotificationLogWhereInput = {
+    AND?: NotificationLogWhereInput | NotificationLogWhereInput[]
+    OR?: NotificationLogWhereInput[]
+    NOT?: NotificationLogWhereInput | NotificationLogWhereInput[]
+    id?: StringFilter<"NotificationLog"> | string
+    userId?: StringFilter<"NotificationLog"> | string
+    type?: StringFilter<"NotificationLog"> | string
+    sentAt?: DateTimeFilter<"NotificationLog"> | Date | string
+    status?: StringFilter<"NotificationLog"> | string
+    errorMessage?: StringNullableFilter<"NotificationLog"> | string | null
+    metadata?: JsonFilter<"NotificationLog">
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type NotificationLogOrderByWithRelationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    type?: SortOrder
+    sentAt?: SortOrder
+    status?: SortOrder
+    errorMessage?: SortOrderInput | SortOrder
+    metadata?: SortOrder
+    user?: UserOrderByWithRelationInput
+  }
+
+  export type NotificationLogWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: NotificationLogWhereInput | NotificationLogWhereInput[]
+    OR?: NotificationLogWhereInput[]
+    NOT?: NotificationLogWhereInput | NotificationLogWhereInput[]
+    userId?: StringFilter<"NotificationLog"> | string
+    type?: StringFilter<"NotificationLog"> | string
+    sentAt?: DateTimeFilter<"NotificationLog"> | Date | string
+    status?: StringFilter<"NotificationLog"> | string
+    errorMessage?: StringNullableFilter<"NotificationLog"> | string | null
+    metadata?: JsonFilter<"NotificationLog">
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id">
+
+  export type NotificationLogOrderByWithAggregationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    type?: SortOrder
+    sentAt?: SortOrder
+    status?: SortOrder
+    errorMessage?: SortOrderInput | SortOrder
+    metadata?: SortOrder
+    _count?: NotificationLogCountOrderByAggregateInput
+    _max?: NotificationLogMaxOrderByAggregateInput
+    _min?: NotificationLogMinOrderByAggregateInput
+  }
+
+  export type NotificationLogScalarWhereWithAggregatesInput = {
+    AND?: NotificationLogScalarWhereWithAggregatesInput | NotificationLogScalarWhereWithAggregatesInput[]
+    OR?: NotificationLogScalarWhereWithAggregatesInput[]
+    NOT?: NotificationLogScalarWhereWithAggregatesInput | NotificationLogScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"NotificationLog"> | string
+    userId?: StringWithAggregatesFilter<"NotificationLog"> | string
+    type?: StringWithAggregatesFilter<"NotificationLog"> | string
+    sentAt?: DateTimeWithAggregatesFilter<"NotificationLog"> | Date | string
+    status?: StringWithAggregatesFilter<"NotificationLog"> | string
+    errorMessage?: StringNullableWithAggregatesFilter<"NotificationLog"> | string | null
+    metadata?: JsonWithAggregatesFilter<"NotificationLog">
+  }
+
+  export type MigrationStatusWhereInput = {
+    AND?: MigrationStatusWhereInput | MigrationStatusWhereInput[]
+    OR?: MigrationStatusWhereInput[]
+    NOT?: MigrationStatusWhereInput | MigrationStatusWhereInput[]
+    id?: StringFilter<"MigrationStatus"> | string
+    userId?: StringFilter<"MigrationStatus"> | string
+    migrationType?: StringFilter<"MigrationStatus"> | string
+    completedAt?: DateTimeFilter<"MigrationStatus"> | Date | string
+    metadata?: JsonFilter<"MigrationStatus">
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type MigrationStatusOrderByWithRelationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    migrationType?: SortOrder
+    completedAt?: SortOrder
+    metadata?: SortOrder
+    user?: UserOrderByWithRelationInput
+  }
+
+  export type MigrationStatusWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    userId_migrationType?: MigrationStatusUserIdMigrationTypeCompoundUniqueInput
+    AND?: MigrationStatusWhereInput | MigrationStatusWhereInput[]
+    OR?: MigrationStatusWhereInput[]
+    NOT?: MigrationStatusWhereInput | MigrationStatusWhereInput[]
+    userId?: StringFilter<"MigrationStatus"> | string
+    migrationType?: StringFilter<"MigrationStatus"> | string
+    completedAt?: DateTimeFilter<"MigrationStatus"> | Date | string
+    metadata?: JsonFilter<"MigrationStatus">
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id" | "userId_migrationType">
+
+  export type MigrationStatusOrderByWithAggregationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    migrationType?: SortOrder
+    completedAt?: SortOrder
+    metadata?: SortOrder
+    _count?: MigrationStatusCountOrderByAggregateInput
+    _max?: MigrationStatusMaxOrderByAggregateInput
+    _min?: MigrationStatusMinOrderByAggregateInput
+  }
+
+  export type MigrationStatusScalarWhereWithAggregatesInput = {
+    AND?: MigrationStatusScalarWhereWithAggregatesInput | MigrationStatusScalarWhereWithAggregatesInput[]
+    OR?: MigrationStatusScalarWhereWithAggregatesInput[]
+    NOT?: MigrationStatusScalarWhereWithAggregatesInput | MigrationStatusScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"MigrationStatus"> | string
+    userId?: StringWithAggregatesFilter<"MigrationStatus"> | string
+    migrationType?: StringWithAggregatesFilter<"MigrationStatus"> | string
+    completedAt?: DateTimeWithAggregatesFilter<"MigrationStatus"> | Date | string
+    metadata?: JsonWithAggregatesFilter<"MigrationStatus">
   }
 
   export type OrganizationCreateInput = {
@@ -19844,6 +28798,15 @@ export namespace Prisma {
     avatarUrl?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    notificationNewEmail?: boolean
+    notificationDailyDigest?: boolean
+    notificationAiReplies?: boolean
+    notificationCalendarReminders?: boolean
+    notificationWeeklyReport?: boolean
+    appTheme?: string
+    fontSize?: string
+    emailDensity?: string
+    lastActiveAccountId?: string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
     msAccounts?: MsConnectedAccountCreateNestedManyWithoutUserInput
     msalCache?: MsalTokenCacheCreateNestedOneWithoutUserInput
@@ -19856,6 +28819,12 @@ export namespace Prisma {
     cachedEmails?: CachedEmailCreateNestedManyWithoutUserInput
     cachedCalEvents?: CachedCalendarEventCreateNestedManyWithoutUserInput
     cachedContacts?: CachedContactCreateNestedManyWithoutUserInput
+    emailAttachments?: EmailAttachmentCreateNestedManyWithoutUserInput
+    aiGeneratedReplies?: AiGeneratedReplyCreateNestedManyWithoutUserInput
+    cachedSearchResults?: CachedSearchResultCreateNestedManyWithoutUserInput
+    syncStatuses?: SyncStatusCreateNestedManyWithoutUserInput
+    notificationLogs?: NotificationLogCreateNestedManyWithoutUserInput
+    migrationStatuses?: MigrationStatusCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -19866,6 +28835,15 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     orgId: string
+    notificationNewEmail?: boolean
+    notificationDailyDigest?: boolean
+    notificationAiReplies?: boolean
+    notificationCalendarReminders?: boolean
+    notificationWeeklyReport?: boolean
+    appTheme?: string
+    fontSize?: string
+    emailDensity?: string
+    lastActiveAccountId?: string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
     msalCache?: MsalTokenCacheUncheckedCreateNestedOneWithoutUserInput
     deltaLinks?: EmailDeltaLinkUncheckedCreateNestedManyWithoutUserInput
@@ -19877,6 +28855,12 @@ export namespace Prisma {
     cachedEmails?: CachedEmailUncheckedCreateNestedManyWithoutUserInput
     cachedCalEvents?: CachedCalendarEventUncheckedCreateNestedManyWithoutUserInput
     cachedContacts?: CachedContactUncheckedCreateNestedManyWithoutUserInput
+    emailAttachments?: EmailAttachmentUncheckedCreateNestedManyWithoutUserInput
+    aiGeneratedReplies?: AiGeneratedReplyUncheckedCreateNestedManyWithoutUserInput
+    cachedSearchResults?: CachedSearchResultUncheckedCreateNestedManyWithoutUserInput
+    syncStatuses?: SyncStatusUncheckedCreateNestedManyWithoutUserInput
+    notificationLogs?: NotificationLogUncheckedCreateNestedManyWithoutUserInput
+    migrationStatuses?: MigrationStatusUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserUpdateInput = {
@@ -19886,6 +28870,15 @@ export namespace Prisma {
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
+    notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
+    notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
+    notificationCalendarReminders?: BoolFieldUpdateOperationsInput | boolean
+    notificationWeeklyReport?: BoolFieldUpdateOperationsInput | boolean
+    appTheme?: StringFieldUpdateOperationsInput | string
+    fontSize?: StringFieldUpdateOperationsInput | string
+    emailDensity?: StringFieldUpdateOperationsInput | string
+    lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
     msAccounts?: MsConnectedAccountUpdateManyWithoutUserNestedInput
     msalCache?: MsalTokenCacheUpdateOneWithoutUserNestedInput
@@ -19898,6 +28891,12 @@ export namespace Prisma {
     cachedEmails?: CachedEmailUpdateManyWithoutUserNestedInput
     cachedCalEvents?: CachedCalendarEventUpdateManyWithoutUserNestedInput
     cachedContacts?: CachedContactUpdateManyWithoutUserNestedInput
+    emailAttachments?: EmailAttachmentUpdateManyWithoutUserNestedInput
+    aiGeneratedReplies?: AiGeneratedReplyUpdateManyWithoutUserNestedInput
+    cachedSearchResults?: CachedSearchResultUpdateManyWithoutUserNestedInput
+    syncStatuses?: SyncStatusUpdateManyWithoutUserNestedInput
+    notificationLogs?: NotificationLogUpdateManyWithoutUserNestedInput
+    migrationStatuses?: MigrationStatusUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -19908,6 +28907,15 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orgId?: StringFieldUpdateOperationsInput | string
+    notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
+    notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
+    notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
+    notificationCalendarReminders?: BoolFieldUpdateOperationsInput | boolean
+    notificationWeeklyReport?: BoolFieldUpdateOperationsInput | boolean
+    appTheme?: StringFieldUpdateOperationsInput | string
+    fontSize?: StringFieldUpdateOperationsInput | string
+    emailDensity?: StringFieldUpdateOperationsInput | string
+    lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
     msalCache?: MsalTokenCacheUncheckedUpdateOneWithoutUserNestedInput
     deltaLinks?: EmailDeltaLinkUncheckedUpdateManyWithoutUserNestedInput
@@ -19919,6 +28927,12 @@ export namespace Prisma {
     cachedEmails?: CachedEmailUncheckedUpdateManyWithoutUserNestedInput
     cachedCalEvents?: CachedCalendarEventUncheckedUpdateManyWithoutUserNestedInput
     cachedContacts?: CachedContactUncheckedUpdateManyWithoutUserNestedInput
+    emailAttachments?: EmailAttachmentUncheckedUpdateManyWithoutUserNestedInput
+    aiGeneratedReplies?: AiGeneratedReplyUncheckedUpdateManyWithoutUserNestedInput
+    cachedSearchResults?: CachedSearchResultUncheckedUpdateManyWithoutUserNestedInput
+    syncStatuses?: SyncStatusUncheckedUpdateManyWithoutUserNestedInput
+    notificationLogs?: NotificationLogUncheckedUpdateManyWithoutUserNestedInput
+    migrationStatuses?: MigrationStatusUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -19929,6 +28943,15 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     orgId: string
+    notificationNewEmail?: boolean
+    notificationDailyDigest?: boolean
+    notificationAiReplies?: boolean
+    notificationCalendarReminders?: boolean
+    notificationWeeklyReport?: boolean
+    appTheme?: string
+    fontSize?: string
+    emailDensity?: string
+    lastActiveAccountId?: string | null
   }
 
   export type UserUpdateManyMutationInput = {
@@ -19938,6 +28961,15 @@ export namespace Prisma {
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
+    notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
+    notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
+    notificationCalendarReminders?: BoolFieldUpdateOperationsInput | boolean
+    notificationWeeklyReport?: BoolFieldUpdateOperationsInput | boolean
+    appTheme?: StringFieldUpdateOperationsInput | string
+    fontSize?: StringFieldUpdateOperationsInput | string
+    emailDensity?: StringFieldUpdateOperationsInput | string
+    lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type UserUncheckedUpdateManyInput = {
@@ -19948,6 +28980,15 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orgId?: StringFieldUpdateOperationsInput | string
+    notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
+    notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
+    notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
+    notificationCalendarReminders?: BoolFieldUpdateOperationsInput | boolean
+    notificationWeeklyReport?: BoolFieldUpdateOperationsInput | boolean
+    appTheme?: StringFieldUpdateOperationsInput | string
+    fontSize?: StringFieldUpdateOperationsInput | string
+    emailDensity?: StringFieldUpdateOperationsInput | string
+    lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type MsConnectedAccountCreateInput = {
@@ -20237,12 +29278,19 @@ export namespace Prisma {
     bodyHtml?: string | null
     attachments?: JsonNullValueInput | InputJsonValue
     importance?: string
+    sensitivity?: string
     requestReadReceipt?: boolean
+    requestDeliveryReceipt?: boolean
+    categories?: JsonNullValueInput | InputJsonValue
     draftType?: string
     inReplyToMessageId?: string | null
     forwardedMessageId?: string | null
+    originalMessageBody?: string | null
     scheduledAt?: Date | string | null
     scheduledSent?: boolean
+    scheduledNotificationSent?: boolean
+    lastScheduleAttemptAt?: Date | string | null
+    scheduleAttemptCount?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutDraftsInput
@@ -20260,12 +29308,19 @@ export namespace Prisma {
     bodyHtml?: string | null
     attachments?: JsonNullValueInput | InputJsonValue
     importance?: string
+    sensitivity?: string
     requestReadReceipt?: boolean
+    requestDeliveryReceipt?: boolean
+    categories?: JsonNullValueInput | InputJsonValue
     draftType?: string
     inReplyToMessageId?: string | null
     forwardedMessageId?: string | null
+    originalMessageBody?: string | null
     scheduledAt?: Date | string | null
     scheduledSent?: boolean
+    scheduledNotificationSent?: boolean
+    lastScheduleAttemptAt?: Date | string | null
+    scheduleAttemptCount?: number
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -20281,12 +29336,19 @@ export namespace Prisma {
     bodyHtml?: NullableStringFieldUpdateOperationsInput | string | null
     attachments?: JsonNullValueInput | InputJsonValue
     importance?: StringFieldUpdateOperationsInput | string
+    sensitivity?: StringFieldUpdateOperationsInput | string
     requestReadReceipt?: BoolFieldUpdateOperationsInput | boolean
+    requestDeliveryReceipt?: BoolFieldUpdateOperationsInput | boolean
+    categories?: JsonNullValueInput | InputJsonValue
     draftType?: StringFieldUpdateOperationsInput | string
     inReplyToMessageId?: NullableStringFieldUpdateOperationsInput | string | null
     forwardedMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    originalMessageBody?: NullableStringFieldUpdateOperationsInput | string | null
     scheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     scheduledSent?: BoolFieldUpdateOperationsInput | boolean
+    scheduledNotificationSent?: BoolFieldUpdateOperationsInput | boolean
+    lastScheduleAttemptAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    scheduleAttemptCount?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutDraftsNestedInput
@@ -20304,12 +29366,19 @@ export namespace Prisma {
     bodyHtml?: NullableStringFieldUpdateOperationsInput | string | null
     attachments?: JsonNullValueInput | InputJsonValue
     importance?: StringFieldUpdateOperationsInput | string
+    sensitivity?: StringFieldUpdateOperationsInput | string
     requestReadReceipt?: BoolFieldUpdateOperationsInput | boolean
+    requestDeliveryReceipt?: BoolFieldUpdateOperationsInput | boolean
+    categories?: JsonNullValueInput | InputJsonValue
     draftType?: StringFieldUpdateOperationsInput | string
     inReplyToMessageId?: NullableStringFieldUpdateOperationsInput | string | null
     forwardedMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    originalMessageBody?: NullableStringFieldUpdateOperationsInput | string | null
     scheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     scheduledSent?: BoolFieldUpdateOperationsInput | boolean
+    scheduledNotificationSent?: BoolFieldUpdateOperationsInput | boolean
+    lastScheduleAttemptAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    scheduleAttemptCount?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -20326,12 +29395,19 @@ export namespace Prisma {
     bodyHtml?: string | null
     attachments?: JsonNullValueInput | InputJsonValue
     importance?: string
+    sensitivity?: string
     requestReadReceipt?: boolean
+    requestDeliveryReceipt?: boolean
+    categories?: JsonNullValueInput | InputJsonValue
     draftType?: string
     inReplyToMessageId?: string | null
     forwardedMessageId?: string | null
+    originalMessageBody?: string | null
     scheduledAt?: Date | string | null
     scheduledSent?: boolean
+    scheduledNotificationSent?: boolean
+    lastScheduleAttemptAt?: Date | string | null
+    scheduleAttemptCount?: number
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -20347,12 +29423,19 @@ export namespace Prisma {
     bodyHtml?: NullableStringFieldUpdateOperationsInput | string | null
     attachments?: JsonNullValueInput | InputJsonValue
     importance?: StringFieldUpdateOperationsInput | string
+    sensitivity?: StringFieldUpdateOperationsInput | string
     requestReadReceipt?: BoolFieldUpdateOperationsInput | boolean
+    requestDeliveryReceipt?: BoolFieldUpdateOperationsInput | boolean
+    categories?: JsonNullValueInput | InputJsonValue
     draftType?: StringFieldUpdateOperationsInput | string
     inReplyToMessageId?: NullableStringFieldUpdateOperationsInput | string | null
     forwardedMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    originalMessageBody?: NullableStringFieldUpdateOperationsInput | string | null
     scheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     scheduledSent?: BoolFieldUpdateOperationsInput | boolean
+    scheduledNotificationSent?: BoolFieldUpdateOperationsInput | boolean
+    lastScheduleAttemptAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    scheduleAttemptCount?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -20369,12 +29452,19 @@ export namespace Prisma {
     bodyHtml?: NullableStringFieldUpdateOperationsInput | string | null
     attachments?: JsonNullValueInput | InputJsonValue
     importance?: StringFieldUpdateOperationsInput | string
+    sensitivity?: StringFieldUpdateOperationsInput | string
     requestReadReceipt?: BoolFieldUpdateOperationsInput | boolean
+    requestDeliveryReceipt?: BoolFieldUpdateOperationsInput | boolean
+    categories?: JsonNullValueInput | InputJsonValue
     draftType?: StringFieldUpdateOperationsInput | string
     inReplyToMessageId?: NullableStringFieldUpdateOperationsInput | string | null
     forwardedMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    originalMessageBody?: NullableStringFieldUpdateOperationsInput | string | null
     scheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     scheduledSent?: BoolFieldUpdateOperationsInput | boolean
+    scheduledNotificationSent?: BoolFieldUpdateOperationsInput | boolean
+    lastScheduleAttemptAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    scheduleAttemptCount?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -20588,6 +29678,13 @@ export namespace Prisma {
     hasAttachments?: boolean
     flagStatus?: string
     categories?: JsonNullValueInput | InputJsonValue
+    importance?: string
+    sensitivity?: string
+    inferenceClassification?: string
+    conversationId?: string | null
+    isDraft?: boolean
+    syncStatus?: string
+    lastModifiedDateTime?: Date | string | null
     syncedAt?: Date | string
     user: UserCreateNestedOneWithoutCachedEmailsInput
   }
@@ -20608,6 +29705,13 @@ export namespace Prisma {
     hasAttachments?: boolean
     flagStatus?: string
     categories?: JsonNullValueInput | InputJsonValue
+    importance?: string
+    sensitivity?: string
+    inferenceClassification?: string
+    conversationId?: string | null
+    isDraft?: boolean
+    syncStatus?: string
+    lastModifiedDateTime?: Date | string | null
     syncedAt?: Date | string
   }
 
@@ -20626,6 +29730,13 @@ export namespace Prisma {
     hasAttachments?: BoolFieldUpdateOperationsInput | boolean
     flagStatus?: StringFieldUpdateOperationsInput | string
     categories?: JsonNullValueInput | InputJsonValue
+    importance?: StringFieldUpdateOperationsInput | string
+    sensitivity?: StringFieldUpdateOperationsInput | string
+    inferenceClassification?: StringFieldUpdateOperationsInput | string
+    conversationId?: NullableStringFieldUpdateOperationsInput | string | null
+    isDraft?: BoolFieldUpdateOperationsInput | boolean
+    syncStatus?: StringFieldUpdateOperationsInput | string
+    lastModifiedDateTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     syncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutCachedEmailsNestedInput
   }
@@ -20646,6 +29757,13 @@ export namespace Prisma {
     hasAttachments?: BoolFieldUpdateOperationsInput | boolean
     flagStatus?: StringFieldUpdateOperationsInput | string
     categories?: JsonNullValueInput | InputJsonValue
+    importance?: StringFieldUpdateOperationsInput | string
+    sensitivity?: StringFieldUpdateOperationsInput | string
+    inferenceClassification?: StringFieldUpdateOperationsInput | string
+    conversationId?: NullableStringFieldUpdateOperationsInput | string | null
+    isDraft?: BoolFieldUpdateOperationsInput | boolean
+    syncStatus?: StringFieldUpdateOperationsInput | string
+    lastModifiedDateTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     syncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -20665,6 +29783,13 @@ export namespace Prisma {
     hasAttachments?: boolean
     flagStatus?: string
     categories?: JsonNullValueInput | InputJsonValue
+    importance?: string
+    sensitivity?: string
+    inferenceClassification?: string
+    conversationId?: string | null
+    isDraft?: boolean
+    syncStatus?: string
+    lastModifiedDateTime?: Date | string | null
     syncedAt?: Date | string
   }
 
@@ -20683,6 +29808,13 @@ export namespace Prisma {
     hasAttachments?: BoolFieldUpdateOperationsInput | boolean
     flagStatus?: StringFieldUpdateOperationsInput | string
     categories?: JsonNullValueInput | InputJsonValue
+    importance?: StringFieldUpdateOperationsInput | string
+    sensitivity?: StringFieldUpdateOperationsInput | string
+    inferenceClassification?: StringFieldUpdateOperationsInput | string
+    conversationId?: NullableStringFieldUpdateOperationsInput | string | null
+    isDraft?: BoolFieldUpdateOperationsInput | boolean
+    syncStatus?: StringFieldUpdateOperationsInput | string
+    lastModifiedDateTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     syncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -20702,6 +29834,13 @@ export namespace Prisma {
     hasAttachments?: BoolFieldUpdateOperationsInput | boolean
     flagStatus?: StringFieldUpdateOperationsInput | string
     categories?: JsonNullValueInput | InputJsonValue
+    importance?: StringFieldUpdateOperationsInput | string
+    sensitivity?: StringFieldUpdateOperationsInput | string
+    inferenceClassification?: StringFieldUpdateOperationsInput | string
+    conversationId?: NullableStringFieldUpdateOperationsInput | string | null
+    isDraft?: BoolFieldUpdateOperationsInput | boolean
+    syncStatus?: StringFieldUpdateOperationsInput | string
+    lastModifiedDateTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     syncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -20710,12 +29849,14 @@ export namespace Prisma {
     homeAccountId: string
     subject?: string
     bodyPreview?: string
+    bodyHtml?: string | null
     startDateTime: Date | string
     endDateTime: Date | string
     isAllDay?: boolean
     location?: string | null
     organizerName?: string | null
     organizerEmail?: string | null
+    organizerType?: string
     responseStatus?: string
     onlineMeetingUrl?: string | null
     attendees?: JsonNullValueInput | InputJsonValue
@@ -20723,6 +29864,15 @@ export namespace Prisma {
     reminderMinutes?: number | null
     showAs?: string
     recurrence?: string | null
+    eventColor?: string | null
+    timeZone?: string
+    teamsMeetingUrl?: string | null
+    teamsMeetingId?: string | null
+    seriesMasterId?: string | null
+    iCalUId?: string | null
+    calendarId?: string | null
+    createdDateTime?: Date | string | null
+    lastModifiedDateTime?: Date | string | null
     syncedAt?: Date | string
     user: UserCreateNestedOneWithoutCachedCalEventsInput
   }
@@ -20733,12 +29883,14 @@ export namespace Prisma {
     homeAccountId: string
     subject?: string
     bodyPreview?: string
+    bodyHtml?: string | null
     startDateTime: Date | string
     endDateTime: Date | string
     isAllDay?: boolean
     location?: string | null
     organizerName?: string | null
     organizerEmail?: string | null
+    organizerType?: string
     responseStatus?: string
     onlineMeetingUrl?: string | null
     attendees?: JsonNullValueInput | InputJsonValue
@@ -20746,6 +29898,15 @@ export namespace Prisma {
     reminderMinutes?: number | null
     showAs?: string
     recurrence?: string | null
+    eventColor?: string | null
+    timeZone?: string
+    teamsMeetingUrl?: string | null
+    teamsMeetingId?: string | null
+    seriesMasterId?: string | null
+    iCalUId?: string | null
+    calendarId?: string | null
+    createdDateTime?: Date | string | null
+    lastModifiedDateTime?: Date | string | null
     syncedAt?: Date | string
   }
 
@@ -20754,12 +29915,14 @@ export namespace Prisma {
     homeAccountId?: StringFieldUpdateOperationsInput | string
     subject?: StringFieldUpdateOperationsInput | string
     bodyPreview?: StringFieldUpdateOperationsInput | string
+    bodyHtml?: NullableStringFieldUpdateOperationsInput | string | null
     startDateTime?: DateTimeFieldUpdateOperationsInput | Date | string
     endDateTime?: DateTimeFieldUpdateOperationsInput | Date | string
     isAllDay?: BoolFieldUpdateOperationsInput | boolean
     location?: NullableStringFieldUpdateOperationsInput | string | null
     organizerName?: NullableStringFieldUpdateOperationsInput | string | null
     organizerEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    organizerType?: StringFieldUpdateOperationsInput | string
     responseStatus?: StringFieldUpdateOperationsInput | string
     onlineMeetingUrl?: NullableStringFieldUpdateOperationsInput | string | null
     attendees?: JsonNullValueInput | InputJsonValue
@@ -20767,6 +29930,15 @@ export namespace Prisma {
     reminderMinutes?: NullableIntFieldUpdateOperationsInput | number | null
     showAs?: StringFieldUpdateOperationsInput | string
     recurrence?: NullableStringFieldUpdateOperationsInput | string | null
+    eventColor?: NullableStringFieldUpdateOperationsInput | string | null
+    timeZone?: StringFieldUpdateOperationsInput | string
+    teamsMeetingUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    teamsMeetingId?: NullableStringFieldUpdateOperationsInput | string | null
+    seriesMasterId?: NullableStringFieldUpdateOperationsInput | string | null
+    iCalUId?: NullableStringFieldUpdateOperationsInput | string | null
+    calendarId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdDateTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastModifiedDateTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     syncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutCachedCalEventsNestedInput
   }
@@ -20777,12 +29949,14 @@ export namespace Prisma {
     homeAccountId?: StringFieldUpdateOperationsInput | string
     subject?: StringFieldUpdateOperationsInput | string
     bodyPreview?: StringFieldUpdateOperationsInput | string
+    bodyHtml?: NullableStringFieldUpdateOperationsInput | string | null
     startDateTime?: DateTimeFieldUpdateOperationsInput | Date | string
     endDateTime?: DateTimeFieldUpdateOperationsInput | Date | string
     isAllDay?: BoolFieldUpdateOperationsInput | boolean
     location?: NullableStringFieldUpdateOperationsInput | string | null
     organizerName?: NullableStringFieldUpdateOperationsInput | string | null
     organizerEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    organizerType?: StringFieldUpdateOperationsInput | string
     responseStatus?: StringFieldUpdateOperationsInput | string
     onlineMeetingUrl?: NullableStringFieldUpdateOperationsInput | string | null
     attendees?: JsonNullValueInput | InputJsonValue
@@ -20790,6 +29964,15 @@ export namespace Prisma {
     reminderMinutes?: NullableIntFieldUpdateOperationsInput | number | null
     showAs?: StringFieldUpdateOperationsInput | string
     recurrence?: NullableStringFieldUpdateOperationsInput | string | null
+    eventColor?: NullableStringFieldUpdateOperationsInput | string | null
+    timeZone?: StringFieldUpdateOperationsInput | string
+    teamsMeetingUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    teamsMeetingId?: NullableStringFieldUpdateOperationsInput | string | null
+    seriesMasterId?: NullableStringFieldUpdateOperationsInput | string | null
+    iCalUId?: NullableStringFieldUpdateOperationsInput | string | null
+    calendarId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdDateTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastModifiedDateTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     syncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -20799,12 +29982,14 @@ export namespace Prisma {
     homeAccountId: string
     subject?: string
     bodyPreview?: string
+    bodyHtml?: string | null
     startDateTime: Date | string
     endDateTime: Date | string
     isAllDay?: boolean
     location?: string | null
     organizerName?: string | null
     organizerEmail?: string | null
+    organizerType?: string
     responseStatus?: string
     onlineMeetingUrl?: string | null
     attendees?: JsonNullValueInput | InputJsonValue
@@ -20812,6 +29997,15 @@ export namespace Prisma {
     reminderMinutes?: number | null
     showAs?: string
     recurrence?: string | null
+    eventColor?: string | null
+    timeZone?: string
+    teamsMeetingUrl?: string | null
+    teamsMeetingId?: string | null
+    seriesMasterId?: string | null
+    iCalUId?: string | null
+    calendarId?: string | null
+    createdDateTime?: Date | string | null
+    lastModifiedDateTime?: Date | string | null
     syncedAt?: Date | string
   }
 
@@ -20820,12 +30014,14 @@ export namespace Prisma {
     homeAccountId?: StringFieldUpdateOperationsInput | string
     subject?: StringFieldUpdateOperationsInput | string
     bodyPreview?: StringFieldUpdateOperationsInput | string
+    bodyHtml?: NullableStringFieldUpdateOperationsInput | string | null
     startDateTime?: DateTimeFieldUpdateOperationsInput | Date | string
     endDateTime?: DateTimeFieldUpdateOperationsInput | Date | string
     isAllDay?: BoolFieldUpdateOperationsInput | boolean
     location?: NullableStringFieldUpdateOperationsInput | string | null
     organizerName?: NullableStringFieldUpdateOperationsInput | string | null
     organizerEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    organizerType?: StringFieldUpdateOperationsInput | string
     responseStatus?: StringFieldUpdateOperationsInput | string
     onlineMeetingUrl?: NullableStringFieldUpdateOperationsInput | string | null
     attendees?: JsonNullValueInput | InputJsonValue
@@ -20833,6 +30029,15 @@ export namespace Prisma {
     reminderMinutes?: NullableIntFieldUpdateOperationsInput | number | null
     showAs?: StringFieldUpdateOperationsInput | string
     recurrence?: NullableStringFieldUpdateOperationsInput | string | null
+    eventColor?: NullableStringFieldUpdateOperationsInput | string | null
+    timeZone?: StringFieldUpdateOperationsInput | string
+    teamsMeetingUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    teamsMeetingId?: NullableStringFieldUpdateOperationsInput | string | null
+    seriesMasterId?: NullableStringFieldUpdateOperationsInput | string | null
+    iCalUId?: NullableStringFieldUpdateOperationsInput | string | null
+    calendarId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdDateTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastModifiedDateTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     syncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -20842,12 +30047,14 @@ export namespace Prisma {
     homeAccountId?: StringFieldUpdateOperationsInput | string
     subject?: StringFieldUpdateOperationsInput | string
     bodyPreview?: StringFieldUpdateOperationsInput | string
+    bodyHtml?: NullableStringFieldUpdateOperationsInput | string | null
     startDateTime?: DateTimeFieldUpdateOperationsInput | Date | string
     endDateTime?: DateTimeFieldUpdateOperationsInput | Date | string
     isAllDay?: BoolFieldUpdateOperationsInput | boolean
     location?: NullableStringFieldUpdateOperationsInput | string | null
     organizerName?: NullableStringFieldUpdateOperationsInput | string | null
     organizerEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    organizerType?: StringFieldUpdateOperationsInput | string
     responseStatus?: StringFieldUpdateOperationsInput | string
     onlineMeetingUrl?: NullableStringFieldUpdateOperationsInput | string | null
     attendees?: JsonNullValueInput | InputJsonValue
@@ -20855,6 +30062,15 @@ export namespace Prisma {
     reminderMinutes?: NullableIntFieldUpdateOperationsInput | number | null
     showAs?: StringFieldUpdateOperationsInput | string
     recurrence?: NullableStringFieldUpdateOperationsInput | string | null
+    eventColor?: NullableStringFieldUpdateOperationsInput | string | null
+    timeZone?: StringFieldUpdateOperationsInput | string
+    teamsMeetingUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    teamsMeetingId?: NullableStringFieldUpdateOperationsInput | string | null
+    seriesMasterId?: NullableStringFieldUpdateOperationsInput | string | null
+    iCalUId?: NullableStringFieldUpdateOperationsInput | string | null
+    calendarId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdDateTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastModifiedDateTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     syncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -20866,6 +30082,23 @@ export namespace Prisma {
     phone?: string
     jobTitle?: string
     company?: string
+    department?: string
+    emailAddresses?: JsonNullValueInput | InputJsonValue
+    phones?: JsonNullValueInput | InputJsonValue
+    givenName?: string
+    surname?: string
+    middleName?: string
+    addresses?: JsonNullValueInput | InputJsonValue
+    imAddresses?: JsonNullValueInput | InputJsonValue
+    categories?: JsonNullValueInput | InputJsonValue
+    notes?: string
+    birthday?: Date | string | null
+    anniversary?: Date | string | null
+    manager?: string | null
+    directReports?: JsonNullValueInput | InputJsonValue
+    frequencyScore?: number
+    isVIP?: boolean
+    isFavorite?: boolean
     syncedAt?: Date | string
     user: UserCreateNestedOneWithoutCachedContactsInput
   }
@@ -20879,6 +30112,23 @@ export namespace Prisma {
     phone?: string
     jobTitle?: string
     company?: string
+    department?: string
+    emailAddresses?: JsonNullValueInput | InputJsonValue
+    phones?: JsonNullValueInput | InputJsonValue
+    givenName?: string
+    surname?: string
+    middleName?: string
+    addresses?: JsonNullValueInput | InputJsonValue
+    imAddresses?: JsonNullValueInput | InputJsonValue
+    categories?: JsonNullValueInput | InputJsonValue
+    notes?: string
+    birthday?: Date | string | null
+    anniversary?: Date | string | null
+    manager?: string | null
+    directReports?: JsonNullValueInput | InputJsonValue
+    frequencyScore?: number
+    isVIP?: boolean
+    isFavorite?: boolean
     syncedAt?: Date | string
   }
 
@@ -20890,6 +30140,23 @@ export namespace Prisma {
     phone?: StringFieldUpdateOperationsInput | string
     jobTitle?: StringFieldUpdateOperationsInput | string
     company?: StringFieldUpdateOperationsInput | string
+    department?: StringFieldUpdateOperationsInput | string
+    emailAddresses?: JsonNullValueInput | InputJsonValue
+    phones?: JsonNullValueInput | InputJsonValue
+    givenName?: StringFieldUpdateOperationsInput | string
+    surname?: StringFieldUpdateOperationsInput | string
+    middleName?: StringFieldUpdateOperationsInput | string
+    addresses?: JsonNullValueInput | InputJsonValue
+    imAddresses?: JsonNullValueInput | InputJsonValue
+    categories?: JsonNullValueInput | InputJsonValue
+    notes?: StringFieldUpdateOperationsInput | string
+    birthday?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    anniversary?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    manager?: NullableStringFieldUpdateOperationsInput | string | null
+    directReports?: JsonNullValueInput | InputJsonValue
+    frequencyScore?: IntFieldUpdateOperationsInput | number
+    isVIP?: BoolFieldUpdateOperationsInput | boolean
+    isFavorite?: BoolFieldUpdateOperationsInput | boolean
     syncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutCachedContactsNestedInput
   }
@@ -20903,6 +30170,23 @@ export namespace Prisma {
     phone?: StringFieldUpdateOperationsInput | string
     jobTitle?: StringFieldUpdateOperationsInput | string
     company?: StringFieldUpdateOperationsInput | string
+    department?: StringFieldUpdateOperationsInput | string
+    emailAddresses?: JsonNullValueInput | InputJsonValue
+    phones?: JsonNullValueInput | InputJsonValue
+    givenName?: StringFieldUpdateOperationsInput | string
+    surname?: StringFieldUpdateOperationsInput | string
+    middleName?: StringFieldUpdateOperationsInput | string
+    addresses?: JsonNullValueInput | InputJsonValue
+    imAddresses?: JsonNullValueInput | InputJsonValue
+    categories?: JsonNullValueInput | InputJsonValue
+    notes?: StringFieldUpdateOperationsInput | string
+    birthday?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    anniversary?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    manager?: NullableStringFieldUpdateOperationsInput | string | null
+    directReports?: JsonNullValueInput | InputJsonValue
+    frequencyScore?: IntFieldUpdateOperationsInput | number
+    isVIP?: BoolFieldUpdateOperationsInput | boolean
+    isFavorite?: BoolFieldUpdateOperationsInput | boolean
     syncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -20915,6 +30199,23 @@ export namespace Prisma {
     phone?: string
     jobTitle?: string
     company?: string
+    department?: string
+    emailAddresses?: JsonNullValueInput | InputJsonValue
+    phones?: JsonNullValueInput | InputJsonValue
+    givenName?: string
+    surname?: string
+    middleName?: string
+    addresses?: JsonNullValueInput | InputJsonValue
+    imAddresses?: JsonNullValueInput | InputJsonValue
+    categories?: JsonNullValueInput | InputJsonValue
+    notes?: string
+    birthday?: Date | string | null
+    anniversary?: Date | string | null
+    manager?: string | null
+    directReports?: JsonNullValueInput | InputJsonValue
+    frequencyScore?: number
+    isVIP?: boolean
+    isFavorite?: boolean
     syncedAt?: Date | string
   }
 
@@ -20926,6 +30227,23 @@ export namespace Prisma {
     phone?: StringFieldUpdateOperationsInput | string
     jobTitle?: StringFieldUpdateOperationsInput | string
     company?: StringFieldUpdateOperationsInput | string
+    department?: StringFieldUpdateOperationsInput | string
+    emailAddresses?: JsonNullValueInput | InputJsonValue
+    phones?: JsonNullValueInput | InputJsonValue
+    givenName?: StringFieldUpdateOperationsInput | string
+    surname?: StringFieldUpdateOperationsInput | string
+    middleName?: StringFieldUpdateOperationsInput | string
+    addresses?: JsonNullValueInput | InputJsonValue
+    imAddresses?: JsonNullValueInput | InputJsonValue
+    categories?: JsonNullValueInput | InputJsonValue
+    notes?: StringFieldUpdateOperationsInput | string
+    birthday?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    anniversary?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    manager?: NullableStringFieldUpdateOperationsInput | string | null
+    directReports?: JsonNullValueInput | InputJsonValue
+    frequencyScore?: IntFieldUpdateOperationsInput | number
+    isVIP?: BoolFieldUpdateOperationsInput | boolean
+    isFavorite?: BoolFieldUpdateOperationsInput | boolean
     syncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -20938,6 +30256,23 @@ export namespace Prisma {
     phone?: StringFieldUpdateOperationsInput | string
     jobTitle?: StringFieldUpdateOperationsInput | string
     company?: StringFieldUpdateOperationsInput | string
+    department?: StringFieldUpdateOperationsInput | string
+    emailAddresses?: JsonNullValueInput | InputJsonValue
+    phones?: JsonNullValueInput | InputJsonValue
+    givenName?: StringFieldUpdateOperationsInput | string
+    surname?: StringFieldUpdateOperationsInput | string
+    middleName?: StringFieldUpdateOperationsInput | string
+    addresses?: JsonNullValueInput | InputJsonValue
+    imAddresses?: JsonNullValueInput | InputJsonValue
+    categories?: JsonNullValueInput | InputJsonValue
+    notes?: StringFieldUpdateOperationsInput | string
+    birthday?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    anniversary?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    manager?: NullableStringFieldUpdateOperationsInput | string | null
+    directReports?: JsonNullValueInput | InputJsonValue
+    frequencyScore?: IntFieldUpdateOperationsInput | number
+    isVIP?: BoolFieldUpdateOperationsInput | boolean
+    isFavorite?: BoolFieldUpdateOperationsInput | boolean
     syncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -21006,6 +30341,10 @@ export namespace Prisma {
     actions: JsonNullValueInput | InputJsonValue
     emailCount?: number
     stopProcessing?: boolean
+    lastExecutedAt?: Date | string | null
+    lastExecutionStatus?: string | null
+    lastExecutionError?: string | null
+    failureCount?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutEmailRulesInput
@@ -21021,6 +30360,10 @@ export namespace Prisma {
     actions: JsonNullValueInput | InputJsonValue
     emailCount?: number
     stopProcessing?: boolean
+    lastExecutedAt?: Date | string | null
+    lastExecutionStatus?: string | null
+    lastExecutionError?: string | null
+    failureCount?: number
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -21034,6 +30377,10 @@ export namespace Prisma {
     actions?: JsonNullValueInput | InputJsonValue
     emailCount?: IntFieldUpdateOperationsInput | number
     stopProcessing?: BoolFieldUpdateOperationsInput | boolean
+    lastExecutedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastExecutionStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    lastExecutionError?: NullableStringFieldUpdateOperationsInput | string | null
+    failureCount?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutEmailRulesNestedInput
@@ -21049,6 +30396,10 @@ export namespace Prisma {
     actions?: JsonNullValueInput | InputJsonValue
     emailCount?: IntFieldUpdateOperationsInput | number
     stopProcessing?: BoolFieldUpdateOperationsInput | boolean
+    lastExecutedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastExecutionStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    lastExecutionError?: NullableStringFieldUpdateOperationsInput | string | null
+    failureCount?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -21063,6 +30414,10 @@ export namespace Prisma {
     actions: JsonNullValueInput | InputJsonValue
     emailCount?: number
     stopProcessing?: boolean
+    lastExecutedAt?: Date | string | null
+    lastExecutionStatus?: string | null
+    lastExecutionError?: string | null
+    failureCount?: number
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -21076,6 +30431,10 @@ export namespace Prisma {
     actions?: JsonNullValueInput | InputJsonValue
     emailCount?: IntFieldUpdateOperationsInput | number
     stopProcessing?: BoolFieldUpdateOperationsInput | boolean
+    lastExecutedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastExecutionStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    lastExecutionError?: NullableStringFieldUpdateOperationsInput | string | null
+    failureCount?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -21090,8 +30449,454 @@ export namespace Prisma {
     actions?: JsonNullValueInput | InputJsonValue
     emailCount?: IntFieldUpdateOperationsInput | number
     stopProcessing?: BoolFieldUpdateOperationsInput | boolean
+    lastExecutedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastExecutionStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    lastExecutionError?: NullableStringFieldUpdateOperationsInput | string | null
+    failureCount?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EmailAttachmentCreateInput = {
+    id?: string
+    messageId: string
+    graphMessageId?: string | null
+    fileName: string
+    contentType: string
+    size: number
+    contentHash?: string | null
+    isInline?: boolean
+    contentId?: string | null
+    uploadedAt?: Date | string
+    createdAt?: Date | string
+    user: UserCreateNestedOneWithoutEmailAttachmentsInput
+  }
+
+  export type EmailAttachmentUncheckedCreateInput = {
+    id?: string
+    userId: string
+    messageId: string
+    graphMessageId?: string | null
+    fileName: string
+    contentType: string
+    size: number
+    contentHash?: string | null
+    isInline?: boolean
+    contentId?: string | null
+    uploadedAt?: Date | string
+    createdAt?: Date | string
+  }
+
+  export type EmailAttachmentUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    messageId?: StringFieldUpdateOperationsInput | string
+    graphMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    fileName?: StringFieldUpdateOperationsInput | string
+    contentType?: StringFieldUpdateOperationsInput | string
+    size?: IntFieldUpdateOperationsInput | number
+    contentHash?: NullableStringFieldUpdateOperationsInput | string | null
+    isInline?: BoolFieldUpdateOperationsInput | boolean
+    contentId?: NullableStringFieldUpdateOperationsInput | string | null
+    uploadedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutEmailAttachmentsNestedInput
+  }
+
+  export type EmailAttachmentUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    messageId?: StringFieldUpdateOperationsInput | string
+    graphMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    fileName?: StringFieldUpdateOperationsInput | string
+    contentType?: StringFieldUpdateOperationsInput | string
+    size?: IntFieldUpdateOperationsInput | number
+    contentHash?: NullableStringFieldUpdateOperationsInput | string | null
+    isInline?: BoolFieldUpdateOperationsInput | boolean
+    contentId?: NullableStringFieldUpdateOperationsInput | string | null
+    uploadedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EmailAttachmentCreateManyInput = {
+    id?: string
+    userId: string
+    messageId: string
+    graphMessageId?: string | null
+    fileName: string
+    contentType: string
+    size: number
+    contentHash?: string | null
+    isInline?: boolean
+    contentId?: string | null
+    uploadedAt?: Date | string
+    createdAt?: Date | string
+  }
+
+  export type EmailAttachmentUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    messageId?: StringFieldUpdateOperationsInput | string
+    graphMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    fileName?: StringFieldUpdateOperationsInput | string
+    contentType?: StringFieldUpdateOperationsInput | string
+    size?: IntFieldUpdateOperationsInput | number
+    contentHash?: NullableStringFieldUpdateOperationsInput | string | null
+    isInline?: BoolFieldUpdateOperationsInput | boolean
+    contentId?: NullableStringFieldUpdateOperationsInput | string | null
+    uploadedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EmailAttachmentUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    messageId?: StringFieldUpdateOperationsInput | string
+    graphMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    fileName?: StringFieldUpdateOperationsInput | string
+    contentType?: StringFieldUpdateOperationsInput | string
+    size?: IntFieldUpdateOperationsInput | number
+    contentHash?: NullableStringFieldUpdateOperationsInput | string | null
+    isInline?: BoolFieldUpdateOperationsInput | boolean
+    contentId?: NullableStringFieldUpdateOperationsInput | string | null
+    uploadedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AiGeneratedReplyCreateInput = {
+    id?: string
+    messageId: string
+    generatedBody: string
+    createdAt?: Date | string
+    expiresAt: Date | string
+    user: UserCreateNestedOneWithoutAiGeneratedRepliesInput
+  }
+
+  export type AiGeneratedReplyUncheckedCreateInput = {
+    id?: string
+    userId: string
+    messageId: string
+    generatedBody: string
+    createdAt?: Date | string
+    expiresAt: Date | string
+  }
+
+  export type AiGeneratedReplyUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    messageId?: StringFieldUpdateOperationsInput | string
+    generatedBody?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutAiGeneratedRepliesNestedInput
+  }
+
+  export type AiGeneratedReplyUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    messageId?: StringFieldUpdateOperationsInput | string
+    generatedBody?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AiGeneratedReplyCreateManyInput = {
+    id?: string
+    userId: string
+    messageId: string
+    generatedBody: string
+    createdAt?: Date | string
+    expiresAt: Date | string
+  }
+
+  export type AiGeneratedReplyUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    messageId?: StringFieldUpdateOperationsInput | string
+    generatedBody?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AiGeneratedReplyUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    messageId?: StringFieldUpdateOperationsInput | string
+    generatedBody?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CachedSearchResultCreateInput = {
+    id?: string
+    homeAccountId: string
+    query: string
+    results: JsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    expiresAt: Date | string
+    user: UserCreateNestedOneWithoutCachedSearchResultsInput
+  }
+
+  export type CachedSearchResultUncheckedCreateInput = {
+    id?: string
+    userId: string
+    homeAccountId: string
+    query: string
+    results: JsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    expiresAt: Date | string
+  }
+
+  export type CachedSearchResultUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    homeAccountId?: StringFieldUpdateOperationsInput | string
+    query?: StringFieldUpdateOperationsInput | string
+    results?: JsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutCachedSearchResultsNestedInput
+  }
+
+  export type CachedSearchResultUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    homeAccountId?: StringFieldUpdateOperationsInput | string
+    query?: StringFieldUpdateOperationsInput | string
+    results?: JsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CachedSearchResultCreateManyInput = {
+    id?: string
+    userId: string
+    homeAccountId: string
+    query: string
+    results: JsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    expiresAt: Date | string
+  }
+
+  export type CachedSearchResultUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    homeAccountId?: StringFieldUpdateOperationsInput | string
+    query?: StringFieldUpdateOperationsInput | string
+    results?: JsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CachedSearchResultUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    homeAccountId?: StringFieldUpdateOperationsInput | string
+    query?: StringFieldUpdateOperationsInput | string
+    results?: JsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SyncStatusCreateInput = {
+    id?: string
+    homeAccountId: string
+    resourceType: string
+    lastSyncedAt?: Date | string
+    status?: string
+    errorMessage?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutSyncStatusesInput
+  }
+
+  export type SyncStatusUncheckedCreateInput = {
+    id?: string
+    userId: string
+    homeAccountId: string
+    resourceType: string
+    lastSyncedAt?: Date | string
+    status?: string
+    errorMessage?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type SyncStatusUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    homeAccountId?: StringFieldUpdateOperationsInput | string
+    resourceType?: StringFieldUpdateOperationsInput | string
+    lastSyncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: StringFieldUpdateOperationsInput | string
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutSyncStatusesNestedInput
+  }
+
+  export type SyncStatusUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    homeAccountId?: StringFieldUpdateOperationsInput | string
+    resourceType?: StringFieldUpdateOperationsInput | string
+    lastSyncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: StringFieldUpdateOperationsInput | string
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SyncStatusCreateManyInput = {
+    id?: string
+    userId: string
+    homeAccountId: string
+    resourceType: string
+    lastSyncedAt?: Date | string
+    status?: string
+    errorMessage?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type SyncStatusUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    homeAccountId?: StringFieldUpdateOperationsInput | string
+    resourceType?: StringFieldUpdateOperationsInput | string
+    lastSyncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: StringFieldUpdateOperationsInput | string
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SyncStatusUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    homeAccountId?: StringFieldUpdateOperationsInput | string
+    resourceType?: StringFieldUpdateOperationsInput | string
+    lastSyncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: StringFieldUpdateOperationsInput | string
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type NotificationLogCreateInput = {
+    id?: string
+    type: string
+    sentAt?: Date | string
+    status: string
+    errorMessage?: string | null
+    metadata?: JsonNullValueInput | InputJsonValue
+    user: UserCreateNestedOneWithoutNotificationLogsInput
+  }
+
+  export type NotificationLogUncheckedCreateInput = {
+    id?: string
+    userId: string
+    type: string
+    sentAt?: Date | string
+    status: string
+    errorMessage?: string | null
+    metadata?: JsonNullValueInput | InputJsonValue
+  }
+
+  export type NotificationLogUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    sentAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: StringFieldUpdateOperationsInput | string
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    metadata?: JsonNullValueInput | InputJsonValue
+    user?: UserUpdateOneRequiredWithoutNotificationLogsNestedInput
+  }
+
+  export type NotificationLogUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    sentAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: StringFieldUpdateOperationsInput | string
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    metadata?: JsonNullValueInput | InputJsonValue
+  }
+
+  export type NotificationLogCreateManyInput = {
+    id?: string
+    userId: string
+    type: string
+    sentAt?: Date | string
+    status: string
+    errorMessage?: string | null
+    metadata?: JsonNullValueInput | InputJsonValue
+  }
+
+  export type NotificationLogUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    sentAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: StringFieldUpdateOperationsInput | string
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    metadata?: JsonNullValueInput | InputJsonValue
+  }
+
+  export type NotificationLogUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    sentAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: StringFieldUpdateOperationsInput | string
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    metadata?: JsonNullValueInput | InputJsonValue
+  }
+
+  export type MigrationStatusCreateInput = {
+    id?: string
+    migrationType: string
+    completedAt?: Date | string
+    metadata?: JsonNullValueInput | InputJsonValue
+    user: UserCreateNestedOneWithoutMigrationStatusesInput
+  }
+
+  export type MigrationStatusUncheckedCreateInput = {
+    id?: string
+    userId: string
+    migrationType: string
+    completedAt?: Date | string
+    metadata?: JsonNullValueInput | InputJsonValue
+  }
+
+  export type MigrationStatusUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    migrationType?: StringFieldUpdateOperationsInput | string
+    completedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    metadata?: JsonNullValueInput | InputJsonValue
+    user?: UserUpdateOneRequiredWithoutMigrationStatusesNestedInput
+  }
+
+  export type MigrationStatusUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    migrationType?: StringFieldUpdateOperationsInput | string
+    completedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    metadata?: JsonNullValueInput | InputJsonValue
+  }
+
+  export type MigrationStatusCreateManyInput = {
+    id?: string
+    userId: string
+    migrationType: string
+    completedAt?: Date | string
+    metadata?: JsonNullValueInput | InputJsonValue
+  }
+
+  export type MigrationStatusUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    migrationType?: StringFieldUpdateOperationsInput | string
+    completedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    metadata?: JsonNullValueInput | InputJsonValue
+  }
+
+  export type MigrationStatusUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    migrationType?: StringFieldUpdateOperationsInput | string
+    completedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    metadata?: JsonNullValueInput | InputJsonValue
   }
 
   export type StringFilter<$PrismaModel = never> = {
@@ -21201,6 +31006,11 @@ export namespace Prisma {
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
   }
 
+  export type BoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
   export type OrganizationScalarRelationFilter = {
     is?: OrganizationWhereInput
     isNot?: OrganizationWhereInput
@@ -21271,6 +31081,42 @@ export namespace Prisma {
     none?: CachedContactWhereInput
   }
 
+  export type EmailAttachmentListRelationFilter = {
+    every?: EmailAttachmentWhereInput
+    some?: EmailAttachmentWhereInput
+    none?: EmailAttachmentWhereInput
+  }
+
+  export type AiGeneratedReplyListRelationFilter = {
+    every?: AiGeneratedReplyWhereInput
+    some?: AiGeneratedReplyWhereInput
+    none?: AiGeneratedReplyWhereInput
+  }
+
+  export type CachedSearchResultListRelationFilter = {
+    every?: CachedSearchResultWhereInput
+    some?: CachedSearchResultWhereInput
+    none?: CachedSearchResultWhereInput
+  }
+
+  export type SyncStatusListRelationFilter = {
+    every?: SyncStatusWhereInput
+    some?: SyncStatusWhereInput
+    none?: SyncStatusWhereInput
+  }
+
+  export type NotificationLogListRelationFilter = {
+    every?: NotificationLogWhereInput
+    some?: NotificationLogWhereInput
+    none?: NotificationLogWhereInput
+  }
+
+  export type MigrationStatusListRelationFilter = {
+    every?: MigrationStatusWhereInput
+    some?: MigrationStatusWhereInput
+    none?: MigrationStatusWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -21316,6 +31162,30 @@ export namespace Prisma {
     _count?: SortOrder
   }
 
+  export type EmailAttachmentOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type AiGeneratedReplyOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type CachedSearchResultOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type SyncStatusOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type NotificationLogOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type MigrationStatusOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
   export type UserCountOrderByAggregateInput = {
     id?: SortOrder
     email?: SortOrder
@@ -21324,6 +31194,15 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     orgId?: SortOrder
+    notificationNewEmail?: SortOrder
+    notificationDailyDigest?: SortOrder
+    notificationAiReplies?: SortOrder
+    notificationCalendarReminders?: SortOrder
+    notificationWeeklyReport?: SortOrder
+    appTheme?: SortOrder
+    fontSize?: SortOrder
+    emailDensity?: SortOrder
+    lastActiveAccountId?: SortOrder
   }
 
   export type UserMaxOrderByAggregateInput = {
@@ -21334,6 +31213,15 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     orgId?: SortOrder
+    notificationNewEmail?: SortOrder
+    notificationDailyDigest?: SortOrder
+    notificationAiReplies?: SortOrder
+    notificationCalendarReminders?: SortOrder
+    notificationWeeklyReport?: SortOrder
+    appTheme?: SortOrder
+    fontSize?: SortOrder
+    emailDensity?: SortOrder
+    lastActiveAccountId?: SortOrder
   }
 
   export type UserMinOrderByAggregateInput = {
@@ -21344,6 +31232,15 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     orgId?: SortOrder
+    notificationNewEmail?: SortOrder
+    notificationDailyDigest?: SortOrder
+    notificationAiReplies?: SortOrder
+    notificationCalendarReminders?: SortOrder
+    notificationWeeklyReport?: SortOrder
+    appTheme?: SortOrder
+    fontSize?: SortOrder
+    emailDensity?: SortOrder
+    lastActiveAccountId?: SortOrder
   }
 
   export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -21364,9 +31261,12 @@ export namespace Prisma {
     _max?: NestedStringNullableFilter<$PrismaModel>
   }
 
-  export type BoolFilter<$PrismaModel = never> = {
+  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
     equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolFilter<$PrismaModel> | boolean
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
   }
 
   export type UserScalarRelationFilter = {
@@ -21413,14 +31313,6 @@ export namespace Prisma {
     isDefault?: SortOrder
     connectedAt?: SortOrder
     updatedAt?: SortOrder
-  }
-
-  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedBoolFilter<$PrismaModel>
-    _max?: NestedBoolFilter<$PrismaModel>
   }
 
   export type MsalTokenCacheCountOrderByAggregateInput = {
@@ -21547,6 +31439,17 @@ export namespace Prisma {
     not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
   }
 
+  export type IntFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntFilter<$PrismaModel> | number
+  }
+
   export type DraftCountOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
@@ -21559,14 +31462,25 @@ export namespace Prisma {
     bodyHtml?: SortOrder
     attachments?: SortOrder
     importance?: SortOrder
+    sensitivity?: SortOrder
     requestReadReceipt?: SortOrder
+    requestDeliveryReceipt?: SortOrder
+    categories?: SortOrder
     draftType?: SortOrder
     inReplyToMessageId?: SortOrder
     forwardedMessageId?: SortOrder
+    originalMessageBody?: SortOrder
     scheduledAt?: SortOrder
     scheduledSent?: SortOrder
+    scheduledNotificationSent?: SortOrder
+    lastScheduleAttemptAt?: SortOrder
+    scheduleAttemptCount?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+  }
+
+  export type DraftAvgOrderByAggregateInput = {
+    scheduleAttemptCount?: SortOrder
   }
 
   export type DraftMaxOrderByAggregateInput = {
@@ -21577,12 +31491,18 @@ export namespace Prisma {
     subject?: SortOrder
     bodyHtml?: SortOrder
     importance?: SortOrder
+    sensitivity?: SortOrder
     requestReadReceipt?: SortOrder
+    requestDeliveryReceipt?: SortOrder
     draftType?: SortOrder
     inReplyToMessageId?: SortOrder
     forwardedMessageId?: SortOrder
+    originalMessageBody?: SortOrder
     scheduledAt?: SortOrder
     scheduledSent?: SortOrder
+    scheduledNotificationSent?: SortOrder
+    lastScheduleAttemptAt?: SortOrder
+    scheduleAttemptCount?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -21595,14 +31515,24 @@ export namespace Prisma {
     subject?: SortOrder
     bodyHtml?: SortOrder
     importance?: SortOrder
+    sensitivity?: SortOrder
     requestReadReceipt?: SortOrder
+    requestDeliveryReceipt?: SortOrder
     draftType?: SortOrder
     inReplyToMessageId?: SortOrder
     forwardedMessageId?: SortOrder
+    originalMessageBody?: SortOrder
     scheduledAt?: SortOrder
     scheduledSent?: SortOrder
+    scheduledNotificationSent?: SortOrder
+    lastScheduleAttemptAt?: SortOrder
+    scheduleAttemptCount?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+  }
+
+  export type DraftSumOrderByAggregateInput = {
+    scheduleAttemptCount?: SortOrder
   }
   export type JsonWithAggregatesFilter<$PrismaModel = never> =
     | PatchUndefined<
@@ -21643,6 +31573,22 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedDateTimeNullableFilter<$PrismaModel>
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
+  export type IntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
   }
 
   export type SignatureCountOrderByAggregateInput = {
@@ -21693,17 +31639,6 @@ export namespace Prisma {
     updatedAt?: SortOrder
   }
 
-  export type IntFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntFilter<$PrismaModel> | number
-  }
-
   export type CachedFolderCountOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
@@ -21750,22 +31685,6 @@ export namespace Prisma {
     totalCount?: SortOrder
   }
 
-  export type IntWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
-    _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedFloatFilter<$PrismaModel>
-    _sum?: NestedIntFilter<$PrismaModel>
-    _min?: NestedIntFilter<$PrismaModel>
-    _max?: NestedIntFilter<$PrismaModel>
-  }
-
   export type CachedEmailCountOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
@@ -21782,6 +31701,13 @@ export namespace Prisma {
     hasAttachments?: SortOrder
     flagStatus?: SortOrder
     categories?: SortOrder
+    importance?: SortOrder
+    sensitivity?: SortOrder
+    inferenceClassification?: SortOrder
+    conversationId?: SortOrder
+    isDraft?: SortOrder
+    syncStatus?: SortOrder
+    lastModifiedDateTime?: SortOrder
     syncedAt?: SortOrder
   }
 
@@ -21799,6 +31725,13 @@ export namespace Prisma {
     isRead?: SortOrder
     hasAttachments?: SortOrder
     flagStatus?: SortOrder
+    importance?: SortOrder
+    sensitivity?: SortOrder
+    inferenceClassification?: SortOrder
+    conversationId?: SortOrder
+    isDraft?: SortOrder
+    syncStatus?: SortOrder
+    lastModifiedDateTime?: SortOrder
     syncedAt?: SortOrder
   }
 
@@ -21816,6 +31749,13 @@ export namespace Prisma {
     isRead?: SortOrder
     hasAttachments?: SortOrder
     flagStatus?: SortOrder
+    importance?: SortOrder
+    sensitivity?: SortOrder
+    inferenceClassification?: SortOrder
+    conversationId?: SortOrder
+    isDraft?: SortOrder
+    syncStatus?: SortOrder
+    lastModifiedDateTime?: SortOrder
     syncedAt?: SortOrder
   }
 
@@ -21836,12 +31776,14 @@ export namespace Prisma {
     homeAccountId?: SortOrder
     subject?: SortOrder
     bodyPreview?: SortOrder
+    bodyHtml?: SortOrder
     startDateTime?: SortOrder
     endDateTime?: SortOrder
     isAllDay?: SortOrder
     location?: SortOrder
     organizerName?: SortOrder
     organizerEmail?: SortOrder
+    organizerType?: SortOrder
     responseStatus?: SortOrder
     onlineMeetingUrl?: SortOrder
     attendees?: SortOrder
@@ -21849,6 +31791,15 @@ export namespace Prisma {
     reminderMinutes?: SortOrder
     showAs?: SortOrder
     recurrence?: SortOrder
+    eventColor?: SortOrder
+    timeZone?: SortOrder
+    teamsMeetingUrl?: SortOrder
+    teamsMeetingId?: SortOrder
+    seriesMasterId?: SortOrder
+    iCalUId?: SortOrder
+    calendarId?: SortOrder
+    createdDateTime?: SortOrder
+    lastModifiedDateTime?: SortOrder
     syncedAt?: SortOrder
   }
 
@@ -21862,18 +31813,29 @@ export namespace Prisma {
     homeAccountId?: SortOrder
     subject?: SortOrder
     bodyPreview?: SortOrder
+    bodyHtml?: SortOrder
     startDateTime?: SortOrder
     endDateTime?: SortOrder
     isAllDay?: SortOrder
     location?: SortOrder
     organizerName?: SortOrder
     organizerEmail?: SortOrder
+    organizerType?: SortOrder
     responseStatus?: SortOrder
     onlineMeetingUrl?: SortOrder
     isRecurring?: SortOrder
     reminderMinutes?: SortOrder
     showAs?: SortOrder
     recurrence?: SortOrder
+    eventColor?: SortOrder
+    timeZone?: SortOrder
+    teamsMeetingUrl?: SortOrder
+    teamsMeetingId?: SortOrder
+    seriesMasterId?: SortOrder
+    iCalUId?: SortOrder
+    calendarId?: SortOrder
+    createdDateTime?: SortOrder
+    lastModifiedDateTime?: SortOrder
     syncedAt?: SortOrder
   }
 
@@ -21883,18 +31845,29 @@ export namespace Prisma {
     homeAccountId?: SortOrder
     subject?: SortOrder
     bodyPreview?: SortOrder
+    bodyHtml?: SortOrder
     startDateTime?: SortOrder
     endDateTime?: SortOrder
     isAllDay?: SortOrder
     location?: SortOrder
     organizerName?: SortOrder
     organizerEmail?: SortOrder
+    organizerType?: SortOrder
     responseStatus?: SortOrder
     onlineMeetingUrl?: SortOrder
     isRecurring?: SortOrder
     reminderMinutes?: SortOrder
     showAs?: SortOrder
     recurrence?: SortOrder
+    eventColor?: SortOrder
+    timeZone?: SortOrder
+    teamsMeetingUrl?: SortOrder
+    teamsMeetingId?: SortOrder
+    seriesMasterId?: SortOrder
+    iCalUId?: SortOrder
+    calendarId?: SortOrder
+    createdDateTime?: SortOrder
+    lastModifiedDateTime?: SortOrder
     syncedAt?: SortOrder
   }
 
@@ -21927,7 +31900,28 @@ export namespace Prisma {
     phone?: SortOrder
     jobTitle?: SortOrder
     company?: SortOrder
+    department?: SortOrder
+    emailAddresses?: SortOrder
+    phones?: SortOrder
+    givenName?: SortOrder
+    surname?: SortOrder
+    middleName?: SortOrder
+    addresses?: SortOrder
+    imAddresses?: SortOrder
+    categories?: SortOrder
+    notes?: SortOrder
+    birthday?: SortOrder
+    anniversary?: SortOrder
+    manager?: SortOrder
+    directReports?: SortOrder
+    frequencyScore?: SortOrder
+    isVIP?: SortOrder
+    isFavorite?: SortOrder
     syncedAt?: SortOrder
+  }
+
+  export type CachedContactAvgOrderByAggregateInput = {
+    frequencyScore?: SortOrder
   }
 
   export type CachedContactMaxOrderByAggregateInput = {
@@ -21939,6 +31933,17 @@ export namespace Prisma {
     phone?: SortOrder
     jobTitle?: SortOrder
     company?: SortOrder
+    department?: SortOrder
+    givenName?: SortOrder
+    surname?: SortOrder
+    middleName?: SortOrder
+    notes?: SortOrder
+    birthday?: SortOrder
+    anniversary?: SortOrder
+    manager?: SortOrder
+    frequencyScore?: SortOrder
+    isVIP?: SortOrder
+    isFavorite?: SortOrder
     syncedAt?: SortOrder
   }
 
@@ -21951,7 +31956,22 @@ export namespace Prisma {
     phone?: SortOrder
     jobTitle?: SortOrder
     company?: SortOrder
+    department?: SortOrder
+    givenName?: SortOrder
+    surname?: SortOrder
+    middleName?: SortOrder
+    notes?: SortOrder
+    birthday?: SortOrder
+    anniversary?: SortOrder
+    manager?: SortOrder
+    frequencyScore?: SortOrder
+    isVIP?: SortOrder
+    isFavorite?: SortOrder
     syncedAt?: SortOrder
+  }
+
+  export type CachedContactSumOrderByAggregateInput = {
+    frequencyScore?: SortOrder
   }
 
   export type DeployLogCountOrderByAggregateInput = {
@@ -21986,6 +32006,10 @@ export namespace Prisma {
     actions?: SortOrder
     emailCount?: SortOrder
     stopProcessing?: SortOrder
+    lastExecutedAt?: SortOrder
+    lastExecutionStatus?: SortOrder
+    lastExecutionError?: SortOrder
+    failureCount?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -21993,6 +32017,7 @@ export namespace Prisma {
   export type EmailRuleAvgOrderByAggregateInput = {
     priority?: SortOrder
     emailCount?: SortOrder
+    failureCount?: SortOrder
   }
 
   export type EmailRuleMaxOrderByAggregateInput = {
@@ -22003,6 +32028,10 @@ export namespace Prisma {
     active?: SortOrder
     emailCount?: SortOrder
     stopProcessing?: SortOrder
+    lastExecutedAt?: SortOrder
+    lastExecutionStatus?: SortOrder
+    lastExecutionError?: SortOrder
+    failureCount?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -22015,6 +32044,10 @@ export namespace Prisma {
     active?: SortOrder
     emailCount?: SortOrder
     stopProcessing?: SortOrder
+    lastExecutedAt?: SortOrder
+    lastExecutionStatus?: SortOrder
+    lastExecutionError?: SortOrder
+    failureCount?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -22022,6 +32055,218 @@ export namespace Prisma {
   export type EmailRuleSumOrderByAggregateInput = {
     priority?: SortOrder
     emailCount?: SortOrder
+    failureCount?: SortOrder
+  }
+
+  export type EmailAttachmentCountOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    messageId?: SortOrder
+    graphMessageId?: SortOrder
+    fileName?: SortOrder
+    contentType?: SortOrder
+    size?: SortOrder
+    contentHash?: SortOrder
+    isInline?: SortOrder
+    contentId?: SortOrder
+    uploadedAt?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type EmailAttachmentAvgOrderByAggregateInput = {
+    size?: SortOrder
+  }
+
+  export type EmailAttachmentMaxOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    messageId?: SortOrder
+    graphMessageId?: SortOrder
+    fileName?: SortOrder
+    contentType?: SortOrder
+    size?: SortOrder
+    contentHash?: SortOrder
+    isInline?: SortOrder
+    contentId?: SortOrder
+    uploadedAt?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type EmailAttachmentMinOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    messageId?: SortOrder
+    graphMessageId?: SortOrder
+    fileName?: SortOrder
+    contentType?: SortOrder
+    size?: SortOrder
+    contentHash?: SortOrder
+    isInline?: SortOrder
+    contentId?: SortOrder
+    uploadedAt?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type EmailAttachmentSumOrderByAggregateInput = {
+    size?: SortOrder
+  }
+
+  export type AiGeneratedReplyCountOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    messageId?: SortOrder
+    generatedBody?: SortOrder
+    createdAt?: SortOrder
+    expiresAt?: SortOrder
+  }
+
+  export type AiGeneratedReplyMaxOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    messageId?: SortOrder
+    generatedBody?: SortOrder
+    createdAt?: SortOrder
+    expiresAt?: SortOrder
+  }
+
+  export type AiGeneratedReplyMinOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    messageId?: SortOrder
+    generatedBody?: SortOrder
+    createdAt?: SortOrder
+    expiresAt?: SortOrder
+  }
+
+  export type CachedSearchResultUserIdHomeAccountIdQueryCompoundUniqueInput = {
+    userId: string
+    homeAccountId: string
+    query: string
+  }
+
+  export type CachedSearchResultCountOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    homeAccountId?: SortOrder
+    query?: SortOrder
+    results?: SortOrder
+    createdAt?: SortOrder
+    expiresAt?: SortOrder
+  }
+
+  export type CachedSearchResultMaxOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    homeAccountId?: SortOrder
+    query?: SortOrder
+    createdAt?: SortOrder
+    expiresAt?: SortOrder
+  }
+
+  export type CachedSearchResultMinOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    homeAccountId?: SortOrder
+    query?: SortOrder
+    createdAt?: SortOrder
+    expiresAt?: SortOrder
+  }
+
+  export type SyncStatusUserIdHomeAccountIdResourceTypeCompoundUniqueInput = {
+    userId: string
+    homeAccountId: string
+    resourceType: string
+  }
+
+  export type SyncStatusCountOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    homeAccountId?: SortOrder
+    resourceType?: SortOrder
+    lastSyncedAt?: SortOrder
+    status?: SortOrder
+    errorMessage?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type SyncStatusMaxOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    homeAccountId?: SortOrder
+    resourceType?: SortOrder
+    lastSyncedAt?: SortOrder
+    status?: SortOrder
+    errorMessage?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type SyncStatusMinOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    homeAccountId?: SortOrder
+    resourceType?: SortOrder
+    lastSyncedAt?: SortOrder
+    status?: SortOrder
+    errorMessage?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type NotificationLogCountOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    type?: SortOrder
+    sentAt?: SortOrder
+    status?: SortOrder
+    errorMessage?: SortOrder
+    metadata?: SortOrder
+  }
+
+  export type NotificationLogMaxOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    type?: SortOrder
+    sentAt?: SortOrder
+    status?: SortOrder
+    errorMessage?: SortOrder
+  }
+
+  export type NotificationLogMinOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    type?: SortOrder
+    sentAt?: SortOrder
+    status?: SortOrder
+    errorMessage?: SortOrder
+  }
+
+  export type MigrationStatusUserIdMigrationTypeCompoundUniqueInput = {
+    userId: string
+    migrationType: string
+  }
+
+  export type MigrationStatusCountOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    migrationType?: SortOrder
+    completedAt?: SortOrder
+    metadata?: SortOrder
+  }
+
+  export type MigrationStatusMaxOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    migrationType?: SortOrder
+    completedAt?: SortOrder
+  }
+
+  export type MigrationStatusMinOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    migrationType?: SortOrder
+    completedAt?: SortOrder
   }
 
   export type UserCreateNestedManyWithoutOrgInput = {
@@ -22156,6 +32401,48 @@ export namespace Prisma {
     connect?: CachedContactWhereUniqueInput | CachedContactWhereUniqueInput[]
   }
 
+  export type EmailAttachmentCreateNestedManyWithoutUserInput = {
+    create?: XOR<EmailAttachmentCreateWithoutUserInput, EmailAttachmentUncheckedCreateWithoutUserInput> | EmailAttachmentCreateWithoutUserInput[] | EmailAttachmentUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: EmailAttachmentCreateOrConnectWithoutUserInput | EmailAttachmentCreateOrConnectWithoutUserInput[]
+    createMany?: EmailAttachmentCreateManyUserInputEnvelope
+    connect?: EmailAttachmentWhereUniqueInput | EmailAttachmentWhereUniqueInput[]
+  }
+
+  export type AiGeneratedReplyCreateNestedManyWithoutUserInput = {
+    create?: XOR<AiGeneratedReplyCreateWithoutUserInput, AiGeneratedReplyUncheckedCreateWithoutUserInput> | AiGeneratedReplyCreateWithoutUserInput[] | AiGeneratedReplyUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: AiGeneratedReplyCreateOrConnectWithoutUserInput | AiGeneratedReplyCreateOrConnectWithoutUserInput[]
+    createMany?: AiGeneratedReplyCreateManyUserInputEnvelope
+    connect?: AiGeneratedReplyWhereUniqueInput | AiGeneratedReplyWhereUniqueInput[]
+  }
+
+  export type CachedSearchResultCreateNestedManyWithoutUserInput = {
+    create?: XOR<CachedSearchResultCreateWithoutUserInput, CachedSearchResultUncheckedCreateWithoutUserInput> | CachedSearchResultCreateWithoutUserInput[] | CachedSearchResultUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: CachedSearchResultCreateOrConnectWithoutUserInput | CachedSearchResultCreateOrConnectWithoutUserInput[]
+    createMany?: CachedSearchResultCreateManyUserInputEnvelope
+    connect?: CachedSearchResultWhereUniqueInput | CachedSearchResultWhereUniqueInput[]
+  }
+
+  export type SyncStatusCreateNestedManyWithoutUserInput = {
+    create?: XOR<SyncStatusCreateWithoutUserInput, SyncStatusUncheckedCreateWithoutUserInput> | SyncStatusCreateWithoutUserInput[] | SyncStatusUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: SyncStatusCreateOrConnectWithoutUserInput | SyncStatusCreateOrConnectWithoutUserInput[]
+    createMany?: SyncStatusCreateManyUserInputEnvelope
+    connect?: SyncStatusWhereUniqueInput | SyncStatusWhereUniqueInput[]
+  }
+
+  export type NotificationLogCreateNestedManyWithoutUserInput = {
+    create?: XOR<NotificationLogCreateWithoutUserInput, NotificationLogUncheckedCreateWithoutUserInput> | NotificationLogCreateWithoutUserInput[] | NotificationLogUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: NotificationLogCreateOrConnectWithoutUserInput | NotificationLogCreateOrConnectWithoutUserInput[]
+    createMany?: NotificationLogCreateManyUserInputEnvelope
+    connect?: NotificationLogWhereUniqueInput | NotificationLogWhereUniqueInput[]
+  }
+
+  export type MigrationStatusCreateNestedManyWithoutUserInput = {
+    create?: XOR<MigrationStatusCreateWithoutUserInput, MigrationStatusUncheckedCreateWithoutUserInput> | MigrationStatusCreateWithoutUserInput[] | MigrationStatusUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: MigrationStatusCreateOrConnectWithoutUserInput | MigrationStatusCreateOrConnectWithoutUserInput[]
+    createMany?: MigrationStatusCreateManyUserInputEnvelope
+    connect?: MigrationStatusWhereUniqueInput | MigrationStatusWhereUniqueInput[]
+  }
+
   export type MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<MsConnectedAccountCreateWithoutUserInput, MsConnectedAccountUncheckedCreateWithoutUserInput> | MsConnectedAccountCreateWithoutUserInput[] | MsConnectedAccountUncheckedCreateWithoutUserInput[]
     connectOrCreate?: MsConnectedAccountCreateOrConnectWithoutUserInput | MsConnectedAccountCreateOrConnectWithoutUserInput[]
@@ -22232,8 +32519,54 @@ export namespace Prisma {
     connect?: CachedContactWhereUniqueInput | CachedContactWhereUniqueInput[]
   }
 
+  export type EmailAttachmentUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<EmailAttachmentCreateWithoutUserInput, EmailAttachmentUncheckedCreateWithoutUserInput> | EmailAttachmentCreateWithoutUserInput[] | EmailAttachmentUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: EmailAttachmentCreateOrConnectWithoutUserInput | EmailAttachmentCreateOrConnectWithoutUserInput[]
+    createMany?: EmailAttachmentCreateManyUserInputEnvelope
+    connect?: EmailAttachmentWhereUniqueInput | EmailAttachmentWhereUniqueInput[]
+  }
+
+  export type AiGeneratedReplyUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<AiGeneratedReplyCreateWithoutUserInput, AiGeneratedReplyUncheckedCreateWithoutUserInput> | AiGeneratedReplyCreateWithoutUserInput[] | AiGeneratedReplyUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: AiGeneratedReplyCreateOrConnectWithoutUserInput | AiGeneratedReplyCreateOrConnectWithoutUserInput[]
+    createMany?: AiGeneratedReplyCreateManyUserInputEnvelope
+    connect?: AiGeneratedReplyWhereUniqueInput | AiGeneratedReplyWhereUniqueInput[]
+  }
+
+  export type CachedSearchResultUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<CachedSearchResultCreateWithoutUserInput, CachedSearchResultUncheckedCreateWithoutUserInput> | CachedSearchResultCreateWithoutUserInput[] | CachedSearchResultUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: CachedSearchResultCreateOrConnectWithoutUserInput | CachedSearchResultCreateOrConnectWithoutUserInput[]
+    createMany?: CachedSearchResultCreateManyUserInputEnvelope
+    connect?: CachedSearchResultWhereUniqueInput | CachedSearchResultWhereUniqueInput[]
+  }
+
+  export type SyncStatusUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<SyncStatusCreateWithoutUserInput, SyncStatusUncheckedCreateWithoutUserInput> | SyncStatusCreateWithoutUserInput[] | SyncStatusUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: SyncStatusCreateOrConnectWithoutUserInput | SyncStatusCreateOrConnectWithoutUserInput[]
+    createMany?: SyncStatusCreateManyUserInputEnvelope
+    connect?: SyncStatusWhereUniqueInput | SyncStatusWhereUniqueInput[]
+  }
+
+  export type NotificationLogUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<NotificationLogCreateWithoutUserInput, NotificationLogUncheckedCreateWithoutUserInput> | NotificationLogCreateWithoutUserInput[] | NotificationLogUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: NotificationLogCreateOrConnectWithoutUserInput | NotificationLogCreateOrConnectWithoutUserInput[]
+    createMany?: NotificationLogCreateManyUserInputEnvelope
+    connect?: NotificationLogWhereUniqueInput | NotificationLogWhereUniqueInput[]
+  }
+
+  export type MigrationStatusUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<MigrationStatusCreateWithoutUserInput, MigrationStatusUncheckedCreateWithoutUserInput> | MigrationStatusCreateWithoutUserInput[] | MigrationStatusUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: MigrationStatusCreateOrConnectWithoutUserInput | MigrationStatusCreateOrConnectWithoutUserInput[]
+    createMany?: MigrationStatusCreateManyUserInputEnvelope
+    connect?: MigrationStatusWhereUniqueInput | MigrationStatusWhereUniqueInput[]
+  }
+
   export type NullableStringFieldUpdateOperationsInput = {
     set?: string | null
+  }
+
+  export type BoolFieldUpdateOperationsInput = {
+    set?: boolean
   }
 
   export type OrganizationUpdateOneRequiredWithoutUsersNestedInput = {
@@ -22394,6 +32727,90 @@ export namespace Prisma {
     deleteMany?: CachedContactScalarWhereInput | CachedContactScalarWhereInput[]
   }
 
+  export type EmailAttachmentUpdateManyWithoutUserNestedInput = {
+    create?: XOR<EmailAttachmentCreateWithoutUserInput, EmailAttachmentUncheckedCreateWithoutUserInput> | EmailAttachmentCreateWithoutUserInput[] | EmailAttachmentUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: EmailAttachmentCreateOrConnectWithoutUserInput | EmailAttachmentCreateOrConnectWithoutUserInput[]
+    upsert?: EmailAttachmentUpsertWithWhereUniqueWithoutUserInput | EmailAttachmentUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: EmailAttachmentCreateManyUserInputEnvelope
+    set?: EmailAttachmentWhereUniqueInput | EmailAttachmentWhereUniqueInput[]
+    disconnect?: EmailAttachmentWhereUniqueInput | EmailAttachmentWhereUniqueInput[]
+    delete?: EmailAttachmentWhereUniqueInput | EmailAttachmentWhereUniqueInput[]
+    connect?: EmailAttachmentWhereUniqueInput | EmailAttachmentWhereUniqueInput[]
+    update?: EmailAttachmentUpdateWithWhereUniqueWithoutUserInput | EmailAttachmentUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: EmailAttachmentUpdateManyWithWhereWithoutUserInput | EmailAttachmentUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: EmailAttachmentScalarWhereInput | EmailAttachmentScalarWhereInput[]
+  }
+
+  export type AiGeneratedReplyUpdateManyWithoutUserNestedInput = {
+    create?: XOR<AiGeneratedReplyCreateWithoutUserInput, AiGeneratedReplyUncheckedCreateWithoutUserInput> | AiGeneratedReplyCreateWithoutUserInput[] | AiGeneratedReplyUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: AiGeneratedReplyCreateOrConnectWithoutUserInput | AiGeneratedReplyCreateOrConnectWithoutUserInput[]
+    upsert?: AiGeneratedReplyUpsertWithWhereUniqueWithoutUserInput | AiGeneratedReplyUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: AiGeneratedReplyCreateManyUserInputEnvelope
+    set?: AiGeneratedReplyWhereUniqueInput | AiGeneratedReplyWhereUniqueInput[]
+    disconnect?: AiGeneratedReplyWhereUniqueInput | AiGeneratedReplyWhereUniqueInput[]
+    delete?: AiGeneratedReplyWhereUniqueInput | AiGeneratedReplyWhereUniqueInput[]
+    connect?: AiGeneratedReplyWhereUniqueInput | AiGeneratedReplyWhereUniqueInput[]
+    update?: AiGeneratedReplyUpdateWithWhereUniqueWithoutUserInput | AiGeneratedReplyUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: AiGeneratedReplyUpdateManyWithWhereWithoutUserInput | AiGeneratedReplyUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: AiGeneratedReplyScalarWhereInput | AiGeneratedReplyScalarWhereInput[]
+  }
+
+  export type CachedSearchResultUpdateManyWithoutUserNestedInput = {
+    create?: XOR<CachedSearchResultCreateWithoutUserInput, CachedSearchResultUncheckedCreateWithoutUserInput> | CachedSearchResultCreateWithoutUserInput[] | CachedSearchResultUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: CachedSearchResultCreateOrConnectWithoutUserInput | CachedSearchResultCreateOrConnectWithoutUserInput[]
+    upsert?: CachedSearchResultUpsertWithWhereUniqueWithoutUserInput | CachedSearchResultUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: CachedSearchResultCreateManyUserInputEnvelope
+    set?: CachedSearchResultWhereUniqueInput | CachedSearchResultWhereUniqueInput[]
+    disconnect?: CachedSearchResultWhereUniqueInput | CachedSearchResultWhereUniqueInput[]
+    delete?: CachedSearchResultWhereUniqueInput | CachedSearchResultWhereUniqueInput[]
+    connect?: CachedSearchResultWhereUniqueInput | CachedSearchResultWhereUniqueInput[]
+    update?: CachedSearchResultUpdateWithWhereUniqueWithoutUserInput | CachedSearchResultUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: CachedSearchResultUpdateManyWithWhereWithoutUserInput | CachedSearchResultUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: CachedSearchResultScalarWhereInput | CachedSearchResultScalarWhereInput[]
+  }
+
+  export type SyncStatusUpdateManyWithoutUserNestedInput = {
+    create?: XOR<SyncStatusCreateWithoutUserInput, SyncStatusUncheckedCreateWithoutUserInput> | SyncStatusCreateWithoutUserInput[] | SyncStatusUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: SyncStatusCreateOrConnectWithoutUserInput | SyncStatusCreateOrConnectWithoutUserInput[]
+    upsert?: SyncStatusUpsertWithWhereUniqueWithoutUserInput | SyncStatusUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: SyncStatusCreateManyUserInputEnvelope
+    set?: SyncStatusWhereUniqueInput | SyncStatusWhereUniqueInput[]
+    disconnect?: SyncStatusWhereUniqueInput | SyncStatusWhereUniqueInput[]
+    delete?: SyncStatusWhereUniqueInput | SyncStatusWhereUniqueInput[]
+    connect?: SyncStatusWhereUniqueInput | SyncStatusWhereUniqueInput[]
+    update?: SyncStatusUpdateWithWhereUniqueWithoutUserInput | SyncStatusUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: SyncStatusUpdateManyWithWhereWithoutUserInput | SyncStatusUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: SyncStatusScalarWhereInput | SyncStatusScalarWhereInput[]
+  }
+
+  export type NotificationLogUpdateManyWithoutUserNestedInput = {
+    create?: XOR<NotificationLogCreateWithoutUserInput, NotificationLogUncheckedCreateWithoutUserInput> | NotificationLogCreateWithoutUserInput[] | NotificationLogUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: NotificationLogCreateOrConnectWithoutUserInput | NotificationLogCreateOrConnectWithoutUserInput[]
+    upsert?: NotificationLogUpsertWithWhereUniqueWithoutUserInput | NotificationLogUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: NotificationLogCreateManyUserInputEnvelope
+    set?: NotificationLogWhereUniqueInput | NotificationLogWhereUniqueInput[]
+    disconnect?: NotificationLogWhereUniqueInput | NotificationLogWhereUniqueInput[]
+    delete?: NotificationLogWhereUniqueInput | NotificationLogWhereUniqueInput[]
+    connect?: NotificationLogWhereUniqueInput | NotificationLogWhereUniqueInput[]
+    update?: NotificationLogUpdateWithWhereUniqueWithoutUserInput | NotificationLogUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: NotificationLogUpdateManyWithWhereWithoutUserInput | NotificationLogUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: NotificationLogScalarWhereInput | NotificationLogScalarWhereInput[]
+  }
+
+  export type MigrationStatusUpdateManyWithoutUserNestedInput = {
+    create?: XOR<MigrationStatusCreateWithoutUserInput, MigrationStatusUncheckedCreateWithoutUserInput> | MigrationStatusCreateWithoutUserInput[] | MigrationStatusUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: MigrationStatusCreateOrConnectWithoutUserInput | MigrationStatusCreateOrConnectWithoutUserInput[]
+    upsert?: MigrationStatusUpsertWithWhereUniqueWithoutUserInput | MigrationStatusUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: MigrationStatusCreateManyUserInputEnvelope
+    set?: MigrationStatusWhereUniqueInput | MigrationStatusWhereUniqueInput[]
+    disconnect?: MigrationStatusWhereUniqueInput | MigrationStatusWhereUniqueInput[]
+    delete?: MigrationStatusWhereUniqueInput | MigrationStatusWhereUniqueInput[]
+    connect?: MigrationStatusWhereUniqueInput | MigrationStatusWhereUniqueInput[]
+    update?: MigrationStatusUpdateWithWhereUniqueWithoutUserInput | MigrationStatusUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: MigrationStatusUpdateManyWithWhereWithoutUserInput | MigrationStatusUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: MigrationStatusScalarWhereInput | MigrationStatusScalarWhereInput[]
+  }
+
   export type MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput = {
     create?: XOR<MsConnectedAccountCreateWithoutUserInput, MsConnectedAccountUncheckedCreateWithoutUserInput> | MsConnectedAccountCreateWithoutUserInput[] | MsConnectedAccountUncheckedCreateWithoutUserInput[]
     connectOrCreate?: MsConnectedAccountCreateOrConnectWithoutUserInput | MsConnectedAccountCreateOrConnectWithoutUserInput[]
@@ -22544,14 +32961,94 @@ export namespace Prisma {
     deleteMany?: CachedContactScalarWhereInput | CachedContactScalarWhereInput[]
   }
 
+  export type EmailAttachmentUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<EmailAttachmentCreateWithoutUserInput, EmailAttachmentUncheckedCreateWithoutUserInput> | EmailAttachmentCreateWithoutUserInput[] | EmailAttachmentUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: EmailAttachmentCreateOrConnectWithoutUserInput | EmailAttachmentCreateOrConnectWithoutUserInput[]
+    upsert?: EmailAttachmentUpsertWithWhereUniqueWithoutUserInput | EmailAttachmentUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: EmailAttachmentCreateManyUserInputEnvelope
+    set?: EmailAttachmentWhereUniqueInput | EmailAttachmentWhereUniqueInput[]
+    disconnect?: EmailAttachmentWhereUniqueInput | EmailAttachmentWhereUniqueInput[]
+    delete?: EmailAttachmentWhereUniqueInput | EmailAttachmentWhereUniqueInput[]
+    connect?: EmailAttachmentWhereUniqueInput | EmailAttachmentWhereUniqueInput[]
+    update?: EmailAttachmentUpdateWithWhereUniqueWithoutUserInput | EmailAttachmentUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: EmailAttachmentUpdateManyWithWhereWithoutUserInput | EmailAttachmentUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: EmailAttachmentScalarWhereInput | EmailAttachmentScalarWhereInput[]
+  }
+
+  export type AiGeneratedReplyUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<AiGeneratedReplyCreateWithoutUserInput, AiGeneratedReplyUncheckedCreateWithoutUserInput> | AiGeneratedReplyCreateWithoutUserInput[] | AiGeneratedReplyUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: AiGeneratedReplyCreateOrConnectWithoutUserInput | AiGeneratedReplyCreateOrConnectWithoutUserInput[]
+    upsert?: AiGeneratedReplyUpsertWithWhereUniqueWithoutUserInput | AiGeneratedReplyUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: AiGeneratedReplyCreateManyUserInputEnvelope
+    set?: AiGeneratedReplyWhereUniqueInput | AiGeneratedReplyWhereUniqueInput[]
+    disconnect?: AiGeneratedReplyWhereUniqueInput | AiGeneratedReplyWhereUniqueInput[]
+    delete?: AiGeneratedReplyWhereUniqueInput | AiGeneratedReplyWhereUniqueInput[]
+    connect?: AiGeneratedReplyWhereUniqueInput | AiGeneratedReplyWhereUniqueInput[]
+    update?: AiGeneratedReplyUpdateWithWhereUniqueWithoutUserInput | AiGeneratedReplyUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: AiGeneratedReplyUpdateManyWithWhereWithoutUserInput | AiGeneratedReplyUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: AiGeneratedReplyScalarWhereInput | AiGeneratedReplyScalarWhereInput[]
+  }
+
+  export type CachedSearchResultUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<CachedSearchResultCreateWithoutUserInput, CachedSearchResultUncheckedCreateWithoutUserInput> | CachedSearchResultCreateWithoutUserInput[] | CachedSearchResultUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: CachedSearchResultCreateOrConnectWithoutUserInput | CachedSearchResultCreateOrConnectWithoutUserInput[]
+    upsert?: CachedSearchResultUpsertWithWhereUniqueWithoutUserInput | CachedSearchResultUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: CachedSearchResultCreateManyUserInputEnvelope
+    set?: CachedSearchResultWhereUniqueInput | CachedSearchResultWhereUniqueInput[]
+    disconnect?: CachedSearchResultWhereUniqueInput | CachedSearchResultWhereUniqueInput[]
+    delete?: CachedSearchResultWhereUniqueInput | CachedSearchResultWhereUniqueInput[]
+    connect?: CachedSearchResultWhereUniqueInput | CachedSearchResultWhereUniqueInput[]
+    update?: CachedSearchResultUpdateWithWhereUniqueWithoutUserInput | CachedSearchResultUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: CachedSearchResultUpdateManyWithWhereWithoutUserInput | CachedSearchResultUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: CachedSearchResultScalarWhereInput | CachedSearchResultScalarWhereInput[]
+  }
+
+  export type SyncStatusUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<SyncStatusCreateWithoutUserInput, SyncStatusUncheckedCreateWithoutUserInput> | SyncStatusCreateWithoutUserInput[] | SyncStatusUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: SyncStatusCreateOrConnectWithoutUserInput | SyncStatusCreateOrConnectWithoutUserInput[]
+    upsert?: SyncStatusUpsertWithWhereUniqueWithoutUserInput | SyncStatusUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: SyncStatusCreateManyUserInputEnvelope
+    set?: SyncStatusWhereUniqueInput | SyncStatusWhereUniqueInput[]
+    disconnect?: SyncStatusWhereUniqueInput | SyncStatusWhereUniqueInput[]
+    delete?: SyncStatusWhereUniqueInput | SyncStatusWhereUniqueInput[]
+    connect?: SyncStatusWhereUniqueInput | SyncStatusWhereUniqueInput[]
+    update?: SyncStatusUpdateWithWhereUniqueWithoutUserInput | SyncStatusUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: SyncStatusUpdateManyWithWhereWithoutUserInput | SyncStatusUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: SyncStatusScalarWhereInput | SyncStatusScalarWhereInput[]
+  }
+
+  export type NotificationLogUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<NotificationLogCreateWithoutUserInput, NotificationLogUncheckedCreateWithoutUserInput> | NotificationLogCreateWithoutUserInput[] | NotificationLogUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: NotificationLogCreateOrConnectWithoutUserInput | NotificationLogCreateOrConnectWithoutUserInput[]
+    upsert?: NotificationLogUpsertWithWhereUniqueWithoutUserInput | NotificationLogUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: NotificationLogCreateManyUserInputEnvelope
+    set?: NotificationLogWhereUniqueInput | NotificationLogWhereUniqueInput[]
+    disconnect?: NotificationLogWhereUniqueInput | NotificationLogWhereUniqueInput[]
+    delete?: NotificationLogWhereUniqueInput | NotificationLogWhereUniqueInput[]
+    connect?: NotificationLogWhereUniqueInput | NotificationLogWhereUniqueInput[]
+    update?: NotificationLogUpdateWithWhereUniqueWithoutUserInput | NotificationLogUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: NotificationLogUpdateManyWithWhereWithoutUserInput | NotificationLogUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: NotificationLogScalarWhereInput | NotificationLogScalarWhereInput[]
+  }
+
+  export type MigrationStatusUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<MigrationStatusCreateWithoutUserInput, MigrationStatusUncheckedCreateWithoutUserInput> | MigrationStatusCreateWithoutUserInput[] | MigrationStatusUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: MigrationStatusCreateOrConnectWithoutUserInput | MigrationStatusCreateOrConnectWithoutUserInput[]
+    upsert?: MigrationStatusUpsertWithWhereUniqueWithoutUserInput | MigrationStatusUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: MigrationStatusCreateManyUserInputEnvelope
+    set?: MigrationStatusWhereUniqueInput | MigrationStatusWhereUniqueInput[]
+    disconnect?: MigrationStatusWhereUniqueInput | MigrationStatusWhereUniqueInput[]
+    delete?: MigrationStatusWhereUniqueInput | MigrationStatusWhereUniqueInput[]
+    connect?: MigrationStatusWhereUniqueInput | MigrationStatusWhereUniqueInput[]
+    update?: MigrationStatusUpdateWithWhereUniqueWithoutUserInput | MigrationStatusUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: MigrationStatusUpdateManyWithWhereWithoutUserInput | MigrationStatusUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: MigrationStatusScalarWhereInput | MigrationStatusScalarWhereInput[]
+  }
+
   export type UserCreateNestedOneWithoutMsAccountsInput = {
     create?: XOR<UserCreateWithoutMsAccountsInput, UserUncheckedCreateWithoutMsAccountsInput>
     connectOrCreate?: UserCreateOrConnectWithoutMsAccountsInput
     connect?: UserWhereUniqueInput
-  }
-
-  export type BoolFieldUpdateOperationsInput = {
-    set?: boolean
   }
 
   export type UserUpdateOneRequiredWithoutMsAccountsNestedInput = {
@@ -22614,6 +33111,14 @@ export namespace Prisma {
     set?: Date | string | null
   }
 
+  export type IntFieldUpdateOperationsInput = {
+    set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
   export type UserUpdateOneRequiredWithoutDraftsNestedInput = {
     create?: XOR<UserCreateWithoutDraftsInput, UserUncheckedCreateWithoutDraftsInput>
     connectOrCreate?: UserCreateOrConnectWithoutDraftsInput
@@ -22640,14 +33145,6 @@ export namespace Prisma {
     create?: XOR<UserCreateWithoutCachedFoldersInput, UserUncheckedCreateWithoutCachedFoldersInput>
     connectOrCreate?: UserCreateOrConnectWithoutCachedFoldersInput
     connect?: UserWhereUniqueInput
-  }
-
-  export type IntFieldUpdateOperationsInput = {
-    set?: number
-    increment?: number
-    decrement?: number
-    multiply?: number
-    divide?: number
   }
 
   export type UserUpdateOneRequiredWithoutCachedFoldersNestedInput = {
@@ -22720,6 +33217,90 @@ export namespace Prisma {
     upsert?: UserUpsertWithoutEmailRulesInput
     connect?: UserWhereUniqueInput
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutEmailRulesInput, UserUpdateWithoutEmailRulesInput>, UserUncheckedUpdateWithoutEmailRulesInput>
+  }
+
+  export type UserCreateNestedOneWithoutEmailAttachmentsInput = {
+    create?: XOR<UserCreateWithoutEmailAttachmentsInput, UserUncheckedCreateWithoutEmailAttachmentsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutEmailAttachmentsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserUpdateOneRequiredWithoutEmailAttachmentsNestedInput = {
+    create?: XOR<UserCreateWithoutEmailAttachmentsInput, UserUncheckedCreateWithoutEmailAttachmentsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutEmailAttachmentsInput
+    upsert?: UserUpsertWithoutEmailAttachmentsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutEmailAttachmentsInput, UserUpdateWithoutEmailAttachmentsInput>, UserUncheckedUpdateWithoutEmailAttachmentsInput>
+  }
+
+  export type UserCreateNestedOneWithoutAiGeneratedRepliesInput = {
+    create?: XOR<UserCreateWithoutAiGeneratedRepliesInput, UserUncheckedCreateWithoutAiGeneratedRepliesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutAiGeneratedRepliesInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserUpdateOneRequiredWithoutAiGeneratedRepliesNestedInput = {
+    create?: XOR<UserCreateWithoutAiGeneratedRepliesInput, UserUncheckedCreateWithoutAiGeneratedRepliesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutAiGeneratedRepliesInput
+    upsert?: UserUpsertWithoutAiGeneratedRepliesInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutAiGeneratedRepliesInput, UserUpdateWithoutAiGeneratedRepliesInput>, UserUncheckedUpdateWithoutAiGeneratedRepliesInput>
+  }
+
+  export type UserCreateNestedOneWithoutCachedSearchResultsInput = {
+    create?: XOR<UserCreateWithoutCachedSearchResultsInput, UserUncheckedCreateWithoutCachedSearchResultsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutCachedSearchResultsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserUpdateOneRequiredWithoutCachedSearchResultsNestedInput = {
+    create?: XOR<UserCreateWithoutCachedSearchResultsInput, UserUncheckedCreateWithoutCachedSearchResultsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutCachedSearchResultsInput
+    upsert?: UserUpsertWithoutCachedSearchResultsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutCachedSearchResultsInput, UserUpdateWithoutCachedSearchResultsInput>, UserUncheckedUpdateWithoutCachedSearchResultsInput>
+  }
+
+  export type UserCreateNestedOneWithoutSyncStatusesInput = {
+    create?: XOR<UserCreateWithoutSyncStatusesInput, UserUncheckedCreateWithoutSyncStatusesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutSyncStatusesInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserUpdateOneRequiredWithoutSyncStatusesNestedInput = {
+    create?: XOR<UserCreateWithoutSyncStatusesInput, UserUncheckedCreateWithoutSyncStatusesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutSyncStatusesInput
+    upsert?: UserUpsertWithoutSyncStatusesInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutSyncStatusesInput, UserUpdateWithoutSyncStatusesInput>, UserUncheckedUpdateWithoutSyncStatusesInput>
+  }
+
+  export type UserCreateNestedOneWithoutNotificationLogsInput = {
+    create?: XOR<UserCreateWithoutNotificationLogsInput, UserUncheckedCreateWithoutNotificationLogsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutNotificationLogsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserUpdateOneRequiredWithoutNotificationLogsNestedInput = {
+    create?: XOR<UserCreateWithoutNotificationLogsInput, UserUncheckedCreateWithoutNotificationLogsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutNotificationLogsInput
+    upsert?: UserUpsertWithoutNotificationLogsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutNotificationLogsInput, UserUpdateWithoutNotificationLogsInput>, UserUncheckedUpdateWithoutNotificationLogsInput>
+  }
+
+  export type UserCreateNestedOneWithoutMigrationStatusesInput = {
+    create?: XOR<UserCreateWithoutMigrationStatusesInput, UserUncheckedCreateWithoutMigrationStatusesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutMigrationStatusesInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserUpdateOneRequiredWithoutMigrationStatusesNestedInput = {
+    create?: XOR<UserCreateWithoutMigrationStatusesInput, UserUncheckedCreateWithoutMigrationStatusesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutMigrationStatusesInput
+    upsert?: UserUpsertWithoutMigrationStatusesInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutMigrationStatusesInput, UserUpdateWithoutMigrationStatusesInput>, UserUncheckedUpdateWithoutMigrationStatusesInput>
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -22803,6 +33384,11 @@ export namespace Prisma {
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
   }
 
+  export type NestedBoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
   export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | null
     in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
@@ -22829,11 +33415,6 @@ export namespace Prisma {
     gt?: number | IntFieldRefInput<$PrismaModel>
     gte?: number | IntFieldRefInput<$PrismaModel>
     not?: NestedIntNullableFilter<$PrismaModel> | number | null
-  }
-
-  export type NestedBoolFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolFilter<$PrismaModel> | boolean
   }
 
   export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
@@ -22953,6 +33534,15 @@ export namespace Prisma {
     avatarUrl?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    notificationNewEmail?: boolean
+    notificationDailyDigest?: boolean
+    notificationAiReplies?: boolean
+    notificationCalendarReminders?: boolean
+    notificationWeeklyReport?: boolean
+    appTheme?: string
+    fontSize?: string
+    emailDensity?: string
+    lastActiveAccountId?: string | null
     msAccounts?: MsConnectedAccountCreateNestedManyWithoutUserInput
     msalCache?: MsalTokenCacheCreateNestedOneWithoutUserInput
     deltaLinks?: EmailDeltaLinkCreateNestedManyWithoutUserInput
@@ -22964,6 +33554,12 @@ export namespace Prisma {
     cachedEmails?: CachedEmailCreateNestedManyWithoutUserInput
     cachedCalEvents?: CachedCalendarEventCreateNestedManyWithoutUserInput
     cachedContacts?: CachedContactCreateNestedManyWithoutUserInput
+    emailAttachments?: EmailAttachmentCreateNestedManyWithoutUserInput
+    aiGeneratedReplies?: AiGeneratedReplyCreateNestedManyWithoutUserInput
+    cachedSearchResults?: CachedSearchResultCreateNestedManyWithoutUserInput
+    syncStatuses?: SyncStatusCreateNestedManyWithoutUserInput
+    notificationLogs?: NotificationLogCreateNestedManyWithoutUserInput
+    migrationStatuses?: MigrationStatusCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutOrgInput = {
@@ -22973,6 +33569,15 @@ export namespace Prisma {
     avatarUrl?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    notificationNewEmail?: boolean
+    notificationDailyDigest?: boolean
+    notificationAiReplies?: boolean
+    notificationCalendarReminders?: boolean
+    notificationWeeklyReport?: boolean
+    appTheme?: string
+    fontSize?: string
+    emailDensity?: string
+    lastActiveAccountId?: string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
     msalCache?: MsalTokenCacheUncheckedCreateNestedOneWithoutUserInput
     deltaLinks?: EmailDeltaLinkUncheckedCreateNestedManyWithoutUserInput
@@ -22984,6 +33589,12 @@ export namespace Prisma {
     cachedEmails?: CachedEmailUncheckedCreateNestedManyWithoutUserInput
     cachedCalEvents?: CachedCalendarEventUncheckedCreateNestedManyWithoutUserInput
     cachedContacts?: CachedContactUncheckedCreateNestedManyWithoutUserInput
+    emailAttachments?: EmailAttachmentUncheckedCreateNestedManyWithoutUserInput
+    aiGeneratedReplies?: AiGeneratedReplyUncheckedCreateNestedManyWithoutUserInput
+    cachedSearchResults?: CachedSearchResultUncheckedCreateNestedManyWithoutUserInput
+    syncStatuses?: SyncStatusUncheckedCreateNestedManyWithoutUserInput
+    notificationLogs?: NotificationLogUncheckedCreateNestedManyWithoutUserInput
+    migrationStatuses?: MigrationStatusUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutOrgInput = {
@@ -23023,6 +33634,15 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
     orgId?: StringFilter<"User"> | string
+    notificationNewEmail?: BoolFilter<"User"> | boolean
+    notificationDailyDigest?: BoolFilter<"User"> | boolean
+    notificationAiReplies?: BoolFilter<"User"> | boolean
+    notificationCalendarReminders?: BoolFilter<"User"> | boolean
+    notificationWeeklyReport?: BoolFilter<"User"> | boolean
+    appTheme?: StringFilter<"User"> | string
+    fontSize?: StringFilter<"User"> | string
+    emailDensity?: StringFilter<"User"> | string
+    lastActiveAccountId?: StringNullableFilter<"User"> | string | null
   }
 
   export type OrganizationCreateWithoutUsersInput = {
@@ -23164,12 +33784,19 @@ export namespace Prisma {
     bodyHtml?: string | null
     attachments?: JsonNullValueInput | InputJsonValue
     importance?: string
+    sensitivity?: string
     requestReadReceipt?: boolean
+    requestDeliveryReceipt?: boolean
+    categories?: JsonNullValueInput | InputJsonValue
     draftType?: string
     inReplyToMessageId?: string | null
     forwardedMessageId?: string | null
+    originalMessageBody?: string | null
     scheduledAt?: Date | string | null
     scheduledSent?: boolean
+    scheduledNotificationSent?: boolean
+    lastScheduleAttemptAt?: Date | string | null
+    scheduleAttemptCount?: number
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -23185,12 +33812,19 @@ export namespace Prisma {
     bodyHtml?: string | null
     attachments?: JsonNullValueInput | InputJsonValue
     importance?: string
+    sensitivity?: string
     requestReadReceipt?: boolean
+    requestDeliveryReceipt?: boolean
+    categories?: JsonNullValueInput | InputJsonValue
     draftType?: string
     inReplyToMessageId?: string | null
     forwardedMessageId?: string | null
+    originalMessageBody?: string | null
     scheduledAt?: Date | string | null
     scheduledSent?: boolean
+    scheduledNotificationSent?: boolean
+    lastScheduleAttemptAt?: Date | string | null
+    scheduleAttemptCount?: number
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -23214,6 +33848,10 @@ export namespace Prisma {
     actions: JsonNullValueInput | InputJsonValue
     emailCount?: number
     stopProcessing?: boolean
+    lastExecutedAt?: Date | string | null
+    lastExecutionStatus?: string | null
+    lastExecutionError?: string | null
+    failureCount?: number
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -23227,6 +33865,10 @@ export namespace Prisma {
     actions: JsonNullValueInput | InputJsonValue
     emailCount?: number
     stopProcessing?: boolean
+    lastExecutedAt?: Date | string | null
+    lastExecutionStatus?: string | null
+    lastExecutionError?: string | null
+    failureCount?: number
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -23328,6 +33970,13 @@ export namespace Prisma {
     hasAttachments?: boolean
     flagStatus?: string
     categories?: JsonNullValueInput | InputJsonValue
+    importance?: string
+    sensitivity?: string
+    inferenceClassification?: string
+    conversationId?: string | null
+    isDraft?: boolean
+    syncStatus?: string
+    lastModifiedDateTime?: Date | string | null
     syncedAt?: Date | string
   }
 
@@ -23346,6 +33995,13 @@ export namespace Prisma {
     hasAttachments?: boolean
     flagStatus?: string
     categories?: JsonNullValueInput | InputJsonValue
+    importance?: string
+    sensitivity?: string
+    inferenceClassification?: string
+    conversationId?: string | null
+    isDraft?: boolean
+    syncStatus?: string
+    lastModifiedDateTime?: Date | string | null
     syncedAt?: Date | string
   }
 
@@ -23364,12 +34020,14 @@ export namespace Prisma {
     homeAccountId: string
     subject?: string
     bodyPreview?: string
+    bodyHtml?: string | null
     startDateTime: Date | string
     endDateTime: Date | string
     isAllDay?: boolean
     location?: string | null
     organizerName?: string | null
     organizerEmail?: string | null
+    organizerType?: string
     responseStatus?: string
     onlineMeetingUrl?: string | null
     attendees?: JsonNullValueInput | InputJsonValue
@@ -23377,6 +34035,15 @@ export namespace Prisma {
     reminderMinutes?: number | null
     showAs?: string
     recurrence?: string | null
+    eventColor?: string | null
+    timeZone?: string
+    teamsMeetingUrl?: string | null
+    teamsMeetingId?: string | null
+    seriesMasterId?: string | null
+    iCalUId?: string | null
+    calendarId?: string | null
+    createdDateTime?: Date | string | null
+    lastModifiedDateTime?: Date | string | null
     syncedAt?: Date | string
   }
 
@@ -23385,12 +34052,14 @@ export namespace Prisma {
     homeAccountId: string
     subject?: string
     bodyPreview?: string
+    bodyHtml?: string | null
     startDateTime: Date | string
     endDateTime: Date | string
     isAllDay?: boolean
     location?: string | null
     organizerName?: string | null
     organizerEmail?: string | null
+    organizerType?: string
     responseStatus?: string
     onlineMeetingUrl?: string | null
     attendees?: JsonNullValueInput | InputJsonValue
@@ -23398,6 +34067,15 @@ export namespace Prisma {
     reminderMinutes?: number | null
     showAs?: string
     recurrence?: string | null
+    eventColor?: string | null
+    timeZone?: string
+    teamsMeetingUrl?: string | null
+    teamsMeetingId?: string | null
+    seriesMasterId?: string | null
+    iCalUId?: string | null
+    calendarId?: string | null
+    createdDateTime?: Date | string | null
+    lastModifiedDateTime?: Date | string | null
     syncedAt?: Date | string
   }
 
@@ -23419,6 +34097,23 @@ export namespace Prisma {
     phone?: string
     jobTitle?: string
     company?: string
+    department?: string
+    emailAddresses?: JsonNullValueInput | InputJsonValue
+    phones?: JsonNullValueInput | InputJsonValue
+    givenName?: string
+    surname?: string
+    middleName?: string
+    addresses?: JsonNullValueInput | InputJsonValue
+    imAddresses?: JsonNullValueInput | InputJsonValue
+    categories?: JsonNullValueInput | InputJsonValue
+    notes?: string
+    birthday?: Date | string | null
+    anniversary?: Date | string | null
+    manager?: string | null
+    directReports?: JsonNullValueInput | InputJsonValue
+    frequencyScore?: number
+    isVIP?: boolean
+    isFavorite?: boolean
     syncedAt?: Date | string
   }
 
@@ -23430,6 +34125,23 @@ export namespace Prisma {
     phone?: string
     jobTitle?: string
     company?: string
+    department?: string
+    emailAddresses?: JsonNullValueInput | InputJsonValue
+    phones?: JsonNullValueInput | InputJsonValue
+    givenName?: string
+    surname?: string
+    middleName?: string
+    addresses?: JsonNullValueInput | InputJsonValue
+    imAddresses?: JsonNullValueInput | InputJsonValue
+    categories?: JsonNullValueInput | InputJsonValue
+    notes?: string
+    birthday?: Date | string | null
+    anniversary?: Date | string | null
+    manager?: string | null
+    directReports?: JsonNullValueInput | InputJsonValue
+    frequencyScore?: number
+    isVIP?: boolean
+    isFavorite?: boolean
     syncedAt?: Date | string
   }
 
@@ -23440,6 +34152,182 @@ export namespace Prisma {
 
   export type CachedContactCreateManyUserInputEnvelope = {
     data: CachedContactCreateManyUserInput | CachedContactCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type EmailAttachmentCreateWithoutUserInput = {
+    id?: string
+    messageId: string
+    graphMessageId?: string | null
+    fileName: string
+    contentType: string
+    size: number
+    contentHash?: string | null
+    isInline?: boolean
+    contentId?: string | null
+    uploadedAt?: Date | string
+    createdAt?: Date | string
+  }
+
+  export type EmailAttachmentUncheckedCreateWithoutUserInput = {
+    id?: string
+    messageId: string
+    graphMessageId?: string | null
+    fileName: string
+    contentType: string
+    size: number
+    contentHash?: string | null
+    isInline?: boolean
+    contentId?: string | null
+    uploadedAt?: Date | string
+    createdAt?: Date | string
+  }
+
+  export type EmailAttachmentCreateOrConnectWithoutUserInput = {
+    where: EmailAttachmentWhereUniqueInput
+    create: XOR<EmailAttachmentCreateWithoutUserInput, EmailAttachmentUncheckedCreateWithoutUserInput>
+  }
+
+  export type EmailAttachmentCreateManyUserInputEnvelope = {
+    data: EmailAttachmentCreateManyUserInput | EmailAttachmentCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type AiGeneratedReplyCreateWithoutUserInput = {
+    id?: string
+    messageId: string
+    generatedBody: string
+    createdAt?: Date | string
+    expiresAt: Date | string
+  }
+
+  export type AiGeneratedReplyUncheckedCreateWithoutUserInput = {
+    id?: string
+    messageId: string
+    generatedBody: string
+    createdAt?: Date | string
+    expiresAt: Date | string
+  }
+
+  export type AiGeneratedReplyCreateOrConnectWithoutUserInput = {
+    where: AiGeneratedReplyWhereUniqueInput
+    create: XOR<AiGeneratedReplyCreateWithoutUserInput, AiGeneratedReplyUncheckedCreateWithoutUserInput>
+  }
+
+  export type AiGeneratedReplyCreateManyUserInputEnvelope = {
+    data: AiGeneratedReplyCreateManyUserInput | AiGeneratedReplyCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type CachedSearchResultCreateWithoutUserInput = {
+    id?: string
+    homeAccountId: string
+    query: string
+    results: JsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    expiresAt: Date | string
+  }
+
+  export type CachedSearchResultUncheckedCreateWithoutUserInput = {
+    id?: string
+    homeAccountId: string
+    query: string
+    results: JsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    expiresAt: Date | string
+  }
+
+  export type CachedSearchResultCreateOrConnectWithoutUserInput = {
+    where: CachedSearchResultWhereUniqueInput
+    create: XOR<CachedSearchResultCreateWithoutUserInput, CachedSearchResultUncheckedCreateWithoutUserInput>
+  }
+
+  export type CachedSearchResultCreateManyUserInputEnvelope = {
+    data: CachedSearchResultCreateManyUserInput | CachedSearchResultCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type SyncStatusCreateWithoutUserInput = {
+    id?: string
+    homeAccountId: string
+    resourceType: string
+    lastSyncedAt?: Date | string
+    status?: string
+    errorMessage?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type SyncStatusUncheckedCreateWithoutUserInput = {
+    id?: string
+    homeAccountId: string
+    resourceType: string
+    lastSyncedAt?: Date | string
+    status?: string
+    errorMessage?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type SyncStatusCreateOrConnectWithoutUserInput = {
+    where: SyncStatusWhereUniqueInput
+    create: XOR<SyncStatusCreateWithoutUserInput, SyncStatusUncheckedCreateWithoutUserInput>
+  }
+
+  export type SyncStatusCreateManyUserInputEnvelope = {
+    data: SyncStatusCreateManyUserInput | SyncStatusCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type NotificationLogCreateWithoutUserInput = {
+    id?: string
+    type: string
+    sentAt?: Date | string
+    status: string
+    errorMessage?: string | null
+    metadata?: JsonNullValueInput | InputJsonValue
+  }
+
+  export type NotificationLogUncheckedCreateWithoutUserInput = {
+    id?: string
+    type: string
+    sentAt?: Date | string
+    status: string
+    errorMessage?: string | null
+    metadata?: JsonNullValueInput | InputJsonValue
+  }
+
+  export type NotificationLogCreateOrConnectWithoutUserInput = {
+    where: NotificationLogWhereUniqueInput
+    create: XOR<NotificationLogCreateWithoutUserInput, NotificationLogUncheckedCreateWithoutUserInput>
+  }
+
+  export type NotificationLogCreateManyUserInputEnvelope = {
+    data: NotificationLogCreateManyUserInput | NotificationLogCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type MigrationStatusCreateWithoutUserInput = {
+    id?: string
+    migrationType: string
+    completedAt?: Date | string
+    metadata?: JsonNullValueInput | InputJsonValue
+  }
+
+  export type MigrationStatusUncheckedCreateWithoutUserInput = {
+    id?: string
+    migrationType: string
+    completedAt?: Date | string
+    metadata?: JsonNullValueInput | InputJsonValue
+  }
+
+  export type MigrationStatusCreateOrConnectWithoutUserInput = {
+    where: MigrationStatusWhereUniqueInput
+    create: XOR<MigrationStatusCreateWithoutUserInput, MigrationStatusUncheckedCreateWithoutUserInput>
+  }
+
+  export type MigrationStatusCreateManyUserInputEnvelope = {
+    data: MigrationStatusCreateManyUserInput | MigrationStatusCreateManyUserInput[]
     skipDuplicates?: boolean
   }
 
@@ -23614,12 +34502,19 @@ export namespace Prisma {
     bodyHtml?: StringNullableFilter<"Draft"> | string | null
     attachments?: JsonFilter<"Draft">
     importance?: StringFilter<"Draft"> | string
+    sensitivity?: StringFilter<"Draft"> | string
     requestReadReceipt?: BoolFilter<"Draft"> | boolean
+    requestDeliveryReceipt?: BoolFilter<"Draft"> | boolean
+    categories?: JsonFilter<"Draft">
     draftType?: StringFilter<"Draft"> | string
     inReplyToMessageId?: StringNullableFilter<"Draft"> | string | null
     forwardedMessageId?: StringNullableFilter<"Draft"> | string | null
+    originalMessageBody?: StringNullableFilter<"Draft"> | string | null
     scheduledAt?: DateTimeNullableFilter<"Draft"> | Date | string | null
     scheduledSent?: BoolFilter<"Draft"> | boolean
+    scheduledNotificationSent?: BoolFilter<"Draft"> | boolean
+    lastScheduleAttemptAt?: DateTimeNullableFilter<"Draft"> | Date | string | null
+    scheduleAttemptCount?: IntFilter<"Draft"> | number
     createdAt?: DateTimeFilter<"Draft"> | Date | string
     updatedAt?: DateTimeFilter<"Draft"> | Date | string
   }
@@ -23653,6 +34548,10 @@ export namespace Prisma {
     actions?: JsonFilter<"EmailRule">
     emailCount?: IntFilter<"EmailRule"> | number
     stopProcessing?: BoolFilter<"EmailRule"> | boolean
+    lastExecutedAt?: DateTimeNullableFilter<"EmailRule"> | Date | string | null
+    lastExecutionStatus?: StringNullableFilter<"EmailRule"> | string | null
+    lastExecutionError?: StringNullableFilter<"EmailRule"> | string | null
+    failureCount?: IntFilter<"EmailRule"> | number
     createdAt?: DateTimeFilter<"EmailRule"> | Date | string
     updatedAt?: DateTimeFilter<"EmailRule"> | Date | string
   }
@@ -23758,6 +34657,13 @@ export namespace Prisma {
     hasAttachments?: BoolFilter<"CachedEmail"> | boolean
     flagStatus?: StringFilter<"CachedEmail"> | string
     categories?: JsonFilter<"CachedEmail">
+    importance?: StringFilter<"CachedEmail"> | string
+    sensitivity?: StringFilter<"CachedEmail"> | string
+    inferenceClassification?: StringFilter<"CachedEmail"> | string
+    conversationId?: StringNullableFilter<"CachedEmail"> | string | null
+    isDraft?: BoolFilter<"CachedEmail"> | boolean
+    syncStatus?: StringFilter<"CachedEmail"> | string
+    lastModifiedDateTime?: DateTimeNullableFilter<"CachedEmail"> | Date | string | null
     syncedAt?: DateTimeFilter<"CachedEmail"> | Date | string
   }
 
@@ -23786,12 +34692,14 @@ export namespace Prisma {
     homeAccountId?: StringFilter<"CachedCalendarEvent"> | string
     subject?: StringFilter<"CachedCalendarEvent"> | string
     bodyPreview?: StringFilter<"CachedCalendarEvent"> | string
+    bodyHtml?: StringNullableFilter<"CachedCalendarEvent"> | string | null
     startDateTime?: DateTimeFilter<"CachedCalendarEvent"> | Date | string
     endDateTime?: DateTimeFilter<"CachedCalendarEvent"> | Date | string
     isAllDay?: BoolFilter<"CachedCalendarEvent"> | boolean
     location?: StringNullableFilter<"CachedCalendarEvent"> | string | null
     organizerName?: StringNullableFilter<"CachedCalendarEvent"> | string | null
     organizerEmail?: StringNullableFilter<"CachedCalendarEvent"> | string | null
+    organizerType?: StringFilter<"CachedCalendarEvent"> | string
     responseStatus?: StringFilter<"CachedCalendarEvent"> | string
     onlineMeetingUrl?: StringNullableFilter<"CachedCalendarEvent"> | string | null
     attendees?: JsonFilter<"CachedCalendarEvent">
@@ -23799,6 +34707,15 @@ export namespace Prisma {
     reminderMinutes?: IntNullableFilter<"CachedCalendarEvent"> | number | null
     showAs?: StringFilter<"CachedCalendarEvent"> | string
     recurrence?: StringNullableFilter<"CachedCalendarEvent"> | string | null
+    eventColor?: StringNullableFilter<"CachedCalendarEvent"> | string | null
+    timeZone?: StringFilter<"CachedCalendarEvent"> | string
+    teamsMeetingUrl?: StringNullableFilter<"CachedCalendarEvent"> | string | null
+    teamsMeetingId?: StringNullableFilter<"CachedCalendarEvent"> | string | null
+    seriesMasterId?: StringNullableFilter<"CachedCalendarEvent"> | string | null
+    iCalUId?: StringNullableFilter<"CachedCalendarEvent"> | string | null
+    calendarId?: StringNullableFilter<"CachedCalendarEvent"> | string | null
+    createdDateTime?: DateTimeNullableFilter<"CachedCalendarEvent"> | Date | string | null
+    lastModifiedDateTime?: DateTimeNullableFilter<"CachedCalendarEvent"> | Date | string | null
     syncedAt?: DateTimeFilter<"CachedCalendarEvent"> | Date | string
   }
 
@@ -23830,7 +34747,202 @@ export namespace Prisma {
     phone?: StringFilter<"CachedContact"> | string
     jobTitle?: StringFilter<"CachedContact"> | string
     company?: StringFilter<"CachedContact"> | string
+    department?: StringFilter<"CachedContact"> | string
+    emailAddresses?: JsonFilter<"CachedContact">
+    phones?: JsonFilter<"CachedContact">
+    givenName?: StringFilter<"CachedContact"> | string
+    surname?: StringFilter<"CachedContact"> | string
+    middleName?: StringFilter<"CachedContact"> | string
+    addresses?: JsonFilter<"CachedContact">
+    imAddresses?: JsonFilter<"CachedContact">
+    categories?: JsonFilter<"CachedContact">
+    notes?: StringFilter<"CachedContact"> | string
+    birthday?: DateTimeNullableFilter<"CachedContact"> | Date | string | null
+    anniversary?: DateTimeNullableFilter<"CachedContact"> | Date | string | null
+    manager?: StringNullableFilter<"CachedContact"> | string | null
+    directReports?: JsonFilter<"CachedContact">
+    frequencyScore?: IntFilter<"CachedContact"> | number
+    isVIP?: BoolFilter<"CachedContact"> | boolean
+    isFavorite?: BoolFilter<"CachedContact"> | boolean
     syncedAt?: DateTimeFilter<"CachedContact"> | Date | string
+  }
+
+  export type EmailAttachmentUpsertWithWhereUniqueWithoutUserInput = {
+    where: EmailAttachmentWhereUniqueInput
+    update: XOR<EmailAttachmentUpdateWithoutUserInput, EmailAttachmentUncheckedUpdateWithoutUserInput>
+    create: XOR<EmailAttachmentCreateWithoutUserInput, EmailAttachmentUncheckedCreateWithoutUserInput>
+  }
+
+  export type EmailAttachmentUpdateWithWhereUniqueWithoutUserInput = {
+    where: EmailAttachmentWhereUniqueInput
+    data: XOR<EmailAttachmentUpdateWithoutUserInput, EmailAttachmentUncheckedUpdateWithoutUserInput>
+  }
+
+  export type EmailAttachmentUpdateManyWithWhereWithoutUserInput = {
+    where: EmailAttachmentScalarWhereInput
+    data: XOR<EmailAttachmentUpdateManyMutationInput, EmailAttachmentUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type EmailAttachmentScalarWhereInput = {
+    AND?: EmailAttachmentScalarWhereInput | EmailAttachmentScalarWhereInput[]
+    OR?: EmailAttachmentScalarWhereInput[]
+    NOT?: EmailAttachmentScalarWhereInput | EmailAttachmentScalarWhereInput[]
+    id?: StringFilter<"EmailAttachment"> | string
+    userId?: StringFilter<"EmailAttachment"> | string
+    messageId?: StringFilter<"EmailAttachment"> | string
+    graphMessageId?: StringNullableFilter<"EmailAttachment"> | string | null
+    fileName?: StringFilter<"EmailAttachment"> | string
+    contentType?: StringFilter<"EmailAttachment"> | string
+    size?: IntFilter<"EmailAttachment"> | number
+    contentHash?: StringNullableFilter<"EmailAttachment"> | string | null
+    isInline?: BoolFilter<"EmailAttachment"> | boolean
+    contentId?: StringNullableFilter<"EmailAttachment"> | string | null
+    uploadedAt?: DateTimeFilter<"EmailAttachment"> | Date | string
+    createdAt?: DateTimeFilter<"EmailAttachment"> | Date | string
+  }
+
+  export type AiGeneratedReplyUpsertWithWhereUniqueWithoutUserInput = {
+    where: AiGeneratedReplyWhereUniqueInput
+    update: XOR<AiGeneratedReplyUpdateWithoutUserInput, AiGeneratedReplyUncheckedUpdateWithoutUserInput>
+    create: XOR<AiGeneratedReplyCreateWithoutUserInput, AiGeneratedReplyUncheckedCreateWithoutUserInput>
+  }
+
+  export type AiGeneratedReplyUpdateWithWhereUniqueWithoutUserInput = {
+    where: AiGeneratedReplyWhereUniqueInput
+    data: XOR<AiGeneratedReplyUpdateWithoutUserInput, AiGeneratedReplyUncheckedUpdateWithoutUserInput>
+  }
+
+  export type AiGeneratedReplyUpdateManyWithWhereWithoutUserInput = {
+    where: AiGeneratedReplyScalarWhereInput
+    data: XOR<AiGeneratedReplyUpdateManyMutationInput, AiGeneratedReplyUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type AiGeneratedReplyScalarWhereInput = {
+    AND?: AiGeneratedReplyScalarWhereInput | AiGeneratedReplyScalarWhereInput[]
+    OR?: AiGeneratedReplyScalarWhereInput[]
+    NOT?: AiGeneratedReplyScalarWhereInput | AiGeneratedReplyScalarWhereInput[]
+    id?: StringFilter<"AiGeneratedReply"> | string
+    userId?: StringFilter<"AiGeneratedReply"> | string
+    messageId?: StringFilter<"AiGeneratedReply"> | string
+    generatedBody?: StringFilter<"AiGeneratedReply"> | string
+    createdAt?: DateTimeFilter<"AiGeneratedReply"> | Date | string
+    expiresAt?: DateTimeFilter<"AiGeneratedReply"> | Date | string
+  }
+
+  export type CachedSearchResultUpsertWithWhereUniqueWithoutUserInput = {
+    where: CachedSearchResultWhereUniqueInput
+    update: XOR<CachedSearchResultUpdateWithoutUserInput, CachedSearchResultUncheckedUpdateWithoutUserInput>
+    create: XOR<CachedSearchResultCreateWithoutUserInput, CachedSearchResultUncheckedCreateWithoutUserInput>
+  }
+
+  export type CachedSearchResultUpdateWithWhereUniqueWithoutUserInput = {
+    where: CachedSearchResultWhereUniqueInput
+    data: XOR<CachedSearchResultUpdateWithoutUserInput, CachedSearchResultUncheckedUpdateWithoutUserInput>
+  }
+
+  export type CachedSearchResultUpdateManyWithWhereWithoutUserInput = {
+    where: CachedSearchResultScalarWhereInput
+    data: XOR<CachedSearchResultUpdateManyMutationInput, CachedSearchResultUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type CachedSearchResultScalarWhereInput = {
+    AND?: CachedSearchResultScalarWhereInput | CachedSearchResultScalarWhereInput[]
+    OR?: CachedSearchResultScalarWhereInput[]
+    NOT?: CachedSearchResultScalarWhereInput | CachedSearchResultScalarWhereInput[]
+    id?: StringFilter<"CachedSearchResult"> | string
+    userId?: StringFilter<"CachedSearchResult"> | string
+    homeAccountId?: StringFilter<"CachedSearchResult"> | string
+    query?: StringFilter<"CachedSearchResult"> | string
+    results?: JsonFilter<"CachedSearchResult">
+    createdAt?: DateTimeFilter<"CachedSearchResult"> | Date | string
+    expiresAt?: DateTimeFilter<"CachedSearchResult"> | Date | string
+  }
+
+  export type SyncStatusUpsertWithWhereUniqueWithoutUserInput = {
+    where: SyncStatusWhereUniqueInput
+    update: XOR<SyncStatusUpdateWithoutUserInput, SyncStatusUncheckedUpdateWithoutUserInput>
+    create: XOR<SyncStatusCreateWithoutUserInput, SyncStatusUncheckedCreateWithoutUserInput>
+  }
+
+  export type SyncStatusUpdateWithWhereUniqueWithoutUserInput = {
+    where: SyncStatusWhereUniqueInput
+    data: XOR<SyncStatusUpdateWithoutUserInput, SyncStatusUncheckedUpdateWithoutUserInput>
+  }
+
+  export type SyncStatusUpdateManyWithWhereWithoutUserInput = {
+    where: SyncStatusScalarWhereInput
+    data: XOR<SyncStatusUpdateManyMutationInput, SyncStatusUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type SyncStatusScalarWhereInput = {
+    AND?: SyncStatusScalarWhereInput | SyncStatusScalarWhereInput[]
+    OR?: SyncStatusScalarWhereInput[]
+    NOT?: SyncStatusScalarWhereInput | SyncStatusScalarWhereInput[]
+    id?: StringFilter<"SyncStatus"> | string
+    userId?: StringFilter<"SyncStatus"> | string
+    homeAccountId?: StringFilter<"SyncStatus"> | string
+    resourceType?: StringFilter<"SyncStatus"> | string
+    lastSyncedAt?: DateTimeFilter<"SyncStatus"> | Date | string
+    status?: StringFilter<"SyncStatus"> | string
+    errorMessage?: StringNullableFilter<"SyncStatus"> | string | null
+    createdAt?: DateTimeFilter<"SyncStatus"> | Date | string
+    updatedAt?: DateTimeFilter<"SyncStatus"> | Date | string
+  }
+
+  export type NotificationLogUpsertWithWhereUniqueWithoutUserInput = {
+    where: NotificationLogWhereUniqueInput
+    update: XOR<NotificationLogUpdateWithoutUserInput, NotificationLogUncheckedUpdateWithoutUserInput>
+    create: XOR<NotificationLogCreateWithoutUserInput, NotificationLogUncheckedCreateWithoutUserInput>
+  }
+
+  export type NotificationLogUpdateWithWhereUniqueWithoutUserInput = {
+    where: NotificationLogWhereUniqueInput
+    data: XOR<NotificationLogUpdateWithoutUserInput, NotificationLogUncheckedUpdateWithoutUserInput>
+  }
+
+  export type NotificationLogUpdateManyWithWhereWithoutUserInput = {
+    where: NotificationLogScalarWhereInput
+    data: XOR<NotificationLogUpdateManyMutationInput, NotificationLogUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type NotificationLogScalarWhereInput = {
+    AND?: NotificationLogScalarWhereInput | NotificationLogScalarWhereInput[]
+    OR?: NotificationLogScalarWhereInput[]
+    NOT?: NotificationLogScalarWhereInput | NotificationLogScalarWhereInput[]
+    id?: StringFilter<"NotificationLog"> | string
+    userId?: StringFilter<"NotificationLog"> | string
+    type?: StringFilter<"NotificationLog"> | string
+    sentAt?: DateTimeFilter<"NotificationLog"> | Date | string
+    status?: StringFilter<"NotificationLog"> | string
+    errorMessage?: StringNullableFilter<"NotificationLog"> | string | null
+    metadata?: JsonFilter<"NotificationLog">
+  }
+
+  export type MigrationStatusUpsertWithWhereUniqueWithoutUserInput = {
+    where: MigrationStatusWhereUniqueInput
+    update: XOR<MigrationStatusUpdateWithoutUserInput, MigrationStatusUncheckedUpdateWithoutUserInput>
+    create: XOR<MigrationStatusCreateWithoutUserInput, MigrationStatusUncheckedCreateWithoutUserInput>
+  }
+
+  export type MigrationStatusUpdateWithWhereUniqueWithoutUserInput = {
+    where: MigrationStatusWhereUniqueInput
+    data: XOR<MigrationStatusUpdateWithoutUserInput, MigrationStatusUncheckedUpdateWithoutUserInput>
+  }
+
+  export type MigrationStatusUpdateManyWithWhereWithoutUserInput = {
+    where: MigrationStatusScalarWhereInput
+    data: XOR<MigrationStatusUpdateManyMutationInput, MigrationStatusUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type MigrationStatusScalarWhereInput = {
+    AND?: MigrationStatusScalarWhereInput | MigrationStatusScalarWhereInput[]
+    OR?: MigrationStatusScalarWhereInput[]
+    NOT?: MigrationStatusScalarWhereInput | MigrationStatusScalarWhereInput[]
+    id?: StringFilter<"MigrationStatus"> | string
+    userId?: StringFilter<"MigrationStatus"> | string
+    migrationType?: StringFilter<"MigrationStatus"> | string
+    completedAt?: DateTimeFilter<"MigrationStatus"> | Date | string
+    metadata?: JsonFilter<"MigrationStatus">
   }
 
   export type UserCreateWithoutMsAccountsInput = {
@@ -23840,6 +34952,15 @@ export namespace Prisma {
     avatarUrl?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    notificationNewEmail?: boolean
+    notificationDailyDigest?: boolean
+    notificationAiReplies?: boolean
+    notificationCalendarReminders?: boolean
+    notificationWeeklyReport?: boolean
+    appTheme?: string
+    fontSize?: string
+    emailDensity?: string
+    lastActiveAccountId?: string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
     msalCache?: MsalTokenCacheCreateNestedOneWithoutUserInput
     deltaLinks?: EmailDeltaLinkCreateNestedManyWithoutUserInput
@@ -23851,6 +34972,12 @@ export namespace Prisma {
     cachedEmails?: CachedEmailCreateNestedManyWithoutUserInput
     cachedCalEvents?: CachedCalendarEventCreateNestedManyWithoutUserInput
     cachedContacts?: CachedContactCreateNestedManyWithoutUserInput
+    emailAttachments?: EmailAttachmentCreateNestedManyWithoutUserInput
+    aiGeneratedReplies?: AiGeneratedReplyCreateNestedManyWithoutUserInput
+    cachedSearchResults?: CachedSearchResultCreateNestedManyWithoutUserInput
+    syncStatuses?: SyncStatusCreateNestedManyWithoutUserInput
+    notificationLogs?: NotificationLogCreateNestedManyWithoutUserInput
+    migrationStatuses?: MigrationStatusCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutMsAccountsInput = {
@@ -23861,6 +34988,15 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     orgId: string
+    notificationNewEmail?: boolean
+    notificationDailyDigest?: boolean
+    notificationAiReplies?: boolean
+    notificationCalendarReminders?: boolean
+    notificationWeeklyReport?: boolean
+    appTheme?: string
+    fontSize?: string
+    emailDensity?: string
+    lastActiveAccountId?: string | null
     msalCache?: MsalTokenCacheUncheckedCreateNestedOneWithoutUserInput
     deltaLinks?: EmailDeltaLinkUncheckedCreateNestedManyWithoutUserInput
     webhookSubs?: WebhookSubscriptionUncheckedCreateNestedManyWithoutUserInput
@@ -23871,6 +35007,12 @@ export namespace Prisma {
     cachedEmails?: CachedEmailUncheckedCreateNestedManyWithoutUserInput
     cachedCalEvents?: CachedCalendarEventUncheckedCreateNestedManyWithoutUserInput
     cachedContacts?: CachedContactUncheckedCreateNestedManyWithoutUserInput
+    emailAttachments?: EmailAttachmentUncheckedCreateNestedManyWithoutUserInput
+    aiGeneratedReplies?: AiGeneratedReplyUncheckedCreateNestedManyWithoutUserInput
+    cachedSearchResults?: CachedSearchResultUncheckedCreateNestedManyWithoutUserInput
+    syncStatuses?: SyncStatusUncheckedCreateNestedManyWithoutUserInput
+    notificationLogs?: NotificationLogUncheckedCreateNestedManyWithoutUserInput
+    migrationStatuses?: MigrationStatusUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutMsAccountsInput = {
@@ -23896,6 +35038,15 @@ export namespace Prisma {
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
+    notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
+    notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
+    notificationCalendarReminders?: BoolFieldUpdateOperationsInput | boolean
+    notificationWeeklyReport?: BoolFieldUpdateOperationsInput | boolean
+    appTheme?: StringFieldUpdateOperationsInput | string
+    fontSize?: StringFieldUpdateOperationsInput | string
+    emailDensity?: StringFieldUpdateOperationsInput | string
+    lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
     msalCache?: MsalTokenCacheUpdateOneWithoutUserNestedInput
     deltaLinks?: EmailDeltaLinkUpdateManyWithoutUserNestedInput
@@ -23907,6 +35058,12 @@ export namespace Prisma {
     cachedEmails?: CachedEmailUpdateManyWithoutUserNestedInput
     cachedCalEvents?: CachedCalendarEventUpdateManyWithoutUserNestedInput
     cachedContacts?: CachedContactUpdateManyWithoutUserNestedInput
+    emailAttachments?: EmailAttachmentUpdateManyWithoutUserNestedInput
+    aiGeneratedReplies?: AiGeneratedReplyUpdateManyWithoutUserNestedInput
+    cachedSearchResults?: CachedSearchResultUpdateManyWithoutUserNestedInput
+    syncStatuses?: SyncStatusUpdateManyWithoutUserNestedInput
+    notificationLogs?: NotificationLogUpdateManyWithoutUserNestedInput
+    migrationStatuses?: MigrationStatusUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutMsAccountsInput = {
@@ -23917,6 +35074,15 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orgId?: StringFieldUpdateOperationsInput | string
+    notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
+    notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
+    notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
+    notificationCalendarReminders?: BoolFieldUpdateOperationsInput | boolean
+    notificationWeeklyReport?: BoolFieldUpdateOperationsInput | boolean
+    appTheme?: StringFieldUpdateOperationsInput | string
+    fontSize?: StringFieldUpdateOperationsInput | string
+    emailDensity?: StringFieldUpdateOperationsInput | string
+    lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     msalCache?: MsalTokenCacheUncheckedUpdateOneWithoutUserNestedInput
     deltaLinks?: EmailDeltaLinkUncheckedUpdateManyWithoutUserNestedInput
     webhookSubs?: WebhookSubscriptionUncheckedUpdateManyWithoutUserNestedInput
@@ -23927,6 +35093,12 @@ export namespace Prisma {
     cachedEmails?: CachedEmailUncheckedUpdateManyWithoutUserNestedInput
     cachedCalEvents?: CachedCalendarEventUncheckedUpdateManyWithoutUserNestedInput
     cachedContacts?: CachedContactUncheckedUpdateManyWithoutUserNestedInput
+    emailAttachments?: EmailAttachmentUncheckedUpdateManyWithoutUserNestedInput
+    aiGeneratedReplies?: AiGeneratedReplyUncheckedUpdateManyWithoutUserNestedInput
+    cachedSearchResults?: CachedSearchResultUncheckedUpdateManyWithoutUserNestedInput
+    syncStatuses?: SyncStatusUncheckedUpdateManyWithoutUserNestedInput
+    notificationLogs?: NotificationLogUncheckedUpdateManyWithoutUserNestedInput
+    migrationStatuses?: MigrationStatusUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutMsalCacheInput = {
@@ -23936,6 +35108,15 @@ export namespace Prisma {
     avatarUrl?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    notificationNewEmail?: boolean
+    notificationDailyDigest?: boolean
+    notificationAiReplies?: boolean
+    notificationCalendarReminders?: boolean
+    notificationWeeklyReport?: boolean
+    appTheme?: string
+    fontSize?: string
+    emailDensity?: string
+    lastActiveAccountId?: string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
     msAccounts?: MsConnectedAccountCreateNestedManyWithoutUserInput
     deltaLinks?: EmailDeltaLinkCreateNestedManyWithoutUserInput
@@ -23947,6 +35128,12 @@ export namespace Prisma {
     cachedEmails?: CachedEmailCreateNestedManyWithoutUserInput
     cachedCalEvents?: CachedCalendarEventCreateNestedManyWithoutUserInput
     cachedContacts?: CachedContactCreateNestedManyWithoutUserInput
+    emailAttachments?: EmailAttachmentCreateNestedManyWithoutUserInput
+    aiGeneratedReplies?: AiGeneratedReplyCreateNestedManyWithoutUserInput
+    cachedSearchResults?: CachedSearchResultCreateNestedManyWithoutUserInput
+    syncStatuses?: SyncStatusCreateNestedManyWithoutUserInput
+    notificationLogs?: NotificationLogCreateNestedManyWithoutUserInput
+    migrationStatuses?: MigrationStatusCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutMsalCacheInput = {
@@ -23957,6 +35144,15 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     orgId: string
+    notificationNewEmail?: boolean
+    notificationDailyDigest?: boolean
+    notificationAiReplies?: boolean
+    notificationCalendarReminders?: boolean
+    notificationWeeklyReport?: boolean
+    appTheme?: string
+    fontSize?: string
+    emailDensity?: string
+    lastActiveAccountId?: string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
     deltaLinks?: EmailDeltaLinkUncheckedCreateNestedManyWithoutUserInput
     webhookSubs?: WebhookSubscriptionUncheckedCreateNestedManyWithoutUserInput
@@ -23967,6 +35163,12 @@ export namespace Prisma {
     cachedEmails?: CachedEmailUncheckedCreateNestedManyWithoutUserInput
     cachedCalEvents?: CachedCalendarEventUncheckedCreateNestedManyWithoutUserInput
     cachedContacts?: CachedContactUncheckedCreateNestedManyWithoutUserInput
+    emailAttachments?: EmailAttachmentUncheckedCreateNestedManyWithoutUserInput
+    aiGeneratedReplies?: AiGeneratedReplyUncheckedCreateNestedManyWithoutUserInput
+    cachedSearchResults?: CachedSearchResultUncheckedCreateNestedManyWithoutUserInput
+    syncStatuses?: SyncStatusUncheckedCreateNestedManyWithoutUserInput
+    notificationLogs?: NotificationLogUncheckedCreateNestedManyWithoutUserInput
+    migrationStatuses?: MigrationStatusUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutMsalCacheInput = {
@@ -23992,6 +35194,15 @@ export namespace Prisma {
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
+    notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
+    notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
+    notificationCalendarReminders?: BoolFieldUpdateOperationsInput | boolean
+    notificationWeeklyReport?: BoolFieldUpdateOperationsInput | boolean
+    appTheme?: StringFieldUpdateOperationsInput | string
+    fontSize?: StringFieldUpdateOperationsInput | string
+    emailDensity?: StringFieldUpdateOperationsInput | string
+    lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
     msAccounts?: MsConnectedAccountUpdateManyWithoutUserNestedInput
     deltaLinks?: EmailDeltaLinkUpdateManyWithoutUserNestedInput
@@ -24003,6 +35214,12 @@ export namespace Prisma {
     cachedEmails?: CachedEmailUpdateManyWithoutUserNestedInput
     cachedCalEvents?: CachedCalendarEventUpdateManyWithoutUserNestedInput
     cachedContacts?: CachedContactUpdateManyWithoutUserNestedInput
+    emailAttachments?: EmailAttachmentUpdateManyWithoutUserNestedInput
+    aiGeneratedReplies?: AiGeneratedReplyUpdateManyWithoutUserNestedInput
+    cachedSearchResults?: CachedSearchResultUpdateManyWithoutUserNestedInput
+    syncStatuses?: SyncStatusUpdateManyWithoutUserNestedInput
+    notificationLogs?: NotificationLogUpdateManyWithoutUserNestedInput
+    migrationStatuses?: MigrationStatusUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutMsalCacheInput = {
@@ -24013,6 +35230,15 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orgId?: StringFieldUpdateOperationsInput | string
+    notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
+    notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
+    notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
+    notificationCalendarReminders?: BoolFieldUpdateOperationsInput | boolean
+    notificationWeeklyReport?: BoolFieldUpdateOperationsInput | boolean
+    appTheme?: StringFieldUpdateOperationsInput | string
+    fontSize?: StringFieldUpdateOperationsInput | string
+    emailDensity?: StringFieldUpdateOperationsInput | string
+    lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
     deltaLinks?: EmailDeltaLinkUncheckedUpdateManyWithoutUserNestedInput
     webhookSubs?: WebhookSubscriptionUncheckedUpdateManyWithoutUserNestedInput
@@ -24023,6 +35249,12 @@ export namespace Prisma {
     cachedEmails?: CachedEmailUncheckedUpdateManyWithoutUserNestedInput
     cachedCalEvents?: CachedCalendarEventUncheckedUpdateManyWithoutUserNestedInput
     cachedContacts?: CachedContactUncheckedUpdateManyWithoutUserNestedInput
+    emailAttachments?: EmailAttachmentUncheckedUpdateManyWithoutUserNestedInput
+    aiGeneratedReplies?: AiGeneratedReplyUncheckedUpdateManyWithoutUserNestedInput
+    cachedSearchResults?: CachedSearchResultUncheckedUpdateManyWithoutUserNestedInput
+    syncStatuses?: SyncStatusUncheckedUpdateManyWithoutUserNestedInput
+    notificationLogs?: NotificationLogUncheckedUpdateManyWithoutUserNestedInput
+    migrationStatuses?: MigrationStatusUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutDeltaLinksInput = {
@@ -24032,6 +35264,15 @@ export namespace Prisma {
     avatarUrl?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    notificationNewEmail?: boolean
+    notificationDailyDigest?: boolean
+    notificationAiReplies?: boolean
+    notificationCalendarReminders?: boolean
+    notificationWeeklyReport?: boolean
+    appTheme?: string
+    fontSize?: string
+    emailDensity?: string
+    lastActiveAccountId?: string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
     msAccounts?: MsConnectedAccountCreateNestedManyWithoutUserInput
     msalCache?: MsalTokenCacheCreateNestedOneWithoutUserInput
@@ -24043,6 +35284,12 @@ export namespace Prisma {
     cachedEmails?: CachedEmailCreateNestedManyWithoutUserInput
     cachedCalEvents?: CachedCalendarEventCreateNestedManyWithoutUserInput
     cachedContacts?: CachedContactCreateNestedManyWithoutUserInput
+    emailAttachments?: EmailAttachmentCreateNestedManyWithoutUserInput
+    aiGeneratedReplies?: AiGeneratedReplyCreateNestedManyWithoutUserInput
+    cachedSearchResults?: CachedSearchResultCreateNestedManyWithoutUserInput
+    syncStatuses?: SyncStatusCreateNestedManyWithoutUserInput
+    notificationLogs?: NotificationLogCreateNestedManyWithoutUserInput
+    migrationStatuses?: MigrationStatusCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutDeltaLinksInput = {
@@ -24053,6 +35300,15 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     orgId: string
+    notificationNewEmail?: boolean
+    notificationDailyDigest?: boolean
+    notificationAiReplies?: boolean
+    notificationCalendarReminders?: boolean
+    notificationWeeklyReport?: boolean
+    appTheme?: string
+    fontSize?: string
+    emailDensity?: string
+    lastActiveAccountId?: string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
     msalCache?: MsalTokenCacheUncheckedCreateNestedOneWithoutUserInput
     webhookSubs?: WebhookSubscriptionUncheckedCreateNestedManyWithoutUserInput
@@ -24063,6 +35319,12 @@ export namespace Prisma {
     cachedEmails?: CachedEmailUncheckedCreateNestedManyWithoutUserInput
     cachedCalEvents?: CachedCalendarEventUncheckedCreateNestedManyWithoutUserInput
     cachedContacts?: CachedContactUncheckedCreateNestedManyWithoutUserInput
+    emailAttachments?: EmailAttachmentUncheckedCreateNestedManyWithoutUserInput
+    aiGeneratedReplies?: AiGeneratedReplyUncheckedCreateNestedManyWithoutUserInput
+    cachedSearchResults?: CachedSearchResultUncheckedCreateNestedManyWithoutUserInput
+    syncStatuses?: SyncStatusUncheckedCreateNestedManyWithoutUserInput
+    notificationLogs?: NotificationLogUncheckedCreateNestedManyWithoutUserInput
+    migrationStatuses?: MigrationStatusUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutDeltaLinksInput = {
@@ -24088,6 +35350,15 @@ export namespace Prisma {
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
+    notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
+    notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
+    notificationCalendarReminders?: BoolFieldUpdateOperationsInput | boolean
+    notificationWeeklyReport?: BoolFieldUpdateOperationsInput | boolean
+    appTheme?: StringFieldUpdateOperationsInput | string
+    fontSize?: StringFieldUpdateOperationsInput | string
+    emailDensity?: StringFieldUpdateOperationsInput | string
+    lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
     msAccounts?: MsConnectedAccountUpdateManyWithoutUserNestedInput
     msalCache?: MsalTokenCacheUpdateOneWithoutUserNestedInput
@@ -24099,6 +35370,12 @@ export namespace Prisma {
     cachedEmails?: CachedEmailUpdateManyWithoutUserNestedInput
     cachedCalEvents?: CachedCalendarEventUpdateManyWithoutUserNestedInput
     cachedContacts?: CachedContactUpdateManyWithoutUserNestedInput
+    emailAttachments?: EmailAttachmentUpdateManyWithoutUserNestedInput
+    aiGeneratedReplies?: AiGeneratedReplyUpdateManyWithoutUserNestedInput
+    cachedSearchResults?: CachedSearchResultUpdateManyWithoutUserNestedInput
+    syncStatuses?: SyncStatusUpdateManyWithoutUserNestedInput
+    notificationLogs?: NotificationLogUpdateManyWithoutUserNestedInput
+    migrationStatuses?: MigrationStatusUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutDeltaLinksInput = {
@@ -24109,6 +35386,15 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orgId?: StringFieldUpdateOperationsInput | string
+    notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
+    notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
+    notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
+    notificationCalendarReminders?: BoolFieldUpdateOperationsInput | boolean
+    notificationWeeklyReport?: BoolFieldUpdateOperationsInput | boolean
+    appTheme?: StringFieldUpdateOperationsInput | string
+    fontSize?: StringFieldUpdateOperationsInput | string
+    emailDensity?: StringFieldUpdateOperationsInput | string
+    lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
     msalCache?: MsalTokenCacheUncheckedUpdateOneWithoutUserNestedInput
     webhookSubs?: WebhookSubscriptionUncheckedUpdateManyWithoutUserNestedInput
@@ -24119,6 +35405,12 @@ export namespace Prisma {
     cachedEmails?: CachedEmailUncheckedUpdateManyWithoutUserNestedInput
     cachedCalEvents?: CachedCalendarEventUncheckedUpdateManyWithoutUserNestedInput
     cachedContacts?: CachedContactUncheckedUpdateManyWithoutUserNestedInput
+    emailAttachments?: EmailAttachmentUncheckedUpdateManyWithoutUserNestedInput
+    aiGeneratedReplies?: AiGeneratedReplyUncheckedUpdateManyWithoutUserNestedInput
+    cachedSearchResults?: CachedSearchResultUncheckedUpdateManyWithoutUserNestedInput
+    syncStatuses?: SyncStatusUncheckedUpdateManyWithoutUserNestedInput
+    notificationLogs?: NotificationLogUncheckedUpdateManyWithoutUserNestedInput
+    migrationStatuses?: MigrationStatusUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutWebhookSubsInput = {
@@ -24128,6 +35420,15 @@ export namespace Prisma {
     avatarUrl?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    notificationNewEmail?: boolean
+    notificationDailyDigest?: boolean
+    notificationAiReplies?: boolean
+    notificationCalendarReminders?: boolean
+    notificationWeeklyReport?: boolean
+    appTheme?: string
+    fontSize?: string
+    emailDensity?: string
+    lastActiveAccountId?: string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
     msAccounts?: MsConnectedAccountCreateNestedManyWithoutUserInput
     msalCache?: MsalTokenCacheCreateNestedOneWithoutUserInput
@@ -24139,6 +35440,12 @@ export namespace Prisma {
     cachedEmails?: CachedEmailCreateNestedManyWithoutUserInput
     cachedCalEvents?: CachedCalendarEventCreateNestedManyWithoutUserInput
     cachedContacts?: CachedContactCreateNestedManyWithoutUserInput
+    emailAttachments?: EmailAttachmentCreateNestedManyWithoutUserInput
+    aiGeneratedReplies?: AiGeneratedReplyCreateNestedManyWithoutUserInput
+    cachedSearchResults?: CachedSearchResultCreateNestedManyWithoutUserInput
+    syncStatuses?: SyncStatusCreateNestedManyWithoutUserInput
+    notificationLogs?: NotificationLogCreateNestedManyWithoutUserInput
+    migrationStatuses?: MigrationStatusCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutWebhookSubsInput = {
@@ -24149,6 +35456,15 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     orgId: string
+    notificationNewEmail?: boolean
+    notificationDailyDigest?: boolean
+    notificationAiReplies?: boolean
+    notificationCalendarReminders?: boolean
+    notificationWeeklyReport?: boolean
+    appTheme?: string
+    fontSize?: string
+    emailDensity?: string
+    lastActiveAccountId?: string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
     msalCache?: MsalTokenCacheUncheckedCreateNestedOneWithoutUserInput
     deltaLinks?: EmailDeltaLinkUncheckedCreateNestedManyWithoutUserInput
@@ -24159,6 +35475,12 @@ export namespace Prisma {
     cachedEmails?: CachedEmailUncheckedCreateNestedManyWithoutUserInput
     cachedCalEvents?: CachedCalendarEventUncheckedCreateNestedManyWithoutUserInput
     cachedContacts?: CachedContactUncheckedCreateNestedManyWithoutUserInput
+    emailAttachments?: EmailAttachmentUncheckedCreateNestedManyWithoutUserInput
+    aiGeneratedReplies?: AiGeneratedReplyUncheckedCreateNestedManyWithoutUserInput
+    cachedSearchResults?: CachedSearchResultUncheckedCreateNestedManyWithoutUserInput
+    syncStatuses?: SyncStatusUncheckedCreateNestedManyWithoutUserInput
+    notificationLogs?: NotificationLogUncheckedCreateNestedManyWithoutUserInput
+    migrationStatuses?: MigrationStatusUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutWebhookSubsInput = {
@@ -24184,6 +35506,15 @@ export namespace Prisma {
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
+    notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
+    notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
+    notificationCalendarReminders?: BoolFieldUpdateOperationsInput | boolean
+    notificationWeeklyReport?: BoolFieldUpdateOperationsInput | boolean
+    appTheme?: StringFieldUpdateOperationsInput | string
+    fontSize?: StringFieldUpdateOperationsInput | string
+    emailDensity?: StringFieldUpdateOperationsInput | string
+    lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
     msAccounts?: MsConnectedAccountUpdateManyWithoutUserNestedInput
     msalCache?: MsalTokenCacheUpdateOneWithoutUserNestedInput
@@ -24195,6 +35526,12 @@ export namespace Prisma {
     cachedEmails?: CachedEmailUpdateManyWithoutUserNestedInput
     cachedCalEvents?: CachedCalendarEventUpdateManyWithoutUserNestedInput
     cachedContacts?: CachedContactUpdateManyWithoutUserNestedInput
+    emailAttachments?: EmailAttachmentUpdateManyWithoutUserNestedInput
+    aiGeneratedReplies?: AiGeneratedReplyUpdateManyWithoutUserNestedInput
+    cachedSearchResults?: CachedSearchResultUpdateManyWithoutUserNestedInput
+    syncStatuses?: SyncStatusUpdateManyWithoutUserNestedInput
+    notificationLogs?: NotificationLogUpdateManyWithoutUserNestedInput
+    migrationStatuses?: MigrationStatusUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutWebhookSubsInput = {
@@ -24205,6 +35542,15 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orgId?: StringFieldUpdateOperationsInput | string
+    notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
+    notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
+    notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
+    notificationCalendarReminders?: BoolFieldUpdateOperationsInput | boolean
+    notificationWeeklyReport?: BoolFieldUpdateOperationsInput | boolean
+    appTheme?: StringFieldUpdateOperationsInput | string
+    fontSize?: StringFieldUpdateOperationsInput | string
+    emailDensity?: StringFieldUpdateOperationsInput | string
+    lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
     msalCache?: MsalTokenCacheUncheckedUpdateOneWithoutUserNestedInput
     deltaLinks?: EmailDeltaLinkUncheckedUpdateManyWithoutUserNestedInput
@@ -24215,6 +35561,12 @@ export namespace Prisma {
     cachedEmails?: CachedEmailUncheckedUpdateManyWithoutUserNestedInput
     cachedCalEvents?: CachedCalendarEventUncheckedUpdateManyWithoutUserNestedInput
     cachedContacts?: CachedContactUncheckedUpdateManyWithoutUserNestedInput
+    emailAttachments?: EmailAttachmentUncheckedUpdateManyWithoutUserNestedInput
+    aiGeneratedReplies?: AiGeneratedReplyUncheckedUpdateManyWithoutUserNestedInput
+    cachedSearchResults?: CachedSearchResultUncheckedUpdateManyWithoutUserNestedInput
+    syncStatuses?: SyncStatusUncheckedUpdateManyWithoutUserNestedInput
+    notificationLogs?: NotificationLogUncheckedUpdateManyWithoutUserNestedInput
+    migrationStatuses?: MigrationStatusUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutDraftsInput = {
@@ -24224,6 +35576,15 @@ export namespace Prisma {
     avatarUrl?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    notificationNewEmail?: boolean
+    notificationDailyDigest?: boolean
+    notificationAiReplies?: boolean
+    notificationCalendarReminders?: boolean
+    notificationWeeklyReport?: boolean
+    appTheme?: string
+    fontSize?: string
+    emailDensity?: string
+    lastActiveAccountId?: string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
     msAccounts?: MsConnectedAccountCreateNestedManyWithoutUserInput
     msalCache?: MsalTokenCacheCreateNestedOneWithoutUserInput
@@ -24235,6 +35596,12 @@ export namespace Prisma {
     cachedEmails?: CachedEmailCreateNestedManyWithoutUserInput
     cachedCalEvents?: CachedCalendarEventCreateNestedManyWithoutUserInput
     cachedContacts?: CachedContactCreateNestedManyWithoutUserInput
+    emailAttachments?: EmailAttachmentCreateNestedManyWithoutUserInput
+    aiGeneratedReplies?: AiGeneratedReplyCreateNestedManyWithoutUserInput
+    cachedSearchResults?: CachedSearchResultCreateNestedManyWithoutUserInput
+    syncStatuses?: SyncStatusCreateNestedManyWithoutUserInput
+    notificationLogs?: NotificationLogCreateNestedManyWithoutUserInput
+    migrationStatuses?: MigrationStatusCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutDraftsInput = {
@@ -24245,6 +35612,15 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     orgId: string
+    notificationNewEmail?: boolean
+    notificationDailyDigest?: boolean
+    notificationAiReplies?: boolean
+    notificationCalendarReminders?: boolean
+    notificationWeeklyReport?: boolean
+    appTheme?: string
+    fontSize?: string
+    emailDensity?: string
+    lastActiveAccountId?: string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
     msalCache?: MsalTokenCacheUncheckedCreateNestedOneWithoutUserInput
     deltaLinks?: EmailDeltaLinkUncheckedCreateNestedManyWithoutUserInput
@@ -24255,6 +35631,12 @@ export namespace Prisma {
     cachedEmails?: CachedEmailUncheckedCreateNestedManyWithoutUserInput
     cachedCalEvents?: CachedCalendarEventUncheckedCreateNestedManyWithoutUserInput
     cachedContacts?: CachedContactUncheckedCreateNestedManyWithoutUserInput
+    emailAttachments?: EmailAttachmentUncheckedCreateNestedManyWithoutUserInput
+    aiGeneratedReplies?: AiGeneratedReplyUncheckedCreateNestedManyWithoutUserInput
+    cachedSearchResults?: CachedSearchResultUncheckedCreateNestedManyWithoutUserInput
+    syncStatuses?: SyncStatusUncheckedCreateNestedManyWithoutUserInput
+    notificationLogs?: NotificationLogUncheckedCreateNestedManyWithoutUserInput
+    migrationStatuses?: MigrationStatusUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutDraftsInput = {
@@ -24280,6 +35662,15 @@ export namespace Prisma {
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
+    notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
+    notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
+    notificationCalendarReminders?: BoolFieldUpdateOperationsInput | boolean
+    notificationWeeklyReport?: BoolFieldUpdateOperationsInput | boolean
+    appTheme?: StringFieldUpdateOperationsInput | string
+    fontSize?: StringFieldUpdateOperationsInput | string
+    emailDensity?: StringFieldUpdateOperationsInput | string
+    lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
     msAccounts?: MsConnectedAccountUpdateManyWithoutUserNestedInput
     msalCache?: MsalTokenCacheUpdateOneWithoutUserNestedInput
@@ -24291,6 +35682,12 @@ export namespace Prisma {
     cachedEmails?: CachedEmailUpdateManyWithoutUserNestedInput
     cachedCalEvents?: CachedCalendarEventUpdateManyWithoutUserNestedInput
     cachedContacts?: CachedContactUpdateManyWithoutUserNestedInput
+    emailAttachments?: EmailAttachmentUpdateManyWithoutUserNestedInput
+    aiGeneratedReplies?: AiGeneratedReplyUpdateManyWithoutUserNestedInput
+    cachedSearchResults?: CachedSearchResultUpdateManyWithoutUserNestedInput
+    syncStatuses?: SyncStatusUpdateManyWithoutUserNestedInput
+    notificationLogs?: NotificationLogUpdateManyWithoutUserNestedInput
+    migrationStatuses?: MigrationStatusUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutDraftsInput = {
@@ -24301,6 +35698,15 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orgId?: StringFieldUpdateOperationsInput | string
+    notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
+    notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
+    notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
+    notificationCalendarReminders?: BoolFieldUpdateOperationsInput | boolean
+    notificationWeeklyReport?: BoolFieldUpdateOperationsInput | boolean
+    appTheme?: StringFieldUpdateOperationsInput | string
+    fontSize?: StringFieldUpdateOperationsInput | string
+    emailDensity?: StringFieldUpdateOperationsInput | string
+    lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
     msalCache?: MsalTokenCacheUncheckedUpdateOneWithoutUserNestedInput
     deltaLinks?: EmailDeltaLinkUncheckedUpdateManyWithoutUserNestedInput
@@ -24311,6 +35717,12 @@ export namespace Prisma {
     cachedEmails?: CachedEmailUncheckedUpdateManyWithoutUserNestedInput
     cachedCalEvents?: CachedCalendarEventUncheckedUpdateManyWithoutUserNestedInput
     cachedContacts?: CachedContactUncheckedUpdateManyWithoutUserNestedInput
+    emailAttachments?: EmailAttachmentUncheckedUpdateManyWithoutUserNestedInput
+    aiGeneratedReplies?: AiGeneratedReplyUncheckedUpdateManyWithoutUserNestedInput
+    cachedSearchResults?: CachedSearchResultUncheckedUpdateManyWithoutUserNestedInput
+    syncStatuses?: SyncStatusUncheckedUpdateManyWithoutUserNestedInput
+    notificationLogs?: NotificationLogUncheckedUpdateManyWithoutUserNestedInput
+    migrationStatuses?: MigrationStatusUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutSignaturesInput = {
@@ -24320,6 +35732,15 @@ export namespace Prisma {
     avatarUrl?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    notificationNewEmail?: boolean
+    notificationDailyDigest?: boolean
+    notificationAiReplies?: boolean
+    notificationCalendarReminders?: boolean
+    notificationWeeklyReport?: boolean
+    appTheme?: string
+    fontSize?: string
+    emailDensity?: string
+    lastActiveAccountId?: string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
     msAccounts?: MsConnectedAccountCreateNestedManyWithoutUserInput
     msalCache?: MsalTokenCacheCreateNestedOneWithoutUserInput
@@ -24331,6 +35752,12 @@ export namespace Prisma {
     cachedEmails?: CachedEmailCreateNestedManyWithoutUserInput
     cachedCalEvents?: CachedCalendarEventCreateNestedManyWithoutUserInput
     cachedContacts?: CachedContactCreateNestedManyWithoutUserInput
+    emailAttachments?: EmailAttachmentCreateNestedManyWithoutUserInput
+    aiGeneratedReplies?: AiGeneratedReplyCreateNestedManyWithoutUserInput
+    cachedSearchResults?: CachedSearchResultCreateNestedManyWithoutUserInput
+    syncStatuses?: SyncStatusCreateNestedManyWithoutUserInput
+    notificationLogs?: NotificationLogCreateNestedManyWithoutUserInput
+    migrationStatuses?: MigrationStatusCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutSignaturesInput = {
@@ -24341,6 +35768,15 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     orgId: string
+    notificationNewEmail?: boolean
+    notificationDailyDigest?: boolean
+    notificationAiReplies?: boolean
+    notificationCalendarReminders?: boolean
+    notificationWeeklyReport?: boolean
+    appTheme?: string
+    fontSize?: string
+    emailDensity?: string
+    lastActiveAccountId?: string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
     msalCache?: MsalTokenCacheUncheckedCreateNestedOneWithoutUserInput
     deltaLinks?: EmailDeltaLinkUncheckedCreateNestedManyWithoutUserInput
@@ -24351,6 +35787,12 @@ export namespace Prisma {
     cachedEmails?: CachedEmailUncheckedCreateNestedManyWithoutUserInput
     cachedCalEvents?: CachedCalendarEventUncheckedCreateNestedManyWithoutUserInput
     cachedContacts?: CachedContactUncheckedCreateNestedManyWithoutUserInput
+    emailAttachments?: EmailAttachmentUncheckedCreateNestedManyWithoutUserInput
+    aiGeneratedReplies?: AiGeneratedReplyUncheckedCreateNestedManyWithoutUserInput
+    cachedSearchResults?: CachedSearchResultUncheckedCreateNestedManyWithoutUserInput
+    syncStatuses?: SyncStatusUncheckedCreateNestedManyWithoutUserInput
+    notificationLogs?: NotificationLogUncheckedCreateNestedManyWithoutUserInput
+    migrationStatuses?: MigrationStatusUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutSignaturesInput = {
@@ -24376,6 +35818,15 @@ export namespace Prisma {
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
+    notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
+    notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
+    notificationCalendarReminders?: BoolFieldUpdateOperationsInput | boolean
+    notificationWeeklyReport?: BoolFieldUpdateOperationsInput | boolean
+    appTheme?: StringFieldUpdateOperationsInput | string
+    fontSize?: StringFieldUpdateOperationsInput | string
+    emailDensity?: StringFieldUpdateOperationsInput | string
+    lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
     msAccounts?: MsConnectedAccountUpdateManyWithoutUserNestedInput
     msalCache?: MsalTokenCacheUpdateOneWithoutUserNestedInput
@@ -24387,6 +35838,12 @@ export namespace Prisma {
     cachedEmails?: CachedEmailUpdateManyWithoutUserNestedInput
     cachedCalEvents?: CachedCalendarEventUpdateManyWithoutUserNestedInput
     cachedContacts?: CachedContactUpdateManyWithoutUserNestedInput
+    emailAttachments?: EmailAttachmentUpdateManyWithoutUserNestedInput
+    aiGeneratedReplies?: AiGeneratedReplyUpdateManyWithoutUserNestedInput
+    cachedSearchResults?: CachedSearchResultUpdateManyWithoutUserNestedInput
+    syncStatuses?: SyncStatusUpdateManyWithoutUserNestedInput
+    notificationLogs?: NotificationLogUpdateManyWithoutUserNestedInput
+    migrationStatuses?: MigrationStatusUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSignaturesInput = {
@@ -24397,6 +35854,15 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orgId?: StringFieldUpdateOperationsInput | string
+    notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
+    notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
+    notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
+    notificationCalendarReminders?: BoolFieldUpdateOperationsInput | boolean
+    notificationWeeklyReport?: BoolFieldUpdateOperationsInput | boolean
+    appTheme?: StringFieldUpdateOperationsInput | string
+    fontSize?: StringFieldUpdateOperationsInput | string
+    emailDensity?: StringFieldUpdateOperationsInput | string
+    lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
     msalCache?: MsalTokenCacheUncheckedUpdateOneWithoutUserNestedInput
     deltaLinks?: EmailDeltaLinkUncheckedUpdateManyWithoutUserNestedInput
@@ -24407,6 +35873,12 @@ export namespace Prisma {
     cachedEmails?: CachedEmailUncheckedUpdateManyWithoutUserNestedInput
     cachedCalEvents?: CachedCalendarEventUncheckedUpdateManyWithoutUserNestedInput
     cachedContacts?: CachedContactUncheckedUpdateManyWithoutUserNestedInput
+    emailAttachments?: EmailAttachmentUncheckedUpdateManyWithoutUserNestedInput
+    aiGeneratedReplies?: AiGeneratedReplyUncheckedUpdateManyWithoutUserNestedInput
+    cachedSearchResults?: CachedSearchResultUncheckedUpdateManyWithoutUserNestedInput
+    syncStatuses?: SyncStatusUncheckedUpdateManyWithoutUserNestedInput
+    notificationLogs?: NotificationLogUncheckedUpdateManyWithoutUserNestedInput
+    migrationStatuses?: MigrationStatusUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutCachedFoldersInput = {
@@ -24416,6 +35888,15 @@ export namespace Prisma {
     avatarUrl?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    notificationNewEmail?: boolean
+    notificationDailyDigest?: boolean
+    notificationAiReplies?: boolean
+    notificationCalendarReminders?: boolean
+    notificationWeeklyReport?: boolean
+    appTheme?: string
+    fontSize?: string
+    emailDensity?: string
+    lastActiveAccountId?: string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
     msAccounts?: MsConnectedAccountCreateNestedManyWithoutUserInput
     msalCache?: MsalTokenCacheCreateNestedOneWithoutUserInput
@@ -24427,6 +35908,12 @@ export namespace Prisma {
     cachedEmails?: CachedEmailCreateNestedManyWithoutUserInput
     cachedCalEvents?: CachedCalendarEventCreateNestedManyWithoutUserInput
     cachedContacts?: CachedContactCreateNestedManyWithoutUserInput
+    emailAttachments?: EmailAttachmentCreateNestedManyWithoutUserInput
+    aiGeneratedReplies?: AiGeneratedReplyCreateNestedManyWithoutUserInput
+    cachedSearchResults?: CachedSearchResultCreateNestedManyWithoutUserInput
+    syncStatuses?: SyncStatusCreateNestedManyWithoutUserInput
+    notificationLogs?: NotificationLogCreateNestedManyWithoutUserInput
+    migrationStatuses?: MigrationStatusCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCachedFoldersInput = {
@@ -24437,6 +35924,15 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     orgId: string
+    notificationNewEmail?: boolean
+    notificationDailyDigest?: boolean
+    notificationAiReplies?: boolean
+    notificationCalendarReminders?: boolean
+    notificationWeeklyReport?: boolean
+    appTheme?: string
+    fontSize?: string
+    emailDensity?: string
+    lastActiveAccountId?: string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
     msalCache?: MsalTokenCacheUncheckedCreateNestedOneWithoutUserInput
     deltaLinks?: EmailDeltaLinkUncheckedCreateNestedManyWithoutUserInput
@@ -24447,6 +35943,12 @@ export namespace Prisma {
     cachedEmails?: CachedEmailUncheckedCreateNestedManyWithoutUserInput
     cachedCalEvents?: CachedCalendarEventUncheckedCreateNestedManyWithoutUserInput
     cachedContacts?: CachedContactUncheckedCreateNestedManyWithoutUserInput
+    emailAttachments?: EmailAttachmentUncheckedCreateNestedManyWithoutUserInput
+    aiGeneratedReplies?: AiGeneratedReplyUncheckedCreateNestedManyWithoutUserInput
+    cachedSearchResults?: CachedSearchResultUncheckedCreateNestedManyWithoutUserInput
+    syncStatuses?: SyncStatusUncheckedCreateNestedManyWithoutUserInput
+    notificationLogs?: NotificationLogUncheckedCreateNestedManyWithoutUserInput
+    migrationStatuses?: MigrationStatusUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCachedFoldersInput = {
@@ -24472,6 +35974,15 @@ export namespace Prisma {
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
+    notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
+    notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
+    notificationCalendarReminders?: BoolFieldUpdateOperationsInput | boolean
+    notificationWeeklyReport?: BoolFieldUpdateOperationsInput | boolean
+    appTheme?: StringFieldUpdateOperationsInput | string
+    fontSize?: StringFieldUpdateOperationsInput | string
+    emailDensity?: StringFieldUpdateOperationsInput | string
+    lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
     msAccounts?: MsConnectedAccountUpdateManyWithoutUserNestedInput
     msalCache?: MsalTokenCacheUpdateOneWithoutUserNestedInput
@@ -24483,6 +35994,12 @@ export namespace Prisma {
     cachedEmails?: CachedEmailUpdateManyWithoutUserNestedInput
     cachedCalEvents?: CachedCalendarEventUpdateManyWithoutUserNestedInput
     cachedContacts?: CachedContactUpdateManyWithoutUserNestedInput
+    emailAttachments?: EmailAttachmentUpdateManyWithoutUserNestedInput
+    aiGeneratedReplies?: AiGeneratedReplyUpdateManyWithoutUserNestedInput
+    cachedSearchResults?: CachedSearchResultUpdateManyWithoutUserNestedInput
+    syncStatuses?: SyncStatusUpdateManyWithoutUserNestedInput
+    notificationLogs?: NotificationLogUpdateManyWithoutUserNestedInput
+    migrationStatuses?: MigrationStatusUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCachedFoldersInput = {
@@ -24493,6 +36010,15 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orgId?: StringFieldUpdateOperationsInput | string
+    notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
+    notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
+    notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
+    notificationCalendarReminders?: BoolFieldUpdateOperationsInput | boolean
+    notificationWeeklyReport?: BoolFieldUpdateOperationsInput | boolean
+    appTheme?: StringFieldUpdateOperationsInput | string
+    fontSize?: StringFieldUpdateOperationsInput | string
+    emailDensity?: StringFieldUpdateOperationsInput | string
+    lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
     msalCache?: MsalTokenCacheUncheckedUpdateOneWithoutUserNestedInput
     deltaLinks?: EmailDeltaLinkUncheckedUpdateManyWithoutUserNestedInput
@@ -24503,6 +36029,12 @@ export namespace Prisma {
     cachedEmails?: CachedEmailUncheckedUpdateManyWithoutUserNestedInput
     cachedCalEvents?: CachedCalendarEventUncheckedUpdateManyWithoutUserNestedInput
     cachedContacts?: CachedContactUncheckedUpdateManyWithoutUserNestedInput
+    emailAttachments?: EmailAttachmentUncheckedUpdateManyWithoutUserNestedInput
+    aiGeneratedReplies?: AiGeneratedReplyUncheckedUpdateManyWithoutUserNestedInput
+    cachedSearchResults?: CachedSearchResultUncheckedUpdateManyWithoutUserNestedInput
+    syncStatuses?: SyncStatusUncheckedUpdateManyWithoutUserNestedInput
+    notificationLogs?: NotificationLogUncheckedUpdateManyWithoutUserNestedInput
+    migrationStatuses?: MigrationStatusUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutCachedEmailsInput = {
@@ -24512,6 +36044,15 @@ export namespace Prisma {
     avatarUrl?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    notificationNewEmail?: boolean
+    notificationDailyDigest?: boolean
+    notificationAiReplies?: boolean
+    notificationCalendarReminders?: boolean
+    notificationWeeklyReport?: boolean
+    appTheme?: string
+    fontSize?: string
+    emailDensity?: string
+    lastActiveAccountId?: string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
     msAccounts?: MsConnectedAccountCreateNestedManyWithoutUserInput
     msalCache?: MsalTokenCacheCreateNestedOneWithoutUserInput
@@ -24523,6 +36064,12 @@ export namespace Prisma {
     cachedFolders?: CachedFolderCreateNestedManyWithoutUserInput
     cachedCalEvents?: CachedCalendarEventCreateNestedManyWithoutUserInput
     cachedContacts?: CachedContactCreateNestedManyWithoutUserInput
+    emailAttachments?: EmailAttachmentCreateNestedManyWithoutUserInput
+    aiGeneratedReplies?: AiGeneratedReplyCreateNestedManyWithoutUserInput
+    cachedSearchResults?: CachedSearchResultCreateNestedManyWithoutUserInput
+    syncStatuses?: SyncStatusCreateNestedManyWithoutUserInput
+    notificationLogs?: NotificationLogCreateNestedManyWithoutUserInput
+    migrationStatuses?: MigrationStatusCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCachedEmailsInput = {
@@ -24533,6 +36080,15 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     orgId: string
+    notificationNewEmail?: boolean
+    notificationDailyDigest?: boolean
+    notificationAiReplies?: boolean
+    notificationCalendarReminders?: boolean
+    notificationWeeklyReport?: boolean
+    appTheme?: string
+    fontSize?: string
+    emailDensity?: string
+    lastActiveAccountId?: string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
     msalCache?: MsalTokenCacheUncheckedCreateNestedOneWithoutUserInput
     deltaLinks?: EmailDeltaLinkUncheckedCreateNestedManyWithoutUserInput
@@ -24543,6 +36099,12 @@ export namespace Prisma {
     cachedFolders?: CachedFolderUncheckedCreateNestedManyWithoutUserInput
     cachedCalEvents?: CachedCalendarEventUncheckedCreateNestedManyWithoutUserInput
     cachedContacts?: CachedContactUncheckedCreateNestedManyWithoutUserInput
+    emailAttachments?: EmailAttachmentUncheckedCreateNestedManyWithoutUserInput
+    aiGeneratedReplies?: AiGeneratedReplyUncheckedCreateNestedManyWithoutUserInput
+    cachedSearchResults?: CachedSearchResultUncheckedCreateNestedManyWithoutUserInput
+    syncStatuses?: SyncStatusUncheckedCreateNestedManyWithoutUserInput
+    notificationLogs?: NotificationLogUncheckedCreateNestedManyWithoutUserInput
+    migrationStatuses?: MigrationStatusUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCachedEmailsInput = {
@@ -24568,6 +36130,15 @@ export namespace Prisma {
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
+    notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
+    notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
+    notificationCalendarReminders?: BoolFieldUpdateOperationsInput | boolean
+    notificationWeeklyReport?: BoolFieldUpdateOperationsInput | boolean
+    appTheme?: StringFieldUpdateOperationsInput | string
+    fontSize?: StringFieldUpdateOperationsInput | string
+    emailDensity?: StringFieldUpdateOperationsInput | string
+    lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
     msAccounts?: MsConnectedAccountUpdateManyWithoutUserNestedInput
     msalCache?: MsalTokenCacheUpdateOneWithoutUserNestedInput
@@ -24579,6 +36150,12 @@ export namespace Prisma {
     cachedFolders?: CachedFolderUpdateManyWithoutUserNestedInput
     cachedCalEvents?: CachedCalendarEventUpdateManyWithoutUserNestedInput
     cachedContacts?: CachedContactUpdateManyWithoutUserNestedInput
+    emailAttachments?: EmailAttachmentUpdateManyWithoutUserNestedInput
+    aiGeneratedReplies?: AiGeneratedReplyUpdateManyWithoutUserNestedInput
+    cachedSearchResults?: CachedSearchResultUpdateManyWithoutUserNestedInput
+    syncStatuses?: SyncStatusUpdateManyWithoutUserNestedInput
+    notificationLogs?: NotificationLogUpdateManyWithoutUserNestedInput
+    migrationStatuses?: MigrationStatusUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCachedEmailsInput = {
@@ -24589,6 +36166,15 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orgId?: StringFieldUpdateOperationsInput | string
+    notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
+    notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
+    notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
+    notificationCalendarReminders?: BoolFieldUpdateOperationsInput | boolean
+    notificationWeeklyReport?: BoolFieldUpdateOperationsInput | boolean
+    appTheme?: StringFieldUpdateOperationsInput | string
+    fontSize?: StringFieldUpdateOperationsInput | string
+    emailDensity?: StringFieldUpdateOperationsInput | string
+    lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
     msalCache?: MsalTokenCacheUncheckedUpdateOneWithoutUserNestedInput
     deltaLinks?: EmailDeltaLinkUncheckedUpdateManyWithoutUserNestedInput
@@ -24599,6 +36185,12 @@ export namespace Prisma {
     cachedFolders?: CachedFolderUncheckedUpdateManyWithoutUserNestedInput
     cachedCalEvents?: CachedCalendarEventUncheckedUpdateManyWithoutUserNestedInput
     cachedContacts?: CachedContactUncheckedUpdateManyWithoutUserNestedInput
+    emailAttachments?: EmailAttachmentUncheckedUpdateManyWithoutUserNestedInput
+    aiGeneratedReplies?: AiGeneratedReplyUncheckedUpdateManyWithoutUserNestedInput
+    cachedSearchResults?: CachedSearchResultUncheckedUpdateManyWithoutUserNestedInput
+    syncStatuses?: SyncStatusUncheckedUpdateManyWithoutUserNestedInput
+    notificationLogs?: NotificationLogUncheckedUpdateManyWithoutUserNestedInput
+    migrationStatuses?: MigrationStatusUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutCachedCalEventsInput = {
@@ -24608,6 +36200,15 @@ export namespace Prisma {
     avatarUrl?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    notificationNewEmail?: boolean
+    notificationDailyDigest?: boolean
+    notificationAiReplies?: boolean
+    notificationCalendarReminders?: boolean
+    notificationWeeklyReport?: boolean
+    appTheme?: string
+    fontSize?: string
+    emailDensity?: string
+    lastActiveAccountId?: string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
     msAccounts?: MsConnectedAccountCreateNestedManyWithoutUserInput
     msalCache?: MsalTokenCacheCreateNestedOneWithoutUserInput
@@ -24619,6 +36220,12 @@ export namespace Prisma {
     cachedFolders?: CachedFolderCreateNestedManyWithoutUserInput
     cachedEmails?: CachedEmailCreateNestedManyWithoutUserInput
     cachedContacts?: CachedContactCreateNestedManyWithoutUserInput
+    emailAttachments?: EmailAttachmentCreateNestedManyWithoutUserInput
+    aiGeneratedReplies?: AiGeneratedReplyCreateNestedManyWithoutUserInput
+    cachedSearchResults?: CachedSearchResultCreateNestedManyWithoutUserInput
+    syncStatuses?: SyncStatusCreateNestedManyWithoutUserInput
+    notificationLogs?: NotificationLogCreateNestedManyWithoutUserInput
+    migrationStatuses?: MigrationStatusCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCachedCalEventsInput = {
@@ -24629,6 +36236,15 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     orgId: string
+    notificationNewEmail?: boolean
+    notificationDailyDigest?: boolean
+    notificationAiReplies?: boolean
+    notificationCalendarReminders?: boolean
+    notificationWeeklyReport?: boolean
+    appTheme?: string
+    fontSize?: string
+    emailDensity?: string
+    lastActiveAccountId?: string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
     msalCache?: MsalTokenCacheUncheckedCreateNestedOneWithoutUserInput
     deltaLinks?: EmailDeltaLinkUncheckedCreateNestedManyWithoutUserInput
@@ -24639,6 +36255,12 @@ export namespace Prisma {
     cachedFolders?: CachedFolderUncheckedCreateNestedManyWithoutUserInput
     cachedEmails?: CachedEmailUncheckedCreateNestedManyWithoutUserInput
     cachedContacts?: CachedContactUncheckedCreateNestedManyWithoutUserInput
+    emailAttachments?: EmailAttachmentUncheckedCreateNestedManyWithoutUserInput
+    aiGeneratedReplies?: AiGeneratedReplyUncheckedCreateNestedManyWithoutUserInput
+    cachedSearchResults?: CachedSearchResultUncheckedCreateNestedManyWithoutUserInput
+    syncStatuses?: SyncStatusUncheckedCreateNestedManyWithoutUserInput
+    notificationLogs?: NotificationLogUncheckedCreateNestedManyWithoutUserInput
+    migrationStatuses?: MigrationStatusUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCachedCalEventsInput = {
@@ -24664,6 +36286,15 @@ export namespace Prisma {
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
+    notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
+    notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
+    notificationCalendarReminders?: BoolFieldUpdateOperationsInput | boolean
+    notificationWeeklyReport?: BoolFieldUpdateOperationsInput | boolean
+    appTheme?: StringFieldUpdateOperationsInput | string
+    fontSize?: StringFieldUpdateOperationsInput | string
+    emailDensity?: StringFieldUpdateOperationsInput | string
+    lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
     msAccounts?: MsConnectedAccountUpdateManyWithoutUserNestedInput
     msalCache?: MsalTokenCacheUpdateOneWithoutUserNestedInput
@@ -24675,6 +36306,12 @@ export namespace Prisma {
     cachedFolders?: CachedFolderUpdateManyWithoutUserNestedInput
     cachedEmails?: CachedEmailUpdateManyWithoutUserNestedInput
     cachedContacts?: CachedContactUpdateManyWithoutUserNestedInput
+    emailAttachments?: EmailAttachmentUpdateManyWithoutUserNestedInput
+    aiGeneratedReplies?: AiGeneratedReplyUpdateManyWithoutUserNestedInput
+    cachedSearchResults?: CachedSearchResultUpdateManyWithoutUserNestedInput
+    syncStatuses?: SyncStatusUpdateManyWithoutUserNestedInput
+    notificationLogs?: NotificationLogUpdateManyWithoutUserNestedInput
+    migrationStatuses?: MigrationStatusUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCachedCalEventsInput = {
@@ -24685,6 +36322,15 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orgId?: StringFieldUpdateOperationsInput | string
+    notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
+    notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
+    notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
+    notificationCalendarReminders?: BoolFieldUpdateOperationsInput | boolean
+    notificationWeeklyReport?: BoolFieldUpdateOperationsInput | boolean
+    appTheme?: StringFieldUpdateOperationsInput | string
+    fontSize?: StringFieldUpdateOperationsInput | string
+    emailDensity?: StringFieldUpdateOperationsInput | string
+    lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
     msalCache?: MsalTokenCacheUncheckedUpdateOneWithoutUserNestedInput
     deltaLinks?: EmailDeltaLinkUncheckedUpdateManyWithoutUserNestedInput
@@ -24695,6 +36341,12 @@ export namespace Prisma {
     cachedFolders?: CachedFolderUncheckedUpdateManyWithoutUserNestedInput
     cachedEmails?: CachedEmailUncheckedUpdateManyWithoutUserNestedInput
     cachedContacts?: CachedContactUncheckedUpdateManyWithoutUserNestedInput
+    emailAttachments?: EmailAttachmentUncheckedUpdateManyWithoutUserNestedInput
+    aiGeneratedReplies?: AiGeneratedReplyUncheckedUpdateManyWithoutUserNestedInput
+    cachedSearchResults?: CachedSearchResultUncheckedUpdateManyWithoutUserNestedInput
+    syncStatuses?: SyncStatusUncheckedUpdateManyWithoutUserNestedInput
+    notificationLogs?: NotificationLogUncheckedUpdateManyWithoutUserNestedInput
+    migrationStatuses?: MigrationStatusUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutCachedContactsInput = {
@@ -24704,6 +36356,15 @@ export namespace Prisma {
     avatarUrl?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    notificationNewEmail?: boolean
+    notificationDailyDigest?: boolean
+    notificationAiReplies?: boolean
+    notificationCalendarReminders?: boolean
+    notificationWeeklyReport?: boolean
+    appTheme?: string
+    fontSize?: string
+    emailDensity?: string
+    lastActiveAccountId?: string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
     msAccounts?: MsConnectedAccountCreateNestedManyWithoutUserInput
     msalCache?: MsalTokenCacheCreateNestedOneWithoutUserInput
@@ -24715,6 +36376,12 @@ export namespace Prisma {
     cachedFolders?: CachedFolderCreateNestedManyWithoutUserInput
     cachedEmails?: CachedEmailCreateNestedManyWithoutUserInput
     cachedCalEvents?: CachedCalendarEventCreateNestedManyWithoutUserInput
+    emailAttachments?: EmailAttachmentCreateNestedManyWithoutUserInput
+    aiGeneratedReplies?: AiGeneratedReplyCreateNestedManyWithoutUserInput
+    cachedSearchResults?: CachedSearchResultCreateNestedManyWithoutUserInput
+    syncStatuses?: SyncStatusCreateNestedManyWithoutUserInput
+    notificationLogs?: NotificationLogCreateNestedManyWithoutUserInput
+    migrationStatuses?: MigrationStatusCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCachedContactsInput = {
@@ -24725,6 +36392,15 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     orgId: string
+    notificationNewEmail?: boolean
+    notificationDailyDigest?: boolean
+    notificationAiReplies?: boolean
+    notificationCalendarReminders?: boolean
+    notificationWeeklyReport?: boolean
+    appTheme?: string
+    fontSize?: string
+    emailDensity?: string
+    lastActiveAccountId?: string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
     msalCache?: MsalTokenCacheUncheckedCreateNestedOneWithoutUserInput
     deltaLinks?: EmailDeltaLinkUncheckedCreateNestedManyWithoutUserInput
@@ -24735,6 +36411,12 @@ export namespace Prisma {
     cachedFolders?: CachedFolderUncheckedCreateNestedManyWithoutUserInput
     cachedEmails?: CachedEmailUncheckedCreateNestedManyWithoutUserInput
     cachedCalEvents?: CachedCalendarEventUncheckedCreateNestedManyWithoutUserInput
+    emailAttachments?: EmailAttachmentUncheckedCreateNestedManyWithoutUserInput
+    aiGeneratedReplies?: AiGeneratedReplyUncheckedCreateNestedManyWithoutUserInput
+    cachedSearchResults?: CachedSearchResultUncheckedCreateNestedManyWithoutUserInput
+    syncStatuses?: SyncStatusUncheckedCreateNestedManyWithoutUserInput
+    notificationLogs?: NotificationLogUncheckedCreateNestedManyWithoutUserInput
+    migrationStatuses?: MigrationStatusUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCachedContactsInput = {
@@ -24760,6 +36442,15 @@ export namespace Prisma {
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
+    notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
+    notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
+    notificationCalendarReminders?: BoolFieldUpdateOperationsInput | boolean
+    notificationWeeklyReport?: BoolFieldUpdateOperationsInput | boolean
+    appTheme?: StringFieldUpdateOperationsInput | string
+    fontSize?: StringFieldUpdateOperationsInput | string
+    emailDensity?: StringFieldUpdateOperationsInput | string
+    lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
     msAccounts?: MsConnectedAccountUpdateManyWithoutUserNestedInput
     msalCache?: MsalTokenCacheUpdateOneWithoutUserNestedInput
@@ -24771,6 +36462,12 @@ export namespace Prisma {
     cachedFolders?: CachedFolderUpdateManyWithoutUserNestedInput
     cachedEmails?: CachedEmailUpdateManyWithoutUserNestedInput
     cachedCalEvents?: CachedCalendarEventUpdateManyWithoutUserNestedInput
+    emailAttachments?: EmailAttachmentUpdateManyWithoutUserNestedInput
+    aiGeneratedReplies?: AiGeneratedReplyUpdateManyWithoutUserNestedInput
+    cachedSearchResults?: CachedSearchResultUpdateManyWithoutUserNestedInput
+    syncStatuses?: SyncStatusUpdateManyWithoutUserNestedInput
+    notificationLogs?: NotificationLogUpdateManyWithoutUserNestedInput
+    migrationStatuses?: MigrationStatusUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCachedContactsInput = {
@@ -24781,6 +36478,15 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orgId?: StringFieldUpdateOperationsInput | string
+    notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
+    notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
+    notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
+    notificationCalendarReminders?: BoolFieldUpdateOperationsInput | boolean
+    notificationWeeklyReport?: BoolFieldUpdateOperationsInput | boolean
+    appTheme?: StringFieldUpdateOperationsInput | string
+    fontSize?: StringFieldUpdateOperationsInput | string
+    emailDensity?: StringFieldUpdateOperationsInput | string
+    lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
     msalCache?: MsalTokenCacheUncheckedUpdateOneWithoutUserNestedInput
     deltaLinks?: EmailDeltaLinkUncheckedUpdateManyWithoutUserNestedInput
@@ -24791,6 +36497,12 @@ export namespace Prisma {
     cachedFolders?: CachedFolderUncheckedUpdateManyWithoutUserNestedInput
     cachedEmails?: CachedEmailUncheckedUpdateManyWithoutUserNestedInput
     cachedCalEvents?: CachedCalendarEventUncheckedUpdateManyWithoutUserNestedInput
+    emailAttachments?: EmailAttachmentUncheckedUpdateManyWithoutUserNestedInput
+    aiGeneratedReplies?: AiGeneratedReplyUncheckedUpdateManyWithoutUserNestedInput
+    cachedSearchResults?: CachedSearchResultUncheckedUpdateManyWithoutUserNestedInput
+    syncStatuses?: SyncStatusUncheckedUpdateManyWithoutUserNestedInput
+    notificationLogs?: NotificationLogUncheckedUpdateManyWithoutUserNestedInput
+    migrationStatuses?: MigrationStatusUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutEmailRulesInput = {
@@ -24800,6 +36512,15 @@ export namespace Prisma {
     avatarUrl?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    notificationNewEmail?: boolean
+    notificationDailyDigest?: boolean
+    notificationAiReplies?: boolean
+    notificationCalendarReminders?: boolean
+    notificationWeeklyReport?: boolean
+    appTheme?: string
+    fontSize?: string
+    emailDensity?: string
+    lastActiveAccountId?: string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
     msAccounts?: MsConnectedAccountCreateNestedManyWithoutUserInput
     msalCache?: MsalTokenCacheCreateNestedOneWithoutUserInput
@@ -24811,6 +36532,12 @@ export namespace Prisma {
     cachedEmails?: CachedEmailCreateNestedManyWithoutUserInput
     cachedCalEvents?: CachedCalendarEventCreateNestedManyWithoutUserInput
     cachedContacts?: CachedContactCreateNestedManyWithoutUserInput
+    emailAttachments?: EmailAttachmentCreateNestedManyWithoutUserInput
+    aiGeneratedReplies?: AiGeneratedReplyCreateNestedManyWithoutUserInput
+    cachedSearchResults?: CachedSearchResultCreateNestedManyWithoutUserInput
+    syncStatuses?: SyncStatusCreateNestedManyWithoutUserInput
+    notificationLogs?: NotificationLogCreateNestedManyWithoutUserInput
+    migrationStatuses?: MigrationStatusCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutEmailRulesInput = {
@@ -24821,6 +36548,15 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     orgId: string
+    notificationNewEmail?: boolean
+    notificationDailyDigest?: boolean
+    notificationAiReplies?: boolean
+    notificationCalendarReminders?: boolean
+    notificationWeeklyReport?: boolean
+    appTheme?: string
+    fontSize?: string
+    emailDensity?: string
+    lastActiveAccountId?: string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
     msalCache?: MsalTokenCacheUncheckedCreateNestedOneWithoutUserInput
     deltaLinks?: EmailDeltaLinkUncheckedCreateNestedManyWithoutUserInput
@@ -24831,6 +36567,12 @@ export namespace Prisma {
     cachedEmails?: CachedEmailUncheckedCreateNestedManyWithoutUserInput
     cachedCalEvents?: CachedCalendarEventUncheckedCreateNestedManyWithoutUserInput
     cachedContacts?: CachedContactUncheckedCreateNestedManyWithoutUserInput
+    emailAttachments?: EmailAttachmentUncheckedCreateNestedManyWithoutUserInput
+    aiGeneratedReplies?: AiGeneratedReplyUncheckedCreateNestedManyWithoutUserInput
+    cachedSearchResults?: CachedSearchResultUncheckedCreateNestedManyWithoutUserInput
+    syncStatuses?: SyncStatusUncheckedCreateNestedManyWithoutUserInput
+    notificationLogs?: NotificationLogUncheckedCreateNestedManyWithoutUserInput
+    migrationStatuses?: MigrationStatusUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutEmailRulesInput = {
@@ -24856,6 +36598,15 @@ export namespace Prisma {
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
+    notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
+    notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
+    notificationCalendarReminders?: BoolFieldUpdateOperationsInput | boolean
+    notificationWeeklyReport?: BoolFieldUpdateOperationsInput | boolean
+    appTheme?: StringFieldUpdateOperationsInput | string
+    fontSize?: StringFieldUpdateOperationsInput | string
+    emailDensity?: StringFieldUpdateOperationsInput | string
+    lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
     msAccounts?: MsConnectedAccountUpdateManyWithoutUserNestedInput
     msalCache?: MsalTokenCacheUpdateOneWithoutUserNestedInput
@@ -24867,6 +36618,12 @@ export namespace Prisma {
     cachedEmails?: CachedEmailUpdateManyWithoutUserNestedInput
     cachedCalEvents?: CachedCalendarEventUpdateManyWithoutUserNestedInput
     cachedContacts?: CachedContactUpdateManyWithoutUserNestedInput
+    emailAttachments?: EmailAttachmentUpdateManyWithoutUserNestedInput
+    aiGeneratedReplies?: AiGeneratedReplyUpdateManyWithoutUserNestedInput
+    cachedSearchResults?: CachedSearchResultUpdateManyWithoutUserNestedInput
+    syncStatuses?: SyncStatusUpdateManyWithoutUserNestedInput
+    notificationLogs?: NotificationLogUpdateManyWithoutUserNestedInput
+    migrationStatuses?: MigrationStatusUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutEmailRulesInput = {
@@ -24877,6 +36634,15 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orgId?: StringFieldUpdateOperationsInput | string
+    notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
+    notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
+    notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
+    notificationCalendarReminders?: BoolFieldUpdateOperationsInput | boolean
+    notificationWeeklyReport?: BoolFieldUpdateOperationsInput | boolean
+    appTheme?: StringFieldUpdateOperationsInput | string
+    fontSize?: StringFieldUpdateOperationsInput | string
+    emailDensity?: StringFieldUpdateOperationsInput | string
+    lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
     msalCache?: MsalTokenCacheUncheckedUpdateOneWithoutUserNestedInput
     deltaLinks?: EmailDeltaLinkUncheckedUpdateManyWithoutUserNestedInput
@@ -24887,24 +36653,117 @@ export namespace Prisma {
     cachedEmails?: CachedEmailUncheckedUpdateManyWithoutUserNestedInput
     cachedCalEvents?: CachedCalendarEventUncheckedUpdateManyWithoutUserNestedInput
     cachedContacts?: CachedContactUncheckedUpdateManyWithoutUserNestedInput
+    emailAttachments?: EmailAttachmentUncheckedUpdateManyWithoutUserNestedInput
+    aiGeneratedReplies?: AiGeneratedReplyUncheckedUpdateManyWithoutUserNestedInput
+    cachedSearchResults?: CachedSearchResultUncheckedUpdateManyWithoutUserNestedInput
+    syncStatuses?: SyncStatusUncheckedUpdateManyWithoutUserNestedInput
+    notificationLogs?: NotificationLogUncheckedUpdateManyWithoutUserNestedInput
+    migrationStatuses?: MigrationStatusUncheckedUpdateManyWithoutUserNestedInput
   }
 
-  export type UserCreateManyOrgInput = {
+  export type UserCreateWithoutEmailAttachmentsInput = {
     id: string
     email: string
     name?: string | null
     avatarUrl?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    notificationNewEmail?: boolean
+    notificationDailyDigest?: boolean
+    notificationAiReplies?: boolean
+    notificationCalendarReminders?: boolean
+    notificationWeeklyReport?: boolean
+    appTheme?: string
+    fontSize?: string
+    emailDensity?: string
+    lastActiveAccountId?: string | null
+    org: OrganizationCreateNestedOneWithoutUsersInput
+    msAccounts?: MsConnectedAccountCreateNestedManyWithoutUserInput
+    msalCache?: MsalTokenCacheCreateNestedOneWithoutUserInput
+    deltaLinks?: EmailDeltaLinkCreateNestedManyWithoutUserInput
+    webhookSubs?: WebhookSubscriptionCreateNestedManyWithoutUserInput
+    drafts?: DraftCreateNestedManyWithoutUserInput
+    emailRules?: EmailRuleCreateNestedManyWithoutUserInput
+    signatures?: SignatureCreateNestedManyWithoutUserInput
+    cachedFolders?: CachedFolderCreateNestedManyWithoutUserInput
+    cachedEmails?: CachedEmailCreateNestedManyWithoutUserInput
+    cachedCalEvents?: CachedCalendarEventCreateNestedManyWithoutUserInput
+    cachedContacts?: CachedContactCreateNestedManyWithoutUserInput
+    aiGeneratedReplies?: AiGeneratedReplyCreateNestedManyWithoutUserInput
+    cachedSearchResults?: CachedSearchResultCreateNestedManyWithoutUserInput
+    syncStatuses?: SyncStatusCreateNestedManyWithoutUserInput
+    notificationLogs?: NotificationLogCreateNestedManyWithoutUserInput
+    migrationStatuses?: MigrationStatusCreateNestedManyWithoutUserInput
   }
 
-  export type UserUpdateWithoutOrgInput = {
+  export type UserUncheckedCreateWithoutEmailAttachmentsInput = {
+    id: string
+    email: string
+    name?: string | null
+    avatarUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    orgId: string
+    notificationNewEmail?: boolean
+    notificationDailyDigest?: boolean
+    notificationAiReplies?: boolean
+    notificationCalendarReminders?: boolean
+    notificationWeeklyReport?: boolean
+    appTheme?: string
+    fontSize?: string
+    emailDensity?: string
+    lastActiveAccountId?: string | null
+    msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
+    msalCache?: MsalTokenCacheUncheckedCreateNestedOneWithoutUserInput
+    deltaLinks?: EmailDeltaLinkUncheckedCreateNestedManyWithoutUserInput
+    webhookSubs?: WebhookSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    drafts?: DraftUncheckedCreateNestedManyWithoutUserInput
+    emailRules?: EmailRuleUncheckedCreateNestedManyWithoutUserInput
+    signatures?: SignatureUncheckedCreateNestedManyWithoutUserInput
+    cachedFolders?: CachedFolderUncheckedCreateNestedManyWithoutUserInput
+    cachedEmails?: CachedEmailUncheckedCreateNestedManyWithoutUserInput
+    cachedCalEvents?: CachedCalendarEventUncheckedCreateNestedManyWithoutUserInput
+    cachedContacts?: CachedContactUncheckedCreateNestedManyWithoutUserInput
+    aiGeneratedReplies?: AiGeneratedReplyUncheckedCreateNestedManyWithoutUserInput
+    cachedSearchResults?: CachedSearchResultUncheckedCreateNestedManyWithoutUserInput
+    syncStatuses?: SyncStatusUncheckedCreateNestedManyWithoutUserInput
+    notificationLogs?: NotificationLogUncheckedCreateNestedManyWithoutUserInput
+    migrationStatuses?: MigrationStatusUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutEmailAttachmentsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutEmailAttachmentsInput, UserUncheckedCreateWithoutEmailAttachmentsInput>
+  }
+
+  export type UserUpsertWithoutEmailAttachmentsInput = {
+    update: XOR<UserUpdateWithoutEmailAttachmentsInput, UserUncheckedUpdateWithoutEmailAttachmentsInput>
+    create: XOR<UserCreateWithoutEmailAttachmentsInput, UserUncheckedCreateWithoutEmailAttachmentsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutEmailAttachmentsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutEmailAttachmentsInput, UserUncheckedUpdateWithoutEmailAttachmentsInput>
+  }
+
+  export type UserUpdateWithoutEmailAttachmentsInput = {
     id?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     name?: NullableStringFieldUpdateOperationsInput | string | null
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
+    notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
+    notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
+    notificationCalendarReminders?: BoolFieldUpdateOperationsInput | boolean
+    notificationWeeklyReport?: BoolFieldUpdateOperationsInput | boolean
+    appTheme?: StringFieldUpdateOperationsInput | string
+    fontSize?: StringFieldUpdateOperationsInput | string
+    emailDensity?: StringFieldUpdateOperationsInput | string
+    lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
     msAccounts?: MsConnectedAccountUpdateManyWithoutUserNestedInput
     msalCache?: MsalTokenCacheUpdateOneWithoutUserNestedInput
     deltaLinks?: EmailDeltaLinkUpdateManyWithoutUserNestedInput
@@ -24916,15 +36775,30 @@ export namespace Prisma {
     cachedEmails?: CachedEmailUpdateManyWithoutUserNestedInput
     cachedCalEvents?: CachedCalendarEventUpdateManyWithoutUserNestedInput
     cachedContacts?: CachedContactUpdateManyWithoutUserNestedInput
+    aiGeneratedReplies?: AiGeneratedReplyUpdateManyWithoutUserNestedInput
+    cachedSearchResults?: CachedSearchResultUpdateManyWithoutUserNestedInput
+    syncStatuses?: SyncStatusUpdateManyWithoutUserNestedInput
+    notificationLogs?: NotificationLogUpdateManyWithoutUserNestedInput
+    migrationStatuses?: MigrationStatusUpdateManyWithoutUserNestedInput
   }
 
-  export type UserUncheckedUpdateWithoutOrgInput = {
+  export type UserUncheckedUpdateWithoutEmailAttachmentsInput = {
     id?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     name?: NullableStringFieldUpdateOperationsInput | string | null
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    orgId?: StringFieldUpdateOperationsInput | string
+    notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
+    notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
+    notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
+    notificationCalendarReminders?: BoolFieldUpdateOperationsInput | boolean
+    notificationWeeklyReport?: BoolFieldUpdateOperationsInput | boolean
+    appTheme?: StringFieldUpdateOperationsInput | string
+    fontSize?: StringFieldUpdateOperationsInput | string
+    emailDensity?: StringFieldUpdateOperationsInput | string
+    lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
     msalCache?: MsalTokenCacheUncheckedUpdateOneWithoutUserNestedInput
     deltaLinks?: EmailDeltaLinkUncheckedUpdateManyWithoutUserNestedInput
@@ -24936,6 +36810,879 @@ export namespace Prisma {
     cachedEmails?: CachedEmailUncheckedUpdateManyWithoutUserNestedInput
     cachedCalEvents?: CachedCalendarEventUncheckedUpdateManyWithoutUserNestedInput
     cachedContacts?: CachedContactUncheckedUpdateManyWithoutUserNestedInput
+    aiGeneratedReplies?: AiGeneratedReplyUncheckedUpdateManyWithoutUserNestedInput
+    cachedSearchResults?: CachedSearchResultUncheckedUpdateManyWithoutUserNestedInput
+    syncStatuses?: SyncStatusUncheckedUpdateManyWithoutUserNestedInput
+    notificationLogs?: NotificationLogUncheckedUpdateManyWithoutUserNestedInput
+    migrationStatuses?: MigrationStatusUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserCreateWithoutAiGeneratedRepliesInput = {
+    id: string
+    email: string
+    name?: string | null
+    avatarUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    notificationNewEmail?: boolean
+    notificationDailyDigest?: boolean
+    notificationAiReplies?: boolean
+    notificationCalendarReminders?: boolean
+    notificationWeeklyReport?: boolean
+    appTheme?: string
+    fontSize?: string
+    emailDensity?: string
+    lastActiveAccountId?: string | null
+    org: OrganizationCreateNestedOneWithoutUsersInput
+    msAccounts?: MsConnectedAccountCreateNestedManyWithoutUserInput
+    msalCache?: MsalTokenCacheCreateNestedOneWithoutUserInput
+    deltaLinks?: EmailDeltaLinkCreateNestedManyWithoutUserInput
+    webhookSubs?: WebhookSubscriptionCreateNestedManyWithoutUserInput
+    drafts?: DraftCreateNestedManyWithoutUserInput
+    emailRules?: EmailRuleCreateNestedManyWithoutUserInput
+    signatures?: SignatureCreateNestedManyWithoutUserInput
+    cachedFolders?: CachedFolderCreateNestedManyWithoutUserInput
+    cachedEmails?: CachedEmailCreateNestedManyWithoutUserInput
+    cachedCalEvents?: CachedCalendarEventCreateNestedManyWithoutUserInput
+    cachedContacts?: CachedContactCreateNestedManyWithoutUserInput
+    emailAttachments?: EmailAttachmentCreateNestedManyWithoutUserInput
+    cachedSearchResults?: CachedSearchResultCreateNestedManyWithoutUserInput
+    syncStatuses?: SyncStatusCreateNestedManyWithoutUserInput
+    notificationLogs?: NotificationLogCreateNestedManyWithoutUserInput
+    migrationStatuses?: MigrationStatusCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutAiGeneratedRepliesInput = {
+    id: string
+    email: string
+    name?: string | null
+    avatarUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    orgId: string
+    notificationNewEmail?: boolean
+    notificationDailyDigest?: boolean
+    notificationAiReplies?: boolean
+    notificationCalendarReminders?: boolean
+    notificationWeeklyReport?: boolean
+    appTheme?: string
+    fontSize?: string
+    emailDensity?: string
+    lastActiveAccountId?: string | null
+    msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
+    msalCache?: MsalTokenCacheUncheckedCreateNestedOneWithoutUserInput
+    deltaLinks?: EmailDeltaLinkUncheckedCreateNestedManyWithoutUserInput
+    webhookSubs?: WebhookSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    drafts?: DraftUncheckedCreateNestedManyWithoutUserInput
+    emailRules?: EmailRuleUncheckedCreateNestedManyWithoutUserInput
+    signatures?: SignatureUncheckedCreateNestedManyWithoutUserInput
+    cachedFolders?: CachedFolderUncheckedCreateNestedManyWithoutUserInput
+    cachedEmails?: CachedEmailUncheckedCreateNestedManyWithoutUserInput
+    cachedCalEvents?: CachedCalendarEventUncheckedCreateNestedManyWithoutUserInput
+    cachedContacts?: CachedContactUncheckedCreateNestedManyWithoutUserInput
+    emailAttachments?: EmailAttachmentUncheckedCreateNestedManyWithoutUserInput
+    cachedSearchResults?: CachedSearchResultUncheckedCreateNestedManyWithoutUserInput
+    syncStatuses?: SyncStatusUncheckedCreateNestedManyWithoutUserInput
+    notificationLogs?: NotificationLogUncheckedCreateNestedManyWithoutUserInput
+    migrationStatuses?: MigrationStatusUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutAiGeneratedRepliesInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutAiGeneratedRepliesInput, UserUncheckedCreateWithoutAiGeneratedRepliesInput>
+  }
+
+  export type UserUpsertWithoutAiGeneratedRepliesInput = {
+    update: XOR<UserUpdateWithoutAiGeneratedRepliesInput, UserUncheckedUpdateWithoutAiGeneratedRepliesInput>
+    create: XOR<UserCreateWithoutAiGeneratedRepliesInput, UserUncheckedCreateWithoutAiGeneratedRepliesInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutAiGeneratedRepliesInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutAiGeneratedRepliesInput, UserUncheckedUpdateWithoutAiGeneratedRepliesInput>
+  }
+
+  export type UserUpdateWithoutAiGeneratedRepliesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
+    notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
+    notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
+    notificationCalendarReminders?: BoolFieldUpdateOperationsInput | boolean
+    notificationWeeklyReport?: BoolFieldUpdateOperationsInput | boolean
+    appTheme?: StringFieldUpdateOperationsInput | string
+    fontSize?: StringFieldUpdateOperationsInput | string
+    emailDensity?: StringFieldUpdateOperationsInput | string
+    lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
+    msAccounts?: MsConnectedAccountUpdateManyWithoutUserNestedInput
+    msalCache?: MsalTokenCacheUpdateOneWithoutUserNestedInput
+    deltaLinks?: EmailDeltaLinkUpdateManyWithoutUserNestedInput
+    webhookSubs?: WebhookSubscriptionUpdateManyWithoutUserNestedInput
+    drafts?: DraftUpdateManyWithoutUserNestedInput
+    emailRules?: EmailRuleUpdateManyWithoutUserNestedInput
+    signatures?: SignatureUpdateManyWithoutUserNestedInput
+    cachedFolders?: CachedFolderUpdateManyWithoutUserNestedInput
+    cachedEmails?: CachedEmailUpdateManyWithoutUserNestedInput
+    cachedCalEvents?: CachedCalendarEventUpdateManyWithoutUserNestedInput
+    cachedContacts?: CachedContactUpdateManyWithoutUserNestedInput
+    emailAttachments?: EmailAttachmentUpdateManyWithoutUserNestedInput
+    cachedSearchResults?: CachedSearchResultUpdateManyWithoutUserNestedInput
+    syncStatuses?: SyncStatusUpdateManyWithoutUserNestedInput
+    notificationLogs?: NotificationLogUpdateManyWithoutUserNestedInput
+    migrationStatuses?: MigrationStatusUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutAiGeneratedRepliesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    orgId?: StringFieldUpdateOperationsInput | string
+    notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
+    notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
+    notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
+    notificationCalendarReminders?: BoolFieldUpdateOperationsInput | boolean
+    notificationWeeklyReport?: BoolFieldUpdateOperationsInput | boolean
+    appTheme?: StringFieldUpdateOperationsInput | string
+    fontSize?: StringFieldUpdateOperationsInput | string
+    emailDensity?: StringFieldUpdateOperationsInput | string
+    lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
+    msalCache?: MsalTokenCacheUncheckedUpdateOneWithoutUserNestedInput
+    deltaLinks?: EmailDeltaLinkUncheckedUpdateManyWithoutUserNestedInput
+    webhookSubs?: WebhookSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    drafts?: DraftUncheckedUpdateManyWithoutUserNestedInput
+    emailRules?: EmailRuleUncheckedUpdateManyWithoutUserNestedInput
+    signatures?: SignatureUncheckedUpdateManyWithoutUserNestedInput
+    cachedFolders?: CachedFolderUncheckedUpdateManyWithoutUserNestedInput
+    cachedEmails?: CachedEmailUncheckedUpdateManyWithoutUserNestedInput
+    cachedCalEvents?: CachedCalendarEventUncheckedUpdateManyWithoutUserNestedInput
+    cachedContacts?: CachedContactUncheckedUpdateManyWithoutUserNestedInput
+    emailAttachments?: EmailAttachmentUncheckedUpdateManyWithoutUserNestedInput
+    cachedSearchResults?: CachedSearchResultUncheckedUpdateManyWithoutUserNestedInput
+    syncStatuses?: SyncStatusUncheckedUpdateManyWithoutUserNestedInput
+    notificationLogs?: NotificationLogUncheckedUpdateManyWithoutUserNestedInput
+    migrationStatuses?: MigrationStatusUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserCreateWithoutCachedSearchResultsInput = {
+    id: string
+    email: string
+    name?: string | null
+    avatarUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    notificationNewEmail?: boolean
+    notificationDailyDigest?: boolean
+    notificationAiReplies?: boolean
+    notificationCalendarReminders?: boolean
+    notificationWeeklyReport?: boolean
+    appTheme?: string
+    fontSize?: string
+    emailDensity?: string
+    lastActiveAccountId?: string | null
+    org: OrganizationCreateNestedOneWithoutUsersInput
+    msAccounts?: MsConnectedAccountCreateNestedManyWithoutUserInput
+    msalCache?: MsalTokenCacheCreateNestedOneWithoutUserInput
+    deltaLinks?: EmailDeltaLinkCreateNestedManyWithoutUserInput
+    webhookSubs?: WebhookSubscriptionCreateNestedManyWithoutUserInput
+    drafts?: DraftCreateNestedManyWithoutUserInput
+    emailRules?: EmailRuleCreateNestedManyWithoutUserInput
+    signatures?: SignatureCreateNestedManyWithoutUserInput
+    cachedFolders?: CachedFolderCreateNestedManyWithoutUserInput
+    cachedEmails?: CachedEmailCreateNestedManyWithoutUserInput
+    cachedCalEvents?: CachedCalendarEventCreateNestedManyWithoutUserInput
+    cachedContacts?: CachedContactCreateNestedManyWithoutUserInput
+    emailAttachments?: EmailAttachmentCreateNestedManyWithoutUserInput
+    aiGeneratedReplies?: AiGeneratedReplyCreateNestedManyWithoutUserInput
+    syncStatuses?: SyncStatusCreateNestedManyWithoutUserInput
+    notificationLogs?: NotificationLogCreateNestedManyWithoutUserInput
+    migrationStatuses?: MigrationStatusCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutCachedSearchResultsInput = {
+    id: string
+    email: string
+    name?: string | null
+    avatarUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    orgId: string
+    notificationNewEmail?: boolean
+    notificationDailyDigest?: boolean
+    notificationAiReplies?: boolean
+    notificationCalendarReminders?: boolean
+    notificationWeeklyReport?: boolean
+    appTheme?: string
+    fontSize?: string
+    emailDensity?: string
+    lastActiveAccountId?: string | null
+    msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
+    msalCache?: MsalTokenCacheUncheckedCreateNestedOneWithoutUserInput
+    deltaLinks?: EmailDeltaLinkUncheckedCreateNestedManyWithoutUserInput
+    webhookSubs?: WebhookSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    drafts?: DraftUncheckedCreateNestedManyWithoutUserInput
+    emailRules?: EmailRuleUncheckedCreateNestedManyWithoutUserInput
+    signatures?: SignatureUncheckedCreateNestedManyWithoutUserInput
+    cachedFolders?: CachedFolderUncheckedCreateNestedManyWithoutUserInput
+    cachedEmails?: CachedEmailUncheckedCreateNestedManyWithoutUserInput
+    cachedCalEvents?: CachedCalendarEventUncheckedCreateNestedManyWithoutUserInput
+    cachedContacts?: CachedContactUncheckedCreateNestedManyWithoutUserInput
+    emailAttachments?: EmailAttachmentUncheckedCreateNestedManyWithoutUserInput
+    aiGeneratedReplies?: AiGeneratedReplyUncheckedCreateNestedManyWithoutUserInput
+    syncStatuses?: SyncStatusUncheckedCreateNestedManyWithoutUserInput
+    notificationLogs?: NotificationLogUncheckedCreateNestedManyWithoutUserInput
+    migrationStatuses?: MigrationStatusUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutCachedSearchResultsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutCachedSearchResultsInput, UserUncheckedCreateWithoutCachedSearchResultsInput>
+  }
+
+  export type UserUpsertWithoutCachedSearchResultsInput = {
+    update: XOR<UserUpdateWithoutCachedSearchResultsInput, UserUncheckedUpdateWithoutCachedSearchResultsInput>
+    create: XOR<UserCreateWithoutCachedSearchResultsInput, UserUncheckedCreateWithoutCachedSearchResultsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutCachedSearchResultsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutCachedSearchResultsInput, UserUncheckedUpdateWithoutCachedSearchResultsInput>
+  }
+
+  export type UserUpdateWithoutCachedSearchResultsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
+    notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
+    notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
+    notificationCalendarReminders?: BoolFieldUpdateOperationsInput | boolean
+    notificationWeeklyReport?: BoolFieldUpdateOperationsInput | boolean
+    appTheme?: StringFieldUpdateOperationsInput | string
+    fontSize?: StringFieldUpdateOperationsInput | string
+    emailDensity?: StringFieldUpdateOperationsInput | string
+    lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
+    msAccounts?: MsConnectedAccountUpdateManyWithoutUserNestedInput
+    msalCache?: MsalTokenCacheUpdateOneWithoutUserNestedInput
+    deltaLinks?: EmailDeltaLinkUpdateManyWithoutUserNestedInput
+    webhookSubs?: WebhookSubscriptionUpdateManyWithoutUserNestedInput
+    drafts?: DraftUpdateManyWithoutUserNestedInput
+    emailRules?: EmailRuleUpdateManyWithoutUserNestedInput
+    signatures?: SignatureUpdateManyWithoutUserNestedInput
+    cachedFolders?: CachedFolderUpdateManyWithoutUserNestedInput
+    cachedEmails?: CachedEmailUpdateManyWithoutUserNestedInput
+    cachedCalEvents?: CachedCalendarEventUpdateManyWithoutUserNestedInput
+    cachedContacts?: CachedContactUpdateManyWithoutUserNestedInput
+    emailAttachments?: EmailAttachmentUpdateManyWithoutUserNestedInput
+    aiGeneratedReplies?: AiGeneratedReplyUpdateManyWithoutUserNestedInput
+    syncStatuses?: SyncStatusUpdateManyWithoutUserNestedInput
+    notificationLogs?: NotificationLogUpdateManyWithoutUserNestedInput
+    migrationStatuses?: MigrationStatusUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutCachedSearchResultsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    orgId?: StringFieldUpdateOperationsInput | string
+    notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
+    notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
+    notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
+    notificationCalendarReminders?: BoolFieldUpdateOperationsInput | boolean
+    notificationWeeklyReport?: BoolFieldUpdateOperationsInput | boolean
+    appTheme?: StringFieldUpdateOperationsInput | string
+    fontSize?: StringFieldUpdateOperationsInput | string
+    emailDensity?: StringFieldUpdateOperationsInput | string
+    lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
+    msalCache?: MsalTokenCacheUncheckedUpdateOneWithoutUserNestedInput
+    deltaLinks?: EmailDeltaLinkUncheckedUpdateManyWithoutUserNestedInput
+    webhookSubs?: WebhookSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    drafts?: DraftUncheckedUpdateManyWithoutUserNestedInput
+    emailRules?: EmailRuleUncheckedUpdateManyWithoutUserNestedInput
+    signatures?: SignatureUncheckedUpdateManyWithoutUserNestedInput
+    cachedFolders?: CachedFolderUncheckedUpdateManyWithoutUserNestedInput
+    cachedEmails?: CachedEmailUncheckedUpdateManyWithoutUserNestedInput
+    cachedCalEvents?: CachedCalendarEventUncheckedUpdateManyWithoutUserNestedInput
+    cachedContacts?: CachedContactUncheckedUpdateManyWithoutUserNestedInput
+    emailAttachments?: EmailAttachmentUncheckedUpdateManyWithoutUserNestedInput
+    aiGeneratedReplies?: AiGeneratedReplyUncheckedUpdateManyWithoutUserNestedInput
+    syncStatuses?: SyncStatusUncheckedUpdateManyWithoutUserNestedInput
+    notificationLogs?: NotificationLogUncheckedUpdateManyWithoutUserNestedInput
+    migrationStatuses?: MigrationStatusUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserCreateWithoutSyncStatusesInput = {
+    id: string
+    email: string
+    name?: string | null
+    avatarUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    notificationNewEmail?: boolean
+    notificationDailyDigest?: boolean
+    notificationAiReplies?: boolean
+    notificationCalendarReminders?: boolean
+    notificationWeeklyReport?: boolean
+    appTheme?: string
+    fontSize?: string
+    emailDensity?: string
+    lastActiveAccountId?: string | null
+    org: OrganizationCreateNestedOneWithoutUsersInput
+    msAccounts?: MsConnectedAccountCreateNestedManyWithoutUserInput
+    msalCache?: MsalTokenCacheCreateNestedOneWithoutUserInput
+    deltaLinks?: EmailDeltaLinkCreateNestedManyWithoutUserInput
+    webhookSubs?: WebhookSubscriptionCreateNestedManyWithoutUserInput
+    drafts?: DraftCreateNestedManyWithoutUserInput
+    emailRules?: EmailRuleCreateNestedManyWithoutUserInput
+    signatures?: SignatureCreateNestedManyWithoutUserInput
+    cachedFolders?: CachedFolderCreateNestedManyWithoutUserInput
+    cachedEmails?: CachedEmailCreateNestedManyWithoutUserInput
+    cachedCalEvents?: CachedCalendarEventCreateNestedManyWithoutUserInput
+    cachedContacts?: CachedContactCreateNestedManyWithoutUserInput
+    emailAttachments?: EmailAttachmentCreateNestedManyWithoutUserInput
+    aiGeneratedReplies?: AiGeneratedReplyCreateNestedManyWithoutUserInput
+    cachedSearchResults?: CachedSearchResultCreateNestedManyWithoutUserInput
+    notificationLogs?: NotificationLogCreateNestedManyWithoutUserInput
+    migrationStatuses?: MigrationStatusCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutSyncStatusesInput = {
+    id: string
+    email: string
+    name?: string | null
+    avatarUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    orgId: string
+    notificationNewEmail?: boolean
+    notificationDailyDigest?: boolean
+    notificationAiReplies?: boolean
+    notificationCalendarReminders?: boolean
+    notificationWeeklyReport?: boolean
+    appTheme?: string
+    fontSize?: string
+    emailDensity?: string
+    lastActiveAccountId?: string | null
+    msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
+    msalCache?: MsalTokenCacheUncheckedCreateNestedOneWithoutUserInput
+    deltaLinks?: EmailDeltaLinkUncheckedCreateNestedManyWithoutUserInput
+    webhookSubs?: WebhookSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    drafts?: DraftUncheckedCreateNestedManyWithoutUserInput
+    emailRules?: EmailRuleUncheckedCreateNestedManyWithoutUserInput
+    signatures?: SignatureUncheckedCreateNestedManyWithoutUserInput
+    cachedFolders?: CachedFolderUncheckedCreateNestedManyWithoutUserInput
+    cachedEmails?: CachedEmailUncheckedCreateNestedManyWithoutUserInput
+    cachedCalEvents?: CachedCalendarEventUncheckedCreateNestedManyWithoutUserInput
+    cachedContacts?: CachedContactUncheckedCreateNestedManyWithoutUserInput
+    emailAttachments?: EmailAttachmentUncheckedCreateNestedManyWithoutUserInput
+    aiGeneratedReplies?: AiGeneratedReplyUncheckedCreateNestedManyWithoutUserInput
+    cachedSearchResults?: CachedSearchResultUncheckedCreateNestedManyWithoutUserInput
+    notificationLogs?: NotificationLogUncheckedCreateNestedManyWithoutUserInput
+    migrationStatuses?: MigrationStatusUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutSyncStatusesInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutSyncStatusesInput, UserUncheckedCreateWithoutSyncStatusesInput>
+  }
+
+  export type UserUpsertWithoutSyncStatusesInput = {
+    update: XOR<UserUpdateWithoutSyncStatusesInput, UserUncheckedUpdateWithoutSyncStatusesInput>
+    create: XOR<UserCreateWithoutSyncStatusesInput, UserUncheckedCreateWithoutSyncStatusesInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutSyncStatusesInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutSyncStatusesInput, UserUncheckedUpdateWithoutSyncStatusesInput>
+  }
+
+  export type UserUpdateWithoutSyncStatusesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
+    notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
+    notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
+    notificationCalendarReminders?: BoolFieldUpdateOperationsInput | boolean
+    notificationWeeklyReport?: BoolFieldUpdateOperationsInput | boolean
+    appTheme?: StringFieldUpdateOperationsInput | string
+    fontSize?: StringFieldUpdateOperationsInput | string
+    emailDensity?: StringFieldUpdateOperationsInput | string
+    lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
+    msAccounts?: MsConnectedAccountUpdateManyWithoutUserNestedInput
+    msalCache?: MsalTokenCacheUpdateOneWithoutUserNestedInput
+    deltaLinks?: EmailDeltaLinkUpdateManyWithoutUserNestedInput
+    webhookSubs?: WebhookSubscriptionUpdateManyWithoutUserNestedInput
+    drafts?: DraftUpdateManyWithoutUserNestedInput
+    emailRules?: EmailRuleUpdateManyWithoutUserNestedInput
+    signatures?: SignatureUpdateManyWithoutUserNestedInput
+    cachedFolders?: CachedFolderUpdateManyWithoutUserNestedInput
+    cachedEmails?: CachedEmailUpdateManyWithoutUserNestedInput
+    cachedCalEvents?: CachedCalendarEventUpdateManyWithoutUserNestedInput
+    cachedContacts?: CachedContactUpdateManyWithoutUserNestedInput
+    emailAttachments?: EmailAttachmentUpdateManyWithoutUserNestedInput
+    aiGeneratedReplies?: AiGeneratedReplyUpdateManyWithoutUserNestedInput
+    cachedSearchResults?: CachedSearchResultUpdateManyWithoutUserNestedInput
+    notificationLogs?: NotificationLogUpdateManyWithoutUserNestedInput
+    migrationStatuses?: MigrationStatusUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutSyncStatusesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    orgId?: StringFieldUpdateOperationsInput | string
+    notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
+    notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
+    notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
+    notificationCalendarReminders?: BoolFieldUpdateOperationsInput | boolean
+    notificationWeeklyReport?: BoolFieldUpdateOperationsInput | boolean
+    appTheme?: StringFieldUpdateOperationsInput | string
+    fontSize?: StringFieldUpdateOperationsInput | string
+    emailDensity?: StringFieldUpdateOperationsInput | string
+    lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
+    msalCache?: MsalTokenCacheUncheckedUpdateOneWithoutUserNestedInput
+    deltaLinks?: EmailDeltaLinkUncheckedUpdateManyWithoutUserNestedInput
+    webhookSubs?: WebhookSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    drafts?: DraftUncheckedUpdateManyWithoutUserNestedInput
+    emailRules?: EmailRuleUncheckedUpdateManyWithoutUserNestedInput
+    signatures?: SignatureUncheckedUpdateManyWithoutUserNestedInput
+    cachedFolders?: CachedFolderUncheckedUpdateManyWithoutUserNestedInput
+    cachedEmails?: CachedEmailUncheckedUpdateManyWithoutUserNestedInput
+    cachedCalEvents?: CachedCalendarEventUncheckedUpdateManyWithoutUserNestedInput
+    cachedContacts?: CachedContactUncheckedUpdateManyWithoutUserNestedInput
+    emailAttachments?: EmailAttachmentUncheckedUpdateManyWithoutUserNestedInput
+    aiGeneratedReplies?: AiGeneratedReplyUncheckedUpdateManyWithoutUserNestedInput
+    cachedSearchResults?: CachedSearchResultUncheckedUpdateManyWithoutUserNestedInput
+    notificationLogs?: NotificationLogUncheckedUpdateManyWithoutUserNestedInput
+    migrationStatuses?: MigrationStatusUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserCreateWithoutNotificationLogsInput = {
+    id: string
+    email: string
+    name?: string | null
+    avatarUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    notificationNewEmail?: boolean
+    notificationDailyDigest?: boolean
+    notificationAiReplies?: boolean
+    notificationCalendarReminders?: boolean
+    notificationWeeklyReport?: boolean
+    appTheme?: string
+    fontSize?: string
+    emailDensity?: string
+    lastActiveAccountId?: string | null
+    org: OrganizationCreateNestedOneWithoutUsersInput
+    msAccounts?: MsConnectedAccountCreateNestedManyWithoutUserInput
+    msalCache?: MsalTokenCacheCreateNestedOneWithoutUserInput
+    deltaLinks?: EmailDeltaLinkCreateNestedManyWithoutUserInput
+    webhookSubs?: WebhookSubscriptionCreateNestedManyWithoutUserInput
+    drafts?: DraftCreateNestedManyWithoutUserInput
+    emailRules?: EmailRuleCreateNestedManyWithoutUserInput
+    signatures?: SignatureCreateNestedManyWithoutUserInput
+    cachedFolders?: CachedFolderCreateNestedManyWithoutUserInput
+    cachedEmails?: CachedEmailCreateNestedManyWithoutUserInput
+    cachedCalEvents?: CachedCalendarEventCreateNestedManyWithoutUserInput
+    cachedContacts?: CachedContactCreateNestedManyWithoutUserInput
+    emailAttachments?: EmailAttachmentCreateNestedManyWithoutUserInput
+    aiGeneratedReplies?: AiGeneratedReplyCreateNestedManyWithoutUserInput
+    cachedSearchResults?: CachedSearchResultCreateNestedManyWithoutUserInput
+    syncStatuses?: SyncStatusCreateNestedManyWithoutUserInput
+    migrationStatuses?: MigrationStatusCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutNotificationLogsInput = {
+    id: string
+    email: string
+    name?: string | null
+    avatarUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    orgId: string
+    notificationNewEmail?: boolean
+    notificationDailyDigest?: boolean
+    notificationAiReplies?: boolean
+    notificationCalendarReminders?: boolean
+    notificationWeeklyReport?: boolean
+    appTheme?: string
+    fontSize?: string
+    emailDensity?: string
+    lastActiveAccountId?: string | null
+    msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
+    msalCache?: MsalTokenCacheUncheckedCreateNestedOneWithoutUserInput
+    deltaLinks?: EmailDeltaLinkUncheckedCreateNestedManyWithoutUserInput
+    webhookSubs?: WebhookSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    drafts?: DraftUncheckedCreateNestedManyWithoutUserInput
+    emailRules?: EmailRuleUncheckedCreateNestedManyWithoutUserInput
+    signatures?: SignatureUncheckedCreateNestedManyWithoutUserInput
+    cachedFolders?: CachedFolderUncheckedCreateNestedManyWithoutUserInput
+    cachedEmails?: CachedEmailUncheckedCreateNestedManyWithoutUserInput
+    cachedCalEvents?: CachedCalendarEventUncheckedCreateNestedManyWithoutUserInput
+    cachedContacts?: CachedContactUncheckedCreateNestedManyWithoutUserInput
+    emailAttachments?: EmailAttachmentUncheckedCreateNestedManyWithoutUserInput
+    aiGeneratedReplies?: AiGeneratedReplyUncheckedCreateNestedManyWithoutUserInput
+    cachedSearchResults?: CachedSearchResultUncheckedCreateNestedManyWithoutUserInput
+    syncStatuses?: SyncStatusUncheckedCreateNestedManyWithoutUserInput
+    migrationStatuses?: MigrationStatusUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutNotificationLogsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutNotificationLogsInput, UserUncheckedCreateWithoutNotificationLogsInput>
+  }
+
+  export type UserUpsertWithoutNotificationLogsInput = {
+    update: XOR<UserUpdateWithoutNotificationLogsInput, UserUncheckedUpdateWithoutNotificationLogsInput>
+    create: XOR<UserCreateWithoutNotificationLogsInput, UserUncheckedCreateWithoutNotificationLogsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutNotificationLogsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutNotificationLogsInput, UserUncheckedUpdateWithoutNotificationLogsInput>
+  }
+
+  export type UserUpdateWithoutNotificationLogsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
+    notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
+    notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
+    notificationCalendarReminders?: BoolFieldUpdateOperationsInput | boolean
+    notificationWeeklyReport?: BoolFieldUpdateOperationsInput | boolean
+    appTheme?: StringFieldUpdateOperationsInput | string
+    fontSize?: StringFieldUpdateOperationsInput | string
+    emailDensity?: StringFieldUpdateOperationsInput | string
+    lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
+    msAccounts?: MsConnectedAccountUpdateManyWithoutUserNestedInput
+    msalCache?: MsalTokenCacheUpdateOneWithoutUserNestedInput
+    deltaLinks?: EmailDeltaLinkUpdateManyWithoutUserNestedInput
+    webhookSubs?: WebhookSubscriptionUpdateManyWithoutUserNestedInput
+    drafts?: DraftUpdateManyWithoutUserNestedInput
+    emailRules?: EmailRuleUpdateManyWithoutUserNestedInput
+    signatures?: SignatureUpdateManyWithoutUserNestedInput
+    cachedFolders?: CachedFolderUpdateManyWithoutUserNestedInput
+    cachedEmails?: CachedEmailUpdateManyWithoutUserNestedInput
+    cachedCalEvents?: CachedCalendarEventUpdateManyWithoutUserNestedInput
+    cachedContacts?: CachedContactUpdateManyWithoutUserNestedInput
+    emailAttachments?: EmailAttachmentUpdateManyWithoutUserNestedInput
+    aiGeneratedReplies?: AiGeneratedReplyUpdateManyWithoutUserNestedInput
+    cachedSearchResults?: CachedSearchResultUpdateManyWithoutUserNestedInput
+    syncStatuses?: SyncStatusUpdateManyWithoutUserNestedInput
+    migrationStatuses?: MigrationStatusUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutNotificationLogsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    orgId?: StringFieldUpdateOperationsInput | string
+    notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
+    notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
+    notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
+    notificationCalendarReminders?: BoolFieldUpdateOperationsInput | boolean
+    notificationWeeklyReport?: BoolFieldUpdateOperationsInput | boolean
+    appTheme?: StringFieldUpdateOperationsInput | string
+    fontSize?: StringFieldUpdateOperationsInput | string
+    emailDensity?: StringFieldUpdateOperationsInput | string
+    lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
+    msalCache?: MsalTokenCacheUncheckedUpdateOneWithoutUserNestedInput
+    deltaLinks?: EmailDeltaLinkUncheckedUpdateManyWithoutUserNestedInput
+    webhookSubs?: WebhookSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    drafts?: DraftUncheckedUpdateManyWithoutUserNestedInput
+    emailRules?: EmailRuleUncheckedUpdateManyWithoutUserNestedInput
+    signatures?: SignatureUncheckedUpdateManyWithoutUserNestedInput
+    cachedFolders?: CachedFolderUncheckedUpdateManyWithoutUserNestedInput
+    cachedEmails?: CachedEmailUncheckedUpdateManyWithoutUserNestedInput
+    cachedCalEvents?: CachedCalendarEventUncheckedUpdateManyWithoutUserNestedInput
+    cachedContacts?: CachedContactUncheckedUpdateManyWithoutUserNestedInput
+    emailAttachments?: EmailAttachmentUncheckedUpdateManyWithoutUserNestedInput
+    aiGeneratedReplies?: AiGeneratedReplyUncheckedUpdateManyWithoutUserNestedInput
+    cachedSearchResults?: CachedSearchResultUncheckedUpdateManyWithoutUserNestedInput
+    syncStatuses?: SyncStatusUncheckedUpdateManyWithoutUserNestedInput
+    migrationStatuses?: MigrationStatusUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserCreateWithoutMigrationStatusesInput = {
+    id: string
+    email: string
+    name?: string | null
+    avatarUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    notificationNewEmail?: boolean
+    notificationDailyDigest?: boolean
+    notificationAiReplies?: boolean
+    notificationCalendarReminders?: boolean
+    notificationWeeklyReport?: boolean
+    appTheme?: string
+    fontSize?: string
+    emailDensity?: string
+    lastActiveAccountId?: string | null
+    org: OrganizationCreateNestedOneWithoutUsersInput
+    msAccounts?: MsConnectedAccountCreateNestedManyWithoutUserInput
+    msalCache?: MsalTokenCacheCreateNestedOneWithoutUserInput
+    deltaLinks?: EmailDeltaLinkCreateNestedManyWithoutUserInput
+    webhookSubs?: WebhookSubscriptionCreateNestedManyWithoutUserInput
+    drafts?: DraftCreateNestedManyWithoutUserInput
+    emailRules?: EmailRuleCreateNestedManyWithoutUserInput
+    signatures?: SignatureCreateNestedManyWithoutUserInput
+    cachedFolders?: CachedFolderCreateNestedManyWithoutUserInput
+    cachedEmails?: CachedEmailCreateNestedManyWithoutUserInput
+    cachedCalEvents?: CachedCalendarEventCreateNestedManyWithoutUserInput
+    cachedContacts?: CachedContactCreateNestedManyWithoutUserInput
+    emailAttachments?: EmailAttachmentCreateNestedManyWithoutUserInput
+    aiGeneratedReplies?: AiGeneratedReplyCreateNestedManyWithoutUserInput
+    cachedSearchResults?: CachedSearchResultCreateNestedManyWithoutUserInput
+    syncStatuses?: SyncStatusCreateNestedManyWithoutUserInput
+    notificationLogs?: NotificationLogCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutMigrationStatusesInput = {
+    id: string
+    email: string
+    name?: string | null
+    avatarUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    orgId: string
+    notificationNewEmail?: boolean
+    notificationDailyDigest?: boolean
+    notificationAiReplies?: boolean
+    notificationCalendarReminders?: boolean
+    notificationWeeklyReport?: boolean
+    appTheme?: string
+    fontSize?: string
+    emailDensity?: string
+    lastActiveAccountId?: string | null
+    msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
+    msalCache?: MsalTokenCacheUncheckedCreateNestedOneWithoutUserInput
+    deltaLinks?: EmailDeltaLinkUncheckedCreateNestedManyWithoutUserInput
+    webhookSubs?: WebhookSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    drafts?: DraftUncheckedCreateNestedManyWithoutUserInput
+    emailRules?: EmailRuleUncheckedCreateNestedManyWithoutUserInput
+    signatures?: SignatureUncheckedCreateNestedManyWithoutUserInput
+    cachedFolders?: CachedFolderUncheckedCreateNestedManyWithoutUserInput
+    cachedEmails?: CachedEmailUncheckedCreateNestedManyWithoutUserInput
+    cachedCalEvents?: CachedCalendarEventUncheckedCreateNestedManyWithoutUserInput
+    cachedContacts?: CachedContactUncheckedCreateNestedManyWithoutUserInput
+    emailAttachments?: EmailAttachmentUncheckedCreateNestedManyWithoutUserInput
+    aiGeneratedReplies?: AiGeneratedReplyUncheckedCreateNestedManyWithoutUserInput
+    cachedSearchResults?: CachedSearchResultUncheckedCreateNestedManyWithoutUserInput
+    syncStatuses?: SyncStatusUncheckedCreateNestedManyWithoutUserInput
+    notificationLogs?: NotificationLogUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutMigrationStatusesInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutMigrationStatusesInput, UserUncheckedCreateWithoutMigrationStatusesInput>
+  }
+
+  export type UserUpsertWithoutMigrationStatusesInput = {
+    update: XOR<UserUpdateWithoutMigrationStatusesInput, UserUncheckedUpdateWithoutMigrationStatusesInput>
+    create: XOR<UserCreateWithoutMigrationStatusesInput, UserUncheckedCreateWithoutMigrationStatusesInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutMigrationStatusesInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutMigrationStatusesInput, UserUncheckedUpdateWithoutMigrationStatusesInput>
+  }
+
+  export type UserUpdateWithoutMigrationStatusesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
+    notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
+    notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
+    notificationCalendarReminders?: BoolFieldUpdateOperationsInput | boolean
+    notificationWeeklyReport?: BoolFieldUpdateOperationsInput | boolean
+    appTheme?: StringFieldUpdateOperationsInput | string
+    fontSize?: StringFieldUpdateOperationsInput | string
+    emailDensity?: StringFieldUpdateOperationsInput | string
+    lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
+    msAccounts?: MsConnectedAccountUpdateManyWithoutUserNestedInput
+    msalCache?: MsalTokenCacheUpdateOneWithoutUserNestedInput
+    deltaLinks?: EmailDeltaLinkUpdateManyWithoutUserNestedInput
+    webhookSubs?: WebhookSubscriptionUpdateManyWithoutUserNestedInput
+    drafts?: DraftUpdateManyWithoutUserNestedInput
+    emailRules?: EmailRuleUpdateManyWithoutUserNestedInput
+    signatures?: SignatureUpdateManyWithoutUserNestedInput
+    cachedFolders?: CachedFolderUpdateManyWithoutUserNestedInput
+    cachedEmails?: CachedEmailUpdateManyWithoutUserNestedInput
+    cachedCalEvents?: CachedCalendarEventUpdateManyWithoutUserNestedInput
+    cachedContacts?: CachedContactUpdateManyWithoutUserNestedInput
+    emailAttachments?: EmailAttachmentUpdateManyWithoutUserNestedInput
+    aiGeneratedReplies?: AiGeneratedReplyUpdateManyWithoutUserNestedInput
+    cachedSearchResults?: CachedSearchResultUpdateManyWithoutUserNestedInput
+    syncStatuses?: SyncStatusUpdateManyWithoutUserNestedInput
+    notificationLogs?: NotificationLogUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutMigrationStatusesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    orgId?: StringFieldUpdateOperationsInput | string
+    notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
+    notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
+    notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
+    notificationCalendarReminders?: BoolFieldUpdateOperationsInput | boolean
+    notificationWeeklyReport?: BoolFieldUpdateOperationsInput | boolean
+    appTheme?: StringFieldUpdateOperationsInput | string
+    fontSize?: StringFieldUpdateOperationsInput | string
+    emailDensity?: StringFieldUpdateOperationsInput | string
+    lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
+    msalCache?: MsalTokenCacheUncheckedUpdateOneWithoutUserNestedInput
+    deltaLinks?: EmailDeltaLinkUncheckedUpdateManyWithoutUserNestedInput
+    webhookSubs?: WebhookSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    drafts?: DraftUncheckedUpdateManyWithoutUserNestedInput
+    emailRules?: EmailRuleUncheckedUpdateManyWithoutUserNestedInput
+    signatures?: SignatureUncheckedUpdateManyWithoutUserNestedInput
+    cachedFolders?: CachedFolderUncheckedUpdateManyWithoutUserNestedInput
+    cachedEmails?: CachedEmailUncheckedUpdateManyWithoutUserNestedInput
+    cachedCalEvents?: CachedCalendarEventUncheckedUpdateManyWithoutUserNestedInput
+    cachedContacts?: CachedContactUncheckedUpdateManyWithoutUserNestedInput
+    emailAttachments?: EmailAttachmentUncheckedUpdateManyWithoutUserNestedInput
+    aiGeneratedReplies?: AiGeneratedReplyUncheckedUpdateManyWithoutUserNestedInput
+    cachedSearchResults?: CachedSearchResultUncheckedUpdateManyWithoutUserNestedInput
+    syncStatuses?: SyncStatusUncheckedUpdateManyWithoutUserNestedInput
+    notificationLogs?: NotificationLogUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserCreateManyOrgInput = {
+    id: string
+    email: string
+    name?: string | null
+    avatarUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    notificationNewEmail?: boolean
+    notificationDailyDigest?: boolean
+    notificationAiReplies?: boolean
+    notificationCalendarReminders?: boolean
+    notificationWeeklyReport?: boolean
+    appTheme?: string
+    fontSize?: string
+    emailDensity?: string
+    lastActiveAccountId?: string | null
+  }
+
+  export type UserUpdateWithoutOrgInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
+    notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
+    notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
+    notificationCalendarReminders?: BoolFieldUpdateOperationsInput | boolean
+    notificationWeeklyReport?: BoolFieldUpdateOperationsInput | boolean
+    appTheme?: StringFieldUpdateOperationsInput | string
+    fontSize?: StringFieldUpdateOperationsInput | string
+    emailDensity?: StringFieldUpdateOperationsInput | string
+    lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    msAccounts?: MsConnectedAccountUpdateManyWithoutUserNestedInput
+    msalCache?: MsalTokenCacheUpdateOneWithoutUserNestedInput
+    deltaLinks?: EmailDeltaLinkUpdateManyWithoutUserNestedInput
+    webhookSubs?: WebhookSubscriptionUpdateManyWithoutUserNestedInput
+    drafts?: DraftUpdateManyWithoutUserNestedInput
+    emailRules?: EmailRuleUpdateManyWithoutUserNestedInput
+    signatures?: SignatureUpdateManyWithoutUserNestedInput
+    cachedFolders?: CachedFolderUpdateManyWithoutUserNestedInput
+    cachedEmails?: CachedEmailUpdateManyWithoutUserNestedInput
+    cachedCalEvents?: CachedCalendarEventUpdateManyWithoutUserNestedInput
+    cachedContacts?: CachedContactUpdateManyWithoutUserNestedInput
+    emailAttachments?: EmailAttachmentUpdateManyWithoutUserNestedInput
+    aiGeneratedReplies?: AiGeneratedReplyUpdateManyWithoutUserNestedInput
+    cachedSearchResults?: CachedSearchResultUpdateManyWithoutUserNestedInput
+    syncStatuses?: SyncStatusUpdateManyWithoutUserNestedInput
+    notificationLogs?: NotificationLogUpdateManyWithoutUserNestedInput
+    migrationStatuses?: MigrationStatusUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutOrgInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
+    notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
+    notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
+    notificationCalendarReminders?: BoolFieldUpdateOperationsInput | boolean
+    notificationWeeklyReport?: BoolFieldUpdateOperationsInput | boolean
+    appTheme?: StringFieldUpdateOperationsInput | string
+    fontSize?: StringFieldUpdateOperationsInput | string
+    emailDensity?: StringFieldUpdateOperationsInput | string
+    lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
+    msalCache?: MsalTokenCacheUncheckedUpdateOneWithoutUserNestedInput
+    deltaLinks?: EmailDeltaLinkUncheckedUpdateManyWithoutUserNestedInput
+    webhookSubs?: WebhookSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    drafts?: DraftUncheckedUpdateManyWithoutUserNestedInput
+    emailRules?: EmailRuleUncheckedUpdateManyWithoutUserNestedInput
+    signatures?: SignatureUncheckedUpdateManyWithoutUserNestedInput
+    cachedFolders?: CachedFolderUncheckedUpdateManyWithoutUserNestedInput
+    cachedEmails?: CachedEmailUncheckedUpdateManyWithoutUserNestedInput
+    cachedCalEvents?: CachedCalendarEventUncheckedUpdateManyWithoutUserNestedInput
+    cachedContacts?: CachedContactUncheckedUpdateManyWithoutUserNestedInput
+    emailAttachments?: EmailAttachmentUncheckedUpdateManyWithoutUserNestedInput
+    aiGeneratedReplies?: AiGeneratedReplyUncheckedUpdateManyWithoutUserNestedInput
+    cachedSearchResults?: CachedSearchResultUncheckedUpdateManyWithoutUserNestedInput
+    syncStatuses?: SyncStatusUncheckedUpdateManyWithoutUserNestedInput
+    notificationLogs?: NotificationLogUncheckedUpdateManyWithoutUserNestedInput
+    migrationStatuses?: MigrationStatusUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutOrgInput = {
@@ -24945,6 +37692,15 @@ export namespace Prisma {
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
+    notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
+    notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
+    notificationCalendarReminders?: BoolFieldUpdateOperationsInput | boolean
+    notificationWeeklyReport?: BoolFieldUpdateOperationsInput | boolean
+    appTheme?: StringFieldUpdateOperationsInput | string
+    fontSize?: StringFieldUpdateOperationsInput | string
+    emailDensity?: StringFieldUpdateOperationsInput | string
+    lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type MsConnectedAccountCreateManyUserInput = {
@@ -24988,12 +37744,19 @@ export namespace Prisma {
     bodyHtml?: string | null
     attachments?: JsonNullValueInput | InputJsonValue
     importance?: string
+    sensitivity?: string
     requestReadReceipt?: boolean
+    requestDeliveryReceipt?: boolean
+    categories?: JsonNullValueInput | InputJsonValue
     draftType?: string
     inReplyToMessageId?: string | null
     forwardedMessageId?: string | null
+    originalMessageBody?: string | null
     scheduledAt?: Date | string | null
     scheduledSent?: boolean
+    scheduledNotificationSent?: boolean
+    lastScheduleAttemptAt?: Date | string | null
+    scheduleAttemptCount?: number
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -25007,6 +37770,10 @@ export namespace Prisma {
     actions: JsonNullValueInput | InputJsonValue
     emailCount?: number
     stopProcessing?: boolean
+    lastExecutedAt?: Date | string | null
+    lastExecutionStatus?: string | null
+    lastExecutionError?: string | null
+    failureCount?: number
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -25052,6 +37819,13 @@ export namespace Prisma {
     hasAttachments?: boolean
     flagStatus?: string
     categories?: JsonNullValueInput | InputJsonValue
+    importance?: string
+    sensitivity?: string
+    inferenceClassification?: string
+    conversationId?: string | null
+    isDraft?: boolean
+    syncStatus?: string
+    lastModifiedDateTime?: Date | string | null
     syncedAt?: Date | string
   }
 
@@ -25060,12 +37834,14 @@ export namespace Prisma {
     homeAccountId: string
     subject?: string
     bodyPreview?: string
+    bodyHtml?: string | null
     startDateTime: Date | string
     endDateTime: Date | string
     isAllDay?: boolean
     location?: string | null
     organizerName?: string | null
     organizerEmail?: string | null
+    organizerType?: string
     responseStatus?: string
     onlineMeetingUrl?: string | null
     attendees?: JsonNullValueInput | InputJsonValue
@@ -25073,6 +37849,15 @@ export namespace Prisma {
     reminderMinutes?: number | null
     showAs?: string
     recurrence?: string | null
+    eventColor?: string | null
+    timeZone?: string
+    teamsMeetingUrl?: string | null
+    teamsMeetingId?: string | null
+    seriesMasterId?: string | null
+    iCalUId?: string | null
+    calendarId?: string | null
+    createdDateTime?: Date | string | null
+    lastModifiedDateTime?: Date | string | null
     syncedAt?: Date | string
   }
 
@@ -25084,7 +37869,82 @@ export namespace Prisma {
     phone?: string
     jobTitle?: string
     company?: string
+    department?: string
+    emailAddresses?: JsonNullValueInput | InputJsonValue
+    phones?: JsonNullValueInput | InputJsonValue
+    givenName?: string
+    surname?: string
+    middleName?: string
+    addresses?: JsonNullValueInput | InputJsonValue
+    imAddresses?: JsonNullValueInput | InputJsonValue
+    categories?: JsonNullValueInput | InputJsonValue
+    notes?: string
+    birthday?: Date | string | null
+    anniversary?: Date | string | null
+    manager?: string | null
+    directReports?: JsonNullValueInput | InputJsonValue
+    frequencyScore?: number
+    isVIP?: boolean
+    isFavorite?: boolean
     syncedAt?: Date | string
+  }
+
+  export type EmailAttachmentCreateManyUserInput = {
+    id?: string
+    messageId: string
+    graphMessageId?: string | null
+    fileName: string
+    contentType: string
+    size: number
+    contentHash?: string | null
+    isInline?: boolean
+    contentId?: string | null
+    uploadedAt?: Date | string
+    createdAt?: Date | string
+  }
+
+  export type AiGeneratedReplyCreateManyUserInput = {
+    id?: string
+    messageId: string
+    generatedBody: string
+    createdAt?: Date | string
+    expiresAt: Date | string
+  }
+
+  export type CachedSearchResultCreateManyUserInput = {
+    id?: string
+    homeAccountId: string
+    query: string
+    results: JsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    expiresAt: Date | string
+  }
+
+  export type SyncStatusCreateManyUserInput = {
+    id?: string
+    homeAccountId: string
+    resourceType: string
+    lastSyncedAt?: Date | string
+    status?: string
+    errorMessage?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type NotificationLogCreateManyUserInput = {
+    id?: string
+    type: string
+    sentAt?: Date | string
+    status: string
+    errorMessage?: string | null
+    metadata?: JsonNullValueInput | InputJsonValue
+  }
+
+  export type MigrationStatusCreateManyUserInput = {
+    id?: string
+    migrationType: string
+    completedAt?: Date | string
+    metadata?: JsonNullValueInput | InputJsonValue
   }
 
   export type MsConnectedAccountUpdateWithoutUserInput = {
@@ -25188,12 +38048,19 @@ export namespace Prisma {
     bodyHtml?: NullableStringFieldUpdateOperationsInput | string | null
     attachments?: JsonNullValueInput | InputJsonValue
     importance?: StringFieldUpdateOperationsInput | string
+    sensitivity?: StringFieldUpdateOperationsInput | string
     requestReadReceipt?: BoolFieldUpdateOperationsInput | boolean
+    requestDeliveryReceipt?: BoolFieldUpdateOperationsInput | boolean
+    categories?: JsonNullValueInput | InputJsonValue
     draftType?: StringFieldUpdateOperationsInput | string
     inReplyToMessageId?: NullableStringFieldUpdateOperationsInput | string | null
     forwardedMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    originalMessageBody?: NullableStringFieldUpdateOperationsInput | string | null
     scheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     scheduledSent?: BoolFieldUpdateOperationsInput | boolean
+    scheduledNotificationSent?: BoolFieldUpdateOperationsInput | boolean
+    lastScheduleAttemptAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    scheduleAttemptCount?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -25209,12 +38076,19 @@ export namespace Prisma {
     bodyHtml?: NullableStringFieldUpdateOperationsInput | string | null
     attachments?: JsonNullValueInput | InputJsonValue
     importance?: StringFieldUpdateOperationsInput | string
+    sensitivity?: StringFieldUpdateOperationsInput | string
     requestReadReceipt?: BoolFieldUpdateOperationsInput | boolean
+    requestDeliveryReceipt?: BoolFieldUpdateOperationsInput | boolean
+    categories?: JsonNullValueInput | InputJsonValue
     draftType?: StringFieldUpdateOperationsInput | string
     inReplyToMessageId?: NullableStringFieldUpdateOperationsInput | string | null
     forwardedMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    originalMessageBody?: NullableStringFieldUpdateOperationsInput | string | null
     scheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     scheduledSent?: BoolFieldUpdateOperationsInput | boolean
+    scheduledNotificationSent?: BoolFieldUpdateOperationsInput | boolean
+    lastScheduleAttemptAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    scheduleAttemptCount?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -25230,12 +38104,19 @@ export namespace Prisma {
     bodyHtml?: NullableStringFieldUpdateOperationsInput | string | null
     attachments?: JsonNullValueInput | InputJsonValue
     importance?: StringFieldUpdateOperationsInput | string
+    sensitivity?: StringFieldUpdateOperationsInput | string
     requestReadReceipt?: BoolFieldUpdateOperationsInput | boolean
+    requestDeliveryReceipt?: BoolFieldUpdateOperationsInput | boolean
+    categories?: JsonNullValueInput | InputJsonValue
     draftType?: StringFieldUpdateOperationsInput | string
     inReplyToMessageId?: NullableStringFieldUpdateOperationsInput | string | null
     forwardedMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    originalMessageBody?: NullableStringFieldUpdateOperationsInput | string | null
     scheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     scheduledSent?: BoolFieldUpdateOperationsInput | boolean
+    scheduledNotificationSent?: BoolFieldUpdateOperationsInput | boolean
+    lastScheduleAttemptAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    scheduleAttemptCount?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -25249,6 +38130,10 @@ export namespace Prisma {
     actions?: JsonNullValueInput | InputJsonValue
     emailCount?: IntFieldUpdateOperationsInput | number
     stopProcessing?: BoolFieldUpdateOperationsInput | boolean
+    lastExecutedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastExecutionStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    lastExecutionError?: NullableStringFieldUpdateOperationsInput | string | null
+    failureCount?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -25262,6 +38147,10 @@ export namespace Prisma {
     actions?: JsonNullValueInput | InputJsonValue
     emailCount?: IntFieldUpdateOperationsInput | number
     stopProcessing?: BoolFieldUpdateOperationsInput | boolean
+    lastExecutedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastExecutionStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    lastExecutionError?: NullableStringFieldUpdateOperationsInput | string | null
+    failureCount?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -25275,6 +38164,10 @@ export namespace Prisma {
     actions?: JsonNullValueInput | InputJsonValue
     emailCount?: IntFieldUpdateOperationsInput | number
     stopProcessing?: BoolFieldUpdateOperationsInput | boolean
+    lastExecutedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastExecutionStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    lastExecutionError?: NullableStringFieldUpdateOperationsInput | string | null
+    failureCount?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -25372,6 +38265,13 @@ export namespace Prisma {
     hasAttachments?: BoolFieldUpdateOperationsInput | boolean
     flagStatus?: StringFieldUpdateOperationsInput | string
     categories?: JsonNullValueInput | InputJsonValue
+    importance?: StringFieldUpdateOperationsInput | string
+    sensitivity?: StringFieldUpdateOperationsInput | string
+    inferenceClassification?: StringFieldUpdateOperationsInput | string
+    conversationId?: NullableStringFieldUpdateOperationsInput | string | null
+    isDraft?: BoolFieldUpdateOperationsInput | boolean
+    syncStatus?: StringFieldUpdateOperationsInput | string
+    lastModifiedDateTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     syncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -25390,6 +38290,13 @@ export namespace Prisma {
     hasAttachments?: BoolFieldUpdateOperationsInput | boolean
     flagStatus?: StringFieldUpdateOperationsInput | string
     categories?: JsonNullValueInput | InputJsonValue
+    importance?: StringFieldUpdateOperationsInput | string
+    sensitivity?: StringFieldUpdateOperationsInput | string
+    inferenceClassification?: StringFieldUpdateOperationsInput | string
+    conversationId?: NullableStringFieldUpdateOperationsInput | string | null
+    isDraft?: BoolFieldUpdateOperationsInput | boolean
+    syncStatus?: StringFieldUpdateOperationsInput | string
+    lastModifiedDateTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     syncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -25408,6 +38315,13 @@ export namespace Prisma {
     hasAttachments?: BoolFieldUpdateOperationsInput | boolean
     flagStatus?: StringFieldUpdateOperationsInput | string
     categories?: JsonNullValueInput | InputJsonValue
+    importance?: StringFieldUpdateOperationsInput | string
+    sensitivity?: StringFieldUpdateOperationsInput | string
+    inferenceClassification?: StringFieldUpdateOperationsInput | string
+    conversationId?: NullableStringFieldUpdateOperationsInput | string | null
+    isDraft?: BoolFieldUpdateOperationsInput | boolean
+    syncStatus?: StringFieldUpdateOperationsInput | string
+    lastModifiedDateTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     syncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -25416,12 +38330,14 @@ export namespace Prisma {
     homeAccountId?: StringFieldUpdateOperationsInput | string
     subject?: StringFieldUpdateOperationsInput | string
     bodyPreview?: StringFieldUpdateOperationsInput | string
+    bodyHtml?: NullableStringFieldUpdateOperationsInput | string | null
     startDateTime?: DateTimeFieldUpdateOperationsInput | Date | string
     endDateTime?: DateTimeFieldUpdateOperationsInput | Date | string
     isAllDay?: BoolFieldUpdateOperationsInput | boolean
     location?: NullableStringFieldUpdateOperationsInput | string | null
     organizerName?: NullableStringFieldUpdateOperationsInput | string | null
     organizerEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    organizerType?: StringFieldUpdateOperationsInput | string
     responseStatus?: StringFieldUpdateOperationsInput | string
     onlineMeetingUrl?: NullableStringFieldUpdateOperationsInput | string | null
     attendees?: JsonNullValueInput | InputJsonValue
@@ -25429,6 +38345,15 @@ export namespace Prisma {
     reminderMinutes?: NullableIntFieldUpdateOperationsInput | number | null
     showAs?: StringFieldUpdateOperationsInput | string
     recurrence?: NullableStringFieldUpdateOperationsInput | string | null
+    eventColor?: NullableStringFieldUpdateOperationsInput | string | null
+    timeZone?: StringFieldUpdateOperationsInput | string
+    teamsMeetingUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    teamsMeetingId?: NullableStringFieldUpdateOperationsInput | string | null
+    seriesMasterId?: NullableStringFieldUpdateOperationsInput | string | null
+    iCalUId?: NullableStringFieldUpdateOperationsInput | string | null
+    calendarId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdDateTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastModifiedDateTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     syncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -25437,12 +38362,14 @@ export namespace Prisma {
     homeAccountId?: StringFieldUpdateOperationsInput | string
     subject?: StringFieldUpdateOperationsInput | string
     bodyPreview?: StringFieldUpdateOperationsInput | string
+    bodyHtml?: NullableStringFieldUpdateOperationsInput | string | null
     startDateTime?: DateTimeFieldUpdateOperationsInput | Date | string
     endDateTime?: DateTimeFieldUpdateOperationsInput | Date | string
     isAllDay?: BoolFieldUpdateOperationsInput | boolean
     location?: NullableStringFieldUpdateOperationsInput | string | null
     organizerName?: NullableStringFieldUpdateOperationsInput | string | null
     organizerEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    organizerType?: StringFieldUpdateOperationsInput | string
     responseStatus?: StringFieldUpdateOperationsInput | string
     onlineMeetingUrl?: NullableStringFieldUpdateOperationsInput | string | null
     attendees?: JsonNullValueInput | InputJsonValue
@@ -25450,6 +38377,15 @@ export namespace Prisma {
     reminderMinutes?: NullableIntFieldUpdateOperationsInput | number | null
     showAs?: StringFieldUpdateOperationsInput | string
     recurrence?: NullableStringFieldUpdateOperationsInput | string | null
+    eventColor?: NullableStringFieldUpdateOperationsInput | string | null
+    timeZone?: StringFieldUpdateOperationsInput | string
+    teamsMeetingUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    teamsMeetingId?: NullableStringFieldUpdateOperationsInput | string | null
+    seriesMasterId?: NullableStringFieldUpdateOperationsInput | string | null
+    iCalUId?: NullableStringFieldUpdateOperationsInput | string | null
+    calendarId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdDateTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastModifiedDateTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     syncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -25458,12 +38394,14 @@ export namespace Prisma {
     homeAccountId?: StringFieldUpdateOperationsInput | string
     subject?: StringFieldUpdateOperationsInput | string
     bodyPreview?: StringFieldUpdateOperationsInput | string
+    bodyHtml?: NullableStringFieldUpdateOperationsInput | string | null
     startDateTime?: DateTimeFieldUpdateOperationsInput | Date | string
     endDateTime?: DateTimeFieldUpdateOperationsInput | Date | string
     isAllDay?: BoolFieldUpdateOperationsInput | boolean
     location?: NullableStringFieldUpdateOperationsInput | string | null
     organizerName?: NullableStringFieldUpdateOperationsInput | string | null
     organizerEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    organizerType?: StringFieldUpdateOperationsInput | string
     responseStatus?: StringFieldUpdateOperationsInput | string
     onlineMeetingUrl?: NullableStringFieldUpdateOperationsInput | string | null
     attendees?: JsonNullValueInput | InputJsonValue
@@ -25471,6 +38409,15 @@ export namespace Prisma {
     reminderMinutes?: NullableIntFieldUpdateOperationsInput | number | null
     showAs?: StringFieldUpdateOperationsInput | string
     recurrence?: NullableStringFieldUpdateOperationsInput | string | null
+    eventColor?: NullableStringFieldUpdateOperationsInput | string | null
+    timeZone?: StringFieldUpdateOperationsInput | string
+    teamsMeetingUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    teamsMeetingId?: NullableStringFieldUpdateOperationsInput | string | null
+    seriesMasterId?: NullableStringFieldUpdateOperationsInput | string | null
+    iCalUId?: NullableStringFieldUpdateOperationsInput | string | null
+    calendarId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdDateTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastModifiedDateTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     syncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -25482,6 +38429,23 @@ export namespace Prisma {
     phone?: StringFieldUpdateOperationsInput | string
     jobTitle?: StringFieldUpdateOperationsInput | string
     company?: StringFieldUpdateOperationsInput | string
+    department?: StringFieldUpdateOperationsInput | string
+    emailAddresses?: JsonNullValueInput | InputJsonValue
+    phones?: JsonNullValueInput | InputJsonValue
+    givenName?: StringFieldUpdateOperationsInput | string
+    surname?: StringFieldUpdateOperationsInput | string
+    middleName?: StringFieldUpdateOperationsInput | string
+    addresses?: JsonNullValueInput | InputJsonValue
+    imAddresses?: JsonNullValueInput | InputJsonValue
+    categories?: JsonNullValueInput | InputJsonValue
+    notes?: StringFieldUpdateOperationsInput | string
+    birthday?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    anniversary?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    manager?: NullableStringFieldUpdateOperationsInput | string | null
+    directReports?: JsonNullValueInput | InputJsonValue
+    frequencyScore?: IntFieldUpdateOperationsInput | number
+    isVIP?: BoolFieldUpdateOperationsInput | boolean
+    isFavorite?: BoolFieldUpdateOperationsInput | boolean
     syncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -25493,6 +38457,23 @@ export namespace Prisma {
     phone?: StringFieldUpdateOperationsInput | string
     jobTitle?: StringFieldUpdateOperationsInput | string
     company?: StringFieldUpdateOperationsInput | string
+    department?: StringFieldUpdateOperationsInput | string
+    emailAddresses?: JsonNullValueInput | InputJsonValue
+    phones?: JsonNullValueInput | InputJsonValue
+    givenName?: StringFieldUpdateOperationsInput | string
+    surname?: StringFieldUpdateOperationsInput | string
+    middleName?: StringFieldUpdateOperationsInput | string
+    addresses?: JsonNullValueInput | InputJsonValue
+    imAddresses?: JsonNullValueInput | InputJsonValue
+    categories?: JsonNullValueInput | InputJsonValue
+    notes?: StringFieldUpdateOperationsInput | string
+    birthday?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    anniversary?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    manager?: NullableStringFieldUpdateOperationsInput | string | null
+    directReports?: JsonNullValueInput | InputJsonValue
+    frequencyScore?: IntFieldUpdateOperationsInput | number
+    isVIP?: BoolFieldUpdateOperationsInput | boolean
+    isFavorite?: BoolFieldUpdateOperationsInput | boolean
     syncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -25504,7 +38485,198 @@ export namespace Prisma {
     phone?: StringFieldUpdateOperationsInput | string
     jobTitle?: StringFieldUpdateOperationsInput | string
     company?: StringFieldUpdateOperationsInput | string
+    department?: StringFieldUpdateOperationsInput | string
+    emailAddresses?: JsonNullValueInput | InputJsonValue
+    phones?: JsonNullValueInput | InputJsonValue
+    givenName?: StringFieldUpdateOperationsInput | string
+    surname?: StringFieldUpdateOperationsInput | string
+    middleName?: StringFieldUpdateOperationsInput | string
+    addresses?: JsonNullValueInput | InputJsonValue
+    imAddresses?: JsonNullValueInput | InputJsonValue
+    categories?: JsonNullValueInput | InputJsonValue
+    notes?: StringFieldUpdateOperationsInput | string
+    birthday?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    anniversary?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    manager?: NullableStringFieldUpdateOperationsInput | string | null
+    directReports?: JsonNullValueInput | InputJsonValue
+    frequencyScore?: IntFieldUpdateOperationsInput | number
+    isVIP?: BoolFieldUpdateOperationsInput | boolean
+    isFavorite?: BoolFieldUpdateOperationsInput | boolean
     syncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EmailAttachmentUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    messageId?: StringFieldUpdateOperationsInput | string
+    graphMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    fileName?: StringFieldUpdateOperationsInput | string
+    contentType?: StringFieldUpdateOperationsInput | string
+    size?: IntFieldUpdateOperationsInput | number
+    contentHash?: NullableStringFieldUpdateOperationsInput | string | null
+    isInline?: BoolFieldUpdateOperationsInput | boolean
+    contentId?: NullableStringFieldUpdateOperationsInput | string | null
+    uploadedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EmailAttachmentUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    messageId?: StringFieldUpdateOperationsInput | string
+    graphMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    fileName?: StringFieldUpdateOperationsInput | string
+    contentType?: StringFieldUpdateOperationsInput | string
+    size?: IntFieldUpdateOperationsInput | number
+    contentHash?: NullableStringFieldUpdateOperationsInput | string | null
+    isInline?: BoolFieldUpdateOperationsInput | boolean
+    contentId?: NullableStringFieldUpdateOperationsInput | string | null
+    uploadedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EmailAttachmentUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    messageId?: StringFieldUpdateOperationsInput | string
+    graphMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    fileName?: StringFieldUpdateOperationsInput | string
+    contentType?: StringFieldUpdateOperationsInput | string
+    size?: IntFieldUpdateOperationsInput | number
+    contentHash?: NullableStringFieldUpdateOperationsInput | string | null
+    isInline?: BoolFieldUpdateOperationsInput | boolean
+    contentId?: NullableStringFieldUpdateOperationsInput | string | null
+    uploadedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AiGeneratedReplyUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    messageId?: StringFieldUpdateOperationsInput | string
+    generatedBody?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AiGeneratedReplyUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    messageId?: StringFieldUpdateOperationsInput | string
+    generatedBody?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AiGeneratedReplyUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    messageId?: StringFieldUpdateOperationsInput | string
+    generatedBody?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CachedSearchResultUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    homeAccountId?: StringFieldUpdateOperationsInput | string
+    query?: StringFieldUpdateOperationsInput | string
+    results?: JsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CachedSearchResultUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    homeAccountId?: StringFieldUpdateOperationsInput | string
+    query?: StringFieldUpdateOperationsInput | string
+    results?: JsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CachedSearchResultUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    homeAccountId?: StringFieldUpdateOperationsInput | string
+    query?: StringFieldUpdateOperationsInput | string
+    results?: JsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SyncStatusUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    homeAccountId?: StringFieldUpdateOperationsInput | string
+    resourceType?: StringFieldUpdateOperationsInput | string
+    lastSyncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: StringFieldUpdateOperationsInput | string
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SyncStatusUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    homeAccountId?: StringFieldUpdateOperationsInput | string
+    resourceType?: StringFieldUpdateOperationsInput | string
+    lastSyncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: StringFieldUpdateOperationsInput | string
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SyncStatusUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    homeAccountId?: StringFieldUpdateOperationsInput | string
+    resourceType?: StringFieldUpdateOperationsInput | string
+    lastSyncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: StringFieldUpdateOperationsInput | string
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type NotificationLogUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    sentAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: StringFieldUpdateOperationsInput | string
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    metadata?: JsonNullValueInput | InputJsonValue
+  }
+
+  export type NotificationLogUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    sentAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: StringFieldUpdateOperationsInput | string
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    metadata?: JsonNullValueInput | InputJsonValue
+  }
+
+  export type NotificationLogUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    sentAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: StringFieldUpdateOperationsInput | string
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    metadata?: JsonNullValueInput | InputJsonValue
+  }
+
+  export type MigrationStatusUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    migrationType?: StringFieldUpdateOperationsInput | string
+    completedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    metadata?: JsonNullValueInput | InputJsonValue
+  }
+
+  export type MigrationStatusUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    migrationType?: StringFieldUpdateOperationsInput | string
+    completedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    metadata?: JsonNullValueInput | InputJsonValue
+  }
+
+  export type MigrationStatusUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    migrationType?: StringFieldUpdateOperationsInput | string
+    completedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    metadata?: JsonNullValueInput | InputJsonValue
   }
 
 

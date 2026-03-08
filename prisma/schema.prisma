@@ -35,6 +35,21 @@ model User {
   orgId String
   org   Organization @relation(fields: [orgId], references: [id])
 
+  // Notification preferences
+  notificationNewEmail          Boolean @default(true)
+  notificationDailyDigest       Boolean @default(false)
+  notificationAiReplies         Boolean @default(true)
+  notificationCalendarReminders Boolean @default(true)
+  notificationWeeklyReport      Boolean @default(false)
+
+  // Appearance preferences
+  appTheme     String @default("light") // light | dark
+  fontSize     String @default("default") // default | compact | comfortable
+  emailDensity String @default("comfortable") // comfortable | compact
+
+  // Multi-account preference
+  lastActiveAccountId String?
+
   msAccounts       MsConnectedAccount[]
   msalCache        MsalTokenCache?
   deltaLinks       EmailDeltaLink[]
@@ -42,10 +57,16 @@ model User {
   drafts           Draft[]
   emailRules       EmailRule[]
   signatures       Signature[]
-  cachedFolders    CachedFolder[]
-  cachedEmails     CachedEmail[]
-  cachedCalEvents  CachedCalendarEvent[]
-  cachedContacts   CachedContact[]
+  cachedFolders       CachedFolder[]
+  cachedEmails        CachedEmail[]
+  cachedCalEvents     CachedCalendarEvent[]
+  cachedContacts      CachedContact[]
+  emailAttachments    EmailAttachment[]
+  aiGeneratedReplies  AiGeneratedReply[]
+  cachedSearchResults CachedSearchResult[]
+  syncStatuses        SyncStatus[]
+  notificationLogs    NotificationLog[]
+  migrationStatuses   MigrationStatus[]
 
   @@map("users")
 }
@@ -116,26 +137,40 @@ model WebhookSubscription {
 // ─── Drafts ───────────────────────────────────────────────────────────────────
 
 model Draft {
-  id                  String    @id @default(cuid())
-  userId              String
-  user                User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  homeAccountId       String?
-  graphDraftId        String?   // MS Graph message ID — set when draft synced to Outlook
-  toRecipients        Json      @default("[]")
-  ccRecipients        Json      @default("[]")
-  bccRecipients       Json      @default("[]")
-  subject             String?
-  bodyHtml            String?   @db.Text
-  attachments         Json      @default("[]")
-  importance          String    @default("normal") // normal | high
-  requestReadReceipt  Boolean   @default(false)
-  draftType           String    @default("new") // new | reply | forward
-  inReplyToMessageId  String?   // Original message ID for replies
-  forwardedMessageId  String?   // Original message ID for forwards
-  scheduledAt         DateTime? // null = send immediately; set = scheduled send
-  scheduledSent       Boolean   @default(false)
-  createdAt           DateTime  @default(now())
-  updatedAt           DateTime  @updatedAt
+  id                       String    @id @default(cuid())
+  userId                   String
+  user                     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  homeAccountId            String?
+  graphDraftId             String?   // MS Graph message ID — set when draft synced to Outlook
+  toRecipients             Json      @default("[]")
+  ccRecipients             Json      @default("[]")
+  bccRecipients            Json      @default("[]")
+  subject                  String?
+  bodyHtml                 String?   @db.Text
+  attachments              Json      @default("[]")
+
+  // Message settings
+  importance               String    @default("normal") // normal | high | low
+  sensitivity              String    @default("normal") // normal | personal | private | confidential
+  requestReadReceipt       Boolean   @default(false)
+  requestDeliveryReceipt   Boolean   @default(false)
+  categories               Json      @default("[]")
+
+  // Reply/forward context
+  draftType                String    @default("new") // new | reply | forward
+  inReplyToMessageId       String?   // Original message ID for replies
+  forwardedMessageId       String?   // Original message ID for forwards
+  originalMessageBody      String?   @db.Text // For preserving context
+
+  // Scheduled send
+  scheduledAt              DateTime? // null = send immediately; set = scheduled send
+  scheduledSent            Boolean   @default(false)
+  scheduledNotificationSent Boolean  @default(false)
+  lastScheduleAttemptAt    DateTime?
+  scheduleAttemptCount     Int       @default(0)
+
+  createdAt                DateTime  @default(now())
+  updatedAt                DateTime  @updatedAt
 
   @@map("drafts")
 }
@@ -180,23 +215,33 @@ model CachedFolder {
 }
 
 model CachedEmail {
-  id               String    @id
-  userId           String
-  user             User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  homeAccountId    String
-  folderId         String
-  subject          String    @default("")
-  bodyPreview      String    @default("") @db.Text
-  fromName         String    @default("")
-  fromAddress      String    @default("")
-  toRecipients     Json      @default("[]")
-  receivedDateTime DateTime
-  sentDateTime     DateTime?
-  isRead           Boolean   @default(false)
-  hasAttachments   Boolean   @default(false)
-  flagStatus       String    @default("notFlagged")
-  categories       Json      @default("[]")
-  syncedAt         DateTime  @default(now())
+  id                      String    @id
+  userId                  String
+  user                    User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  homeAccountId           String
+  folderId                String
+  subject                 String    @default("")
+  bodyPreview             String    @default("") @db.Text
+  fromName                String    @default("")
+  fromAddress             String    @default("")
+  toRecipients            Json      @default("[]")
+  receivedDateTime        DateTime
+  sentDateTime            DateTime?
+  isRead                  Boolean   @default(false)
+  hasAttachments          Boolean   @default(false)
+  flagStatus              String    @default("notFlagged")
+  categories              Json      @default("[]")
+
+  // Additional metadata
+  importance              String    @default("normal") // normal | high | low
+  sensitivity             String    @default("normal") // normal | personal | private | confidential
+  inferenceClassification String    @default("other") // focused | other
+  conversationId          String?
+  isDraft                 Boolean   @default(false)
+  syncStatus              String    @default("synced")
+  lastModifiedDateTime    DateTime?
+
+  syncedAt                DateTime  @default(now())
 
   @@index([userId, homeAccountId, folderId, receivedDateTime(sort: Desc)])
   @@index([userId, homeAccountId, isRead])
@@ -205,42 +250,83 @@ model CachedEmail {
 }
 
 model CachedCalendarEvent {
-  id               String   @id
-  userId           String
-  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  homeAccountId    String
-  subject          String   @default("")
-  bodyPreview      String   @default("") @db.Text
-  startDateTime    DateTime
-  endDateTime      DateTime
-  isAllDay         Boolean  @default(false)
-  location         String?
-  organizerName    String?
-  organizerEmail   String?
-  responseStatus   String   @default("none")
-  onlineMeetingUrl String?
-  attendees        Json     @default("[]")
-  isRecurring      Boolean  @default(false)
-  reminderMinutes  Int?     // Reminder time in minutes (null = no reminder)
-  showAs           String   @default("busy") // busy | free | tentative
-  recurrence       String?  // daily | weekly | monthly | null
-  syncedAt         DateTime @default(now())
+  id                   String    @id
+  userId               String
+  user                 User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  homeAccountId        String
+  subject              String    @default("")
+  bodyPreview          String    @default("") @db.Text
+  bodyHtml             String?   @db.Text
+  startDateTime        DateTime
+  endDateTime          DateTime
+  isAllDay             Boolean   @default(false)
+  location             String?
+  organizerName        String?
+  organizerEmail       String?
+  organizerType        String    @default("required") // required | optional
+  responseStatus       String    @default("none")
+  onlineMeetingUrl     String?
+  attendees            Json      @default("[]")
+  isRecurring          Boolean   @default(false)
+
+  // Event settings
+  reminderMinutes      Int?      // Reminder time in minutes (null = no reminder)
+  showAs               String    @default("busy") // busy | free | tentative
+  recurrence           String?   // daily | weekly | monthly | null
+  eventColor           String?
+  timeZone             String    @default("UTC")
+
+  // Teams meeting data
+  teamsMeetingUrl      String?
+  teamsMeetingId       String?
+
+  // Recurrence tracking
+  seriesMasterId       String?
+  iCalUId              String?
+  calendarId           String?
+
+  // Timestamps
+  createdDateTime      DateTime?
+  lastModifiedDateTime DateTime?
+  syncedAt             DateTime  @default(now())
 
   @@index([userId, startDateTime, endDateTime])
   @@map("cached_calendar_events")
 }
 
 model CachedContact {
-  id            String   @id
-  userId        String
-  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  homeAccountId String
-  displayName   String   @default("")
-  emailAddress  String   @default("")
-  phone         String   @default("")
-  jobTitle      String   @default("")
-  company       String   @default("")
-  syncedAt      DateTime @default(now())
+  id              String    @id
+  userId          String
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  homeAccountId   String
+  displayName     String    @default("")
+  emailAddress    String    @default("") // Legacy - use emailAddresses array
+  phone           String    @default("") // Legacy - use phones array
+  jobTitle        String    @default("")
+  company         String    @default("")
+  department      String    @default("")
+
+  // Structured contact data
+  emailAddresses  Json      @default("[]") // Array of {address, name}
+  phones          Json      @default("[]") // Array of {type, value}
+  givenName       String    @default("")
+  surname         String    @default("")
+  middleName      String    @default("")
+  addresses       Json      @default("[]") // Structured addresses
+  imAddresses     Json      @default("[]") // IM handles
+
+  // CRM features
+  categories      Json      @default("[]") // Tags/labels
+  notes           String    @default("")
+  birthday        DateTime?
+  anniversary     DateTime?
+  manager         String?
+  directReports   Json      @default("[]")
+  frequencyScore  Int       @default(0)
+  isVIP           Boolean   @default(false)
+  isFavorite      Boolean   @default(false)
+
+  syncedAt        DateTime  @default(now())
 
   @@index([userId, homeAccountId, displayName])
   @@map("cached_contacts")
@@ -262,19 +348,131 @@ model DeployLog {
 // ─── Email Rules ──────────────────────────────────────────────────────────────
 
 model EmailRule {
-  id             String   @id @default(cuid())
-  userId         String
-  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  name           String
-  priority       Int
-  active         Boolean  @default(true)
-  conditions     Json
-  actions        Json
-  emailCount     Int      @default(0)
-  stopProcessing Boolean  @default(false)
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  id                  String    @id @default(cuid())
+  userId              String
+  user                User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name                String
+  priority            Int
+  active              Boolean   @default(true)
+  conditions          Json
+  actions             Json
+  emailCount          Int       @default(0)
+  stopProcessing      Boolean   @default(false)
+
+  // Execution tracking
+  lastExecutedAt      DateTime?
+  lastExecutionStatus String?
+  lastExecutionError  String?
+  failureCount        Int       @default(0)
+
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
 
   @@index([userId, priority])
   @@map("email_rules")
+}
+
+// ─── Email Attachments ────────────────────────────────────────────────────────
+
+model EmailAttachment {
+  id              String   @id @default(cuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  messageId       String
+  graphMessageId  String?
+  fileName        String
+  contentType     String
+  size            Int
+  contentHash     String?
+  isInline        Boolean  @default(false)
+  contentId       String?
+  uploadedAt      DateTime @default(now())
+  createdAt       DateTime @default(now())
+
+  @@index([userId, messageId])
+  @@index([graphMessageId])
+  @@map("email_attachments")
+}
+
+// ─── AI Generated Replies ─────────────────────────────────────────────────────
+
+model AiGeneratedReply {
+  id            String   @id @default(cuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  messageId     String
+  generatedBody String   @db.Text
+  createdAt     DateTime @default(now())
+  expiresAt     DateTime
+
+  @@index([userId, messageId])
+  @@index([expiresAt])
+  @@map("ai_generated_replies")
+}
+
+// ─── Search Cache ─────────────────────────────────────────────────────────────
+
+model CachedSearchResult {
+  id            String   @id @default(cuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  homeAccountId String
+  query         String
+  results       Json
+  createdAt     DateTime @default(now())
+  expiresAt     DateTime
+
+  @@unique([userId, homeAccountId, query])
+  @@index([expiresAt])
+  @@map("cached_search_results")
+}
+
+// ─── Sync Status ──────────────────────────────────────────────────────────────
+
+model SyncStatus {
+  id            String   @id @default(cuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  homeAccountId String
+  resourceType  String
+  lastSyncedAt  DateTime @default(now())
+  status        String   @default("success")
+  errorMessage  String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@unique([userId, homeAccountId, resourceType])
+  @@index([lastSyncedAt])
+  @@map("sync_status")
+}
+
+// ─── Notification Log ─────────────────────────────────────────────────────────
+
+model NotificationLog {
+  id           String   @id @default(cuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type         String
+  sentAt       DateTime @default(now())
+  status       String
+  errorMessage String?
+  metadata     Json     @default("{}")
+
+  @@index([userId, type])
+  @@index([sentAt])
+  @@map("notification_log")
+}
+
+// ─── Migration Status ─────────────────────────────────────────────────────────
+
+model MigrationStatus {
+  id            String   @id @default(cuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  migrationType String
+  completedAt   DateTime @default(now())
+  metadata      Json     @default("{}")
+
+  @@unique([userId, migrationType])
+  @@map("migration_status")
 }

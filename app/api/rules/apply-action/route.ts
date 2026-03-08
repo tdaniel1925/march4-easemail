@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { prisma } from "@/lib/prisma";
 import { graphPatch, graphPost, graphDelete } from "@/lib/microsoft/graph";
 
 // ─── POST /api/rules/apply-action ────────────────────────────────────────────
@@ -13,6 +14,7 @@ interface ApplyActionBody {
   homeAccountId: string;
   action: "markRead" | "markImportant" | "archive" | "delete" | "forward";
   value?: string; // forward: recipient address
+  ruleId?: string; // optional - if provided, tracks execution status
 }
 
 export async function POST(req: NextRequest) {
@@ -21,11 +23,13 @@ export async function POST(req: NextRequest) {
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const body = await req.json() as ApplyActionBody;
-  const { emailId, homeAccountId, action, value } = body;
+  const { emailId, homeAccountId, action, value, ruleId } = body;
 
   if (!emailId || !homeAccountId || !action) {
     return NextResponse.json({ error: "emailId, homeAccountId, action required" }, { status: 400 });
   }
+
+  let executionError: string | null = null;
 
   try {
     switch (action) {
@@ -67,7 +71,26 @@ export async function POST(req: NextRequest) {
     }
   } catch (err) {
     // Log but return 200 — rules should never break the inbox
+    executionError = err instanceof Error ? err.message : String(err);
     console.error(`[rules/apply-action] ${action} on ${emailId} failed:`, err);
+  }
+
+  // Track execution status if ruleId provided
+  if (ruleId) {
+    try {
+      await prisma.emailRule.update({
+        where: { id: ruleId, userId: user.id },
+        data: {
+          lastExecutedAt: new Date(),
+          lastExecutionStatus: executionError ? "failure" : "success",
+          lastExecutionError: executionError,
+          ...(executionError ? { failureCount: { increment: 1 } } : {}),
+        },
+      });
+    } catch (dbErr) {
+      // Don't fail if tracking update fails
+      console.error(`[rules/apply-action] Failed to update rule tracking:`, dbErr);
+    }
   }
 
   return NextResponse.json({ ok: true });

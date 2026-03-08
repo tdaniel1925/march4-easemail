@@ -14,6 +14,7 @@ export interface SideEffect {
   homeAccountId: string;
   action: "markRead" | "markImportant" | "archive" | "delete" | "forward";
   value?: string; // forward: recipient address
+  ruleId?: string; // optional - for execution tracking
 }
 
 // ─── Result ───────────────────────────────────────────────────────────────────
@@ -61,28 +62,28 @@ export function applyRules(
             mutated = { ...mutated, isRead: true };
             // Deduplicate — only queue once per email
             if (!sideEffects.some((s) => s.emailId === email.id && s.action === "markRead")) {
-              sideEffects.push({ emailId: email.id, homeAccountId, action: "markRead" });
+              sideEffects.push({ emailId: email.id, homeAccountId, action: "markRead", ruleId: rule.id });
             }
             break;
 
           case "mark_important":
             mutated = { ...mutated, flag: { flagStatus: "flagged" } };
             if (!sideEffects.some((s) => s.emailId === email.id && s.action === "markImportant")) {
-              sideEffects.push({ emailId: email.id, homeAccountId, action: "markImportant" });
+              sideEffects.push({ emailId: email.id, homeAccountId, action: "markImportant", ruleId: rule.id });
             }
             break;
 
           case "archive":
             removed = true;
             if (!sideEffects.some((s) => s.emailId === email.id && s.action === "archive")) {
-              sideEffects.push({ emailId: email.id, homeAccountId, action: "archive" });
+              sideEffects.push({ emailId: email.id, homeAccountId, action: "archive", ruleId: rule.id });
             }
             break;
 
           case "delete":
             removed = true;
             if (!sideEffects.some((s) => s.emailId === email.id && s.action === "delete")) {
-              sideEffects.push({ emailId: email.id, homeAccountId, action: "delete" });
+              sideEffects.push({ emailId: email.id, homeAccountId, action: "delete", ruleId: rule.id });
             }
             break;
 
@@ -98,6 +99,7 @@ export function applyRules(
                 homeAccountId,
                 action: "forward",
                 value: action.value.trim(),
+                ruleId: rule.id,
               });
             }
             break;
