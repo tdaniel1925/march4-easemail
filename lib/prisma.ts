@@ -15,7 +15,12 @@ function createPrismaClient() {
   }
   const connectionString = rawUrl.replace(/[?&]pgbouncer=true/i, "").replace(/\?$/, "");
   console.log("[prisma] connecting via DATABASE_URL pooler to", connectionString.replace(/:([^:@]+)@/, ":***@"));
-  const pool = new Pool({ connectionString, ssl: { rejectUnauthorized: false } });
+  const pool = new Pool({
+    connectionString,
+    ssl: process.env.NODE_ENV === 'production'
+      ? { rejectUnauthorized: true, ca: process.env.DATABASE_CA_CERT }
+      : { rejectUnauthorized: false } // Dev only
+  });
   const adapter = new PrismaPg(pool);
   return new PrismaClient({
     adapter,

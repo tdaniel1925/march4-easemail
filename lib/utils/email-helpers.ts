@@ -43,7 +43,8 @@ export function formatDate(iso: string): string {
 }
 
 export function getInitials(name: string): string {
-  return name.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2);
+  if (!name) return "";
+  return name.split(" ").filter(n => n).map((n) => n[0]).join("").toUpperCase().slice(0, 2);
 }
 
 export const avatarColors = [
@@ -54,5 +55,7 @@ export const avatarColors = [
 ];
 
 export function getAvatarColor(name: string) {
-  return avatarColors[name.charCodeAt(0) % avatarColors.length];
+  const charCode = name.charCodeAt(0);
+  if (isNaN(charCode)) return avatarColors[0];
+  return avatarColors[charCode % avatarColors.length];
 }

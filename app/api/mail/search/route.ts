@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { graphGet } from "@/lib/microsoft/graph";
 import { isReauthError } from "@/lib/microsoft/auth-errors";
 import type { EmailMessage } from "@/lib/types/email";
+import { withRateLimit, rateLimiters } from "@/lib/rate-limit";
 
 // Maps well-known folder param → Graph well-known folder name
 const WELL_KNOWN_FOLDER_PATHS: Record<string, string> = {
@@ -29,7 +30,7 @@ interface GraphMessage {
 
 const SELECT = "id,subject,bodyPreview,receivedDateTime,sentDateTime,isRead,hasAttachments,flag,from,toRecipients,body";
 
-export async function GET(req: NextRequest) {
+async function searchEmailHandler(req: NextRequest) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -38,8 +39,11 @@ export async function GET(req: NextRequest) {
   const q = req.nextUrl.searchParams.get("q");
   const folder = req.nextUrl.searchParams.get("folder") ?? "inbox";
 
+  // Input validation
   if (!homeAccountId) return NextResponse.json({ error: "homeAccountId required" }, { status: 400 });
-  if (!q?.trim()) return NextResponse.json({ emails: [] });
+  if (!q) return NextResponse.json({ error: "Search query (q) is required" }, { status: 400 });
+  if (!q.trim()) return NextResponse.json({ emails: [] });
+  if (q.length > 200) return NextResponse.json({ error: "Search query too long (max 200 chars)" }, { status: 400 });
 
   // ── 1. Try DB cache first (fast, local) ─────────────────────────────────────
   try {
@@ -167,3 +171,6 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: msg }, { status: 500 });
   }
 }
+
+// Export with rate limiting (100 searches per minute)
+export const GET = withRateLimit(searchEmailHandler, rateLimiters.read);

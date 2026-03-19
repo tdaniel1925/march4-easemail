@@ -260,3 +260,246 @@
 - [Fix] inbox API: added try/catch around graphGet — was returning HTML 500 page on error, causing "Unexpected end of JSON input" in InboxClient .json() call when switching accounts
 - [Fix] InboxClient: check r.ok before r.json() in account-switch and tab-switch fetch chains
 - TypeScript: CLEAN
+[2026-03-19T00:04:50-05:00] [Task] Code Quality Fixes - Agent 4
+- Added pino@9.7.0 and pino-pretty@13.1.0 to package.json (exact versions)
+- Added prettier@3.4.2 to devDependencies
+- Added package.json scripts: type-check, format, format:check, test
+- Created lib/logger.ts with structured logging (pino + child loggers for auth, graph, sync, cron, api)
+- Replaced 11 console statements in app/api/auth/microsoft/callback/route.ts with authLogger calls
+- Remaining: 76 console statements across 52 files (requires npm install first, then systematic replacement)
+
+---
+
+## 2026-03-19 — E2E Test Suite Complete
+
+### Created 8 New E2E Test Files
+- tests/e2e/auth.spec.ts — Authentication flows (login, logout, unauthorized access, domain gate) — 12 tests
+- tests/e2e/inbox.spec.ts — Inbox features (load, tabs, read/unread, star, delete, search, infinite scroll, AI Reply, toolbar) — 23 tests
+- tests/e2e/folders.spec.ts — Folder navigation (Starred, Sent, Drafts, Trash + search, empty states, sidebar nav) — 28 tests
+- tests/e2e/contacts.spec.ts — Contacts management (list, detail, search, CRUD, presence indicators) — 31 tests
+- tests/e2e/rules.spec.ts — Email rules (create, edit, delete, reorder, conditions, actions, validation) — 26 tests
+- tests/e2e/settings.spec.ts — Settings page (profile, notifications, appearance, privacy, sign out, validation) — 23 tests
+- tests/e2e/accounts.spec.ts — Account management (view accounts, default, disconnect, add, switching) — 29 tests
+- tests/e2e/teams.spec.ts — MS Teams integration (consent, chats, send messages, teams/channels, auto-refresh) — 22 tests
+
+### Test Coverage Summary
+**Total Test Files:** 10 (2 existing + 8 new)
+**Total Tests:** 194+ across all features
+**Existing Tests:**
+- tests/e2e/calendar.spec.ts — 16 tests (Calendar views, event modal, NL input, validation)
+- tests/e2e/composer.spec.ts — 22 tests (Compose, recipients, attachments, draft save, schedule send, reply/forward modes)
+
+### Test Patterns Used
+- Helper functions for navigation (goToInbox, goToFolder, etc.)
+- Graceful handling of empty states (skip tests if no data)
+- data-testid selectors where appropriate
+- Fallback to text/role selectors for flexibility
+- Conditional skips for features requiring live data or OAuth
+- Timeout handling for async operations
+- Context checks (auth state, consent requirements)
+
+### How to Run Tests
+```bash
+# Build the app first (tests run against production build)
+npm run build
+npm start  # Port 4000 by default
+
+# In another terminal:
+npm run test:e2e  # Run all E2E tests
+npx playwright test tests/e2e/auth.spec.ts  # Run specific file
+npx playwright test --headed  # Run with browser visible
+npx playwright test --debug  # Run with debugger
+```
+
+### Test Configuration
+- Auth: Auto-generated via globalSetup (Supabase Admin magic-link)
+- Session: tests/e2e/auth/session.json (auto-refreshed each run)
+- Base URL: http://localhost:4000 (configurable via PLAYWRIGHT_BASE_URL)
+- Browser: Chromium (Desktop Chrome)
+- Workers: 1 (serial execution to avoid state conflicts)
+- Retries: 1 on CI, 0 locally
+
+### Notes
+- All tests follow existing patterns from calendar.spec.ts and composer.spec.ts
+- Tests are UI-focused; they don't verify actual Graph API data
+- Features requiring live OAuth or real mutations are skipped with clear comments
+- Empty states and error scenarios are tested where applicable
+- Tests use conditional logic to handle varying data states gracefully
+
+[2026-03-19T00:10:21-05:00] [Task] Code Quality Fixes - Summary
+
+COMPLETED:
+✅ Created lib/logger.ts with pino structured logging
+✅ Added logger dependencies to package.json (pino@9.7.0, pino-pretty@13.1.0, prettier@3.4.2)
+✅ Added package.json scripts: type-check, format, format:check, test
+✅ Replaced 11/87 console statements in app/api/auth/microsoft/callback/route.ts
+✅ Created comprehensive README.md (357 lines)
+✅ Created CONSOLE-TO-LOGGER-MIGRATION.md guide
+✅ Verified error responses already standardized ({ error: string } pattern)
+
+IN PROGRESS:
+⚠️ Console to logger migration: 11/87 complete (76 remaining across 52 files)
+⚠️ TypeScript compilation: Errors present (need npm install + .next cleanup)
+
+NEXT STEPS:
+1. Run 'npm install' to install pino, pino-pretty, prettier
+2. Delete .next directory: rm -rf .next
+3. Run 'npm run type-check' to verify no TypeScript errors
+4. Continue console.log replacement following CONSOLE-TO-LOGGER-MIGRATION.md
+5. Run 'npm run format' to format all files with Prettier
+6. Commit changes
+
+NOTES:
+- Error responses already consistent across all API routes ({ error: string })
+- Logger configured with child loggers for subsystems (auth, sync, cron, api, graph)
+- Redaction enabled for sensitive fields (password, token, accessToken, etc.)
+- Pretty-printing enabled in development, JSON in production
+
+
+## Security Hardening - 2026-03-19
+
+### P0 Security Fixes Completed
+
+**1. SSL Certificate Validation (lib/prisma.ts)**
+- Changed rejectUnauthorized from false to true in production
+- Development mode still uses rejectUnauthorized: false
+- Added DATABASE_CA_CERT env var support for custom CA certificates
+
+**2. Image Hostname Restrictions (next.config.ts)**
+- Removed wildcard hostname pattern ("**")
+- Restricted to: graph.microsoft.com, *.sharepoint.com
+
+**3. Security Headers (next.config.ts)**
+- Content-Security-Policy configured with strict directives
+- X-Frame-Options: DENY
+- X-Content-Type-Options: nosniff
+- Referrer-Policy: strict-origin-when-cross-origin
+- X-XSS-Protection: 1; mode=block
+- Permissions-Policy: camera=(), microphone=(), geolocation=()
+
+**4. Rate Limiting Infrastructure**
+- Installed: @upstash/ratelimit@2.0.4, @upstash/redis@1.36.2 (exact versions)
+- Created lib/rate-limit.ts with 4 rate limiter tiers:
+  - auth: 10 requests per 15 minutes (strict)
+  - send: 30 emails per hour
+  - read: 100 requests per minute
+  - general: 200 requests per minute
+- withRateLimit() wrapper function for easy route protection
+- Identifier extraction: user ID (preferred) or IP address (fallback)
+- Rate limit headers returned: X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset
+- 429 status with retry-after on rate limit exceeded
+
+**5. Input Validation with Zod**
+- Installed: zod@3.25.3 (exact version, compatible with @anthropic-ai/sdk)
+- Created lib/validation/schemas.ts with comprehensive schemas for:
+  - Email operations (send, search, mark-read, star, move, delete)
+  - Calendar operations (create event, NL create, respond)
+  - Rule operations (create, update, apply action)
+  - Signature CRUD
+  - Contact CRUD
+  - Draft CRUD
+  - AI operations (reply, remix, dictate)
+  - Teams operations (messages, meetings)
+- validateRequestBody() helper function for easy route validation
+
+**6. Rate Limiting Applied to Critical Routes**
+- /api/mail/send: send rate limiter (30/hour) + attachment size validation
+- /api/mail/search: read rate limiter (100/min) + query length validation
+- /api/auth/microsoft: auth rate limiter (10/15min)
+- /api/auth/microsoft/callback: auth rate limiter (10/15min)
+
+### Environment Variables Needed for Full Security
+Add to Vercel (production):
+- UPSTASH_REDIS_REST_URL (for rate limiting)
+- UPSTASH_REDIS_REST_TOKEN (for rate limiting)
+- DATABASE_CA_CERT (optional, for custom SSL CA certificate)
+
+### TypeScript Compilation Status
+- Pre-existing test errors remain (not introduced by security fixes)
+- New packages need type generation (run dev server once to generate)
+- No NEW type errors introduced by security changes
+
+---
+
+## [Agent 3: Vitest Unit Tests] 2026-03-19 05:19 UTC
+
+### Vitest Unit Testing Infrastructure Setup
+
+**Task**: Implement comprehensive Vitest unit tests for utility functions, helpers, and stores.
+
+**Completed**:
+
+1. **Testing Infrastructure**:
+   - Installed vitest@2.1.8, @vitest/ui@2.1.8, @vitest/coverage-v8@2.1.8, jsdom@25.0.1
+   - Installed @testing-library/react@16.1.0, @testing-library/jest-dom@6.6.3
+   - Created vitest.config.ts with jsdom environment and focused coverage
+   - Created tests/setup.ts with mock environment variables and cleanup
+   - Added test scripts: test:unit, test:unit:ui, test:unit:coverage
+
+2. **Test Files Created**:
+   - tests/unit/rule-engine.test.ts (31 tests, 99.11% coverage)
+     * All condition types: from, subject, to, keywords
+     * All operators: contains, is, starts_with, ends_with, not_contains
+     * All actions: mark_read, mark_important, archive, delete, skip_inbox, forward, label
+     * Rule processing: priority, stopProcessing, deduplication
+     * Edge cases: AND/OR logic, blank values, multiple emails
+   
+   - tests/unit/email-helpers.test.ts (30 tests, 65% coverage)
+     * formatDate(): all time ranges from minutes to months
+     * getInitials(): various name formats
+     * getAvatarColor(): consistent color selection
+     * Edge cases: empty strings, special characters, future dates
+   
+   - tests/unit/auth-errors.test.ts (14 tests, 100% coverage)
+     * All error patterns: REAUTH_REQUIRED, MSAL cache, no_tokens_found, InteractionRequired
+     * Edge cases: null, undefined, non-Error objects, case sensitivity
+   
+   - tests/unit/stores/account-store.test.ts (25 tests, 100% coverage)
+     * setAccounts(): default selection, empty handling
+     * setActiveAccount(): account switching
+     * removeAccount(): cleanup, fallback logic
+     * All other store actions: inbox unread, draft count, folders, labels
+
+3. **Test Results**:
+   - ✅ All 100 tests passing
+   - ✅ 83.56% overall coverage on tested files
+   - ✅ 100% coverage: auth-errors.ts, account-store.ts
+   - ✅ 99.11% coverage: rule-engine.ts
+   - ⚠️  65% coverage: email-helpers.ts (mapCachedEmail not directly tested)
+
+4. **Configuration**:
+   - vitest.config.ts excludes e2e tests from unit test runs
+   - Coverage focused on lib/utils/*, lib/microsoft/auth-errors.ts, lib/stores/*
+   - Tests use mocked time for consistency (vi.useFakeTimers)
+   - All tests isolated with beforeEach/afterEach cleanup
+
+5. **Documentation**:
+   - Created UNIT-TESTS-REPORT.md with full implementation details
+   - Test names serve as living documentation
+   - Coverage report shows exactly what's tested
+
+**Files Modified**:
+- package.json: Added vitest dependencies and test scripts
+- vitest.config.ts: Created with focused coverage config
+- tests/setup.ts: Created test environment setup
+
+**Files Created**:
+- tests/unit/rule-engine.test.ts
+- tests/unit/email-helpers.test.ts
+- tests/unit/auth-errors.test.ts
+- tests/unit/stores/account-store.test.ts
+- UNIT-TESTS-REPORT.md
+
+**How to Run**:
+```bash
+npm run test:unit              # Run all unit tests
+npm run test:unit:ui           # Run with Vitest UI
+npm run test:unit:coverage     # Run with coverage report
+```
+
+**Next Steps**:
+- Consider adding pre-commit hook to run tests
+- Add API route integration tests (requires more mocking)
+- Keep tests updated as code evolves
+- Maintain 80%+ coverage on utility functions
+

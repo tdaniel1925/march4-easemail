@@ -186,7 +186,7 @@ function RuleForm({ form, onChange }: { form: RuleFormState; onChange: (f: RuleF
               {idx > 0 && (
                 <select
                   value={form.conditions[idx - 1].logic}
-                  onChange={(e) => updateCondition(form.conditions[idx - 1].id, { logic: e.target.value as Logic })}
+                  onChange={(e) => updateCondition(form.conditions[idx - 1].id!, { logic: e.target.value as Logic })}
                   className="text-xs font-semibold text-neutral-500 bg-background-100 border border-neutral-200 rounded-small px-2 py-1 focus:outline-none focus:border-primary-300"
                 >
                   <option value="AND">AND</option>
@@ -195,7 +195,7 @@ function RuleForm({ form, onChange }: { form: RuleFormState; onChange: (f: RuleF
               )}
               <select
                 value={cond.field}
-                onChange={(e) => updateCondition(cond.id, { field: e.target.value as ConditionField })}
+                onChange={(e) => updateCondition(cond.id!, { field: e.target.value as ConditionField })}
                 className="text-xs text-neutral-700 bg-background-100 border border-neutral-200 rounded-small px-2 py-1.5 focus:outline-none focus:border-primary-300"
               >
                 <option value="subject">Subject</option>
@@ -205,7 +205,7 @@ function RuleForm({ form, onChange }: { form: RuleFormState; onChange: (f: RuleF
               </select>
               <select
                 value={cond.operator}
-                onChange={(e) => updateCondition(cond.id, { operator: e.target.value as ConditionOperator })}
+                onChange={(e) => updateCondition(cond.id!, { operator: e.target.value as ConditionOperator })}
                 className="text-xs text-neutral-700 bg-background-100 border border-neutral-200 rounded-small px-2 py-1.5 focus:outline-none focus:border-primary-300"
               >
                 <option value="contains">contains</option>
@@ -217,12 +217,12 @@ function RuleForm({ form, onChange }: { form: RuleFormState; onChange: (f: RuleF
               <input
                 type="text"
                 value={cond.value}
-                onChange={(e) => updateCondition(cond.id, { value: e.target.value })}
+                onChange={(e) => updateCondition(cond.id!, { value: e.target.value })}
                 placeholder="value…"
                 className="flex-1 min-w-24 px-2 py-1.5 text-xs bg-background-100 border border-neutral-200 rounded-small text-neutral-800 placeholder-neutral-400 focus:outline-none focus:border-primary-300 transition-colors"
               />
               {form.conditions.length > 1 && (
-                <button onClick={() => removeCondition(cond.id)} className="p-1 text-neutral-400 hover:text-primary-600 transition-colors">
+                <button onClick={() => removeCondition(cond.id!)} className="p-1 text-neutral-400 hover:text-primary-600 transition-colors">
                   <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
                 </button>
               )}
@@ -245,7 +245,7 @@ function RuleForm({ form, onChange }: { form: RuleFormState; onChange: (f: RuleF
             <div key={action.id} className="flex items-center gap-2 flex-wrap">
               <select
                 value={action.type}
-                onChange={(e) => updateAction(action.id, { type: e.target.value as ActionType, value: "" })}
+                onChange={(e) => updateAction(action.id!, { type: e.target.value as ActionType, value: "" })}
                 className="text-xs text-neutral-700 bg-background-100 border border-neutral-200 rounded-small px-2 py-1.5 focus:outline-none focus:border-primary-300"
               >
                 <option value="archive">Archive</option>
@@ -260,13 +260,13 @@ function RuleForm({ form, onChange }: { form: RuleFormState; onChange: (f: RuleF
                 <input
                   type="text"
                   value={action.value}
-                  onChange={(e) => updateAction(action.id, { value: e.target.value })}
+                  onChange={(e) => updateAction(action.id!, { value: e.target.value })}
                   placeholder={action.type === "label" ? "Label name…" : "Email address…"}
                   className="flex-1 min-w-24 px-2 py-1.5 text-xs bg-background-100 border border-neutral-200 rounded-small text-neutral-800 placeholder-neutral-400 focus:outline-none focus:border-primary-300 transition-colors"
                 />
               )}
               {form.actions.length > 1 && (
-                <button onClick={() => removeAction(action.id)} className="p-1 text-neutral-400 hover:text-primary-600 transition-colors">
+                <button onClick={() => removeAction(action.id!)} className="p-1 text-neutral-400 hover:text-primary-600 transition-colors">
                   <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
                 </button>
               )}

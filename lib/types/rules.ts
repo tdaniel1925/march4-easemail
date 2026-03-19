@@ -16,7 +16,7 @@ export type ActionType =
 export type Logic = "AND" | "OR";
 
 export interface Condition {
-  id: string;
+  id?: string;
   field: ConditionField;
   operator: ConditionOperator;
   value: string;
@@ -24,9 +24,9 @@ export interface Condition {
 }
 
 export interface RuleAction {
-  id: string;
+  id?: string;
   type: ActionType;
-  value: string;
+  value?: string;
 }
 
 export interface Rule {
@@ -38,4 +38,6 @@ export interface Rule {
   actions: RuleAction[];
   emailCount: number;
   stopProcessing: boolean;
+  userId?: string;
+  createdAt?: Date;
 }

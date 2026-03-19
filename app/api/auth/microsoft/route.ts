@@ -9,8 +9,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { ConfidentialClientApplication } from "@azure/msal-node";
 import { GRAPH_SCOPES } from "@/lib/microsoft/msal";
 import { createClient } from "@/lib/supabase/server";
+import { withRateLimit, rateLimiters } from "@/lib/rate-limit";
 
-export async function GET(req: NextRequest) {
+async function microsoftAuthHandler(req: NextRequest) {
   const add = req.nextUrl.searchParams.get("add") === "1";
 
   let state = "login";
@@ -40,3 +41,6 @@ export async function GET(req: NextRequest) {
 
   return NextResponse.redirect(authUrl);
 }
+
+// Export with strict rate limiting (10 auth attempts per 15 minutes)
+export const GET = withRateLimit(microsoftAuthHandler, rateLimiters.auth);

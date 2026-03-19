@@ -21,6 +21,8 @@ import { ConfidentialClientApplication } from "@azure/msal-node";
 import { createServiceClient } from "@/lib/supabase/server";
 import { createMsalClient, GRAPH_SCOPES, TEAMS_SCOPES } from "@/lib/microsoft/msal";
 import { prisma } from "@/lib/prisma";
+import { authLogger } from "@/lib/logger";
+import { withRateLimit, rateLimiters } from "@/lib/rate-limit";
 
 // ── Domain/admin allowlist ────────────────────────────────────────────────────
 function isEmailAllowed(email: string): boolean {
@@ -33,14 +35,14 @@ function isEmailAllowed(email: string): boolean {
   return allowedDomains.includes(domain) || adminEmails.includes(lower);
 }
 
-export async function GET(req: NextRequest) {
+async function callbackHandler(req: NextRequest) {
   const { searchParams } = req.nextUrl;
   const code  = searchParams.get("code");
   const error = searchParams.get("error");
   const state = searchParams.get("state") ?? "login";
 
   if (error || !code) {
-    console.error("Microsoft OAuth error:", error, searchParams.get("error_description"));
+    authLogger.error({ error, errorDescription: searchParams.get("error_description") }, "Microsoft OAuth error");
     return NextResponse.redirect(new URL("/login?error=ms_oauth_failed", req.url));
   }
 
@@ -54,7 +56,7 @@ export async function GET(req: NextRequest) {
       const userId = state.slice("teams_consent:".length);
       if (!userId) throw new Error("Invalid teams_consent state — missing userId");
 
-      console.log("[auth/callback] TEAMS_CONSENT flow for userId:", userId);
+      authLogger.info({ userId, flow: "teams_consent" }, "TEAMS_CONSENT flow started");
 
       const msal = createMsalClient(userId);
       await msal.acquireTokenByCode({
@@ -63,7 +65,7 @@ export async function GET(req: NextRequest) {
         redirectUri: process.env.MICROSOFT_REDIRECT_URI!,
       });
 
-      console.log("[auth/callback] TEAMS_CONSENT: cache updated, redirecting to /teams");
+      authLogger.info({ userId, flow: "teams_consent" }, "TEAMS_CONSENT: cache updated, redirecting to /teams");
       return NextResponse.redirect(new URL("/teams", appUrl));
     }
 
@@ -72,7 +74,7 @@ export async function GET(req: NextRequest) {
       const userId = state.slice(4);
       if (!userId) throw new Error("Invalid add state — missing userId");
 
-      console.log("[auth/callback] ADD flow for userId:", userId);
+      authLogger.info({ userId, flow: "add" }, "ADD flow started");
 
       // Use the user's existing MSAL client (DB cache plugin).
       // acquireTokenByCode will load Account A's tokens, add Account B's
@@ -89,11 +91,11 @@ export async function GET(req: NextRequest) {
       const { homeAccountId, username: msEmail, name: displayName, tenantId } = tokenResult.account;
 
       if (!isEmailAllowed(msEmail)) {
-        console.warn("[auth/callback] ADD: blocked unauthorized email:", msEmail);
+        authLogger.warn({ msEmail, userId, flow: "add" }, "ADD: blocked unauthorized email");
         return NextResponse.redirect(new URL("/login?error=unauthorized_domain", appUrl));
       }
 
-      console.log("[auth/callback] ADD: linking", msEmail, "to user", userId);
+      authLogger.info({ msEmail, userId, flow: "add" }, "ADD: linking MS account to user");
 
       await prisma.msConnectedAccount.upsert({
         where: { userId_homeAccountId: { userId, homeAccountId } },
@@ -108,14 +110,14 @@ export async function GET(req: NextRequest) {
         },
       });
 
-      console.log("[auth/callback] ADD: done, redirecting to /accounts?added=1");
+      authLogger.info({ userId, msEmail, flow: "add" }, "ADD: done, redirecting to /accounts");
       return NextResponse.redirect(new URL("/accounts?added=1", appUrl));
     }
 
     // ── LOGIN FLOW ───────────────────────────────────────────────────────────
 
     // 1. Exchange code via temp MSAL (no cache plugin — no userId yet)
-    console.log("[auth/callback] LOGIN flow, exchanging code");
+    authLogger.info({ flow: "login" }, "LOGIN flow started, exchanging code");
     const tempMsal = new ConfidentialClientApplication({
       auth: {
         clientId: process.env.MICROSOFT_CLIENT_ID!,
@@ -129,7 +131,7 @@ export async function GET(req: NextRequest) {
       scopes: GRAPH_SCOPES,
       redirectUri: process.env.MICROSOFT_REDIRECT_URI!,
     });
-    console.log("[auth/callback] token acquired for:", tokenResult?.account?.username);
+    authLogger.info({ username: tokenResult?.account?.username, flow: "login" }, "Token acquired");
 
     if (!tokenResult?.account) throw new Error("No account in token response");
 
@@ -137,7 +139,7 @@ export async function GET(req: NextRequest) {
 
     // 1b. Domain/admin gate — reject unauthorized accounts before creating anything
     if (!isEmailAllowed(msEmail)) {
-      console.warn("[auth/callback] LOGIN: blocked unauthorized email:", msEmail);
+      authLogger.warn({ msEmail, flow: "login" }, "LOGIN: blocked unauthorized email");
       return NextResponse.redirect(new URL("/login?error=unauthorized_domain", appUrl));
     }
 
@@ -211,11 +213,15 @@ export async function GET(req: NextRequest) {
 
   } catch (err) {
     const e = err as Error;
-    console.error("[auth/callback] FAILED:", {
+    authLogger.error({
+      err,
       name: e?.name,
       message: e?.message,
-      stack: e?.stack?.split("\n").slice(0, 4).join("\n"),
-    });
+      state,
+    }, "auth/callback FAILED");
     return NextResponse.redirect(new URL(`/login?error=${encodeURIComponent(String(err))}`, req.url));
   }
 }
+
+// Export with strict rate limiting (10 auth callbacks per 15 minutes)
+export const GET = withRateLimit(callbackHandler, rateLimiters.auth);

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { graphFetch } from "@/lib/microsoft/graph";
+import { withRateLimit, rateLimiters } from "@/lib/rate-limit";
 
 interface Attachment {
   name: string;
@@ -9,10 +10,17 @@ interface Attachment {
   data: string; // base64
 }
 
-export async function POST(req: NextRequest) {
+async function sendEmailHandler(req: NextRequest) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  let requestBody;
+  try {
+    requestBody = await req.json();
+  } catch {
+    return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
+  }
 
   const {
     to,
@@ -25,7 +33,7 @@ export async function POST(req: NextRequest) {
     draftId,
     importance,
     isReadReceiptRequested,
-  } = await req.json() as {
+  } = requestBody as {
     to: { emailAddress: { address: string } }[];
     cc?: { emailAddress: { address: string } }[];
     bcc?: { emailAddress: { address: string } }[];
@@ -38,11 +46,28 @@ export async function POST(req: NextRequest) {
     isReadReceiptRequested?: boolean;
   };
 
+  // Input validation
   if (!to?.length) {
     return NextResponse.json({ error: "At least one recipient required" }, { status: 400 });
   }
   if (!subject?.trim()) {
     return NextResponse.json({ error: "Subject required" }, { status: 400 });
+  }
+  if (!body?.content) {
+    return NextResponse.json({ error: "Email body required" }, { status: 400 });
+  }
+
+  // Validate attachments size
+  if (attachments && attachments.length > 0) {
+    for (const att of attachments) {
+      const sizeBytes = Math.ceil(att.data.length * 0.75); // base64 to bytes approximation
+      if (sizeBytes > 25 * 1024 * 1024) {
+        return NextResponse.json(
+          { error: `Attachment "${att.name}" exceeds 25MB limit` },
+          { status: 400 }
+        );
+      }
+    }
   }
 
   // Prefer the explicitly selected account; fall back to default
@@ -106,3 +131,6 @@ export async function POST(req: NextRequest) {
 
   return NextResponse.json({ ok: true });
 }
+
+// Export with rate limiting (30 emails per hour)
+export const POST = withRateLimit(sendEmailHandler, rateLimiters.send);
