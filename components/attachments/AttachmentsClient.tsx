@@ -6,6 +6,8 @@ import type { AttachmentItem } from "@/app/attachments/page";
 
 type FileType = "image" | "pdf" | "doc" | "sheet" | "other";
 type FilterTab = "all" | "documents" | "images" | "spreadsheets" | "other";
+type SortField = "name" | "type" | "sender" | "subject" | "date" | "size";
+type SortDirection = "asc" | "desc";
 
 function formatSize(bytes: number): string {
   if (bytes < 1024) return `${bytes} B`;
@@ -19,6 +21,11 @@ function getFileType(contentType: string, name: string): FileType {
   if (contentType.includes("spreadsheet") || name.match(/\.(xlsx|xls|csv)$/i)) return "sheet";
   if (contentType.includes("document") || contentType.includes("word") || name.match(/\.(docx|doc|txt)$/i)) return "doc";
   return "other";
+}
+
+function getFileExtension(name: string): string {
+  const match = name.match(/\.([^.]+)$/);
+  return match ? match[1].toUpperCase() : "FILE";
 }
 
 function totalBytes(items: AttachmentItem[]): number {
@@ -93,12 +100,41 @@ export default function AttachmentsClient({ attachments, nextLink }: { attachmen
   const [items, setItems] = useState<AttachmentItem[]>(attachments);
   const [nextLinkState, setNextLink] = useState<string | null>(nextLink);
   const [loadingMore, setLoadingMore] = useState(false);
+  const [sortField, setSortField] = useState<SortField>("date");
+  const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     if (debounceRef.current) clearTimeout(debounceRef.current);
     debounceRef.current = setTimeout(() => setDebouncedSearch(search.trim()), 300);
     return () => { if (debounceRef.current) clearTimeout(debounceRef.current); };
   }, [search]);
+
+  function handleSort(field: SortField) {
+    if (sortField === field) {
+      setSortDirection(prev => prev === "asc" ? "desc" : "asc");
+    } else {
+      setSortField(field);
+      setSortDirection("asc");
+    }
+  }
+
+  function toggleSelection(id: string) {
+    setSelectedIds(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }
+
+  function toggleSelectAll() {
+    if (selectedIds.size === filtered.length) {
+      setSelectedIds(new Set());
+    } else {
+      setSelectedIds(new Set(filtered.map(item => `${item.messageId}-${item.id}`)));
+    }
+  }
 
   const filtered = items.filter((item) => {
     const tabMatch = matchesTab(item, activeTab);
@@ -108,8 +144,34 @@ export default function AttachmentsClient({ attachments, nextLink }: { attachmen
     return (
       item.name.toLowerCase().includes(q) ||
       item.senderName.toLowerCase().includes(q) ||
-      item.senderAddress.toLowerCase().includes(q)
+      item.senderAddress.toLowerCase().includes(q) ||
+      item.messageSubject.toLowerCase().includes(q)
     );
+  });
+
+  const sorted = [...filtered].sort((a, b) => {
+    let comparison = 0;
+    switch (sortField) {
+      case "name":
+        comparison = a.name.localeCompare(b.name);
+        break;
+      case "type":
+        comparison = getFileExtension(a.name).localeCompare(getFileExtension(b.name));
+        break;
+      case "sender":
+        comparison = a.senderName.localeCompare(b.senderName);
+        break;
+      case "subject":
+        comparison = a.messageSubject.localeCompare(b.messageSubject);
+        break;
+      case "date":
+        comparison = a.receivedDateTime.localeCompare(b.receivedDateTime);
+        break;
+      case "size":
+        comparison = a.size - b.size;
+        break;
+    }
+    return sortDirection === "asc" ? comparison : -comparison;
   });
 
   const imageCount = items.filter((a) => getFileType(a.contentType, a.name) === "image").length;
@@ -223,7 +285,7 @@ export default function AttachmentsClient({ attachments, nextLink }: { attachmen
       </div>
 
       <div className="flex-1 overflow-y-auto px-8 py-6">
-        {filtered.length === 0 ? (
+        {sorted.length === 0 ? (
           <div
             className="flex flex-col items-center justify-center rounded-[14px] py-20"
             style={{ backgroundColor: "white", boxShadow: "0 1px 4px rgba(0,0,0,0.06)" }}
@@ -253,20 +315,151 @@ export default function AttachmentsClient({ attachments, nextLink }: { attachmen
             className="rounded-[14px] overflow-hidden"
             style={{ backgroundColor: "white", boxShadow: "0 1px 4px rgba(0,0,0,0.06)" }}
           >
+            {selectedIds.size > 0 && (
+              <div className="flex items-center justify-between px-5 py-3 border-b" style={{ backgroundColor: "rgb(253 235 235)", borderColor: "rgb(229 229 229)" }}>
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-medium" style={{ color: "rgb(138 9 9)" }}>
+                    {selectedIds.size} selected
+                  </span>
+                  <button
+                    onClick={() => setSelectedIds(new Set())}
+                    className="text-xs px-2 py-1 rounded hover:bg-white/50 transition-colors"
+                    style={{ color: "rgb(138 9 9)" }}
+                  >
+                    Clear
+                  </button>
+                </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={async () => {
+                      const selectedItems = sorted.filter(item =>
+                        selectedIds.has(`${item.messageId}-${item.id}`)
+                      );
+                      for (const item of selectedItems) {
+                        try {
+                          const url = `/api/mail/attachments/${encodeURIComponent(item.messageId)}/${encodeURIComponent(item.id)}?homeAccountId=${encodeURIComponent(item.homeAccountId)}`;
+                          const res = await fetch(url);
+                          if (!res.ok) throw new Error(`Download failed: ${res.status}`);
+                          const blob = await res.blob();
+                          const a = document.createElement("a");
+                          a.href = URL.createObjectURL(blob);
+                          a.download = item.name;
+                          a.click();
+                          URL.revokeObjectURL(a.href);
+                          await new Promise(resolve => setTimeout(resolve, 500));
+                        } catch (err) {
+                          console.error("[bulk-download]", err);
+                        }
+                      }
+                    }}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[8px] text-xs font-medium transition-colors"
+                    style={{ backgroundColor: "rgb(138 9 9)", color: "white" }}
+                    onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "rgb(115 7 7)"; }}
+                    onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "rgb(138 9 9)"; }}
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                    </svg>
+                    Download Selected ({selectedIds.size})
+                  </button>
+                </div>
+              </div>
+            )}
             <table className="w-full border-collapse">
               <thead>
                 <tr style={{ borderBottom: "1px solid rgb(229 229 229)" }}>
-                  <th className="text-left px-5 py-3 text-xs font-semibold uppercase tracking-wider" style={{ color: "rgb(115 115 115)" }}>
-                    Name
+                  <th className="text-center px-3 py-3 w-10">
+                    <input
+                      type="checkbox"
+                      checked={selectedIds.size === sorted.length && sorted.length > 0}
+                      onChange={toggleSelectAll}
+                      className="w-4 h-4 rounded cursor-pointer"
+                      style={{ accentColor: "rgb(138 9 9)" }}
+                    />
                   </th>
-                  <th className="text-left px-5 py-3 text-xs font-semibold uppercase tracking-wider" style={{ color: "rgb(115 115 115)" }}>
-                    Sender
+                  <th
+                    className="text-left px-5 py-3 text-xs font-semibold uppercase tracking-wider cursor-pointer hover:bg-neutral-50 transition-colors select-none"
+                    style={{ color: sortField === "name" ? "rgb(138 9 9)" : "rgb(115 115 115)" }}
+                    onClick={() => handleSort("name")}
+                  >
+                    <div className="flex items-center gap-1.5">
+                      Name
+                      {sortField === "name" && (
+                        <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} style={{ transform: sortDirection === "asc" ? "rotate(0deg)" : "rotate(180deg)", transition: "transform 0.2s" }}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
+                        </svg>
+                      )}
+                    </div>
                   </th>
-                  <th className="text-left px-5 py-3 text-xs font-semibold uppercase tracking-wider" style={{ color: "rgb(115 115 115)" }}>
-                    Date
+                  <th
+                    className="text-left px-5 py-3 text-xs font-semibold uppercase tracking-wider cursor-pointer hover:bg-neutral-50 transition-colors select-none"
+                    style={{ color: sortField === "type" ? "rgb(138 9 9)" : "rgb(115 115 115)" }}
+                    onClick={() => handleSort("type")}
+                  >
+                    <div className="flex items-center gap-1.5">
+                      Type
+                      {sortField === "type" && (
+                        <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} style={{ transform: sortDirection === "asc" ? "rotate(0deg)" : "rotate(180deg)", transition: "transform 0.2s" }}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
+                        </svg>
+                      )}
+                    </div>
                   </th>
-                  <th className="text-left px-5 py-3 text-xs font-semibold uppercase tracking-wider" style={{ color: "rgb(115 115 115)" }}>
-                    Size
+                  <th
+                    className="text-left px-5 py-3 text-xs font-semibold uppercase tracking-wider cursor-pointer hover:bg-neutral-50 transition-colors select-none"
+                    style={{ color: sortField === "sender" ? "rgb(138 9 9)" : "rgb(115 115 115)" }}
+                    onClick={() => handleSort("sender")}
+                  >
+                    <div className="flex items-center gap-1.5">
+                      Sender
+                      {sortField === "sender" && (
+                        <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} style={{ transform: sortDirection === "asc" ? "rotate(0deg)" : "rotate(180deg)", transition: "transform 0.2s" }}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
+                        </svg>
+                      )}
+                    </div>
+                  </th>
+                  <th
+                    className="text-left px-5 py-3 text-xs font-semibold uppercase tracking-wider cursor-pointer hover:bg-neutral-50 transition-colors select-none"
+                    style={{ color: sortField === "subject" ? "rgb(138 9 9)" : "rgb(115 115 115)" }}
+                    onClick={() => handleSort("subject")}
+                  >
+                    <div className="flex items-center gap-1.5">
+                      Email Subject
+                      {sortField === "subject" && (
+                        <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} style={{ transform: sortDirection === "asc" ? "rotate(0deg)" : "rotate(180deg)", transition: "transform 0.2s" }}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
+                        </svg>
+                      )}
+                    </div>
+                  </th>
+                  <th
+                    className="text-left px-5 py-3 text-xs font-semibold uppercase tracking-wider cursor-pointer hover:bg-neutral-50 transition-colors select-none"
+                    style={{ color: sortField === "date" ? "rgb(138 9 9)" : "rgb(115 115 115)" }}
+                    onClick={() => handleSort("date")}
+                  >
+                    <div className="flex items-center gap-1.5">
+                      Date
+                      {sortField === "date" && (
+                        <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} style={{ transform: sortDirection === "asc" ? "rotate(0deg)" : "rotate(180deg)", transition: "transform 0.2s" }}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
+                        </svg>
+                      )}
+                    </div>
+                  </th>
+                  <th
+                    className="text-left px-5 py-3 text-xs font-semibold uppercase tracking-wider cursor-pointer hover:bg-neutral-50 transition-colors select-none"
+                    style={{ color: sortField === "size" ? "rgb(138 9 9)" : "rgb(115 115 115)" }}
+                    onClick={() => handleSort("size")}
+                  >
+                    <div className="flex items-center gap-1.5">
+                      Size
+                      {sortField === "size" && (
+                        <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} style={{ transform: sortDirection === "asc" ? "rotate(0deg)" : "rotate(180deg)", transition: "transform 0.2s" }}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
+                        </svg>
+                      )}
+                    </div>
                   </th>
                   <th className="text-right px-5 py-3 text-xs font-semibold uppercase tracking-wider" style={{ color: "rgb(115 115 115)" }}>
                     Actions
@@ -274,12 +467,14 @@ export default function AttachmentsClient({ attachments, nextLink }: { attachmen
                 </tr>
               </thead>
               <tbody>
-                {filtered.map((item, idx) => (
+                {sorted.map((item, idx) => (
                   <AttachmentRow
                     key={`${item.messageId}-${item.id}`}
                     item={item}
-                    isLast={idx === filtered.length - 1}
+                    isLast={idx === sorted.length - 1}
+                    isSelected={selectedIds.has(`${item.messageId}-${item.id}`)}
                     onRowClick={() => router.push(`/inbox/${item.messageId}`)}
+                    onToggleSelection={() => toggleSelection(`${item.messageId}-${item.id}`)}
                   />
                 ))}
               </tbody>
@@ -308,11 +503,15 @@ export default function AttachmentsClient({ attachments, nextLink }: { attachmen
 function AttachmentRow({
   item,
   isLast,
+  isSelected,
   onRowClick,
+  onToggleSelection,
 }: {
   item: AttachmentItem;
   isLast: boolean;
+  isSelected: boolean;
   onRowClick: () => void;
+  onToggleSelection: () => void;
 }) {
   const type = getFileType(item.contentType, item.name);
   const [downloading, setDownloading] = useState(false);
@@ -340,11 +539,26 @@ function AttachmentRow({
 
   return (
     <tr
-      onClick={onRowClick}
-      className="cursor-pointer transition-colors hover:bg-neutral-50"
-      style={{ borderBottom: isLast ? "none" : "1px solid rgb(245 245 245)" }}
+      className="transition-colors hover:bg-neutral-50"
+      style={{
+        borderBottom: isLast ? "none" : "1px solid rgb(245 245 245)",
+        backgroundColor: isSelected ? "rgb(254 249 249)" : "transparent"
+      }}
     >
-      <td className="px-5 py-3.5">
+      <td className="text-center px-3 py-3.5">
+        <input
+          type="checkbox"
+          checked={isSelected}
+          onChange={(e) => {
+            e.stopPropagation();
+            onToggleSelection();
+          }}
+          onClick={(e) => e.stopPropagation()}
+          className="w-4 h-4 rounded cursor-pointer"
+          style={{ accentColor: "rgb(138 9 9)" }}
+        />
+      </td>
+      <td className="px-5 py-3.5 cursor-pointer" onClick={onRowClick}>
         <div className="flex items-center gap-2.5 min-w-0">
           <FileIcon type={type} />
           <span
@@ -356,7 +570,12 @@ function AttachmentRow({
           </span>
         </div>
       </td>
-      <td className="px-5 py-3.5">
+      <td className="px-5 py-3.5 cursor-pointer" onClick={onRowClick}>
+        <span className="inline-block px-2 py-0.5 rounded text-xs font-medium" style={{ backgroundColor: "rgb(245 245 245)", color: "rgb(58 58 58)" }}>
+          {getFileExtension(item.name)}
+        </span>
+      </td>
+      <td className="px-5 py-3.5 cursor-pointer" onClick={onRowClick}>
         <div className="min-w-0">
           <p className="text-sm truncate" style={{ color: "rgb(58 58 58)" }}>
             {item.senderName}
@@ -366,12 +585,17 @@ function AttachmentRow({
           </p>
         </div>
       </td>
-      <td className="px-5 py-3.5">
+      <td className="px-5 py-3.5 cursor-pointer" onClick={onRowClick}>
+        <span className="text-sm truncate block max-w-xs" style={{ color: "rgb(58 58 58)" }} title={item.messageSubject}>
+          {item.messageSubject}
+        </span>
+      </td>
+      <td className="px-5 py-3.5 cursor-pointer" onClick={onRowClick}>
         <span className="text-sm whitespace-nowrap" style={{ color: "rgb(115 115 115)" }}>
           {formatDate(item.receivedDateTime)}
         </span>
       </td>
-      <td className="px-5 py-3.5">
+      <td className="px-5 py-3.5 cursor-pointer" onClick={onRowClick}>
         <span className="text-sm" style={{ color: "rgb(115 115 115)" }}>
           {formatSize(item.size)}
         </span>
