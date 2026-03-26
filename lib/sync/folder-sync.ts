@@ -2,8 +2,9 @@ import { graphGet } from "@/lib/microsoft/graph";
 import { prisma } from "@/lib/prisma";
 
 const GRAPH_BASE = "https://graph.microsoft.com/v1.0";
+// Note: wellKnownName cannot be in $select - it's returned by default when available
 const FOLDER_SELECT =
-  "id,displayName,parentFolderId,unreadItemCount,totalItemCount,childFolderCount,wellKnownName";
+  "id,displayName,parentFolderId,unreadItemCount,totalItemCount,childFolderCount";
 
 interface GraphFolder {
   id: string;
