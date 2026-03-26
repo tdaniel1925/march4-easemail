@@ -51,6 +51,13 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: "account_requires_reauth" }, { status: 401 });
     }
     const msg = String(err);
+
+    // Check for licensing error specifically
+    if (msg.includes("Failed to get license information") || msg.includes("valid Office365 license")) {
+      console.log("[teams/chats] Detected license error - returning teams_license_required");
+      return NextResponse.json({ error: "teams_license_required", details: msg }, { status: 403 });
+    }
+
     if (msg.includes("403") || msg.includes("Authorization_RequestDenied") || msg.includes("Forbidden")) {
       console.log("[teams/chats] Detected 403/Forbidden - returning teams_scope_required");
       return NextResponse.json({ error: "teams_scope_required", details: msg }, { status: 403 });
