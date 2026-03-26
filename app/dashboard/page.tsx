@@ -157,6 +157,120 @@ export default async function DashboardPage() {
   // Get real unread count
   const unreadCount = await getUnreadCount(user.id, defaultAccount.homeAccountId);
 
+  // Fetch drafts count across all accounts
+  let draftsCount = 0;
+  try {
+    const draftsResults = await Promise.allSettled(
+      dbUser.msAccounts.map(acc =>
+        graphGet<{ value: unknown[] }>(
+          user.id,
+          acc.homeAccountId,
+          `/me/mailFolders/drafts/messages?$top=1&$count=true&$select=id`
+        )
+      )
+    );
+    draftsCount = draftsResults
+      .filter((r): r is PromiseFulfilledResult<{ value: unknown[]; "@odata.count"?: number }> => r.status === "fulfilled")
+      .reduce((sum, r) => sum + (r.value["@odata.count"] ?? r.value.value?.length ?? 0), 0);
+  } catch {
+    // Not fatal
+  }
+
+  // Get oldest unread email
+  let hoursWaiting = 0;
+  try {
+    const oldestUnread = await prisma.cachedEmail.findFirst({
+      where: {
+        userId: user.id,
+        homeAccountId: defaultAccount.homeAccountId,
+        isRead: false,
+      },
+      orderBy: { receivedDateTime: 'asc' },
+      select: { receivedDateTime: true }
+    });
+    if (oldestUnread) {
+      hoursWaiting = Math.floor((Date.now() - new Date(oldestUnread.receivedDateTime).getTime()) / 3600000);
+    }
+  } catch {
+    // Not fatal
+  }
+
+  // Get sent emails for the week (for dual chart)
+  let sentData = [0, 0, 0, 0, 0, 0, 0];
+  try {
+    const sentResults = await Promise.allSettled(
+      dbUser.msAccounts.map(acc =>
+        graphGet<GraphMessageList>(
+          user.id,
+          acc.homeAccountId,
+          `/me/mailFolders/sentitems/messages?$filter=sentDateTime ge ${sevenDaysAgo.toISOString()}&$select=sentDateTime&$top=999`
+        )
+      )
+    );
+
+    const allSent = sentResults
+      .filter((r): r is PromiseFulfilledResult<GraphMessageList> => r.status === "fulfilled")
+      .flatMap(r => r.value.value ?? []);
+
+    const sentDayMap: Record<number, number> = {};
+    allSent.forEach((msg) => {
+      const date = new Date(msg.receivedDateTime); // Note: Graph API uses receivedDateTime even for sent
+      const dayOfWeek = date.getDay();
+      sentDayMap[dayOfWeek] = (sentDayMap[dayOfWeek] || 0) + 1;
+    });
+
+    sentData = [
+      sentDayMap[1] || 0,
+      sentDayMap[2] || 0,
+      sentDayMap[3] || 0,
+      sentDayMap[4] || 0,
+      sentDayMap[5] || 0,
+      sentDayMap[6] || 0,
+      sentDayMap[0] || 0,
+    ];
+  } catch {
+    // Not fatal
+  }
+
+  // Get attachments count for today
+  let attachmentsToday = 0;
+  try {
+    const startOfToday = new Date(userDate.getFullYear(), userDate.getMonth(), userDate.getDate()).toISOString();
+    attachmentsToday = await prisma.cachedEmail.count({
+      where: {
+        userId: user.id,
+        homeAccountId: defaultAccount.homeAccountId,
+        hasAttachments: true,
+        receivedDateTime: { gte: startOfToday }
+      }
+    });
+  } catch {
+    // Not fatal
+  }
+
+  // Get yesterday's unread count for trend
+  const yesterdayStart = new Date(Date.now() - 24 * 60 * 60 * 1000);
+  yesterdayStart.setHours(0, 0, 0, 0);
+  const yesterdayEnd = new Date(yesterdayStart);
+  yesterdayEnd.setHours(23, 59, 59, 999);
+
+  let yesterdayUnread = 0;
+  try {
+    yesterdayUnread = await prisma.cachedEmail.count({
+      where: {
+        userId: user.id,
+        homeAccountId: defaultAccount.homeAccountId,
+        isRead: false,
+        receivedDateTime: {
+          gte: yesterdayStart,
+          lte: yesterdayEnd
+        }
+      }
+    });
+  } catch {
+    // Not fatal
+  }
+
   return (
     <div className="flex" style={{ height: "100vh", overflow: "hidden" }}>
       <StoreInitializer accounts={dbUser.msAccounts} inboxUnread={unreadCount} />
@@ -177,6 +291,11 @@ export default async function DashboardPage() {
         recentUnread={recentUnread}
         eventsToday={events.length}
         emailsData={emailsData}
+        sentData={sentData}
+        draftsCount={draftsCount}
+        hoursWaiting={hoursWaiting}
+        attachmentsToday={attachmentsToday}
+        unreadTrend={unreadCount - yesterdayUnread}
       />
     </div>
   );
