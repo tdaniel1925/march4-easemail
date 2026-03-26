@@ -1,5 +1,25 @@
 # Build Log
 
+## 2026-03-26 — Session: Calendar Timezone + Draft Reopen
+
+### FIX #2 — Calendar Timezone Support
+- [Calendar] lib/sync/calendar-sync.ts — calendar sync now captures `timeZone` from Graph API start/end objects, stores in cachedCalendarEvent.timeZone field
+- [Calendar] app/api/calendar/event/route.ts — PATCH handler now saves `timeZone` to cache after successful Graph update
+- [Dashboard] app/dashboard/page.tsx — date range calculation now uses user's preferredTimeZone (falls back to America/Chicago). Converts UTC to user's local day boundaries for accurate "today's events" filtering
+- [API] app/api/user/settings/route.ts — NEW endpoint. PATCH accepts { preferredTimeZone: string }, updates user.preferredTimeZone in DB
+- [Schema] Prisma migration created automatically for new timeZone fields
+
+### FIX #3 — Drafts Click-to-Reopen
+- [API] app/api/drafts/[id]/route.ts — added GET handler. Fetches draft by id+userId, returns full draft object (security: userId filter)
+- [Compose] app/compose/page.tsx — accepts ?draftId= param, loads draft from DB if present, passes draftData to ComposeClient
+- [Folder] components/folder/FolderClient.tsx — onClick handler now checks if folder === "drafts". If true → router.push(`/compose?draftId=${email.id}`), otherwise normal email open flow
+- [Compose] components/compose/ComposeClient.tsx — accepts draftId + draftData props. New useEffect loads draft data on mount: pre-fills to/cc/bcc/subject/body/attachments/scheduledAt/importance/requestReadReceipt. Sets draftSaved=true to prevent immediate auto-save
+- [UX] Clicking a draft in /drafts now reopens it in composer with all fields intact (was previously read-only)
+
+### Verification
+- [TS] tsc --noEmit — clean compilation
+- [Git] Committed: feat(calendar,drafts): implement timezone handling and draft reopen
+
 ## 2026-03-05 — Session: Security, UX Fixes, AI Prompt Improvements
 
 ### Domain/Admin Access Gate
