@@ -53,9 +53,12 @@ export default async function DashboardPage() {
   if (!defaultAccount) redirect("/onboarding");
 
   // Fetch today's calendar events across all accounts
+  const userTimeZone = dbUser.preferredTimeZone || "America/Chicago";
   const now = new Date();
-  const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString();
-  const endOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59).toISOString();
+  const userDateStr = now.toLocaleString("en-US", { timeZone: userTimeZone });
+  const userDate = new Date(userDateStr);
+  const startOfDay = new Date(userDate.getFullYear(), userDate.getMonth(), userDate.getDate()).toISOString();
+  const endOfDay = new Date(userDate.getFullYear(), userDate.getMonth(), userDate.getDate(), 23, 59, 59).toISOString();
 
   let events: GraphEventList["value"] = [];
   try {

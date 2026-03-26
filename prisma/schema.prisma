@@ -47,6 +47,9 @@ model User {
   fontSize     String @default("default") // default | compact | comfortable
   emailDensity String @default("comfortable") // comfortable | compact
 
+  // Timezone preference
+  preferredTimeZone String @default("America/Chicago")
+
   // Multi-account preference
   lastActiveAccountId String?
 

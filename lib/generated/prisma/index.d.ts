@@ -3987,6 +3987,7 @@ export namespace Prisma {
     appTheme: string | null
     fontSize: string | null
     emailDensity: string | null
+    preferredTimeZone: string | null
     lastActiveAccountId: string | null
   }
 
@@ -4006,6 +4007,7 @@ export namespace Prisma {
     appTheme: string | null
     fontSize: string | null
     emailDensity: string | null
+    preferredTimeZone: string | null
     lastActiveAccountId: string | null
   }
 
@@ -4025,6 +4027,7 @@ export namespace Prisma {
     appTheme: number
     fontSize: number
     emailDensity: number
+    preferredTimeZone: number
     lastActiveAccountId: number
     _all: number
   }
@@ -4046,6 +4049,7 @@ export namespace Prisma {
     appTheme?: true
     fontSize?: true
     emailDensity?: true
+    preferredTimeZone?: true
     lastActiveAccountId?: true
   }
 
@@ -4065,6 +4069,7 @@ export namespace Prisma {
     appTheme?: true
     fontSize?: true
     emailDensity?: true
+    preferredTimeZone?: true
     lastActiveAccountId?: true
   }
 
@@ -4084,6 +4089,7 @@ export namespace Prisma {
     appTheme?: true
     fontSize?: true
     emailDensity?: true
+    preferredTimeZone?: true
     lastActiveAccountId?: true
     _all?: true
   }
@@ -4176,6 +4182,7 @@ export namespace Prisma {
     appTheme: string
     fontSize: string
     emailDensity: string
+    preferredTimeZone: string
     lastActiveAccountId: string | null
     _count: UserCountAggregateOutputType | null
     _min: UserMinAggregateOutputType | null
@@ -4212,6 +4219,7 @@ export namespace Prisma {
     appTheme?: boolean
     fontSize?: boolean
     emailDensity?: boolean
+    preferredTimeZone?: boolean
     lastActiveAccountId?: boolean
     org?: boolean | OrganizationDefaultArgs<ExtArgs>
     msAccounts?: boolean | User$msAccountsArgs<ExtArgs>
@@ -4251,6 +4259,7 @@ export namespace Prisma {
     appTheme?: boolean
     fontSize?: boolean
     emailDensity?: boolean
+    preferredTimeZone?: boolean
     lastActiveAccountId?: boolean
     org?: boolean | OrganizationDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
@@ -4271,6 +4280,7 @@ export namespace Prisma {
     appTheme?: boolean
     fontSize?: boolean
     emailDensity?: boolean
+    preferredTimeZone?: boolean
     lastActiveAccountId?: boolean
     org?: boolean | OrganizationDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
@@ -4291,10 +4301,11 @@ export namespace Prisma {
     appTheme?: boolean
     fontSize?: boolean
     emailDensity?: boolean
+    preferredTimeZone?: boolean
     lastActiveAccountId?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "name" | "avatarUrl" | "createdAt" | "updatedAt" | "orgId" | "notificationNewEmail" | "notificationDailyDigest" | "notificationAiReplies" | "notificationCalendarReminders" | "notificationWeeklyReport" | "appTheme" | "fontSize" | "emailDensity" | "lastActiveAccountId", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "name" | "avatarUrl" | "createdAt" | "updatedAt" | "orgId" | "notificationNewEmail" | "notificationDailyDigest" | "notificationAiReplies" | "notificationCalendarReminders" | "notificationWeeklyReport" | "appTheme" | "fontSize" | "emailDensity" | "preferredTimeZone" | "lastActiveAccountId", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     org?: boolean | OrganizationDefaultArgs<ExtArgs>
     msAccounts?: boolean | User$msAccountsArgs<ExtArgs>
@@ -4363,6 +4374,7 @@ export namespace Prisma {
       appTheme: string
       fontSize: string
       emailDensity: string
+      preferredTimeZone: string
       lastActiveAccountId: string | null
     }, ExtArgs["result"]["user"]>
     composites: {}
@@ -4821,6 +4833,7 @@ export namespace Prisma {
     readonly appTheme: FieldRef<"User", 'String'>
     readonly fontSize: FieldRef<"User", 'String'>
     readonly emailDensity: FieldRef<"User", 'String'>
+    readonly preferredTimeZone: FieldRef<"User", 'String'>
     readonly lastActiveAccountId: FieldRef<"User", 'String'>
   }
     
@@ -27608,6 +27621,7 @@ export namespace Prisma {
     appTheme: 'appTheme',
     fontSize: 'fontSize',
     emailDensity: 'emailDensity',
+    preferredTimeZone: 'preferredTimeZone',
     lastActiveAccountId: 'lastActiveAccountId'
   };
 
@@ -28155,6 +28169,7 @@ export namespace Prisma {
     appTheme?: StringFilter<"User"> | string
     fontSize?: StringFilter<"User"> | string
     emailDensity?: StringFilter<"User"> | string
+    preferredTimeZone?: StringFilter<"User"> | string
     lastActiveAccountId?: StringNullableFilter<"User"> | string | null
     org?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
     msAccounts?: MsConnectedAccountListRelationFilter
@@ -28193,6 +28208,7 @@ export namespace Prisma {
     appTheme?: SortOrder
     fontSize?: SortOrder
     emailDensity?: SortOrder
+    preferredTimeZone?: SortOrder
     lastActiveAccountId?: SortOrderInput | SortOrder
     org?: OrganizationOrderByWithRelationInput
     msAccounts?: MsConnectedAccountOrderByRelationAggregateInput
@@ -28234,6 +28250,7 @@ export namespace Prisma {
     appTheme?: StringFilter<"User"> | string
     fontSize?: StringFilter<"User"> | string
     emailDensity?: StringFilter<"User"> | string
+    preferredTimeZone?: StringFilter<"User"> | string
     lastActiveAccountId?: StringNullableFilter<"User"> | string | null
     org?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
     msAccounts?: MsConnectedAccountListRelationFilter
@@ -28272,6 +28289,7 @@ export namespace Prisma {
     appTheme?: SortOrder
     fontSize?: SortOrder
     emailDensity?: SortOrder
+    preferredTimeZone?: SortOrder
     lastActiveAccountId?: SortOrderInput | SortOrder
     _count?: UserCountOrderByAggregateInput
     _max?: UserMaxOrderByAggregateInput
@@ -28297,6 +28315,7 @@ export namespace Prisma {
     appTheme?: StringWithAggregatesFilter<"User"> | string
     fontSize?: StringWithAggregatesFilter<"User"> | string
     emailDensity?: StringWithAggregatesFilter<"User"> | string
+    preferredTimeZone?: StringWithAggregatesFilter<"User"> | string
     lastActiveAccountId?: StringNullableWithAggregatesFilter<"User"> | string | null
   }
 
@@ -30099,6 +30118,7 @@ export namespace Prisma {
     appTheme?: string
     fontSize?: string
     emailDensity?: string
+    preferredTimeZone?: string
     lastActiveAccountId?: string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
     msAccounts?: MsConnectedAccountCreateNestedManyWithoutUserInput
@@ -30137,6 +30157,7 @@ export namespace Prisma {
     appTheme?: string
     fontSize?: string
     emailDensity?: string
+    preferredTimeZone?: string
     lastActiveAccountId?: string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
     msalCache?: MsalTokenCacheUncheckedCreateNestedOneWithoutUserInput
@@ -30173,6 +30194,7 @@ export namespace Prisma {
     appTheme?: StringFieldUpdateOperationsInput | string
     fontSize?: StringFieldUpdateOperationsInput | string
     emailDensity?: StringFieldUpdateOperationsInput | string
+    preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
     msAccounts?: MsConnectedAccountUpdateManyWithoutUserNestedInput
@@ -30211,6 +30233,7 @@ export namespace Prisma {
     appTheme?: StringFieldUpdateOperationsInput | string
     fontSize?: StringFieldUpdateOperationsInput | string
     emailDensity?: StringFieldUpdateOperationsInput | string
+    preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
     msalCache?: MsalTokenCacheUncheckedUpdateOneWithoutUserNestedInput
@@ -30248,6 +30271,7 @@ export namespace Prisma {
     appTheme?: string
     fontSize?: string
     emailDensity?: string
+    preferredTimeZone?: string
     lastActiveAccountId?: string | null
   }
 
@@ -30266,6 +30290,7 @@ export namespace Prisma {
     appTheme?: StringFieldUpdateOperationsInput | string
     fontSize?: StringFieldUpdateOperationsInput | string
     emailDensity?: StringFieldUpdateOperationsInput | string
+    preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
@@ -30285,6 +30310,7 @@ export namespace Prisma {
     appTheme?: StringFieldUpdateOperationsInput | string
     fontSize?: StringFieldUpdateOperationsInput | string
     emailDensity?: StringFieldUpdateOperationsInput | string
+    preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
@@ -32578,6 +32604,7 @@ export namespace Prisma {
     appTheme?: SortOrder
     fontSize?: SortOrder
     emailDensity?: SortOrder
+    preferredTimeZone?: SortOrder
     lastActiveAccountId?: SortOrder
   }
 
@@ -32597,6 +32624,7 @@ export namespace Prisma {
     appTheme?: SortOrder
     fontSize?: SortOrder
     emailDensity?: SortOrder
+    preferredTimeZone?: SortOrder
     lastActiveAccountId?: SortOrder
   }
 
@@ -32616,6 +32644,7 @@ export namespace Prisma {
     appTheme?: SortOrder
     fontSize?: SortOrder
     emailDensity?: SortOrder
+    preferredTimeZone?: SortOrder
     lastActiveAccountId?: SortOrder
   }
 
@@ -35004,6 +35033,7 @@ export namespace Prisma {
     appTheme?: string
     fontSize?: string
     emailDensity?: string
+    preferredTimeZone?: string
     lastActiveAccountId?: string | null
     msAccounts?: MsConnectedAccountCreateNestedManyWithoutUserInput
     msalCache?: MsalTokenCacheCreateNestedOneWithoutUserInput
@@ -35040,6 +35070,7 @@ export namespace Prisma {
     appTheme?: string
     fontSize?: string
     emailDensity?: string
+    preferredTimeZone?: string
     lastActiveAccountId?: string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
     msalCache?: MsalTokenCacheUncheckedCreateNestedOneWithoutUserInput
@@ -35106,6 +35137,7 @@ export namespace Prisma {
     appTheme?: StringFilter<"User"> | string
     fontSize?: StringFilter<"User"> | string
     emailDensity?: StringFilter<"User"> | string
+    preferredTimeZone?: StringFilter<"User"> | string
     lastActiveAccountId?: StringNullableFilter<"User"> | string | null
   }
 
@@ -36481,6 +36513,7 @@ export namespace Prisma {
     appTheme?: string
     fontSize?: string
     emailDensity?: string
+    preferredTimeZone?: string
     lastActiveAccountId?: string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
     msalCache?: MsalTokenCacheCreateNestedOneWithoutUserInput
@@ -36518,6 +36551,7 @@ export namespace Prisma {
     appTheme?: string
     fontSize?: string
     emailDensity?: string
+    preferredTimeZone?: string
     lastActiveAccountId?: string | null
     msalCache?: MsalTokenCacheUncheckedCreateNestedOneWithoutUserInput
     deltaLinks?: EmailDeltaLinkUncheckedCreateNestedManyWithoutUserInput
@@ -36569,6 +36603,7 @@ export namespace Prisma {
     appTheme?: StringFieldUpdateOperationsInput | string
     fontSize?: StringFieldUpdateOperationsInput | string
     emailDensity?: StringFieldUpdateOperationsInput | string
+    preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
     msalCache?: MsalTokenCacheUpdateOneWithoutUserNestedInput
@@ -36606,6 +36641,7 @@ export namespace Prisma {
     appTheme?: StringFieldUpdateOperationsInput | string
     fontSize?: StringFieldUpdateOperationsInput | string
     emailDensity?: StringFieldUpdateOperationsInput | string
+    preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     msalCache?: MsalTokenCacheUncheckedUpdateOneWithoutUserNestedInput
     deltaLinks?: EmailDeltaLinkUncheckedUpdateManyWithoutUserNestedInput
@@ -36641,6 +36677,7 @@ export namespace Prisma {
     appTheme?: string
     fontSize?: string
     emailDensity?: string
+    preferredTimeZone?: string
     lastActiveAccountId?: string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
     msAccounts?: MsConnectedAccountCreateNestedManyWithoutUserInput
@@ -36678,6 +36715,7 @@ export namespace Prisma {
     appTheme?: string
     fontSize?: string
     emailDensity?: string
+    preferredTimeZone?: string
     lastActiveAccountId?: string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
     deltaLinks?: EmailDeltaLinkUncheckedCreateNestedManyWithoutUserInput
@@ -36729,6 +36767,7 @@ export namespace Prisma {
     appTheme?: StringFieldUpdateOperationsInput | string
     fontSize?: StringFieldUpdateOperationsInput | string
     emailDensity?: StringFieldUpdateOperationsInput | string
+    preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
     msAccounts?: MsConnectedAccountUpdateManyWithoutUserNestedInput
@@ -36766,6 +36805,7 @@ export namespace Prisma {
     appTheme?: StringFieldUpdateOperationsInput | string
     fontSize?: StringFieldUpdateOperationsInput | string
     emailDensity?: StringFieldUpdateOperationsInput | string
+    preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
     deltaLinks?: EmailDeltaLinkUncheckedUpdateManyWithoutUserNestedInput
@@ -36801,6 +36841,7 @@ export namespace Prisma {
     appTheme?: string
     fontSize?: string
     emailDensity?: string
+    preferredTimeZone?: string
     lastActiveAccountId?: string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
     msAccounts?: MsConnectedAccountCreateNestedManyWithoutUserInput
@@ -36838,6 +36879,7 @@ export namespace Prisma {
     appTheme?: string
     fontSize?: string
     emailDensity?: string
+    preferredTimeZone?: string
     lastActiveAccountId?: string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
     msalCache?: MsalTokenCacheUncheckedCreateNestedOneWithoutUserInput
@@ -36889,6 +36931,7 @@ export namespace Prisma {
     appTheme?: StringFieldUpdateOperationsInput | string
     fontSize?: StringFieldUpdateOperationsInput | string
     emailDensity?: StringFieldUpdateOperationsInput | string
+    preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
     msAccounts?: MsConnectedAccountUpdateManyWithoutUserNestedInput
@@ -36926,6 +36969,7 @@ export namespace Prisma {
     appTheme?: StringFieldUpdateOperationsInput | string
     fontSize?: StringFieldUpdateOperationsInput | string
     emailDensity?: StringFieldUpdateOperationsInput | string
+    preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
     msalCache?: MsalTokenCacheUncheckedUpdateOneWithoutUserNestedInput
@@ -36961,6 +37005,7 @@ export namespace Prisma {
     appTheme?: string
     fontSize?: string
     emailDensity?: string
+    preferredTimeZone?: string
     lastActiveAccountId?: string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
     msAccounts?: MsConnectedAccountCreateNestedManyWithoutUserInput
@@ -36998,6 +37043,7 @@ export namespace Prisma {
     appTheme?: string
     fontSize?: string
     emailDensity?: string
+    preferredTimeZone?: string
     lastActiveAccountId?: string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
     msalCache?: MsalTokenCacheUncheckedCreateNestedOneWithoutUserInput
@@ -37049,6 +37095,7 @@ export namespace Prisma {
     appTheme?: StringFieldUpdateOperationsInput | string
     fontSize?: StringFieldUpdateOperationsInput | string
     emailDensity?: StringFieldUpdateOperationsInput | string
+    preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
     msAccounts?: MsConnectedAccountUpdateManyWithoutUserNestedInput
@@ -37086,6 +37133,7 @@ export namespace Prisma {
     appTheme?: StringFieldUpdateOperationsInput | string
     fontSize?: StringFieldUpdateOperationsInput | string
     emailDensity?: StringFieldUpdateOperationsInput | string
+    preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
     msalCache?: MsalTokenCacheUncheckedUpdateOneWithoutUserNestedInput
@@ -37121,6 +37169,7 @@ export namespace Prisma {
     appTheme?: string
     fontSize?: string
     emailDensity?: string
+    preferredTimeZone?: string
     lastActiveAccountId?: string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
     msAccounts?: MsConnectedAccountCreateNestedManyWithoutUserInput
@@ -37158,6 +37207,7 @@ export namespace Prisma {
     appTheme?: string
     fontSize?: string
     emailDensity?: string
+    preferredTimeZone?: string
     lastActiveAccountId?: string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
     msalCache?: MsalTokenCacheUncheckedCreateNestedOneWithoutUserInput
@@ -37209,6 +37259,7 @@ export namespace Prisma {
     appTheme?: StringFieldUpdateOperationsInput | string
     fontSize?: StringFieldUpdateOperationsInput | string
     emailDensity?: StringFieldUpdateOperationsInput | string
+    preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
     msAccounts?: MsConnectedAccountUpdateManyWithoutUserNestedInput
@@ -37246,6 +37297,7 @@ export namespace Prisma {
     appTheme?: StringFieldUpdateOperationsInput | string
     fontSize?: StringFieldUpdateOperationsInput | string
     emailDensity?: StringFieldUpdateOperationsInput | string
+    preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
     msalCache?: MsalTokenCacheUncheckedUpdateOneWithoutUserNestedInput
@@ -37281,6 +37333,7 @@ export namespace Prisma {
     appTheme?: string
     fontSize?: string
     emailDensity?: string
+    preferredTimeZone?: string
     lastActiveAccountId?: string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
     msAccounts?: MsConnectedAccountCreateNestedManyWithoutUserInput
@@ -37318,6 +37371,7 @@ export namespace Prisma {
     appTheme?: string
     fontSize?: string
     emailDensity?: string
+    preferredTimeZone?: string
     lastActiveAccountId?: string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
     msalCache?: MsalTokenCacheUncheckedCreateNestedOneWithoutUserInput
@@ -37369,6 +37423,7 @@ export namespace Prisma {
     appTheme?: StringFieldUpdateOperationsInput | string
     fontSize?: StringFieldUpdateOperationsInput | string
     emailDensity?: StringFieldUpdateOperationsInput | string
+    preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
     msAccounts?: MsConnectedAccountUpdateManyWithoutUserNestedInput
@@ -37406,6 +37461,7 @@ export namespace Prisma {
     appTheme?: StringFieldUpdateOperationsInput | string
     fontSize?: StringFieldUpdateOperationsInput | string
     emailDensity?: StringFieldUpdateOperationsInput | string
+    preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
     msalCache?: MsalTokenCacheUncheckedUpdateOneWithoutUserNestedInput
@@ -37441,6 +37497,7 @@ export namespace Prisma {
     appTheme?: string
     fontSize?: string
     emailDensity?: string
+    preferredTimeZone?: string
     lastActiveAccountId?: string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
     msAccounts?: MsConnectedAccountCreateNestedManyWithoutUserInput
@@ -37478,6 +37535,7 @@ export namespace Prisma {
     appTheme?: string
     fontSize?: string
     emailDensity?: string
+    preferredTimeZone?: string
     lastActiveAccountId?: string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
     msalCache?: MsalTokenCacheUncheckedCreateNestedOneWithoutUserInput
@@ -37529,6 +37587,7 @@ export namespace Prisma {
     appTheme?: StringFieldUpdateOperationsInput | string
     fontSize?: StringFieldUpdateOperationsInput | string
     emailDensity?: StringFieldUpdateOperationsInput | string
+    preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
     msAccounts?: MsConnectedAccountUpdateManyWithoutUserNestedInput
@@ -37566,6 +37625,7 @@ export namespace Prisma {
     appTheme?: StringFieldUpdateOperationsInput | string
     fontSize?: StringFieldUpdateOperationsInput | string
     emailDensity?: StringFieldUpdateOperationsInput | string
+    preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
     msalCache?: MsalTokenCacheUncheckedUpdateOneWithoutUserNestedInput
@@ -37601,6 +37661,7 @@ export namespace Prisma {
     appTheme?: string
     fontSize?: string
     emailDensity?: string
+    preferredTimeZone?: string
     lastActiveAccountId?: string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
     msAccounts?: MsConnectedAccountCreateNestedManyWithoutUserInput
@@ -37638,6 +37699,7 @@ export namespace Prisma {
     appTheme?: string
     fontSize?: string
     emailDensity?: string
+    preferredTimeZone?: string
     lastActiveAccountId?: string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
     msalCache?: MsalTokenCacheUncheckedCreateNestedOneWithoutUserInput
@@ -37689,6 +37751,7 @@ export namespace Prisma {
     appTheme?: StringFieldUpdateOperationsInput | string
     fontSize?: StringFieldUpdateOperationsInput | string
     emailDensity?: StringFieldUpdateOperationsInput | string
+    preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
     msAccounts?: MsConnectedAccountUpdateManyWithoutUserNestedInput
@@ -37726,6 +37789,7 @@ export namespace Prisma {
     appTheme?: StringFieldUpdateOperationsInput | string
     fontSize?: StringFieldUpdateOperationsInput | string
     emailDensity?: StringFieldUpdateOperationsInput | string
+    preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
     msalCache?: MsalTokenCacheUncheckedUpdateOneWithoutUserNestedInput
@@ -37761,6 +37825,7 @@ export namespace Prisma {
     appTheme?: string
     fontSize?: string
     emailDensity?: string
+    preferredTimeZone?: string
     lastActiveAccountId?: string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
     msAccounts?: MsConnectedAccountCreateNestedManyWithoutUserInput
@@ -37798,6 +37863,7 @@ export namespace Prisma {
     appTheme?: string
     fontSize?: string
     emailDensity?: string
+    preferredTimeZone?: string
     lastActiveAccountId?: string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
     msalCache?: MsalTokenCacheUncheckedCreateNestedOneWithoutUserInput
@@ -37849,6 +37915,7 @@ export namespace Prisma {
     appTheme?: StringFieldUpdateOperationsInput | string
     fontSize?: StringFieldUpdateOperationsInput | string
     emailDensity?: StringFieldUpdateOperationsInput | string
+    preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
     msAccounts?: MsConnectedAccountUpdateManyWithoutUserNestedInput
@@ -37886,6 +37953,7 @@ export namespace Prisma {
     appTheme?: StringFieldUpdateOperationsInput | string
     fontSize?: StringFieldUpdateOperationsInput | string
     emailDensity?: StringFieldUpdateOperationsInput | string
+    preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
     msalCache?: MsalTokenCacheUncheckedUpdateOneWithoutUserNestedInput
@@ -37921,6 +37989,7 @@ export namespace Prisma {
     appTheme?: string
     fontSize?: string
     emailDensity?: string
+    preferredTimeZone?: string
     lastActiveAccountId?: string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
     msAccounts?: MsConnectedAccountCreateNestedManyWithoutUserInput
@@ -37958,6 +38027,7 @@ export namespace Prisma {
     appTheme?: string
     fontSize?: string
     emailDensity?: string
+    preferredTimeZone?: string
     lastActiveAccountId?: string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
     msalCache?: MsalTokenCacheUncheckedCreateNestedOneWithoutUserInput
@@ -38009,6 +38079,7 @@ export namespace Prisma {
     appTheme?: StringFieldUpdateOperationsInput | string
     fontSize?: StringFieldUpdateOperationsInput | string
     emailDensity?: StringFieldUpdateOperationsInput | string
+    preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
     msAccounts?: MsConnectedAccountUpdateManyWithoutUserNestedInput
@@ -38046,6 +38117,7 @@ export namespace Prisma {
     appTheme?: StringFieldUpdateOperationsInput | string
     fontSize?: StringFieldUpdateOperationsInput | string
     emailDensity?: StringFieldUpdateOperationsInput | string
+    preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
     msalCache?: MsalTokenCacheUncheckedUpdateOneWithoutUserNestedInput
@@ -38081,6 +38153,7 @@ export namespace Prisma {
     appTheme?: string
     fontSize?: string
     emailDensity?: string
+    preferredTimeZone?: string
     lastActiveAccountId?: string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
     msAccounts?: MsConnectedAccountCreateNestedManyWithoutUserInput
@@ -38118,6 +38191,7 @@ export namespace Prisma {
     appTheme?: string
     fontSize?: string
     emailDensity?: string
+    preferredTimeZone?: string
     lastActiveAccountId?: string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
     msalCache?: MsalTokenCacheUncheckedCreateNestedOneWithoutUserInput
@@ -38169,6 +38243,7 @@ export namespace Prisma {
     appTheme?: StringFieldUpdateOperationsInput | string
     fontSize?: StringFieldUpdateOperationsInput | string
     emailDensity?: StringFieldUpdateOperationsInput | string
+    preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
     msAccounts?: MsConnectedAccountUpdateManyWithoutUserNestedInput
@@ -38206,6 +38281,7 @@ export namespace Prisma {
     appTheme?: StringFieldUpdateOperationsInput | string
     fontSize?: StringFieldUpdateOperationsInput | string
     emailDensity?: StringFieldUpdateOperationsInput | string
+    preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
     msalCache?: MsalTokenCacheUncheckedUpdateOneWithoutUserNestedInput
@@ -38241,6 +38317,7 @@ export namespace Prisma {
     appTheme?: string
     fontSize?: string
     emailDensity?: string
+    preferredTimeZone?: string
     lastActiveAccountId?: string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
     msAccounts?: MsConnectedAccountCreateNestedManyWithoutUserInput
@@ -38278,6 +38355,7 @@ export namespace Prisma {
     appTheme?: string
     fontSize?: string
     emailDensity?: string
+    preferredTimeZone?: string
     lastActiveAccountId?: string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
     msalCache?: MsalTokenCacheUncheckedCreateNestedOneWithoutUserInput
@@ -38329,6 +38407,7 @@ export namespace Prisma {
     appTheme?: StringFieldUpdateOperationsInput | string
     fontSize?: StringFieldUpdateOperationsInput | string
     emailDensity?: StringFieldUpdateOperationsInput | string
+    preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
     msAccounts?: MsConnectedAccountUpdateManyWithoutUserNestedInput
@@ -38366,6 +38445,7 @@ export namespace Prisma {
     appTheme?: StringFieldUpdateOperationsInput | string
     fontSize?: StringFieldUpdateOperationsInput | string
     emailDensity?: StringFieldUpdateOperationsInput | string
+    preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
     msalCache?: MsalTokenCacheUncheckedUpdateOneWithoutUserNestedInput
@@ -38401,6 +38481,7 @@ export namespace Prisma {
     appTheme?: string
     fontSize?: string
     emailDensity?: string
+    preferredTimeZone?: string
     lastActiveAccountId?: string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
     msAccounts?: MsConnectedAccountCreateNestedManyWithoutUserInput
@@ -38438,6 +38519,7 @@ export namespace Prisma {
     appTheme?: string
     fontSize?: string
     emailDensity?: string
+    preferredTimeZone?: string
     lastActiveAccountId?: string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
     msalCache?: MsalTokenCacheUncheckedCreateNestedOneWithoutUserInput
@@ -38489,6 +38571,7 @@ export namespace Prisma {
     appTheme?: StringFieldUpdateOperationsInput | string
     fontSize?: StringFieldUpdateOperationsInput | string
     emailDensity?: StringFieldUpdateOperationsInput | string
+    preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
     msAccounts?: MsConnectedAccountUpdateManyWithoutUserNestedInput
@@ -38526,6 +38609,7 @@ export namespace Prisma {
     appTheme?: StringFieldUpdateOperationsInput | string
     fontSize?: StringFieldUpdateOperationsInput | string
     emailDensity?: StringFieldUpdateOperationsInput | string
+    preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
     msalCache?: MsalTokenCacheUncheckedUpdateOneWithoutUserNestedInput
@@ -38561,6 +38645,7 @@ export namespace Prisma {
     appTheme?: string
     fontSize?: string
     emailDensity?: string
+    preferredTimeZone?: string
     lastActiveAccountId?: string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
     msAccounts?: MsConnectedAccountCreateNestedManyWithoutUserInput
@@ -38598,6 +38683,7 @@ export namespace Prisma {
     appTheme?: string
     fontSize?: string
     emailDensity?: string
+    preferredTimeZone?: string
     lastActiveAccountId?: string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
     msalCache?: MsalTokenCacheUncheckedCreateNestedOneWithoutUserInput
@@ -38649,6 +38735,7 @@ export namespace Prisma {
     appTheme?: StringFieldUpdateOperationsInput | string
     fontSize?: StringFieldUpdateOperationsInput | string
     emailDensity?: StringFieldUpdateOperationsInput | string
+    preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
     msAccounts?: MsConnectedAccountUpdateManyWithoutUserNestedInput
@@ -38686,6 +38773,7 @@ export namespace Prisma {
     appTheme?: StringFieldUpdateOperationsInput | string
     fontSize?: StringFieldUpdateOperationsInput | string
     emailDensity?: StringFieldUpdateOperationsInput | string
+    preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
     msalCache?: MsalTokenCacheUncheckedUpdateOneWithoutUserNestedInput
@@ -38721,6 +38809,7 @@ export namespace Prisma {
     appTheme?: string
     fontSize?: string
     emailDensity?: string
+    preferredTimeZone?: string
     lastActiveAccountId?: string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
     msAccounts?: MsConnectedAccountCreateNestedManyWithoutUserInput
@@ -38758,6 +38847,7 @@ export namespace Prisma {
     appTheme?: string
     fontSize?: string
     emailDensity?: string
+    preferredTimeZone?: string
     lastActiveAccountId?: string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
     msalCache?: MsalTokenCacheUncheckedCreateNestedOneWithoutUserInput
@@ -38809,6 +38899,7 @@ export namespace Prisma {
     appTheme?: StringFieldUpdateOperationsInput | string
     fontSize?: StringFieldUpdateOperationsInput | string
     emailDensity?: StringFieldUpdateOperationsInput | string
+    preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
     msAccounts?: MsConnectedAccountUpdateManyWithoutUserNestedInput
@@ -38846,6 +38937,7 @@ export namespace Prisma {
     appTheme?: StringFieldUpdateOperationsInput | string
     fontSize?: StringFieldUpdateOperationsInput | string
     emailDensity?: StringFieldUpdateOperationsInput | string
+    preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
     msalCache?: MsalTokenCacheUncheckedUpdateOneWithoutUserNestedInput
@@ -38881,6 +38973,7 @@ export namespace Prisma {
     appTheme?: string
     fontSize?: string
     emailDensity?: string
+    preferredTimeZone?: string
     lastActiveAccountId?: string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
     msAccounts?: MsConnectedAccountCreateNestedManyWithoutUserInput
@@ -38918,6 +39011,7 @@ export namespace Prisma {
     appTheme?: string
     fontSize?: string
     emailDensity?: string
+    preferredTimeZone?: string
     lastActiveAccountId?: string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
     msalCache?: MsalTokenCacheUncheckedCreateNestedOneWithoutUserInput
@@ -38969,6 +39063,7 @@ export namespace Prisma {
     appTheme?: StringFieldUpdateOperationsInput | string
     fontSize?: StringFieldUpdateOperationsInput | string
     emailDensity?: StringFieldUpdateOperationsInput | string
+    preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
     msAccounts?: MsConnectedAccountUpdateManyWithoutUserNestedInput
@@ -39006,6 +39101,7 @@ export namespace Prisma {
     appTheme?: StringFieldUpdateOperationsInput | string
     fontSize?: StringFieldUpdateOperationsInput | string
     emailDensity?: StringFieldUpdateOperationsInput | string
+    preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
     msalCache?: MsalTokenCacheUncheckedUpdateOneWithoutUserNestedInput
@@ -39041,6 +39137,7 @@ export namespace Prisma {
     appTheme?: string
     fontSize?: string
     emailDensity?: string
+    preferredTimeZone?: string
     lastActiveAccountId?: string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
     msAccounts?: MsConnectedAccountCreateNestedManyWithoutUserInput
@@ -39078,6 +39175,7 @@ export namespace Prisma {
     appTheme?: string
     fontSize?: string
     emailDensity?: string
+    preferredTimeZone?: string
     lastActiveAccountId?: string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
     msalCache?: MsalTokenCacheUncheckedCreateNestedOneWithoutUserInput
@@ -39129,6 +39227,7 @@ export namespace Prisma {
     appTheme?: StringFieldUpdateOperationsInput | string
     fontSize?: StringFieldUpdateOperationsInput | string
     emailDensity?: StringFieldUpdateOperationsInput | string
+    preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
     msAccounts?: MsConnectedAccountUpdateManyWithoutUserNestedInput
@@ -39166,6 +39265,7 @@ export namespace Prisma {
     appTheme?: StringFieldUpdateOperationsInput | string
     fontSize?: StringFieldUpdateOperationsInput | string
     emailDensity?: StringFieldUpdateOperationsInput | string
+    preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
     msalCache?: MsalTokenCacheUncheckedUpdateOneWithoutUserNestedInput
@@ -39201,6 +39301,7 @@ export namespace Prisma {
     appTheme?: string
     fontSize?: string
     emailDensity?: string
+    preferredTimeZone?: string
     lastActiveAccountId?: string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
     msAccounts?: MsConnectedAccountCreateNestedManyWithoutUserInput
@@ -39238,6 +39339,7 @@ export namespace Prisma {
     appTheme?: string
     fontSize?: string
     emailDensity?: string
+    preferredTimeZone?: string
     lastActiveAccountId?: string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
     msalCache?: MsalTokenCacheUncheckedCreateNestedOneWithoutUserInput
@@ -39289,6 +39391,7 @@ export namespace Prisma {
     appTheme?: StringFieldUpdateOperationsInput | string
     fontSize?: StringFieldUpdateOperationsInput | string
     emailDensity?: StringFieldUpdateOperationsInput | string
+    preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
     msAccounts?: MsConnectedAccountUpdateManyWithoutUserNestedInput
@@ -39326,6 +39429,7 @@ export namespace Prisma {
     appTheme?: StringFieldUpdateOperationsInput | string
     fontSize?: StringFieldUpdateOperationsInput | string
     emailDensity?: StringFieldUpdateOperationsInput | string
+    preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
     msalCache?: MsalTokenCacheUncheckedUpdateOneWithoutUserNestedInput
@@ -39361,6 +39465,7 @@ export namespace Prisma {
     appTheme?: string
     fontSize?: string
     emailDensity?: string
+    preferredTimeZone?: string
     lastActiveAccountId?: string | null
   }
 
@@ -39379,6 +39484,7 @@ export namespace Prisma {
     appTheme?: StringFieldUpdateOperationsInput | string
     fontSize?: StringFieldUpdateOperationsInput | string
     emailDensity?: StringFieldUpdateOperationsInput | string
+    preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     msAccounts?: MsConnectedAccountUpdateManyWithoutUserNestedInput
     msalCache?: MsalTokenCacheUpdateOneWithoutUserNestedInput
@@ -39415,6 +39521,7 @@ export namespace Prisma {
     appTheme?: StringFieldUpdateOperationsInput | string
     fontSize?: StringFieldUpdateOperationsInput | string
     emailDensity?: StringFieldUpdateOperationsInput | string
+    preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
     msalCache?: MsalTokenCacheUncheckedUpdateOneWithoutUserNestedInput
@@ -39451,6 +39558,7 @@ export namespace Prisma {
     appTheme?: StringFieldUpdateOperationsInput | string
     fontSize?: StringFieldUpdateOperationsInput | string
     emailDensity?: StringFieldUpdateOperationsInput | string
+    preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 

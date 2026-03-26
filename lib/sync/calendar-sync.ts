@@ -5,7 +5,7 @@ const GRAPH_BASE = "https://graph.microsoft.com/v1.0";
 const CALENDAR_DELTA_KEY = "calendar";
 const MAX_PAGES = 100;
 const CAL_SELECT =
-  "id,subject,bodyPreview,start,end,isAllDay,location,organizer,responseStatus,onlineMeeting,attendees,recurrence";
+  "id,subject,bodyPreview,start,end,isAllDay,location,organizer,responseStatus,onlineMeeting,attendees,recurrence,timeZone";
 
 interface CalDeltaResponse {
   value: CalDeltaItem[];
@@ -17,8 +17,8 @@ interface CalDeltaItem {
   id: string;
   subject?: string;
   bodyPreview?: string;
-  start?: { dateTime: string };
-  end?: { dateTime: string };
+  start?: { dateTime: string; timeZone?: string };
+  end?: { dateTime: string; timeZone?: string };
   isAllDay?: boolean;
   location?: { displayName: string };
   organizer?: { emailAddress: { name: string; address: string } };
@@ -110,6 +110,7 @@ export async function syncCalendar(
         toUpsert.map((e) => {
           const startDateTime = e.start?.dateTime ? new Date(e.start.dateTime) : new Date();
           const endDateTime = e.end?.dateTime ? new Date(e.end.dateTime) : new Date();
+          const timeZone = e.start?.timeZone || "UTC";
           const attendees = JSON.parse(
             JSON.stringify(
               (e.attendees ?? []).map((a) => ({
@@ -135,6 +136,7 @@ export async function syncCalendar(
               onlineMeetingUrl: e.onlineMeeting?.joinUrl ?? null,
               attendees,
               isRecurring: e.recurrence != null,
+              timeZone,
               syncedAt: new Date(),
             },
             create: {
@@ -153,6 +155,7 @@ export async function syncCalendar(
               onlineMeetingUrl: e.onlineMeeting?.joinUrl ?? null,
               attendees,
               isRecurring: e.recurrence != null,
+              timeZone,
             },
           });
         })

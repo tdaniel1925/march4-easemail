@@ -5,6 +5,22 @@ import { graphFetch } from "@/lib/microsoft/graph";
 
 type Params = { params: Promise<{ id: string }> };
 
+// ─── GET /api/drafts/[id] ─────────────────────────────────────────────────────
+
+export async function GET(req: NextRequest, { params }: Params) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+
+  const { id } = await params;
+  const draft = await prisma.draft.findFirst({
+    where: { id, userId: user.id }
+  });
+
+  if (!draft) return NextResponse.json({ error: "not_found" }, { status: 404 });
+  return NextResponse.json(draft);
+}
+
 // ─── DELETE /api/drafts/[id] ──────────────────────────────────────────────────
 
 export async function DELETE(_req: NextRequest, { params }: Params) {

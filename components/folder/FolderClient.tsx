@@ -251,6 +251,11 @@ export default function FolderClient({
                 email={email}
                 showRecipient={folder === "sent" || folder === "drafts"}
                 onClick={() => {
+                  if (folder === "drafts") {
+                    router.push(`/compose?draftId=${email.id}`);
+                    return;
+                  }
+
                   if (!email.isRead) {
                     setEmails((prev) => prev.map((e) => e.id === email.id ? { ...e, isRead: true } : e));
                   }

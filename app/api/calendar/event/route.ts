@@ -151,6 +151,7 @@ export async function PATCH(req: NextRequest): Promise<NextResponse> {
         reminderMinutes: data.reminderMinutes ?? null,
         showAs: data.showAs || "busy",
         recurrence: data.recurrence || null,
+        timeZone: data.timeZone ?? "UTC",
       },
     });
 
