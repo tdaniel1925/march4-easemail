@@ -439,7 +439,7 @@ export default function AttachmentsClient({ attachments, nextLink }: { attachmen
                     onClick={() => handleSort("date")}
                   >
                     <div className="flex items-center gap-1.5">
-                      Date
+                      Date Received
                       {sortField === "date" && (
                         <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} style={{ transform: sortDirection === "asc" ? "rotate(0deg)" : "rotate(180deg)", transition: "transform 0.2s" }}>
                           <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
