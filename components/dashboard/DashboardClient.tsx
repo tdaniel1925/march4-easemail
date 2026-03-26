@@ -128,7 +128,7 @@ export default function DashboardClient({
 }: {
   userName: string;
   events: CalendarEvent[];
-  recentUnread: EmailMessage[];
+  recentUnread: (EmailMessage & { accountName?: string })[];
   eventsToday: number;
   emailsData: number[];
 }) {
@@ -170,6 +170,27 @@ export default function DashboardClient({
     }
     fetchTodos();
   }, []);
+
+  useEffect(() => {
+    function getRefreshInterval() {
+      const now = new Date();
+      const centralTime = now.toLocaleString("en-US", {
+        timeZone: "America/Chicago",
+        hour: "numeric",
+        hour12: false
+      });
+      const hour = parseInt(centralTime);
+
+      if (hour >= 8 && hour < 18) return 5 * 60 * 1000; // 5 min
+      return 30 * 60 * 1000; // 30 min
+    }
+
+    const interval = setInterval(() => {
+      router.refresh();
+    }, getRefreshInterval());
+
+    return () => clearInterval(interval);
+  }, [router]);
 
   async function toggleTodo(id: string) {
     const todo = todos.find(t => t.id === id);
@@ -234,7 +255,8 @@ export default function DashboardClient({
           </div>
           <a
             href="/compose"
-            className="flex items-center gap-2 ai-gradient-bg text-white text-sm font-semibold px-4 py-2.5 rounded-small shadow-custom transition-all flex-shrink-0"
+            className="flex items-center gap-2 text-white text-sm font-semibold px-4 py-2.5 rounded-small shadow-custom transition-all flex-shrink-0"
+            style={{ backgroundColor: "rgb(138 9 9)" }}
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
@@ -436,6 +458,11 @@ export default function DashboardClient({
                 <div className="flex flex-col gap-4">
                   {recentUnread.map((email, i) => (
                     <div key={email.id}>
+                      {email.accountName && (
+                        <div className="text-xs font-semibold mb-1" style={{ color: "rgb(138 9 9)" }}>
+                          {email.accountName}
+                        </div>
+                      )}
                       <button
                         onClick={() => router.push(`/inbox/${email.id}`)}
                         className="w-full text-left group"

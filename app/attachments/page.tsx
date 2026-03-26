@@ -22,6 +22,7 @@ interface GraphMessage {
 
 interface GraphMessagesResponse {
   value: GraphMessage[];
+  "@odata.nextLink"?: string;
 }
 
 export interface AttachmentItem {
@@ -53,12 +54,16 @@ export default async function AttachmentsPage() {
 
   let attachments: AttachmentItem[] = [];
 
+  let nextLink: string | null = null;
+
   try {
     const data = await graphGet<GraphMessagesResponse>(
       user.id,
       defaultAccount.homeAccountId,
-      "/me/messages?$filter=hasAttachments eq true&$top=25&$select=id,subject,from,receivedDateTime,hasAttachments&$expand=attachments($select=id,name,size,contentType)"
+      "/me/messages?$filter=hasAttachments eq true&$top=100&$select=id,subject,from,receivedDateTime,hasAttachments&$expand=attachments($select=id,name,size,contentType)"
     );
+
+    nextLink = data["@odata.nextLink"] || null;
 
     for (const message of data.value ?? []) {
       for (const att of message.attachments ?? []) {
@@ -90,7 +95,7 @@ export default async function AttachmentsPage() {
         userName={dbUser.name ?? user.email ?? "You"}
         userEmail={defaultAccount.msEmail}
       />
-      <AttachmentsClient attachments={attachments} />
+      <AttachmentsClient attachments={attachments} nextLink={nextLink} />
     </div>
   );
 }

@@ -84,12 +84,15 @@ function matchesTab(item: AttachmentItem, tab: FilterTab): boolean {
   return true;
 }
 
-export default function AttachmentsClient({ attachments }: { attachments: AttachmentItem[] }) {
+export default function AttachmentsClient({ attachments, nextLink }: { attachments: AttachmentItem[]; nextLink: string | null }) {
   const router = useRouter();
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [activeTab, setActiveTab] = useState<FilterTab>("all");
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [items, setItems] = useState<AttachmentItem[]>(attachments);
+  const [nextLinkState, setNextLink] = useState<string | null>(nextLink);
+  const [loadingMore, setLoadingMore] = useState(false);
 
   useEffect(() => {
     if (debounceRef.current) clearTimeout(debounceRef.current);
@@ -97,7 +100,7 @@ export default function AttachmentsClient({ attachments }: { attachments: Attach
     return () => { if (debounceRef.current) clearTimeout(debounceRef.current); };
   }, [search]);
 
-  const filtered = attachments.filter((item) => {
+  const filtered = items.filter((item) => {
     const tabMatch = matchesTab(item, activeTab);
     if (!tabMatch) return false;
     if (!debouncedSearch) return true;
@@ -109,12 +112,28 @@ export default function AttachmentsClient({ attachments }: { attachments: Attach
     );
   });
 
-  const imageCount = attachments.filter((a) => getFileType(a.contentType, a.name) === "image").length;
-  const docCount = attachments.filter((a) => {
+  const imageCount = items.filter((a) => getFileType(a.contentType, a.name) === "image").length;
+  const docCount = items.filter((a) => {
     const t = getFileType(a.contentType, a.name);
     return t === "doc" || t === "pdf";
   }).length;
-  const totalSize = totalBytes(attachments);
+  const totalSize = totalBytes(items);
+
+  async function loadMore() {
+    if (!nextLinkState || loadingMore) return;
+    setLoadingMore(true);
+    try {
+      const res = await fetch(`/api/attachments/paginate?nextLink=${encodeURIComponent(nextLinkState)}`);
+      if (!res.ok) throw new Error("Failed to load more");
+      const data = await res.json();
+      setItems(prev => [...prev, ...data.items]);
+      setNextLink(data.nextLink || null);
+    } catch (err) {
+      console.error("[loadMore]", err);
+    } finally {
+      setLoadingMore(false);
+    }
+  }
 
   return (
     <div
@@ -132,7 +151,7 @@ export default function AttachmentsClient({ attachments }: { attachments: Attach
         </div>
 
         <div className="grid grid-cols-4 gap-4 mb-5">
-          <StatCard label="Total Files" value={String(attachments.length)} icon="files" />
+          <StatCard label="Total Files" value={String(items.length)} icon="files" />
           <StatCard label="Images" value={String(imageCount)} icon="image" />
           <StatCard label="Documents" value={String(docCount)} icon="doc" />
           <StatCard label="Total Size" value={formatSize(totalSize)} icon="size" />
@@ -265,6 +284,20 @@ export default function AttachmentsClient({ attachments }: { attachments: Attach
                 ))}
               </tbody>
             </table>
+            {nextLinkState && (
+              <div className="flex justify-center py-4 border-t border-neutral-200">
+                <button
+                  onClick={loadMore}
+                  disabled={loadingMore}
+                  className="px-6 py-2.5 rounded-[8px] text-sm font-semibold transition-colors disabled:opacity-50"
+                  style={{ backgroundColor: "rgb(138 9 9)", color: "white" }}
+                  onMouseEnter={(e) => { if (!loadingMore) { e.currentTarget.style.backgroundColor = "rgb(115 7 7)"; } }}
+                  onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "rgb(138 9 9)"; }}
+                >
+                  {loadingMore ? "Loading..." : "Load More"}
+                </button>
+              </div>
+            )}
           </div>
         )}
       </div>

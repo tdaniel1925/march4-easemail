@@ -80,26 +80,38 @@ export default async function DashboardPage() {
     // Not fatal
   }
 
-  // Fetch top 3 unread emails
-  let recentUnread: EmailMessage[] = [];
+  // Fetch top unread emails across all accounts
+  let recentUnread: (EmailMessage & { accountName?: string })[] = [];
   try {
-    const msgData = await graphGet<GraphMessageList>(
-      user.id,
-      defaultAccount.homeAccountId,
-      `/me/messages?$filter=isRead eq false&$top=3&$select=id,subject,bodyPreview,receivedDateTime,isRead,hasAttachments,flag,from,toRecipients,ccRecipients&$orderby=receivedDateTime desc`
+    const results = await Promise.allSettled(
+      dbUser.msAccounts.map(acc =>
+        graphGet<GraphMessageList>(
+          user.id,
+          acc.homeAccountId,
+          `/me/messages?$filter=isRead eq false&$top=3&$select=id,subject,bodyPreview,receivedDateTime,isRead,hasAttachments,flag,from,toRecipients,ccRecipients&$orderby=receivedDateTime desc`
+        )
+      )
     );
-    recentUnread = (msgData.value ?? []).map((m) => ({
-      id: m.id,
-      subject: m.subject ?? "(no subject)",
-      bodyPreview: m.bodyPreview ?? "",
-      receivedDateTime: m.receivedDateTime,
-      isRead: m.isRead,
-      hasAttachments: m.hasAttachments,
-      flag: { flagStatus: (m.flag?.flagStatus === "flagged" ? "flagged" : "notFlagged") as "flagged" | "notFlagged" },
-      from: { name: m.from?.emailAddress?.name ?? "Unknown", address: m.from?.emailAddress?.address ?? "" },
-      toRecipients: (m.toRecipients ?? []).map((r) => ({ name: r.emailAddress.name, address: r.emailAddress.address })),
-      ccRecipients: (m.ccRecipients ?? []).map((r) => ({ name: r.emailAddress.name, address: r.emailAddress.address })),
-    }));
+
+    recentUnread = results
+      .filter((r): r is PromiseFulfilledResult<GraphMessageList> => r.status === "fulfilled")
+      .flatMap((r, idx) =>
+        (r.value.value ?? []).map((m) => ({
+          id: m.id,
+          subject: m.subject ?? "(no subject)",
+          bodyPreview: m.bodyPreview ?? "",
+          receivedDateTime: m.receivedDateTime,
+          isRead: m.isRead,
+          hasAttachments: m.hasAttachments,
+          flag: { flagStatus: (m.flag?.flagStatus === "flagged" ? "flagged" : "notFlagged") as "flagged" | "notFlagged" },
+          from: { name: m.from?.emailAddress?.name ?? "Unknown", address: m.from?.emailAddress?.address ?? "" },
+          toRecipients: (m.toRecipients ?? []).map((r) => ({ name: r.emailAddress.name, address: r.emailAddress.address })),
+          ccRecipients: (m.ccRecipients ?? []).map((r) => ({ name: r.emailAddress.name, address: r.emailAddress.address })),
+          accountName: dbUser.msAccounts[idx].displayName || undefined,
+        }))
+      )
+      .sort((a, b) => new Date(b.receivedDateTime).getTime() - new Date(a.receivedDateTime).getTime())
+      .slice(0, 10);
   } catch {
     // Not fatal
   }
