@@ -56,3 +56,48 @@ _Entries added as errors are investigated and fixed._
 **Scope:** Fixed both AI Remix and AI Dictate (shared function).
 
 **Pattern:** See `codebakers-suggestions.md` #3
+
+---
+
+## 2026-03-26 — Production schema mismatch after deployment
+
+**Error:** `PrismaClientKnownRequestError: Invalid 'prisma.user.findUnique()' invocation: The column '(not available)' does not exist in the current database.`
+
+**Root cause:** Migrations created locally (`20260326_add_todo_items`, `20260326_add_timezone_fields`) were committed and pushed, but not applied to production Supabase database. The app code deployed to Vercel expects `users.preferredTimeZone` and `todo_items` table, but they don't exist yet in the database.
+
+**Why it happened:**
+1. Local development has no DATABASE_URL (intentional - work against production directly)
+2. `npx prisma migrate dev` couldn't run locally
+3. Migration SQL files created manually
+4. Code deployed before migrations could be applied
+5. Timing issue: app expects columns that don't exist
+
+**Fix:** Run migration SQL directly in Supabase SQL Editor:
+
+```sql
+-- Migration 1: Add todo_items table
+CREATE TABLE "todo_items" (
+    "id" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
+    "text" TEXT NOT NULL,
+    "done" BOOLEAN NOT NULL DEFAULT false,
+    "priority" TEXT NOT NULL DEFAULT 'normal',
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    CONSTRAINT "todo_items_pkey" PRIMARY KEY ("id")
+);
+CREATE INDEX "todo_items_userId_createdAt_idx" ON "todo_items"("userId", "createdAt" DESC);
+ALTER TABLE "todo_items" ADD CONSTRAINT "todo_items_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- Migration 2: Add timezone field
+ALTER TABLE "users" ADD COLUMN "preferredTimeZone" TEXT NOT NULL DEFAULT 'America/Chicago';
+```
+
+**Prevention:** For schema changes in production-only setups:
+1. Apply migration SQL in Supabase FIRST
+2. Then deploy code changes that use new columns
+3. Or: set up staging environment with DATABASE_URL for migration testing
+
+**Files affected:** All pages using `user.preferredTimeZone`, `/api/todos/*` routes
+
+**Pattern:** Migration timing in production-first development workflows
