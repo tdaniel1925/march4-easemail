@@ -6,6 +6,7 @@ import type { AttachmentItem } from "@/app/attachments/page";
 
 type FileType = "image" | "pdf" | "doc" | "sheet" | "other";
 type FilterTab = "all" | "documents" | "images" | "spreadsheets" | "other";
+type DirectionTab = "received" | "sent";
 type SortField = "name" | "type" | "sender" | "subject" | "date" | "size";
 type SortDirection = "asc" | "desc";
 
@@ -95,6 +96,7 @@ export default function AttachmentsClient({ attachments, nextLink }: { attachmen
   const router = useRouter();
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
+  const [directionTab, setDirectionTab] = useState<DirectionTab>("received");
   const [activeTab, setActiveTab] = useState<FilterTab>("all");
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [items, setItems] = useState<AttachmentItem[]>(attachments);
@@ -103,6 +105,7 @@ export default function AttachmentsClient({ attachments, nextLink }: { attachmen
   const [sortField, setSortField] = useState<SortField>("date");
   const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [previewItem, setPreviewItem] = useState<AttachmentItem | null>(null);
 
   useEffect(() => {
     if (debounceRef.current) clearTimeout(debounceRef.current);
@@ -210,6 +213,29 @@ export default function AttachmentsClient({ attachments, nextLink }: { attachmen
           <h1 className="text-xl font-semibold" style={{ color: "rgb(27 29 29)" }}>
             All Attachments
           </h1>
+        </div>
+
+        <div className="flex items-center gap-2 mb-5">
+          <button
+            onClick={() => setDirectionTab("received")}
+            className="px-4 py-2 rounded-[10px] text-sm font-semibold transition-all"
+            style={{
+              backgroundColor: directionTab === "received" ? "rgb(138 9 9)" : "rgb(245 245 245)",
+              color: directionTab === "received" ? "white" : "rgb(82 82 82)",
+            }}
+          >
+            Received
+          </button>
+          <button
+            onClick={() => setDirectionTab("sent")}
+            className="px-4 py-2 rounded-[10px] text-sm font-semibold transition-all"
+            style={{
+              backgroundColor: directionTab === "sent" ? "rgb(138 9 9)" : "rgb(245 245 245)",
+              color: directionTab === "sent" ? "white" : "rgb(82 82 82)",
+            }}
+          >
+            Sent
+          </button>
         </div>
 
         <div className="grid grid-cols-4 gap-4 mb-5">
@@ -473,8 +499,9 @@ export default function AttachmentsClient({ attachments, nextLink }: { attachmen
                     item={item}
                     isLast={idx === sorted.length - 1}
                     isSelected={selectedIds.has(`${item.messageId}-${item.id}`)}
-                    onRowClick={() => router.push(`/inbox/${item.messageId}`)}
+                    onRowClick={() => router.push(`/inbox/${item.messageId}?returnTo=/attachments`)}
                     onToggleSelection={() => toggleSelection(`${item.messageId}-${item.id}`)}
+                    onPreview={() => setPreviewItem(item)}
                   />
                 ))}
               </tbody>
@@ -496,6 +523,104 @@ export default function AttachmentsClient({ attachments, nextLink }: { attachmen
           </div>
         )}
       </div>
+
+      {/* Preview Modal */}
+      {previewItem && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-8"
+          style={{ backgroundColor: "rgba(0, 0, 0, 0.75)" }}
+          onClick={() => setPreviewItem(null)}
+        >
+          <div
+            className="relative rounded-[16px] overflow-hidden max-w-5xl max-h-full"
+            style={{ backgroundColor: "white" }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modal Header */}
+            <div className="flex items-center justify-between px-6 py-4 border-b" style={{ borderColor: "rgb(229 229 229)" }}>
+              <div className="flex items-center gap-3 min-w-0 flex-1">
+                <FileIcon type={getFileType(previewItem.contentType, previewItem.name)} />
+                <div className="min-w-0 flex-1">
+                  <h3 className="text-base font-semibold truncate" style={{ color: "rgb(27 29 29)" }} title={previewItem.name}>
+                    {previewItem.name}
+                  </h3>
+                  <p className="text-xs truncate" style={{ color: "rgb(115 115 115)" }}>
+                    {formatSize(previewItem.size)} • {formatDate(previewItem.receivedDateTime)}
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => setPreviewItem(null)}
+                className="flex-shrink-0 p-2 rounded-[8px] hover:bg-neutral-100 transition-colors"
+                style={{ color: "rgb(115 115 115)" }}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            {/* Modal Body */}
+            <div className="p-6 max-h-[calc(100vh-16rem)] overflow-auto">
+              {getFileType(previewItem.contentType, previewItem.name) === "image" ? (
+                <img
+                  src={`/api/mail/attachments/${encodeURIComponent(previewItem.messageId)}/${encodeURIComponent(previewItem.id)}?homeAccountId=${encodeURIComponent(previewItem.homeAccountId)}`}
+                  alt={previewItem.name}
+                  className="max-w-full h-auto mx-auto"
+                  style={{ maxHeight: "70vh" }}
+                />
+              ) : getFileType(previewItem.contentType, previewItem.name) === "pdf" ? (
+                <iframe
+                  src={`/api/mail/attachments/${encodeURIComponent(previewItem.messageId)}/${encodeURIComponent(previewItem.id)}?homeAccountId=${encodeURIComponent(previewItem.homeAccountId)}`}
+                  className="w-full"
+                  style={{ height: "70vh", border: "none" }}
+                  title={previewItem.name}
+                />
+              ) : (
+                <div className="text-center py-12">
+                  <FileIcon type={getFileType(previewItem.contentType, previewItem.name)} />
+                  <p className="text-sm mt-4" style={{ color: "rgb(115 115 115)" }}>
+                    Preview not available for this file type.
+                  </p>
+                  <p className="text-xs mt-2" style={{ color: "rgb(155 155 155)" }}>
+                    Download the file to view it.
+                  </p>
+                </div>
+              )}
+            </div>
+
+            {/* Modal Footer */}
+            <div className="flex items-center justify-end gap-2 px-6 py-4 border-t" style={{ borderColor: "rgb(229 229 229)" }}>
+              <button
+                onClick={async () => {
+                  try {
+                    const url = `/api/mail/attachments/${encodeURIComponent(previewItem.messageId)}/${encodeURIComponent(previewItem.id)}?homeAccountId=${encodeURIComponent(previewItem.homeAccountId)}`;
+                    const res = await fetch(url);
+                    if (!res.ok) throw new Error(`Download failed: ${res.status}`);
+                    const blob = await res.blob();
+                    const a = document.createElement("a");
+                    a.href = URL.createObjectURL(blob);
+                    a.download = previewItem.name;
+                    a.click();
+                    URL.revokeObjectURL(a.href);
+                  } catch (err) {
+                    console.error("[download]", err);
+                  }
+                }}
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-[8px] text-sm font-medium transition-colors"
+                style={{ backgroundColor: "rgb(138 9 9)", color: "white" }}
+                onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "rgb(115 7 7)"; }}
+                onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "rgb(138 9 9)"; }}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                </svg>
+                Download
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -506,12 +631,14 @@ function AttachmentRow({
   isSelected,
   onRowClick,
   onToggleSelection,
+  onPreview,
 }: {
   item: AttachmentItem;
   isLast: boolean;
   isSelected: boolean;
   onRowClick: () => void;
   onToggleSelection: () => void;
+  onPreview: () => void;
 }) {
   const type = getFileType(item.contentType, item.name);
   const [downloading, setDownloading] = useState(false);
@@ -602,6 +729,20 @@ function AttachmentRow({
       </td>
       <td className="px-5 py-3.5 text-right">
         <div className="flex items-center justify-end gap-2">
+          <button
+            onClick={(e) => { e.stopPropagation(); onPreview(); }}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[8px] text-xs font-medium transition-colors"
+            style={{ backgroundColor: "rgb(245 245 245)", color: "rgb(58 58 58)" }}
+            onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "rgb(229 229 229)"; }}
+            onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "rgb(245 245 245)"; }}
+            title="Preview attachment"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              <path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+            </svg>
+            Preview
+          </button>
           <button
             onClick={handleDownload}
             disabled={downloading}
