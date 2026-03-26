@@ -82,7 +82,7 @@ function SafeHtml({ html }: { html: string }) {
 
 // ─── EmailReadClient ──────────────────────────────────────────────────────────
 
-export default function EmailReadClient({ email, homeAccountId }: { email: EmailDetail; homeAccountId: string }) {
+export default function EmailReadClient({ email, homeAccountId, returnTo = "/inbox" }: { email: EmailDetail; homeAccountId: string; returnTo?: string }) {
   const router = useRouter();
   const [isRead, setIsRead] = useState(email.isRead);
   const [isStarred, setIsStarred] = useState(email.flag.flagStatus === "flagged");
@@ -157,13 +157,13 @@ export default function EmailReadClient({ email, homeAccountId }: { email: Email
         {/* Left: back + actions */}
         <div className="flex items-center gap-2">
           <Link
-            href="/inbox"
+            href={returnTo}
             className="flex items-center gap-1.5 text-sm text-neutral-500 hover:text-primary-600 transition-colors px-2.5 py-1.5 rounded-small hover:bg-background-100 font-medium"
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M11 17l-5-5m0 0l5-5m-5 5h12" />
             </svg>
-            Inbox
+            {returnTo === "/attachments" ? "Attachments" : "Inbox"}
           </Link>
 
           <div className="w-px h-5 bg-neutral-200" />

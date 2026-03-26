@@ -140,8 +140,14 @@ export default function AttachmentsClient({ attachments, nextLink }: { attachmen
   }
 
   const filtered = items.filter((item) => {
+    // Filter by direction tab
+    if (item.direction !== directionTab) return false;
+
+    // Filter by file type tab
     const tabMatch = matchesTab(item, activeTab);
     if (!tabMatch) return false;
+
+    // Filter by search
     if (!debouncedSearch) return true;
     const q = debouncedSearch.toLowerCase();
     return (
@@ -177,12 +183,13 @@ export default function AttachmentsClient({ attachments, nextLink }: { attachmen
     return sortDirection === "asc" ? comparison : -comparison;
   });
 
-  const imageCount = items.filter((a) => getFileType(a.contentType, a.name) === "image").length;
-  const docCount = items.filter((a) => {
+  const directionFiltered = items.filter((a) => a.direction === directionTab);
+  const imageCount = directionFiltered.filter((a) => getFileType(a.contentType, a.name) === "image").length;
+  const docCount = directionFiltered.filter((a) => {
     const t = getFileType(a.contentType, a.name);
     return t === "doc" || t === "pdf";
   }).length;
-  const totalSize = totalBytes(items);
+  const totalSize = totalBytes(directionFiltered);
 
   async function loadMore() {
     if (!nextLinkState || loadingMore) return;
@@ -239,7 +246,7 @@ export default function AttachmentsClient({ attachments, nextLink }: { attachmen
         </div>
 
         <div className="grid grid-cols-4 gap-4 mb-5">
-          <StatCard label="Total Files" value={String(items.length)} icon="files" />
+          <StatCard label="Total Files" value={String(directionFiltered.length)} icon="files" />
           <StatCard label="Images" value={String(imageCount)} icon="image" />
           <StatCard label="Documents" value={String(docCount)} icon="doc" />
           <StatCard label="Total Size" value={formatSize(totalSize)} icon="size" />
