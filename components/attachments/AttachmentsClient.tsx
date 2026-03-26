@@ -345,7 +345,7 @@ export default function AttachmentsClient({ attachments, nextLink }: { attachmen
           </div>
         ) : (
           <div
-            className="rounded-[14px] overflow-hidden"
+            className="rounded-[14px]"
             style={{ backgroundColor: "white", boxShadow: "0 1px 4px rgba(0,0,0,0.06)" }}
           >
             {selectedIds.size > 0 && (
@@ -398,7 +398,8 @@ export default function AttachmentsClient({ attachments, nextLink }: { attachmen
                 </div>
               </div>
             )}
-            <table className="w-full border-collapse">
+            <div className="overflow-x-auto">
+              <table className="w-full border-collapse" style={{ minWidth: "1200px" }}>
               <thead>
                 <tr style={{ borderBottom: "1px solid rgb(229 229 229)" }}>
                   <th className="text-center px-3 py-3 w-10">
@@ -412,7 +413,7 @@ export default function AttachmentsClient({ attachments, nextLink }: { attachmen
                   </th>
                   <th
                     className="text-left px-5 py-3 text-xs font-semibold uppercase tracking-wider cursor-pointer hover:bg-neutral-50 transition-colors select-none"
-                    style={{ color: sortField === "name" ? "rgb(138 9 9)" : "rgb(115 115 115)" }}
+                    style={{ color: sortField === "name" ? "rgb(138 9 9)" : "rgb(115 115 115)", minWidth: "200px" }}
                     onClick={() => handleSort("name")}
                   >
                     <div className="flex items-center gap-1.5">
@@ -426,7 +427,7 @@ export default function AttachmentsClient({ attachments, nextLink }: { attachmen
                   </th>
                   <th
                     className="text-left px-5 py-3 text-xs font-semibold uppercase tracking-wider cursor-pointer hover:bg-neutral-50 transition-colors select-none"
-                    style={{ color: sortField === "type" ? "rgb(138 9 9)" : "rgb(115 115 115)" }}
+                    style={{ color: sortField === "type" ? "rgb(138 9 9)" : "rgb(115 115 115)", width: "100px" }}
                     onClick={() => handleSort("type")}
                   >
                     <div className="flex items-center gap-1.5">
@@ -440,7 +441,7 @@ export default function AttachmentsClient({ attachments, nextLink }: { attachmen
                   </th>
                   <th
                     className="text-left px-5 py-3 text-xs font-semibold uppercase tracking-wider cursor-pointer hover:bg-neutral-50 transition-colors select-none"
-                    style={{ color: sortField === "sender" ? "rgb(138 9 9)" : "rgb(115 115 115)" }}
+                    style={{ color: sortField === "sender" ? "rgb(138 9 9)" : "rgb(115 115 115)", minWidth: "180px" }}
                     onClick={() => handleSort("sender")}
                   >
                     <div className="flex items-center gap-1.5">
@@ -454,7 +455,7 @@ export default function AttachmentsClient({ attachments, nextLink }: { attachmen
                   </th>
                   <th
                     className="text-left px-5 py-3 text-xs font-semibold uppercase tracking-wider cursor-pointer hover:bg-neutral-50 transition-colors select-none"
-                    style={{ color: sortField === "subject" ? "rgb(138 9 9)" : "rgb(115 115 115)" }}
+                    style={{ color: sortField === "subject" ? "rgb(138 9 9)" : "rgb(115 115 115)", minWidth: "200px" }}
                     onClick={() => handleSort("subject")}
                   >
                     <div className="flex items-center gap-1.5">
@@ -468,7 +469,7 @@ export default function AttachmentsClient({ attachments, nextLink }: { attachmen
                   </th>
                   <th
                     className="text-left px-5 py-3 text-xs font-semibold uppercase tracking-wider cursor-pointer hover:bg-neutral-50 transition-colors select-none"
-                    style={{ color: sortField === "date" ? "rgb(138 9 9)" : "rgb(115 115 115)" }}
+                    style={{ color: sortField === "date" ? "rgb(138 9 9)" : "rgb(115 115 115)", width: "140px" }}
                     onClick={() => handleSort("date")}
                   >
                     <div className="flex items-center gap-1.5">
@@ -482,7 +483,7 @@ export default function AttachmentsClient({ attachments, nextLink }: { attachmen
                   </th>
                   <th
                     className="text-left px-5 py-3 text-xs font-semibold uppercase tracking-wider cursor-pointer hover:bg-neutral-50 transition-colors select-none"
-                    style={{ color: sortField === "size" ? "rgb(138 9 9)" : "rgb(115 115 115)" }}
+                    style={{ color: sortField === "size" ? "rgb(138 9 9)" : "rgb(115 115 115)", width: "100px" }}
                     onClick={() => handleSort("size")}
                   >
                     <div className="flex items-center gap-1.5">
@@ -494,7 +495,7 @@ export default function AttachmentsClient({ attachments, nextLink }: { attachmen
                       )}
                     </div>
                   </th>
-                  <th className="text-right px-5 py-3 text-xs font-semibold uppercase tracking-wider" style={{ color: "rgb(115 115 115)" }}>
+                  <th className="text-right px-5 py-3 text-xs font-semibold uppercase tracking-wider" style={{ color: "rgb(115 115 115)", minWidth: "280px" }}>
                     Actions
                   </th>
                 </tr>
@@ -513,6 +514,7 @@ export default function AttachmentsClient({ attachments, nextLink }: { attachmen
                 ))}
               </tbody>
             </table>
+            </div>
             {nextLinkState && (
               <div className="flex justify-center py-4 border-t border-neutral-200">
                 <button
