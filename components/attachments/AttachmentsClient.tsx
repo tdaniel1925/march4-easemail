@@ -10,6 +10,15 @@ type DirectionTab = "received" | "sent";
 type SortField = "name" | "type" | "sender" | "subject" | "date" | "size";
 type SortDirection = "asc" | "desc";
 
+type ColumnKey = "checkbox" | "name" | "type" | "sender" | "subject" | "date" | "size" | "actions";
+
+interface ColumnConfig {
+  key: ColumnKey;
+  label: string;
+  visible: boolean;
+  sortable: boolean;
+}
+
 function formatSize(bytes: number): string {
   if (bytes < 1024) return `${bytes} B`;
   if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
@@ -99,6 +108,7 @@ export default function AttachmentsClient({ attachments, nextLink }: { attachmen
   const [directionTab, setDirectionTab] = useState<DirectionTab>("received");
   const [activeTab, setActiveTab] = useState<FilterTab>("all");
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const columnMenuRef = useRef<HTMLDivElement>(null);
   const [items, setItems] = useState<AttachmentItem[]>(attachments);
   const [nextLinkState, setNextLink] = useState<string | null>(nextLink);
   const [loadingMore, setLoadingMore] = useState(false);
@@ -106,12 +116,53 @@ export default function AttachmentsClient({ attachments, nextLink }: { attachmen
   const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [previewItem, setPreviewItem] = useState<AttachmentItem | null>(null);
+  const [showColumnMenu, setShowColumnMenu] = useState(false);
+
+  // Default visible columns: name, type, date, actions (with preview)
+  const [visibleColumns, setVisibleColumns] = useState<Set<ColumnKey>>(
+    new Set(["name", "type", "date", "actions"])
+  );
+
+  const allColumns: ColumnConfig[] = [
+    { key: "checkbox", label: "Select", visible: visibleColumns.has("checkbox"), sortable: false },
+    { key: "name", label: "File Name", visible: visibleColumns.has("name"), sortable: true },
+    { key: "type", label: "Type", visible: visibleColumns.has("type"), sortable: true },
+    { key: "sender", label: "Sender", visible: visibleColumns.has("sender"), sortable: true },
+    { key: "subject", label: "Email Subject", visible: visibleColumns.has("subject"), sortable: true },
+    { key: "date", label: "Date Received", visible: visibleColumns.has("date"), sortable: true },
+    { key: "size", label: "Size", visible: visibleColumns.has("size"), sortable: true },
+    { key: "actions", label: "Actions", visible: visibleColumns.has("actions"), sortable: false },
+  ];
+
+  function toggleColumn(key: ColumnKey) {
+    setVisibleColumns(prev => {
+      const next = new Set(prev);
+      if (next.has(key)) {
+        next.delete(key);
+      } else {
+        next.add(key);
+      }
+      return next;
+    });
+  }
 
   useEffect(() => {
     if (debounceRef.current) clearTimeout(debounceRef.current);
     debounceRef.current = setTimeout(() => setDebouncedSearch(search.trim()), 300);
     return () => { if (debounceRef.current) clearTimeout(debounceRef.current); };
   }, [search]);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (columnMenuRef.current && !columnMenuRef.current.contains(event.target as Node)) {
+        setShowColumnMenu(false);
+      }
+    }
+    if (showColumnMenu) {
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => document.removeEventListener("mousedown", handleClickOutside);
+    }
+  }, [showColumnMenu]);
 
   function handleSort(field: SortField) {
     if (sortField === field) {
@@ -269,7 +320,53 @@ export default function AttachmentsClient({ attachments, nextLink }: { attachmen
             ))}
           </div>
 
-          <div className="relative w-64">
+          <div className="flex items-center gap-2">
+            <div className="relative" ref={columnMenuRef}>
+              <button
+                onClick={() => setShowColumnMenu(!showColumnMenu)}
+                className="px-3 py-2 rounded-[8px] text-sm font-medium transition-colors flex items-center gap-1.5"
+                style={{ backgroundColor: "rgb(245 245 245)", color: "rgb(82 82 82)" }}
+                onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "rgb(229 229 229)"; }}
+                onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "rgb(245 245 245)"; }}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2" />
+                </svg>
+                Columns
+              </button>
+
+              {showColumnMenu && (
+                <div
+                  className="absolute right-0 mt-2 w-56 rounded-[10px] shadow-lg z-10"
+                  style={{ backgroundColor: "white", border: "1px solid rgb(229 229 229)" }}
+                >
+                  <div className="p-2">
+                    <p className="text-xs font-semibold uppercase tracking-wider px-2 py-1.5" style={{ color: "rgb(115 115 115)" }}>
+                      Show/Hide Columns
+                    </p>
+                    {allColumns.map((col) => (
+                      <label
+                        key={col.key}
+                        className="flex items-center gap-2 px-2 py-1.5 rounded hover:bg-neutral-50 cursor-pointer"
+                      >
+                        <input
+                          type="checkbox"
+                          checked={col.visible}
+                          onChange={() => toggleColumn(col.key)}
+                          className="w-4 h-4 rounded cursor-pointer"
+                          style={{ accentColor: "rgb(138 9 9)" }}
+                        />
+                        <span className="text-sm" style={{ color: "rgb(58 58 58)" }}>
+                          {col.label}
+                        </span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className="relative w-64">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2"
@@ -313,6 +410,7 @@ export default function AttachmentsClient({ attachments, nextLink }: { attachmen
                 </svg>
               </button>
             )}
+          </div>
           </div>
         </div>
       </div>
@@ -398,106 +496,121 @@ export default function AttachmentsClient({ attachments, nextLink }: { attachmen
                 </div>
               </div>
             )}
-            <div className="overflow-x-auto">
-              <table className="w-full border-collapse" style={{ minWidth: "1200px" }}>
+            <table className="w-full border-collapse table-auto">
               <thead>
                 <tr style={{ borderBottom: "1px solid rgb(229 229 229)" }}>
-                  <th className="text-center px-3 py-3 w-10">
-                    <input
-                      type="checkbox"
-                      checked={selectedIds.size === sorted.length && sorted.length > 0}
-                      onChange={toggleSelectAll}
-                      className="w-4 h-4 rounded cursor-pointer"
-                      style={{ accentColor: "rgb(138 9 9)" }}
-                    />
-                  </th>
-                  <th
-                    className="text-left px-5 py-3 text-xs font-semibold uppercase tracking-wider cursor-pointer hover:bg-neutral-50 transition-colors select-none"
-                    style={{ color: sortField === "name" ? "rgb(138 9 9)" : "rgb(115 115 115)", minWidth: "200px" }}
-                    onClick={() => handleSort("name")}
-                  >
-                    <div className="flex items-center gap-1.5">
-                      Name
-                      {sortField === "name" && (
-                        <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} style={{ transform: sortDirection === "asc" ? "rotate(0deg)" : "rotate(180deg)", transition: "transform 0.2s" }}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
-                        </svg>
-                      )}
-                    </div>
-                  </th>
-                  <th
-                    className="text-left px-5 py-3 text-xs font-semibold uppercase tracking-wider cursor-pointer hover:bg-neutral-50 transition-colors select-none"
-                    style={{ color: sortField === "type" ? "rgb(138 9 9)" : "rgb(115 115 115)", width: "100px" }}
-                    onClick={() => handleSort("type")}
-                  >
-                    <div className="flex items-center gap-1.5">
-                      Type
-                      {sortField === "type" && (
-                        <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} style={{ transform: sortDirection === "asc" ? "rotate(0deg)" : "rotate(180deg)", transition: "transform 0.2s" }}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
-                        </svg>
-                      )}
-                    </div>
-                  </th>
-                  <th
-                    className="text-left px-5 py-3 text-xs font-semibold uppercase tracking-wider cursor-pointer hover:bg-neutral-50 transition-colors select-none"
-                    style={{ color: sortField === "sender" ? "rgb(138 9 9)" : "rgb(115 115 115)", minWidth: "180px" }}
-                    onClick={() => handleSort("sender")}
-                  >
-                    <div className="flex items-center gap-1.5">
-                      Sender
-                      {sortField === "sender" && (
-                        <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} style={{ transform: sortDirection === "asc" ? "rotate(0deg)" : "rotate(180deg)", transition: "transform 0.2s" }}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
-                        </svg>
-                      )}
-                    </div>
-                  </th>
-                  <th
-                    className="text-left px-5 py-3 text-xs font-semibold uppercase tracking-wider cursor-pointer hover:bg-neutral-50 transition-colors select-none"
-                    style={{ color: sortField === "subject" ? "rgb(138 9 9)" : "rgb(115 115 115)", minWidth: "200px" }}
-                    onClick={() => handleSort("subject")}
-                  >
-                    <div className="flex items-center gap-1.5">
-                      Email Subject
-                      {sortField === "subject" && (
-                        <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} style={{ transform: sortDirection === "asc" ? "rotate(0deg)" : "rotate(180deg)", transition: "transform 0.2s" }}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
-                        </svg>
-                      )}
-                    </div>
-                  </th>
-                  <th
-                    className="text-left px-5 py-3 text-xs font-semibold uppercase tracking-wider cursor-pointer hover:bg-neutral-50 transition-colors select-none"
-                    style={{ color: sortField === "date" ? "rgb(138 9 9)" : "rgb(115 115 115)", width: "140px" }}
-                    onClick={() => handleSort("date")}
-                  >
-                    <div className="flex items-center gap-1.5">
-                      Date Received
-                      {sortField === "date" && (
-                        <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} style={{ transform: sortDirection === "asc" ? "rotate(0deg)" : "rotate(180deg)", transition: "transform 0.2s" }}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
-                        </svg>
-                      )}
-                    </div>
-                  </th>
-                  <th
-                    className="text-left px-5 py-3 text-xs font-semibold uppercase tracking-wider cursor-pointer hover:bg-neutral-50 transition-colors select-none"
-                    style={{ color: sortField === "size" ? "rgb(138 9 9)" : "rgb(115 115 115)", width: "100px" }}
-                    onClick={() => handleSort("size")}
-                  >
-                    <div className="flex items-center gap-1.5">
-                      Size
-                      {sortField === "size" && (
-                        <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} style={{ transform: sortDirection === "asc" ? "rotate(0deg)" : "rotate(180deg)", transition: "transform 0.2s" }}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
-                        </svg>
-                      )}
-                    </div>
-                  </th>
-                  <th className="text-right px-5 py-3 text-xs font-semibold uppercase tracking-wider" style={{ color: "rgb(115 115 115)", minWidth: "280px" }}>
-                    Actions
-                  </th>
+                  {visibleColumns.has("checkbox") && (
+                    <th className="text-center px-3 py-3 w-10">
+                      <input
+                        type="checkbox"
+                        checked={selectedIds.size === sorted.length && sorted.length > 0}
+                        onChange={toggleSelectAll}
+                        className="w-4 h-4 rounded cursor-pointer"
+                        style={{ accentColor: "rgb(138 9 9)" }}
+                      />
+                    </th>
+                  )}
+                  {visibleColumns.has("name") && (
+                    <th
+                      className="text-left px-5 py-3 text-xs font-semibold uppercase tracking-wider cursor-pointer hover:bg-neutral-50 transition-colors select-none"
+                      style={{ color: sortField === "name" ? "rgb(138 9 9)" : "rgb(115 115 115)" }}
+                      onClick={() => handleSort("name")}
+                    >
+                      <div className="flex items-center gap-1.5">
+                        File Name
+                        {sortField === "name" && (
+                          <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} style={{ transform: sortDirection === "asc" ? "rotate(0deg)" : "rotate(180deg)", transition: "transform 0.2s" }}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
+                          </svg>
+                        )}
+                      </div>
+                    </th>
+                  )}
+                  {visibleColumns.has("type") && (
+                    <th
+                      className="text-left px-5 py-3 text-xs font-semibold uppercase tracking-wider cursor-pointer hover:bg-neutral-50 transition-colors select-none"
+                      style={{ color: sortField === "type" ? "rgb(138 9 9)" : "rgb(115 115 115)" }}
+                      onClick={() => handleSort("type")}
+                    >
+                      <div className="flex items-center gap-1.5">
+                        Type
+                        {sortField === "type" && (
+                          <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} style={{ transform: sortDirection === "asc" ? "rotate(0deg)" : "rotate(180deg)", transition: "transform 0.2s" }}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
+                          </svg>
+                        )}
+                      </div>
+                    </th>
+                  )}
+                  {visibleColumns.has("sender") && (
+                    <th
+                      className="text-left px-5 py-3 text-xs font-semibold uppercase tracking-wider cursor-pointer hover:bg-neutral-50 transition-colors select-none"
+                      style={{ color: sortField === "sender" ? "rgb(138 9 9)" : "rgb(115 115 115)" }}
+                      onClick={() => handleSort("sender")}
+                    >
+                      <div className="flex items-center gap-1.5">
+                        Sender
+                        {sortField === "sender" && (
+                          <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} style={{ transform: sortDirection === "asc" ? "rotate(0deg)" : "rotate(180deg)", transition: "transform 0.2s" }}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
+                          </svg>
+                        )}
+                      </div>
+                    </th>
+                  )}
+                  {visibleColumns.has("subject") && (
+                    <th
+                      className="text-left px-5 py-3 text-xs font-semibold uppercase tracking-wider cursor-pointer hover:bg-neutral-50 transition-colors select-none"
+                      style={{ color: sortField === "subject" ? "rgb(138 9 9)" : "rgb(115 115 115)" }}
+                      onClick={() => handleSort("subject")}
+                    >
+                      <div className="flex items-center gap-1.5">
+                        Email Subject
+                        {sortField === "subject" && (
+                          <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} style={{ transform: sortDirection === "asc" ? "rotate(0deg)" : "rotate(180deg)", transition: "transform 0.2s" }}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
+                          </svg>
+                        )}
+                      </div>
+                    </th>
+                  )}
+                  {visibleColumns.has("date") && (
+                    <th
+                      className="text-left px-5 py-3 text-xs font-semibold uppercase tracking-wider cursor-pointer hover:bg-neutral-50 transition-colors select-none"
+                      style={{ color: sortField === "date" ? "rgb(138 9 9)" : "rgb(115 115 115)" }}
+                      onClick={() => handleSort("date")}
+                    >
+                      <div className="flex items-center gap-1.5">
+                        Date Received
+                        {sortField === "date" && (
+                          <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} style={{ transform: sortDirection === "asc" ? "rotate(0deg)" : "rotate(180deg)", transition: "transform 0.2s" }}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
+                          </svg>
+                        )}
+                      </div>
+                    </th>
+                  )}
+                  {visibleColumns.has("size") && (
+                    <th
+                      className="text-left px-5 py-3 text-xs font-semibold uppercase tracking-wider cursor-pointer hover:bg-neutral-50 transition-colors select-none"
+                      style={{ color: sortField === "size" ? "rgb(138 9 9)" : "rgb(115 115 115)" }}
+                      onClick={() => handleSort("size")}
+                    >
+                      <div className="flex items-center gap-1.5">
+                        Size
+                        {sortField === "size" && (
+                          <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} style={{ transform: sortDirection === "asc" ? "rotate(0deg)" : "rotate(180deg)", transition: "transform 0.2s" }}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
+                          </svg>
+                        )}
+                      </div>
+                    </th>
+                  )}
+                  {visibleColumns.has("actions") && (
+                    <th className="text-right px-5 py-3 text-xs font-semibold uppercase tracking-wider" style={{ color: "rgb(115 115 115)" }}>
+                      Actions
+                    </th>
+                  )}
                 </tr>
               </thead>
               <tbody>
@@ -507,6 +620,7 @@ export default function AttachmentsClient({ attachments, nextLink }: { attachmen
                     item={item}
                     isLast={idx === sorted.length - 1}
                     isSelected={selectedIds.has(`${item.messageId}-${item.id}`)}
+                    visibleColumns={visibleColumns}
                     onRowClick={() => router.push(`/inbox/${item.messageId}?returnTo=/attachments`)}
                     onToggleSelection={() => toggleSelection(`${item.messageId}-${item.id}`)}
                     onPreview={() => setPreviewItem(item)}
@@ -514,7 +628,6 @@ export default function AttachmentsClient({ attachments, nextLink }: { attachmen
                 ))}
               </tbody>
             </table>
-            </div>
             {nextLinkState && (
               <div className="flex justify-center py-4 border-t border-neutral-200">
                 <button
@@ -638,6 +751,7 @@ function AttachmentRow({
   item,
   isLast,
   isSelected,
+  visibleColumns,
   onRowClick,
   onToggleSelection,
   onPreview,
@@ -645,6 +759,7 @@ function AttachmentRow({
   item: AttachmentItem;
   isLast: boolean;
   isSelected: boolean;
+  visibleColumns: Set<ColumnKey>;
   onRowClick: () => void;
   onToggleSelection: () => void;
   onPreview: () => void;
@@ -681,112 +796,128 @@ function AttachmentRow({
         backgroundColor: isSelected ? "rgb(254 249 249)" : "transparent"
       }}
     >
-      <td className="text-center px-3 py-3.5">
-        <input
-          type="checkbox"
-          checked={isSelected}
-          onChange={(e) => {
-            e.stopPropagation();
-            onToggleSelection();
-          }}
-          onClick={(e) => e.stopPropagation()}
-          className="w-4 h-4 rounded cursor-pointer"
-          style={{ accentColor: "rgb(138 9 9)" }}
-        />
-      </td>
-      <td className="px-5 py-3.5 cursor-pointer" onClick={onRowClick}>
-        <div className="flex items-center gap-2.5 min-w-0">
-          <FileIcon type={type} />
-          <span
-            className="text-sm font-medium truncate max-w-xs"
-            style={{ color: "rgb(27 29 29)" }}
-            title={item.name}
-          >
-            {item.name}
+      {visibleColumns.has("checkbox") && (
+        <td className="text-center px-3 py-3.5">
+          <input
+            type="checkbox"
+            checked={isSelected}
+            onChange={(e) => {
+              e.stopPropagation();
+              onToggleSelection();
+            }}
+            onClick={(e) => e.stopPropagation()}
+            className="w-4 h-4 rounded cursor-pointer"
+            style={{ accentColor: "rgb(138 9 9)" }}
+          />
+        </td>
+      )}
+      {visibleColumns.has("name") && (
+        <td className="px-5 py-3.5 cursor-pointer" onClick={onRowClick}>
+          <div className="flex items-center gap-2.5 min-w-0">
+            <FileIcon type={type} />
+            <span
+              className="text-sm font-medium truncate"
+              style={{ color: "rgb(27 29 29)" }}
+              title={item.name}
+            >
+              {item.name}
+            </span>
+          </div>
+        </td>
+      )}
+      {visibleColumns.has("type") && (
+        <td className="px-5 py-3.5 cursor-pointer" onClick={onRowClick}>
+          <span className="inline-block px-2 py-0.5 rounded text-xs font-medium" style={{ backgroundColor: "rgb(245 245 245)", color: "rgb(58 58 58)" }}>
+            {getFileExtension(item.name)}
           </span>
-        </div>
-      </td>
-      <td className="px-5 py-3.5 cursor-pointer" onClick={onRowClick}>
-        <span className="inline-block px-2 py-0.5 rounded text-xs font-medium" style={{ backgroundColor: "rgb(245 245 245)", color: "rgb(58 58 58)" }}>
-          {getFileExtension(item.name)}
-        </span>
-      </td>
-      <td className="px-5 py-3.5 cursor-pointer" onClick={onRowClick}>
-        <div className="min-w-0">
-          <p className="text-sm truncate" style={{ color: "rgb(58 58 58)" }}>
-            {item.senderName}
-          </p>
-          <p className="text-xs truncate" style={{ color: "rgb(155 155 155)" }}>
-            {item.senderAddress}
-          </p>
-        </div>
-      </td>
-      <td className="px-5 py-3.5 cursor-pointer" onClick={onRowClick}>
-        <span className="text-sm truncate block max-w-xs" style={{ color: "rgb(58 58 58)" }} title={item.messageSubject}>
-          {item.messageSubject}
-        </span>
-      </td>
-      <td className="px-5 py-3.5 cursor-pointer" onClick={onRowClick}>
-        <span className="text-sm whitespace-nowrap" style={{ color: "rgb(115 115 115)" }}>
-          {formatDate(item.receivedDateTime)}
-        </span>
-      </td>
-      <td className="px-5 py-3.5 cursor-pointer" onClick={onRowClick}>
-        <span className="text-sm" style={{ color: "rgb(115 115 115)" }}>
-          {formatSize(item.size)}
-        </span>
-      </td>
-      <td className="px-5 py-3.5 text-right">
-        <div className="flex items-center justify-end gap-2">
-          <button
-            onClick={(e) => { e.stopPropagation(); onPreview(); }}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[8px] text-xs font-medium transition-colors"
-            style={{ backgroundColor: "rgb(245 245 245)", color: "rgb(58 58 58)" }}
-            onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "rgb(229 229 229)"; }}
-            onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "rgb(245 245 245)"; }}
-            title="Preview attachment"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-              <path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-            </svg>
-            Preview
-          </button>
-          <button
-            onClick={handleDownload}
-            disabled={downloading}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[8px] text-xs font-medium transition-colors disabled:opacity-50"
-            style={{ backgroundColor: "rgb(245 245 245)", color: "rgb(58 58 58)" }}
-            onMouseEnter={(e) => { if (!downloading) { e.currentTarget.style.backgroundColor = "rgb(229 229 229)"; } }}
-            onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "rgb(245 245 245)"; }}
-            title="Download attachment"
-          >
-            {downloading ? (
-              <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-              </svg>
-            ) : (
+        </td>
+      )}
+      {visibleColumns.has("sender") && (
+        <td className="px-5 py-3.5 cursor-pointer" onClick={onRowClick}>
+          <div className="min-w-0">
+            <p className="text-sm truncate" style={{ color: "rgb(58 58 58)" }}>
+              {item.senderName}
+            </p>
+            <p className="text-xs truncate" style={{ color: "rgb(155 155 155)" }}>
+              {item.senderAddress}
+            </p>
+          </div>
+        </td>
+      )}
+      {visibleColumns.has("subject") && (
+        <td className="px-5 py-3.5 cursor-pointer" onClick={onRowClick}>
+          <span className="text-sm truncate block" style={{ color: "rgb(58 58 58)" }} title={item.messageSubject}>
+            {item.messageSubject}
+          </span>
+        </td>
+      )}
+      {visibleColumns.has("date") && (
+        <td className="px-5 py-3.5 cursor-pointer" onClick={onRowClick}>
+          <span className="text-sm whitespace-nowrap" style={{ color: "rgb(115 115 115)" }}>
+            {formatDate(item.receivedDateTime)}
+          </span>
+        </td>
+      )}
+      {visibleColumns.has("size") && (
+        <td className="px-5 py-3.5 cursor-pointer" onClick={onRowClick}>
+          <span className="text-sm" style={{ color: "rgb(115 115 115)" }}>
+            {formatSize(item.size)}
+          </span>
+        </td>
+      )}
+      {visibleColumns.has("actions") && (
+        <td className="px-5 py-3.5 text-right">
+          <div className="flex items-center justify-end gap-2">
+            <button
+              onClick={(e) => { e.stopPropagation(); onPreview(); }}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[8px] text-xs font-medium transition-colors"
+              style={{ backgroundColor: "rgb(245 245 245)", color: "rgb(58 58 58)" }}
+              onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "rgb(229 229 229)"; }}
+              onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "rgb(245 245 245)"; }}
+              title="Preview attachment"
+            >
               <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
               </svg>
-            )}
-            Download
-          </button>
-          <button
-            onClick={(e) => { e.stopPropagation(); onRowClick(); }}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[8px] text-xs font-medium transition-colors"
-            style={{ backgroundColor: "rgb(253 235 235)", color: "rgb(138 9 9)" }}
-            onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "rgb(138 9 9)"; e.currentTarget.style.color = "white"; }}
-            onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "rgb(253 235 235)"; e.currentTarget.style.color = "rgb(138 9 9)"; }}
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-              <path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-            </svg>
-            View email
-          </button>
-        </div>
-      </td>
+              Preview
+            </button>
+            <button
+              onClick={handleDownload}
+              disabled={downloading}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[8px] text-xs font-medium transition-colors disabled:opacity-50"
+              style={{ backgroundColor: "rgb(245 245 245)", color: "rgb(58 58 58)" }}
+              onMouseEnter={(e) => { if (!downloading) { e.currentTarget.style.backgroundColor = "rgb(229 229 229)"; } }}
+              onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "rgb(245 245 245)"; }}
+              title="Download attachment"
+            >
+              {downloading ? (
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+              ) : (
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                </svg>
+              )}
+              Download
+            </button>
+            <button
+              onClick={(e) => { e.stopPropagation(); onRowClick(); }}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[8px] text-xs font-medium transition-colors"
+              style={{ backgroundColor: "rgb(253 235 235)", color: "rgb(138 9 9)" }}
+              onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "rgb(138 9 9)"; e.currentTarget.style.color = "white"; }}
+              onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "rgb(253 235 235)"; e.currentTarget.style.color = "rgb(138 9 9)"; }}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+              </svg>
+              View email
+            </button>
+          </div>
+        </td>
+      )}
     </tr>
   );
 }
