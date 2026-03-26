@@ -66,6 +66,21 @@
 - **TypeScript:** CLEAN (verified with tsc --noEmit)
 - **All 8 fixes:** COMPLETE ✅
 
+### Post-Deployment Issue — Schema Migration (RESOLVED)
+**Issue:** Sign-in failed with Prisma error after deployment: "column (not available) does not exist"
+
+**Root Cause:** Migrations created locally weren't applied to production Supabase database before code deployed. App expected `users.preferredTimeZone` and `todo_items` table that didn't exist yet.
+
+**Resolution:**
+1. Identified missing columns from migration files
+2. Provided SQL scripts to user for manual application in Supabase SQL Editor
+3. User applied both migrations successfully
+4. Sign-in and all features now working
+
+**Prevention:** For production-first workflows, apply schema migrations in Supabase BEFORE deploying code that uses them.
+
+**Logged to:** `.codebakers/ERROR-LOG.md` (2026-03-26 entry)
+
 ### Remaining Work (Optional Enhancements)
 - Settings UI: Timezone selector (API complete, UI pending - see IMPLEMENTATION_PROMPTS.md)
 - Calendar display: Timezone formatting (backend complete, display functions pending)
