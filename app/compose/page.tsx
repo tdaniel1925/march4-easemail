@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import Sidebar from "@/components/Sidebar";
 import { StoreInitializer } from "@/components/StoreInitializer";
 import ComposeClient from "@/components/compose/ComposeClient";
+import { getUnreadCount } from "@/lib/utils/get-unread-count";
 
 type SearchParams = Promise<{
   mode?: string;
@@ -31,9 +32,11 @@ export default async function ComposePage({
   const params = await searchParams;
   const mode = params.mode as "reply" | "replyAll" | "forward" | undefined;
 
+  const unreadCount = await getUnreadCount(user.id, defaultAccount.homeAccountId);
+
   return (
     <div className="flex" style={{ height: "100vh", overflow: "hidden" }}>
-      <StoreInitializer accounts={dbUser.msAccounts} inboxUnread={0} />
+      <StoreInitializer accounts={dbUser.msAccounts} inboxUnread={unreadCount} />
       <Sidebar
         userName={dbUser.name ?? user.email ?? "You"}
         userEmail={defaultAccount.msEmail}

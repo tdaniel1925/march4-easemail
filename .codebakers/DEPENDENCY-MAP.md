@@ -1,6 +1,6 @@
 # CodeBakers Dependency Map
 # GENERATED — never edit by hand. Run `pnpm dep:map` to regenerate.
-# Last generated: 2026-03-05 | git: 898975e
+# Last generated: 2026-03-26 | git: bc68aab
 # Debug: pnpm dep:map --debug
 
 ---
@@ -21,9 +21,9 @@
 | AttachmentItem | useAttachmentsClient | — | — | — | — (set manually) |
 | CalendarClientProps | useCalendarClient | — | — | — | — (set manually) |
 | CalendarEvent | useDashboardClient | — | — | — | — (set manually) |
-| CalendarStore | useCalendarStore | CalendarClient, EventDetailModal, EventFormModal | — | — | — (set manually) |
+| CalendarStore | useCalendarStore | CalendarClient, EventDetailModal | — | — | — (set manually) |
 | CalEvent | useCalendarClient | — | — | — | — (set manually) |
-| Color | useAccountsClient, useAccountSwitcher, useAdminClient, useAttachmentsClient, useCalendarClient, useEventDetailModal, useEventFormModal, useComposeClient, useContactsClient, useDashboardClient, useEmailRulesClient, useFolderClient, useHelpClient, useAiReplyModal, useEmailReadClient, useInboxClient, useSettingsClient, useReadingPane, useSidebar, useSignaturesClient, useTeamsClient | — | — | — | — (set manually) |
+| Color | useAccountsClient, useAccountSwitcher, useAdminClient, useAttachmentsClient, useCalendarClient, useEventDetailModal, useEventFormModal, useComposeClient, useContactsClient, useDashboardClient, useEmailRulesClient, useFolderClient, useHelpClient, useAiReplyModal, useEmailReadClient, useInboxClient, useSettingsClient, useReadingPane, useSidebar, useSignaturesClient, useTeamsClient | — | — | activeColor | — (set manually) |
 | ComponentFile | useGenerateDepMap | — | — | — | — (set manually) |
 | ComposeMode | useComposeClient, useReadingPane | — | — | — | — (set manually) |
 | Condition | useEmailRulesClient | — | — | — | — (set manually) |
@@ -54,6 +54,7 @@
 | Profile | useSettingsClient | — | — | — | — (set manually) |
 | Props | useAdminClient, useEventFormModal, useContactsClient | — | — | — | — (set manually) |
 | Recipient | useEmailReadClient | — | — | — | — (set manually) |
+| Recurrence | useEventFormModal | — | — | — | — (set manually) |
 | Response | useEventDetailModal | — | — | — | — (set manually) |
 | Rule | useEmailRulesClient | — | — | activeRule | — (set manually) |
 | RuleAction | useEmailRulesClient | — | — | — | — (set manually) |
@@ -78,8 +79,7 @@
 | Time | useCalendarClient | — | — | — | — (set manually) |
 | TodoItem | useDashboardClient | — | — | — | — (set manually) |
 | Tone | useComposeClient | — | — | — | — (set manually) |
-| WeekStart | useEventFormModal, useCalendarStore | CalendarClient, EventDetailModal, EventFormModal | — | — | — (set manually) |
-| Window | useComposeClient | — | — | — | — (set manually) |
+| WeekStart | useCalendarStore | CalendarClient, EventDetailModal | — | — | — (set manually) |
 
 ---
 
@@ -119,7 +119,7 @@ Entities: CalendarStore, WeekStart
 
 ### useComposeClient
 File: `components\compose\ComposeClient.tsx`
-Entities: Window, ISpeechRecognitionResultList, ISpeechRecognitionResult, Tone, Length, ActivePanel, ComposeMode, FileAttachment, ContactSuggestion, Account, StylePreset, Target, Color
+Entities: ISpeechRecognitionResultList, ISpeechRecognitionResult, Tone, Length, ActivePanel, ComposeMode, FileAttachment, ContactSuggestion, Account, StylePreset, Target, Color
 
 ### useContactsClient
 File: `components\contacts\ContactsClient.tsx`
@@ -143,7 +143,7 @@ Entities: Response, Color
 
 ### useEventFormModal
 File: `components\calendar\EventFormModal.tsx`
-Entities: Props, WeekStart, Color
+Entities: Recurrence, Props, Color
 
 ### useFolderClient
 File: `components\folder\FolderClient.tsx`
@@ -196,7 +196,7 @@ Entities: TeamsChat, TeamsMessage, TeamsTeam, TeamsChannel, PresenceAvailability
 | CalendarClient | `components\calendar\CalendarClient.tsx` | useCalendarStore |
 | DashboardClient | `components\dashboard\DashboardClient.tsx` | useAccountStore |
 | EventDetailModal | `components\calendar\EventDetailModal.tsx` | useCalendarStore |
-| EventFormModal | `components\calendar\EventFormModal.tsx` | useAccountStore, useCalendarStore |
+| EventFormModal | `components\calendar\EventFormModal.tsx` | useAccountStore |
 | FolderClient | `components\folder\FolderClient.tsx` | useAccountStore |
 | InboxClient | `components\inbox\InboxClient.tsx` | useAccountStore |
 | Sidebar | `components\Sidebar.tsx` | useAccountStore |

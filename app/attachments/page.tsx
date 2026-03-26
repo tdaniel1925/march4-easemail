@@ -5,6 +5,7 @@ import { graphGet } from "@/lib/microsoft/graph";
 import Sidebar from "@/components/Sidebar";
 import { StoreInitializer } from "@/components/StoreInitializer";
 import AttachmentsClient from "@/components/attachments/AttachmentsClient";
+import { getUnreadCount } from "@/lib/utils/get-unread-count";
 
 interface GraphMessage {
   id: string;
@@ -80,9 +81,11 @@ export default async function AttachmentsPage() {
     console.error("Failed to fetch attachments:", err);
   }
 
+  const unreadCount = await getUnreadCount(user.id, defaultAccount.homeAccountId);
+
   return (
     <div className="flex" style={{ height: "100vh", overflow: "hidden" }}>
-      <StoreInitializer accounts={dbUser.msAccounts} inboxUnread={0} />
+      <StoreInitializer accounts={dbUser.msAccounts} inboxUnread={unreadCount} />
       <Sidebar
         userName={dbUser.name ?? user.email ?? "You"}
         userEmail={defaultAccount.msEmail}

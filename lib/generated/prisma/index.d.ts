@@ -113,6 +113,11 @@ export type NotificationLog = $Result.DefaultSelection<Prisma.$NotificationLogPa
  * 
  */
 export type MigrationStatus = $Result.DefaultSelection<Prisma.$MigrationStatusPayload>
+/**
+ * Model TodoItem
+ * 
+ */
+export type TodoItem = $Result.DefaultSelection<Prisma.$TodoItemPayload>
 
 /**
  * ##  Prisma Client ʲˢ
@@ -434,6 +439,16 @@ export class PrismaClient<
     * ```
     */
   get migrationStatus(): Prisma.MigrationStatusDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.todoItem`: Exposes CRUD operations for the **TodoItem** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more TodoItems
+    * const todoItems = await prisma.todoItem.findMany()
+    * ```
+    */
+  get todoItem(): Prisma.TodoItemDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -887,7 +902,8 @@ export namespace Prisma {
     CachedSearchResult: 'CachedSearchResult',
     SyncStatus: 'SyncStatus',
     NotificationLog: 'NotificationLog',
-    MigrationStatus: 'MigrationStatus'
+    MigrationStatus: 'MigrationStatus',
+    TodoItem: 'TodoItem'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -903,7 +919,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "organization" | "user" | "msConnectedAccount" | "msalTokenCache" | "emailDeltaLink" | "webhookSubscription" | "draft" | "signature" | "cachedFolder" | "cachedEmail" | "cachedCalendarEvent" | "cachedContact" | "deployLog" | "emailRule" | "emailAttachment" | "aiGeneratedReply" | "cachedSearchResult" | "syncStatus" | "notificationLog" | "migrationStatus"
+      modelProps: "organization" | "user" | "msConnectedAccount" | "msalTokenCache" | "emailDeltaLink" | "webhookSubscription" | "draft" | "signature" | "cachedFolder" | "cachedEmail" | "cachedCalendarEvent" | "cachedContact" | "deployLog" | "emailRule" | "emailAttachment" | "aiGeneratedReply" | "cachedSearchResult" | "syncStatus" | "notificationLog" | "migrationStatus" | "todoItem"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -2387,6 +2403,80 @@ export namespace Prisma {
           }
         }
       }
+      TodoItem: {
+        payload: Prisma.$TodoItemPayload<ExtArgs>
+        fields: Prisma.TodoItemFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.TodoItemFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TodoItemPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.TodoItemFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TodoItemPayload>
+          }
+          findFirst: {
+            args: Prisma.TodoItemFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TodoItemPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.TodoItemFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TodoItemPayload>
+          }
+          findMany: {
+            args: Prisma.TodoItemFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TodoItemPayload>[]
+          }
+          create: {
+            args: Prisma.TodoItemCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TodoItemPayload>
+          }
+          createMany: {
+            args: Prisma.TodoItemCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.TodoItemCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TodoItemPayload>[]
+          }
+          delete: {
+            args: Prisma.TodoItemDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TodoItemPayload>
+          }
+          update: {
+            args: Prisma.TodoItemUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TodoItemPayload>
+          }
+          deleteMany: {
+            args: Prisma.TodoItemDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.TodoItemUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.TodoItemUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TodoItemPayload>[]
+          }
+          upsert: {
+            args: Prisma.TodoItemUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TodoItemPayload>
+          }
+          aggregate: {
+            args: Prisma.TodoItemAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateTodoItem>
+          }
+          groupBy: {
+            args: Prisma.TodoItemGroupByArgs<ExtArgs>
+            result: $Utils.Optional<TodoItemGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.TodoItemCountArgs<ExtArgs>
+            result: $Utils.Optional<TodoItemCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -2515,6 +2605,7 @@ export namespace Prisma {
     syncStatus?: SyncStatusOmit
     notificationLog?: NotificationLogOmit
     migrationStatus?: MigrationStatusOmit
+    todoItem?: TodoItemOmit
   }
 
   /* Types for Logging */
@@ -2642,6 +2733,7 @@ export namespace Prisma {
     syncStatuses: number
     notificationLogs: number
     migrationStatuses: number
+    todoItems: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2661,6 +2753,7 @@ export namespace Prisma {
     syncStatuses?: boolean | UserCountOutputTypeCountSyncStatusesArgs
     notificationLogs?: boolean | UserCountOutputTypeCountNotificationLogsArgs
     migrationStatuses?: boolean | UserCountOutputTypeCountMigrationStatusesArgs
+    todoItems?: boolean | UserCountOutputTypeCountTodoItemsArgs
   }
 
   // Custom InputTypes
@@ -2784,6 +2877,13 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountMigrationStatusesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: MigrationStatusWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountTodoItemsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TodoItemWhereInput
   }
 
 
@@ -4131,6 +4231,7 @@ export namespace Prisma {
     syncStatuses?: boolean | User$syncStatusesArgs<ExtArgs>
     notificationLogs?: boolean | User$notificationLogsArgs<ExtArgs>
     migrationStatuses?: boolean | User$migrationStatusesArgs<ExtArgs>
+    todoItems?: boolean | User$todoItemsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -4213,6 +4314,7 @@ export namespace Prisma {
     syncStatuses?: boolean | User$syncStatusesArgs<ExtArgs>
     notificationLogs?: boolean | User$notificationLogsArgs<ExtArgs>
     migrationStatuses?: boolean | User$migrationStatusesArgs<ExtArgs>
+    todoItems?: boolean | User$todoItemsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -4243,6 +4345,7 @@ export namespace Prisma {
       syncStatuses: Prisma.$SyncStatusPayload<ExtArgs>[]
       notificationLogs: Prisma.$NotificationLogPayload<ExtArgs>[]
       migrationStatuses: Prisma.$MigrationStatusPayload<ExtArgs>[]
+      todoItems: Prisma.$TodoItemPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -4673,6 +4776,7 @@ export namespace Prisma {
     syncStatuses<T extends User$syncStatusesArgs<ExtArgs> = {}>(args?: Subset<T, User$syncStatusesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SyncStatusPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     notificationLogs<T extends User$notificationLogsArgs<ExtArgs> = {}>(args?: Subset<T, User$notificationLogsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$NotificationLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     migrationStatuses<T extends User$migrationStatusesArgs<ExtArgs> = {}>(args?: Subset<T, User$migrationStatusesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MigrationStatusPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    todoItems<T extends User$todoItemsArgs<ExtArgs> = {}>(args?: Subset<T, User$todoItemsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TodoItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -5514,6 +5618,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: MigrationStatusScalarFieldEnum | MigrationStatusScalarFieldEnum[]
+  }
+
+  /**
+   * User.todoItems
+   */
+  export type User$todoItemsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TodoItem
+     */
+    select?: TodoItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TodoItem
+     */
+    omit?: TodoItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TodoItemInclude<ExtArgs> | null
+    where?: TodoItemWhereInput
+    orderBy?: TodoItemOrderByWithRelationInput | TodoItemOrderByWithRelationInput[]
+    cursor?: TodoItemWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: TodoItemScalarFieldEnum | TodoItemScalarFieldEnum[]
   }
 
   /**
@@ -26356,6 +26484,1090 @@ export namespace Prisma {
 
 
   /**
+   * Model TodoItem
+   */
+
+  export type AggregateTodoItem = {
+    _count: TodoItemCountAggregateOutputType | null
+    _min: TodoItemMinAggregateOutputType | null
+    _max: TodoItemMaxAggregateOutputType | null
+  }
+
+  export type TodoItemMinAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    text: string | null
+    done: boolean | null
+    priority: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type TodoItemMaxAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    text: string | null
+    done: boolean | null
+    priority: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type TodoItemCountAggregateOutputType = {
+    id: number
+    userId: number
+    text: number
+    done: number
+    priority: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type TodoItemMinAggregateInputType = {
+    id?: true
+    userId?: true
+    text?: true
+    done?: true
+    priority?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type TodoItemMaxAggregateInputType = {
+    id?: true
+    userId?: true
+    text?: true
+    done?: true
+    priority?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type TodoItemCountAggregateInputType = {
+    id?: true
+    userId?: true
+    text?: true
+    done?: true
+    priority?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type TodoItemAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which TodoItem to aggregate.
+     */
+    where?: TodoItemWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TodoItems to fetch.
+     */
+    orderBy?: TodoItemOrderByWithRelationInput | TodoItemOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: TodoItemWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TodoItems from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TodoItems.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned TodoItems
+    **/
+    _count?: true | TodoItemCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: TodoItemMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: TodoItemMaxAggregateInputType
+  }
+
+  export type GetTodoItemAggregateType<T extends TodoItemAggregateArgs> = {
+        [P in keyof T & keyof AggregateTodoItem]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateTodoItem[P]>
+      : GetScalarType<T[P], AggregateTodoItem[P]>
+  }
+
+
+
+
+  export type TodoItemGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TodoItemWhereInput
+    orderBy?: TodoItemOrderByWithAggregationInput | TodoItemOrderByWithAggregationInput[]
+    by: TodoItemScalarFieldEnum[] | TodoItemScalarFieldEnum
+    having?: TodoItemScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: TodoItemCountAggregateInputType | true
+    _min?: TodoItemMinAggregateInputType
+    _max?: TodoItemMaxAggregateInputType
+  }
+
+  export type TodoItemGroupByOutputType = {
+    id: string
+    userId: string
+    text: string
+    done: boolean
+    priority: string
+    createdAt: Date
+    updatedAt: Date
+    _count: TodoItemCountAggregateOutputType | null
+    _min: TodoItemMinAggregateOutputType | null
+    _max: TodoItemMaxAggregateOutputType | null
+  }
+
+  type GetTodoItemGroupByPayload<T extends TodoItemGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<TodoItemGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof TodoItemGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], TodoItemGroupByOutputType[P]>
+            : GetScalarType<T[P], TodoItemGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type TodoItemSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    text?: boolean
+    done?: boolean
+    priority?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["todoItem"]>
+
+  export type TodoItemSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    text?: boolean
+    done?: boolean
+    priority?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["todoItem"]>
+
+  export type TodoItemSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    text?: boolean
+    done?: boolean
+    priority?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["todoItem"]>
+
+  export type TodoItemSelectScalar = {
+    id?: boolean
+    userId?: boolean
+    text?: boolean
+    done?: boolean
+    priority?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type TodoItemOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "text" | "done" | "priority" | "createdAt" | "updatedAt", ExtArgs["result"]["todoItem"]>
+  export type TodoItemInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type TodoItemIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type TodoItemIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $TodoItemPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "TodoItem"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      userId: string
+      text: string
+      done: boolean
+      priority: string
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["todoItem"]>
+    composites: {}
+  }
+
+  type TodoItemGetPayload<S extends boolean | null | undefined | TodoItemDefaultArgs> = $Result.GetResult<Prisma.$TodoItemPayload, S>
+
+  type TodoItemCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<TodoItemFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: TodoItemCountAggregateInputType | true
+    }
+
+  export interface TodoItemDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['TodoItem'], meta: { name: 'TodoItem' } }
+    /**
+     * Find zero or one TodoItem that matches the filter.
+     * @param {TodoItemFindUniqueArgs} args - Arguments to find a TodoItem
+     * @example
+     * // Get one TodoItem
+     * const todoItem = await prisma.todoItem.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends TodoItemFindUniqueArgs>(args: SelectSubset<T, TodoItemFindUniqueArgs<ExtArgs>>): Prisma__TodoItemClient<$Result.GetResult<Prisma.$TodoItemPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one TodoItem that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {TodoItemFindUniqueOrThrowArgs} args - Arguments to find a TodoItem
+     * @example
+     * // Get one TodoItem
+     * const todoItem = await prisma.todoItem.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends TodoItemFindUniqueOrThrowArgs>(args: SelectSubset<T, TodoItemFindUniqueOrThrowArgs<ExtArgs>>): Prisma__TodoItemClient<$Result.GetResult<Prisma.$TodoItemPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first TodoItem that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TodoItemFindFirstArgs} args - Arguments to find a TodoItem
+     * @example
+     * // Get one TodoItem
+     * const todoItem = await prisma.todoItem.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends TodoItemFindFirstArgs>(args?: SelectSubset<T, TodoItemFindFirstArgs<ExtArgs>>): Prisma__TodoItemClient<$Result.GetResult<Prisma.$TodoItemPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first TodoItem that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TodoItemFindFirstOrThrowArgs} args - Arguments to find a TodoItem
+     * @example
+     * // Get one TodoItem
+     * const todoItem = await prisma.todoItem.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends TodoItemFindFirstOrThrowArgs>(args?: SelectSubset<T, TodoItemFindFirstOrThrowArgs<ExtArgs>>): Prisma__TodoItemClient<$Result.GetResult<Prisma.$TodoItemPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more TodoItems that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TodoItemFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all TodoItems
+     * const todoItems = await prisma.todoItem.findMany()
+     * 
+     * // Get first 10 TodoItems
+     * const todoItems = await prisma.todoItem.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const todoItemWithIdOnly = await prisma.todoItem.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends TodoItemFindManyArgs>(args?: SelectSubset<T, TodoItemFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TodoItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a TodoItem.
+     * @param {TodoItemCreateArgs} args - Arguments to create a TodoItem.
+     * @example
+     * // Create one TodoItem
+     * const TodoItem = await prisma.todoItem.create({
+     *   data: {
+     *     // ... data to create a TodoItem
+     *   }
+     * })
+     * 
+     */
+    create<T extends TodoItemCreateArgs>(args: SelectSubset<T, TodoItemCreateArgs<ExtArgs>>): Prisma__TodoItemClient<$Result.GetResult<Prisma.$TodoItemPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many TodoItems.
+     * @param {TodoItemCreateManyArgs} args - Arguments to create many TodoItems.
+     * @example
+     * // Create many TodoItems
+     * const todoItem = await prisma.todoItem.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends TodoItemCreateManyArgs>(args?: SelectSubset<T, TodoItemCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many TodoItems and returns the data saved in the database.
+     * @param {TodoItemCreateManyAndReturnArgs} args - Arguments to create many TodoItems.
+     * @example
+     * // Create many TodoItems
+     * const todoItem = await prisma.todoItem.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many TodoItems and only return the `id`
+     * const todoItemWithIdOnly = await prisma.todoItem.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends TodoItemCreateManyAndReturnArgs>(args?: SelectSubset<T, TodoItemCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TodoItemPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a TodoItem.
+     * @param {TodoItemDeleteArgs} args - Arguments to delete one TodoItem.
+     * @example
+     * // Delete one TodoItem
+     * const TodoItem = await prisma.todoItem.delete({
+     *   where: {
+     *     // ... filter to delete one TodoItem
+     *   }
+     * })
+     * 
+     */
+    delete<T extends TodoItemDeleteArgs>(args: SelectSubset<T, TodoItemDeleteArgs<ExtArgs>>): Prisma__TodoItemClient<$Result.GetResult<Prisma.$TodoItemPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one TodoItem.
+     * @param {TodoItemUpdateArgs} args - Arguments to update one TodoItem.
+     * @example
+     * // Update one TodoItem
+     * const todoItem = await prisma.todoItem.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends TodoItemUpdateArgs>(args: SelectSubset<T, TodoItemUpdateArgs<ExtArgs>>): Prisma__TodoItemClient<$Result.GetResult<Prisma.$TodoItemPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more TodoItems.
+     * @param {TodoItemDeleteManyArgs} args - Arguments to filter TodoItems to delete.
+     * @example
+     * // Delete a few TodoItems
+     * const { count } = await prisma.todoItem.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends TodoItemDeleteManyArgs>(args?: SelectSubset<T, TodoItemDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more TodoItems.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TodoItemUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many TodoItems
+     * const todoItem = await prisma.todoItem.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends TodoItemUpdateManyArgs>(args: SelectSubset<T, TodoItemUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more TodoItems and returns the data updated in the database.
+     * @param {TodoItemUpdateManyAndReturnArgs} args - Arguments to update many TodoItems.
+     * @example
+     * // Update many TodoItems
+     * const todoItem = await prisma.todoItem.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more TodoItems and only return the `id`
+     * const todoItemWithIdOnly = await prisma.todoItem.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends TodoItemUpdateManyAndReturnArgs>(args: SelectSubset<T, TodoItemUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TodoItemPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one TodoItem.
+     * @param {TodoItemUpsertArgs} args - Arguments to update or create a TodoItem.
+     * @example
+     * // Update or create a TodoItem
+     * const todoItem = await prisma.todoItem.upsert({
+     *   create: {
+     *     // ... data to create a TodoItem
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the TodoItem we want to update
+     *   }
+     * })
+     */
+    upsert<T extends TodoItemUpsertArgs>(args: SelectSubset<T, TodoItemUpsertArgs<ExtArgs>>): Prisma__TodoItemClient<$Result.GetResult<Prisma.$TodoItemPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of TodoItems.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TodoItemCountArgs} args - Arguments to filter TodoItems to count.
+     * @example
+     * // Count the number of TodoItems
+     * const count = await prisma.todoItem.count({
+     *   where: {
+     *     // ... the filter for the TodoItems we want to count
+     *   }
+     * })
+    **/
+    count<T extends TodoItemCountArgs>(
+      args?: Subset<T, TodoItemCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], TodoItemCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a TodoItem.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TodoItemAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends TodoItemAggregateArgs>(args: Subset<T, TodoItemAggregateArgs>): Prisma.PrismaPromise<GetTodoItemAggregateType<T>>
+
+    /**
+     * Group by TodoItem.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TodoItemGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends TodoItemGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: TodoItemGroupByArgs['orderBy'] }
+        : { orderBy?: TodoItemGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, TodoItemGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetTodoItemGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the TodoItem model
+   */
+  readonly fields: TodoItemFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for TodoItem.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__TodoItemClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the TodoItem model
+   */
+  interface TodoItemFieldRefs {
+    readonly id: FieldRef<"TodoItem", 'String'>
+    readonly userId: FieldRef<"TodoItem", 'String'>
+    readonly text: FieldRef<"TodoItem", 'String'>
+    readonly done: FieldRef<"TodoItem", 'Boolean'>
+    readonly priority: FieldRef<"TodoItem", 'String'>
+    readonly createdAt: FieldRef<"TodoItem", 'DateTime'>
+    readonly updatedAt: FieldRef<"TodoItem", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * TodoItem findUnique
+   */
+  export type TodoItemFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TodoItem
+     */
+    select?: TodoItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TodoItem
+     */
+    omit?: TodoItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TodoItemInclude<ExtArgs> | null
+    /**
+     * Filter, which TodoItem to fetch.
+     */
+    where: TodoItemWhereUniqueInput
+  }
+
+  /**
+   * TodoItem findUniqueOrThrow
+   */
+  export type TodoItemFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TodoItem
+     */
+    select?: TodoItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TodoItem
+     */
+    omit?: TodoItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TodoItemInclude<ExtArgs> | null
+    /**
+     * Filter, which TodoItem to fetch.
+     */
+    where: TodoItemWhereUniqueInput
+  }
+
+  /**
+   * TodoItem findFirst
+   */
+  export type TodoItemFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TodoItem
+     */
+    select?: TodoItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TodoItem
+     */
+    omit?: TodoItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TodoItemInclude<ExtArgs> | null
+    /**
+     * Filter, which TodoItem to fetch.
+     */
+    where?: TodoItemWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TodoItems to fetch.
+     */
+    orderBy?: TodoItemOrderByWithRelationInput | TodoItemOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for TodoItems.
+     */
+    cursor?: TodoItemWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TodoItems from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TodoItems.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of TodoItems.
+     */
+    distinct?: TodoItemScalarFieldEnum | TodoItemScalarFieldEnum[]
+  }
+
+  /**
+   * TodoItem findFirstOrThrow
+   */
+  export type TodoItemFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TodoItem
+     */
+    select?: TodoItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TodoItem
+     */
+    omit?: TodoItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TodoItemInclude<ExtArgs> | null
+    /**
+     * Filter, which TodoItem to fetch.
+     */
+    where?: TodoItemWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TodoItems to fetch.
+     */
+    orderBy?: TodoItemOrderByWithRelationInput | TodoItemOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for TodoItems.
+     */
+    cursor?: TodoItemWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TodoItems from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TodoItems.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of TodoItems.
+     */
+    distinct?: TodoItemScalarFieldEnum | TodoItemScalarFieldEnum[]
+  }
+
+  /**
+   * TodoItem findMany
+   */
+  export type TodoItemFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TodoItem
+     */
+    select?: TodoItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TodoItem
+     */
+    omit?: TodoItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TodoItemInclude<ExtArgs> | null
+    /**
+     * Filter, which TodoItems to fetch.
+     */
+    where?: TodoItemWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TodoItems to fetch.
+     */
+    orderBy?: TodoItemOrderByWithRelationInput | TodoItemOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing TodoItems.
+     */
+    cursor?: TodoItemWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TodoItems from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TodoItems.
+     */
+    skip?: number
+    distinct?: TodoItemScalarFieldEnum | TodoItemScalarFieldEnum[]
+  }
+
+  /**
+   * TodoItem create
+   */
+  export type TodoItemCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TodoItem
+     */
+    select?: TodoItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TodoItem
+     */
+    omit?: TodoItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TodoItemInclude<ExtArgs> | null
+    /**
+     * The data needed to create a TodoItem.
+     */
+    data: XOR<TodoItemCreateInput, TodoItemUncheckedCreateInput>
+  }
+
+  /**
+   * TodoItem createMany
+   */
+  export type TodoItemCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many TodoItems.
+     */
+    data: TodoItemCreateManyInput | TodoItemCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * TodoItem createManyAndReturn
+   */
+  export type TodoItemCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TodoItem
+     */
+    select?: TodoItemSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the TodoItem
+     */
+    omit?: TodoItemOmit<ExtArgs> | null
+    /**
+     * The data used to create many TodoItems.
+     */
+    data: TodoItemCreateManyInput | TodoItemCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TodoItemIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * TodoItem update
+   */
+  export type TodoItemUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TodoItem
+     */
+    select?: TodoItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TodoItem
+     */
+    omit?: TodoItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TodoItemInclude<ExtArgs> | null
+    /**
+     * The data needed to update a TodoItem.
+     */
+    data: XOR<TodoItemUpdateInput, TodoItemUncheckedUpdateInput>
+    /**
+     * Choose, which TodoItem to update.
+     */
+    where: TodoItemWhereUniqueInput
+  }
+
+  /**
+   * TodoItem updateMany
+   */
+  export type TodoItemUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update TodoItems.
+     */
+    data: XOR<TodoItemUpdateManyMutationInput, TodoItemUncheckedUpdateManyInput>
+    /**
+     * Filter which TodoItems to update
+     */
+    where?: TodoItemWhereInput
+    /**
+     * Limit how many TodoItems to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * TodoItem updateManyAndReturn
+   */
+  export type TodoItemUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TodoItem
+     */
+    select?: TodoItemSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the TodoItem
+     */
+    omit?: TodoItemOmit<ExtArgs> | null
+    /**
+     * The data used to update TodoItems.
+     */
+    data: XOR<TodoItemUpdateManyMutationInput, TodoItemUncheckedUpdateManyInput>
+    /**
+     * Filter which TodoItems to update
+     */
+    where?: TodoItemWhereInput
+    /**
+     * Limit how many TodoItems to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TodoItemIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * TodoItem upsert
+   */
+  export type TodoItemUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TodoItem
+     */
+    select?: TodoItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TodoItem
+     */
+    omit?: TodoItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TodoItemInclude<ExtArgs> | null
+    /**
+     * The filter to search for the TodoItem to update in case it exists.
+     */
+    where: TodoItemWhereUniqueInput
+    /**
+     * In case the TodoItem found by the `where` argument doesn't exist, create a new TodoItem with this data.
+     */
+    create: XOR<TodoItemCreateInput, TodoItemUncheckedCreateInput>
+    /**
+     * In case the TodoItem was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<TodoItemUpdateInput, TodoItemUncheckedUpdateInput>
+  }
+
+  /**
+   * TodoItem delete
+   */
+  export type TodoItemDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TodoItem
+     */
+    select?: TodoItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TodoItem
+     */
+    omit?: TodoItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TodoItemInclude<ExtArgs> | null
+    /**
+     * Filter which TodoItem to delete.
+     */
+    where: TodoItemWhereUniqueInput
+  }
+
+  /**
+   * TodoItem deleteMany
+   */
+  export type TodoItemDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which TodoItems to delete
+     */
+    where?: TodoItemWhereInput
+    /**
+     * Limit how many TodoItems to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * TodoItem without action
+   */
+  export type TodoItemDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TodoItem
+     */
+    select?: TodoItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TodoItem
+     */
+    omit?: TodoItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TodoItemInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -26731,6 +27943,19 @@ export namespace Prisma {
   export type MigrationStatusScalarFieldEnum = (typeof MigrationStatusScalarFieldEnum)[keyof typeof MigrationStatusScalarFieldEnum]
 
 
+  export const TodoItemScalarFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    text: 'text',
+    done: 'done',
+    priority: 'priority',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type TodoItemScalarFieldEnum = (typeof TodoItemScalarFieldEnum)[keyof typeof TodoItemScalarFieldEnum]
+
+
   export const SortOrder: {
     asc: 'asc',
     desc: 'desc'
@@ -26949,6 +28174,7 @@ export namespace Prisma {
     syncStatuses?: SyncStatusListRelationFilter
     notificationLogs?: NotificationLogListRelationFilter
     migrationStatuses?: MigrationStatusListRelationFilter
+    todoItems?: TodoItemListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -26986,6 +28212,7 @@ export namespace Prisma {
     syncStatuses?: SyncStatusOrderByRelationAggregateInput
     notificationLogs?: NotificationLogOrderByRelationAggregateInput
     migrationStatuses?: MigrationStatusOrderByRelationAggregateInput
+    todoItems?: TodoItemOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -27026,6 +28253,7 @@ export namespace Prisma {
     syncStatuses?: SyncStatusListRelationFilter
     notificationLogs?: NotificationLogListRelationFilter
     migrationStatuses?: MigrationStatusListRelationFilter
+    todoItems?: TodoItemListRelationFilter
   }, "id" | "email">
 
   export type UserOrderByWithAggregationInput = {
@@ -28731,6 +29959,71 @@ export namespace Prisma {
     metadata?: JsonWithAggregatesFilter<"MigrationStatus">
   }
 
+  export type TodoItemWhereInput = {
+    AND?: TodoItemWhereInput | TodoItemWhereInput[]
+    OR?: TodoItemWhereInput[]
+    NOT?: TodoItemWhereInput | TodoItemWhereInput[]
+    id?: StringFilter<"TodoItem"> | string
+    userId?: StringFilter<"TodoItem"> | string
+    text?: StringFilter<"TodoItem"> | string
+    done?: BoolFilter<"TodoItem"> | boolean
+    priority?: StringFilter<"TodoItem"> | string
+    createdAt?: DateTimeFilter<"TodoItem"> | Date | string
+    updatedAt?: DateTimeFilter<"TodoItem"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type TodoItemOrderByWithRelationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    text?: SortOrder
+    done?: SortOrder
+    priority?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    user?: UserOrderByWithRelationInput
+  }
+
+  export type TodoItemWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: TodoItemWhereInput | TodoItemWhereInput[]
+    OR?: TodoItemWhereInput[]
+    NOT?: TodoItemWhereInput | TodoItemWhereInput[]
+    userId?: StringFilter<"TodoItem"> | string
+    text?: StringFilter<"TodoItem"> | string
+    done?: BoolFilter<"TodoItem"> | boolean
+    priority?: StringFilter<"TodoItem"> | string
+    createdAt?: DateTimeFilter<"TodoItem"> | Date | string
+    updatedAt?: DateTimeFilter<"TodoItem"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id">
+
+  export type TodoItemOrderByWithAggregationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    text?: SortOrder
+    done?: SortOrder
+    priority?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: TodoItemCountOrderByAggregateInput
+    _max?: TodoItemMaxOrderByAggregateInput
+    _min?: TodoItemMinOrderByAggregateInput
+  }
+
+  export type TodoItemScalarWhereWithAggregatesInput = {
+    AND?: TodoItemScalarWhereWithAggregatesInput | TodoItemScalarWhereWithAggregatesInput[]
+    OR?: TodoItemScalarWhereWithAggregatesInput[]
+    NOT?: TodoItemScalarWhereWithAggregatesInput | TodoItemScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"TodoItem"> | string
+    userId?: StringWithAggregatesFilter<"TodoItem"> | string
+    text?: StringWithAggregatesFilter<"TodoItem"> | string
+    done?: BoolWithAggregatesFilter<"TodoItem"> | boolean
+    priority?: StringWithAggregatesFilter<"TodoItem"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"TodoItem"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"TodoItem"> | Date | string
+  }
+
   export type OrganizationCreateInput = {
     id?: string
     name: string
@@ -28825,6 +30118,7 @@ export namespace Prisma {
     syncStatuses?: SyncStatusCreateNestedManyWithoutUserInput
     notificationLogs?: NotificationLogCreateNestedManyWithoutUserInput
     migrationStatuses?: MigrationStatusCreateNestedManyWithoutUserInput
+    todoItems?: TodoItemCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -28861,6 +30155,7 @@ export namespace Prisma {
     syncStatuses?: SyncStatusUncheckedCreateNestedManyWithoutUserInput
     notificationLogs?: NotificationLogUncheckedCreateNestedManyWithoutUserInput
     migrationStatuses?: MigrationStatusUncheckedCreateNestedManyWithoutUserInput
+    todoItems?: TodoItemUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserUpdateInput = {
@@ -28897,6 +30192,7 @@ export namespace Prisma {
     syncStatuses?: SyncStatusUpdateManyWithoutUserNestedInput
     notificationLogs?: NotificationLogUpdateManyWithoutUserNestedInput
     migrationStatuses?: MigrationStatusUpdateManyWithoutUserNestedInput
+    todoItems?: TodoItemUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -28933,6 +30229,7 @@ export namespace Prisma {
     syncStatuses?: SyncStatusUncheckedUpdateManyWithoutUserNestedInput
     notificationLogs?: NotificationLogUncheckedUpdateManyWithoutUserNestedInput
     migrationStatuses?: MigrationStatusUncheckedUpdateManyWithoutUserNestedInput
+    todoItems?: TodoItemUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -30899,6 +32196,75 @@ export namespace Prisma {
     metadata?: JsonNullValueInput | InputJsonValue
   }
 
+  export type TodoItemCreateInput = {
+    id?: string
+    text: string
+    done?: boolean
+    priority?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutTodoItemsInput
+  }
+
+  export type TodoItemUncheckedCreateInput = {
+    id?: string
+    userId: string
+    text: string
+    done?: boolean
+    priority?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TodoItemUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    text?: StringFieldUpdateOperationsInput | string
+    done?: BoolFieldUpdateOperationsInput | boolean
+    priority?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutTodoItemsNestedInput
+  }
+
+  export type TodoItemUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    text?: StringFieldUpdateOperationsInput | string
+    done?: BoolFieldUpdateOperationsInput | boolean
+    priority?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TodoItemCreateManyInput = {
+    id?: string
+    userId: string
+    text: string
+    done?: boolean
+    priority?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TodoItemUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    text?: StringFieldUpdateOperationsInput | string
+    done?: BoolFieldUpdateOperationsInput | boolean
+    priority?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TodoItemUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    text?: StringFieldUpdateOperationsInput | string
+    done?: BoolFieldUpdateOperationsInput | boolean
+    priority?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -31117,6 +32483,12 @@ export namespace Prisma {
     none?: MigrationStatusWhereInput
   }
 
+  export type TodoItemListRelationFilter = {
+    every?: TodoItemWhereInput
+    some?: TodoItemWhereInput
+    none?: TodoItemWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -31183,6 +32555,10 @@ export namespace Prisma {
   }
 
   export type MigrationStatusOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type TodoItemOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -32269,6 +33645,36 @@ export namespace Prisma {
     completedAt?: SortOrder
   }
 
+  export type TodoItemCountOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    text?: SortOrder
+    done?: SortOrder
+    priority?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type TodoItemMaxOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    text?: SortOrder
+    done?: SortOrder
+    priority?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type TodoItemMinOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    text?: SortOrder
+    done?: SortOrder
+    priority?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
   export type UserCreateNestedManyWithoutOrgInput = {
     create?: XOR<UserCreateWithoutOrgInput, UserUncheckedCreateWithoutOrgInput> | UserCreateWithoutOrgInput[] | UserUncheckedCreateWithoutOrgInput[]
     connectOrCreate?: UserCreateOrConnectWithoutOrgInput | UserCreateOrConnectWithoutOrgInput[]
@@ -32443,6 +33849,13 @@ export namespace Prisma {
     connect?: MigrationStatusWhereUniqueInput | MigrationStatusWhereUniqueInput[]
   }
 
+  export type TodoItemCreateNestedManyWithoutUserInput = {
+    create?: XOR<TodoItemCreateWithoutUserInput, TodoItemUncheckedCreateWithoutUserInput> | TodoItemCreateWithoutUserInput[] | TodoItemUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: TodoItemCreateOrConnectWithoutUserInput | TodoItemCreateOrConnectWithoutUserInput[]
+    createMany?: TodoItemCreateManyUserInputEnvelope
+    connect?: TodoItemWhereUniqueInput | TodoItemWhereUniqueInput[]
+  }
+
   export type MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<MsConnectedAccountCreateWithoutUserInput, MsConnectedAccountUncheckedCreateWithoutUserInput> | MsConnectedAccountCreateWithoutUserInput[] | MsConnectedAccountUncheckedCreateWithoutUserInput[]
     connectOrCreate?: MsConnectedAccountCreateOrConnectWithoutUserInput | MsConnectedAccountCreateOrConnectWithoutUserInput[]
@@ -32559,6 +33972,13 @@ export namespace Prisma {
     connectOrCreate?: MigrationStatusCreateOrConnectWithoutUserInput | MigrationStatusCreateOrConnectWithoutUserInput[]
     createMany?: MigrationStatusCreateManyUserInputEnvelope
     connect?: MigrationStatusWhereUniqueInput | MigrationStatusWhereUniqueInput[]
+  }
+
+  export type TodoItemUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<TodoItemCreateWithoutUserInput, TodoItemUncheckedCreateWithoutUserInput> | TodoItemCreateWithoutUserInput[] | TodoItemUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: TodoItemCreateOrConnectWithoutUserInput | TodoItemCreateOrConnectWithoutUserInput[]
+    createMany?: TodoItemCreateManyUserInputEnvelope
+    connect?: TodoItemWhereUniqueInput | TodoItemWhereUniqueInput[]
   }
 
   export type NullableStringFieldUpdateOperationsInput = {
@@ -32811,6 +34231,20 @@ export namespace Prisma {
     deleteMany?: MigrationStatusScalarWhereInput | MigrationStatusScalarWhereInput[]
   }
 
+  export type TodoItemUpdateManyWithoutUserNestedInput = {
+    create?: XOR<TodoItemCreateWithoutUserInput, TodoItemUncheckedCreateWithoutUserInput> | TodoItemCreateWithoutUserInput[] | TodoItemUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: TodoItemCreateOrConnectWithoutUserInput | TodoItemCreateOrConnectWithoutUserInput[]
+    upsert?: TodoItemUpsertWithWhereUniqueWithoutUserInput | TodoItemUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: TodoItemCreateManyUserInputEnvelope
+    set?: TodoItemWhereUniqueInput | TodoItemWhereUniqueInput[]
+    disconnect?: TodoItemWhereUniqueInput | TodoItemWhereUniqueInput[]
+    delete?: TodoItemWhereUniqueInput | TodoItemWhereUniqueInput[]
+    connect?: TodoItemWhereUniqueInput | TodoItemWhereUniqueInput[]
+    update?: TodoItemUpdateWithWhereUniqueWithoutUserInput | TodoItemUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: TodoItemUpdateManyWithWhereWithoutUserInput | TodoItemUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: TodoItemScalarWhereInput | TodoItemScalarWhereInput[]
+  }
+
   export type MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput = {
     create?: XOR<MsConnectedAccountCreateWithoutUserInput, MsConnectedAccountUncheckedCreateWithoutUserInput> | MsConnectedAccountCreateWithoutUserInput[] | MsConnectedAccountUncheckedCreateWithoutUserInput[]
     connectOrCreate?: MsConnectedAccountCreateOrConnectWithoutUserInput | MsConnectedAccountCreateOrConnectWithoutUserInput[]
@@ -33043,6 +34477,20 @@ export namespace Prisma {
     update?: MigrationStatusUpdateWithWhereUniqueWithoutUserInput | MigrationStatusUpdateWithWhereUniqueWithoutUserInput[]
     updateMany?: MigrationStatusUpdateManyWithWhereWithoutUserInput | MigrationStatusUpdateManyWithWhereWithoutUserInput[]
     deleteMany?: MigrationStatusScalarWhereInput | MigrationStatusScalarWhereInput[]
+  }
+
+  export type TodoItemUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<TodoItemCreateWithoutUserInput, TodoItemUncheckedCreateWithoutUserInput> | TodoItemCreateWithoutUserInput[] | TodoItemUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: TodoItemCreateOrConnectWithoutUserInput | TodoItemCreateOrConnectWithoutUserInput[]
+    upsert?: TodoItemUpsertWithWhereUniqueWithoutUserInput | TodoItemUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: TodoItemCreateManyUserInputEnvelope
+    set?: TodoItemWhereUniqueInput | TodoItemWhereUniqueInput[]
+    disconnect?: TodoItemWhereUniqueInput | TodoItemWhereUniqueInput[]
+    delete?: TodoItemWhereUniqueInput | TodoItemWhereUniqueInput[]
+    connect?: TodoItemWhereUniqueInput | TodoItemWhereUniqueInput[]
+    update?: TodoItemUpdateWithWhereUniqueWithoutUserInput | TodoItemUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: TodoItemUpdateManyWithWhereWithoutUserInput | TodoItemUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: TodoItemScalarWhereInput | TodoItemScalarWhereInput[]
   }
 
   export type UserCreateNestedOneWithoutMsAccountsInput = {
@@ -33303,6 +34751,20 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutMigrationStatusesInput, UserUpdateWithoutMigrationStatusesInput>, UserUncheckedUpdateWithoutMigrationStatusesInput>
   }
 
+  export type UserCreateNestedOneWithoutTodoItemsInput = {
+    create?: XOR<UserCreateWithoutTodoItemsInput, UserUncheckedCreateWithoutTodoItemsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutTodoItemsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserUpdateOneRequiredWithoutTodoItemsNestedInput = {
+    create?: XOR<UserCreateWithoutTodoItemsInput, UserUncheckedCreateWithoutTodoItemsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutTodoItemsInput
+    upsert?: UserUpsertWithoutTodoItemsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutTodoItemsInput, UserUpdateWithoutTodoItemsInput>, UserUncheckedUpdateWithoutTodoItemsInput>
+  }
+
   export type NestedStringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -33560,6 +35022,7 @@ export namespace Prisma {
     syncStatuses?: SyncStatusCreateNestedManyWithoutUserInput
     notificationLogs?: NotificationLogCreateNestedManyWithoutUserInput
     migrationStatuses?: MigrationStatusCreateNestedManyWithoutUserInput
+    todoItems?: TodoItemCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutOrgInput = {
@@ -33595,6 +35058,7 @@ export namespace Prisma {
     syncStatuses?: SyncStatusUncheckedCreateNestedManyWithoutUserInput
     notificationLogs?: NotificationLogUncheckedCreateNestedManyWithoutUserInput
     migrationStatuses?: MigrationStatusUncheckedCreateNestedManyWithoutUserInput
+    todoItems?: TodoItemUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutOrgInput = {
@@ -34331,6 +35795,34 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type TodoItemCreateWithoutUserInput = {
+    id?: string
+    text: string
+    done?: boolean
+    priority?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TodoItemUncheckedCreateWithoutUserInput = {
+    id?: string
+    text: string
+    done?: boolean
+    priority?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TodoItemCreateOrConnectWithoutUserInput = {
+    where: TodoItemWhereUniqueInput
+    create: XOR<TodoItemCreateWithoutUserInput, TodoItemUncheckedCreateWithoutUserInput>
+  }
+
+  export type TodoItemCreateManyUserInputEnvelope = {
+    data: TodoItemCreateManyUserInput | TodoItemCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
   export type OrganizationUpsertWithoutUsersInput = {
     update: XOR<OrganizationUpdateWithoutUsersInput, OrganizationUncheckedUpdateWithoutUsersInput>
     create: XOR<OrganizationCreateWithoutUsersInput, OrganizationUncheckedCreateWithoutUsersInput>
@@ -34945,6 +36437,35 @@ export namespace Prisma {
     metadata?: JsonFilter<"MigrationStatus">
   }
 
+  export type TodoItemUpsertWithWhereUniqueWithoutUserInput = {
+    where: TodoItemWhereUniqueInput
+    update: XOR<TodoItemUpdateWithoutUserInput, TodoItemUncheckedUpdateWithoutUserInput>
+    create: XOR<TodoItemCreateWithoutUserInput, TodoItemUncheckedCreateWithoutUserInput>
+  }
+
+  export type TodoItemUpdateWithWhereUniqueWithoutUserInput = {
+    where: TodoItemWhereUniqueInput
+    data: XOR<TodoItemUpdateWithoutUserInput, TodoItemUncheckedUpdateWithoutUserInput>
+  }
+
+  export type TodoItemUpdateManyWithWhereWithoutUserInput = {
+    where: TodoItemScalarWhereInput
+    data: XOR<TodoItemUpdateManyMutationInput, TodoItemUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type TodoItemScalarWhereInput = {
+    AND?: TodoItemScalarWhereInput | TodoItemScalarWhereInput[]
+    OR?: TodoItemScalarWhereInput[]
+    NOT?: TodoItemScalarWhereInput | TodoItemScalarWhereInput[]
+    id?: StringFilter<"TodoItem"> | string
+    userId?: StringFilter<"TodoItem"> | string
+    text?: StringFilter<"TodoItem"> | string
+    done?: BoolFilter<"TodoItem"> | boolean
+    priority?: StringFilter<"TodoItem"> | string
+    createdAt?: DateTimeFilter<"TodoItem"> | Date | string
+    updatedAt?: DateTimeFilter<"TodoItem"> | Date | string
+  }
+
   export type UserCreateWithoutMsAccountsInput = {
     id: string
     email: string
@@ -34978,6 +36499,7 @@ export namespace Prisma {
     syncStatuses?: SyncStatusCreateNestedManyWithoutUserInput
     notificationLogs?: NotificationLogCreateNestedManyWithoutUserInput
     migrationStatuses?: MigrationStatusCreateNestedManyWithoutUserInput
+    todoItems?: TodoItemCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutMsAccountsInput = {
@@ -35013,6 +36535,7 @@ export namespace Prisma {
     syncStatuses?: SyncStatusUncheckedCreateNestedManyWithoutUserInput
     notificationLogs?: NotificationLogUncheckedCreateNestedManyWithoutUserInput
     migrationStatuses?: MigrationStatusUncheckedCreateNestedManyWithoutUserInput
+    todoItems?: TodoItemUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutMsAccountsInput = {
@@ -35064,6 +36587,7 @@ export namespace Prisma {
     syncStatuses?: SyncStatusUpdateManyWithoutUserNestedInput
     notificationLogs?: NotificationLogUpdateManyWithoutUserNestedInput
     migrationStatuses?: MigrationStatusUpdateManyWithoutUserNestedInput
+    todoItems?: TodoItemUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutMsAccountsInput = {
@@ -35099,6 +36623,7 @@ export namespace Prisma {
     syncStatuses?: SyncStatusUncheckedUpdateManyWithoutUserNestedInput
     notificationLogs?: NotificationLogUncheckedUpdateManyWithoutUserNestedInput
     migrationStatuses?: MigrationStatusUncheckedUpdateManyWithoutUserNestedInput
+    todoItems?: TodoItemUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutMsalCacheInput = {
@@ -35134,6 +36659,7 @@ export namespace Prisma {
     syncStatuses?: SyncStatusCreateNestedManyWithoutUserInput
     notificationLogs?: NotificationLogCreateNestedManyWithoutUserInput
     migrationStatuses?: MigrationStatusCreateNestedManyWithoutUserInput
+    todoItems?: TodoItemCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutMsalCacheInput = {
@@ -35169,6 +36695,7 @@ export namespace Prisma {
     syncStatuses?: SyncStatusUncheckedCreateNestedManyWithoutUserInput
     notificationLogs?: NotificationLogUncheckedCreateNestedManyWithoutUserInput
     migrationStatuses?: MigrationStatusUncheckedCreateNestedManyWithoutUserInput
+    todoItems?: TodoItemUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutMsalCacheInput = {
@@ -35220,6 +36747,7 @@ export namespace Prisma {
     syncStatuses?: SyncStatusUpdateManyWithoutUserNestedInput
     notificationLogs?: NotificationLogUpdateManyWithoutUserNestedInput
     migrationStatuses?: MigrationStatusUpdateManyWithoutUserNestedInput
+    todoItems?: TodoItemUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutMsalCacheInput = {
@@ -35255,6 +36783,7 @@ export namespace Prisma {
     syncStatuses?: SyncStatusUncheckedUpdateManyWithoutUserNestedInput
     notificationLogs?: NotificationLogUncheckedUpdateManyWithoutUserNestedInput
     migrationStatuses?: MigrationStatusUncheckedUpdateManyWithoutUserNestedInput
+    todoItems?: TodoItemUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutDeltaLinksInput = {
@@ -35290,6 +36819,7 @@ export namespace Prisma {
     syncStatuses?: SyncStatusCreateNestedManyWithoutUserInput
     notificationLogs?: NotificationLogCreateNestedManyWithoutUserInput
     migrationStatuses?: MigrationStatusCreateNestedManyWithoutUserInput
+    todoItems?: TodoItemCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutDeltaLinksInput = {
@@ -35325,6 +36855,7 @@ export namespace Prisma {
     syncStatuses?: SyncStatusUncheckedCreateNestedManyWithoutUserInput
     notificationLogs?: NotificationLogUncheckedCreateNestedManyWithoutUserInput
     migrationStatuses?: MigrationStatusUncheckedCreateNestedManyWithoutUserInput
+    todoItems?: TodoItemUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutDeltaLinksInput = {
@@ -35376,6 +36907,7 @@ export namespace Prisma {
     syncStatuses?: SyncStatusUpdateManyWithoutUserNestedInput
     notificationLogs?: NotificationLogUpdateManyWithoutUserNestedInput
     migrationStatuses?: MigrationStatusUpdateManyWithoutUserNestedInput
+    todoItems?: TodoItemUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutDeltaLinksInput = {
@@ -35411,6 +36943,7 @@ export namespace Prisma {
     syncStatuses?: SyncStatusUncheckedUpdateManyWithoutUserNestedInput
     notificationLogs?: NotificationLogUncheckedUpdateManyWithoutUserNestedInput
     migrationStatuses?: MigrationStatusUncheckedUpdateManyWithoutUserNestedInput
+    todoItems?: TodoItemUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutWebhookSubsInput = {
@@ -35446,6 +36979,7 @@ export namespace Prisma {
     syncStatuses?: SyncStatusCreateNestedManyWithoutUserInput
     notificationLogs?: NotificationLogCreateNestedManyWithoutUserInput
     migrationStatuses?: MigrationStatusCreateNestedManyWithoutUserInput
+    todoItems?: TodoItemCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutWebhookSubsInput = {
@@ -35481,6 +37015,7 @@ export namespace Prisma {
     syncStatuses?: SyncStatusUncheckedCreateNestedManyWithoutUserInput
     notificationLogs?: NotificationLogUncheckedCreateNestedManyWithoutUserInput
     migrationStatuses?: MigrationStatusUncheckedCreateNestedManyWithoutUserInput
+    todoItems?: TodoItemUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutWebhookSubsInput = {
@@ -35532,6 +37067,7 @@ export namespace Prisma {
     syncStatuses?: SyncStatusUpdateManyWithoutUserNestedInput
     notificationLogs?: NotificationLogUpdateManyWithoutUserNestedInput
     migrationStatuses?: MigrationStatusUpdateManyWithoutUserNestedInput
+    todoItems?: TodoItemUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutWebhookSubsInput = {
@@ -35567,6 +37103,7 @@ export namespace Prisma {
     syncStatuses?: SyncStatusUncheckedUpdateManyWithoutUserNestedInput
     notificationLogs?: NotificationLogUncheckedUpdateManyWithoutUserNestedInput
     migrationStatuses?: MigrationStatusUncheckedUpdateManyWithoutUserNestedInput
+    todoItems?: TodoItemUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutDraftsInput = {
@@ -35602,6 +37139,7 @@ export namespace Prisma {
     syncStatuses?: SyncStatusCreateNestedManyWithoutUserInput
     notificationLogs?: NotificationLogCreateNestedManyWithoutUserInput
     migrationStatuses?: MigrationStatusCreateNestedManyWithoutUserInput
+    todoItems?: TodoItemCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutDraftsInput = {
@@ -35637,6 +37175,7 @@ export namespace Prisma {
     syncStatuses?: SyncStatusUncheckedCreateNestedManyWithoutUserInput
     notificationLogs?: NotificationLogUncheckedCreateNestedManyWithoutUserInput
     migrationStatuses?: MigrationStatusUncheckedCreateNestedManyWithoutUserInput
+    todoItems?: TodoItemUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutDraftsInput = {
@@ -35688,6 +37227,7 @@ export namespace Prisma {
     syncStatuses?: SyncStatusUpdateManyWithoutUserNestedInput
     notificationLogs?: NotificationLogUpdateManyWithoutUserNestedInput
     migrationStatuses?: MigrationStatusUpdateManyWithoutUserNestedInput
+    todoItems?: TodoItemUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutDraftsInput = {
@@ -35723,6 +37263,7 @@ export namespace Prisma {
     syncStatuses?: SyncStatusUncheckedUpdateManyWithoutUserNestedInput
     notificationLogs?: NotificationLogUncheckedUpdateManyWithoutUserNestedInput
     migrationStatuses?: MigrationStatusUncheckedUpdateManyWithoutUserNestedInput
+    todoItems?: TodoItemUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutSignaturesInput = {
@@ -35758,6 +37299,7 @@ export namespace Prisma {
     syncStatuses?: SyncStatusCreateNestedManyWithoutUserInput
     notificationLogs?: NotificationLogCreateNestedManyWithoutUserInput
     migrationStatuses?: MigrationStatusCreateNestedManyWithoutUserInput
+    todoItems?: TodoItemCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutSignaturesInput = {
@@ -35793,6 +37335,7 @@ export namespace Prisma {
     syncStatuses?: SyncStatusUncheckedCreateNestedManyWithoutUserInput
     notificationLogs?: NotificationLogUncheckedCreateNestedManyWithoutUserInput
     migrationStatuses?: MigrationStatusUncheckedCreateNestedManyWithoutUserInput
+    todoItems?: TodoItemUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutSignaturesInput = {
@@ -35844,6 +37387,7 @@ export namespace Prisma {
     syncStatuses?: SyncStatusUpdateManyWithoutUserNestedInput
     notificationLogs?: NotificationLogUpdateManyWithoutUserNestedInput
     migrationStatuses?: MigrationStatusUpdateManyWithoutUserNestedInput
+    todoItems?: TodoItemUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSignaturesInput = {
@@ -35879,6 +37423,7 @@ export namespace Prisma {
     syncStatuses?: SyncStatusUncheckedUpdateManyWithoutUserNestedInput
     notificationLogs?: NotificationLogUncheckedUpdateManyWithoutUserNestedInput
     migrationStatuses?: MigrationStatusUncheckedUpdateManyWithoutUserNestedInput
+    todoItems?: TodoItemUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutCachedFoldersInput = {
@@ -35914,6 +37459,7 @@ export namespace Prisma {
     syncStatuses?: SyncStatusCreateNestedManyWithoutUserInput
     notificationLogs?: NotificationLogCreateNestedManyWithoutUserInput
     migrationStatuses?: MigrationStatusCreateNestedManyWithoutUserInput
+    todoItems?: TodoItemCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCachedFoldersInput = {
@@ -35949,6 +37495,7 @@ export namespace Prisma {
     syncStatuses?: SyncStatusUncheckedCreateNestedManyWithoutUserInput
     notificationLogs?: NotificationLogUncheckedCreateNestedManyWithoutUserInput
     migrationStatuses?: MigrationStatusUncheckedCreateNestedManyWithoutUserInput
+    todoItems?: TodoItemUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCachedFoldersInput = {
@@ -36000,6 +37547,7 @@ export namespace Prisma {
     syncStatuses?: SyncStatusUpdateManyWithoutUserNestedInput
     notificationLogs?: NotificationLogUpdateManyWithoutUserNestedInput
     migrationStatuses?: MigrationStatusUpdateManyWithoutUserNestedInput
+    todoItems?: TodoItemUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCachedFoldersInput = {
@@ -36035,6 +37583,7 @@ export namespace Prisma {
     syncStatuses?: SyncStatusUncheckedUpdateManyWithoutUserNestedInput
     notificationLogs?: NotificationLogUncheckedUpdateManyWithoutUserNestedInput
     migrationStatuses?: MigrationStatusUncheckedUpdateManyWithoutUserNestedInput
+    todoItems?: TodoItemUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutCachedEmailsInput = {
@@ -36070,6 +37619,7 @@ export namespace Prisma {
     syncStatuses?: SyncStatusCreateNestedManyWithoutUserInput
     notificationLogs?: NotificationLogCreateNestedManyWithoutUserInput
     migrationStatuses?: MigrationStatusCreateNestedManyWithoutUserInput
+    todoItems?: TodoItemCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCachedEmailsInput = {
@@ -36105,6 +37655,7 @@ export namespace Prisma {
     syncStatuses?: SyncStatusUncheckedCreateNestedManyWithoutUserInput
     notificationLogs?: NotificationLogUncheckedCreateNestedManyWithoutUserInput
     migrationStatuses?: MigrationStatusUncheckedCreateNestedManyWithoutUserInput
+    todoItems?: TodoItemUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCachedEmailsInput = {
@@ -36156,6 +37707,7 @@ export namespace Prisma {
     syncStatuses?: SyncStatusUpdateManyWithoutUserNestedInput
     notificationLogs?: NotificationLogUpdateManyWithoutUserNestedInput
     migrationStatuses?: MigrationStatusUpdateManyWithoutUserNestedInput
+    todoItems?: TodoItemUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCachedEmailsInput = {
@@ -36191,6 +37743,7 @@ export namespace Prisma {
     syncStatuses?: SyncStatusUncheckedUpdateManyWithoutUserNestedInput
     notificationLogs?: NotificationLogUncheckedUpdateManyWithoutUserNestedInput
     migrationStatuses?: MigrationStatusUncheckedUpdateManyWithoutUserNestedInput
+    todoItems?: TodoItemUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutCachedCalEventsInput = {
@@ -36226,6 +37779,7 @@ export namespace Prisma {
     syncStatuses?: SyncStatusCreateNestedManyWithoutUserInput
     notificationLogs?: NotificationLogCreateNestedManyWithoutUserInput
     migrationStatuses?: MigrationStatusCreateNestedManyWithoutUserInput
+    todoItems?: TodoItemCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCachedCalEventsInput = {
@@ -36261,6 +37815,7 @@ export namespace Prisma {
     syncStatuses?: SyncStatusUncheckedCreateNestedManyWithoutUserInput
     notificationLogs?: NotificationLogUncheckedCreateNestedManyWithoutUserInput
     migrationStatuses?: MigrationStatusUncheckedCreateNestedManyWithoutUserInput
+    todoItems?: TodoItemUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCachedCalEventsInput = {
@@ -36312,6 +37867,7 @@ export namespace Prisma {
     syncStatuses?: SyncStatusUpdateManyWithoutUserNestedInput
     notificationLogs?: NotificationLogUpdateManyWithoutUserNestedInput
     migrationStatuses?: MigrationStatusUpdateManyWithoutUserNestedInput
+    todoItems?: TodoItemUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCachedCalEventsInput = {
@@ -36347,6 +37903,7 @@ export namespace Prisma {
     syncStatuses?: SyncStatusUncheckedUpdateManyWithoutUserNestedInput
     notificationLogs?: NotificationLogUncheckedUpdateManyWithoutUserNestedInput
     migrationStatuses?: MigrationStatusUncheckedUpdateManyWithoutUserNestedInput
+    todoItems?: TodoItemUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutCachedContactsInput = {
@@ -36382,6 +37939,7 @@ export namespace Prisma {
     syncStatuses?: SyncStatusCreateNestedManyWithoutUserInput
     notificationLogs?: NotificationLogCreateNestedManyWithoutUserInput
     migrationStatuses?: MigrationStatusCreateNestedManyWithoutUserInput
+    todoItems?: TodoItemCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCachedContactsInput = {
@@ -36417,6 +37975,7 @@ export namespace Prisma {
     syncStatuses?: SyncStatusUncheckedCreateNestedManyWithoutUserInput
     notificationLogs?: NotificationLogUncheckedCreateNestedManyWithoutUserInput
     migrationStatuses?: MigrationStatusUncheckedCreateNestedManyWithoutUserInput
+    todoItems?: TodoItemUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCachedContactsInput = {
@@ -36468,6 +38027,7 @@ export namespace Prisma {
     syncStatuses?: SyncStatusUpdateManyWithoutUserNestedInput
     notificationLogs?: NotificationLogUpdateManyWithoutUserNestedInput
     migrationStatuses?: MigrationStatusUpdateManyWithoutUserNestedInput
+    todoItems?: TodoItemUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCachedContactsInput = {
@@ -36503,6 +38063,7 @@ export namespace Prisma {
     syncStatuses?: SyncStatusUncheckedUpdateManyWithoutUserNestedInput
     notificationLogs?: NotificationLogUncheckedUpdateManyWithoutUserNestedInput
     migrationStatuses?: MigrationStatusUncheckedUpdateManyWithoutUserNestedInput
+    todoItems?: TodoItemUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutEmailRulesInput = {
@@ -36538,6 +38099,7 @@ export namespace Prisma {
     syncStatuses?: SyncStatusCreateNestedManyWithoutUserInput
     notificationLogs?: NotificationLogCreateNestedManyWithoutUserInput
     migrationStatuses?: MigrationStatusCreateNestedManyWithoutUserInput
+    todoItems?: TodoItemCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutEmailRulesInput = {
@@ -36573,6 +38135,7 @@ export namespace Prisma {
     syncStatuses?: SyncStatusUncheckedCreateNestedManyWithoutUserInput
     notificationLogs?: NotificationLogUncheckedCreateNestedManyWithoutUserInput
     migrationStatuses?: MigrationStatusUncheckedCreateNestedManyWithoutUserInput
+    todoItems?: TodoItemUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutEmailRulesInput = {
@@ -36624,6 +38187,7 @@ export namespace Prisma {
     syncStatuses?: SyncStatusUpdateManyWithoutUserNestedInput
     notificationLogs?: NotificationLogUpdateManyWithoutUserNestedInput
     migrationStatuses?: MigrationStatusUpdateManyWithoutUserNestedInput
+    todoItems?: TodoItemUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutEmailRulesInput = {
@@ -36659,6 +38223,7 @@ export namespace Prisma {
     syncStatuses?: SyncStatusUncheckedUpdateManyWithoutUserNestedInput
     notificationLogs?: NotificationLogUncheckedUpdateManyWithoutUserNestedInput
     migrationStatuses?: MigrationStatusUncheckedUpdateManyWithoutUserNestedInput
+    todoItems?: TodoItemUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutEmailAttachmentsInput = {
@@ -36694,6 +38259,7 @@ export namespace Prisma {
     syncStatuses?: SyncStatusCreateNestedManyWithoutUserInput
     notificationLogs?: NotificationLogCreateNestedManyWithoutUserInput
     migrationStatuses?: MigrationStatusCreateNestedManyWithoutUserInput
+    todoItems?: TodoItemCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutEmailAttachmentsInput = {
@@ -36729,6 +38295,7 @@ export namespace Prisma {
     syncStatuses?: SyncStatusUncheckedCreateNestedManyWithoutUserInput
     notificationLogs?: NotificationLogUncheckedCreateNestedManyWithoutUserInput
     migrationStatuses?: MigrationStatusUncheckedCreateNestedManyWithoutUserInput
+    todoItems?: TodoItemUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutEmailAttachmentsInput = {
@@ -36780,6 +38347,7 @@ export namespace Prisma {
     syncStatuses?: SyncStatusUpdateManyWithoutUserNestedInput
     notificationLogs?: NotificationLogUpdateManyWithoutUserNestedInput
     migrationStatuses?: MigrationStatusUpdateManyWithoutUserNestedInput
+    todoItems?: TodoItemUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutEmailAttachmentsInput = {
@@ -36815,6 +38383,7 @@ export namespace Prisma {
     syncStatuses?: SyncStatusUncheckedUpdateManyWithoutUserNestedInput
     notificationLogs?: NotificationLogUncheckedUpdateManyWithoutUserNestedInput
     migrationStatuses?: MigrationStatusUncheckedUpdateManyWithoutUserNestedInput
+    todoItems?: TodoItemUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutAiGeneratedRepliesInput = {
@@ -36850,6 +38419,7 @@ export namespace Prisma {
     syncStatuses?: SyncStatusCreateNestedManyWithoutUserInput
     notificationLogs?: NotificationLogCreateNestedManyWithoutUserInput
     migrationStatuses?: MigrationStatusCreateNestedManyWithoutUserInput
+    todoItems?: TodoItemCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutAiGeneratedRepliesInput = {
@@ -36885,6 +38455,7 @@ export namespace Prisma {
     syncStatuses?: SyncStatusUncheckedCreateNestedManyWithoutUserInput
     notificationLogs?: NotificationLogUncheckedCreateNestedManyWithoutUserInput
     migrationStatuses?: MigrationStatusUncheckedCreateNestedManyWithoutUserInput
+    todoItems?: TodoItemUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutAiGeneratedRepliesInput = {
@@ -36936,6 +38507,7 @@ export namespace Prisma {
     syncStatuses?: SyncStatusUpdateManyWithoutUserNestedInput
     notificationLogs?: NotificationLogUpdateManyWithoutUserNestedInput
     migrationStatuses?: MigrationStatusUpdateManyWithoutUserNestedInput
+    todoItems?: TodoItemUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAiGeneratedRepliesInput = {
@@ -36971,6 +38543,7 @@ export namespace Prisma {
     syncStatuses?: SyncStatusUncheckedUpdateManyWithoutUserNestedInput
     notificationLogs?: NotificationLogUncheckedUpdateManyWithoutUserNestedInput
     migrationStatuses?: MigrationStatusUncheckedUpdateManyWithoutUserNestedInput
+    todoItems?: TodoItemUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutCachedSearchResultsInput = {
@@ -37006,6 +38579,7 @@ export namespace Prisma {
     syncStatuses?: SyncStatusCreateNestedManyWithoutUserInput
     notificationLogs?: NotificationLogCreateNestedManyWithoutUserInput
     migrationStatuses?: MigrationStatusCreateNestedManyWithoutUserInput
+    todoItems?: TodoItemCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCachedSearchResultsInput = {
@@ -37041,6 +38615,7 @@ export namespace Prisma {
     syncStatuses?: SyncStatusUncheckedCreateNestedManyWithoutUserInput
     notificationLogs?: NotificationLogUncheckedCreateNestedManyWithoutUserInput
     migrationStatuses?: MigrationStatusUncheckedCreateNestedManyWithoutUserInput
+    todoItems?: TodoItemUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCachedSearchResultsInput = {
@@ -37092,6 +38667,7 @@ export namespace Prisma {
     syncStatuses?: SyncStatusUpdateManyWithoutUserNestedInput
     notificationLogs?: NotificationLogUpdateManyWithoutUserNestedInput
     migrationStatuses?: MigrationStatusUpdateManyWithoutUserNestedInput
+    todoItems?: TodoItemUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCachedSearchResultsInput = {
@@ -37127,6 +38703,7 @@ export namespace Prisma {
     syncStatuses?: SyncStatusUncheckedUpdateManyWithoutUserNestedInput
     notificationLogs?: NotificationLogUncheckedUpdateManyWithoutUserNestedInput
     migrationStatuses?: MigrationStatusUncheckedUpdateManyWithoutUserNestedInput
+    todoItems?: TodoItemUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutSyncStatusesInput = {
@@ -37162,6 +38739,7 @@ export namespace Prisma {
     cachedSearchResults?: CachedSearchResultCreateNestedManyWithoutUserInput
     notificationLogs?: NotificationLogCreateNestedManyWithoutUserInput
     migrationStatuses?: MigrationStatusCreateNestedManyWithoutUserInput
+    todoItems?: TodoItemCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutSyncStatusesInput = {
@@ -37197,6 +38775,7 @@ export namespace Prisma {
     cachedSearchResults?: CachedSearchResultUncheckedCreateNestedManyWithoutUserInput
     notificationLogs?: NotificationLogUncheckedCreateNestedManyWithoutUserInput
     migrationStatuses?: MigrationStatusUncheckedCreateNestedManyWithoutUserInput
+    todoItems?: TodoItemUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutSyncStatusesInput = {
@@ -37248,6 +38827,7 @@ export namespace Prisma {
     cachedSearchResults?: CachedSearchResultUpdateManyWithoutUserNestedInput
     notificationLogs?: NotificationLogUpdateManyWithoutUserNestedInput
     migrationStatuses?: MigrationStatusUpdateManyWithoutUserNestedInput
+    todoItems?: TodoItemUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSyncStatusesInput = {
@@ -37283,6 +38863,7 @@ export namespace Prisma {
     cachedSearchResults?: CachedSearchResultUncheckedUpdateManyWithoutUserNestedInput
     notificationLogs?: NotificationLogUncheckedUpdateManyWithoutUserNestedInput
     migrationStatuses?: MigrationStatusUncheckedUpdateManyWithoutUserNestedInput
+    todoItems?: TodoItemUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutNotificationLogsInput = {
@@ -37318,6 +38899,7 @@ export namespace Prisma {
     cachedSearchResults?: CachedSearchResultCreateNestedManyWithoutUserInput
     syncStatuses?: SyncStatusCreateNestedManyWithoutUserInput
     migrationStatuses?: MigrationStatusCreateNestedManyWithoutUserInput
+    todoItems?: TodoItemCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutNotificationLogsInput = {
@@ -37353,6 +38935,7 @@ export namespace Prisma {
     cachedSearchResults?: CachedSearchResultUncheckedCreateNestedManyWithoutUserInput
     syncStatuses?: SyncStatusUncheckedCreateNestedManyWithoutUserInput
     migrationStatuses?: MigrationStatusUncheckedCreateNestedManyWithoutUserInput
+    todoItems?: TodoItemUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutNotificationLogsInput = {
@@ -37404,6 +38987,7 @@ export namespace Prisma {
     cachedSearchResults?: CachedSearchResultUpdateManyWithoutUserNestedInput
     syncStatuses?: SyncStatusUpdateManyWithoutUserNestedInput
     migrationStatuses?: MigrationStatusUpdateManyWithoutUserNestedInput
+    todoItems?: TodoItemUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutNotificationLogsInput = {
@@ -37439,6 +39023,7 @@ export namespace Prisma {
     cachedSearchResults?: CachedSearchResultUncheckedUpdateManyWithoutUserNestedInput
     syncStatuses?: SyncStatusUncheckedUpdateManyWithoutUserNestedInput
     migrationStatuses?: MigrationStatusUncheckedUpdateManyWithoutUserNestedInput
+    todoItems?: TodoItemUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutMigrationStatusesInput = {
@@ -37474,6 +39059,7 @@ export namespace Prisma {
     cachedSearchResults?: CachedSearchResultCreateNestedManyWithoutUserInput
     syncStatuses?: SyncStatusCreateNestedManyWithoutUserInput
     notificationLogs?: NotificationLogCreateNestedManyWithoutUserInput
+    todoItems?: TodoItemCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutMigrationStatusesInput = {
@@ -37509,6 +39095,7 @@ export namespace Prisma {
     cachedSearchResults?: CachedSearchResultUncheckedCreateNestedManyWithoutUserInput
     syncStatuses?: SyncStatusUncheckedCreateNestedManyWithoutUserInput
     notificationLogs?: NotificationLogUncheckedCreateNestedManyWithoutUserInput
+    todoItems?: TodoItemUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutMigrationStatusesInput = {
@@ -37560,6 +39147,7 @@ export namespace Prisma {
     cachedSearchResults?: CachedSearchResultUpdateManyWithoutUserNestedInput
     syncStatuses?: SyncStatusUpdateManyWithoutUserNestedInput
     notificationLogs?: NotificationLogUpdateManyWithoutUserNestedInput
+    todoItems?: TodoItemUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutMigrationStatusesInput = {
@@ -37595,6 +39183,167 @@ export namespace Prisma {
     cachedSearchResults?: CachedSearchResultUncheckedUpdateManyWithoutUserNestedInput
     syncStatuses?: SyncStatusUncheckedUpdateManyWithoutUserNestedInput
     notificationLogs?: NotificationLogUncheckedUpdateManyWithoutUserNestedInput
+    todoItems?: TodoItemUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserCreateWithoutTodoItemsInput = {
+    id: string
+    email: string
+    name?: string | null
+    avatarUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    notificationNewEmail?: boolean
+    notificationDailyDigest?: boolean
+    notificationAiReplies?: boolean
+    notificationCalendarReminders?: boolean
+    notificationWeeklyReport?: boolean
+    appTheme?: string
+    fontSize?: string
+    emailDensity?: string
+    lastActiveAccountId?: string | null
+    org: OrganizationCreateNestedOneWithoutUsersInput
+    msAccounts?: MsConnectedAccountCreateNestedManyWithoutUserInput
+    msalCache?: MsalTokenCacheCreateNestedOneWithoutUserInput
+    deltaLinks?: EmailDeltaLinkCreateNestedManyWithoutUserInput
+    webhookSubs?: WebhookSubscriptionCreateNestedManyWithoutUserInput
+    drafts?: DraftCreateNestedManyWithoutUserInput
+    emailRules?: EmailRuleCreateNestedManyWithoutUserInput
+    signatures?: SignatureCreateNestedManyWithoutUserInput
+    cachedFolders?: CachedFolderCreateNestedManyWithoutUserInput
+    cachedEmails?: CachedEmailCreateNestedManyWithoutUserInput
+    cachedCalEvents?: CachedCalendarEventCreateNestedManyWithoutUserInput
+    cachedContacts?: CachedContactCreateNestedManyWithoutUserInput
+    emailAttachments?: EmailAttachmentCreateNestedManyWithoutUserInput
+    aiGeneratedReplies?: AiGeneratedReplyCreateNestedManyWithoutUserInput
+    cachedSearchResults?: CachedSearchResultCreateNestedManyWithoutUserInput
+    syncStatuses?: SyncStatusCreateNestedManyWithoutUserInput
+    notificationLogs?: NotificationLogCreateNestedManyWithoutUserInput
+    migrationStatuses?: MigrationStatusCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutTodoItemsInput = {
+    id: string
+    email: string
+    name?: string | null
+    avatarUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    orgId: string
+    notificationNewEmail?: boolean
+    notificationDailyDigest?: boolean
+    notificationAiReplies?: boolean
+    notificationCalendarReminders?: boolean
+    notificationWeeklyReport?: boolean
+    appTheme?: string
+    fontSize?: string
+    emailDensity?: string
+    lastActiveAccountId?: string | null
+    msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
+    msalCache?: MsalTokenCacheUncheckedCreateNestedOneWithoutUserInput
+    deltaLinks?: EmailDeltaLinkUncheckedCreateNestedManyWithoutUserInput
+    webhookSubs?: WebhookSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    drafts?: DraftUncheckedCreateNestedManyWithoutUserInput
+    emailRules?: EmailRuleUncheckedCreateNestedManyWithoutUserInput
+    signatures?: SignatureUncheckedCreateNestedManyWithoutUserInput
+    cachedFolders?: CachedFolderUncheckedCreateNestedManyWithoutUserInput
+    cachedEmails?: CachedEmailUncheckedCreateNestedManyWithoutUserInput
+    cachedCalEvents?: CachedCalendarEventUncheckedCreateNestedManyWithoutUserInput
+    cachedContacts?: CachedContactUncheckedCreateNestedManyWithoutUserInput
+    emailAttachments?: EmailAttachmentUncheckedCreateNestedManyWithoutUserInput
+    aiGeneratedReplies?: AiGeneratedReplyUncheckedCreateNestedManyWithoutUserInput
+    cachedSearchResults?: CachedSearchResultUncheckedCreateNestedManyWithoutUserInput
+    syncStatuses?: SyncStatusUncheckedCreateNestedManyWithoutUserInput
+    notificationLogs?: NotificationLogUncheckedCreateNestedManyWithoutUserInput
+    migrationStatuses?: MigrationStatusUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutTodoItemsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutTodoItemsInput, UserUncheckedCreateWithoutTodoItemsInput>
+  }
+
+  export type UserUpsertWithoutTodoItemsInput = {
+    update: XOR<UserUpdateWithoutTodoItemsInput, UserUncheckedUpdateWithoutTodoItemsInput>
+    create: XOR<UserCreateWithoutTodoItemsInput, UserUncheckedCreateWithoutTodoItemsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutTodoItemsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutTodoItemsInput, UserUncheckedUpdateWithoutTodoItemsInput>
+  }
+
+  export type UserUpdateWithoutTodoItemsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
+    notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
+    notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
+    notificationCalendarReminders?: BoolFieldUpdateOperationsInput | boolean
+    notificationWeeklyReport?: BoolFieldUpdateOperationsInput | boolean
+    appTheme?: StringFieldUpdateOperationsInput | string
+    fontSize?: StringFieldUpdateOperationsInput | string
+    emailDensity?: StringFieldUpdateOperationsInput | string
+    lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
+    msAccounts?: MsConnectedAccountUpdateManyWithoutUserNestedInput
+    msalCache?: MsalTokenCacheUpdateOneWithoutUserNestedInput
+    deltaLinks?: EmailDeltaLinkUpdateManyWithoutUserNestedInput
+    webhookSubs?: WebhookSubscriptionUpdateManyWithoutUserNestedInput
+    drafts?: DraftUpdateManyWithoutUserNestedInput
+    emailRules?: EmailRuleUpdateManyWithoutUserNestedInput
+    signatures?: SignatureUpdateManyWithoutUserNestedInput
+    cachedFolders?: CachedFolderUpdateManyWithoutUserNestedInput
+    cachedEmails?: CachedEmailUpdateManyWithoutUserNestedInput
+    cachedCalEvents?: CachedCalendarEventUpdateManyWithoutUserNestedInput
+    cachedContacts?: CachedContactUpdateManyWithoutUserNestedInput
+    emailAttachments?: EmailAttachmentUpdateManyWithoutUserNestedInput
+    aiGeneratedReplies?: AiGeneratedReplyUpdateManyWithoutUserNestedInput
+    cachedSearchResults?: CachedSearchResultUpdateManyWithoutUserNestedInput
+    syncStatuses?: SyncStatusUpdateManyWithoutUserNestedInput
+    notificationLogs?: NotificationLogUpdateManyWithoutUserNestedInput
+    migrationStatuses?: MigrationStatusUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutTodoItemsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    orgId?: StringFieldUpdateOperationsInput | string
+    notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
+    notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
+    notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
+    notificationCalendarReminders?: BoolFieldUpdateOperationsInput | boolean
+    notificationWeeklyReport?: BoolFieldUpdateOperationsInput | boolean
+    appTheme?: StringFieldUpdateOperationsInput | string
+    fontSize?: StringFieldUpdateOperationsInput | string
+    emailDensity?: StringFieldUpdateOperationsInput | string
+    lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
+    msalCache?: MsalTokenCacheUncheckedUpdateOneWithoutUserNestedInput
+    deltaLinks?: EmailDeltaLinkUncheckedUpdateManyWithoutUserNestedInput
+    webhookSubs?: WebhookSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    drafts?: DraftUncheckedUpdateManyWithoutUserNestedInput
+    emailRules?: EmailRuleUncheckedUpdateManyWithoutUserNestedInput
+    signatures?: SignatureUncheckedUpdateManyWithoutUserNestedInput
+    cachedFolders?: CachedFolderUncheckedUpdateManyWithoutUserNestedInput
+    cachedEmails?: CachedEmailUncheckedUpdateManyWithoutUserNestedInput
+    cachedCalEvents?: CachedCalendarEventUncheckedUpdateManyWithoutUserNestedInput
+    cachedContacts?: CachedContactUncheckedUpdateManyWithoutUserNestedInput
+    emailAttachments?: EmailAttachmentUncheckedUpdateManyWithoutUserNestedInput
+    aiGeneratedReplies?: AiGeneratedReplyUncheckedUpdateManyWithoutUserNestedInput
+    cachedSearchResults?: CachedSearchResultUncheckedUpdateManyWithoutUserNestedInput
+    syncStatuses?: SyncStatusUncheckedUpdateManyWithoutUserNestedInput
+    notificationLogs?: NotificationLogUncheckedUpdateManyWithoutUserNestedInput
+    migrationStatuses?: MigrationStatusUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateManyOrgInput = {
@@ -37648,6 +39397,7 @@ export namespace Prisma {
     syncStatuses?: SyncStatusUpdateManyWithoutUserNestedInput
     notificationLogs?: NotificationLogUpdateManyWithoutUserNestedInput
     migrationStatuses?: MigrationStatusUpdateManyWithoutUserNestedInput
+    todoItems?: TodoItemUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutOrgInput = {
@@ -37683,6 +39433,7 @@ export namespace Prisma {
     syncStatuses?: SyncStatusUncheckedUpdateManyWithoutUserNestedInput
     notificationLogs?: NotificationLogUncheckedUpdateManyWithoutUserNestedInput
     migrationStatuses?: MigrationStatusUncheckedUpdateManyWithoutUserNestedInput
+    todoItems?: TodoItemUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutOrgInput = {
@@ -37945,6 +39696,15 @@ export namespace Prisma {
     migrationType: string
     completedAt?: Date | string
     metadata?: JsonNullValueInput | InputJsonValue
+  }
+
+  export type TodoItemCreateManyUserInput = {
+    id?: string
+    text: string
+    done?: boolean
+    priority?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type MsConnectedAccountUpdateWithoutUserInput = {
@@ -38677,6 +40437,33 @@ export namespace Prisma {
     migrationType?: StringFieldUpdateOperationsInput | string
     completedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     metadata?: JsonNullValueInput | InputJsonValue
+  }
+
+  export type TodoItemUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    text?: StringFieldUpdateOperationsInput | string
+    done?: BoolFieldUpdateOperationsInput | boolean
+    priority?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TodoItemUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    text?: StringFieldUpdateOperationsInput | string
+    done?: BoolFieldUpdateOperationsInput | boolean
+    priority?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TodoItemUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    text?: StringFieldUpdateOperationsInput | string
+    done?: BoolFieldUpdateOperationsInput | boolean
+    priority?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
 

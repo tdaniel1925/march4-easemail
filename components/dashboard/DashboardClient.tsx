@@ -47,7 +47,7 @@ const EVENT_COLORS = [
 
 // ─── Weekly Chart ─────────────────────────────────────────────────────────────
 
-function WeeklyChart() {
+function WeeklyChart({ data }: { data: number[] }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -57,7 +57,7 @@ function WeeklyChart() {
     if (!ctx) return;
 
     const labels = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-    const emailsData = [5, 8, 6, 11, 9, 3, 2];
+    const emailsData = data;
     const barW = 14;
     const gap = 8;
     const groupW = barW * 2 + gap;
@@ -112,7 +112,7 @@ function WeeklyChart() {
       ctx.textAlign = "center";
       ctx.fillText(label, cx, totalH - 4);
     });
-  }, []);
+  }, [data]);
 
   return <canvas ref={canvasRef} style={{ width: "100%", height: "144px", display: "block" }} />;
 }
@@ -124,22 +124,21 @@ export default function DashboardClient({
   events,
   recentUnread,
   eventsToday,
+  emailsData,
 }: {
   userName: string;
   events: CalendarEvent[];
   recentUnread: EmailMessage[];
   eventsToday: number;
+  emailsData: number[];
 }) {
   const router = useRouter();
   const inboxUnread = useAccountStore((s) => s.inboxUnread);
 
   const [dateStr, setDateStr] = useState("");
   const [timeStr, setTimeStr] = useState("");
-  const [todos, setTodos] = useState<TodoItem[]>([
-    { id: "1", text: "Review client contracts", done: false, priority: "high" },
-    { id: "2", text: "Send meeting summary email", done: true },
-    { id: "3", text: "Prepare case notes for Thursday", done: false, priority: "normal" },
-  ]);
+  const [todos, setTodos] = useState<TodoItem[]>([]);
+  const [todosLoading, setTodosLoading] = useState(true);
   const [newTodo, setNewTodo] = useState("");
   const [addingTodo, setAddingTodo] = useState(false);
 
@@ -154,16 +153,69 @@ export default function DashboardClient({
     return () => clearInterval(id);
   }, []);
 
-  function toggleTodo(id: string) {
-    setTodos((prev) => prev.map((t) => t.id === id ? { ...t, done: !t.done } : t));
+  useEffect(() => {
+    async function fetchTodos() {
+      setTodosLoading(true);
+      try {
+        const res = await fetch("/api/todos");
+        if (res.ok) {
+          const data = await res.json();
+          setTodos(data);
+        }
+      } catch (error) {
+        console.error("Failed to fetch todos:", error);
+      } finally {
+        setTodosLoading(false);
+      }
+    }
+    fetchTodos();
+  }, []);
+
+  async function toggleTodo(id: string) {
+    const todo = todos.find(t => t.id === id);
+    if (!todo) return;
+
+    // Optimistic update
+    setTodos(prev => prev.map(t => t.id === id ? { ...t, done: !t.done } : t));
+
+    try {
+      const res = await fetch(`/api/todos/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ done: !todo.done }),
+      });
+
+      if (!res.ok) {
+        // Revert on error
+        setTodos(prev => prev.map(t => t.id === id ? { ...t, done: todo.done } : t));
+      }
+    } catch (error) {
+      console.error("Failed to toggle todo:", error);
+      // Revert on error
+      setTodos(prev => prev.map(t => t.id === id ? { ...t, done: todo.done } : t));
+    }
   }
 
-  function addTodo() {
+  async function addTodo() {
     const text = newTodo.trim();
     if (!text) return;
-    setTodos((prev) => [...prev, { id: Date.now().toString(), text, done: false }]);
-    setNewTodo("");
-    setAddingTodo(false);
+
+    try {
+      const res = await fetch("/api/todos", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text }),
+      });
+
+      if (res.ok) {
+        const created = await res.json();
+        setTodos(prev => [created, ...prev]);
+        setNewTodo("");
+        setAddingTodo(false);
+      }
+    } catch (error) {
+      console.error("Failed to create todo:", error);
+    }
   }
 
   return (
@@ -283,7 +335,30 @@ export default function DashboardClient({
               </div>
 
               <div className="flex flex-col gap-1">
-                {todos.map((todo) => (
+                {todosLoading ? (
+                  <div className="flex flex-col gap-2">
+                    {[1, 2, 3].map((i) => (
+                      <div
+                        key={i}
+                        className="flex items-start gap-3 p-3 rounded-large"
+                        style={{ backgroundColor: "rgb(245 245 245)" }}
+                      >
+                        <div className="w-5 h-5 rounded flex-shrink-0 mt-0.5" style={{ backgroundColor: "rgb(229 231 235)" }} />
+                        <div className="flex-1 min-w-0">
+                          <div className="h-4 rounded" style={{ backgroundColor: "rgb(229 231 235)" }} />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : todos.length === 0 && !addingTodo ? (
+                  <div className="flex flex-col items-center justify-center py-6 text-sm" style={{ color: "rgb(155 155 155)" }}>
+                    <svg xmlns="http://www.w3.org/2000/svg" className="w-8 h-8 mb-2 opacity-40" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                    </svg>
+                    No tasks yet
+                  </div>
+                ) : null}
+                {!todosLoading && todos.map((todo) => (
                   <label
                     key={todo.id}
                     className="flex items-start gap-3 p-3 rounded-large cursor-pointer transition-colors"
@@ -399,7 +474,7 @@ export default function DashboardClient({
                 <h2 className="text-base font-semibold" style={{ color: "rgb(27 29 29)" }}>Weekly Activity</h2>
                 <span className="text-xs font-medium" style={{ color: "rgb(155 155 155)" }}>Emails received</span>
               </div>
-              <WeeklyChart />
+              <WeeklyChart data={emailsData} />
             </section>
 
             {/* Quick Stats */}

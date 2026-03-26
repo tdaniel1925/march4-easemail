@@ -6,6 +6,7 @@ import Sidebar from "@/components/Sidebar";
 import { StoreInitializer } from "@/components/StoreInitializer";
 import DashboardClient from "@/components/dashboard/DashboardClient";
 import type { EmailMessage } from "@/lib/types/email";
+import { getUnreadCount } from "@/lib/utils/get-unread-count";
 
 // ─── Graph shapes ─────────────────────────────────────────────────────────────
 
@@ -100,11 +101,50 @@ export default async function DashboardPage() {
     // Not fatal
   }
 
+  // Fetch weekly email activity data (last 7 days)
+  const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+  let emailsData = [0, 0, 0, 0, 0, 0, 0]; // Mon-Sun default
+  try {
+    const emailCounts = await prisma.cachedEmail.groupBy({
+      by: ['receivedDateTime'],
+      where: {
+        userId: user.id,
+        homeAccountId: defaultAccount.homeAccountId,
+        receivedDateTime: { gte: sevenDaysAgo },
+      },
+      _count: { id: true },
+    });
+
+    // Transform to [Mon, Tue, Wed, Thu, Fri, Sat, Sun] counts
+    const dayCountsMap: Record<number, number> = {};
+    emailCounts.forEach((item) => {
+      const date = new Date(item.receivedDateTime);
+      const dayOfWeek = date.getDay(); // 0=Sunday, 1=Monday, etc.
+      dayCountsMap[dayOfWeek] = (dayCountsMap[dayOfWeek] || 0) + item._count.id;
+    });
+
+    // Remap to Mon=0, Tue=1, ..., Sun=6 format
+    emailsData = [
+      dayCountsMap[1] || 0, // Monday
+      dayCountsMap[2] || 0, // Tuesday
+      dayCountsMap[3] || 0, // Wednesday
+      dayCountsMap[4] || 0, // Thursday
+      dayCountsMap[5] || 0, // Friday
+      dayCountsMap[6] || 0, // Saturday
+      dayCountsMap[0] || 0, // Sunday
+    ];
+  } catch {
+    // Not fatal, use defaults
+  }
+
   const userName = dbUser.name ?? defaultAccount.displayName ?? user.email ?? "You";
+
+  // Get real unread count
+  const unreadCount = await getUnreadCount(user.id, defaultAccount.homeAccountId);
 
   return (
     <div className="flex" style={{ height: "100vh", overflow: "hidden" }}>
-      <StoreInitializer accounts={dbUser.msAccounts} inboxUnread={0} />
+      <StoreInitializer accounts={dbUser.msAccounts} inboxUnread={unreadCount} />
       <Sidebar
         userName={userName}
         userEmail={defaultAccount.msEmail}
@@ -121,6 +161,7 @@ export default async function DashboardPage() {
         }))}
         recentUnread={recentUnread}
         eventsToday={events.length}
+        emailsData={emailsData}
       />
     </div>
   );

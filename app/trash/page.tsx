@@ -7,6 +7,7 @@ import FolderClient from "@/components/folder/FolderClient";
 import { StoreInitializer } from "@/components/StoreInitializer";
 import type { EmailMessage } from "@/lib/types/email";
 import { mapCachedEmail } from "@/lib/utils/email-helpers";
+import { getUnreadCount } from "@/lib/utils/get-unread-count";
 
 interface GraphMessage {
   id: string; subject: string; bodyPreview: string; receivedDateTime: string;
@@ -62,9 +63,11 @@ export default async function TrashPage() {
     }
   } catch (err) { console.error("Failed to fetch trash:", err); }
 
+  const unreadCount = await getUnreadCount(user.id, defaultAccount.homeAccountId);
+
   return (
     <div className="flex" style={{ height: "100vh", overflow: "hidden" }}>
-      <StoreInitializer accounts={dbUser.msAccounts} inboxUnread={0} />
+      <StoreInitializer accounts={dbUser.msAccounts} inboxUnread={unreadCount} />
       <Sidebar userName={dbUser.name ?? user.email ?? "You"} userEmail={defaultAccount.msEmail} />
       <FolderClient folder="trash" folderLabel="Trash" initialEmails={emails} initialNextLink={initialNextLink} />
     </div>

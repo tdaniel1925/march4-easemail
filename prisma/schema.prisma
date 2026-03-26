@@ -67,6 +67,7 @@ model User {
   syncStatuses        SyncStatus[]
   notificationLogs    NotificationLog[]
   migrationStatuses   MigrationStatus[]
+  todoItems           TodoItem[]
 
   @@map("users")
 }
@@ -475,4 +476,20 @@ model MigrationStatus {
 
   @@unique([userId, migrationType])
   @@map("migration_status")
+}
+
+// ─── Todo Items ───────────────────────────────────────────────────────────────
+
+model TodoItem {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  text      String
+  done      Boolean  @default(false)
+  priority  String   @default("normal") // high | normal
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId, createdAt(sort: Desc)])
+  @@map("todo_items")
 }

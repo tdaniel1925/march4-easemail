@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import Sidebar from "@/components/Sidebar";
 import { StoreInitializer } from "@/components/StoreInitializer";
 import SignaturesClient from "@/components/signatures/SignaturesClient";
+import { getUnreadCount } from "@/lib/utils/get-unread-count";
 
 export default async function SignaturesPage() {
   const supabase = await createClient();
@@ -22,9 +23,11 @@ export default async function SignaturesPage() {
     dbUser.msAccounts.find((a) => a.isDefault) ?? dbUser.msAccounts[0];
   if (!defaultAccount) redirect("/onboarding");
 
+  const unreadCount = await getUnreadCount(user.id, defaultAccount.homeAccountId);
+
   return (
     <div className="flex" style={{ height: "100vh", overflow: "hidden" }}>
-      <StoreInitializer accounts={dbUser.msAccounts} inboxUnread={0} />
+      <StoreInitializer accounts={dbUser.msAccounts} inboxUnread={unreadCount} />
       <Sidebar
         userName={dbUser.name ?? user.email ?? "You"}
         userEmail={defaultAccount.msEmail}
