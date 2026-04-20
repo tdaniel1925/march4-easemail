@@ -45,6 +45,18 @@ Rules:
 - Extract email addresses for attendees; names only → leave attendees empty
 - For legal events, include the event type in the subject (e.g. "Deposition — Smith v. Jones")
 
+Date rules:
+- "next week" → Monday of next week
+- "in N weeks" → N × 7 days from today
+- "next month" → 1st of next month
+- "end of month" → last day of that month
+
+Time rules:
+- "morning" → 10:00
+- "afternoon" → 14:00
+- "lunch" → 12:00
+- "EOD" / "end of day" / "COB" → 17:00
+
 Input: "${text.slice(0, 600)}"`;
 
   let message;

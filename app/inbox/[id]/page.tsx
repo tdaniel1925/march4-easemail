@@ -34,10 +34,14 @@ interface GraphMessage {
 
 export default async function EmailReadPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
   const { id } = await params;
+  const search = await searchParams;
+  const returnTo = typeof search.returnTo === "string" ? search.returnTo : "/inbox";
 
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
@@ -107,7 +111,7 @@ export default async function EmailReadPage({
         userName={dbUser.name ?? user.email ?? "You"}
         userEmail={defaultAccount.msEmail}
       />
-      <EmailReadClient email={email} homeAccountId={defaultAccount.homeAccountId} />
+      <EmailReadClient email={email} homeAccountId={defaultAccount.homeAccountId} returnTo={returnTo} />
     </div>
   );
 }

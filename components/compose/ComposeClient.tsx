@@ -250,10 +250,14 @@ export default function ComposeClient({
   accounts,
   mode,
   messageId,
+  draftId,
+  draftData,
 }: {
   accounts: Account[];
   mode?: ComposeMode;
   messageId?: string;
+  draftId?: string;
+  draftData?: any | null;
 }) {
   const router = useRouter();
   const defaultAccount = accounts.find((a) => a.isDefault) ?? accounts[0];
@@ -1156,6 +1160,27 @@ export default function ComposeClient({
       .catch(() => {});
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // ── Load draft data if draftId provided ──────────────────────────────────────
+  useEffect(() => {
+    if (!draftData) return;
+
+    draftIdRef.current = draftData.id;
+    setTo((draftData.toRecipients as { emailAddress: { address: string } }[])?.map(r => r.emailAddress?.address).filter(Boolean) ?? []);
+    setCc((draftData.ccRecipients as { emailAddress: { address: string } }[])?.map(r => r.emailAddress?.address).filter(Boolean) ?? []);
+    setBcc((draftData.bccRecipients as { emailAddress: { address: string } }[])?.map(r => r.emailAddress?.address).filter(Boolean) ?? []);
+    setSubject(draftData.subject ?? "");
+
+    if (bodyRef.current) {
+      bodyRef.current.innerHTML = draftData.bodyHtml ?? "";
+    }
+
+    setAttachments((draftData.attachments as FileAttachment[]) ?? []);
+    if (draftData.scheduledAt) setScheduledAt(new Date(draftData.scheduledAt));
+    setImportance(draftData.importance as "normal" | "high");
+    setRequestReadReceipt(draftData.requestReadReceipt ?? false);
+    setDraftSaved(true);
+  }, [draftData]);
 
   // Cleanup on unmount
   useEffect(() => {

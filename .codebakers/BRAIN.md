@@ -1,5 +1,5 @@
 # 🍞 EaseMail — BRAIN.md
-_Last updated: 2026-03-05_
+_Last updated: 2026-03-26_
 
 ## Project Identity
 - **Name:** EaseMail
@@ -22,7 +22,7 @@ _Last updated: 2026-03-05_
 
 ## DB Schema (Prisma)
 - `organizations` — tenant (law firm)
-- `users` — mirrors Supabase auth.users.id, belongs to org
+- `users` — mirrors Supabase auth.users.id, belongs to org, has preferredTimeZone (default: America/Chicago)
 - `ms_connected_accounts` — one per MS account linked
 - `msal_token_cache` — serialized MSAL cache per user
 - `email_delta_links` — stores delta tokens for emails AND calendar (folderId="calendar" for cal)
@@ -32,8 +32,9 @@ _Last updated: 2026-03-05_
 - `email_rules` — inbox automation rules (conditions/actions as Json, priority, emailCount, stopProcessing)
 - `cached_folders` — synced mail folders (wellKnownName for inbox/sent/drafts/deletedItems lookup)
 - `cached_emails` — synced emails (folderId, receivedDateTime, flagStatus, categories as Json)
-- `cached_calendar_events` — synced calendar events (startDateTime, endDateTime, attendees as Json)
+- `cached_calendar_events` — synced calendar events (startDateTime, endDateTime, attendees as Json, timeZone captured from Graph)
 - `cached_contacts` — synced contacts (displayName, emailAddress, phone, jobTitle, company)
+- `todo_items` — dashboard todos (text, done, priority, userId)
 
 ## Pages / Routes
 | Route | Status |
@@ -124,9 +125,9 @@ Client: `AccountsClient` calls `removeAccount()` on Zustand store → sidebar up
 - `/api/mail/folders` uses `$filter=wellKnownName eq null` (NOT `$select=wellKnownName` — Graph rejects that)
 
 ## Current Focus
-- Session: 2026-03-05 (latest)
-- Last completed: Domain gate, compose send fix, search cache-first, AI prompt improvements
-- Next: Nothing critical pending. Nice-to-haves remain (webhooks, per-account cache cleanup on disconnect)
+- Session: 2026-03-26 (latest)
+- Last completed: 8 critical fixes — dashboard real data, timezone overhaul, drafts click-to-reopen, attachments pagination, calendar AI NL, auto-refresh, multi-account categorization, AI button fix
+- Next: Optional enhancements (see IMPLEMENTATION_PROMPTS.md): timezone selector UI, calendar display formatting, attachments filtering API, notifications stat
 
 ## Admin Panel (2026-03-05)
 - `/admin` — server page, isAdminEmail() guard (redirects non-admins to /inbox)
@@ -220,6 +221,41 @@ Client: `AccountsClient` calls `removeAccount()` on Zustand store → sidebar up
 
 ## Session Artifacts
 - `codebakers-suggestions.md` — improvements to the CodeBakers framework captured during this build. Update it whenever a protocol gap or recurring friction point is identified.
+
+## Dashboard — Real Data Integration (2026-03-26)
+- Unread count: `lib/utils/get-unread-count.ts` — queries cachedEmail where isRead=false, inbox folder only
+- Weekly chart: Prisma groupBy on cachedEmail.receivedDateTime (last 7 days) → [Mon-Sun] array
+- Todos: TodoItem model + /api/todos CRUD routes, optimistic UI updates in DashboardClient
+- Auto-refresh: 5-min during business hours (8am-6pm Central), 30-min outside hours
+- Multi-account unread: Promise.allSettled fetches from all accounts, displays with accountName badges
+
+## Calendar Timezone Support (2026-03-26)
+- User.preferredTimeZone added to schema (default: America/Chicago)
+- Calendar sync captures timezone from Graph API (e.start.timeZone)
+- /api/user/settings PATCH endpoint for timezone updates
+- Dashboard date range calculation uses user timezone (not server UTC)
+- /api/calendar/event saves timezone on PATCH
+- Pending: Settings UI timezone selector, formatTime() display functions (see IMPLEMENTATION_PROMPTS.md)
+
+## Drafts Click-to-Reopen (2026-03-26)
+- /api/drafts/[id] GET handler loads draft by ID with userId security filter
+- /compose accepts ?draftId param, loads draft server-side
+- ComposeClient useEffect populates form fields from draftData prop
+- FolderClient routes drafts to /compose?draftId=X (not reading pane)
+- draftIdRef set correctly for auto-save to update existing draft
+
+## Attachments Pagination (2026-03-26)
+- Initial fetch increased from $top=25 to $top=100
+- Captures @odata.nextLink from Graph response
+- AttachmentsClient "Load More" button with loading state
+- /api/attachments/paginate route for client-side pagination
+- Pending: Backend filtering API by content type (see IMPLEMENTATION_PROMPTS.md)
+
+## Calendar AI Natural Language (2026-03-26)
+- Enhanced system prompt in /api/calendar/nl-create
+- Date rules: "next week" → Monday, "in N weeks" → N×7 days, "next month" → 1st, "end of month" → last day
+- Time rules: "morning" → 10:00, "afternoon" → 14:00, "lunch" → 12:00, "EOD"/"COB" → 17:00
+- Legal context preserved: law firm event types, smart durations, legal subject naming
 
 ## Known Issues / Risks
 See FIX-QUEUE.md

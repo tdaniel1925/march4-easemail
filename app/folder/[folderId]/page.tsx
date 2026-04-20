@@ -7,6 +7,7 @@ import FolderClient from "@/components/folder/FolderClient";
 import { StoreInitializer } from "@/components/StoreInitializer";
 import type { EmailMessage } from "@/lib/types/email";
 import { mapCachedEmail } from "@/lib/utils/email-helpers";
+import { getUnreadCount } from "@/lib/utils/get-unread-count";
 
 interface GraphRecipient {
   emailAddress: { name: string; address: string };
@@ -96,9 +97,11 @@ export default async function CustomFolderPage({
     console.error("Failed to fetch custom folder:", err);
   }
 
+  const unreadCount = await getUnreadCount(user.id, defaultAccount.homeAccountId);
+
   return (
     <div className="flex" style={{ height: "100vh", overflow: "hidden" }}>
-      <StoreInitializer accounts={dbUser.msAccounts} inboxUnread={0} />
+      <StoreInitializer accounts={dbUser.msAccounts} inboxUnread={unreadCount} />
       <Sidebar userName={dbUser.name ?? user.email ?? "You"} userEmail={defaultAccount.msEmail} />
       <FolderClient folder={folderId} folderLabel={folderLabel} initialEmails={emails} initialNextLink={initialNextLink} />
     </div>

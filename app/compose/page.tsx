@@ -4,10 +4,12 @@ import { prisma } from "@/lib/prisma";
 import Sidebar from "@/components/Sidebar";
 import { StoreInitializer } from "@/components/StoreInitializer";
 import ComposeClient from "@/components/compose/ComposeClient";
+import { getUnreadCount } from "@/lib/utils/get-unread-count";
 
 type SearchParams = Promise<{
   mode?: string;
   messageId?: string;
+  draftId?: string;
 }>;
 
 export default async function ComposePage({
@@ -31,9 +33,19 @@ export default async function ComposePage({
   const params = await searchParams;
   const mode = params.mode as "reply" | "replyAll" | "forward" | undefined;
 
+  // Load draft if draftId provided
+  let draftData = null;
+  if (params.draftId) {
+    draftData = await prisma.draft.findFirst({
+      where: { id: params.draftId, userId: user.id }
+    });
+  }
+
+  const unreadCount = await getUnreadCount(user.id, defaultAccount.homeAccountId);
+
   return (
     <div className="flex" style={{ height: "100vh", overflow: "hidden" }}>
-      <StoreInitializer accounts={dbUser.msAccounts} inboxUnread={0} />
+      <StoreInitializer accounts={dbUser.msAccounts} inboxUnread={unreadCount} />
       <Sidebar
         userName={dbUser.name ?? user.email ?? "You"}
         userEmail={defaultAccount.msEmail}
@@ -48,6 +60,8 @@ export default async function ComposePage({
         }))}
         mode={mode}
         messageId={params.messageId}
+        draftId={params.draftId}
+        draftData={draftData}
       />
     </div>
   );

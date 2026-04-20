@@ -5,6 +5,7 @@ import { isAdminEmail } from "@/lib/admin";
 import Sidebar from "@/components/Sidebar";
 import { StoreInitializer } from "@/components/StoreInitializer";
 import AdminClient from "@/components/admin/AdminClient";
+import { getUnreadCount } from "@/lib/utils/get-unread-count";
 
 export default async function AdminPage() {
   const supabase = await createClient();
@@ -63,9 +64,11 @@ export default async function AdminPage() {
 
   const userName = dbUser.name ?? defaultAccount?.displayName ?? user.email ?? "You";
 
+  const unreadCount = await getUnreadCount(user.id, defaultAccount.homeAccountId);
+
   return (
     <div className="flex" style={{ height: "100vh", overflow: "hidden" }}>
-      <StoreInitializer accounts={dbUser.msAccounts} inboxUnread={0} />
+      <StoreInitializer accounts={dbUser.msAccounts} inboxUnread={unreadCount} />
       <Sidebar
         userName={userName}
         userEmail={defaultAccount?.msEmail ?? user.email ?? ""}

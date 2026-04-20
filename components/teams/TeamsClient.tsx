@@ -192,20 +192,30 @@ export default function TeamsClient({ userName, userEmail }: TeamsClientProps) {
   // ── Load chats ──────────────────────────────────────────────────────────────
   const loadChats = useCallback(async () => {
     try {
+      console.log("[TeamsClient] Fetching chats from /api/teams/chats");
       const res = await fetch("/api/teams/chats");
+      console.log("[TeamsClient] Response status:", res.status);
       if (!res.ok) {
-        const body = await res.json() as { error?: string };
-        if (body.error === "account_requires_reauth" || body.error === "teams_scope_required" || res.status === 403) {
+        const body = await res.json() as { error?: string; details?: string };
+        console.log("[TeamsClient] Error response:", body);
+        if (body.error === "teams_license_required") {
+          console.log("[TeamsClient] Setting chatsError to 'license'");
+          setChatsError("license");
+        } else if (body.error === "account_requires_reauth" || body.error === "teams_scope_required" || res.status === 403) {
+          console.log("[TeamsClient] Setting chatsError to 'reauth'");
           setChatsError("reauth");
         } else {
+          console.log("[TeamsClient] Setting chatsError to:", body.error ?? "Failed to load chats");
           setChatsError(body.error ?? "Failed to load chats");
         }
         return;
       }
       const data = await res.json() as { chats: TeamsChat[] };
+      console.log("[TeamsClient] Successfully loaded", data.chats.length, "chats");
       setChats(data.chats);
       setChatsError(null);
-    } catch {
+    } catch (err) {
+      console.error("[TeamsClient] Network error:", err);
       setChatsError("Network error");
     } finally {
       setChatsLoading(false);
@@ -222,7 +232,9 @@ export default function TeamsClient({ userName, userEmail }: TeamsClientProps) {
       const res = await fetch("/api/teams/teams");
       if (!res.ok) {
         const body = await res.json() as { error?: string };
-        if (body.error === "teams_scope_required" || res.status === 403 || body.error === "account_requires_reauth") {
+        if (body.error === "teams_license_required") {
+          setTeamsError("license");
+        } else if (body.error === "teams_scope_required" || res.status === 403 || body.error === "account_requires_reauth") {
           setTeamsError("reauth");
         } else {
           setTeamsError(body.error ?? "Failed to load teams");
@@ -434,6 +446,24 @@ export default function TeamsClient({ userName, userEmail }: TeamsClientProps) {
                   <div className="w-5 h-5 rounded-full border-2 border-neutral-200 animate-spin" style={{ borderTopColor: "rgb(138 9 9)" }} />
                 </div>
               )}
+              {!chatsLoading && chatsError === "license" && (
+                <div className="px-4 py-8 text-center flex flex-col items-center gap-3">
+                  <div className="w-10 h-10 rounded-[10px] flex items-center justify-center" style={{ backgroundColor: "rgb(254 243 199)" }}>
+                    <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} style={{ color: "rgb(180 83 9)" }}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium mb-1" style={{ color: "rgb(27 29 29)" }}>Microsoft Teams license required</p>
+                    <p className="text-xs" style={{ color: "rgb(115 115 115)" }}>
+                      Your Microsoft account needs a valid Microsoft 365 license with Teams enabled.
+                    </p>
+                    <p className="text-xs mt-2" style={{ color: "rgb(115 115 115)" }}>
+                      Contact your Microsoft 365 admin to assign a license.
+                    </p>
+                  </div>
+                </div>
+              )}
               {!chatsLoading && chatsError === "reauth" && (
                 <div className="px-4 py-8 text-center flex flex-col items-center gap-3">
                   <div className="w-10 h-10 rounded-[10px] flex items-center justify-center" style={{ backgroundColor: "rgb(237 233 254)" }}>
@@ -507,6 +537,24 @@ export default function TeamsClient({ userName, userEmail }: TeamsClientProps) {
               {teamsLoading && (
                 <div className="flex items-center justify-center py-12">
                   <div className="w-5 h-5 rounded-full border-2 border-neutral-200 animate-spin" style={{ borderTopColor: "rgb(138 9 9)" }} />
+                </div>
+              )}
+              {!teamsLoading && teamsError === "license" && (
+                <div className="px-4 py-8 text-center flex flex-col items-center gap-3">
+                  <div className="w-10 h-10 rounded-[10px] flex items-center justify-center" style={{ backgroundColor: "rgb(254 243 199)" }}>
+                    <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} style={{ color: "rgb(180 83 9)" }}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium mb-1" style={{ color: "rgb(27 29 29)" }}>Microsoft Teams license required</p>
+                    <p className="text-xs" style={{ color: "rgb(115 115 115)" }}>
+                      Your Microsoft account needs a valid Microsoft 365 license with Teams enabled.
+                    </p>
+                    <p className="text-xs mt-2" style={{ color: "rgb(115 115 115)" }}>
+                      Contact your Microsoft 365 admin to assign a license.
+                    </p>
+                  </div>
                 </div>
               )}
               {!teamsLoading && teamsError === "reauth" && (

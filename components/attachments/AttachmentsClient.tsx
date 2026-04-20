@@ -6,6 +6,18 @@ import type { AttachmentItem } from "@/app/attachments/page";
 
 type FileType = "image" | "pdf" | "doc" | "sheet" | "other";
 type FilterTab = "all" | "documents" | "images" | "spreadsheets" | "other";
+type DirectionTab = "received" | "sent";
+type SortField = "name" | "type" | "sender" | "subject" | "date" | "size";
+type SortDirection = "asc" | "desc";
+
+type ColumnKey = "checkbox" | "name" | "type" | "sender" | "subject" | "date" | "size" | "actions";
+
+interface ColumnConfig {
+  key: ColumnKey;
+  label: string;
+  visible: boolean;
+  sortable: boolean;
+}
 
 function formatSize(bytes: number): string {
   if (bytes < 1024) return `${bytes} B`;
@@ -19,6 +31,11 @@ function getFileType(contentType: string, name: string): FileType {
   if (contentType.includes("spreadsheet") || name.match(/\.(xlsx|xls|csv)$/i)) return "sheet";
   if (contentType.includes("document") || contentType.includes("word") || name.match(/\.(docx|doc|txt)$/i)) return "doc";
   return "other";
+}
+
+function getFileExtension(name: string): string {
+  const match = name.match(/\.([^.]+)$/);
+  return match ? match[1].toUpperCase() : "FILE";
 }
 
 function totalBytes(items: AttachmentItem[]): number {
@@ -84,12 +101,50 @@ function matchesTab(item: AttachmentItem, tab: FilterTab): boolean {
   return true;
 }
 
-export default function AttachmentsClient({ attachments }: { attachments: AttachmentItem[] }) {
+export default function AttachmentsClient({ attachments, nextLink }: { attachments: AttachmentItem[]; nextLink: string | null }) {
   const router = useRouter();
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
+  const [directionTab, setDirectionTab] = useState<DirectionTab>("received");
   const [activeTab, setActiveTab] = useState<FilterTab>("all");
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const columnMenuRef = useRef<HTMLDivElement>(null);
+  const [items, setItems] = useState<AttachmentItem[]>(attachments);
+  const [nextLinkState, setNextLink] = useState<string | null>(nextLink);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [sortField, setSortField] = useState<SortField>("date");
+  const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [previewItem, setPreviewItem] = useState<AttachmentItem | null>(null);
+  const [showColumnMenu, setShowColumnMenu] = useState(false);
+
+  // Default visible columns: name, type, date, actions (with preview)
+  const [visibleColumns, setVisibleColumns] = useState<Set<ColumnKey>>(
+    new Set(["name", "type", "date", "actions"])
+  );
+
+  const allColumns: ColumnConfig[] = [
+    { key: "checkbox", label: "Select", visible: visibleColumns.has("checkbox"), sortable: false },
+    { key: "name", label: "File Name", visible: visibleColumns.has("name"), sortable: true },
+    { key: "type", label: "Type", visible: visibleColumns.has("type"), sortable: true },
+    { key: "sender", label: "Sender", visible: visibleColumns.has("sender"), sortable: true },
+    { key: "subject", label: "Email Subject", visible: visibleColumns.has("subject"), sortable: true },
+    { key: "date", label: "Date Received", visible: visibleColumns.has("date"), sortable: true },
+    { key: "size", label: "Size", visible: visibleColumns.has("size"), sortable: true },
+    { key: "actions", label: "Actions", visible: visibleColumns.has("actions"), sortable: false },
+  ];
+
+  function toggleColumn(key: ColumnKey) {
+    setVisibleColumns(prev => {
+      const next = new Set(prev);
+      if (next.has(key)) {
+        next.delete(key);
+      } else {
+        next.add(key);
+      }
+      return next;
+    });
+  }
 
   useEffect(() => {
     if (debounceRef.current) clearTimeout(debounceRef.current);
@@ -97,24 +152,111 @@ export default function AttachmentsClient({ attachments }: { attachments: Attach
     return () => { if (debounceRef.current) clearTimeout(debounceRef.current); };
   }, [search]);
 
-  const filtered = attachments.filter((item) => {
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (columnMenuRef.current && !columnMenuRef.current.contains(event.target as Node)) {
+        setShowColumnMenu(false);
+      }
+    }
+    if (showColumnMenu) {
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => document.removeEventListener("mousedown", handleClickOutside);
+    }
+  }, [showColumnMenu]);
+
+  function handleSort(field: SortField) {
+    if (sortField === field) {
+      setSortDirection(prev => prev === "asc" ? "desc" : "asc");
+    } else {
+      setSortField(field);
+      setSortDirection("asc");
+    }
+  }
+
+  function toggleSelection(id: string) {
+    setSelectedIds(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }
+
+  function toggleSelectAll() {
+    if (selectedIds.size === filtered.length) {
+      setSelectedIds(new Set());
+    } else {
+      setSelectedIds(new Set(filtered.map(item => `${item.messageId}-${item.id}`)));
+    }
+  }
+
+  const filtered = items.filter((item) => {
+    // Filter by direction tab
+    if (item.direction !== directionTab) return false;
+
+    // Filter by file type tab
     const tabMatch = matchesTab(item, activeTab);
     if (!tabMatch) return false;
+
+    // Filter by search
     if (!debouncedSearch) return true;
     const q = debouncedSearch.toLowerCase();
     return (
       item.name.toLowerCase().includes(q) ||
       item.senderName.toLowerCase().includes(q) ||
-      item.senderAddress.toLowerCase().includes(q)
+      item.senderAddress.toLowerCase().includes(q) ||
+      item.messageSubject.toLowerCase().includes(q)
     );
   });
 
-  const imageCount = attachments.filter((a) => getFileType(a.contentType, a.name) === "image").length;
-  const docCount = attachments.filter((a) => {
+  const sorted = [...filtered].sort((a, b) => {
+    let comparison = 0;
+    switch (sortField) {
+      case "name":
+        comparison = a.name.localeCompare(b.name);
+        break;
+      case "type":
+        comparison = getFileExtension(a.name).localeCompare(getFileExtension(b.name));
+        break;
+      case "sender":
+        comparison = a.senderName.localeCompare(b.senderName);
+        break;
+      case "subject":
+        comparison = a.messageSubject.localeCompare(b.messageSubject);
+        break;
+      case "date":
+        comparison = a.receivedDateTime.localeCompare(b.receivedDateTime);
+        break;
+      case "size":
+        comparison = a.size - b.size;
+        break;
+    }
+    return sortDirection === "asc" ? comparison : -comparison;
+  });
+
+  const directionFiltered = items.filter((a) => a.direction === directionTab);
+  const imageCount = directionFiltered.filter((a) => getFileType(a.contentType, a.name) === "image").length;
+  const docCount = directionFiltered.filter((a) => {
     const t = getFileType(a.contentType, a.name);
     return t === "doc" || t === "pdf";
   }).length;
-  const totalSize = totalBytes(attachments);
+  const totalSize = totalBytes(directionFiltered);
+
+  async function loadMore() {
+    if (!nextLinkState || loadingMore) return;
+    setLoadingMore(true);
+    try {
+      const res = await fetch(`/api/attachments/paginate?nextLink=${encodeURIComponent(nextLinkState)}`);
+      if (!res.ok) throw new Error("Failed to load more");
+      const data = await res.json();
+      setItems(prev => [...prev, ...data.items]);
+      setNextLink(data.nextLink || null);
+    } catch (err) {
+      console.error("[loadMore]", err);
+    } finally {
+      setLoadingMore(false);
+    }
+  }
 
   return (
     <div
@@ -131,8 +273,31 @@ export default function AttachmentsClient({ attachments }: { attachments: Attach
           </h1>
         </div>
 
+        <div className="flex items-center gap-2 mb-5">
+          <button
+            onClick={() => setDirectionTab("received")}
+            className="px-4 py-2 rounded-[10px] text-sm font-semibold transition-all"
+            style={{
+              backgroundColor: directionTab === "received" ? "rgb(138 9 9)" : "rgb(245 245 245)",
+              color: directionTab === "received" ? "white" : "rgb(82 82 82)",
+            }}
+          >
+            Received
+          </button>
+          <button
+            onClick={() => setDirectionTab("sent")}
+            className="px-4 py-2 rounded-[10px] text-sm font-semibold transition-all"
+            style={{
+              backgroundColor: directionTab === "sent" ? "rgb(138 9 9)" : "rgb(245 245 245)",
+              color: directionTab === "sent" ? "white" : "rgb(82 82 82)",
+            }}
+          >
+            Sent
+          </button>
+        </div>
+
         <div className="grid grid-cols-4 gap-4 mb-5">
-          <StatCard label="Total Files" value={String(attachments.length)} icon="files" />
+          <StatCard label="Total Files" value={String(directionFiltered.length)} icon="files" />
           <StatCard label="Images" value={String(imageCount)} icon="image" />
           <StatCard label="Documents" value={String(docCount)} icon="doc" />
           <StatCard label="Total Size" value={formatSize(totalSize)} icon="size" />
@@ -155,7 +320,53 @@ export default function AttachmentsClient({ attachments }: { attachments: Attach
             ))}
           </div>
 
-          <div className="relative w-64">
+          <div className="flex items-center gap-2">
+            <div className="relative" ref={columnMenuRef}>
+              <button
+                onClick={() => setShowColumnMenu(!showColumnMenu)}
+                className="px-3 py-2 rounded-[8px] text-sm font-medium transition-colors flex items-center gap-1.5"
+                style={{ backgroundColor: "rgb(245 245 245)", color: "rgb(82 82 82)" }}
+                onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "rgb(229 229 229)"; }}
+                onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "rgb(245 245 245)"; }}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2" />
+                </svg>
+                Columns
+              </button>
+
+              {showColumnMenu && (
+                <div
+                  className="absolute right-0 mt-2 w-56 rounded-[10px] shadow-lg z-10"
+                  style={{ backgroundColor: "white", border: "1px solid rgb(229 229 229)" }}
+                >
+                  <div className="p-2">
+                    <p className="text-xs font-semibold uppercase tracking-wider px-2 py-1.5" style={{ color: "rgb(115 115 115)" }}>
+                      Show/Hide Columns
+                    </p>
+                    {allColumns.map((col) => (
+                      <label
+                        key={col.key}
+                        className="flex items-center gap-2 px-2 py-1.5 rounded hover:bg-neutral-50 cursor-pointer"
+                      >
+                        <input
+                          type="checkbox"
+                          checked={col.visible}
+                          onChange={() => toggleColumn(col.key)}
+                          className="w-4 h-4 rounded cursor-pointer"
+                          style={{ accentColor: "rgb(138 9 9)" }}
+                        />
+                        <span className="text-sm" style={{ color: "rgb(58 58 58)" }}>
+                          {col.label}
+                        </span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className="relative w-64">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2"
@@ -200,11 +411,12 @@ export default function AttachmentsClient({ attachments }: { attachments: Attach
               </button>
             )}
           </div>
+          </div>
         </div>
       </div>
 
       <div className="flex-1 overflow-y-auto px-8 py-6">
-        {filtered.length === 0 ? (
+        {sorted.length === 0 ? (
           <div
             className="flex flex-col items-center justify-center rounded-[14px] py-20"
             style={{ backgroundColor: "white", boxShadow: "0 1px 4px rgba(0,0,0,0.06)" }}
@@ -231,43 +443,306 @@ export default function AttachmentsClient({ attachments }: { attachments: Attach
           </div>
         ) : (
           <div
-            className="rounded-[14px] overflow-hidden"
+            className="rounded-[14px]"
             style={{ backgroundColor: "white", boxShadow: "0 1px 4px rgba(0,0,0,0.06)" }}
           >
-            <table className="w-full border-collapse">
+            {selectedIds.size > 0 && (
+              <div className="flex items-center justify-between px-5 py-3 border-b" style={{ backgroundColor: "rgb(253 235 235)", borderColor: "rgb(229 229 229)" }}>
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-medium" style={{ color: "rgb(138 9 9)" }}>
+                    {selectedIds.size} selected
+                  </span>
+                  <button
+                    onClick={() => setSelectedIds(new Set())}
+                    className="text-xs px-2 py-1 rounded hover:bg-white/50 transition-colors"
+                    style={{ color: "rgb(138 9 9)" }}
+                  >
+                    Clear
+                  </button>
+                </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={async () => {
+                      const selectedItems = sorted.filter(item =>
+                        selectedIds.has(`${item.messageId}-${item.id}`)
+                      );
+                      for (const item of selectedItems) {
+                        try {
+                          const url = `/api/mail/attachments/${encodeURIComponent(item.messageId)}/${encodeURIComponent(item.id)}?homeAccountId=${encodeURIComponent(item.homeAccountId)}`;
+                          const res = await fetch(url);
+                          if (!res.ok) throw new Error(`Download failed: ${res.status}`);
+                          const blob = await res.blob();
+                          const a = document.createElement("a");
+                          a.href = URL.createObjectURL(blob);
+                          a.download = item.name;
+                          a.click();
+                          URL.revokeObjectURL(a.href);
+                          await new Promise(resolve => setTimeout(resolve, 500));
+                        } catch (err) {
+                          console.error("[bulk-download]", err);
+                        }
+                      }
+                    }}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[8px] text-xs font-medium transition-colors"
+                    style={{ backgroundColor: "rgb(138 9 9)", color: "white" }}
+                    onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "rgb(115 7 7)"; }}
+                    onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "rgb(138 9 9)"; }}
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                    </svg>
+                    Download Selected ({selectedIds.size})
+                  </button>
+                </div>
+              </div>
+            )}
+            <table className="w-full border-collapse table-auto">
               <thead>
                 <tr style={{ borderBottom: "1px solid rgb(229 229 229)" }}>
-                  <th className="text-left px-5 py-3 text-xs font-semibold uppercase tracking-wider" style={{ color: "rgb(115 115 115)" }}>
-                    Name
-                  </th>
-                  <th className="text-left px-5 py-3 text-xs font-semibold uppercase tracking-wider" style={{ color: "rgb(115 115 115)" }}>
-                    Sender
-                  </th>
-                  <th className="text-left px-5 py-3 text-xs font-semibold uppercase tracking-wider" style={{ color: "rgb(115 115 115)" }}>
-                    Date
-                  </th>
-                  <th className="text-left px-5 py-3 text-xs font-semibold uppercase tracking-wider" style={{ color: "rgb(115 115 115)" }}>
-                    Size
-                  </th>
-                  <th className="text-right px-5 py-3 text-xs font-semibold uppercase tracking-wider" style={{ color: "rgb(115 115 115)" }}>
-                    Actions
-                  </th>
+                  {visibleColumns.has("checkbox") && (
+                    <th className="text-center px-3 py-3 w-10">
+                      <input
+                        type="checkbox"
+                        checked={selectedIds.size === sorted.length && sorted.length > 0}
+                        onChange={toggleSelectAll}
+                        className="w-4 h-4 rounded cursor-pointer"
+                        style={{ accentColor: "rgb(138 9 9)" }}
+                      />
+                    </th>
+                  )}
+                  {visibleColumns.has("name") && (
+                    <th
+                      className="text-left px-5 py-3 text-xs font-semibold uppercase tracking-wider cursor-pointer hover:bg-neutral-50 transition-colors select-none"
+                      style={{ color: sortField === "name" ? "rgb(138 9 9)" : "rgb(115 115 115)" }}
+                      onClick={() => handleSort("name")}
+                    >
+                      <div className="flex items-center gap-1.5">
+                        File Name
+                        {sortField === "name" && (
+                          <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} style={{ transform: sortDirection === "asc" ? "rotate(0deg)" : "rotate(180deg)", transition: "transform 0.2s" }}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
+                          </svg>
+                        )}
+                      </div>
+                    </th>
+                  )}
+                  {visibleColumns.has("type") && (
+                    <th
+                      className="text-left px-5 py-3 text-xs font-semibold uppercase tracking-wider cursor-pointer hover:bg-neutral-50 transition-colors select-none"
+                      style={{ color: sortField === "type" ? "rgb(138 9 9)" : "rgb(115 115 115)" }}
+                      onClick={() => handleSort("type")}
+                    >
+                      <div className="flex items-center gap-1.5">
+                        Type
+                        {sortField === "type" && (
+                          <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} style={{ transform: sortDirection === "asc" ? "rotate(0deg)" : "rotate(180deg)", transition: "transform 0.2s" }}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
+                          </svg>
+                        )}
+                      </div>
+                    </th>
+                  )}
+                  {visibleColumns.has("sender") && (
+                    <th
+                      className="text-left px-5 py-3 text-xs font-semibold uppercase tracking-wider cursor-pointer hover:bg-neutral-50 transition-colors select-none"
+                      style={{ color: sortField === "sender" ? "rgb(138 9 9)" : "rgb(115 115 115)" }}
+                      onClick={() => handleSort("sender")}
+                    >
+                      <div className="flex items-center gap-1.5">
+                        Sender
+                        {sortField === "sender" && (
+                          <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} style={{ transform: sortDirection === "asc" ? "rotate(0deg)" : "rotate(180deg)", transition: "transform 0.2s" }}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
+                          </svg>
+                        )}
+                      </div>
+                    </th>
+                  )}
+                  {visibleColumns.has("subject") && (
+                    <th
+                      className="text-left px-5 py-3 text-xs font-semibold uppercase tracking-wider cursor-pointer hover:bg-neutral-50 transition-colors select-none"
+                      style={{ color: sortField === "subject" ? "rgb(138 9 9)" : "rgb(115 115 115)" }}
+                      onClick={() => handleSort("subject")}
+                    >
+                      <div className="flex items-center gap-1.5">
+                        Email Subject
+                        {sortField === "subject" && (
+                          <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} style={{ transform: sortDirection === "asc" ? "rotate(0deg)" : "rotate(180deg)", transition: "transform 0.2s" }}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
+                          </svg>
+                        )}
+                      </div>
+                    </th>
+                  )}
+                  {visibleColumns.has("date") && (
+                    <th
+                      className="text-left px-5 py-3 text-xs font-semibold uppercase tracking-wider cursor-pointer hover:bg-neutral-50 transition-colors select-none"
+                      style={{ color: sortField === "date" ? "rgb(138 9 9)" : "rgb(115 115 115)" }}
+                      onClick={() => handleSort("date")}
+                    >
+                      <div className="flex items-center gap-1.5">
+                        Date Received
+                        {sortField === "date" && (
+                          <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} style={{ transform: sortDirection === "asc" ? "rotate(0deg)" : "rotate(180deg)", transition: "transform 0.2s" }}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
+                          </svg>
+                        )}
+                      </div>
+                    </th>
+                  )}
+                  {visibleColumns.has("size") && (
+                    <th
+                      className="text-left px-5 py-3 text-xs font-semibold uppercase tracking-wider cursor-pointer hover:bg-neutral-50 transition-colors select-none"
+                      style={{ color: sortField === "size" ? "rgb(138 9 9)" : "rgb(115 115 115)" }}
+                      onClick={() => handleSort("size")}
+                    >
+                      <div className="flex items-center gap-1.5">
+                        Size
+                        {sortField === "size" && (
+                          <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} style={{ transform: sortDirection === "asc" ? "rotate(0deg)" : "rotate(180deg)", transition: "transform 0.2s" }}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
+                          </svg>
+                        )}
+                      </div>
+                    </th>
+                  )}
+                  {visibleColumns.has("actions") && (
+                    <th className="text-right px-5 py-3 text-xs font-semibold uppercase tracking-wider" style={{ color: "rgb(115 115 115)" }}>
+                      Actions
+                    </th>
+                  )}
                 </tr>
               </thead>
               <tbody>
-                {filtered.map((item, idx) => (
+                {sorted.map((item, idx) => (
                   <AttachmentRow
                     key={`${item.messageId}-${item.id}`}
                     item={item}
-                    isLast={idx === filtered.length - 1}
-                    onRowClick={() => router.push(`/inbox/${item.messageId}`)}
+                    isLast={idx === sorted.length - 1}
+                    isSelected={selectedIds.has(`${item.messageId}-${item.id}`)}
+                    visibleColumns={visibleColumns}
+                    onRowClick={() => router.push(`/inbox/${item.messageId}?returnTo=/attachments`)}
+                    onToggleSelection={() => toggleSelection(`${item.messageId}-${item.id}`)}
+                    onPreview={() => setPreviewItem(item)}
                   />
                 ))}
               </tbody>
             </table>
+            {nextLinkState && (
+              <div className="flex justify-center py-4 border-t border-neutral-200">
+                <button
+                  onClick={loadMore}
+                  disabled={loadingMore}
+                  className="px-6 py-2.5 rounded-[8px] text-sm font-semibold transition-colors disabled:opacity-50"
+                  style={{ backgroundColor: "rgb(138 9 9)", color: "white" }}
+                  onMouseEnter={(e) => { if (!loadingMore) { e.currentTarget.style.backgroundColor = "rgb(115 7 7)"; } }}
+                  onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "rgb(138 9 9)"; }}
+                >
+                  {loadingMore ? "Loading..." : "Load More"}
+                </button>
+              </div>
+            )}
           </div>
         )}
       </div>
+
+      {/* Preview Modal */}
+      {previewItem && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-8"
+          style={{ backgroundColor: "rgba(0, 0, 0, 0.75)" }}
+          onClick={() => setPreviewItem(null)}
+        >
+          <div
+            className="relative rounded-[16px] overflow-hidden max-w-5xl max-h-full"
+            style={{ backgroundColor: "white" }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modal Header */}
+            <div className="flex items-center justify-between px-6 py-4 border-b" style={{ borderColor: "rgb(229 229 229)" }}>
+              <div className="flex items-center gap-3 min-w-0 flex-1">
+                <FileIcon type={getFileType(previewItem.contentType, previewItem.name)} />
+                <div className="min-w-0 flex-1">
+                  <h3 className="text-base font-semibold truncate" style={{ color: "rgb(27 29 29)" }} title={previewItem.name}>
+                    {previewItem.name}
+                  </h3>
+                  <p className="text-xs truncate" style={{ color: "rgb(115 115 115)" }}>
+                    {formatSize(previewItem.size)} • {formatDate(previewItem.receivedDateTime)}
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => setPreviewItem(null)}
+                className="flex-shrink-0 p-2 rounded-[8px] hover:bg-neutral-100 transition-colors"
+                style={{ color: "rgb(115 115 115)" }}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            {/* Modal Body */}
+            <div className="p-6 max-h-[calc(100vh-16rem)] overflow-auto">
+              {getFileType(previewItem.contentType, previewItem.name) === "image" ? (
+                <img
+                  src={`/api/mail/attachments/${encodeURIComponent(previewItem.messageId)}/${encodeURIComponent(previewItem.id)}?homeAccountId=${encodeURIComponent(previewItem.homeAccountId)}`}
+                  alt={previewItem.name}
+                  className="max-w-full h-auto mx-auto"
+                  style={{ maxHeight: "70vh" }}
+                />
+              ) : getFileType(previewItem.contentType, previewItem.name) === "pdf" ? (
+                <iframe
+                  src={`/api/mail/attachments/${encodeURIComponent(previewItem.messageId)}/${encodeURIComponent(previewItem.id)}?homeAccountId=${encodeURIComponent(previewItem.homeAccountId)}`}
+                  className="w-full"
+                  style={{ height: "70vh", border: "none" }}
+                  title={previewItem.name}
+                />
+              ) : (
+                <div className="text-center py-12">
+                  <FileIcon type={getFileType(previewItem.contentType, previewItem.name)} />
+                  <p className="text-sm mt-4" style={{ color: "rgb(115 115 115)" }}>
+                    Preview not available for this file type.
+                  </p>
+                  <p className="text-xs mt-2" style={{ color: "rgb(155 155 155)" }}>
+                    Download the file to view it.
+                  </p>
+                </div>
+              )}
+            </div>
+
+            {/* Modal Footer */}
+            <div className="flex items-center justify-end gap-2 px-6 py-4 border-t" style={{ borderColor: "rgb(229 229 229)" }}>
+              <button
+                onClick={async () => {
+                  try {
+                    const url = `/api/mail/attachments/${encodeURIComponent(previewItem.messageId)}/${encodeURIComponent(previewItem.id)}?homeAccountId=${encodeURIComponent(previewItem.homeAccountId)}`;
+                    const res = await fetch(url);
+                    if (!res.ok) throw new Error(`Download failed: ${res.status}`);
+                    const blob = await res.blob();
+                    const a = document.createElement("a");
+                    a.href = URL.createObjectURL(blob);
+                    a.download = previewItem.name;
+                    a.click();
+                    URL.revokeObjectURL(a.href);
+                  } catch (err) {
+                    console.error("[download]", err);
+                  }
+                }}
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-[8px] text-sm font-medium transition-colors"
+                style={{ backgroundColor: "rgb(138 9 9)", color: "white" }}
+                onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "rgb(115 7 7)"; }}
+                onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "rgb(138 9 9)"; }}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                </svg>
+                Download
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -275,11 +750,19 @@ export default function AttachmentsClient({ attachments }: { attachments: Attach
 function AttachmentRow({
   item,
   isLast,
+  isSelected,
+  visibleColumns,
   onRowClick,
+  onToggleSelection,
+  onPreview,
 }: {
   item: AttachmentItem;
   isLast: boolean;
+  isSelected: boolean;
+  visibleColumns: Set<ColumnKey>;
   onRowClick: () => void;
+  onToggleSelection: () => void;
+  onPreview: () => void;
 }) {
   const type = getFileType(item.contentType, item.name);
   const [downloading, setDownloading] = useState(false);
@@ -307,79 +790,134 @@ function AttachmentRow({
 
   return (
     <tr
-      onClick={onRowClick}
-      className="cursor-pointer transition-colors hover:bg-neutral-50"
-      style={{ borderBottom: isLast ? "none" : "1px solid rgb(245 245 245)" }}
+      className="transition-colors hover:bg-neutral-50"
+      style={{
+        borderBottom: isLast ? "none" : "1px solid rgb(245 245 245)",
+        backgroundColor: isSelected ? "rgb(254 249 249)" : "transparent"
+      }}
     >
-      <td className="px-5 py-3.5">
-        <div className="flex items-center gap-2.5 min-w-0">
-          <FileIcon type={type} />
-          <span
-            className="text-sm font-medium truncate max-w-xs"
-            style={{ color: "rgb(27 29 29)" }}
-            title={item.name}
-          >
-            {item.name}
+      {visibleColumns.has("checkbox") && (
+        <td className="text-center px-3 py-3.5">
+          <input
+            type="checkbox"
+            checked={isSelected}
+            onChange={(e) => {
+              e.stopPropagation();
+              onToggleSelection();
+            }}
+            onClick={(e) => e.stopPropagation()}
+            className="w-4 h-4 rounded cursor-pointer"
+            style={{ accentColor: "rgb(138 9 9)" }}
+          />
+        </td>
+      )}
+      {visibleColumns.has("name") && (
+        <td className="px-5 py-3.5 cursor-pointer" onClick={onRowClick}>
+          <div className="flex items-center gap-2.5 min-w-0">
+            <FileIcon type={type} />
+            <span
+              className="text-sm font-medium truncate"
+              style={{ color: "rgb(27 29 29)" }}
+              title={item.name}
+            >
+              {item.name}
+            </span>
+          </div>
+        </td>
+      )}
+      {visibleColumns.has("type") && (
+        <td className="px-5 py-3.5 cursor-pointer" onClick={onRowClick}>
+          <span className="inline-block px-2 py-0.5 rounded text-xs font-medium" style={{ backgroundColor: "rgb(245 245 245)", color: "rgb(58 58 58)" }}>
+            {getFileExtension(item.name)}
           </span>
-        </div>
-      </td>
-      <td className="px-5 py-3.5">
-        <div className="min-w-0">
-          <p className="text-sm truncate" style={{ color: "rgb(58 58 58)" }}>
-            {item.senderName}
-          </p>
-          <p className="text-xs truncate" style={{ color: "rgb(155 155 155)" }}>
-            {item.senderAddress}
-          </p>
-        </div>
-      </td>
-      <td className="px-5 py-3.5">
-        <span className="text-sm whitespace-nowrap" style={{ color: "rgb(115 115 115)" }}>
-          {formatDate(item.receivedDateTime)}
-        </span>
-      </td>
-      <td className="px-5 py-3.5">
-        <span className="text-sm" style={{ color: "rgb(115 115 115)" }}>
-          {formatSize(item.size)}
-        </span>
-      </td>
-      <td className="px-5 py-3.5 text-right">
-        <div className="flex items-center justify-end gap-2">
-          <button
-            onClick={handleDownload}
-            disabled={downloading}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[8px] text-xs font-medium transition-colors disabled:opacity-50"
-            style={{ backgroundColor: "rgb(245 245 245)", color: "rgb(58 58 58)" }}
-            onMouseEnter={(e) => { if (!downloading) { e.currentTarget.style.backgroundColor = "rgb(229 229 229)"; } }}
-            onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "rgb(245 245 245)"; }}
-            title="Download attachment"
-          >
-            {downloading ? (
-              <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-              </svg>
-            ) : (
+        </td>
+      )}
+      {visibleColumns.has("sender") && (
+        <td className="px-5 py-3.5 cursor-pointer" onClick={onRowClick}>
+          <div className="min-w-0">
+            <p className="text-sm truncate" style={{ color: "rgb(58 58 58)" }}>
+              {item.senderName}
+            </p>
+            <p className="text-xs truncate" style={{ color: "rgb(155 155 155)" }}>
+              {item.senderAddress}
+            </p>
+          </div>
+        </td>
+      )}
+      {visibleColumns.has("subject") && (
+        <td className="px-5 py-3.5 cursor-pointer" onClick={onRowClick}>
+          <span className="text-sm truncate block" style={{ color: "rgb(58 58 58)" }} title={item.messageSubject}>
+            {item.messageSubject}
+          </span>
+        </td>
+      )}
+      {visibleColumns.has("date") && (
+        <td className="px-5 py-3.5 cursor-pointer" onClick={onRowClick}>
+          <span className="text-sm whitespace-nowrap" style={{ color: "rgb(115 115 115)" }}>
+            {formatDate(item.receivedDateTime)}
+          </span>
+        </td>
+      )}
+      {visibleColumns.has("size") && (
+        <td className="px-5 py-3.5 cursor-pointer" onClick={onRowClick}>
+          <span className="text-sm" style={{ color: "rgb(115 115 115)" }}>
+            {formatSize(item.size)}
+          </span>
+        </td>
+      )}
+      {visibleColumns.has("actions") && (
+        <td className="px-5 py-3.5 text-right">
+          <div className="flex items-center justify-end gap-2">
+            <button
+              onClick={(e) => { e.stopPropagation(); onPreview(); }}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[8px] text-xs font-medium transition-colors"
+              style={{ backgroundColor: "rgb(245 245 245)", color: "rgb(58 58 58)" }}
+              onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "rgb(229 229 229)"; }}
+              onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "rgb(245 245 245)"; }}
+              title="Preview attachment"
+            >
               <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
               </svg>
-            )}
-            Download
-          </button>
-          <button
-            onClick={(e) => { e.stopPropagation(); onRowClick(); }}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[8px] text-xs font-medium transition-colors"
-            style={{ backgroundColor: "rgb(253 235 235)", color: "rgb(138 9 9)" }}
-            onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "rgb(138 9 9)"; e.currentTarget.style.color = "white"; }}
-            onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "rgb(253 235 235)"; e.currentTarget.style.color = "rgb(138 9 9)"; }}
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-              <path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-            </svg>
-            View email
-          </button>
-        </div>
-      </td>
+              Preview
+            </button>
+            <button
+              onClick={handleDownload}
+              disabled={downloading}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[8px] text-xs font-medium transition-colors disabled:opacity-50"
+              style={{ backgroundColor: "rgb(245 245 245)", color: "rgb(58 58 58)" }}
+              onMouseEnter={(e) => { if (!downloading) { e.currentTarget.style.backgroundColor = "rgb(229 229 229)"; } }}
+              onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "rgb(245 245 245)"; }}
+              title="Download attachment"
+            >
+              {downloading ? (
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+              ) : (
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                </svg>
+              )}
+              Download
+            </button>
+            <button
+              onClick={(e) => { e.stopPropagation(); onRowClick(); }}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[8px] text-xs font-medium transition-colors"
+              style={{ backgroundColor: "rgb(253 235 235)", color: "rgb(138 9 9)" }}
+              onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "rgb(138 9 9)"; e.currentTarget.style.color = "white"; }}
+              onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "rgb(253 235 235)"; e.currentTarget.style.color = "rgb(138 9 9)"; }}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+              </svg>
+              View email
+            </button>
+          </div>
+        </td>
+      )}
     </tr>
   );
 }
