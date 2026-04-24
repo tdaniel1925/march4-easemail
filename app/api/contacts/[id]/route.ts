@@ -2,8 +2,10 @@ import { type NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { graphPatch, graphDelete } from "@/lib/microsoft/graph";
+import { detectProviderType } from "@/lib/providers/registry";
 
 // ─── PATCH /api/contacts/[id] — Update a contact ──────────────────────────────
+// Only supported for Microsoft accounts. IMAP/JMAP accounts return 400.
 
 export async function PATCH(
   req: NextRequest,
@@ -13,11 +15,6 @@ export async function PATCH(
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const account = await prisma.msConnectedAccount.findFirst({
-    where: { userId: user.id, isDefault: true },
-  });
-  if (!account) return NextResponse.json({ error: "No connected account" }, { status: 400 });
-
   const { id } = await params;
   const body = await req.json() as {
     displayName?: string;
@@ -25,7 +22,22 @@ export async function PATCH(
     phone?: string;
     company?: string;
     title?: string;
+    homeAccountId?: string;
   };
+
+  // If a non-Microsoft account is specified, contacts are not supported
+  if (body.homeAccountId && detectProviderType(body.homeAccountId) !== "microsoft") {
+    return NextResponse.json({ error: "Not supported for this account type" }, { status: 400 });
+  }
+
+  const account = body.homeAccountId
+    ? await prisma.msConnectedAccount.findFirst({
+        where: { userId: user.id, homeAccountId: body.homeAccountId },
+      })
+    : await prisma.msConnectedAccount.findFirst({
+        where: { userId: user.id, isDefault: true },
+      });
+  if (!account) return NextResponse.json({ error: "No connected account" }, { status: 400 });
 
   const payload: Record<string, unknown> = {};
   if (body.displayName !== undefined) payload.displayName = body.displayName;
@@ -48,18 +60,30 @@ export async function PATCH(
 }
 
 // ─── DELETE /api/contacts/[id] — Delete a contact ────────────────────────────
+// Only supported for Microsoft accounts. IMAP/JMAP accounts return 400.
 
 export async function DELETE(
-  _req: NextRequest,
+  req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const account = await prisma.msConnectedAccount.findFirst({
-    where: { userId: user.id, isDefault: true },
-  });
+  const homeAccountId = req.nextUrl.searchParams.get("homeAccountId");
+
+  // If a non-Microsoft account is specified, contacts are not supported
+  if (homeAccountId && detectProviderType(homeAccountId) !== "microsoft") {
+    return NextResponse.json({ error: "Not supported for this account type" }, { status: 400 });
+  }
+
+  const account = homeAccountId
+    ? await prisma.msConnectedAccount.findFirst({
+        where: { userId: user.id, homeAccountId },
+      })
+    : await prisma.msConnectedAccount.findFirst({
+        where: { userId: user.id, isDefault: true },
+      });
   if (!account) return NextResponse.json({ error: "No connected account" }, { status: 400 });
 
   const { id } = await params;

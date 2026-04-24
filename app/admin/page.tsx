@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
+import { getUserWithAccounts } from "@/lib/utils/get-user-accounts";
 import { isAdminEmail } from "@/lib/admin";
 import Sidebar from "@/components/Sidebar";
 import { StoreInitializer } from "@/components/StoreInitializer";
@@ -13,12 +14,10 @@ export default async function AdminPage() {
   if (!user) redirect("/login");
   if (!isAdminEmail(user.email ?? "")) redirect("/inbox");
 
-  const dbUser = await prisma.user.findUnique({
-    where: { id: user.id },
-    include: { msAccounts: { orderBy: { isDefault: "desc" } } },
-  });
+  const dbUser = await getUserWithAccounts(user.id);
   if (!dbUser) redirect("/onboarding");
-  const defaultAccount = dbUser.msAccounts[0];
+  const defaultAccount = dbUser.defaultAccount;
+  if (!defaultAccount) redirect("/onboarding");
 
   // ── All users with their connected accounts ─────────────────────────────────
   const users = await prisma.user.findMany({
@@ -68,10 +67,10 @@ export default async function AdminPage() {
 
   return (
     <div className="flex" style={{ height: "100vh", overflow: "hidden" }}>
-      <StoreInitializer accounts={dbUser.msAccounts} inboxUnread={unreadCount} />
+      <StoreInitializer accounts={dbUser.msAccounts} imapAccounts={dbUser.imapAccounts} jmapAccounts={dbUser.jmapAccounts} inboxUnread={unreadCount} />
       <Sidebar
         userName={userName}
-        userEmail={defaultAccount?.msEmail ?? user.email ?? ""}
+        userEmail={defaultAccount?.email ?? user.email ?? ""}
         isAdmin
       />
       <AdminClient

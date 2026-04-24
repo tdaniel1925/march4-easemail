@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { getUserWithAccounts } from "@/lib/utils/get-user-accounts";
 import { prisma } from "@/lib/prisma";
 import { graphGet } from "@/lib/microsoft/graph";
 import Sidebar from "@/components/Sidebar";
@@ -40,12 +41,9 @@ export default async function CustomFolderPage({
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const dbUser = await prisma.user.findUnique({
-    where: { id: user.id },
-    include: { msAccounts: { orderBy: { isDefault: "desc" } } },
-  });
+  const dbUser = await getUserWithAccounts(user.id);
   if (!dbUser) redirect("/onboarding");
-  const defaultAccount = dbUser.msAccounts.find((a) => a.isDefault) ?? dbUser.msAccounts[0];
+  const defaultAccount = dbUser.defaultAccount;
   if (!defaultAccount) redirect("/onboarding");
 
   let folderLabel = "Folder";
@@ -53,15 +51,20 @@ export default async function CustomFolderPage({
   let initialNextLink: string | null = null;
 
   try {
-    // Try cache first — look up folder by ID for label and emails
-    const cachedFolder = await prisma.cachedFolder.findUnique({
-      where: { id: folderId },
+    // Verify the folder belongs to this user's account before any data access
+    const cachedFolder = await prisma.cachedFolder.findFirst({
+      where: {
+        id: folderId,
+        userId: user.id,
+        homeAccountId: defaultAccount.homeAccountId,
+      },
     });
 
     if (cachedFolder) {
       folderLabel = cachedFolder.displayName;
+      // folderId is validated — scoped to userId + homeAccountId above
       const cached = await prisma.cachedEmail.findMany({
-        where: { userId: user.id, homeAccountId: defaultAccount.homeAccountId, folderId },
+        where: { userId: user.id, homeAccountId: defaultAccount.homeAccountId, folderId: cachedFolder.id },
         orderBy: { receivedDateTime: "desc" },
         take: 50,
       });
@@ -69,7 +72,8 @@ export default async function CustomFolderPage({
     }
 
     if (emails.length === 0) {
-      // Fall back to Graph
+      // Only fall back to Graph if we have no cached data.
+      // Use encodeURIComponent to safely embed folderId in the Graph URL path.
       const folderMeta = await graphGet<GraphFolder>(
         user.id, defaultAccount.homeAccountId,
         `/me/mailFolders/${encodeURIComponent(folderId)}?$select=id,displayName`
@@ -101,8 +105,8 @@ export default async function CustomFolderPage({
 
   return (
     <div className="flex" style={{ height: "100vh", overflow: "hidden" }}>
-      <StoreInitializer accounts={dbUser.msAccounts} inboxUnread={unreadCount} />
-      <Sidebar userName={dbUser.name ?? user.email ?? "You"} userEmail={defaultAccount.msEmail} />
+      <StoreInitializer accounts={dbUser.msAccounts} imapAccounts={dbUser.imapAccounts} jmapAccounts={dbUser.jmapAccounts} inboxUnread={unreadCount} />
+      <Sidebar userName={dbUser.name ?? user.email ?? "You"} userEmail={defaultAccount.email} />
       <FolderClient folder={folderId} folderLabel={folderLabel} initialEmails={emails} initialNextLink={initialNextLink} />
     </div>
   );

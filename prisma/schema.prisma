@@ -54,6 +54,8 @@ model User {
   lastActiveAccountId String?
 
   msAccounts       MsConnectedAccount[]
+  imapAccounts     ImapConnectedAccount[]
+  jmapAccounts     JmapConnectedAccount[]
   msalCache        MsalTokenCache?
   deltaLinks       EmailDeltaLink[]
   webhookSubs      WebhookSubscription[]
@@ -213,6 +215,7 @@ model CachedFolder {
   totalCount     Int      @default(0)
   wellKnownName  String?
   syncedAt       DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 
   @@index([userId, homeAccountId, wellKnownName])
   @@map("cached_folders")
@@ -246,6 +249,7 @@ model CachedEmail {
   lastModifiedDateTime    DateTime?
 
   syncedAt                DateTime  @default(now())
+  updatedAt               DateTime  @updatedAt
 
   @@index([userId, homeAccountId, folderId, receivedDateTime(sort: Desc)])
   @@index([userId, homeAccountId, isRead])
@@ -293,6 +297,7 @@ model CachedCalendarEvent {
   createdDateTime      DateTime?
   lastModifiedDateTime DateTime?
   syncedAt             DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
 
   @@index([userId, startDateTime, endDateTime])
   @@map("cached_calendar_events")
@@ -331,6 +336,7 @@ model CachedContact {
   isFavorite      Boolean   @default(false)
 
   syncedAt        DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
 
   @@index([userId, homeAccountId, displayName])
   @@map("cached_contacts")
@@ -344,6 +350,7 @@ model DeployLog {
   commits      Json      // string[] of commit messages
   createdAt    DateTime  @default(now())
   digestSentAt DateTime?
+  updatedAt    DateTime  @updatedAt
 
   @@index([digestSentAt, createdAt])
   @@map("deploy_log")
@@ -392,6 +399,7 @@ model EmailAttachment {
   contentId       String?
   uploadedAt      DateTime @default(now())
   createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 
   @@index([userId, messageId])
   @@index([graphMessageId])
@@ -408,6 +416,7 @@ model AiGeneratedReply {
   generatedBody String   @db.Text
   createdAt     DateTime @default(now())
   expiresAt     DateTime
+  updatedAt     DateTime @updatedAt
 
   @@index([userId, messageId])
   @@index([expiresAt])
@@ -425,6 +434,7 @@ model CachedSearchResult {
   results       Json
   createdAt     DateTime @default(now())
   expiresAt     DateTime
+  updatedAt     DateTime @updatedAt
 
   @@unique([userId, homeAccountId, query])
   @@index([expiresAt])
@@ -461,6 +471,7 @@ model NotificationLog {
   status       String
   errorMessage String?
   metadata     Json     @default("{}")
+  updatedAt    DateTime @updatedAt
 
   @@index([userId, type])
   @@index([sentAt])
@@ -476,6 +487,7 @@ model MigrationStatus {
   migrationType String
   completedAt   DateTime @default(now())
   metadata      Json     @default("{}")
+  updatedAt     DateTime @updatedAt
 
   @@unique([userId, migrationType])
   @@map("migration_status")
@@ -495,4 +507,74 @@ model TodoItem {
 
   @@index([userId, createdAt(sort: Desc)])
   @@map("todo_items")
+}
+
+// ─── IMAP Connected Accounts ─────────────────────────────────────────────────
+
+model ImapConnectedAccount {
+  id                String   @id @default(cuid())
+  userId            String
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  accountId         String   // "imap:<cuid>" — used as homeAccountId throughout the app
+  email             String
+  displayName       String?
+  isDefault         Boolean  @default(false)
+  connectedAt       DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  // IMAP connection settings
+  imapHost          String
+  imapPort          Int      @default(993)
+  imapSecurity      String   @default("tls") // tls | starttls | none
+
+  // SMTP connection settings
+  smtpHost          String
+  smtpPort          Int      @default(587)
+  smtpSecurity      String   @default("starttls") // tls | starttls | none
+
+  // Encrypted credentials (AES-256-GCM)
+  encryptedPassword String   @db.Text
+  encryptionIv      String
+  encryptionTag     String
+
+  // IMAP sync state
+  uidValidity       Json     @default("{}")  // { [folderPath]: number }
+  highestModSeq     Json     @default("{}")  // { [folderPath]: string }
+
+  @@unique([userId, accountId])
+  @@unique([userId, email])
+  @@map("imap_connected_accounts")
+}
+
+// ─── JMAP Connected Accounts ─────────────────────────────────────────────────
+
+model JmapConnectedAccount {
+  id                String   @id @default(cuid())
+  userId            String
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  accountId         String   // "jmap:<cuid>" — used as homeAccountId throughout the app
+  email             String
+  displayName       String?
+  isDefault         Boolean  @default(false)
+  connectedAt       DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  // JMAP connection settings
+  sessionUrl        String   // e.g. https://api.fastmail.com/jmap/session
+  jmapAccountId     String   // the JMAP accountId from session response
+
+  // Encrypted credentials (AES-256-GCM) — stores API token or password
+  encryptedToken    String   @db.Text
+  encryptionIv      String
+  encryptionTag     String
+
+  // JMAP sync state
+  emailState        String?  // JMAP state string for Email type
+  mailboxState      String?  // JMAP state string for Mailbox type
+
+  @@unique([userId, accountId])
+  @@unique([userId, email])
+  @@map("jmap_connected_accounts")
 }

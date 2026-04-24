@@ -76,22 +76,34 @@ function getTodayStr(): string {
   return new Date().toISOString().split("T")[0];
 }
 
-function formatTime(iso: string): string {
+/** Extract hours and minutes in a specific IANA timezone */
+function getTimeInZone(iso: string, tz: string): { h: number; m: number } {
   const d = new Date(iso);
-  const h = d.getHours();
-  const m = d.getMinutes();
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone: tz,
+    hour: "numeric",
+    minute: "numeric",
+    hour12: false,
+  }).formatToParts(d);
+  const h = parseInt(parts.find((p) => p.type === "hour")?.value ?? "0", 10);
+  const m = parseInt(parts.find((p) => p.type === "minute")?.value ?? "0", 10);
+  return { h: h === 24 ? 0 : h, m };
+}
+
+function formatTime(iso: string, tz: string): string {
+  const { h, m } = getTimeInZone(iso, tz);
   const ampm = h >= 12 ? "PM" : "AM";
   const h12 = h % 12 === 0 ? 12 : h % 12;
   return m === 0 ? `${h12} ${ampm}` : `${h12}:${String(m).padStart(2, "0")} ${ampm}`;
 }
 
-function formatTimeRange(startIso: string, endIso: string): string {
-  return `${formatTime(startIso)} – ${formatTime(endIso)}`;
+function formatTimeRange(startIso: string, endIso: string, tz: string): string {
+  return `${formatTime(startIso, tz)} – ${formatTime(endIso, tz)}`;
 }
 
-function getEventTop(startIso: string): number {
-  const d = new Date(startIso);
-  return (d.getHours() - HOUR_START) * ROW_HEIGHT + d.getMinutes() * (ROW_HEIGHT / 60);
+function getEventTop(startIso: string, tz: string): number {
+  const { h, m } = getTimeInZone(startIso, tz);
+  return (h - HOUR_START) * ROW_HEIGHT + m * (ROW_HEIGHT / 60);
 }
 
 function getEventHeight(startIso: string, endIso: string): number {
@@ -148,7 +160,7 @@ interface PositionedEvent {
   height: number;
 }
 
-function computeEventPositions(dayEvents: CalEvent[]): PositionedEvent[] {
+function computeEventPositions(dayEvents: CalEvent[], tz: string): PositionedEvent[] {
   const timed = dayEvents
     .filter((e) => !e.isAllDay)
     .sort((a, b) => new Date(a.startDateTime).getTime() - new Date(b.startDateTime).getTime());
@@ -177,7 +189,7 @@ function computeEventPositions(dayEvents: CalEvent[]): PositionedEvent[] {
   return timed.map((event, i) => {
     const relevantCols = [colAssignment[i], ...overlaps[i].map((j) => colAssignment[j])];
     const colCount = Math.max(...relevantCols) + 1;
-    return { event, colIndex: colAssignment[i], colCount, top: getEventTop(event.startDateTime), height: getEventHeight(event.startDateTime, event.endDateTime) };
+    return { event, colIndex: colAssignment[i], colCount, top: getEventTop(event.startDateTime, tz), height: getEventHeight(event.startDateTime, event.endDateTime) };
   });
 }
 
@@ -194,7 +206,7 @@ function Spinner() {
   );
 }
 
-function EventCard({ positioned, onClick }: { positioned: PositionedEvent; onClick: () => void }) {
+function EventCard({ positioned, onClick, tz }: { positioned: PositionedEvent; onClick: () => void; tz: string }) {
   const { event, colIndex, colCount, top, height } = positioned;
   const palette = getAccountPalette(event.accountHomeId);
   const widthPct = 100 / colCount;
@@ -207,7 +219,7 @@ function EventCard({ positioned, onClick }: { positioned: PositionedEvent; onCli
       title={event.subject}
     >
       <p className="font-semibold text-xs leading-tight truncate">{event.subject}</p>
-      {height > 32 && <p className="text-xs opacity-70 truncate">{formatTimeRange(event.startDateTime, event.endDateTime)}</p>}
+      {height > 32 && <p className="text-xs opacity-70 truncate">{formatTimeRange(event.startDateTime, event.endDateTime, tz)}</p>}
       {height > 52 && event.location && <p className="text-xs opacity-60 truncate">{event.location}</p>}
       {event.isRecurring && <span className="absolute top-1 right-1 text-[9px] opacity-50">↻</span>}
     </div>
@@ -241,6 +253,7 @@ function TimeGrid({
   scrollRef,
   onEventClick,
   onAllDayClick,
+  tz,
 }: {
   dayDateStrs: string[];
   timedByDay: Record<string, CalEvent[]>;
@@ -252,6 +265,7 @@ function TimeGrid({
   scrollRef: React.RefObject<HTMLDivElement | null>;
   onEventClick: (e: CalEvent) => void;
   onAllDayClick: (e: CalEvent) => void;
+  tz: string;
 }) {
   const hasAllDay = dayDateStrs.some((d) => (allDayByDay[d]?.length ?? 0) > 0);
   const todayInView = dayDateStrs.includes(today);
@@ -319,7 +333,7 @@ function TimeGrid({
           {dayDateStrs.map((dateStr, colIdx) => {
             const isWeekend = dayDateStrs.length > 1 && colIdx >= 5;
             const isToday = dateStr === today;
-            const positioned = computeEventPositions(timedByDay[dateStr] ?? []);
+            const positioned = computeEventPositions(timedByDay[dateStr] ?? [], tz);
             return (
               <div key={dateStr} className="flex-1 relative border-l border-neutral-100"
                 style={{ background: isWeekend ? "#fafafa" : isToday ? BRAND_LIGHT : "#fff", height: ROW_HEIGHT * HOURS.length }}>
@@ -327,7 +341,7 @@ function TimeGrid({
                   <div key={h} className="absolute left-0 right-0 border-t border-neutral-100" style={{ top: (h - HOUR_START) * ROW_HEIGHT }} />
                 ))}
                 {positioned.map((p) => (
-                  <EventCard key={p.event.id} positioned={p} onClick={() => onEventClick(p.event)} />
+                  <EventCard key={p.event.id} positioned={p} onClick={() => onEventClick(p.event)} tz={tz} />
                 ))}
                 {isToday && todayInView && showTimeLine && (
                   <div className="absolute left-0 right-0 pointer-events-none z-10" style={{ top: timeLineTop }}>
@@ -353,9 +367,10 @@ function isSingleColumn(arr: string[]) { return arr.length === 1; }
 interface CalendarClientProps {
   weekStart: string;
   events: CalEvent[];
+  userTimeZone?: string;
 }
 
-export default function CalendarClient({ weekStart: initialWeekStart, events: initialEvents }: CalendarClientProps) {
+export default function CalendarClient({ weekStart: initialWeekStart, events: initialEvents, userTimeZone = "America/Chicago" }: CalendarClientProps) {
   // ── State ────────────────────────────────────────────────────────────────────
   const [weekStart, setWeekStart] = useState(initialWeekStart);
   const [events, setEvents] = useState<CalEvent[]>(initialEvents);
@@ -595,6 +610,7 @@ export default function CalendarClient({ weekStart: initialWeekStart, events: in
         scrollRef={scrollRef}
         onEventClick={setSelectedEvent}
         onAllDayClick={setSelectedEvent}
+        tz={userTimeZone}
       />
     );
   }
@@ -616,6 +632,7 @@ export default function CalendarClient({ weekStart: initialWeekStart, events: in
         scrollRef={scrollRef}
         onEventClick={setSelectedEvent}
         onAllDayClick={setSelectedEvent}
+        tz={userTimeZone}
       />
     );
   }
@@ -659,7 +676,7 @@ export default function CalendarClient({ weekStart: initialWeekStart, events: in
                       <div key={e.id} onClick={() => setSelectedEvent(e)}
                         className="text-[11px] px-1.5 py-0.5 rounded mb-0.5 truncate cursor-pointer hover:brightness-95 transition-all"
                         style={{ backgroundColor: palette.bg, color: palette.text }}>
-                        {!e.isAllDay && <span className="opacity-70">{formatTime(e.startDateTime)} </span>}{e.subject}
+                        {!e.isAllDay && <span className="opacity-70">{formatTime(e.startDateTime, userTimeZone)} </span>}{e.subject}
                       </div>
                     );
                   })}
@@ -729,7 +746,7 @@ export default function CalendarClient({ weekStart: initialWeekStart, events: in
                         className="flex items-start gap-3 p-3 rounded-[10px] cursor-pointer hover:shadow-sm transition-all bg-white border border-neutral-100"
                         style={{ borderLeftWidth: 3, borderLeftColor: palette.border }}>
                         <div className="flex-shrink-0 text-xs text-neutral-400 w-24 pt-0.5 font-medium">
-                          {e.isAllDay ? "All day" : formatTimeRange(e.startDateTime, e.endDateTime)}
+                          {e.isAllDay ? "All day" : formatTimeRange(e.startDateTime, e.endDateTime, userTimeZone)}
                         </div>
                         <div className="flex-1 min-w-0">
                           <p className="text-sm font-semibold text-neutral-800 truncate">{e.subject}</p>

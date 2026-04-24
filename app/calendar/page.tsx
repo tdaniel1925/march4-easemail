@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { prisma } from "@/lib/prisma";
+import { getUserWithAccounts } from "@/lib/utils/get-user-accounts";
 import { graphGet } from "@/lib/microsoft/graph";
 import Sidebar from "@/components/Sidebar";
 import { StoreInitializer } from "@/components/StoreInitializer";
@@ -18,12 +18,9 @@ export default async function CalendarPage() {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const dbUser = await prisma.user.findUnique({
-    where: { id: user.id },
-    include: { msAccounts: { orderBy: { isDefault: "desc" } } },
-  });
+  const dbUser = await getUserWithAccounts(user.id);
   if (!dbUser) redirect("/onboarding");
-  if (!dbUser.msAccounts.length) redirect("/onboarding");
+  if (!dbUser.allAccounts.length) redirect("/onboarding");
 
   // Current week: Monday 00:00:00 → Sunday 23:59:59
   const now = new Date();
@@ -61,16 +58,16 @@ export default async function CalendarPage() {
     .flatMap((r) => r.value)
     .sort((a, b) => new Date(a.startDateTime).getTime() - new Date(b.startDateTime).getTime());
 
-  const defaultAccount = dbUser.msAccounts.find((a) => a.isDefault) ?? dbUser.msAccounts[0];
-  const userName = dbUser.name ?? defaultAccount.displayName ?? user.email ?? "You";
+  const defaultAccount = dbUser.defaultAccount;
+  const userName = dbUser.name ?? defaultAccount?.displayName ?? user.email ?? "You";
 
-  const unreadCount = await getUnreadCount(user.id, defaultAccount.homeAccountId);
+  const unreadCount = defaultAccount ? await getUnreadCount(user.id, defaultAccount.homeAccountId) : 0;
 
   return (
     <div className="flex" style={{ height: "100vh", overflow: "hidden" }}>
-      <StoreInitializer accounts={dbUser.msAccounts} inboxUnread={unreadCount} />
-      <Sidebar userName={userName} userEmail={defaultAccount.msEmail} />
-      <CalendarClient weekStart={weekStartStr} events={events} />
+      <StoreInitializer accounts={dbUser.msAccounts} imapAccounts={dbUser.imapAccounts} jmapAccounts={dbUser.jmapAccounts} inboxUnread={unreadCount} />
+      <Sidebar userName={userName} userEmail={defaultAccount?.email ?? dbUser.email} />
+      <CalendarClient weekStart={weekStartStr} events={events} userTimeZone={dbUser.preferredTimeZone} />
     </div>
   );
 }

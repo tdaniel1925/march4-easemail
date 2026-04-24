@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { getUserWithAccounts } from "@/lib/utils/get-user-accounts";
 import { prisma } from "@/lib/prisma";
 import { graphGet } from "@/lib/microsoft/graph";
 import Sidebar from "@/components/Sidebar";
@@ -35,14 +36,10 @@ export default async function InboxPage() {
   if (!user) redirect("/login");
 
   // 2. Load user + ALL connected accounts from DB
-  const dbUser = await prisma.user.findUnique({
-    where: { id: user.id },
-    include: { msAccounts: { orderBy: { isDefault: "desc" } } },
-  });
-
+  const dbUser = await getUserWithAccounts(user.id);
   if (!dbUser) redirect("/onboarding");
 
-  const defaultAccount = dbUser.msAccounts.find((a) => a.isDefault) ?? dbUser.msAccounts[0];
+  const defaultAccount = dbUser.defaultAccount;
   if (!defaultAccount) redirect("/onboarding");
 
   // 3. Try DB cache first, fall back to Graph API
@@ -104,10 +101,10 @@ export default async function InboxPage() {
 
   return (
     <div className="flex" style={{ height: "100vh", overflow: "hidden" }}>
-      <StoreInitializer accounts={dbUser.msAccounts} inboxUnread={unreadCount} />
+      <StoreInitializer accounts={dbUser.msAccounts} imapAccounts={dbUser.imapAccounts} jmapAccounts={dbUser.jmapAccounts} inboxUnread={unreadCount} />
       <Sidebar
         userName={dbUser.name ?? user.email ?? "You"}
-        userEmail={defaultAccount.msEmail}
+        userEmail={defaultAccount.email}
       />
       <InboxClient initialEmails={emails} initialNextLink={initialNextLink} />
     </div>

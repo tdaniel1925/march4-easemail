@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { graphGet, graphPost } from "@/lib/microsoft/graph";
+import { detectProviderType } from "@/lib/providers/registry";
 
 interface GraphPerson {
   displayName?: string;
@@ -24,6 +25,7 @@ interface GraphContact {
 
 // ─── GET /api/contacts?q=searchTerm ──────────────────────────────────────────
 // Returns up to 8 contacts matching the query. Cache-first, falls back to Graph.
+// IMAP/JMAP accounts don't support contacts — returns empty array.
 
 export async function GET(req: NextRequest) {
   const supabase = await createClient();
@@ -31,10 +33,19 @@ export async function GET(req: NextRequest) {
   if (!user) return NextResponse.json([], { status: 200 });
 
   const q = req.nextUrl.searchParams.get("q")?.trim() ?? "";
+  const homeAccountId = req.nextUrl.searchParams.get("homeAccountId");
+
+  // If a non-Microsoft account is specified, return empty contacts
+  if (homeAccountId && detectProviderType(homeAccountId) !== "microsoft") {
+    return NextResponse.json({ contacts: [] });
+  }
+
   if (q.length < 2) return NextResponse.json([]);
+  // Limit search term length to prevent abuse
+  if (q.length > 200) return NextResponse.json([]);
 
   try {
-    // Try DB cache first
+    // Try DB cache first — uses Prisma parameterized queries (safe by default)
     const cached = await prisma.cachedContact.findMany({
       where: {
         userId: user.id,
@@ -55,12 +66,18 @@ export async function GET(req: NextRequest) {
     // Cache query failed — fall through to Graph
   }
 
-  const account = await prisma.msConnectedAccount.findFirst({
-    where: { userId: user.id, isDefault: true },
-  });
+  // Find a Microsoft account to query Graph — use explicit or default
+  const account = homeAccountId
+    ? await prisma.msConnectedAccount.findFirst({
+        where: { userId: user.id, homeAccountId },
+      })
+    : await prisma.msConnectedAccount.findFirst({
+        where: { userId: user.id, isDefault: true },
+      });
   if (!account) return NextResponse.json([]);
 
   try {
+    // q is encoded via encodeURIComponent — special characters are percent-encoded, not interpolated raw
     const data = await graphGet<GraphResponse>(
       user.id,
       account.homeAccountId,
@@ -84,16 +101,12 @@ export async function GET(req: NextRequest) {
 }
 
 // ─── POST /api/contacts — Create a new contact ────────────────────────────────
+// Only supported for Microsoft accounts. IMAP/JMAP accounts return 400.
 
 export async function POST(req: NextRequest) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-
-  const account = await prisma.msConnectedAccount.findFirst({
-    where: { userId: user.id, isDefault: true },
-  });
-  if (!account) return NextResponse.json({ error: "No connected account" }, { status: 400 });
 
   const body = await req.json() as {
     displayName: string;
@@ -101,7 +114,27 @@ export async function POST(req: NextRequest) {
     phone?: string;
     company?: string;
     title?: string;
+    homeAccountId?: string;
   };
+
+  // If a non-Microsoft account is specified, contacts are not supported
+  if (body.homeAccountId && detectProviderType(body.homeAccountId) !== "microsoft") {
+    return NextResponse.json({ error: "Not supported for this account type" }, { status: 400 });
+  }
+
+  const account = body.homeAccountId
+    ? await prisma.msConnectedAccount.findFirst({
+        where: { userId: user.id, homeAccountId: body.homeAccountId },
+      })
+    : await prisma.msConnectedAccount.findFirst({
+        where: { userId: user.id, isDefault: true },
+      });
+  if (!account) return NextResponse.json({ error: "No connected account" }, { status: 400 });
+
+  // Validate required field
+  if (!body.displayName?.trim()) {
+    return NextResponse.json({ error: "displayName is required" }, { status: 400 });
+  }
 
   const payload: GraphContact = {
     displayName: body.displayName,

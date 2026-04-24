@@ -693,7 +693,7 @@ export default function EventFormModal({ prefill, onClose, onSaved, editEvent }:
                 className="w-full text-sm border border-neutral-200 rounded-lg px-3 py-2.5 focus:outline-none focus:border-neutral-400 bg-white"
               >
                 {accounts.map((acc) => (
-                  <option key={acc.homeAccountId} value={acc.homeAccountId}>{acc.msEmail}</option>
+                  <option key={acc.homeAccountId} value={acc.homeAccountId}>{acc.email ?? acc.msEmail}</option>
                 ))}
               </select>
             </div>

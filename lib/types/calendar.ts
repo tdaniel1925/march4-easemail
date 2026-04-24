@@ -5,6 +5,7 @@ export interface CalEvent {
   subject: string;
   startDateTime: string;   // ISO 8601
   endDateTime: string;     // ISO 8601
+  timeZone: string;        // IANA timezone (e.g. "America/Chicago")
   isAllDay: boolean;
   location?: string;
   bodyPreview?: string;
@@ -57,6 +58,7 @@ export function mapGraphEvent(
     subject: e.subject ?? "(no subject)",
     startDateTime: e.start.dateTime,
     endDateTime: e.end.dateTime,
+    timeZone: e.start.timeZone ?? "UTC",
     isAllDay: e.isAllDay ?? false,
     location: e.location?.displayName || undefined,
     bodyPreview: e.bodyPreview || undefined,

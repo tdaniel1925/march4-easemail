@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { prisma } from "@/lib/prisma";
+import { getUserWithAccounts } from "@/lib/utils/get-user-accounts";
 import Sidebar from "@/components/Sidebar";
 import { StoreInitializer } from "@/components/StoreInitializer";
 import SignaturesClient from "@/components/signatures/SignaturesClient";
@@ -13,26 +13,22 @@ export default async function SignaturesPage() {
   } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const dbUser = await prisma.user.findUnique({
-    where: { id: user.id },
-    include: { msAccounts: { orderBy: { isDefault: "desc" } } },
-  });
+  const dbUser = await getUserWithAccounts(user.id);
   if (!dbUser) redirect("/onboarding");
 
-  const defaultAccount =
-    dbUser.msAccounts.find((a) => a.isDefault) ?? dbUser.msAccounts[0];
+  const defaultAccount = dbUser.defaultAccount;
   if (!defaultAccount) redirect("/onboarding");
 
   const unreadCount = await getUnreadCount(user.id, defaultAccount.homeAccountId);
 
   return (
     <div className="flex" style={{ height: "100vh", overflow: "hidden" }}>
-      <StoreInitializer accounts={dbUser.msAccounts} inboxUnread={unreadCount} />
+      <StoreInitializer accounts={dbUser.msAccounts} imapAccounts={dbUser.imapAccounts} jmapAccounts={dbUser.jmapAccounts} inboxUnread={unreadCount} />
       <Sidebar
         userName={dbUser.name ?? user.email ?? "You"}
-        userEmail={defaultAccount.msEmail}
+        userEmail={defaultAccount.email}
       />
-      <SignaturesClient userEmail={defaultAccount.msEmail} />
+      <SignaturesClient userEmail={defaultAccount.email} />
     </div>
   );
 }

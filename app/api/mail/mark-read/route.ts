@@ -1,47 +1,39 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { prisma } from "@/lib/prisma";
-import { graphFetch } from "@/lib/microsoft/graph";
+import { verifyAccountOwnership, getProvider } from "@/lib/providers/registry";
 
 export async function POST(req: NextRequest) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { messageId, isRead } = await req.json() as { messageId: string; isRead?: boolean };
+  const { messageId, isRead, homeAccountId } = await req.json() as {
+    messageId: string;
+    isRead?: boolean;
+    homeAccountId?: string;
+  };
   if (!messageId) return NextResponse.json({ error: "messageId required" }, { status: 400 });
 
-  const account = await prisma.msConnectedAccount.findFirst({
-    where: { userId: user.id, isDefault: true },
-  });
+  // Resolve account: use provided homeAccountId or fall back to default
+  let accountId = homeAccountId;
+  if (!accountId) {
+    // Backward compatibility: find default account across all provider types
+    const { getAllAccounts } = await import("@/lib/providers/registry");
+    const accounts = await getAllAccounts(user.id);
+    const defaultAccount = accounts.find((a) => a.isDefault) ?? accounts[0];
+    if (!defaultAccount) return NextResponse.json({ error: "No connected account" }, { status: 404 });
+    accountId = defaultAccount.accountId;
+  }
+
+  // Verify ownership
+  const account = await verifyAccountOwnership(user.id, accountId);
   if (!account) return NextResponse.json({ error: "No connected account" }, { status: 404 });
 
   const readValue = isRead ?? true; // Default to true for backward compatibility
 
   try {
-    // Update in Microsoft Graph
-    const graphRes = await graphFetch(
-      user.id,
-      account.homeAccountId,
-      `/me/messages/${messageId}`,
-      {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ isRead: readValue }),
-      }
-    );
-
-    if (!graphRes.ok) {
-      const error = await graphRes.text().catch(() => "Unknown error");
-      return NextResponse.json({ error: `Graph API error: ${error}` }, { status: 500 });
-    }
-
-    // FIX: Wait for cache update to complete before returning success
-    // This prevents the issue where UI shows read but database has isRead: false
-    await prisma.cachedEmail.updateMany({
-      where: { id: messageId, userId: user.id },
-      data: { isRead: readValue },
-    });
+    const provider = getProvider(accountId);
+    await provider.markRead(user.id, accountId, messageId, readValue);
 
     return NextResponse.json({ ok: true, isRead: readValue });
   } catch (error) {

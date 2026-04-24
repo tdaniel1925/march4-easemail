@@ -16,24 +16,30 @@ describe("account-store", () => {
     id: "account-1",
     homeAccountId: "home-1",
     msEmail: "user1@example.com",
+    email: "user1@example.com",
     displayName: "User One",
     isDefault: true,
+    providerType: "microsoft",
   };
 
   const mockAccount2: ConnectedAccount = {
     id: "account-2",
     homeAccountId: "home-2",
     msEmail: "user2@example.com",
+    email: "user2@example.com",
     displayName: "User Two",
     isDefault: false,
+    providerType: "microsoft",
   };
 
   const mockAccount3: ConnectedAccount = {
     id: "account-3",
     homeAccountId: "home-3",
     msEmail: "user3@example.com",
+    email: "user3@example.com",
     displayName: "User Three",
     isDefault: false,
+    providerType: "microsoft",
   };
 
   describe("setAccounts", () => {

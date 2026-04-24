@@ -64,6 +64,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
       subject: e.subject || "(no subject)",
       startDateTime: e.startDateTime.toISOString(),
       endDateTime: e.endDateTime.toISOString(),
+      timeZone: e.timeZone ?? "UTC",
       isAllDay: e.isAllDay,
       location: e.location ?? undefined,
       bodyPreview: e.bodyPreview || undefined,

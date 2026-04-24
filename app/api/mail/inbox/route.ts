@@ -4,7 +4,9 @@ import { prisma } from "@/lib/prisma";
 import { graphGet } from "@/lib/microsoft/graph";
 import { isReauthError } from "@/lib/microsoft/auth-errors";
 import { mapCachedEmail } from "@/lib/utils/email-helpers";
-import type { EmailMessage } from "@/components/inbox/InboxClient";
+import { verifyAccountOwnership, detectProviderType, getProvider } from "@/lib/providers/registry";
+import type { NormalizedEmail, FetchEmailsOptions } from "@/lib/providers/types";
+import type { EmailMessage } from "@/lib/types/email";
 
 const GRAPH_BASE = "https://graph.microsoft.com/v1.0";
 const SELECT = "id,subject,bodyPreview,receivedDateTime,isRead,hasAttachments,flag,from,body";
@@ -16,6 +18,9 @@ const TAB_PATHS: Record<string, string> = {
   starred:     `/me/mailFolders/inbox/messages?$filter=flag/flagStatus eq 'flagged'&$select=${SELECT}&$top=100`,
   attachments: `/me/mailFolders/inbox/messages?$filter=hasAttachments eq true&$select=${SELECT}&$top=100&$orderby=receivedDateTime desc`,
 };
+
+/** Allowed tab values — prevents arbitrary string injection into query paths */
+const ALLOWED_TABS = new Set(["", "unread", "starred", "attachments", "label"]);
 
 interface GraphMessage {
   id: string;
@@ -54,6 +59,29 @@ function mapGraphMessage(m: GraphMessage): EmailMessage {
   };
 }
 
+/** Map a NormalizedEmail (from provider) to the frontend EmailMessage format */
+function mapNormalizedToEmailMessage(e: NormalizedEmail): EmailMessage {
+  return {
+    id: e.id,
+    subject: e.subject || "(no subject)",
+    bodyPreview: e.bodyPreview ?? "",
+    receivedDateTime: e.receivedDateTime,
+    sentDateTime: e.sentDateTime,
+    isRead: e.isRead,
+    hasAttachments: e.hasAttachments,
+    flag: { flagStatus: e.flagStatus },
+    from: {
+      name: e.from?.name ?? "Unknown",
+      address: e.from?.address ?? "",
+    },
+    toRecipients: e.toRecipients,
+    body: e.bodyHtml
+      ? { content: e.bodyHtml, contentType: "html" }
+      : { content: e.bodyText ?? e.bodyPreview ?? "", contentType: "text" },
+    attachments: e.attachments,
+  };
+}
+
 export async function GET(req: NextRequest) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
@@ -62,9 +90,46 @@ export async function GET(req: NextRequest) {
   const homeAccountId = req.nextUrl.searchParams.get("homeAccountId");
   if (!homeAccountId) return NextResponse.json({ error: "homeAccountId required" }, { status: 400 });
 
+  // Verify the homeAccountId belongs to this authenticated user (prevents IDOR / parameter tampering)
+  const account = await verifyAccountOwnership(user.id, homeAccountId);
+  if (!account) return NextResponse.json({ error: "Account not found" }, { status: 404 });
+
+  const providerType = detectProviderType(homeAccountId);
   const nextLinkParam = req.nextUrl.searchParams.get("nextLink");
-  const tab = req.nextUrl.searchParams.get("tab") ?? "";
-  const labelParam = req.nextUrl.searchParams.get("label") ?? "";
+  const rawTab = req.nextUrl.searchParams.get("tab") ?? "";
+  // Validate tab against allowed values — reject unknown tabs
+  const tab = ALLOWED_TABS.has(rawTab) ? rawTab : "";
+  // Sanitize label: only allow alphanumeric, spaces, hyphens, underscores — prevents OData injection
+  const rawLabel = req.nextUrl.searchParams.get("label") ?? "";
+  const labelParam = rawLabel.replace(/[^a-zA-Z0-9 \-_]/g, "").slice(0, 64);
+
+  // ── IMAP / JMAP provider path ─────────────────────────────────────────────
+  if (providerType !== "microsoft") {
+    try {
+      const provider = getProvider(homeAccountId);
+      const filter = tab === "unread" ? "unread"
+        : tab === "starred" ? "starred"
+        : tab === "attachments" ? "attachments"
+        : undefined;
+
+      const options: FetchEmailsOptions = {
+        top: 50,
+        ...(filter ? { filter } : {}),
+        ...(tab === "label" && labelParam ? { label: labelParam } : {}),
+        ...(nextLinkParam ? { cursor: nextLinkParam } : {}),
+      };
+
+      const result = await provider.fetchEmails(user.id, homeAccountId, "inbox", options);
+      const emails = result.emails.map(mapNormalizedToEmailMessage);
+      return NextResponse.json({ emails, nextLink: result.nextCursor ?? null });
+    } catch (err) {
+      const msg = String(err);
+      console.error("[inbox] provider error:", msg);
+      return NextResponse.json({ error: msg }, { status: 500 });
+    }
+  }
+
+  // ── Microsoft Graph path (cache-first + Graph fallback) ───────────────────
 
   // If nextLink is a Graph URL, pass through to Graph directly (legacy pagination)
   if (nextLinkParam && nextLinkParam.startsWith("http")) {
@@ -112,6 +177,7 @@ export async function GET(req: NextRequest) {
         where.hasAttachments = true;
       } else if (tab === "label" && labelParam) {
         where.folderId = inboxFolder.id;
+        // labelParam is already sanitized above — safe for Prisma parameterized query
         where.categories = { array_contains: labelParam };
       } else {
         where.folderId = inboxFolder.id;
@@ -142,6 +208,7 @@ export async function GET(req: NextRequest) {
 
     let tabPath: string | undefined;
     if (tab === "label" && labelParam) {
+      // labelParam is sanitized: alphanumeric/spaces/hyphens/underscores only — safe to embed in OData filter
       tabPath = `/me/mailFolders/inbox/messages?$filter=categories/any(c:c eq '${labelParam}')&$select=${SELECT}&$top=100`;
     } else {
       tabPath = TAB_PATHS[tab];

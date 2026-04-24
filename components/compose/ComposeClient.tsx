@@ -66,6 +66,7 @@ interface Account {
   id: string;
   homeAccountId: string;
   msEmail: string;
+  email?: string;
   displayName: string | null;
   isDefault: boolean;
 }
@@ -1333,14 +1334,14 @@ export default function ComposeClient({
               >
                 {accounts.map((acc) => (
                   <option key={acc.homeAccountId} value={acc.homeAccountId}>
-                    {acc.displayName ? `${acc.displayName} <${acc.msEmail}>` : acc.msEmail}
+                    {acc.displayName ? `${acc.displayName} <${acc.email ?? acc.msEmail}>` : (acc.email ?? acc.msEmail)}
                     {acc.isDefault ? " (default)" : ""}
                   </option>
                 ))}
               </select>
             ) : (
               <span className="text-sm text-neutral-700">
-                {defaultAccount?.displayName ? `${defaultAccount.displayName} <${defaultAccount.msEmail}>` : defaultAccount?.msEmail}
+                {defaultAccount?.displayName ? `${defaultAccount.displayName} <${defaultAccount.email ?? defaultAccount.msEmail}>` : (defaultAccount?.email ?? defaultAccount?.msEmail)}
               </span>
             )}
           </div>

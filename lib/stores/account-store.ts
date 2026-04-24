@@ -1,12 +1,15 @@
 import { create } from "zustand";
 import type { MailFolder } from "@/lib/types/email";
+import type { ProviderType } from "@/lib/providers/types";
 
 export interface ConnectedAccount {
   id: string;
   homeAccountId: string;
-  msEmail: string;
+  msEmail: string; // kept for backward compatibility
+  email: string;
   displayName: string | null;
   isDefault: boolean;
+  providerType: ProviderType;
 }
 
 interface AccountStore {

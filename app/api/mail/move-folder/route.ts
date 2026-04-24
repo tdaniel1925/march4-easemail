@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { prisma } from "@/lib/prisma";
-import { graphFetch } from "@/lib/microsoft/graph";
+import { verifyAccountOwnership, getProvider } from "@/lib/providers/registry";
 
 /**
  * POST /api/mail/move-folder
@@ -12,9 +11,10 @@ export async function POST(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { messageId, folderId } = await req.json() as {
+  const { messageId, folderId, homeAccountId } = await req.json() as {
     messageId: string;
     folderId: string;
+    homeAccountId?: string;
   };
 
   if (!messageId || !folderId) {
@@ -24,47 +24,31 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const account = await prisma.msConnectedAccount.findFirst({
-    where: { userId: user.id, isDefault: true },
-  });
+  // Resolve account: use provided homeAccountId or fall back to default
+  let accountId = homeAccountId;
+  if (!accountId) {
+    const { getAllAccounts } = await import("@/lib/providers/registry");
+    const accounts = await getAllAccounts(user.id);
+    const defaultAccount = accounts.find((a) => a.isDefault) ?? accounts[0];
+    if (!defaultAccount) return NextResponse.json({ error: "No connected account" }, { status: 404 });
+    accountId = defaultAccount.accountId;
+  }
+
+  // Verify ownership
+  const account = await verifyAccountOwnership(user.id, accountId);
   if (!account) return NextResponse.json({ error: "No connected account" }, { status: 404 });
 
   try {
-    // Verify folder belongs to user
-    const folder = await prisma.cachedFolder.findFirst({
-      where: {
-        id: folderId,
-        userId: user.id,
-        homeAccountId: account.homeAccountId,
-      },
-    });
+    // Verify folder belongs to user by checking provider's folder list
+    const provider = getProvider(accountId);
+    const folders = await provider.fetchFolders(user.id, accountId);
+    const folder = folders.find((f) => f.id === folderId);
 
     if (!folder) {
       return NextResponse.json({ error: "Folder not found or access denied" }, { status: 404 });
     }
 
-    // Move message in Microsoft Graph
-    const graphRes = await graphFetch(
-      user.id,
-      account.homeAccountId,
-      `/me/messages/${messageId}/move`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ destinationId: folderId }),
-      }
-    );
-
-    if (!graphRes.ok) {
-      const error = await graphRes.text().catch(() => "Unknown error");
-      return NextResponse.json({ error: `Graph API error: ${error}` }, { status: 500 });
-    }
-
-    // FIX: Wait for cache update to complete before returning success
-    await prisma.cachedEmail.updateMany({
-      where: { id: messageId, userId: user.id },
-      data: { folderId },
-    });
+    await provider.moveMessage(user.id, accountId, messageId, folderId);
 
     return NextResponse.json({ ok: true, folderId });
   } catch (error) {

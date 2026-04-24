@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { graphFetch } from "@/lib/microsoft/graph";
+import { verifyAccountOwnership, detectProviderType, getProvider } from "@/lib/providers/registry";
+import type { SendEmailParams } from "@/lib/providers/types";
 
 // ─── GET /api/cron/send-scheduled ────────────────────────────────────────────
 // Called by Vercel Cron every minute. Sends any drafts whose scheduledAt has passed.
@@ -24,42 +26,78 @@ export async function GET(req: NextRequest) {
 
   const results = await Promise.allSettled(
     dueDrafts.map(async (draft) => {
-      const account = draft.homeAccountId
-        ? await prisma.msConnectedAccount.findFirst({
-            where: { userId: draft.userId, homeAccountId: draft.homeAccountId },
-          })
-        : await prisma.msConnectedAccount.findFirst({
-            where: { userId: draft.userId, isDefault: true },
-          });
+      const accountId = draft.homeAccountId;
 
-      if (!account) throw new Error(`No account for draft ${draft.id}`);
+      // Determine provider type and resolve account
+      const providerType = accountId ? detectProviderType(accountId) : "microsoft";
 
-      const to = draft.toRecipients as unknown as { emailAddress: { address: string } }[];
-      const cc = draft.ccRecipients as unknown as { emailAddress: { address: string } }[];
-      const bcc = draft.bccRecipients as unknown as { emailAddress: { address: string } }[];
+      if (providerType !== "microsoft" && accountId) {
+        // ── IMAP / JMAP provider path ───────────────────────────────────────
+        const account = await verifyAccountOwnership(draft.userId, accountId);
+        if (!account) throw new Error(`No account for draft ${draft.id}`);
 
-      const payload = {
-        message: {
+        const to = draft.toRecipients as unknown as { emailAddress: { address: string } }[];
+        const cc = draft.ccRecipients as unknown as { emailAddress: { address: string } }[];
+        const bcc = draft.bccRecipients as unknown as { emailAddress: { address: string } }[];
+
+        const provider = getProvider(accountId);
+        const params: SendEmailParams = {
+          to: (to ?? []).map((r) => ({ address: r.emailAddress.address })),
+          cc: cc?.length ? cc.map((r) => ({ address: r.emailAddress.address })) : undefined,
+          bcc: bcc?.length ? bcc.map((r) => ({ address: r.emailAddress.address })) : undefined,
           subject: draft.subject ?? "(No subject)",
-          body: { contentType: "HTML", content: draft.bodyHtml ?? "" },
-          toRecipients: to,
-          ...(cc?.length ? { ccRecipients: cc } : {}),
-          ...(bcc?.length ? { bccRecipients: bcc } : {}),
-          // FIX: Include importance and read receipt settings
-          ...(draft.importance === "high" ? { importance: "high" } : {}),
-          ...(draft.requestReadReceipt ? { isReadReceiptRequested: true } : {}),
-        },
-        saveToSentItems: true,
-      };
+          bodyHtml: draft.bodyHtml ?? "",
+          importance: (draft.importance as "normal" | "high" | "low") ?? "normal",
+        };
 
-      const res = await graphFetch(draft.userId, account.homeAccountId, "/me/sendMail", {
-        method: "POST",
-        body: JSON.stringify(payload),
-      });
+        await provider.sendEmail(draft.userId, accountId, params);
+      } else {
+        // ── Microsoft Graph path ────────────────────────────────────────────
+        const msAccount = accountId
+          ? await prisma.msConnectedAccount.findFirst({
+              where: { userId: draft.userId, homeAccountId: accountId },
+            })
+          : await prisma.msConnectedAccount.findFirst({
+              where: { userId: draft.userId, isDefault: true },
+            });
 
-      if (!res.ok) {
-        const err = await res.text();
-        throw new Error(`Graph send failed for draft ${draft.id}: ${err}`);
+        if (!msAccount) throw new Error(`No account for draft ${draft.id}`);
+
+        const to = draft.toRecipients as unknown as { emailAddress: { address: string } }[];
+        const cc = draft.ccRecipients as unknown as { emailAddress: { address: string } }[];
+        const bcc = draft.bccRecipients as unknown as { emailAddress: { address: string } }[];
+
+        const payload = {
+          message: {
+            subject: draft.subject ?? "(No subject)",
+            body: { contentType: "HTML", content: draft.bodyHtml ?? "" },
+            toRecipients: to,
+            ...(cc?.length ? { ccRecipients: cc } : {}),
+            ...(bcc?.length ? { bccRecipients: bcc } : {}),
+            ...(draft.importance === "high" ? { importance: "high" } : {}),
+            ...(draft.requestReadReceipt ? { isReadReceiptRequested: true } : {}),
+          },
+          saveToSentItems: true,
+        };
+
+        const res = await graphFetch(draft.userId, msAccount.homeAccountId, "/me/sendMail", {
+          method: "POST",
+          body: JSON.stringify(payload),
+        });
+
+        if (!res.ok) {
+          const err = await res.text();
+          throw new Error(`Graph send failed for draft ${draft.id}: ${err}`);
+        }
+
+        // Clean up Graph draft if exists
+        if (draft.graphDraftId) {
+          try {
+            await graphFetch(draft.userId, msAccount.homeAccountId, `/me/messages/${draft.graphDraftId}`, {
+              method: "DELETE",
+            });
+          } catch {}
+        }
       }
 
       // Mark as sent
@@ -67,15 +105,6 @@ export async function GET(req: NextRequest) {
         where: { id: draft.id },
         data: { scheduledSent: true },
       });
-
-      // Clean up Graph draft if exists
-      if (draft.graphDraftId) {
-        try {
-          await graphFetch(draft.userId, account.homeAccountId, `/me/messages/${draft.graphDraftId}`, {
-            method: "DELETE",
-          });
-        } catch {}
-      }
     })
   );
 

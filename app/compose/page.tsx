@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { getUserWithAccounts } from "@/lib/utils/get-user-accounts";
 import { prisma } from "@/lib/prisma";
 import Sidebar from "@/components/Sidebar";
 import { StoreInitializer } from "@/components/StoreInitializer";
@@ -21,15 +22,11 @@ export default async function ComposePage({
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const dbUser = await prisma.user.findUnique({
-    where: { id: user.id },
-    include: { msAccounts: { orderBy: { isDefault: "desc" } } },
-  });
-
+  const dbUser = await getUserWithAccounts(user.id);
   if (!dbUser) redirect("/onboarding");
-  if (!dbUser.msAccounts.length) redirect("/onboarding");
 
-  const defaultAccount = dbUser.msAccounts.find((a) => a.isDefault) ?? dbUser.msAccounts[0];
+  const defaultAccount = dbUser.defaultAccount;
+  if (!defaultAccount) redirect("/onboarding");
   const params = await searchParams;
   const mode = params.mode as "reply" | "replyAll" | "forward" | undefined;
 
@@ -45,10 +42,10 @@ export default async function ComposePage({
 
   return (
     <div className="flex" style={{ height: "100vh", overflow: "hidden" }}>
-      <StoreInitializer accounts={dbUser.msAccounts} inboxUnread={unreadCount} />
+      <StoreInitializer accounts={dbUser.msAccounts} imapAccounts={dbUser.imapAccounts} jmapAccounts={dbUser.jmapAccounts} inboxUnread={unreadCount} />
       <Sidebar
         userName={dbUser.name ?? user.email ?? "You"}
-        userEmail={defaultAccount.msEmail}
+        userEmail={defaultAccount.email}
       />
       <ComposeClient
         accounts={dbUser.msAccounts.map((a) => ({

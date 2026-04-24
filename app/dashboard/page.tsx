@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { getUserWithAccounts } from "@/lib/utils/get-user-accounts";
 import { prisma } from "@/lib/prisma";
 import { graphGet } from "@/lib/microsoft/graph";
 import Sidebar from "@/components/Sidebar";
@@ -43,13 +44,10 @@ export default async function DashboardPage() {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const dbUser = await prisma.user.findUnique({
-    where: { id: user.id },
-    include: { msAccounts: { orderBy: { isDefault: "desc" } } },
-  });
+  const dbUser = await getUserWithAccounts(user.id);
   if (!dbUser) redirect("/onboarding");
 
-  const defaultAccount = dbUser.msAccounts.find((a) => a.isDefault) ?? dbUser.msAccounts[0];
+  const defaultAccount = dbUser.defaultAccount;
   if (!defaultAccount) redirect("/onboarding");
 
   // Fetch today's calendar events across all accounts
@@ -117,36 +115,36 @@ export default async function DashboardPage() {
   }
 
   // Fetch weekly email activity data (last 7 days)
+  // We use findMany + JS aggregation because groupBy on a DateTime field groups by exact
+  // timestamp (not by calendar day), which would return one row per email.
   const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
-  let emailsData = [0, 0, 0, 0, 0, 0, 0]; // Mon-Sun default
+  let emailsData = [0, 0, 0, 0, 0, 0, 0]; // Mon–Sun default
   try {
-    const emailCounts = await prisma.cachedEmail.groupBy({
-      by: ['receivedDateTime'],
+    const receivedRows = await prisma.cachedEmail.findMany({
       where: {
         userId: user.id,
         homeAccountId: defaultAccount.homeAccountId,
         receivedDateTime: { gte: sevenDaysAgo },
+        isDraft: false,
       },
-      _count: { id: true },
+      select: { receivedDateTime: true },
     });
 
-    // Transform to [Mon, Tue, Wed, Thu, Fri, Sat, Sun] counts
+    // Map JS day (0=Sun…6=Sat) → Mon-first index [Mon=0 … Sun=6]
     const dayCountsMap: Record<number, number> = {};
-    emailCounts.forEach((item) => {
-      const date = new Date(item.receivedDateTime);
-      const dayOfWeek = date.getDay(); // 0=Sunday, 1=Monday, etc.
-      dayCountsMap[dayOfWeek] = (dayCountsMap[dayOfWeek] || 0) + item._count.id;
+    receivedRows.forEach(({ receivedDateTime }) => {
+      const day = new Date(receivedDateTime).getDay(); // 0=Sun
+      dayCountsMap[day] = (dayCountsMap[day] ?? 0) + 1;
     });
 
-    // Remap to Mon=0, Tue=1, ..., Sun=6 format
     emailsData = [
-      dayCountsMap[1] || 0, // Monday
-      dayCountsMap[2] || 0, // Tuesday
-      dayCountsMap[3] || 0, // Wednesday
-      dayCountsMap[4] || 0, // Thursday
-      dayCountsMap[5] || 0, // Friday
-      dayCountsMap[6] || 0, // Saturday
-      dayCountsMap[0] || 0, // Sunday
+      dayCountsMap[1] ?? 0, // Monday
+      dayCountsMap[2] ?? 0, // Tuesday
+      dayCountsMap[3] ?? 0, // Wednesday
+      dayCountsMap[4] ?? 0, // Thursday
+      dayCountsMap[5] ?? 0, // Friday
+      dayCountsMap[6] ?? 0, // Saturday
+      dayCountsMap[0] ?? 0, // Sunday
     ];
   } catch {
     // Not fatal, use defaults
@@ -196,37 +194,37 @@ export default async function DashboardPage() {
   }
 
   // Get sent emails for the week (for dual chart)
+  // Use the DB cache (sentDateTime field) rather than a live Graph call so this is fast.
   let sentData = [0, 0, 0, 0, 0, 0, 0];
   try {
-    const sentResults = await Promise.allSettled(
-      dbUser.msAccounts.map(acc =>
-        graphGet<GraphMessageList>(
-          user.id,
-          acc.homeAccountId,
-          `/me/mailFolders/sentitems/messages?$filter=sentDateTime ge ${sevenDaysAgo.toISOString()}&$select=sentDateTime&$top=999`
-        )
-      )
-    );
-
-    const allSent = sentResults
-      .filter((r): r is PromiseFulfilledResult<GraphMessageList> => r.status === "fulfilled")
-      .flatMap(r => r.value.value ?? []);
+    const sentRows = await prisma.cachedEmail.findMany({
+      where: {
+        userId: user.id,
+        // Include all connected accounts for a full picture
+        sentDateTime: { gte: sevenDaysAgo },
+        isDraft: false,
+        // sentDateTime being non-null implies it's a sent item
+        NOT: { sentDateTime: null },
+        folderId: { in: ["sentitems", "sentItems", "SentItems"] },
+      },
+      select: { sentDateTime: true },
+    });
 
     const sentDayMap: Record<number, number> = {};
-    allSent.forEach((msg) => {
-      const date = new Date(msg.receivedDateTime); // Note: Graph API uses receivedDateTime even for sent
-      const dayOfWeek = date.getDay();
-      sentDayMap[dayOfWeek] = (sentDayMap[dayOfWeek] || 0) + 1;
+    sentRows.forEach(({ sentDateTime }) => {
+      if (!sentDateTime) return;
+      const day = new Date(sentDateTime).getDay(); // 0=Sun
+      sentDayMap[day] = (sentDayMap[day] ?? 0) + 1;
     });
 
     sentData = [
-      sentDayMap[1] || 0,
-      sentDayMap[2] || 0,
-      sentDayMap[3] || 0,
-      sentDayMap[4] || 0,
-      sentDayMap[5] || 0,
-      sentDayMap[6] || 0,
-      sentDayMap[0] || 0,
+      sentDayMap[1] ?? 0,
+      sentDayMap[2] ?? 0,
+      sentDayMap[3] ?? 0,
+      sentDayMap[4] ?? 0,
+      sentDayMap[5] ?? 0,
+      sentDayMap[6] ?? 0,
+      sentDayMap[0] ?? 0,
     ];
   } catch {
     // Not fatal
@@ -235,13 +233,13 @@ export default async function DashboardPage() {
   // Get attachments count for today
   let attachmentsToday = 0;
   try {
-    const startOfToday = new Date(userDate.getFullYear(), userDate.getMonth(), userDate.getDate()).toISOString();
+    const startOfTodayDate = new Date(userDate.getFullYear(), userDate.getMonth(), userDate.getDate());
     attachmentsToday = await prisma.cachedEmail.count({
       where: {
         userId: user.id,
         homeAccountId: defaultAccount.homeAccountId,
         hasAttachments: true,
-        receivedDateTime: { gte: startOfToday }
+        receivedDateTime: { gte: startOfTodayDate }
       }
     });
   } catch {
@@ -273,10 +271,10 @@ export default async function DashboardPage() {
 
   return (
     <div className="flex" style={{ height: "100vh", overflow: "hidden" }}>
-      <StoreInitializer accounts={dbUser.msAccounts} inboxUnread={unreadCount} />
+      <StoreInitializer accounts={dbUser.msAccounts} imapAccounts={dbUser.imapAccounts} jmapAccounts={dbUser.jmapAccounts} inboxUnread={unreadCount} />
       <Sidebar
         userName={userName}
-        userEmail={defaultAccount.msEmail}
+        userEmail={defaultAccount.email}
       />
       <DashboardClient
         userName={userName.split(" ")[0]}

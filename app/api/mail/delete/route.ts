@@ -1,10 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { prisma } from "@/lib/prisma";
-import { graphFetch } from "@/lib/microsoft/graph";
+import { verifyAccountOwnership, getProvider } from "@/lib/providers/registry";
 
 /**
- * DELETE /api/mail/delete
+ * POST /api/mail/delete
  * Deletes an email (moves to Deleted Items or permanently deletes)
  */
 export async function POST(req: NextRequest) {
@@ -12,78 +11,46 @@ export async function POST(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { messageId, permanent } = await req.json() as {
+  const { messageId, permanent, homeAccountId } = await req.json() as {
     messageId: string;
     permanent?: boolean;
+    homeAccountId?: string;
   };
 
   if (!messageId) {
     return NextResponse.json({ error: "messageId required" }, { status: 400 });
   }
 
-  const account = await prisma.msConnectedAccount.findFirst({
-    where: { userId: user.id, isDefault: true },
-  });
+  // Resolve account: use provided homeAccountId or fall back to default
+  let accountId = homeAccountId;
+  if (!accountId) {
+    const { getAllAccounts } = await import("@/lib/providers/registry");
+    const accounts = await getAllAccounts(user.id);
+    const defaultAccount = accounts.find((a) => a.isDefault) ?? accounts[0];
+    if (!defaultAccount) return NextResponse.json({ error: "No connected account" }, { status: 404 });
+    accountId = defaultAccount.accountId;
+  }
+
+  // Verify ownership
+  const account = await verifyAccountOwnership(user.id, accountId);
   if (!account) return NextResponse.json({ error: "No connected account" }, { status: 404 });
 
   try {
+    const provider = getProvider(accountId);
+
     if (permanent) {
-      // Permanently delete from Microsoft Graph
-      const graphRes = await graphFetch(
-        user.id,
-        account.homeAccountId,
-        `/me/messages/${messageId}`,
-        { method: "DELETE" }
-      );
-
-      if (!graphRes.ok) {
-        const error = await graphRes.text().catch(() => "Unknown error");
-        return NextResponse.json({ error: `Graph API error: ${error}` }, { status: 500 });
-      }
-
-      // FIX: Wait for cache deletion to complete before returning success
-      await prisma.cachedEmail.deleteMany({
-        where: { id: messageId, userId: user.id },
-      });
-
+      await provider.deleteMessage(user.id, accountId, messageId);
       return NextResponse.json({ ok: true, deleted: true });
     } else {
       // Move to Deleted Items folder
-      const deletedFolder = await prisma.cachedFolder.findFirst({
-        where: {
-          userId: user.id,
-          homeAccountId: account.homeAccountId,
-          wellKnownName: "deleteditems",
-        },
-      });
+      const folders = await provider.fetchFolders(user.id, accountId);
+      const deletedFolder = folders.find((f) => f.wellKnownName === "deleteditems");
 
       if (!deletedFolder) {
         return NextResponse.json({ error: "Deleted Items folder not found" }, { status: 404 });
       }
 
-      // Move message in Microsoft Graph
-      const graphRes = await graphFetch(
-        user.id,
-        account.homeAccountId,
-        `/me/messages/${messageId}/move`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ destinationId: deletedFolder.id }),
-        }
-      );
-
-      if (!graphRes.ok) {
-        const error = await graphRes.text().catch(() => "Unknown error");
-        return NextResponse.json({ error: `Graph API error: ${error}` }, { status: 500 });
-      }
-
-      // FIX: Wait for cache update to complete before returning success
-      await prisma.cachedEmail.updateMany({
-        where: { id: messageId, userId: user.id },
-        data: { folderId: deletedFolder.id },
-      });
-
+      await provider.moveMessage(user.id, accountId, messageId, deletedFolder.id);
       return NextResponse.json({ ok: true, folderId: deletedFolder.id });
     }
   } catch (error) {

@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { prisma } from "@/lib/prisma";
+import { getUserWithAccounts } from "@/lib/utils/get-user-accounts";
 import { graphGet } from "@/lib/microsoft/graph";
 import Sidebar from "@/components/Sidebar";
 import { StoreInitializer } from "@/components/StoreInitializer";
@@ -47,21 +47,19 @@ export default async function EmailReadPage({
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const dbUser = await prisma.user.findUnique({
-    where: { id: user.id },
-    include: { msAccounts: { orderBy: { isDefault: "desc" } } },
-  });
+  const dbUser = await getUserWithAccounts(user.id);
   if (!dbUser) redirect("/onboarding");
 
-  const defaultAccount = dbUser.msAccounts.find((a) => a.isDefault) ?? dbUser.msAccounts[0];
+  const defaultAccount = dbUser.defaultAccount;
   if (!defaultAccount) redirect("/onboarding");
 
   let message: GraphMessage | null = null;
   try {
+    // Use encodeURIComponent to safely embed the message ID in the Graph URL path
     message = await graphGet<GraphMessage>(
       user.id,
       defaultAccount.homeAccountId,
-      `/me/messages/${id}?$select=id,subject,bodyPreview,receivedDateTime,isRead,hasAttachments,flag,from,toRecipients,ccRecipients,body&$expand=attachments($select=id,name,size,contentType)`
+      `/me/messages/${encodeURIComponent(id)}?$select=id,subject,bodyPreview,receivedDateTime,isRead,hasAttachments,flag,from,toRecipients,ccRecipients,body&$expand=attachments($select=id,name,size,contentType)`
     );
   } catch (err) {
     console.error("Failed to fetch message:", err);
@@ -106,10 +104,10 @@ export default async function EmailReadPage({
 
   return (
     <div className="flex" style={{ height: "100vh", overflow: "hidden" }}>
-      <StoreInitializer accounts={dbUser.msAccounts} inboxUnread={inboxUnread} />
+      <StoreInitializer accounts={dbUser.msAccounts} imapAccounts={dbUser.imapAccounts} jmapAccounts={dbUser.jmapAccounts} inboxUnread={inboxUnread} />
       <Sidebar
         userName={dbUser.name ?? user.email ?? "You"}
-        userEmail={defaultAccount.msEmail}
+        userEmail={defaultAccount.email}
       />
       <EmailReadClient email={email} homeAccountId={defaultAccount.homeAccountId} returnTo={returnTo} />
     </div>

@@ -5,6 +5,7 @@ import { syncEmails } from "@/lib/sync/email-sync";
 import { syncCalendar } from "@/lib/sync/calendar-sync";
 import { syncContacts } from "@/lib/sync/contact-sync";
 import { isReauthError } from "@/lib/microsoft/auth-errors";
+import { getProvider } from "@/lib/providers/registry";
 
 // ─── GET /api/cron/sync ───────────────────────────────────────────────────────
 // Called by Vercel Cron every minute. Delta-syncs emails, calendar, contacts
@@ -18,15 +19,28 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const accounts = await prisma.msConnectedAccount.findMany({
-    select: { userId: true, homeAccountId: true },
-  });
+  // Verify encryption key is available for IMAP/JMAP credential decryption
+  const hasEncryptionKey = !!process.env.CREDENTIAL_ENCRYPTION_KEY;
+
+  // Gather accounts from all providers
+  const [msAccounts, imapAccounts, jmapAccounts] = await Promise.all([
+    prisma.msConnectedAccount.findMany({ select: { userId: true, homeAccountId: true } }),
+    prisma.imapConnectedAccount.findMany({ select: { userId: true, accountId: true } }),
+    prisma.jmapConnectedAccount.findMany({ select: { userId: true, accountId: true } }),
+  ]);
+
+  const accounts = [
+    ...msAccounts.map((a) => ({ userId: a.userId, homeAccountId: a.homeAccountId, type: "microsoft" as const })),
+    // Only include IMAP/JMAP if encryption key is available
+    ...(hasEncryptionKey ? imapAccounts.map((a) => ({ userId: a.userId, homeAccountId: a.accountId, type: "imap" as const })) : []),
+    ...(hasEncryptionKey ? jmapAccounts.map((a) => ({ userId: a.userId, homeAccountId: a.accountId, type: "jmap" as const })) : []),
+  ];
 
   // Group by userId
-  const byUser = new Map<string, string[]>();
+  const byUser = new Map<string, { homeAccountId: string; type: string }[]>();
   for (const acc of accounts) {
     const list = byUser.get(acc.userId) ?? [];
-    list.push(acc.homeAccountId);
+    list.push({ homeAccountId: acc.homeAccountId, type: acc.type });
     byUser.set(acc.userId, list);
   }
 
@@ -35,10 +49,39 @@ export async function GET(req: NextRequest) {
   let errors = 0;
 
   const userResults = await Promise.allSettled(
-    Array.from(byUser.entries()).map(async ([userId, homeAccountIds]) => {
+    Array.from(byUser.entries()).map(async ([userId, accountEntries]) => {
       await Promise.allSettled(
-        homeAccountIds.map(async (homeAccountId) => {
+        accountEntries.map(async ({ homeAccountId, type: accountType }) => {
           try {
+            if (accountType === "imap" || accountType === "jmap") {
+              // ── IMAP/JMAP sync via provider abstraction ──
+              const provider = getProvider(homeAccountId);
+
+              // 1. Sync folders
+              const folders = await provider.syncFolders(userId, homeAccountId);
+              await prisma.syncStatus.upsert({
+                where: { userId_homeAccountId_resourceType: { userId, homeAccountId, resourceType: "folders" } },
+                create: { userId, homeAccountId, resourceType: "folders", status: "success", lastSyncedAt: new Date() },
+                update: { status: "success", lastSyncedAt: new Date(), errorMessage: null },
+              }).catch(() => {});
+
+              // 2. Sync emails for inbox + sent folders
+              const keyFolders = folders.filter((f) =>
+                f.wellKnownName === "inbox" || f.wellKnownName === "sentitems"
+              );
+              await Promise.allSettled(
+                keyFolders.map((f) => provider.syncEmails(userId, homeAccountId, f.id))
+              );
+              await prisma.syncStatus.upsert({
+                where: { userId_homeAccountId_resourceType: { userId, homeAccountId, resourceType: "emails" } },
+                create: { userId, homeAccountId, resourceType: "emails", status: "success", lastSyncedAt: new Date() },
+                update: { status: "success", lastSyncedAt: new Date(), errorMessage: null },
+              }).catch(() => {});
+
+              synced++;
+            } else {
+              // ── Microsoft sync (existing logic) ──
+
             // 1. Sync folders → get folder list for email sync
             const folderRefs = await syncFolders(userId, homeAccountId);
             await prisma.syncStatus.upsert({
@@ -96,9 +139,14 @@ export async function GET(req: NextRequest) {
             }
 
             synced++;
+            }
           } catch (err) {
             const errorMsg = err instanceof Error ? err.message : String(err);
-            if (isReauthError(err)) {
+            // Detect reauth errors across all provider types
+            const isReauth = isReauthError(err) ||
+              (accountType === "imap" && /auth|login failed|invalid credentials/i.test(errorMsg)) ||
+              (accountType === "jmap" && /401|unauthorized|auth/i.test(errorMsg));
+            if (isReauth) {
               reauth++;
               console.warn(
                 `[sync] reauth required for ${userId}/${homeAccountId}:`,

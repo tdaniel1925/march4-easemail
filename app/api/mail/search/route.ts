@@ -3,6 +3,8 @@ import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { graphGet } from "@/lib/microsoft/graph";
 import { isReauthError } from "@/lib/microsoft/auth-errors";
+import { mapNormalizedEmail } from "@/lib/utils/email-helpers";
+import { verifyAccountOwnership, getProvider, detectProviderType } from "@/lib/providers/registry";
 import type { EmailMessage } from "@/lib/types/email";
 import { withRateLimit, rateLimiters } from "@/lib/rate-limit";
 
@@ -13,6 +15,9 @@ const WELL_KNOWN_FOLDER_PATHS: Record<string, string> = {
   drafts:  "drafts",
   trash:   "deletedItems",
 };
+
+/** Only these folder values are accepted from external input */
+const ALLOWED_FOLDERS = new Set<string>(["inbox", "sent", "drafts", "trash", "starred"]);
 
 interface GraphMessage {
   id: string;
@@ -37,13 +42,53 @@ async function searchEmailHandler(req: NextRequest) {
 
   const homeAccountId = req.nextUrl.searchParams.get("homeAccountId");
   const q = req.nextUrl.searchParams.get("q");
-  const folder = req.nextUrl.searchParams.get("folder") ?? "inbox";
+  // Validate folder against allowlist — prevents arbitrary Graph path injection
+  const rawFolder = req.nextUrl.searchParams.get("folder") ?? "inbox";
+  const folder = ALLOWED_FOLDERS.has(rawFolder) ? rawFolder : "inbox";
 
   // Input validation
   if (!homeAccountId) return NextResponse.json({ error: "homeAccountId required" }, { status: 400 });
   if (!q) return NextResponse.json({ error: "Search query (q) is required" }, { status: 400 });
   if (!q.trim()) return NextResponse.json({ emails: [] });
   if (q.length > 200) return NextResponse.json({ error: "Search query too long (max 200 chars)" }, { status: 400 });
+
+  // Verify the homeAccountId belongs to this authenticated user (prevents IDOR)
+  const account = await verifyAccountOwnership(user.id, homeAccountId);
+  if (!account) return NextResponse.json({ error: "Account not found" }, { status: 404 });
+
+  const providerType = detectProviderType(homeAccountId);
+
+  // ── Non-Microsoft providers: use provider abstraction directly ─────────────
+  if (providerType !== "microsoft") {
+    try {
+      const provider = getProvider(homeAccountId);
+
+      // Resolve folder ID for non-Microsoft providers
+      let folderId: string | undefined;
+      if (folder !== "starred" && folder !== "inbox") {
+        const folders = await provider.fetchFolders(user.id, homeAccountId);
+        const wellKnownMap: Record<string, string> = {
+          sent: "sentitems",
+          drafts: "drafts",
+          trash: "deleteditems",
+        };
+        const wkn = wellKnownMap[folder];
+        if (wkn) {
+          const found = folders.find((f) => f.wellKnownName === wkn);
+          folderId = found?.id;
+        }
+      }
+
+      const results = await provider.searchEmails(user.id, homeAccountId, q.trim(), folderId);
+      const emails: EmailMessage[] = results.map(mapNormalizedEmail);
+      return NextResponse.json({ emails });
+    } catch (err) {
+      console.error("search error (provider):", String(err));
+      return NextResponse.json({ error: String(err) }, { status: 500 });
+    }
+  }
+
+  // ── Microsoft path (existing logic with caching) ───────────────────────────
 
   // ── 1. Try DB cache first (fast, local) ─────────────────────────────────────
   try {
@@ -75,7 +120,7 @@ async function searchEmailHandler(req: NextRequest) {
         flag: { flagStatus: m.flagStatus === "flagged" ? "flagged" as const : "notFlagged" as const },
         from: { name: m.fromName, address: m.fromAddress },
         toRecipients: (m.toRecipients as { name: string; address: string }[]) ?? [],
-        body: { content: m.bodyPreview || "", contentType: "text" },
+        body: { content: m.bodyPreview || "", contentType: "text" as const },
       }));
       return NextResponse.json({ emails });
     }
@@ -104,13 +149,14 @@ async function searchEmailHandler(req: NextRequest) {
   }
 
   // ── 3. Fall back to Graph search ─────────────────────────────────────────────
+  // folder is validated against ALLOWED_FOLDERS above — safe to use in path construction
   const search = encodeURIComponent(q);
   const wellKnown = WELL_KNOWN_FOLDER_PATHS[folder];
   const path = (folder === "starred" || (!wellKnown && !folder))
     ? `/me/messages?$search="${search}"&$select=${SELECT}&$top=50`
     : wellKnown
       ? `/me/mailFolders/${wellKnown}/messages?$search="${search}"&$select=${SELECT}&$top=50`
-      : `/me/mailFolders/${encodeURIComponent(folder)}/messages?$search="${search}"&$select=${SELECT}&$top=50`;
+      : `/me/mailFolders/inbox/messages?$search="${search}"&$select=${SELECT}&$top=50`;
 
   try {
     const data = await graphGet<{ value: GraphMessage[] }>(user.id, homeAccountId, path);
@@ -123,7 +169,7 @@ async function searchEmailHandler(req: NextRequest) {
       sentDateTime: m.sentDateTime,
       isRead: m.isRead,
       hasAttachments: m.hasAttachments,
-      flag: { flagStatus: m.flag?.flagStatus === "flagged" ? "flagged" : "notFlagged" },
+      flag: { flagStatus: m.flag?.flagStatus === "flagged" ? "flagged" as const : "notFlagged" as const },
       from: { name: m.from?.emailAddress?.name ?? "Unknown", address: m.from?.emailAddress?.address ?? "" },
       toRecipients: m.toRecipients?.map((r) => ({
         name: r.emailAddress?.name ?? "", address: r.emailAddress?.address ?? "",
@@ -135,6 +181,9 @@ async function searchEmailHandler(req: NextRequest) {
     try {
       const expiresAt = new Date();
       expiresAt.setHours(expiresAt.getHours() + 1);
+
+      // Cast to Prisma's JsonValue-compatible type (EmailMessage[] satisfies JsonArray)
+      const emailsJson = emails as unknown as Parameters<typeof prisma.cachedSearchResult.upsert>[0]["create"]["results"];
 
       await prisma.cachedSearchResult.upsert({
         where: {
@@ -148,11 +197,11 @@ async function searchEmailHandler(req: NextRequest) {
           userId: user.id,
           homeAccountId,
           query: q.trim(),
-          results: emails as any,
+          results: emailsJson,
           expiresAt,
         },
         update: {
-          results: emails as any,
+          results: emailsJson,
           expiresAt,
         },
       });

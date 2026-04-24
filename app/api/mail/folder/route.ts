@@ -3,7 +3,8 @@ import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { graphGet } from "@/lib/microsoft/graph";
 import { isReauthError } from "@/lib/microsoft/auth-errors";
-import { mapCachedEmail } from "@/lib/utils/email-helpers";
+import { mapCachedEmail, mapNormalizedEmail } from "@/lib/utils/email-helpers";
+import { verifyAccountOwnership, getProvider, detectProviderType } from "@/lib/providers/registry";
 import type { EmailMessage } from "@/lib/types/email";
 
 const GRAPH_BASE = "https://graph.microsoft.com/v1.0";
@@ -12,18 +13,21 @@ const SELECT_RECEIVED = "id,subject,bodyPreview,receivedDateTime,isRead,hasAttac
 const SELECT_SENT     = "id,subject,bodyPreview,receivedDateTime,sentDateTime,isRead,hasAttachments,flag,from,toRecipients,body";
 
 const FOLDER_PATHS: Record<string, string> = {
-  sent:     `/me/mailFolders/sentItems/messages?$select=${SELECT_SENT}&$top=50&$orderby=sentDateTime desc`,
-  drafts:   `/me/mailFolders/drafts/messages?$select=${SELECT_SENT}&$top=50&$orderby=lastModifiedDateTime desc`,
-  trash:    `/me/mailFolders/deletedItems/messages?$select=${SELECT_RECEIVED}&$top=50&$orderby=receivedDateTime desc`,
-  starred:  `/me/messages?$filter=flag/flagStatus eq 'flagged'&$select=${SELECT_RECEIVED}&$top=50`,
+  sent:    `/me/mailFolders/sentItems/messages?$select=${SELECT_SENT}&$top=50&$orderby=sentDateTime desc`,
+  drafts:  `/me/mailFolders/drafts/messages?$select=${SELECT_SENT}&$top=50&$orderby=lastModifiedDateTime desc`,
+  trash:   `/me/mailFolders/deletedItems/messages?$select=${SELECT_RECEIVED}&$top=50&$orderby=receivedDateTime desc`,
+  starred: `/me/messages?$filter=flag/flagStatus eq 'flagged'&$select=${SELECT_RECEIVED}&$top=50`,
 };
 
-// Maps folder name → well-known name for cache lookup
+/** Well-known folder aliases — validated server-side, never passed raw to Graph */
 const WELL_KNOWN: Record<string, string> = {
   sent:    "sentItems",
   drafts:  "drafts",
   trash:   "deletedItems",
 };
+
+/** Named folders accepted from query params (beyond well-known). Any other value is treated as a folder ID and must exist in the user's cachedFolder table before being used in a Graph call. */
+const NAMED_FOLDERS = new Set(["sent", "drafts", "trash", "starred"]);
 
 interface GraphRecipient {
   emailAddress: { name: string; address: string };
@@ -74,6 +78,23 @@ function mapGraphMessage(m: GraphMessage): EmailMessage {
   };
 }
 
+/** Map well-known folder name to the provider folderId for non-Microsoft providers */
+function resolveWellKnownFolder(
+  folder: string,
+  providerFolders: { id: string; wellKnownName: string | null }[]
+): string | null {
+  const wellKnownMap: Record<string, string> = {
+    sent: "sentitems",
+    drafts: "drafts",
+    trash: "deleteditems",
+    starred: "starred", // handled specially
+  };
+  const wkn = wellKnownMap[folder];
+  if (!wkn) return null;
+  const found = providerFolders.find((f) => f.wellKnownName === wkn);
+  return found?.id ?? null;
+}
+
 export async function GET(req: NextRequest) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
@@ -85,6 +106,62 @@ export async function GET(req: NextRequest) {
 
   if (!homeAccountId) return NextResponse.json({ error: "homeAccountId required" }, { status: 400 });
   if (!folder && !nextLinkParam) return NextResponse.json({ error: "folder required" }, { status: 400 });
+
+  // Verify the homeAccountId belongs to this authenticated user (prevents IDOR)
+  const account = await verifyAccountOwnership(user.id, homeAccountId);
+  if (!account) return NextResponse.json({ error: "Account not found" }, { status: 404 });
+
+  const providerType = detectProviderType(homeAccountId);
+
+  // ── Non-Microsoft providers: use provider abstraction ──────────────────────
+  if (providerType !== "microsoft") {
+    try {
+      const provider = getProvider(homeAccountId);
+
+      if (folder === "starred") {
+        // Fetch all emails and filter flagged ones
+        const folders = await provider.fetchFolders(user.id, homeAccountId);
+        const inboxFolder = folders.find((f) => f.wellKnownName === "inbox");
+        if (!inboxFolder) return NextResponse.json({ emails: [], nextLink: null });
+        const result = await provider.fetchEmails(user.id, homeAccountId, inboxFolder.id, {
+          filter: "starred",
+          top: 50,
+          cursor: nextLinkParam ?? undefined,
+        });
+        return NextResponse.json({
+          emails: result.emails.map(mapNormalizedEmail),
+          nextLink: result.nextCursor ?? null,
+        });
+      }
+
+      // Resolve folder: named folder or custom folder ID
+      let folderId: string | null = null;
+      if (NAMED_FOLDERS.has(folder)) {
+        const providerFolders = await provider.fetchFolders(user.id, homeAccountId);
+        folderId = resolveWellKnownFolder(folder, providerFolders);
+      } else {
+        folderId = folder; // treat as folder ID directly
+      }
+
+      if (!folderId) {
+        return NextResponse.json({ error: "Folder not found" }, { status: 404 });
+      }
+
+      const result = await provider.fetchEmails(user.id, homeAccountId, folderId, {
+        top: 50,
+        cursor: nextLinkParam ?? undefined,
+      });
+      return NextResponse.json({
+        emails: result.emails.map(mapNormalizedEmail),
+        nextLink: result.nextCursor ?? null,
+      });
+    } catch (err) {
+      console.error("folder route error (provider):", String(err));
+      return NextResponse.json({ error: String(err) }, { status: 500 });
+    }
+  }
+
+  // ── Microsoft path (existing logic with caching) ───────────────────────────
 
   // Legacy Graph URL pagination — pass through directly
   if (nextLinkParam && nextLinkParam.startsWith("http")) {
@@ -128,7 +205,7 @@ export async function GET(req: NextRequest) {
         });
       }
     } else if (WELL_KNOWN[folder]) {
-      // Well-known folder (sent, drafts, trash)
+      // Well-known folder (sent, drafts, trash) — folder param is validated against WELL_KNOWN dict
       const cachedFolder = await prisma.cachedFolder.findFirst({
         where: { userId: user.id, homeAccountId, wellKnownName: WELL_KNOWN[folder] },
       });
@@ -157,8 +234,17 @@ export async function GET(req: NextRequest) {
           });
         }
       }
-    } else if (folder) {
-      // Custom folder — folder param is the folder ID directly
+    } else if (folder && !NAMED_FOLDERS.has(folder)) {
+      // Custom folder — folder param is treated as a folder ID.
+      // Validate it belongs to this user's cached folders before using in a Graph call.
+      const owned = await prisma.cachedFolder.findFirst({
+        where: { id: folder, userId: user.id, homeAccountId },
+        select: { id: true },
+      });
+      if (!owned) {
+        return NextResponse.json({ error: "Folder not found" }, { status: 404 });
+      }
+
       const cached = nextLinkParam
         ? await prisma.cachedEmail.findMany({
             where: { userId: user.id, homeAccountId, folderId: folder },
@@ -184,7 +270,8 @@ export async function GET(req: NextRequest) {
     if (cacheHit) return; // TypeScript won't reach here but keeps the flow clear
 
     // ── Fallback to Graph ───────────────────────────────────────────────────
-
+    // For custom folder IDs: we already verified ownership above via cachedFolder check.
+    // For named/well-known folders: they come from FOLDER_PATHS constant, not user input.
     const path = FOLDER_PATHS[folder]
       ?? `/me/mailFolders/${encodeURIComponent(folder)}/messages?$select=${SELECT_RECEIVED}&$top=50&$orderby=receivedDateTime desc`;
     const data = await graphGet<GraphResponse>(user.id, homeAccountId, path);

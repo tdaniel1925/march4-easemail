@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { prisma } from "@/lib/prisma";
+import { getUserWithAccounts } from "@/lib/utils/get-user-accounts";
 import Sidebar from "@/components/Sidebar";
 import { StoreInitializer } from "@/components/StoreInitializer";
 import TeamsClient from "@/components/teams/TeamsClient";
@@ -11,28 +11,26 @@ export default async function TeamsPage() {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const dbUser = await prisma.user.findUnique({
-    where: { id: user.id },
-    include: { msAccounts: { orderBy: { isDefault: "desc" } } },
-  });
+  const dbUser = await getUserWithAccounts(user.id);
   if (!dbUser) redirect("/onboarding");
-  if (!dbUser.msAccounts.length) redirect("/onboarding");
 
-  const defaultAccount = dbUser.msAccounts[0];
+  const defaultAccount = dbUser.defaultAccount;
+  if (!defaultAccount) redirect("/onboarding");
+
   const userName = dbUser.name ?? defaultAccount?.displayName ?? user.email ?? "You";
 
   const unreadCount = await getUnreadCount(user.id, defaultAccount.homeAccountId);
 
   return (
     <div className="flex" style={{ height: "100vh", overflow: "hidden" }}>
-      <StoreInitializer accounts={dbUser.msAccounts} inboxUnread={unreadCount} />
+      <StoreInitializer accounts={dbUser.msAccounts} imapAccounts={dbUser.imapAccounts} jmapAccounts={dbUser.jmapAccounts} inboxUnread={unreadCount} />
       <Sidebar
         userName={userName}
-        userEmail={defaultAccount?.msEmail ?? user.email ?? ""}
+        userEmail={defaultAccount?.email ?? user.email ?? ""}
       />
       <TeamsClient
         userName={userName}
-        userEmail={defaultAccount?.msEmail ?? user.email ?? ""}
+        userEmail={defaultAccount?.email ?? user.email ?? ""}
       />
     </div>
   );

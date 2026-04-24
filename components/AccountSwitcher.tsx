@@ -23,7 +23,7 @@ export default function AccountSwitcher() {
 
   if (!activeAccount) return null;
 
-  const initials = getInitials(activeAccount.displayName ?? activeAccount.msEmail);
+  const initials = getInitials(activeAccount.displayName ?? activeAccount.email ?? activeAccount.msEmail);
 
   return (
     <div ref={ref} className="relative px-4 pt-3 pb-1 flex-shrink-0">
@@ -43,7 +43,7 @@ export default function AccountSwitcher() {
           {initials}
         </div>
         <span className="flex-1 text-xs truncate font-medium" style={{ color: "rgb(58 58 58)" }}>
-          {activeAccount.msEmail}
+          {activeAccount.email ?? activeAccount.msEmail}
         </span>
         <svg
           className={`w-3.5 h-3.5 flex-shrink-0 transition-transform ${open ? "rotate-180" : ""}`}
@@ -62,7 +62,7 @@ export default function AccountSwitcher() {
         >
           {accounts.map((acc) => {
             const isActive = acc.homeAccountId === activeAccount.homeAccountId;
-            const accInitials = getInitials(acc.displayName ?? acc.msEmail);
+            const accInitials = getInitials(acc.displayName ?? acc.email ?? acc.msEmail);
             return (
               <button
                 key={acc.homeAccountId}
@@ -82,7 +82,7 @@ export default function AccountSwitcher() {
                   className="flex-1 text-xs truncate"
                   style={{ color: isActive ? "rgb(83 5 5)" : "rgb(58 58 58)", fontWeight: isActive ? 600 : 400 }}
                 >
-                  {acc.msEmail}
+                  {acc.email ?? acc.msEmail}
                 </span>
                 {isActive && (
                   <svg className="w-3.5 h-3.5 flex-shrink-0" style={{ color: "rgb(138 9 9)" }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
@@ -94,7 +94,7 @@ export default function AccountSwitcher() {
           })}
           <div className="border-t border-neutral-100">
             <Link
-              href="/api/auth/microsoft?add=1"
+              href="/accounts"
               onClick={() => setOpen(false)}
               className="flex items-center gap-2 px-3 py-2.5 text-xs transition-colors"
               style={{ color: "rgb(115 115 115)" }}
