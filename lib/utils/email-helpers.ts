@@ -1,4 +1,5 @@
 import type { EmailMessage } from "@/lib/types/email";
+import type { NormalizedEmail } from "@/lib/providers/types";
 
 export function mapCachedEmail(row: {
   id: string;
@@ -24,6 +25,28 @@ export function mapCachedEmail(row: {
     flag: { flagStatus: row.flagStatus === "flagged" ? "flagged" : "notFlagged" },
     from: { name: row.fromName, address: row.fromAddress },
     toRecipients: (row.toRecipients as { name: string; address: string }[]) ?? [],
+  };
+}
+
+/** Map a NormalizedEmail (from provider abstraction) to the frontend EmailMessage shape */
+export function mapNormalizedEmail(e: NormalizedEmail): EmailMessage {
+  return {
+    id: e.id,
+    subject: e.subject || "(no subject)",
+    bodyPreview: e.bodyPreview,
+    receivedDateTime: e.receivedDateTime,
+    sentDateTime: e.sentDateTime,
+    isRead: e.isRead,
+    hasAttachments: e.hasAttachments,
+    flag: { flagStatus: e.flagStatus },
+    from: { name: e.from.name, address: e.from.address },
+    toRecipients: e.toRecipients.map((r) => ({ name: r.name, address: r.address })),
+    body: e.bodyHtml
+      ? { content: e.bodyHtml, contentType: "html" }
+      : e.bodyText
+        ? { content: e.bodyText, contentType: "text" }
+        : { content: e.bodyPreview, contentType: "text" },
+    attachments: e.attachments,
   };
 }
 
