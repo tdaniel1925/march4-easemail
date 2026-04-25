@@ -140,15 +140,15 @@ function getMonthGrid(yearMonth: string): string[][] {
   const firstDay = new Date(year, month - 1, 1);
   const startDow = firstDay.getDay(); // 0=Sun
   const daysBack = startDow === 0 ? 6 : startDow - 1;
-  const gridStart = new Date(firstDay);
-  gridStart.setDate(1 - daysBack);
+  // Calculate grid start date
+  const gridStartDate = new Date(year, month - 1, 1 - daysBack);
   const weeks: string[][] = [];
   for (let w = 0; w < 6; w++) {
     const week: string[] = [];
     for (let d = 0; d < 7; d++) {
-      const date = new Date(gridStart);
-      date.setDate(gridStart.getDate() + w * 7 + d);
-      week.push(date.toISOString().split("T")[0]);
+      const date = new Date(gridStartDate.getFullYear(), gridStartDate.getMonth(), gridStartDate.getDate() + w * 7 + d);
+      // Format as YYYY-MM-DD without UTC conversion
+      week.push(`${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`);
     }
     weeks.push(week);
   }
@@ -538,11 +538,15 @@ export default function CalendarClient({ weekStart: initialWeekStart, events: in
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           text,
-          now: new Intl.DateTimeFormat("en-CA", {
-            timeZone: userTimeZone,
-            year: "numeric", month: "2-digit", day: "2-digit",
-            hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false,
-          }).format(new Date()).replace(/, /, "T"),
+          now: (() => {
+            const p = new Intl.DateTimeFormat("en-CA", {
+              timeZone: userTimeZone,
+              year: "numeric", month: "2-digit", day: "2-digit",
+              hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false,
+            }).formatToParts(new Date());
+            const get = (t: string) => p.find((x) => x.type === t)?.value ?? "00";
+            return `${get("year")}-${get("month")}-${get("day")}T${get("hour")}:${get("minute")}:${get("second")}`;
+          })(),
           timeZone: userTimeZone,
         }),
       });
@@ -1084,6 +1088,10 @@ export default function CalendarClient({ weekStart: initialWeekStart, events: in
             setSelectedEvent(null);
             setShowForm(true);
           }}
+          onDeleted={(eventId) => {
+            setEvents((prev) => prev.filter((ev) => ev.id !== eventId));
+            setRangeEvents((prev) => prev.filter((ev) => ev.id !== eventId));
+          }}
         />
       )}
 
@@ -1104,13 +1112,13 @@ export default function CalendarClient({ weekStart: initialWeekStart, events: in
                 <div>
                   <span className="text-[10px] font-semibold uppercase tracking-wider" style={{ color: "rgb(115 115 115)" }}>Start</span>
                   <p className="text-sm font-medium" style={{ color: "rgb(27 29 29)" }}>
-                    {nlPrefill.start ? new Date(nlPrefill.start.endsWith("Z") ? nlPrefill.start : nlPrefill.start).toLocaleString("en-US", { weekday: "short", month: "short", day: "numeric", hour: "numeric", minute: "2-digit", hour12: true }) : "(not set)"}
+                    {nlPrefill.start ? new Date(nlPrefill.start).toLocaleString("en-US", { timeZone: userTimeZone, weekday: "short", month: "short", day: "numeric", hour: "numeric", minute: "2-digit", hour12: true }) : "(not set)"}
                   </p>
                 </div>
                 <div>
                   <span className="text-[10px] font-semibold uppercase tracking-wider" style={{ color: "rgb(115 115 115)" }}>End</span>
                   <p className="text-sm font-medium" style={{ color: "rgb(27 29 29)" }}>
-                    {nlPrefill.end ? new Date(nlPrefill.end.endsWith("Z") ? nlPrefill.end : nlPrefill.end).toLocaleString("en-US", { weekday: "short", month: "short", day: "numeric", hour: "numeric", minute: "2-digit", hour12: true }) : "(not set)"}
+                    {nlPrefill.end ? new Date(nlPrefill.end).toLocaleString("en-US", { timeZone: userTimeZone, weekday: "short", month: "short", day: "numeric", hour: "numeric", minute: "2-digit", hour12: true }) : "(not set)"}
                   </p>
                 </div>
               </div>

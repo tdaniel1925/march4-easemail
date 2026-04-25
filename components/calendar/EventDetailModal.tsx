@@ -5,10 +5,11 @@ import { useCalendarStore } from "@/lib/stores/calendar-store";
 
 const BRAND = "rgb(138, 9, 9)";
 
-function fmt(iso: string, allDay: boolean): string {
+function fmt(iso: string, allDay: boolean, tz?: string): string {
   const d = new Date(iso);
-  if (allDay) return d.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" });
-  return d.toLocaleString("en-US", { weekday: "short", month: "short", day: "numeric", hour: "numeric", minute: "2-digit" });
+  const opts: Intl.DateTimeFormatOptions = tz ? { timeZone: tz } : {};
+  if (allDay) return d.toLocaleDateString("en-US", { ...opts, weekday: "long", month: "long", day: "numeric", year: "numeric" });
+  return d.toLocaleString("en-US", { ...opts, weekday: "short", month: "short", day: "numeric", hour: "numeric", minute: "2-digit" });
 }
 
 function duration(startIso: string, endIso: string): string {
@@ -37,7 +38,7 @@ const RESPONSE_COLORS: Record<string, string> = {
   organizer: "rgb(109 40 217)",
 };
 
-export default function EventDetailModal({ onEdit }: { onEdit?: () => void }) {
+export default function EventDetailModal({ onEdit, onDeleted }: { onEdit?: () => void; onDeleted?: (eventId: string) => void }) {
   const { selectedEvent, setSelectedEvent } = useCalendarStore();
   const [respondLoading, setRespondLoading] = useState<string | null>(null);
   const [respondStatus, setRespondStatus] = useState<string | null>(null);
@@ -95,8 +96,7 @@ export default function EventDetailModal({ onEdit }: { onEdit?: () => void }) {
       });
       if (!res.ok) throw new Error();
       setSelectedEvent(null);
-      // Trigger a page refresh so the deleted event disappears
-      window.location.reload();
+      if (onDeleted) onDeleted(e.id);
     } catch {
       setDeleteLoading(false);
       setDeleteConfirm(false);

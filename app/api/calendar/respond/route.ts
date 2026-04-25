@@ -34,7 +34,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       tentativelyAccept: "tentativelyAccepted",
     };
     await prisma.cachedCalendarEvent.updateMany({
-      where: { id: eventId, userId: user.id },
+      where: { id: eventId, userId: user.id, homeAccountId },
       data: { responseStatus: statusMap[response] ?? "none" },
     }).catch(() => {});
 
