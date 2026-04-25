@@ -47,9 +47,11 @@ export async function middleware(request: NextRequest) {
     }
   );
 
-  const { data: { user } } = await supabase.auth.getUser();
+  // Use getSession() for fast cookie-based check (no network call).
+  // Real auth verification happens in each page's getUser() before data access.
+  const { data: { session } } = await supabase.auth.getSession();
 
-  if (!user) {
+  if (!session) {
     // API routes return 401 JSON; page routes redirect to /login
     if (pathname.startsWith("/api/")) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -60,7 +62,8 @@ export async function middleware(request: NextRequest) {
   }
 
   // Domain/admin gate — block sessions from unauthorized email domains
-  const userEmail = (user.email ?? "").toLowerCase().trim();
+  // Uses JWT-embedded email for routing; page SSR re-verifies with getUser()
+  const userEmail = (session.user.email ?? "").toLowerCase().trim();
   const userDomain = userEmail.split("@")[1] ?? "";
   const allowedDomains = (process.env.ALLOWED_DOMAINS ?? "dmillerlaw.com")
     .split(",").map((d) => d.trim().toLowerCase()).filter(Boolean);
