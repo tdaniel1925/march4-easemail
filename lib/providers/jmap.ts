@@ -367,7 +367,7 @@ export class JmapProvider implements EmailProvider {
     folderId: string,
     options?: FetchEmailsOptions
   ): Promise<{ emails: NormalizedEmail[]; nextCursor?: string }> {
-    const jmapMailboxId = folderId.replace(`${accountId}:`, "");
+    let jmapMailboxId = folderId.replace(`${accountId}:`, "");
     const top = options?.top ?? 50;
     const position = options?.cursor ? parseInt(options.cursor, 10) : 0;
 
@@ -375,6 +375,33 @@ export class JmapProvider implements EmailProvider {
       userId,
       accountId
     );
+
+    // Resolve well-known folder names (e.g. "inbox") to actual JMAP mailbox IDs
+    const WELL_KNOWN_ROLES: Record<string, string> = {
+      inbox: "inbox",
+      sentitems: "sent",
+      drafts: "drafts",
+      deleteditems: "trash",
+      junkemail: "junk",
+      archive: "archive",
+    };
+    const jmapRole = WELL_KNOWN_ROLES[jmapMailboxId];
+    if (jmapRole || jmapMailboxId === "inbox") {
+      const role = jmapRole ?? "inbox";
+      const mbResponse = await jmapCall(session.apiUrl, token, jmapAccountId, [
+        [
+          "Mailbox/query",
+          {
+            accountId: jmapAccountId,
+            filter: { role, hasAnyRole: true },
+          },
+          "0",
+        ],
+      ]);
+      const [, mbResult] = mbResponse.methodResponses[0];
+      const ids = (mbResult.ids as string[]) ?? [];
+      if (ids.length > 0) jmapMailboxId = ids[0];
+    }
 
     // Build filter
     const filter: Record<string, unknown> = { inMailbox: jmapMailboxId };
@@ -808,9 +835,25 @@ export class JmapProvider implements EmailProvider {
     accountId: string,
     folderId: string
   ): Promise<void> {
-    const jmapMailboxId = folderId.replace(`${accountId}:`, "");
+    let jmapMailboxId = folderId.replace(`${accountId}:`, "");
     const { token, session, jmapAccountId, account } =
       await getSessionAndToken(userId, accountId);
+
+    // Resolve well-known folder names to actual JMAP mailbox IDs
+    const WELL_KNOWN_ROLES: Record<string, string> = {
+      inbox: "inbox", sentitems: "sent", drafts: "drafts",
+      deleteditems: "trash", junkemail: "junk", archive: "archive",
+    };
+    const jmapRole = WELL_KNOWN_ROLES[jmapMailboxId];
+    if (jmapRole || jmapMailboxId === "inbox") {
+      const role = jmapRole ?? "inbox";
+      const mbResponse = await jmapCall(session.apiUrl, token, jmapAccountId, [
+        ["Mailbox/query", { accountId: jmapAccountId, filter: { role, hasAnyRole: true } }, "0"],
+      ]);
+      const [, mbResult] = mbResponse.methodResponses[0];
+      const ids = (mbResult.ids as string[]) ?? [];
+      if (ids.length > 0) jmapMailboxId = ids[0];
+    }
 
     if (account.emailState) {
       // Delta sync via Email/changes
