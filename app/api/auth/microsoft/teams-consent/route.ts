@@ -17,32 +17,37 @@ import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 
 export async function GET(req: NextRequest) {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return NextResponse.redirect(new URL("/login", req.url));
+  try {
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return NextResponse.redirect(new URL("/login", req.url));
 
-  const dbUser = await prisma.user.findUnique({
-    where: { id: user.id },
-    include: { msAccounts: { where: { isDefault: true } } },
-  });
+    const dbUser = await prisma.user.findUnique({
+      where: { id: user.id },
+      include: { msAccounts: { where: { isDefault: true } } },
+    });
 
-  const loginHint = dbUser?.msAccounts[0]?.msEmail ?? undefined;
+    const loginHint = dbUser?.msAccounts[0]?.msEmail ?? undefined;
 
-  const msal = new ConfidentialClientApplication({
-    auth: {
-      clientId: process.env.MICROSOFT_CLIENT_ID!,
-      clientSecret: process.env.MICROSOFT_CLIENT_SECRET!,
-      authority: `https://login.microsoftonline.com/${process.env.MICROSOFT_TENANT_ID ?? "common"}`,
-    },
-  });
+    const msal = new ConfidentialClientApplication({
+      auth: {
+        clientId: process.env.MICROSOFT_CLIENT_ID!,
+        clientSecret: process.env.MICROSOFT_CLIENT_SECRET!,
+        authority: `https://login.microsoftonline.com/${process.env.MICROSOFT_TENANT_ID ?? "common"}`,
+      },
+    });
 
-  const authUrl = await msal.getAuthCodeUrl({
-    scopes: TEAMS_SCOPES,
-    redirectUri: process.env.MICROSOFT_REDIRECT_URI!,
-    prompt: "consent",
-    loginHint,
-    state: `teams_consent:${user.id}`,
-  });
+    const authUrl = await msal.getAuthCodeUrl({
+      scopes: TEAMS_SCOPES,
+      redirectUri: process.env.MICROSOFT_REDIRECT_URI!,
+      prompt: "consent",
+      loginHint,
+      state: `teams_consent:${user.id}`,
+    });
 
-  return NextResponse.redirect(authUrl);
+    return NextResponse.redirect(authUrl);
+  } catch (err) {
+    console.error("[auth/teams-consent]", err);
+    return NextResponse.redirect(new URL("/teams?error=consent_failed", req.url));
+  }
 }

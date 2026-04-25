@@ -47,7 +47,7 @@ export async function POST(req: NextRequest) {
   } catch (error) {
     console.error("[ai-replies] Error:", error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Failed to save AI reply" },
+      { error: "Failed to save AI reply" },
       { status: 500 }
     );
   }
@@ -93,7 +93,7 @@ export async function GET(req: NextRequest) {
   } catch (error) {
     console.error("[ai-replies] Error:", error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Failed to retrieve AI reply" },
+      { error: "Failed to retrieve AI reply" },
       { status: 500 }
     );
   }

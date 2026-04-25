@@ -1,29 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { Resend } from "resend";
 import { createHmac, timingSafeEqual } from "crypto";
 import Anthropic from "@anthropic-ai/sdk";
 import { prisma } from "@/lib/prisma";
-
-const resend = new Resend(process.env.RESEND_API_KEY);
-const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-
-async function generatePlainEnglishSummary(commits: GitHubCommit[]): Promise<string> {
-  const messages = commits.map((c) => c.message.split("\n")[0]).join("\n");
-  try {
-    const response = await anthropic.messages.create({
-      model: "claude-haiku-4-5-20251001",
-      max_tokens: 300,
-      system: "You summarize software updates for non-technical stakeholders at a law firm. Be concise, friendly, and focus only on things that affect how users experience the app. Skip technical details, bug fixes to internal code, and developer tooling. Use plain English bullet points. If there are no user-facing feature additions, say so briefly.",
-      messages: [{
-        role: "user",
-        content: `Summarize only the NEW FEATURES added in this push in plain English for the law firm team. Each bullet should start with what changed and why it helps them. Skip anything that is purely a bug fix, chore, or technical refactor.\n\nCommits:\n${messages}`,
-      }],
-    });
-    return response.content[0].type === "text" ? response.content[0].text.trim() : "";
-  } catch {
-    return "";
-  }
-}
 
 // GitHub push event shape (partial)
 interface GitHubCommit {
@@ -56,9 +34,12 @@ function verifySignature(body: string, signature: string | null): boolean {
   }
 }
 
+function escHtml(str: string): string {
+  return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+
 function buildEmailHtml(summary: string, pusher: string, date: string): string {
   const brand = "rgb(138, 9, 9)";
-
   return `<!DOCTYPE html>
 <html>
 <head><meta charset="utf-8"></head>
@@ -66,8 +47,6 @@ function buildEmailHtml(summary: string, pusher: string, date: string): string {
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#f6f6f6;padding:32px 16px;">
     <tr><td align="center">
       <table width="560" cellpadding="0" cellspacing="0" style="background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.08);">
-
-        <!-- Header -->
         <tr>
           <td style="background:${brand};padding:28px 32px;">
             <p style="margin:0;font-size:11px;color:rgba(255,255,255,0.65);letter-spacing:1px;text-transform:uppercase;">EaseMail</p>
@@ -75,21 +54,16 @@ function buildEmailHtml(summary: string, pusher: string, date: string): string {
             <p style="margin:6px 0 0;font-size:13px;color:rgba(255,255,255,0.75);">Update from ${escHtml(pusher)} &mdash; ${escHtml(date)}</p>
           </td>
         </tr>
-
-        <!-- Summary -->
         <tr>
           <td style="padding:32px 32px 24px;">
             <div style="font-size:15px;color:#1a1a1a;line-height:1.8;white-space:pre-line;">${escHtml(summary)}</div>
           </td>
         </tr>
-
-        <!-- Footer -->
         <tr>
           <td style="padding:16px 32px;border-top:1px solid #f0f0f0;background:#fafafa;">
             <p style="margin:0;font-size:11px;color:#bbb;">You receive this because you are listed as an EaseMail admin.</p>
           </td>
         </tr>
-
       </table>
     </td></tr>
   </table>
@@ -97,8 +71,27 @@ function buildEmailHtml(summary: string, pusher: string, date: string): string {
 </html>`;
 }
 
-function escHtml(str: string): string {
-  return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+async function generatePlainEnglishSummary(commits: GitHubCommit[]): Promise<string> {
+  // Instantiate inside function so env vars are available at runtime, not build time
+  const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+  const messages = commits.map((c) => c.message.split("\n")[0]).join("\n");
+  try {
+    const response = await anthropic.messages.create({
+      model: "claude-haiku-4-5-20251001",
+      max_tokens: 300,
+      system:
+        "You summarize software updates for non-technical stakeholders at a law firm. Be concise, friendly, and focus only on things that affect how users experience the app. Skip technical details, bug fixes to internal code, and developer tooling. Use plain English bullet points. If there are no user-facing feature additions, say so briefly.",
+      messages: [
+        {
+          role: "user",
+          content: `Summarize only the NEW FEATURES added in this push in plain English for the law firm team. Each bullet should start with what changed and why it helps them. Skip anything that is purely a bug fix, chore, or technical refactor.\n\nCommits:\n${messages}`,
+        },
+      ],
+    });
+    return response.content[0].type === "text" ? response.content[0].text.trim() : "";
+  } catch {
+    return "";
+  }
 }
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
@@ -134,3 +127,5 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
   return NextResponse.json({ ok: true, queued: payload.commits.length });
 }
+
+

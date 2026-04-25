@@ -3,11 +3,7 @@ import { Resend } from "resend";
 import Anthropic from "@anthropic-ai/sdk";
 import { prisma } from "@/lib/prisma";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-
 const RECIPIENTS = ["david@dmillerlaw.com", "tdaniel@botmakers.ai"];
-const FROM = process.env.NOTIFY_FROM_EMAIL ?? "noreply@easemail.app";
 
 function escHtml(s: string) {
   return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
@@ -48,6 +44,11 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
   if (req.headers.get("authorization") !== `Bearer ${process.env.CRON_SECRET}`) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+
+  // Instantiate clients inside the handler so env vars are available at runtime
+  const resend = new Resend(process.env.RESEND_API_KEY);
+  const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+  const FROM = process.env.NOTIFY_FROM_EMAIL ?? "noreply@easemail.app";
 
   // Grab all unsent logs from today
   const startOfDay = new Date();

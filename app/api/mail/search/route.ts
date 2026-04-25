@@ -3,9 +3,10 @@ import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { graphGet } from "@/lib/microsoft/graph";
 import { isReauthError } from "@/lib/microsoft/auth-errors";
-import { mapNormalizedEmail } from "@/lib/utils/email-helpers";
+import { mapNormalizedEmail, mapCachedEmail, mapGraphMessage } from "@/lib/utils/email-helpers";
 import { verifyAccountOwnership, getProvider, detectProviderType } from "@/lib/providers/registry";
 import type { EmailMessage } from "@/lib/types/email";
+import type { GraphMessage } from "@/lib/types/graph";
 import { withRateLimit, rateLimiters } from "@/lib/rate-limit";
 
 // Maps well-known folder param → Graph well-known folder name
@@ -18,20 +19,6 @@ const WELL_KNOWN_FOLDER_PATHS: Record<string, string> = {
 
 /** Only these folder values are accepted from external input */
 const ALLOWED_FOLDERS = new Set<string>(["inbox", "sent", "drafts", "trash", "starred"]);
-
-interface GraphMessage {
-  id: string;
-  subject: string;
-  bodyPreview: string;
-  receivedDateTime: string;
-  sentDateTime?: string;
-  isRead: boolean;
-  hasAttachments: boolean;
-  flag: { flagStatus: string };
-  from: { emailAddress: { name: string; address: string } };
-  toRecipients?: { emailAddress: { name: string; address: string } }[];
-  body: { content: string; contentType: string };
-}
 
 const SELECT = "id,subject,bodyPreview,receivedDateTime,sentDateTime,isRead,hasAttachments,flag,from,toRecipients,body";
 
@@ -109,19 +96,7 @@ async function searchEmailHandler(req: NextRequest) {
     });
 
     if (cached.length > 0) {
-      const emails: EmailMessage[] = cached.map((m) => ({
-        id: m.id,
-        subject: m.subject || "(no subject)",
-        bodyPreview: m.bodyPreview || "",
-        receivedDateTime: m.sentDateTime?.toISOString() ?? m.receivedDateTime.toISOString(),
-        sentDateTime: m.sentDateTime?.toISOString(),
-        isRead: m.isRead,
-        hasAttachments: m.hasAttachments,
-        flag: { flagStatus: m.flagStatus === "flagged" ? "flagged" as const : "notFlagged" as const },
-        from: { name: m.fromName, address: m.fromAddress },
-        toRecipients: (m.toRecipients as { name: string; address: string }[]) ?? [],
-        body: { content: m.bodyPreview || "", contentType: "text" as const },
-      }));
+      const emails = cached.map(mapCachedEmail);
       return NextResponse.json({ emails });
     }
   } catch {
@@ -161,21 +136,7 @@ async function searchEmailHandler(req: NextRequest) {
   try {
     const data = await graphGet<{ value: GraphMessage[] }>(user.id, homeAccountId, path);
 
-    const emails: EmailMessage[] = data.value.map((m) => ({
-      id: m.id,
-      subject: m.subject ?? "(no subject)",
-      bodyPreview: m.bodyPreview ?? "",
-      receivedDateTime: m.sentDateTime ?? m.receivedDateTime ?? "",
-      sentDateTime: m.sentDateTime,
-      isRead: m.isRead,
-      hasAttachments: m.hasAttachments,
-      flag: { flagStatus: m.flag?.flagStatus === "flagged" ? "flagged" as const : "notFlagged" as const },
-      from: { name: m.from?.emailAddress?.name ?? "Unknown", address: m.from?.emailAddress?.address ?? "" },
-      toRecipients: m.toRecipients?.map((r) => ({
-        name: r.emailAddress?.name ?? "", address: r.emailAddress?.address ?? "",
-      })),
-      body: { content: m.body?.content ?? m.bodyPreview ?? "", contentType: (m.body?.contentType as "html" | "text") ?? "text" },
-    }));
+    const emails = data.value.map(mapGraphMessage);
 
     // ── 4. Cache the Graph search results (1hr TTL) ─────────────────────────────
     try {

@@ -118,6 +118,16 @@ export type MigrationStatus = $Result.DefaultSelection<Prisma.$MigrationStatusPa
  * 
  */
 export type TodoItem = $Result.DefaultSelection<Prisma.$TodoItemPayload>
+/**
+ * Model ImapConnectedAccount
+ * 
+ */
+export type ImapConnectedAccount = $Result.DefaultSelection<Prisma.$ImapConnectedAccountPayload>
+/**
+ * Model JmapConnectedAccount
+ * 
+ */
+export type JmapConnectedAccount = $Result.DefaultSelection<Prisma.$JmapConnectedAccountPayload>
 
 /**
  * ##  Prisma Client ʲˢ
@@ -449,6 +459,26 @@ export class PrismaClient<
     * ```
     */
   get todoItem(): Prisma.TodoItemDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.imapConnectedAccount`: Exposes CRUD operations for the **ImapConnectedAccount** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ImapConnectedAccounts
+    * const imapConnectedAccounts = await prisma.imapConnectedAccount.findMany()
+    * ```
+    */
+  get imapConnectedAccount(): Prisma.ImapConnectedAccountDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.jmapConnectedAccount`: Exposes CRUD operations for the **JmapConnectedAccount** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more JmapConnectedAccounts
+    * const jmapConnectedAccounts = await prisma.jmapConnectedAccount.findMany()
+    * ```
+    */
+  get jmapConnectedAccount(): Prisma.JmapConnectedAccountDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -903,7 +933,9 @@ export namespace Prisma {
     SyncStatus: 'SyncStatus',
     NotificationLog: 'NotificationLog',
     MigrationStatus: 'MigrationStatus',
-    TodoItem: 'TodoItem'
+    TodoItem: 'TodoItem',
+    ImapConnectedAccount: 'ImapConnectedAccount',
+    JmapConnectedAccount: 'JmapConnectedAccount'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -919,7 +951,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "organization" | "user" | "msConnectedAccount" | "msalTokenCache" | "emailDeltaLink" | "webhookSubscription" | "draft" | "signature" | "cachedFolder" | "cachedEmail" | "cachedCalendarEvent" | "cachedContact" | "deployLog" | "emailRule" | "emailAttachment" | "aiGeneratedReply" | "cachedSearchResult" | "syncStatus" | "notificationLog" | "migrationStatus" | "todoItem"
+      modelProps: "organization" | "user" | "msConnectedAccount" | "msalTokenCache" | "emailDeltaLink" | "webhookSubscription" | "draft" | "signature" | "cachedFolder" | "cachedEmail" | "cachedCalendarEvent" | "cachedContact" | "deployLog" | "emailRule" | "emailAttachment" | "aiGeneratedReply" | "cachedSearchResult" | "syncStatus" | "notificationLog" | "migrationStatus" | "todoItem" | "imapConnectedAccount" | "jmapConnectedAccount"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -2477,6 +2509,154 @@ export namespace Prisma {
           }
         }
       }
+      ImapConnectedAccount: {
+        payload: Prisma.$ImapConnectedAccountPayload<ExtArgs>
+        fields: Prisma.ImapConnectedAccountFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ImapConnectedAccountFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ImapConnectedAccountPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ImapConnectedAccountFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ImapConnectedAccountPayload>
+          }
+          findFirst: {
+            args: Prisma.ImapConnectedAccountFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ImapConnectedAccountPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ImapConnectedAccountFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ImapConnectedAccountPayload>
+          }
+          findMany: {
+            args: Prisma.ImapConnectedAccountFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ImapConnectedAccountPayload>[]
+          }
+          create: {
+            args: Prisma.ImapConnectedAccountCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ImapConnectedAccountPayload>
+          }
+          createMany: {
+            args: Prisma.ImapConnectedAccountCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ImapConnectedAccountCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ImapConnectedAccountPayload>[]
+          }
+          delete: {
+            args: Prisma.ImapConnectedAccountDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ImapConnectedAccountPayload>
+          }
+          update: {
+            args: Prisma.ImapConnectedAccountUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ImapConnectedAccountPayload>
+          }
+          deleteMany: {
+            args: Prisma.ImapConnectedAccountDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ImapConnectedAccountUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ImapConnectedAccountUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ImapConnectedAccountPayload>[]
+          }
+          upsert: {
+            args: Prisma.ImapConnectedAccountUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ImapConnectedAccountPayload>
+          }
+          aggregate: {
+            args: Prisma.ImapConnectedAccountAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateImapConnectedAccount>
+          }
+          groupBy: {
+            args: Prisma.ImapConnectedAccountGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ImapConnectedAccountGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ImapConnectedAccountCountArgs<ExtArgs>
+            result: $Utils.Optional<ImapConnectedAccountCountAggregateOutputType> | number
+          }
+        }
+      }
+      JmapConnectedAccount: {
+        payload: Prisma.$JmapConnectedAccountPayload<ExtArgs>
+        fields: Prisma.JmapConnectedAccountFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.JmapConnectedAccountFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JmapConnectedAccountPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.JmapConnectedAccountFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JmapConnectedAccountPayload>
+          }
+          findFirst: {
+            args: Prisma.JmapConnectedAccountFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JmapConnectedAccountPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.JmapConnectedAccountFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JmapConnectedAccountPayload>
+          }
+          findMany: {
+            args: Prisma.JmapConnectedAccountFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JmapConnectedAccountPayload>[]
+          }
+          create: {
+            args: Prisma.JmapConnectedAccountCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JmapConnectedAccountPayload>
+          }
+          createMany: {
+            args: Prisma.JmapConnectedAccountCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.JmapConnectedAccountCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JmapConnectedAccountPayload>[]
+          }
+          delete: {
+            args: Prisma.JmapConnectedAccountDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JmapConnectedAccountPayload>
+          }
+          update: {
+            args: Prisma.JmapConnectedAccountUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JmapConnectedAccountPayload>
+          }
+          deleteMany: {
+            args: Prisma.JmapConnectedAccountDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.JmapConnectedAccountUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.JmapConnectedAccountUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JmapConnectedAccountPayload>[]
+          }
+          upsert: {
+            args: Prisma.JmapConnectedAccountUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JmapConnectedAccountPayload>
+          }
+          aggregate: {
+            args: Prisma.JmapConnectedAccountAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateJmapConnectedAccount>
+          }
+          groupBy: {
+            args: Prisma.JmapConnectedAccountGroupByArgs<ExtArgs>
+            result: $Utils.Optional<JmapConnectedAccountGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.JmapConnectedAccountCountArgs<ExtArgs>
+            result: $Utils.Optional<JmapConnectedAccountCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -2606,6 +2786,8 @@ export namespace Prisma {
     notificationLog?: NotificationLogOmit
     migrationStatus?: MigrationStatusOmit
     todoItem?: TodoItemOmit
+    imapConnectedAccount?: ImapConnectedAccountOmit
+    jmapConnectedAccount?: JmapConnectedAccountOmit
   }
 
   /* Types for Logging */
@@ -2718,6 +2900,8 @@ export namespace Prisma {
 
   export type UserCountOutputType = {
     msAccounts: number
+    imapAccounts: number
+    jmapAccounts: number
     deltaLinks: number
     webhookSubs: number
     drafts: number
@@ -2738,6 +2922,8 @@ export namespace Prisma {
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     msAccounts?: boolean | UserCountOutputTypeCountMsAccountsArgs
+    imapAccounts?: boolean | UserCountOutputTypeCountImapAccountsArgs
+    jmapAccounts?: boolean | UserCountOutputTypeCountJmapAccountsArgs
     deltaLinks?: boolean | UserCountOutputTypeCountDeltaLinksArgs
     webhookSubs?: boolean | UserCountOutputTypeCountWebhookSubsArgs
     drafts?: boolean | UserCountOutputTypeCountDraftsArgs
@@ -2772,6 +2958,20 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountMsAccountsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: MsConnectedAccountWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountImapAccountsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ImapConnectedAccountWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountJmapAccountsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: JmapConnectedAccountWhereInput
   }
 
   /**
@@ -4223,6 +4423,8 @@ export namespace Prisma {
     lastActiveAccountId?: boolean
     org?: boolean | OrganizationDefaultArgs<ExtArgs>
     msAccounts?: boolean | User$msAccountsArgs<ExtArgs>
+    imapAccounts?: boolean | User$imapAccountsArgs<ExtArgs>
+    jmapAccounts?: boolean | User$jmapAccountsArgs<ExtArgs>
     msalCache?: boolean | User$msalCacheArgs<ExtArgs>
     deltaLinks?: boolean | User$deltaLinksArgs<ExtArgs>
     webhookSubs?: boolean | User$webhookSubsArgs<ExtArgs>
@@ -4309,6 +4511,8 @@ export namespace Prisma {
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     org?: boolean | OrganizationDefaultArgs<ExtArgs>
     msAccounts?: boolean | User$msAccountsArgs<ExtArgs>
+    imapAccounts?: boolean | User$imapAccountsArgs<ExtArgs>
+    jmapAccounts?: boolean | User$jmapAccountsArgs<ExtArgs>
     msalCache?: boolean | User$msalCacheArgs<ExtArgs>
     deltaLinks?: boolean | User$deltaLinksArgs<ExtArgs>
     webhookSubs?: boolean | User$webhookSubsArgs<ExtArgs>
@@ -4340,6 +4544,8 @@ export namespace Prisma {
     objects: {
       org: Prisma.$OrganizationPayload<ExtArgs>
       msAccounts: Prisma.$MsConnectedAccountPayload<ExtArgs>[]
+      imapAccounts: Prisma.$ImapConnectedAccountPayload<ExtArgs>[]
+      jmapAccounts: Prisma.$JmapConnectedAccountPayload<ExtArgs>[]
       msalCache: Prisma.$MsalTokenCachePayload<ExtArgs> | null
       deltaLinks: Prisma.$EmailDeltaLinkPayload<ExtArgs>[]
       webhookSubs: Prisma.$WebhookSubscriptionPayload<ExtArgs>[]
@@ -4772,6 +4978,8 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     org<T extends OrganizationDefaultArgs<ExtArgs> = {}>(args?: Subset<T, OrganizationDefaultArgs<ExtArgs>>): Prisma__OrganizationClient<$Result.GetResult<Prisma.$OrganizationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     msAccounts<T extends User$msAccountsArgs<ExtArgs> = {}>(args?: Subset<T, User$msAccountsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MsConnectedAccountPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    imapAccounts<T extends User$imapAccountsArgs<ExtArgs> = {}>(args?: Subset<T, User$imapAccountsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ImapConnectedAccountPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    jmapAccounts<T extends User$jmapAccountsArgs<ExtArgs> = {}>(args?: Subset<T, User$jmapAccountsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JmapConnectedAccountPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     msalCache<T extends User$msalCacheArgs<ExtArgs> = {}>(args?: Subset<T, User$msalCacheArgs<ExtArgs>>): Prisma__MsalTokenCacheClient<$Result.GetResult<Prisma.$MsalTokenCachePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     deltaLinks<T extends User$deltaLinksArgs<ExtArgs> = {}>(args?: Subset<T, User$deltaLinksArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EmailDeltaLinkPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     webhookSubs<T extends User$webhookSubsArgs<ExtArgs> = {}>(args?: Subset<T, User$webhookSubsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WebhookSubscriptionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -5252,6 +5460,54 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: MsConnectedAccountScalarFieldEnum | MsConnectedAccountScalarFieldEnum[]
+  }
+
+  /**
+   * User.imapAccounts
+   */
+  export type User$imapAccountsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ImapConnectedAccount
+     */
+    select?: ImapConnectedAccountSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ImapConnectedAccount
+     */
+    omit?: ImapConnectedAccountOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ImapConnectedAccountInclude<ExtArgs> | null
+    where?: ImapConnectedAccountWhereInput
+    orderBy?: ImapConnectedAccountOrderByWithRelationInput | ImapConnectedAccountOrderByWithRelationInput[]
+    cursor?: ImapConnectedAccountWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ImapConnectedAccountScalarFieldEnum | ImapConnectedAccountScalarFieldEnum[]
+  }
+
+  /**
+   * User.jmapAccounts
+   */
+  export type User$jmapAccountsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JmapConnectedAccount
+     */
+    select?: JmapConnectedAccountSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JmapConnectedAccount
+     */
+    omit?: JmapConnectedAccountOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JmapConnectedAccountInclude<ExtArgs> | null
+    where?: JmapConnectedAccountWhereInput
+    orderBy?: JmapConnectedAccountOrderByWithRelationInput | JmapConnectedAccountOrderByWithRelationInput[]
+    cursor?: JmapConnectedAccountWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: JmapConnectedAccountScalarFieldEnum | JmapConnectedAccountScalarFieldEnum[]
   }
 
   /**
@@ -12551,6 +12807,7 @@ export namespace Prisma {
     totalCount: number | null
     wellKnownName: string | null
     syncedAt: Date | null
+    updatedAt: Date | null
   }
 
   export type CachedFolderMaxAggregateOutputType = {
@@ -12563,6 +12820,7 @@ export namespace Prisma {
     totalCount: number | null
     wellKnownName: string | null
     syncedAt: Date | null
+    updatedAt: Date | null
   }
 
   export type CachedFolderCountAggregateOutputType = {
@@ -12575,6 +12833,7 @@ export namespace Prisma {
     totalCount: number
     wellKnownName: number
     syncedAt: number
+    updatedAt: number
     _all: number
   }
 
@@ -12599,6 +12858,7 @@ export namespace Prisma {
     totalCount?: true
     wellKnownName?: true
     syncedAt?: true
+    updatedAt?: true
   }
 
   export type CachedFolderMaxAggregateInputType = {
@@ -12611,6 +12871,7 @@ export namespace Prisma {
     totalCount?: true
     wellKnownName?: true
     syncedAt?: true
+    updatedAt?: true
   }
 
   export type CachedFolderCountAggregateInputType = {
@@ -12623,6 +12884,7 @@ export namespace Prisma {
     totalCount?: true
     wellKnownName?: true
     syncedAt?: true
+    updatedAt?: true
     _all?: true
   }
 
@@ -12722,6 +12984,7 @@ export namespace Prisma {
     totalCount: number
     wellKnownName: string | null
     syncedAt: Date
+    updatedAt: Date
     _count: CachedFolderCountAggregateOutputType | null
     _avg: CachedFolderAvgAggregateOutputType | null
     _sum: CachedFolderSumAggregateOutputType | null
@@ -12753,6 +13016,7 @@ export namespace Prisma {
     totalCount?: boolean
     wellKnownName?: boolean
     syncedAt?: boolean
+    updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["cachedFolder"]>
 
@@ -12766,6 +13030,7 @@ export namespace Prisma {
     totalCount?: boolean
     wellKnownName?: boolean
     syncedAt?: boolean
+    updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["cachedFolder"]>
 
@@ -12779,6 +13044,7 @@ export namespace Prisma {
     totalCount?: boolean
     wellKnownName?: boolean
     syncedAt?: boolean
+    updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["cachedFolder"]>
 
@@ -12792,9 +13058,10 @@ export namespace Prisma {
     totalCount?: boolean
     wellKnownName?: boolean
     syncedAt?: boolean
+    updatedAt?: boolean
   }
 
-  export type CachedFolderOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "homeAccountId" | "displayName" | "parentFolderId" | "unreadCount" | "totalCount" | "wellKnownName" | "syncedAt", ExtArgs["result"]["cachedFolder"]>
+  export type CachedFolderOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "homeAccountId" | "displayName" | "parentFolderId" | "unreadCount" | "totalCount" | "wellKnownName" | "syncedAt" | "updatedAt", ExtArgs["result"]["cachedFolder"]>
   export type CachedFolderInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
   }
@@ -12820,6 +13087,7 @@ export namespace Prisma {
       totalCount: number
       wellKnownName: string | null
       syncedAt: Date
+      updatedAt: Date
     }, ExtArgs["result"]["cachedFolder"]>
     composites: {}
   }
@@ -13253,6 +13521,7 @@ export namespace Prisma {
     readonly totalCount: FieldRef<"CachedFolder", 'Int'>
     readonly wellKnownName: FieldRef<"CachedFolder", 'String'>
     readonly syncedAt: FieldRef<"CachedFolder", 'DateTime'>
+    readonly updatedAt: FieldRef<"CachedFolder", 'DateTime'>
   }
     
 
@@ -13699,6 +13968,7 @@ export namespace Prisma {
     syncStatus: string | null
     lastModifiedDateTime: Date | null
     syncedAt: Date | null
+    updatedAt: Date | null
   }
 
   export type CachedEmailMaxAggregateOutputType = {
@@ -13723,6 +13993,7 @@ export namespace Prisma {
     syncStatus: string | null
     lastModifiedDateTime: Date | null
     syncedAt: Date | null
+    updatedAt: Date | null
   }
 
   export type CachedEmailCountAggregateOutputType = {
@@ -13749,6 +14020,7 @@ export namespace Prisma {
     syncStatus: number
     lastModifiedDateTime: number
     syncedAt: number
+    updatedAt: number
     _all: number
   }
 
@@ -13775,6 +14047,7 @@ export namespace Prisma {
     syncStatus?: true
     lastModifiedDateTime?: true
     syncedAt?: true
+    updatedAt?: true
   }
 
   export type CachedEmailMaxAggregateInputType = {
@@ -13799,6 +14072,7 @@ export namespace Prisma {
     syncStatus?: true
     lastModifiedDateTime?: true
     syncedAt?: true
+    updatedAt?: true
   }
 
   export type CachedEmailCountAggregateInputType = {
@@ -13825,6 +14099,7 @@ export namespace Prisma {
     syncStatus?: true
     lastModifiedDateTime?: true
     syncedAt?: true
+    updatedAt?: true
     _all?: true
   }
 
@@ -13924,6 +14199,7 @@ export namespace Prisma {
     syncStatus: string
     lastModifiedDateTime: Date | null
     syncedAt: Date
+    updatedAt: Date
     _count: CachedEmailCountAggregateOutputType | null
     _min: CachedEmailMinAggregateOutputType | null
     _max: CachedEmailMaxAggregateOutputType | null
@@ -13967,6 +14243,7 @@ export namespace Prisma {
     syncStatus?: boolean
     lastModifiedDateTime?: boolean
     syncedAt?: boolean
+    updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["cachedEmail"]>
 
@@ -13994,6 +14271,7 @@ export namespace Prisma {
     syncStatus?: boolean
     lastModifiedDateTime?: boolean
     syncedAt?: boolean
+    updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["cachedEmail"]>
 
@@ -14021,6 +14299,7 @@ export namespace Prisma {
     syncStatus?: boolean
     lastModifiedDateTime?: boolean
     syncedAt?: boolean
+    updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["cachedEmail"]>
 
@@ -14048,9 +14327,10 @@ export namespace Prisma {
     syncStatus?: boolean
     lastModifiedDateTime?: boolean
     syncedAt?: boolean
+    updatedAt?: boolean
   }
 
-  export type CachedEmailOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "homeAccountId" | "folderId" | "subject" | "bodyPreview" | "fromName" | "fromAddress" | "toRecipients" | "receivedDateTime" | "sentDateTime" | "isRead" | "hasAttachments" | "flagStatus" | "categories" | "importance" | "sensitivity" | "inferenceClassification" | "conversationId" | "isDraft" | "syncStatus" | "lastModifiedDateTime" | "syncedAt", ExtArgs["result"]["cachedEmail"]>
+  export type CachedEmailOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "homeAccountId" | "folderId" | "subject" | "bodyPreview" | "fromName" | "fromAddress" | "toRecipients" | "receivedDateTime" | "sentDateTime" | "isRead" | "hasAttachments" | "flagStatus" | "categories" | "importance" | "sensitivity" | "inferenceClassification" | "conversationId" | "isDraft" | "syncStatus" | "lastModifiedDateTime" | "syncedAt" | "updatedAt", ExtArgs["result"]["cachedEmail"]>
   export type CachedEmailInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
   }
@@ -14090,6 +14370,7 @@ export namespace Prisma {
       syncStatus: string
       lastModifiedDateTime: Date | null
       syncedAt: Date
+      updatedAt: Date
     }, ExtArgs["result"]["cachedEmail"]>
     composites: {}
   }
@@ -14537,6 +14818,7 @@ export namespace Prisma {
     readonly syncStatus: FieldRef<"CachedEmail", 'String'>
     readonly lastModifiedDateTime: FieldRef<"CachedEmail", 'DateTime'>
     readonly syncedAt: FieldRef<"CachedEmail", 'DateTime'>
+    readonly updatedAt: FieldRef<"CachedEmail", 'DateTime'>
   }
     
 
@@ -15001,6 +15283,7 @@ export namespace Prisma {
     createdDateTime: Date | null
     lastModifiedDateTime: Date | null
     syncedAt: Date | null
+    updatedAt: Date | null
   }
 
   export type CachedCalendarEventMaxAggregateOutputType = {
@@ -15033,6 +15316,7 @@ export namespace Prisma {
     createdDateTime: Date | null
     lastModifiedDateTime: Date | null
     syncedAt: Date | null
+    updatedAt: Date | null
   }
 
   export type CachedCalendarEventCountAggregateOutputType = {
@@ -15066,6 +15350,7 @@ export namespace Prisma {
     createdDateTime: number
     lastModifiedDateTime: number
     syncedAt: number
+    updatedAt: number
     _all: number
   }
 
@@ -15108,6 +15393,7 @@ export namespace Prisma {
     createdDateTime?: true
     lastModifiedDateTime?: true
     syncedAt?: true
+    updatedAt?: true
   }
 
   export type CachedCalendarEventMaxAggregateInputType = {
@@ -15140,6 +15426,7 @@ export namespace Prisma {
     createdDateTime?: true
     lastModifiedDateTime?: true
     syncedAt?: true
+    updatedAt?: true
   }
 
   export type CachedCalendarEventCountAggregateInputType = {
@@ -15173,6 +15460,7 @@ export namespace Prisma {
     createdDateTime?: true
     lastModifiedDateTime?: true
     syncedAt?: true
+    updatedAt?: true
     _all?: true
   }
 
@@ -15293,6 +15581,7 @@ export namespace Prisma {
     createdDateTime: Date | null
     lastModifiedDateTime: Date | null
     syncedAt: Date
+    updatedAt: Date
     _count: CachedCalendarEventCountAggregateOutputType | null
     _avg: CachedCalendarEventAvgAggregateOutputType | null
     _sum: CachedCalendarEventSumAggregateOutputType | null
@@ -15345,6 +15634,7 @@ export namespace Prisma {
     createdDateTime?: boolean
     lastModifiedDateTime?: boolean
     syncedAt?: boolean
+    updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["cachedCalendarEvent"]>
 
@@ -15379,6 +15669,7 @@ export namespace Prisma {
     createdDateTime?: boolean
     lastModifiedDateTime?: boolean
     syncedAt?: boolean
+    updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["cachedCalendarEvent"]>
 
@@ -15413,6 +15704,7 @@ export namespace Prisma {
     createdDateTime?: boolean
     lastModifiedDateTime?: boolean
     syncedAt?: boolean
+    updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["cachedCalendarEvent"]>
 
@@ -15447,9 +15739,10 @@ export namespace Prisma {
     createdDateTime?: boolean
     lastModifiedDateTime?: boolean
     syncedAt?: boolean
+    updatedAt?: boolean
   }
 
-  export type CachedCalendarEventOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "homeAccountId" | "subject" | "bodyPreview" | "bodyHtml" | "startDateTime" | "endDateTime" | "isAllDay" | "location" | "organizerName" | "organizerEmail" | "organizerType" | "responseStatus" | "onlineMeetingUrl" | "attendees" | "isRecurring" | "reminderMinutes" | "showAs" | "recurrence" | "eventColor" | "timeZone" | "teamsMeetingUrl" | "teamsMeetingId" | "seriesMasterId" | "iCalUId" | "calendarId" | "createdDateTime" | "lastModifiedDateTime" | "syncedAt", ExtArgs["result"]["cachedCalendarEvent"]>
+  export type CachedCalendarEventOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "homeAccountId" | "subject" | "bodyPreview" | "bodyHtml" | "startDateTime" | "endDateTime" | "isAllDay" | "location" | "organizerName" | "organizerEmail" | "organizerType" | "responseStatus" | "onlineMeetingUrl" | "attendees" | "isRecurring" | "reminderMinutes" | "showAs" | "recurrence" | "eventColor" | "timeZone" | "teamsMeetingUrl" | "teamsMeetingId" | "seriesMasterId" | "iCalUId" | "calendarId" | "createdDateTime" | "lastModifiedDateTime" | "syncedAt" | "updatedAt", ExtArgs["result"]["cachedCalendarEvent"]>
   export type CachedCalendarEventInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
   }
@@ -15496,6 +15789,7 @@ export namespace Prisma {
       createdDateTime: Date | null
       lastModifiedDateTime: Date | null
       syncedAt: Date
+      updatedAt: Date
     }, ExtArgs["result"]["cachedCalendarEvent"]>
     composites: {}
   }
@@ -15950,6 +16244,7 @@ export namespace Prisma {
     readonly createdDateTime: FieldRef<"CachedCalendarEvent", 'DateTime'>
     readonly lastModifiedDateTime: FieldRef<"CachedCalendarEvent", 'DateTime'>
     readonly syncedAt: FieldRef<"CachedCalendarEvent", 'DateTime'>
+    readonly updatedAt: FieldRef<"CachedCalendarEvent", 'DateTime'>
   }
     
 
@@ -16405,6 +16700,7 @@ export namespace Prisma {
     isVIP: boolean | null
     isFavorite: boolean | null
     syncedAt: Date | null
+    updatedAt: Date | null
   }
 
   export type CachedContactMaxAggregateOutputType = {
@@ -16428,6 +16724,7 @@ export namespace Prisma {
     isVIP: boolean | null
     isFavorite: boolean | null
     syncedAt: Date | null
+    updatedAt: Date | null
   }
 
   export type CachedContactCountAggregateOutputType = {
@@ -16457,6 +16754,7 @@ export namespace Prisma {
     isVIP: number
     isFavorite: number
     syncedAt: number
+    updatedAt: number
     _all: number
   }
 
@@ -16490,6 +16788,7 @@ export namespace Prisma {
     isVIP?: true
     isFavorite?: true
     syncedAt?: true
+    updatedAt?: true
   }
 
   export type CachedContactMaxAggregateInputType = {
@@ -16513,6 +16812,7 @@ export namespace Prisma {
     isVIP?: true
     isFavorite?: true
     syncedAt?: true
+    updatedAt?: true
   }
 
   export type CachedContactCountAggregateInputType = {
@@ -16542,6 +16842,7 @@ export namespace Prisma {
     isVIP?: true
     isFavorite?: true
     syncedAt?: true
+    updatedAt?: true
     _all?: true
   }
 
@@ -16658,6 +16959,7 @@ export namespace Prisma {
     isVIP: boolean
     isFavorite: boolean
     syncedAt: Date
+    updatedAt: Date
     _count: CachedContactCountAggregateOutputType | null
     _avg: CachedContactAvgAggregateOutputType | null
     _sum: CachedContactSumAggregateOutputType | null
@@ -16706,6 +17008,7 @@ export namespace Prisma {
     isVIP?: boolean
     isFavorite?: boolean
     syncedAt?: boolean
+    updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["cachedContact"]>
 
@@ -16736,6 +17039,7 @@ export namespace Prisma {
     isVIP?: boolean
     isFavorite?: boolean
     syncedAt?: boolean
+    updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["cachedContact"]>
 
@@ -16766,6 +17070,7 @@ export namespace Prisma {
     isVIP?: boolean
     isFavorite?: boolean
     syncedAt?: boolean
+    updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["cachedContact"]>
 
@@ -16796,9 +17101,10 @@ export namespace Prisma {
     isVIP?: boolean
     isFavorite?: boolean
     syncedAt?: boolean
+    updatedAt?: boolean
   }
 
-  export type CachedContactOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "homeAccountId" | "displayName" | "emailAddress" | "phone" | "jobTitle" | "company" | "department" | "emailAddresses" | "phones" | "givenName" | "surname" | "middleName" | "addresses" | "imAddresses" | "categories" | "notes" | "birthday" | "anniversary" | "manager" | "directReports" | "frequencyScore" | "isVIP" | "isFavorite" | "syncedAt", ExtArgs["result"]["cachedContact"]>
+  export type CachedContactOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "homeAccountId" | "displayName" | "emailAddress" | "phone" | "jobTitle" | "company" | "department" | "emailAddresses" | "phones" | "givenName" | "surname" | "middleName" | "addresses" | "imAddresses" | "categories" | "notes" | "birthday" | "anniversary" | "manager" | "directReports" | "frequencyScore" | "isVIP" | "isFavorite" | "syncedAt" | "updatedAt", ExtArgs["result"]["cachedContact"]>
   export type CachedContactInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
   }
@@ -16841,6 +17147,7 @@ export namespace Prisma {
       isVIP: boolean
       isFavorite: boolean
       syncedAt: Date
+      updatedAt: Date
     }, ExtArgs["result"]["cachedContact"]>
     composites: {}
   }
@@ -17291,6 +17598,7 @@ export namespace Prisma {
     readonly isVIP: FieldRef<"CachedContact", 'Boolean'>
     readonly isFavorite: FieldRef<"CachedContact", 'Boolean'>
     readonly syncedAt: FieldRef<"CachedContact", 'DateTime'>
+    readonly updatedAt: FieldRef<"CachedContact", 'DateTime'>
   }
     
 
@@ -17720,6 +18028,7 @@ export namespace Prisma {
     pusher: string | null
     createdAt: Date | null
     digestSentAt: Date | null
+    updatedAt: Date | null
   }
 
   export type DeployLogMaxAggregateOutputType = {
@@ -17727,6 +18036,7 @@ export namespace Prisma {
     pusher: string | null
     createdAt: Date | null
     digestSentAt: Date | null
+    updatedAt: Date | null
   }
 
   export type DeployLogCountAggregateOutputType = {
@@ -17735,6 +18045,7 @@ export namespace Prisma {
     commits: number
     createdAt: number
     digestSentAt: number
+    updatedAt: number
     _all: number
   }
 
@@ -17744,6 +18055,7 @@ export namespace Prisma {
     pusher?: true
     createdAt?: true
     digestSentAt?: true
+    updatedAt?: true
   }
 
   export type DeployLogMaxAggregateInputType = {
@@ -17751,6 +18063,7 @@ export namespace Prisma {
     pusher?: true
     createdAt?: true
     digestSentAt?: true
+    updatedAt?: true
   }
 
   export type DeployLogCountAggregateInputType = {
@@ -17759,6 +18072,7 @@ export namespace Prisma {
     commits?: true
     createdAt?: true
     digestSentAt?: true
+    updatedAt?: true
     _all?: true
   }
 
@@ -17840,6 +18154,7 @@ export namespace Prisma {
     commits: JsonValue
     createdAt: Date
     digestSentAt: Date | null
+    updatedAt: Date
     _count: DeployLogCountAggregateOutputType | null
     _min: DeployLogMinAggregateOutputType | null
     _max: DeployLogMaxAggregateOutputType | null
@@ -17865,6 +18180,7 @@ export namespace Prisma {
     commits?: boolean
     createdAt?: boolean
     digestSentAt?: boolean
+    updatedAt?: boolean
   }, ExtArgs["result"]["deployLog"]>
 
   export type DeployLogSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -17873,6 +18189,7 @@ export namespace Prisma {
     commits?: boolean
     createdAt?: boolean
     digestSentAt?: boolean
+    updatedAt?: boolean
   }, ExtArgs["result"]["deployLog"]>
 
   export type DeployLogSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -17881,6 +18198,7 @@ export namespace Prisma {
     commits?: boolean
     createdAt?: boolean
     digestSentAt?: boolean
+    updatedAt?: boolean
   }, ExtArgs["result"]["deployLog"]>
 
   export type DeployLogSelectScalar = {
@@ -17889,9 +18207,10 @@ export namespace Prisma {
     commits?: boolean
     createdAt?: boolean
     digestSentAt?: boolean
+    updatedAt?: boolean
   }
 
-  export type DeployLogOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "pusher" | "commits" | "createdAt" | "digestSentAt", ExtArgs["result"]["deployLog"]>
+  export type DeployLogOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "pusher" | "commits" | "createdAt" | "digestSentAt" | "updatedAt", ExtArgs["result"]["deployLog"]>
 
   export type $DeployLogPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "DeployLog"
@@ -17902,6 +18221,7 @@ export namespace Prisma {
       commits: Prisma.JsonValue
       createdAt: Date
       digestSentAt: Date | null
+      updatedAt: Date
     }, ExtArgs["result"]["deployLog"]>
     composites: {}
   }
@@ -18330,6 +18650,7 @@ export namespace Prisma {
     readonly commits: FieldRef<"DeployLog", 'Json'>
     readonly createdAt: FieldRef<"DeployLog", 'DateTime'>
     readonly digestSentAt: FieldRef<"DeployLog", 'DateTime'>
+    readonly updatedAt: FieldRef<"DeployLog", 'DateTime'>
   }
     
 
@@ -19951,6 +20272,7 @@ export namespace Prisma {
     contentId: string | null
     uploadedAt: Date | null
     createdAt: Date | null
+    updatedAt: Date | null
   }
 
   export type EmailAttachmentMaxAggregateOutputType = {
@@ -19966,6 +20288,7 @@ export namespace Prisma {
     contentId: string | null
     uploadedAt: Date | null
     createdAt: Date | null
+    updatedAt: Date | null
   }
 
   export type EmailAttachmentCountAggregateOutputType = {
@@ -19981,6 +20304,7 @@ export namespace Prisma {
     contentId: number
     uploadedAt: number
     createdAt: number
+    updatedAt: number
     _all: number
   }
 
@@ -20006,6 +20330,7 @@ export namespace Prisma {
     contentId?: true
     uploadedAt?: true
     createdAt?: true
+    updatedAt?: true
   }
 
   export type EmailAttachmentMaxAggregateInputType = {
@@ -20021,6 +20346,7 @@ export namespace Prisma {
     contentId?: true
     uploadedAt?: true
     createdAt?: true
+    updatedAt?: true
   }
 
   export type EmailAttachmentCountAggregateInputType = {
@@ -20036,6 +20362,7 @@ export namespace Prisma {
     contentId?: true
     uploadedAt?: true
     createdAt?: true
+    updatedAt?: true
     _all?: true
   }
 
@@ -20138,6 +20465,7 @@ export namespace Prisma {
     contentId: string | null
     uploadedAt: Date
     createdAt: Date
+    updatedAt: Date
     _count: EmailAttachmentCountAggregateOutputType | null
     _avg: EmailAttachmentAvgAggregateOutputType | null
     _sum: EmailAttachmentSumAggregateOutputType | null
@@ -20172,6 +20500,7 @@ export namespace Prisma {
     contentId?: boolean
     uploadedAt?: boolean
     createdAt?: boolean
+    updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["emailAttachment"]>
 
@@ -20188,6 +20517,7 @@ export namespace Prisma {
     contentId?: boolean
     uploadedAt?: boolean
     createdAt?: boolean
+    updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["emailAttachment"]>
 
@@ -20204,6 +20534,7 @@ export namespace Prisma {
     contentId?: boolean
     uploadedAt?: boolean
     createdAt?: boolean
+    updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["emailAttachment"]>
 
@@ -20220,9 +20551,10 @@ export namespace Prisma {
     contentId?: boolean
     uploadedAt?: boolean
     createdAt?: boolean
+    updatedAt?: boolean
   }
 
-  export type EmailAttachmentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "messageId" | "graphMessageId" | "fileName" | "contentType" | "size" | "contentHash" | "isInline" | "contentId" | "uploadedAt" | "createdAt", ExtArgs["result"]["emailAttachment"]>
+  export type EmailAttachmentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "messageId" | "graphMessageId" | "fileName" | "contentType" | "size" | "contentHash" | "isInline" | "contentId" | "uploadedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["emailAttachment"]>
   export type EmailAttachmentInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
   }
@@ -20251,6 +20583,7 @@ export namespace Prisma {
       contentId: string | null
       uploadedAt: Date
       createdAt: Date
+      updatedAt: Date
     }, ExtArgs["result"]["emailAttachment"]>
     composites: {}
   }
@@ -20687,6 +21020,7 @@ export namespace Prisma {
     readonly contentId: FieldRef<"EmailAttachment", 'String'>
     readonly uploadedAt: FieldRef<"EmailAttachment", 'DateTime'>
     readonly createdAt: FieldRef<"EmailAttachment", 'DateTime'>
+    readonly updatedAt: FieldRef<"EmailAttachment", 'DateTime'>
   }
     
 
@@ -21118,6 +21452,7 @@ export namespace Prisma {
     generatedBody: string | null
     createdAt: Date | null
     expiresAt: Date | null
+    updatedAt: Date | null
   }
 
   export type AiGeneratedReplyMaxAggregateOutputType = {
@@ -21127,6 +21462,7 @@ export namespace Prisma {
     generatedBody: string | null
     createdAt: Date | null
     expiresAt: Date | null
+    updatedAt: Date | null
   }
 
   export type AiGeneratedReplyCountAggregateOutputType = {
@@ -21136,6 +21472,7 @@ export namespace Prisma {
     generatedBody: number
     createdAt: number
     expiresAt: number
+    updatedAt: number
     _all: number
   }
 
@@ -21147,6 +21484,7 @@ export namespace Prisma {
     generatedBody?: true
     createdAt?: true
     expiresAt?: true
+    updatedAt?: true
   }
 
   export type AiGeneratedReplyMaxAggregateInputType = {
@@ -21156,6 +21494,7 @@ export namespace Prisma {
     generatedBody?: true
     createdAt?: true
     expiresAt?: true
+    updatedAt?: true
   }
 
   export type AiGeneratedReplyCountAggregateInputType = {
@@ -21165,6 +21504,7 @@ export namespace Prisma {
     generatedBody?: true
     createdAt?: true
     expiresAt?: true
+    updatedAt?: true
     _all?: true
   }
 
@@ -21247,6 +21587,7 @@ export namespace Prisma {
     generatedBody: string
     createdAt: Date
     expiresAt: Date
+    updatedAt: Date
     _count: AiGeneratedReplyCountAggregateOutputType | null
     _min: AiGeneratedReplyMinAggregateOutputType | null
     _max: AiGeneratedReplyMaxAggregateOutputType | null
@@ -21273,6 +21614,7 @@ export namespace Prisma {
     generatedBody?: boolean
     createdAt?: boolean
     expiresAt?: boolean
+    updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["aiGeneratedReply"]>
 
@@ -21283,6 +21625,7 @@ export namespace Prisma {
     generatedBody?: boolean
     createdAt?: boolean
     expiresAt?: boolean
+    updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["aiGeneratedReply"]>
 
@@ -21293,6 +21636,7 @@ export namespace Prisma {
     generatedBody?: boolean
     createdAt?: boolean
     expiresAt?: boolean
+    updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["aiGeneratedReply"]>
 
@@ -21303,9 +21647,10 @@ export namespace Prisma {
     generatedBody?: boolean
     createdAt?: boolean
     expiresAt?: boolean
+    updatedAt?: boolean
   }
 
-  export type AiGeneratedReplyOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "messageId" | "generatedBody" | "createdAt" | "expiresAt", ExtArgs["result"]["aiGeneratedReply"]>
+  export type AiGeneratedReplyOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "messageId" | "generatedBody" | "createdAt" | "expiresAt" | "updatedAt", ExtArgs["result"]["aiGeneratedReply"]>
   export type AiGeneratedReplyInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
   }
@@ -21328,6 +21673,7 @@ export namespace Prisma {
       generatedBody: string
       createdAt: Date
       expiresAt: Date
+      updatedAt: Date
     }, ExtArgs["result"]["aiGeneratedReply"]>
     composites: {}
   }
@@ -21758,6 +22104,7 @@ export namespace Prisma {
     readonly generatedBody: FieldRef<"AiGeneratedReply", 'String'>
     readonly createdAt: FieldRef<"AiGeneratedReply", 'DateTime'>
     readonly expiresAt: FieldRef<"AiGeneratedReply", 'DateTime'>
+    readonly updatedAt: FieldRef<"AiGeneratedReply", 'DateTime'>
   }
     
 
@@ -22189,6 +22536,7 @@ export namespace Prisma {
     query: string | null
     createdAt: Date | null
     expiresAt: Date | null
+    updatedAt: Date | null
   }
 
   export type CachedSearchResultMaxAggregateOutputType = {
@@ -22198,6 +22546,7 @@ export namespace Prisma {
     query: string | null
     createdAt: Date | null
     expiresAt: Date | null
+    updatedAt: Date | null
   }
 
   export type CachedSearchResultCountAggregateOutputType = {
@@ -22208,6 +22557,7 @@ export namespace Prisma {
     results: number
     createdAt: number
     expiresAt: number
+    updatedAt: number
     _all: number
   }
 
@@ -22219,6 +22569,7 @@ export namespace Prisma {
     query?: true
     createdAt?: true
     expiresAt?: true
+    updatedAt?: true
   }
 
   export type CachedSearchResultMaxAggregateInputType = {
@@ -22228,6 +22579,7 @@ export namespace Prisma {
     query?: true
     createdAt?: true
     expiresAt?: true
+    updatedAt?: true
   }
 
   export type CachedSearchResultCountAggregateInputType = {
@@ -22238,6 +22590,7 @@ export namespace Prisma {
     results?: true
     createdAt?: true
     expiresAt?: true
+    updatedAt?: true
     _all?: true
   }
 
@@ -22321,6 +22674,7 @@ export namespace Prisma {
     results: JsonValue
     createdAt: Date
     expiresAt: Date
+    updatedAt: Date
     _count: CachedSearchResultCountAggregateOutputType | null
     _min: CachedSearchResultMinAggregateOutputType | null
     _max: CachedSearchResultMaxAggregateOutputType | null
@@ -22348,6 +22702,7 @@ export namespace Prisma {
     results?: boolean
     createdAt?: boolean
     expiresAt?: boolean
+    updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["cachedSearchResult"]>
 
@@ -22359,6 +22714,7 @@ export namespace Prisma {
     results?: boolean
     createdAt?: boolean
     expiresAt?: boolean
+    updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["cachedSearchResult"]>
 
@@ -22370,6 +22726,7 @@ export namespace Prisma {
     results?: boolean
     createdAt?: boolean
     expiresAt?: boolean
+    updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["cachedSearchResult"]>
 
@@ -22381,9 +22738,10 @@ export namespace Prisma {
     results?: boolean
     createdAt?: boolean
     expiresAt?: boolean
+    updatedAt?: boolean
   }
 
-  export type CachedSearchResultOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "homeAccountId" | "query" | "results" | "createdAt" | "expiresAt", ExtArgs["result"]["cachedSearchResult"]>
+  export type CachedSearchResultOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "homeAccountId" | "query" | "results" | "createdAt" | "expiresAt" | "updatedAt", ExtArgs["result"]["cachedSearchResult"]>
   export type CachedSearchResultInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
   }
@@ -22407,6 +22765,7 @@ export namespace Prisma {
       results: Prisma.JsonValue
       createdAt: Date
       expiresAt: Date
+      updatedAt: Date
     }, ExtArgs["result"]["cachedSearchResult"]>
     composites: {}
   }
@@ -22838,6 +23197,7 @@ export namespace Prisma {
     readonly results: FieldRef<"CachedSearchResult", 'Json'>
     readonly createdAt: FieldRef<"CachedSearchResult", 'DateTime'>
     readonly expiresAt: FieldRef<"CachedSearchResult", 'DateTime'>
+    readonly updatedAt: FieldRef<"CachedSearchResult", 'DateTime'>
   }
     
 
@@ -24379,6 +24739,7 @@ export namespace Prisma {
     sentAt: Date | null
     status: string | null
     errorMessage: string | null
+    updatedAt: Date | null
   }
 
   export type NotificationLogMaxAggregateOutputType = {
@@ -24388,6 +24749,7 @@ export namespace Prisma {
     sentAt: Date | null
     status: string | null
     errorMessage: string | null
+    updatedAt: Date | null
   }
 
   export type NotificationLogCountAggregateOutputType = {
@@ -24398,6 +24760,7 @@ export namespace Prisma {
     status: number
     errorMessage: number
     metadata: number
+    updatedAt: number
     _all: number
   }
 
@@ -24409,6 +24772,7 @@ export namespace Prisma {
     sentAt?: true
     status?: true
     errorMessage?: true
+    updatedAt?: true
   }
 
   export type NotificationLogMaxAggregateInputType = {
@@ -24418,6 +24782,7 @@ export namespace Prisma {
     sentAt?: true
     status?: true
     errorMessage?: true
+    updatedAt?: true
   }
 
   export type NotificationLogCountAggregateInputType = {
@@ -24428,6 +24793,7 @@ export namespace Prisma {
     status?: true
     errorMessage?: true
     metadata?: true
+    updatedAt?: true
     _all?: true
   }
 
@@ -24511,6 +24877,7 @@ export namespace Prisma {
     status: string
     errorMessage: string | null
     metadata: JsonValue
+    updatedAt: Date
     _count: NotificationLogCountAggregateOutputType | null
     _min: NotificationLogMinAggregateOutputType | null
     _max: NotificationLogMaxAggregateOutputType | null
@@ -24538,6 +24905,7 @@ export namespace Prisma {
     status?: boolean
     errorMessage?: boolean
     metadata?: boolean
+    updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["notificationLog"]>
 
@@ -24549,6 +24917,7 @@ export namespace Prisma {
     status?: boolean
     errorMessage?: boolean
     metadata?: boolean
+    updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["notificationLog"]>
 
@@ -24560,6 +24929,7 @@ export namespace Prisma {
     status?: boolean
     errorMessage?: boolean
     metadata?: boolean
+    updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["notificationLog"]>
 
@@ -24571,9 +24941,10 @@ export namespace Prisma {
     status?: boolean
     errorMessage?: boolean
     metadata?: boolean
+    updatedAt?: boolean
   }
 
-  export type NotificationLogOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "type" | "sentAt" | "status" | "errorMessage" | "metadata", ExtArgs["result"]["notificationLog"]>
+  export type NotificationLogOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "type" | "sentAt" | "status" | "errorMessage" | "metadata" | "updatedAt", ExtArgs["result"]["notificationLog"]>
   export type NotificationLogInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
   }
@@ -24597,6 +24968,7 @@ export namespace Prisma {
       status: string
       errorMessage: string | null
       metadata: Prisma.JsonValue
+      updatedAt: Date
     }, ExtArgs["result"]["notificationLog"]>
     composites: {}
   }
@@ -25028,6 +25400,7 @@ export namespace Prisma {
     readonly status: FieldRef<"NotificationLog", 'String'>
     readonly errorMessage: FieldRef<"NotificationLog", 'String'>
     readonly metadata: FieldRef<"NotificationLog", 'Json'>
+    readonly updatedAt: FieldRef<"NotificationLog", 'DateTime'>
   }
     
 
@@ -25457,6 +25830,7 @@ export namespace Prisma {
     userId: string | null
     migrationType: string | null
     completedAt: Date | null
+    updatedAt: Date | null
   }
 
   export type MigrationStatusMaxAggregateOutputType = {
@@ -25464,6 +25838,7 @@ export namespace Prisma {
     userId: string | null
     migrationType: string | null
     completedAt: Date | null
+    updatedAt: Date | null
   }
 
   export type MigrationStatusCountAggregateOutputType = {
@@ -25472,6 +25847,7 @@ export namespace Prisma {
     migrationType: number
     completedAt: number
     metadata: number
+    updatedAt: number
     _all: number
   }
 
@@ -25481,6 +25857,7 @@ export namespace Prisma {
     userId?: true
     migrationType?: true
     completedAt?: true
+    updatedAt?: true
   }
 
   export type MigrationStatusMaxAggregateInputType = {
@@ -25488,6 +25865,7 @@ export namespace Prisma {
     userId?: true
     migrationType?: true
     completedAt?: true
+    updatedAt?: true
   }
 
   export type MigrationStatusCountAggregateInputType = {
@@ -25496,6 +25874,7 @@ export namespace Prisma {
     migrationType?: true
     completedAt?: true
     metadata?: true
+    updatedAt?: true
     _all?: true
   }
 
@@ -25577,6 +25956,7 @@ export namespace Prisma {
     migrationType: string
     completedAt: Date
     metadata: JsonValue
+    updatedAt: Date
     _count: MigrationStatusCountAggregateOutputType | null
     _min: MigrationStatusMinAggregateOutputType | null
     _max: MigrationStatusMaxAggregateOutputType | null
@@ -25602,6 +25982,7 @@ export namespace Prisma {
     migrationType?: boolean
     completedAt?: boolean
     metadata?: boolean
+    updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["migrationStatus"]>
 
@@ -25611,6 +25992,7 @@ export namespace Prisma {
     migrationType?: boolean
     completedAt?: boolean
     metadata?: boolean
+    updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["migrationStatus"]>
 
@@ -25620,6 +26002,7 @@ export namespace Prisma {
     migrationType?: boolean
     completedAt?: boolean
     metadata?: boolean
+    updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["migrationStatus"]>
 
@@ -25629,9 +26012,10 @@ export namespace Prisma {
     migrationType?: boolean
     completedAt?: boolean
     metadata?: boolean
+    updatedAt?: boolean
   }
 
-  export type MigrationStatusOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "migrationType" | "completedAt" | "metadata", ExtArgs["result"]["migrationStatus"]>
+  export type MigrationStatusOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "migrationType" | "completedAt" | "metadata" | "updatedAt", ExtArgs["result"]["migrationStatus"]>
   export type MigrationStatusInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
   }
@@ -25653,6 +26037,7 @@ export namespace Prisma {
       migrationType: string
       completedAt: Date
       metadata: Prisma.JsonValue
+      updatedAt: Date
     }, ExtArgs["result"]["migrationStatus"]>
     composites: {}
   }
@@ -26082,6 +26467,7 @@ export namespace Prisma {
     readonly migrationType: FieldRef<"MigrationStatus", 'String'>
     readonly completedAt: FieldRef<"MigrationStatus", 'DateTime'>
     readonly metadata: FieldRef<"MigrationStatus", 'Json'>
+    readonly updatedAt: FieldRef<"MigrationStatus", 'DateTime'>
   }
     
 
@@ -27581,6 +27967,2464 @@ export namespace Prisma {
 
 
   /**
+   * Model ImapConnectedAccount
+   */
+
+  export type AggregateImapConnectedAccount = {
+    _count: ImapConnectedAccountCountAggregateOutputType | null
+    _avg: ImapConnectedAccountAvgAggregateOutputType | null
+    _sum: ImapConnectedAccountSumAggregateOutputType | null
+    _min: ImapConnectedAccountMinAggregateOutputType | null
+    _max: ImapConnectedAccountMaxAggregateOutputType | null
+  }
+
+  export type ImapConnectedAccountAvgAggregateOutputType = {
+    imapPort: number | null
+    smtpPort: number | null
+  }
+
+  export type ImapConnectedAccountSumAggregateOutputType = {
+    imapPort: number | null
+    smtpPort: number | null
+  }
+
+  export type ImapConnectedAccountMinAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    accountId: string | null
+    email: string | null
+    displayName: string | null
+    isDefault: boolean | null
+    connectedAt: Date | null
+    updatedAt: Date | null
+    imapHost: string | null
+    imapPort: number | null
+    imapSecurity: string | null
+    smtpHost: string | null
+    smtpPort: number | null
+    smtpSecurity: string | null
+    encryptedPassword: string | null
+    encryptionIv: string | null
+    encryptionTag: string | null
+  }
+
+  export type ImapConnectedAccountMaxAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    accountId: string | null
+    email: string | null
+    displayName: string | null
+    isDefault: boolean | null
+    connectedAt: Date | null
+    updatedAt: Date | null
+    imapHost: string | null
+    imapPort: number | null
+    imapSecurity: string | null
+    smtpHost: string | null
+    smtpPort: number | null
+    smtpSecurity: string | null
+    encryptedPassword: string | null
+    encryptionIv: string | null
+    encryptionTag: string | null
+  }
+
+  export type ImapConnectedAccountCountAggregateOutputType = {
+    id: number
+    userId: number
+    accountId: number
+    email: number
+    displayName: number
+    isDefault: number
+    connectedAt: number
+    updatedAt: number
+    imapHost: number
+    imapPort: number
+    imapSecurity: number
+    smtpHost: number
+    smtpPort: number
+    smtpSecurity: number
+    encryptedPassword: number
+    encryptionIv: number
+    encryptionTag: number
+    uidValidity: number
+    highestModSeq: number
+    _all: number
+  }
+
+
+  export type ImapConnectedAccountAvgAggregateInputType = {
+    imapPort?: true
+    smtpPort?: true
+  }
+
+  export type ImapConnectedAccountSumAggregateInputType = {
+    imapPort?: true
+    smtpPort?: true
+  }
+
+  export type ImapConnectedAccountMinAggregateInputType = {
+    id?: true
+    userId?: true
+    accountId?: true
+    email?: true
+    displayName?: true
+    isDefault?: true
+    connectedAt?: true
+    updatedAt?: true
+    imapHost?: true
+    imapPort?: true
+    imapSecurity?: true
+    smtpHost?: true
+    smtpPort?: true
+    smtpSecurity?: true
+    encryptedPassword?: true
+    encryptionIv?: true
+    encryptionTag?: true
+  }
+
+  export type ImapConnectedAccountMaxAggregateInputType = {
+    id?: true
+    userId?: true
+    accountId?: true
+    email?: true
+    displayName?: true
+    isDefault?: true
+    connectedAt?: true
+    updatedAt?: true
+    imapHost?: true
+    imapPort?: true
+    imapSecurity?: true
+    smtpHost?: true
+    smtpPort?: true
+    smtpSecurity?: true
+    encryptedPassword?: true
+    encryptionIv?: true
+    encryptionTag?: true
+  }
+
+  export type ImapConnectedAccountCountAggregateInputType = {
+    id?: true
+    userId?: true
+    accountId?: true
+    email?: true
+    displayName?: true
+    isDefault?: true
+    connectedAt?: true
+    updatedAt?: true
+    imapHost?: true
+    imapPort?: true
+    imapSecurity?: true
+    smtpHost?: true
+    smtpPort?: true
+    smtpSecurity?: true
+    encryptedPassword?: true
+    encryptionIv?: true
+    encryptionTag?: true
+    uidValidity?: true
+    highestModSeq?: true
+    _all?: true
+  }
+
+  export type ImapConnectedAccountAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ImapConnectedAccount to aggregate.
+     */
+    where?: ImapConnectedAccountWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ImapConnectedAccounts to fetch.
+     */
+    orderBy?: ImapConnectedAccountOrderByWithRelationInput | ImapConnectedAccountOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ImapConnectedAccountWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ImapConnectedAccounts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ImapConnectedAccounts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ImapConnectedAccounts
+    **/
+    _count?: true | ImapConnectedAccountCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: ImapConnectedAccountAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ImapConnectedAccountSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ImapConnectedAccountMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ImapConnectedAccountMaxAggregateInputType
+  }
+
+  export type GetImapConnectedAccountAggregateType<T extends ImapConnectedAccountAggregateArgs> = {
+        [P in keyof T & keyof AggregateImapConnectedAccount]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateImapConnectedAccount[P]>
+      : GetScalarType<T[P], AggregateImapConnectedAccount[P]>
+  }
+
+
+
+
+  export type ImapConnectedAccountGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ImapConnectedAccountWhereInput
+    orderBy?: ImapConnectedAccountOrderByWithAggregationInput | ImapConnectedAccountOrderByWithAggregationInput[]
+    by: ImapConnectedAccountScalarFieldEnum[] | ImapConnectedAccountScalarFieldEnum
+    having?: ImapConnectedAccountScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ImapConnectedAccountCountAggregateInputType | true
+    _avg?: ImapConnectedAccountAvgAggregateInputType
+    _sum?: ImapConnectedAccountSumAggregateInputType
+    _min?: ImapConnectedAccountMinAggregateInputType
+    _max?: ImapConnectedAccountMaxAggregateInputType
+  }
+
+  export type ImapConnectedAccountGroupByOutputType = {
+    id: string
+    userId: string
+    accountId: string
+    email: string
+    displayName: string | null
+    isDefault: boolean
+    connectedAt: Date
+    updatedAt: Date
+    imapHost: string
+    imapPort: number
+    imapSecurity: string
+    smtpHost: string
+    smtpPort: number
+    smtpSecurity: string
+    encryptedPassword: string
+    encryptionIv: string
+    encryptionTag: string
+    uidValidity: JsonValue
+    highestModSeq: JsonValue
+    _count: ImapConnectedAccountCountAggregateOutputType | null
+    _avg: ImapConnectedAccountAvgAggregateOutputType | null
+    _sum: ImapConnectedAccountSumAggregateOutputType | null
+    _min: ImapConnectedAccountMinAggregateOutputType | null
+    _max: ImapConnectedAccountMaxAggregateOutputType | null
+  }
+
+  type GetImapConnectedAccountGroupByPayload<T extends ImapConnectedAccountGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ImapConnectedAccountGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ImapConnectedAccountGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ImapConnectedAccountGroupByOutputType[P]>
+            : GetScalarType<T[P], ImapConnectedAccountGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ImapConnectedAccountSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    accountId?: boolean
+    email?: boolean
+    displayName?: boolean
+    isDefault?: boolean
+    connectedAt?: boolean
+    updatedAt?: boolean
+    imapHost?: boolean
+    imapPort?: boolean
+    imapSecurity?: boolean
+    smtpHost?: boolean
+    smtpPort?: boolean
+    smtpSecurity?: boolean
+    encryptedPassword?: boolean
+    encryptionIv?: boolean
+    encryptionTag?: boolean
+    uidValidity?: boolean
+    highestModSeq?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["imapConnectedAccount"]>
+
+  export type ImapConnectedAccountSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    accountId?: boolean
+    email?: boolean
+    displayName?: boolean
+    isDefault?: boolean
+    connectedAt?: boolean
+    updatedAt?: boolean
+    imapHost?: boolean
+    imapPort?: boolean
+    imapSecurity?: boolean
+    smtpHost?: boolean
+    smtpPort?: boolean
+    smtpSecurity?: boolean
+    encryptedPassword?: boolean
+    encryptionIv?: boolean
+    encryptionTag?: boolean
+    uidValidity?: boolean
+    highestModSeq?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["imapConnectedAccount"]>
+
+  export type ImapConnectedAccountSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    accountId?: boolean
+    email?: boolean
+    displayName?: boolean
+    isDefault?: boolean
+    connectedAt?: boolean
+    updatedAt?: boolean
+    imapHost?: boolean
+    imapPort?: boolean
+    imapSecurity?: boolean
+    smtpHost?: boolean
+    smtpPort?: boolean
+    smtpSecurity?: boolean
+    encryptedPassword?: boolean
+    encryptionIv?: boolean
+    encryptionTag?: boolean
+    uidValidity?: boolean
+    highestModSeq?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["imapConnectedAccount"]>
+
+  export type ImapConnectedAccountSelectScalar = {
+    id?: boolean
+    userId?: boolean
+    accountId?: boolean
+    email?: boolean
+    displayName?: boolean
+    isDefault?: boolean
+    connectedAt?: boolean
+    updatedAt?: boolean
+    imapHost?: boolean
+    imapPort?: boolean
+    imapSecurity?: boolean
+    smtpHost?: boolean
+    smtpPort?: boolean
+    smtpSecurity?: boolean
+    encryptedPassword?: boolean
+    encryptionIv?: boolean
+    encryptionTag?: boolean
+    uidValidity?: boolean
+    highestModSeq?: boolean
+  }
+
+  export type ImapConnectedAccountOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "accountId" | "email" | "displayName" | "isDefault" | "connectedAt" | "updatedAt" | "imapHost" | "imapPort" | "imapSecurity" | "smtpHost" | "smtpPort" | "smtpSecurity" | "encryptedPassword" | "encryptionIv" | "encryptionTag" | "uidValidity" | "highestModSeq", ExtArgs["result"]["imapConnectedAccount"]>
+  export type ImapConnectedAccountInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type ImapConnectedAccountIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type ImapConnectedAccountIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $ImapConnectedAccountPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ImapConnectedAccount"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      userId: string
+      accountId: string
+      email: string
+      displayName: string | null
+      isDefault: boolean
+      connectedAt: Date
+      updatedAt: Date
+      imapHost: string
+      imapPort: number
+      imapSecurity: string
+      smtpHost: string
+      smtpPort: number
+      smtpSecurity: string
+      encryptedPassword: string
+      encryptionIv: string
+      encryptionTag: string
+      uidValidity: Prisma.JsonValue
+      highestModSeq: Prisma.JsonValue
+    }, ExtArgs["result"]["imapConnectedAccount"]>
+    composites: {}
+  }
+
+  type ImapConnectedAccountGetPayload<S extends boolean | null | undefined | ImapConnectedAccountDefaultArgs> = $Result.GetResult<Prisma.$ImapConnectedAccountPayload, S>
+
+  type ImapConnectedAccountCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ImapConnectedAccountFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ImapConnectedAccountCountAggregateInputType | true
+    }
+
+  export interface ImapConnectedAccountDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ImapConnectedAccount'], meta: { name: 'ImapConnectedAccount' } }
+    /**
+     * Find zero or one ImapConnectedAccount that matches the filter.
+     * @param {ImapConnectedAccountFindUniqueArgs} args - Arguments to find a ImapConnectedAccount
+     * @example
+     * // Get one ImapConnectedAccount
+     * const imapConnectedAccount = await prisma.imapConnectedAccount.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ImapConnectedAccountFindUniqueArgs>(args: SelectSubset<T, ImapConnectedAccountFindUniqueArgs<ExtArgs>>): Prisma__ImapConnectedAccountClient<$Result.GetResult<Prisma.$ImapConnectedAccountPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ImapConnectedAccount that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ImapConnectedAccountFindUniqueOrThrowArgs} args - Arguments to find a ImapConnectedAccount
+     * @example
+     * // Get one ImapConnectedAccount
+     * const imapConnectedAccount = await prisma.imapConnectedAccount.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ImapConnectedAccountFindUniqueOrThrowArgs>(args: SelectSubset<T, ImapConnectedAccountFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ImapConnectedAccountClient<$Result.GetResult<Prisma.$ImapConnectedAccountPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ImapConnectedAccount that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ImapConnectedAccountFindFirstArgs} args - Arguments to find a ImapConnectedAccount
+     * @example
+     * // Get one ImapConnectedAccount
+     * const imapConnectedAccount = await prisma.imapConnectedAccount.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ImapConnectedAccountFindFirstArgs>(args?: SelectSubset<T, ImapConnectedAccountFindFirstArgs<ExtArgs>>): Prisma__ImapConnectedAccountClient<$Result.GetResult<Prisma.$ImapConnectedAccountPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ImapConnectedAccount that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ImapConnectedAccountFindFirstOrThrowArgs} args - Arguments to find a ImapConnectedAccount
+     * @example
+     * // Get one ImapConnectedAccount
+     * const imapConnectedAccount = await prisma.imapConnectedAccount.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ImapConnectedAccountFindFirstOrThrowArgs>(args?: SelectSubset<T, ImapConnectedAccountFindFirstOrThrowArgs<ExtArgs>>): Prisma__ImapConnectedAccountClient<$Result.GetResult<Prisma.$ImapConnectedAccountPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ImapConnectedAccounts that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ImapConnectedAccountFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ImapConnectedAccounts
+     * const imapConnectedAccounts = await prisma.imapConnectedAccount.findMany()
+     * 
+     * // Get first 10 ImapConnectedAccounts
+     * const imapConnectedAccounts = await prisma.imapConnectedAccount.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const imapConnectedAccountWithIdOnly = await prisma.imapConnectedAccount.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ImapConnectedAccountFindManyArgs>(args?: SelectSubset<T, ImapConnectedAccountFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ImapConnectedAccountPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ImapConnectedAccount.
+     * @param {ImapConnectedAccountCreateArgs} args - Arguments to create a ImapConnectedAccount.
+     * @example
+     * // Create one ImapConnectedAccount
+     * const ImapConnectedAccount = await prisma.imapConnectedAccount.create({
+     *   data: {
+     *     // ... data to create a ImapConnectedAccount
+     *   }
+     * })
+     * 
+     */
+    create<T extends ImapConnectedAccountCreateArgs>(args: SelectSubset<T, ImapConnectedAccountCreateArgs<ExtArgs>>): Prisma__ImapConnectedAccountClient<$Result.GetResult<Prisma.$ImapConnectedAccountPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ImapConnectedAccounts.
+     * @param {ImapConnectedAccountCreateManyArgs} args - Arguments to create many ImapConnectedAccounts.
+     * @example
+     * // Create many ImapConnectedAccounts
+     * const imapConnectedAccount = await prisma.imapConnectedAccount.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ImapConnectedAccountCreateManyArgs>(args?: SelectSubset<T, ImapConnectedAccountCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ImapConnectedAccounts and returns the data saved in the database.
+     * @param {ImapConnectedAccountCreateManyAndReturnArgs} args - Arguments to create many ImapConnectedAccounts.
+     * @example
+     * // Create many ImapConnectedAccounts
+     * const imapConnectedAccount = await prisma.imapConnectedAccount.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ImapConnectedAccounts and only return the `id`
+     * const imapConnectedAccountWithIdOnly = await prisma.imapConnectedAccount.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ImapConnectedAccountCreateManyAndReturnArgs>(args?: SelectSubset<T, ImapConnectedAccountCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ImapConnectedAccountPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ImapConnectedAccount.
+     * @param {ImapConnectedAccountDeleteArgs} args - Arguments to delete one ImapConnectedAccount.
+     * @example
+     * // Delete one ImapConnectedAccount
+     * const ImapConnectedAccount = await prisma.imapConnectedAccount.delete({
+     *   where: {
+     *     // ... filter to delete one ImapConnectedAccount
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ImapConnectedAccountDeleteArgs>(args: SelectSubset<T, ImapConnectedAccountDeleteArgs<ExtArgs>>): Prisma__ImapConnectedAccountClient<$Result.GetResult<Prisma.$ImapConnectedAccountPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ImapConnectedAccount.
+     * @param {ImapConnectedAccountUpdateArgs} args - Arguments to update one ImapConnectedAccount.
+     * @example
+     * // Update one ImapConnectedAccount
+     * const imapConnectedAccount = await prisma.imapConnectedAccount.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ImapConnectedAccountUpdateArgs>(args: SelectSubset<T, ImapConnectedAccountUpdateArgs<ExtArgs>>): Prisma__ImapConnectedAccountClient<$Result.GetResult<Prisma.$ImapConnectedAccountPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ImapConnectedAccounts.
+     * @param {ImapConnectedAccountDeleteManyArgs} args - Arguments to filter ImapConnectedAccounts to delete.
+     * @example
+     * // Delete a few ImapConnectedAccounts
+     * const { count } = await prisma.imapConnectedAccount.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ImapConnectedAccountDeleteManyArgs>(args?: SelectSubset<T, ImapConnectedAccountDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ImapConnectedAccounts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ImapConnectedAccountUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ImapConnectedAccounts
+     * const imapConnectedAccount = await prisma.imapConnectedAccount.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ImapConnectedAccountUpdateManyArgs>(args: SelectSubset<T, ImapConnectedAccountUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ImapConnectedAccounts and returns the data updated in the database.
+     * @param {ImapConnectedAccountUpdateManyAndReturnArgs} args - Arguments to update many ImapConnectedAccounts.
+     * @example
+     * // Update many ImapConnectedAccounts
+     * const imapConnectedAccount = await prisma.imapConnectedAccount.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more ImapConnectedAccounts and only return the `id`
+     * const imapConnectedAccountWithIdOnly = await prisma.imapConnectedAccount.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ImapConnectedAccountUpdateManyAndReturnArgs>(args: SelectSubset<T, ImapConnectedAccountUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ImapConnectedAccountPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ImapConnectedAccount.
+     * @param {ImapConnectedAccountUpsertArgs} args - Arguments to update or create a ImapConnectedAccount.
+     * @example
+     * // Update or create a ImapConnectedAccount
+     * const imapConnectedAccount = await prisma.imapConnectedAccount.upsert({
+     *   create: {
+     *     // ... data to create a ImapConnectedAccount
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ImapConnectedAccount we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ImapConnectedAccountUpsertArgs>(args: SelectSubset<T, ImapConnectedAccountUpsertArgs<ExtArgs>>): Prisma__ImapConnectedAccountClient<$Result.GetResult<Prisma.$ImapConnectedAccountPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ImapConnectedAccounts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ImapConnectedAccountCountArgs} args - Arguments to filter ImapConnectedAccounts to count.
+     * @example
+     * // Count the number of ImapConnectedAccounts
+     * const count = await prisma.imapConnectedAccount.count({
+     *   where: {
+     *     // ... the filter for the ImapConnectedAccounts we want to count
+     *   }
+     * })
+    **/
+    count<T extends ImapConnectedAccountCountArgs>(
+      args?: Subset<T, ImapConnectedAccountCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ImapConnectedAccountCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ImapConnectedAccount.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ImapConnectedAccountAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ImapConnectedAccountAggregateArgs>(args: Subset<T, ImapConnectedAccountAggregateArgs>): Prisma.PrismaPromise<GetImapConnectedAccountAggregateType<T>>
+
+    /**
+     * Group by ImapConnectedAccount.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ImapConnectedAccountGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ImapConnectedAccountGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ImapConnectedAccountGroupByArgs['orderBy'] }
+        : { orderBy?: ImapConnectedAccountGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ImapConnectedAccountGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetImapConnectedAccountGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ImapConnectedAccount model
+   */
+  readonly fields: ImapConnectedAccountFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ImapConnectedAccount.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ImapConnectedAccountClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ImapConnectedAccount model
+   */
+  interface ImapConnectedAccountFieldRefs {
+    readonly id: FieldRef<"ImapConnectedAccount", 'String'>
+    readonly userId: FieldRef<"ImapConnectedAccount", 'String'>
+    readonly accountId: FieldRef<"ImapConnectedAccount", 'String'>
+    readonly email: FieldRef<"ImapConnectedAccount", 'String'>
+    readonly displayName: FieldRef<"ImapConnectedAccount", 'String'>
+    readonly isDefault: FieldRef<"ImapConnectedAccount", 'Boolean'>
+    readonly connectedAt: FieldRef<"ImapConnectedAccount", 'DateTime'>
+    readonly updatedAt: FieldRef<"ImapConnectedAccount", 'DateTime'>
+    readonly imapHost: FieldRef<"ImapConnectedAccount", 'String'>
+    readonly imapPort: FieldRef<"ImapConnectedAccount", 'Int'>
+    readonly imapSecurity: FieldRef<"ImapConnectedAccount", 'String'>
+    readonly smtpHost: FieldRef<"ImapConnectedAccount", 'String'>
+    readonly smtpPort: FieldRef<"ImapConnectedAccount", 'Int'>
+    readonly smtpSecurity: FieldRef<"ImapConnectedAccount", 'String'>
+    readonly encryptedPassword: FieldRef<"ImapConnectedAccount", 'String'>
+    readonly encryptionIv: FieldRef<"ImapConnectedAccount", 'String'>
+    readonly encryptionTag: FieldRef<"ImapConnectedAccount", 'String'>
+    readonly uidValidity: FieldRef<"ImapConnectedAccount", 'Json'>
+    readonly highestModSeq: FieldRef<"ImapConnectedAccount", 'Json'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ImapConnectedAccount findUnique
+   */
+  export type ImapConnectedAccountFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ImapConnectedAccount
+     */
+    select?: ImapConnectedAccountSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ImapConnectedAccount
+     */
+    omit?: ImapConnectedAccountOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ImapConnectedAccountInclude<ExtArgs> | null
+    /**
+     * Filter, which ImapConnectedAccount to fetch.
+     */
+    where: ImapConnectedAccountWhereUniqueInput
+  }
+
+  /**
+   * ImapConnectedAccount findUniqueOrThrow
+   */
+  export type ImapConnectedAccountFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ImapConnectedAccount
+     */
+    select?: ImapConnectedAccountSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ImapConnectedAccount
+     */
+    omit?: ImapConnectedAccountOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ImapConnectedAccountInclude<ExtArgs> | null
+    /**
+     * Filter, which ImapConnectedAccount to fetch.
+     */
+    where: ImapConnectedAccountWhereUniqueInput
+  }
+
+  /**
+   * ImapConnectedAccount findFirst
+   */
+  export type ImapConnectedAccountFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ImapConnectedAccount
+     */
+    select?: ImapConnectedAccountSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ImapConnectedAccount
+     */
+    omit?: ImapConnectedAccountOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ImapConnectedAccountInclude<ExtArgs> | null
+    /**
+     * Filter, which ImapConnectedAccount to fetch.
+     */
+    where?: ImapConnectedAccountWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ImapConnectedAccounts to fetch.
+     */
+    orderBy?: ImapConnectedAccountOrderByWithRelationInput | ImapConnectedAccountOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ImapConnectedAccounts.
+     */
+    cursor?: ImapConnectedAccountWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ImapConnectedAccounts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ImapConnectedAccounts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ImapConnectedAccounts.
+     */
+    distinct?: ImapConnectedAccountScalarFieldEnum | ImapConnectedAccountScalarFieldEnum[]
+  }
+
+  /**
+   * ImapConnectedAccount findFirstOrThrow
+   */
+  export type ImapConnectedAccountFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ImapConnectedAccount
+     */
+    select?: ImapConnectedAccountSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ImapConnectedAccount
+     */
+    omit?: ImapConnectedAccountOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ImapConnectedAccountInclude<ExtArgs> | null
+    /**
+     * Filter, which ImapConnectedAccount to fetch.
+     */
+    where?: ImapConnectedAccountWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ImapConnectedAccounts to fetch.
+     */
+    orderBy?: ImapConnectedAccountOrderByWithRelationInput | ImapConnectedAccountOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ImapConnectedAccounts.
+     */
+    cursor?: ImapConnectedAccountWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ImapConnectedAccounts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ImapConnectedAccounts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ImapConnectedAccounts.
+     */
+    distinct?: ImapConnectedAccountScalarFieldEnum | ImapConnectedAccountScalarFieldEnum[]
+  }
+
+  /**
+   * ImapConnectedAccount findMany
+   */
+  export type ImapConnectedAccountFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ImapConnectedAccount
+     */
+    select?: ImapConnectedAccountSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ImapConnectedAccount
+     */
+    omit?: ImapConnectedAccountOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ImapConnectedAccountInclude<ExtArgs> | null
+    /**
+     * Filter, which ImapConnectedAccounts to fetch.
+     */
+    where?: ImapConnectedAccountWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ImapConnectedAccounts to fetch.
+     */
+    orderBy?: ImapConnectedAccountOrderByWithRelationInput | ImapConnectedAccountOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ImapConnectedAccounts.
+     */
+    cursor?: ImapConnectedAccountWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ImapConnectedAccounts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ImapConnectedAccounts.
+     */
+    skip?: number
+    distinct?: ImapConnectedAccountScalarFieldEnum | ImapConnectedAccountScalarFieldEnum[]
+  }
+
+  /**
+   * ImapConnectedAccount create
+   */
+  export type ImapConnectedAccountCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ImapConnectedAccount
+     */
+    select?: ImapConnectedAccountSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ImapConnectedAccount
+     */
+    omit?: ImapConnectedAccountOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ImapConnectedAccountInclude<ExtArgs> | null
+    /**
+     * The data needed to create a ImapConnectedAccount.
+     */
+    data: XOR<ImapConnectedAccountCreateInput, ImapConnectedAccountUncheckedCreateInput>
+  }
+
+  /**
+   * ImapConnectedAccount createMany
+   */
+  export type ImapConnectedAccountCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ImapConnectedAccounts.
+     */
+    data: ImapConnectedAccountCreateManyInput | ImapConnectedAccountCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ImapConnectedAccount createManyAndReturn
+   */
+  export type ImapConnectedAccountCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ImapConnectedAccount
+     */
+    select?: ImapConnectedAccountSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ImapConnectedAccount
+     */
+    omit?: ImapConnectedAccountOmit<ExtArgs> | null
+    /**
+     * The data used to create many ImapConnectedAccounts.
+     */
+    data: ImapConnectedAccountCreateManyInput | ImapConnectedAccountCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ImapConnectedAccountIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ImapConnectedAccount update
+   */
+  export type ImapConnectedAccountUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ImapConnectedAccount
+     */
+    select?: ImapConnectedAccountSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ImapConnectedAccount
+     */
+    omit?: ImapConnectedAccountOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ImapConnectedAccountInclude<ExtArgs> | null
+    /**
+     * The data needed to update a ImapConnectedAccount.
+     */
+    data: XOR<ImapConnectedAccountUpdateInput, ImapConnectedAccountUncheckedUpdateInput>
+    /**
+     * Choose, which ImapConnectedAccount to update.
+     */
+    where: ImapConnectedAccountWhereUniqueInput
+  }
+
+  /**
+   * ImapConnectedAccount updateMany
+   */
+  export type ImapConnectedAccountUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ImapConnectedAccounts.
+     */
+    data: XOR<ImapConnectedAccountUpdateManyMutationInput, ImapConnectedAccountUncheckedUpdateManyInput>
+    /**
+     * Filter which ImapConnectedAccounts to update
+     */
+    where?: ImapConnectedAccountWhereInput
+    /**
+     * Limit how many ImapConnectedAccounts to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ImapConnectedAccount updateManyAndReturn
+   */
+  export type ImapConnectedAccountUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ImapConnectedAccount
+     */
+    select?: ImapConnectedAccountSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ImapConnectedAccount
+     */
+    omit?: ImapConnectedAccountOmit<ExtArgs> | null
+    /**
+     * The data used to update ImapConnectedAccounts.
+     */
+    data: XOR<ImapConnectedAccountUpdateManyMutationInput, ImapConnectedAccountUncheckedUpdateManyInput>
+    /**
+     * Filter which ImapConnectedAccounts to update
+     */
+    where?: ImapConnectedAccountWhereInput
+    /**
+     * Limit how many ImapConnectedAccounts to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ImapConnectedAccountIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ImapConnectedAccount upsert
+   */
+  export type ImapConnectedAccountUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ImapConnectedAccount
+     */
+    select?: ImapConnectedAccountSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ImapConnectedAccount
+     */
+    omit?: ImapConnectedAccountOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ImapConnectedAccountInclude<ExtArgs> | null
+    /**
+     * The filter to search for the ImapConnectedAccount to update in case it exists.
+     */
+    where: ImapConnectedAccountWhereUniqueInput
+    /**
+     * In case the ImapConnectedAccount found by the `where` argument doesn't exist, create a new ImapConnectedAccount with this data.
+     */
+    create: XOR<ImapConnectedAccountCreateInput, ImapConnectedAccountUncheckedCreateInput>
+    /**
+     * In case the ImapConnectedAccount was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ImapConnectedAccountUpdateInput, ImapConnectedAccountUncheckedUpdateInput>
+  }
+
+  /**
+   * ImapConnectedAccount delete
+   */
+  export type ImapConnectedAccountDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ImapConnectedAccount
+     */
+    select?: ImapConnectedAccountSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ImapConnectedAccount
+     */
+    omit?: ImapConnectedAccountOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ImapConnectedAccountInclude<ExtArgs> | null
+    /**
+     * Filter which ImapConnectedAccount to delete.
+     */
+    where: ImapConnectedAccountWhereUniqueInput
+  }
+
+  /**
+   * ImapConnectedAccount deleteMany
+   */
+  export type ImapConnectedAccountDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ImapConnectedAccounts to delete
+     */
+    where?: ImapConnectedAccountWhereInput
+    /**
+     * Limit how many ImapConnectedAccounts to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ImapConnectedAccount without action
+   */
+  export type ImapConnectedAccountDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ImapConnectedAccount
+     */
+    select?: ImapConnectedAccountSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ImapConnectedAccount
+     */
+    omit?: ImapConnectedAccountOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ImapConnectedAccountInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model JmapConnectedAccount
+   */
+
+  export type AggregateJmapConnectedAccount = {
+    _count: JmapConnectedAccountCountAggregateOutputType | null
+    _min: JmapConnectedAccountMinAggregateOutputType | null
+    _max: JmapConnectedAccountMaxAggregateOutputType | null
+  }
+
+  export type JmapConnectedAccountMinAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    accountId: string | null
+    email: string | null
+    displayName: string | null
+    isDefault: boolean | null
+    connectedAt: Date | null
+    updatedAt: Date | null
+    sessionUrl: string | null
+    jmapAccountId: string | null
+    encryptedToken: string | null
+    encryptionIv: string | null
+    encryptionTag: string | null
+    emailState: string | null
+    mailboxState: string | null
+  }
+
+  export type JmapConnectedAccountMaxAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    accountId: string | null
+    email: string | null
+    displayName: string | null
+    isDefault: boolean | null
+    connectedAt: Date | null
+    updatedAt: Date | null
+    sessionUrl: string | null
+    jmapAccountId: string | null
+    encryptedToken: string | null
+    encryptionIv: string | null
+    encryptionTag: string | null
+    emailState: string | null
+    mailboxState: string | null
+  }
+
+  export type JmapConnectedAccountCountAggregateOutputType = {
+    id: number
+    userId: number
+    accountId: number
+    email: number
+    displayName: number
+    isDefault: number
+    connectedAt: number
+    updatedAt: number
+    sessionUrl: number
+    jmapAccountId: number
+    encryptedToken: number
+    encryptionIv: number
+    encryptionTag: number
+    emailState: number
+    mailboxState: number
+    _all: number
+  }
+
+
+  export type JmapConnectedAccountMinAggregateInputType = {
+    id?: true
+    userId?: true
+    accountId?: true
+    email?: true
+    displayName?: true
+    isDefault?: true
+    connectedAt?: true
+    updatedAt?: true
+    sessionUrl?: true
+    jmapAccountId?: true
+    encryptedToken?: true
+    encryptionIv?: true
+    encryptionTag?: true
+    emailState?: true
+    mailboxState?: true
+  }
+
+  export type JmapConnectedAccountMaxAggregateInputType = {
+    id?: true
+    userId?: true
+    accountId?: true
+    email?: true
+    displayName?: true
+    isDefault?: true
+    connectedAt?: true
+    updatedAt?: true
+    sessionUrl?: true
+    jmapAccountId?: true
+    encryptedToken?: true
+    encryptionIv?: true
+    encryptionTag?: true
+    emailState?: true
+    mailboxState?: true
+  }
+
+  export type JmapConnectedAccountCountAggregateInputType = {
+    id?: true
+    userId?: true
+    accountId?: true
+    email?: true
+    displayName?: true
+    isDefault?: true
+    connectedAt?: true
+    updatedAt?: true
+    sessionUrl?: true
+    jmapAccountId?: true
+    encryptedToken?: true
+    encryptionIv?: true
+    encryptionTag?: true
+    emailState?: true
+    mailboxState?: true
+    _all?: true
+  }
+
+  export type JmapConnectedAccountAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which JmapConnectedAccount to aggregate.
+     */
+    where?: JmapConnectedAccountWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of JmapConnectedAccounts to fetch.
+     */
+    orderBy?: JmapConnectedAccountOrderByWithRelationInput | JmapConnectedAccountOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: JmapConnectedAccountWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` JmapConnectedAccounts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` JmapConnectedAccounts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned JmapConnectedAccounts
+    **/
+    _count?: true | JmapConnectedAccountCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: JmapConnectedAccountMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: JmapConnectedAccountMaxAggregateInputType
+  }
+
+  export type GetJmapConnectedAccountAggregateType<T extends JmapConnectedAccountAggregateArgs> = {
+        [P in keyof T & keyof AggregateJmapConnectedAccount]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateJmapConnectedAccount[P]>
+      : GetScalarType<T[P], AggregateJmapConnectedAccount[P]>
+  }
+
+
+
+
+  export type JmapConnectedAccountGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: JmapConnectedAccountWhereInput
+    orderBy?: JmapConnectedAccountOrderByWithAggregationInput | JmapConnectedAccountOrderByWithAggregationInput[]
+    by: JmapConnectedAccountScalarFieldEnum[] | JmapConnectedAccountScalarFieldEnum
+    having?: JmapConnectedAccountScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: JmapConnectedAccountCountAggregateInputType | true
+    _min?: JmapConnectedAccountMinAggregateInputType
+    _max?: JmapConnectedAccountMaxAggregateInputType
+  }
+
+  export type JmapConnectedAccountGroupByOutputType = {
+    id: string
+    userId: string
+    accountId: string
+    email: string
+    displayName: string | null
+    isDefault: boolean
+    connectedAt: Date
+    updatedAt: Date
+    sessionUrl: string
+    jmapAccountId: string
+    encryptedToken: string
+    encryptionIv: string
+    encryptionTag: string
+    emailState: string | null
+    mailboxState: string | null
+    _count: JmapConnectedAccountCountAggregateOutputType | null
+    _min: JmapConnectedAccountMinAggregateOutputType | null
+    _max: JmapConnectedAccountMaxAggregateOutputType | null
+  }
+
+  type GetJmapConnectedAccountGroupByPayload<T extends JmapConnectedAccountGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<JmapConnectedAccountGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof JmapConnectedAccountGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], JmapConnectedAccountGroupByOutputType[P]>
+            : GetScalarType<T[P], JmapConnectedAccountGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type JmapConnectedAccountSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    accountId?: boolean
+    email?: boolean
+    displayName?: boolean
+    isDefault?: boolean
+    connectedAt?: boolean
+    updatedAt?: boolean
+    sessionUrl?: boolean
+    jmapAccountId?: boolean
+    encryptedToken?: boolean
+    encryptionIv?: boolean
+    encryptionTag?: boolean
+    emailState?: boolean
+    mailboxState?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["jmapConnectedAccount"]>
+
+  export type JmapConnectedAccountSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    accountId?: boolean
+    email?: boolean
+    displayName?: boolean
+    isDefault?: boolean
+    connectedAt?: boolean
+    updatedAt?: boolean
+    sessionUrl?: boolean
+    jmapAccountId?: boolean
+    encryptedToken?: boolean
+    encryptionIv?: boolean
+    encryptionTag?: boolean
+    emailState?: boolean
+    mailboxState?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["jmapConnectedAccount"]>
+
+  export type JmapConnectedAccountSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    accountId?: boolean
+    email?: boolean
+    displayName?: boolean
+    isDefault?: boolean
+    connectedAt?: boolean
+    updatedAt?: boolean
+    sessionUrl?: boolean
+    jmapAccountId?: boolean
+    encryptedToken?: boolean
+    encryptionIv?: boolean
+    encryptionTag?: boolean
+    emailState?: boolean
+    mailboxState?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["jmapConnectedAccount"]>
+
+  export type JmapConnectedAccountSelectScalar = {
+    id?: boolean
+    userId?: boolean
+    accountId?: boolean
+    email?: boolean
+    displayName?: boolean
+    isDefault?: boolean
+    connectedAt?: boolean
+    updatedAt?: boolean
+    sessionUrl?: boolean
+    jmapAccountId?: boolean
+    encryptedToken?: boolean
+    encryptionIv?: boolean
+    encryptionTag?: boolean
+    emailState?: boolean
+    mailboxState?: boolean
+  }
+
+  export type JmapConnectedAccountOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "accountId" | "email" | "displayName" | "isDefault" | "connectedAt" | "updatedAt" | "sessionUrl" | "jmapAccountId" | "encryptedToken" | "encryptionIv" | "encryptionTag" | "emailState" | "mailboxState", ExtArgs["result"]["jmapConnectedAccount"]>
+  export type JmapConnectedAccountInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type JmapConnectedAccountIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type JmapConnectedAccountIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $JmapConnectedAccountPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "JmapConnectedAccount"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      userId: string
+      accountId: string
+      email: string
+      displayName: string | null
+      isDefault: boolean
+      connectedAt: Date
+      updatedAt: Date
+      sessionUrl: string
+      jmapAccountId: string
+      encryptedToken: string
+      encryptionIv: string
+      encryptionTag: string
+      emailState: string | null
+      mailboxState: string | null
+    }, ExtArgs["result"]["jmapConnectedAccount"]>
+    composites: {}
+  }
+
+  type JmapConnectedAccountGetPayload<S extends boolean | null | undefined | JmapConnectedAccountDefaultArgs> = $Result.GetResult<Prisma.$JmapConnectedAccountPayload, S>
+
+  type JmapConnectedAccountCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<JmapConnectedAccountFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: JmapConnectedAccountCountAggregateInputType | true
+    }
+
+  export interface JmapConnectedAccountDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['JmapConnectedAccount'], meta: { name: 'JmapConnectedAccount' } }
+    /**
+     * Find zero or one JmapConnectedAccount that matches the filter.
+     * @param {JmapConnectedAccountFindUniqueArgs} args - Arguments to find a JmapConnectedAccount
+     * @example
+     * // Get one JmapConnectedAccount
+     * const jmapConnectedAccount = await prisma.jmapConnectedAccount.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends JmapConnectedAccountFindUniqueArgs>(args: SelectSubset<T, JmapConnectedAccountFindUniqueArgs<ExtArgs>>): Prisma__JmapConnectedAccountClient<$Result.GetResult<Prisma.$JmapConnectedAccountPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one JmapConnectedAccount that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {JmapConnectedAccountFindUniqueOrThrowArgs} args - Arguments to find a JmapConnectedAccount
+     * @example
+     * // Get one JmapConnectedAccount
+     * const jmapConnectedAccount = await prisma.jmapConnectedAccount.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends JmapConnectedAccountFindUniqueOrThrowArgs>(args: SelectSubset<T, JmapConnectedAccountFindUniqueOrThrowArgs<ExtArgs>>): Prisma__JmapConnectedAccountClient<$Result.GetResult<Prisma.$JmapConnectedAccountPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first JmapConnectedAccount that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {JmapConnectedAccountFindFirstArgs} args - Arguments to find a JmapConnectedAccount
+     * @example
+     * // Get one JmapConnectedAccount
+     * const jmapConnectedAccount = await prisma.jmapConnectedAccount.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends JmapConnectedAccountFindFirstArgs>(args?: SelectSubset<T, JmapConnectedAccountFindFirstArgs<ExtArgs>>): Prisma__JmapConnectedAccountClient<$Result.GetResult<Prisma.$JmapConnectedAccountPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first JmapConnectedAccount that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {JmapConnectedAccountFindFirstOrThrowArgs} args - Arguments to find a JmapConnectedAccount
+     * @example
+     * // Get one JmapConnectedAccount
+     * const jmapConnectedAccount = await prisma.jmapConnectedAccount.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends JmapConnectedAccountFindFirstOrThrowArgs>(args?: SelectSubset<T, JmapConnectedAccountFindFirstOrThrowArgs<ExtArgs>>): Prisma__JmapConnectedAccountClient<$Result.GetResult<Prisma.$JmapConnectedAccountPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more JmapConnectedAccounts that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {JmapConnectedAccountFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all JmapConnectedAccounts
+     * const jmapConnectedAccounts = await prisma.jmapConnectedAccount.findMany()
+     * 
+     * // Get first 10 JmapConnectedAccounts
+     * const jmapConnectedAccounts = await prisma.jmapConnectedAccount.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const jmapConnectedAccountWithIdOnly = await prisma.jmapConnectedAccount.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends JmapConnectedAccountFindManyArgs>(args?: SelectSubset<T, JmapConnectedAccountFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JmapConnectedAccountPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a JmapConnectedAccount.
+     * @param {JmapConnectedAccountCreateArgs} args - Arguments to create a JmapConnectedAccount.
+     * @example
+     * // Create one JmapConnectedAccount
+     * const JmapConnectedAccount = await prisma.jmapConnectedAccount.create({
+     *   data: {
+     *     // ... data to create a JmapConnectedAccount
+     *   }
+     * })
+     * 
+     */
+    create<T extends JmapConnectedAccountCreateArgs>(args: SelectSubset<T, JmapConnectedAccountCreateArgs<ExtArgs>>): Prisma__JmapConnectedAccountClient<$Result.GetResult<Prisma.$JmapConnectedAccountPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many JmapConnectedAccounts.
+     * @param {JmapConnectedAccountCreateManyArgs} args - Arguments to create many JmapConnectedAccounts.
+     * @example
+     * // Create many JmapConnectedAccounts
+     * const jmapConnectedAccount = await prisma.jmapConnectedAccount.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends JmapConnectedAccountCreateManyArgs>(args?: SelectSubset<T, JmapConnectedAccountCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many JmapConnectedAccounts and returns the data saved in the database.
+     * @param {JmapConnectedAccountCreateManyAndReturnArgs} args - Arguments to create many JmapConnectedAccounts.
+     * @example
+     * // Create many JmapConnectedAccounts
+     * const jmapConnectedAccount = await prisma.jmapConnectedAccount.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many JmapConnectedAccounts and only return the `id`
+     * const jmapConnectedAccountWithIdOnly = await prisma.jmapConnectedAccount.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends JmapConnectedAccountCreateManyAndReturnArgs>(args?: SelectSubset<T, JmapConnectedAccountCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JmapConnectedAccountPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a JmapConnectedAccount.
+     * @param {JmapConnectedAccountDeleteArgs} args - Arguments to delete one JmapConnectedAccount.
+     * @example
+     * // Delete one JmapConnectedAccount
+     * const JmapConnectedAccount = await prisma.jmapConnectedAccount.delete({
+     *   where: {
+     *     // ... filter to delete one JmapConnectedAccount
+     *   }
+     * })
+     * 
+     */
+    delete<T extends JmapConnectedAccountDeleteArgs>(args: SelectSubset<T, JmapConnectedAccountDeleteArgs<ExtArgs>>): Prisma__JmapConnectedAccountClient<$Result.GetResult<Prisma.$JmapConnectedAccountPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one JmapConnectedAccount.
+     * @param {JmapConnectedAccountUpdateArgs} args - Arguments to update one JmapConnectedAccount.
+     * @example
+     * // Update one JmapConnectedAccount
+     * const jmapConnectedAccount = await prisma.jmapConnectedAccount.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends JmapConnectedAccountUpdateArgs>(args: SelectSubset<T, JmapConnectedAccountUpdateArgs<ExtArgs>>): Prisma__JmapConnectedAccountClient<$Result.GetResult<Prisma.$JmapConnectedAccountPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more JmapConnectedAccounts.
+     * @param {JmapConnectedAccountDeleteManyArgs} args - Arguments to filter JmapConnectedAccounts to delete.
+     * @example
+     * // Delete a few JmapConnectedAccounts
+     * const { count } = await prisma.jmapConnectedAccount.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends JmapConnectedAccountDeleteManyArgs>(args?: SelectSubset<T, JmapConnectedAccountDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more JmapConnectedAccounts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {JmapConnectedAccountUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many JmapConnectedAccounts
+     * const jmapConnectedAccount = await prisma.jmapConnectedAccount.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends JmapConnectedAccountUpdateManyArgs>(args: SelectSubset<T, JmapConnectedAccountUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more JmapConnectedAccounts and returns the data updated in the database.
+     * @param {JmapConnectedAccountUpdateManyAndReturnArgs} args - Arguments to update many JmapConnectedAccounts.
+     * @example
+     * // Update many JmapConnectedAccounts
+     * const jmapConnectedAccount = await prisma.jmapConnectedAccount.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more JmapConnectedAccounts and only return the `id`
+     * const jmapConnectedAccountWithIdOnly = await prisma.jmapConnectedAccount.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends JmapConnectedAccountUpdateManyAndReturnArgs>(args: SelectSubset<T, JmapConnectedAccountUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JmapConnectedAccountPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one JmapConnectedAccount.
+     * @param {JmapConnectedAccountUpsertArgs} args - Arguments to update or create a JmapConnectedAccount.
+     * @example
+     * // Update or create a JmapConnectedAccount
+     * const jmapConnectedAccount = await prisma.jmapConnectedAccount.upsert({
+     *   create: {
+     *     // ... data to create a JmapConnectedAccount
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the JmapConnectedAccount we want to update
+     *   }
+     * })
+     */
+    upsert<T extends JmapConnectedAccountUpsertArgs>(args: SelectSubset<T, JmapConnectedAccountUpsertArgs<ExtArgs>>): Prisma__JmapConnectedAccountClient<$Result.GetResult<Prisma.$JmapConnectedAccountPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of JmapConnectedAccounts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {JmapConnectedAccountCountArgs} args - Arguments to filter JmapConnectedAccounts to count.
+     * @example
+     * // Count the number of JmapConnectedAccounts
+     * const count = await prisma.jmapConnectedAccount.count({
+     *   where: {
+     *     // ... the filter for the JmapConnectedAccounts we want to count
+     *   }
+     * })
+    **/
+    count<T extends JmapConnectedAccountCountArgs>(
+      args?: Subset<T, JmapConnectedAccountCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], JmapConnectedAccountCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a JmapConnectedAccount.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {JmapConnectedAccountAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends JmapConnectedAccountAggregateArgs>(args: Subset<T, JmapConnectedAccountAggregateArgs>): Prisma.PrismaPromise<GetJmapConnectedAccountAggregateType<T>>
+
+    /**
+     * Group by JmapConnectedAccount.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {JmapConnectedAccountGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends JmapConnectedAccountGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: JmapConnectedAccountGroupByArgs['orderBy'] }
+        : { orderBy?: JmapConnectedAccountGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, JmapConnectedAccountGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetJmapConnectedAccountGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the JmapConnectedAccount model
+   */
+  readonly fields: JmapConnectedAccountFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for JmapConnectedAccount.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__JmapConnectedAccountClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the JmapConnectedAccount model
+   */
+  interface JmapConnectedAccountFieldRefs {
+    readonly id: FieldRef<"JmapConnectedAccount", 'String'>
+    readonly userId: FieldRef<"JmapConnectedAccount", 'String'>
+    readonly accountId: FieldRef<"JmapConnectedAccount", 'String'>
+    readonly email: FieldRef<"JmapConnectedAccount", 'String'>
+    readonly displayName: FieldRef<"JmapConnectedAccount", 'String'>
+    readonly isDefault: FieldRef<"JmapConnectedAccount", 'Boolean'>
+    readonly connectedAt: FieldRef<"JmapConnectedAccount", 'DateTime'>
+    readonly updatedAt: FieldRef<"JmapConnectedAccount", 'DateTime'>
+    readonly sessionUrl: FieldRef<"JmapConnectedAccount", 'String'>
+    readonly jmapAccountId: FieldRef<"JmapConnectedAccount", 'String'>
+    readonly encryptedToken: FieldRef<"JmapConnectedAccount", 'String'>
+    readonly encryptionIv: FieldRef<"JmapConnectedAccount", 'String'>
+    readonly encryptionTag: FieldRef<"JmapConnectedAccount", 'String'>
+    readonly emailState: FieldRef<"JmapConnectedAccount", 'String'>
+    readonly mailboxState: FieldRef<"JmapConnectedAccount", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * JmapConnectedAccount findUnique
+   */
+  export type JmapConnectedAccountFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JmapConnectedAccount
+     */
+    select?: JmapConnectedAccountSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JmapConnectedAccount
+     */
+    omit?: JmapConnectedAccountOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JmapConnectedAccountInclude<ExtArgs> | null
+    /**
+     * Filter, which JmapConnectedAccount to fetch.
+     */
+    where: JmapConnectedAccountWhereUniqueInput
+  }
+
+  /**
+   * JmapConnectedAccount findUniqueOrThrow
+   */
+  export type JmapConnectedAccountFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JmapConnectedAccount
+     */
+    select?: JmapConnectedAccountSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JmapConnectedAccount
+     */
+    omit?: JmapConnectedAccountOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JmapConnectedAccountInclude<ExtArgs> | null
+    /**
+     * Filter, which JmapConnectedAccount to fetch.
+     */
+    where: JmapConnectedAccountWhereUniqueInput
+  }
+
+  /**
+   * JmapConnectedAccount findFirst
+   */
+  export type JmapConnectedAccountFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JmapConnectedAccount
+     */
+    select?: JmapConnectedAccountSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JmapConnectedAccount
+     */
+    omit?: JmapConnectedAccountOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JmapConnectedAccountInclude<ExtArgs> | null
+    /**
+     * Filter, which JmapConnectedAccount to fetch.
+     */
+    where?: JmapConnectedAccountWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of JmapConnectedAccounts to fetch.
+     */
+    orderBy?: JmapConnectedAccountOrderByWithRelationInput | JmapConnectedAccountOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for JmapConnectedAccounts.
+     */
+    cursor?: JmapConnectedAccountWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` JmapConnectedAccounts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` JmapConnectedAccounts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of JmapConnectedAccounts.
+     */
+    distinct?: JmapConnectedAccountScalarFieldEnum | JmapConnectedAccountScalarFieldEnum[]
+  }
+
+  /**
+   * JmapConnectedAccount findFirstOrThrow
+   */
+  export type JmapConnectedAccountFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JmapConnectedAccount
+     */
+    select?: JmapConnectedAccountSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JmapConnectedAccount
+     */
+    omit?: JmapConnectedAccountOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JmapConnectedAccountInclude<ExtArgs> | null
+    /**
+     * Filter, which JmapConnectedAccount to fetch.
+     */
+    where?: JmapConnectedAccountWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of JmapConnectedAccounts to fetch.
+     */
+    orderBy?: JmapConnectedAccountOrderByWithRelationInput | JmapConnectedAccountOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for JmapConnectedAccounts.
+     */
+    cursor?: JmapConnectedAccountWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` JmapConnectedAccounts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` JmapConnectedAccounts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of JmapConnectedAccounts.
+     */
+    distinct?: JmapConnectedAccountScalarFieldEnum | JmapConnectedAccountScalarFieldEnum[]
+  }
+
+  /**
+   * JmapConnectedAccount findMany
+   */
+  export type JmapConnectedAccountFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JmapConnectedAccount
+     */
+    select?: JmapConnectedAccountSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JmapConnectedAccount
+     */
+    omit?: JmapConnectedAccountOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JmapConnectedAccountInclude<ExtArgs> | null
+    /**
+     * Filter, which JmapConnectedAccounts to fetch.
+     */
+    where?: JmapConnectedAccountWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of JmapConnectedAccounts to fetch.
+     */
+    orderBy?: JmapConnectedAccountOrderByWithRelationInput | JmapConnectedAccountOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing JmapConnectedAccounts.
+     */
+    cursor?: JmapConnectedAccountWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` JmapConnectedAccounts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` JmapConnectedAccounts.
+     */
+    skip?: number
+    distinct?: JmapConnectedAccountScalarFieldEnum | JmapConnectedAccountScalarFieldEnum[]
+  }
+
+  /**
+   * JmapConnectedAccount create
+   */
+  export type JmapConnectedAccountCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JmapConnectedAccount
+     */
+    select?: JmapConnectedAccountSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JmapConnectedAccount
+     */
+    omit?: JmapConnectedAccountOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JmapConnectedAccountInclude<ExtArgs> | null
+    /**
+     * The data needed to create a JmapConnectedAccount.
+     */
+    data: XOR<JmapConnectedAccountCreateInput, JmapConnectedAccountUncheckedCreateInput>
+  }
+
+  /**
+   * JmapConnectedAccount createMany
+   */
+  export type JmapConnectedAccountCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many JmapConnectedAccounts.
+     */
+    data: JmapConnectedAccountCreateManyInput | JmapConnectedAccountCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * JmapConnectedAccount createManyAndReturn
+   */
+  export type JmapConnectedAccountCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JmapConnectedAccount
+     */
+    select?: JmapConnectedAccountSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the JmapConnectedAccount
+     */
+    omit?: JmapConnectedAccountOmit<ExtArgs> | null
+    /**
+     * The data used to create many JmapConnectedAccounts.
+     */
+    data: JmapConnectedAccountCreateManyInput | JmapConnectedAccountCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JmapConnectedAccountIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * JmapConnectedAccount update
+   */
+  export type JmapConnectedAccountUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JmapConnectedAccount
+     */
+    select?: JmapConnectedAccountSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JmapConnectedAccount
+     */
+    omit?: JmapConnectedAccountOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JmapConnectedAccountInclude<ExtArgs> | null
+    /**
+     * The data needed to update a JmapConnectedAccount.
+     */
+    data: XOR<JmapConnectedAccountUpdateInput, JmapConnectedAccountUncheckedUpdateInput>
+    /**
+     * Choose, which JmapConnectedAccount to update.
+     */
+    where: JmapConnectedAccountWhereUniqueInput
+  }
+
+  /**
+   * JmapConnectedAccount updateMany
+   */
+  export type JmapConnectedAccountUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update JmapConnectedAccounts.
+     */
+    data: XOR<JmapConnectedAccountUpdateManyMutationInput, JmapConnectedAccountUncheckedUpdateManyInput>
+    /**
+     * Filter which JmapConnectedAccounts to update
+     */
+    where?: JmapConnectedAccountWhereInput
+    /**
+     * Limit how many JmapConnectedAccounts to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * JmapConnectedAccount updateManyAndReturn
+   */
+  export type JmapConnectedAccountUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JmapConnectedAccount
+     */
+    select?: JmapConnectedAccountSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the JmapConnectedAccount
+     */
+    omit?: JmapConnectedAccountOmit<ExtArgs> | null
+    /**
+     * The data used to update JmapConnectedAccounts.
+     */
+    data: XOR<JmapConnectedAccountUpdateManyMutationInput, JmapConnectedAccountUncheckedUpdateManyInput>
+    /**
+     * Filter which JmapConnectedAccounts to update
+     */
+    where?: JmapConnectedAccountWhereInput
+    /**
+     * Limit how many JmapConnectedAccounts to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JmapConnectedAccountIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * JmapConnectedAccount upsert
+   */
+  export type JmapConnectedAccountUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JmapConnectedAccount
+     */
+    select?: JmapConnectedAccountSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JmapConnectedAccount
+     */
+    omit?: JmapConnectedAccountOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JmapConnectedAccountInclude<ExtArgs> | null
+    /**
+     * The filter to search for the JmapConnectedAccount to update in case it exists.
+     */
+    where: JmapConnectedAccountWhereUniqueInput
+    /**
+     * In case the JmapConnectedAccount found by the `where` argument doesn't exist, create a new JmapConnectedAccount with this data.
+     */
+    create: XOR<JmapConnectedAccountCreateInput, JmapConnectedAccountUncheckedCreateInput>
+    /**
+     * In case the JmapConnectedAccount was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<JmapConnectedAccountUpdateInput, JmapConnectedAccountUncheckedUpdateInput>
+  }
+
+  /**
+   * JmapConnectedAccount delete
+   */
+  export type JmapConnectedAccountDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JmapConnectedAccount
+     */
+    select?: JmapConnectedAccountSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JmapConnectedAccount
+     */
+    omit?: JmapConnectedAccountOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JmapConnectedAccountInclude<ExtArgs> | null
+    /**
+     * Filter which JmapConnectedAccount to delete.
+     */
+    where: JmapConnectedAccountWhereUniqueInput
+  }
+
+  /**
+   * JmapConnectedAccount deleteMany
+   */
+  export type JmapConnectedAccountDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which JmapConnectedAccounts to delete
+     */
+    where?: JmapConnectedAccountWhereInput
+    /**
+     * Limit how many JmapConnectedAccounts to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * JmapConnectedAccount without action
+   */
+  export type JmapConnectedAccountDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JmapConnectedAccount
+     */
+    select?: JmapConnectedAccountSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JmapConnectedAccount
+     */
+    omit?: JmapConnectedAccountOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JmapConnectedAccountInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -27740,7 +30584,8 @@ export namespace Prisma {
     unreadCount: 'unreadCount',
     totalCount: 'totalCount',
     wellKnownName: 'wellKnownName',
-    syncedAt: 'syncedAt'
+    syncedAt: 'syncedAt',
+    updatedAt: 'updatedAt'
   };
 
   export type CachedFolderScalarFieldEnum = (typeof CachedFolderScalarFieldEnum)[keyof typeof CachedFolderScalarFieldEnum]
@@ -27769,7 +30614,8 @@ export namespace Prisma {
     isDraft: 'isDraft',
     syncStatus: 'syncStatus',
     lastModifiedDateTime: 'lastModifiedDateTime',
-    syncedAt: 'syncedAt'
+    syncedAt: 'syncedAt',
+    updatedAt: 'updatedAt'
   };
 
   export type CachedEmailScalarFieldEnum = (typeof CachedEmailScalarFieldEnum)[keyof typeof CachedEmailScalarFieldEnum]
@@ -27805,7 +30651,8 @@ export namespace Prisma {
     calendarId: 'calendarId',
     createdDateTime: 'createdDateTime',
     lastModifiedDateTime: 'lastModifiedDateTime',
-    syncedAt: 'syncedAt'
+    syncedAt: 'syncedAt',
+    updatedAt: 'updatedAt'
   };
 
   export type CachedCalendarEventScalarFieldEnum = (typeof CachedCalendarEventScalarFieldEnum)[keyof typeof CachedCalendarEventScalarFieldEnum]
@@ -27837,7 +30684,8 @@ export namespace Prisma {
     frequencyScore: 'frequencyScore',
     isVIP: 'isVIP',
     isFavorite: 'isFavorite',
-    syncedAt: 'syncedAt'
+    syncedAt: 'syncedAt',
+    updatedAt: 'updatedAt'
   };
 
   export type CachedContactScalarFieldEnum = (typeof CachedContactScalarFieldEnum)[keyof typeof CachedContactScalarFieldEnum]
@@ -27848,7 +30696,8 @@ export namespace Prisma {
     pusher: 'pusher',
     commits: 'commits',
     createdAt: 'createdAt',
-    digestSentAt: 'digestSentAt'
+    digestSentAt: 'digestSentAt',
+    updatedAt: 'updatedAt'
   };
 
   export type DeployLogScalarFieldEnum = (typeof DeployLogScalarFieldEnum)[keyof typeof DeployLogScalarFieldEnum]
@@ -27887,7 +30736,8 @@ export namespace Prisma {
     isInline: 'isInline',
     contentId: 'contentId',
     uploadedAt: 'uploadedAt',
-    createdAt: 'createdAt'
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
   };
 
   export type EmailAttachmentScalarFieldEnum = (typeof EmailAttachmentScalarFieldEnum)[keyof typeof EmailAttachmentScalarFieldEnum]
@@ -27899,7 +30749,8 @@ export namespace Prisma {
     messageId: 'messageId',
     generatedBody: 'generatedBody',
     createdAt: 'createdAt',
-    expiresAt: 'expiresAt'
+    expiresAt: 'expiresAt',
+    updatedAt: 'updatedAt'
   };
 
   export type AiGeneratedReplyScalarFieldEnum = (typeof AiGeneratedReplyScalarFieldEnum)[keyof typeof AiGeneratedReplyScalarFieldEnum]
@@ -27912,7 +30763,8 @@ export namespace Prisma {
     query: 'query',
     results: 'results',
     createdAt: 'createdAt',
-    expiresAt: 'expiresAt'
+    expiresAt: 'expiresAt',
+    updatedAt: 'updatedAt'
   };
 
   export type CachedSearchResultScalarFieldEnum = (typeof CachedSearchResultScalarFieldEnum)[keyof typeof CachedSearchResultScalarFieldEnum]
@@ -27940,7 +30792,8 @@ export namespace Prisma {
     sentAt: 'sentAt',
     status: 'status',
     errorMessage: 'errorMessage',
-    metadata: 'metadata'
+    metadata: 'metadata',
+    updatedAt: 'updatedAt'
   };
 
   export type NotificationLogScalarFieldEnum = (typeof NotificationLogScalarFieldEnum)[keyof typeof NotificationLogScalarFieldEnum]
@@ -27951,7 +30804,8 @@ export namespace Prisma {
     userId: 'userId',
     migrationType: 'migrationType',
     completedAt: 'completedAt',
-    metadata: 'metadata'
+    metadata: 'metadata',
+    updatedAt: 'updatedAt'
   };
 
   export type MigrationStatusScalarFieldEnum = (typeof MigrationStatusScalarFieldEnum)[keyof typeof MigrationStatusScalarFieldEnum]
@@ -27968,6 +30822,52 @@ export namespace Prisma {
   };
 
   export type TodoItemScalarFieldEnum = (typeof TodoItemScalarFieldEnum)[keyof typeof TodoItemScalarFieldEnum]
+
+
+  export const ImapConnectedAccountScalarFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    accountId: 'accountId',
+    email: 'email',
+    displayName: 'displayName',
+    isDefault: 'isDefault',
+    connectedAt: 'connectedAt',
+    updatedAt: 'updatedAt',
+    imapHost: 'imapHost',
+    imapPort: 'imapPort',
+    imapSecurity: 'imapSecurity',
+    smtpHost: 'smtpHost',
+    smtpPort: 'smtpPort',
+    smtpSecurity: 'smtpSecurity',
+    encryptedPassword: 'encryptedPassword',
+    encryptionIv: 'encryptionIv',
+    encryptionTag: 'encryptionTag',
+    uidValidity: 'uidValidity',
+    highestModSeq: 'highestModSeq'
+  };
+
+  export type ImapConnectedAccountScalarFieldEnum = (typeof ImapConnectedAccountScalarFieldEnum)[keyof typeof ImapConnectedAccountScalarFieldEnum]
+
+
+  export const JmapConnectedAccountScalarFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    accountId: 'accountId',
+    email: 'email',
+    displayName: 'displayName',
+    isDefault: 'isDefault',
+    connectedAt: 'connectedAt',
+    updatedAt: 'updatedAt',
+    sessionUrl: 'sessionUrl',
+    jmapAccountId: 'jmapAccountId',
+    encryptedToken: 'encryptedToken',
+    encryptionIv: 'encryptionIv',
+    encryptionTag: 'encryptionTag',
+    emailState: 'emailState',
+    mailboxState: 'mailboxState'
+  };
+
+  export type JmapConnectedAccountScalarFieldEnum = (typeof JmapConnectedAccountScalarFieldEnum)[keyof typeof JmapConnectedAccountScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -28173,6 +31073,8 @@ export namespace Prisma {
     lastActiveAccountId?: StringNullableFilter<"User"> | string | null
     org?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
     msAccounts?: MsConnectedAccountListRelationFilter
+    imapAccounts?: ImapConnectedAccountListRelationFilter
+    jmapAccounts?: JmapConnectedAccountListRelationFilter
     msalCache?: XOR<MsalTokenCacheNullableScalarRelationFilter, MsalTokenCacheWhereInput> | null
     deltaLinks?: EmailDeltaLinkListRelationFilter
     webhookSubs?: WebhookSubscriptionListRelationFilter
@@ -28212,6 +31114,8 @@ export namespace Prisma {
     lastActiveAccountId?: SortOrderInput | SortOrder
     org?: OrganizationOrderByWithRelationInput
     msAccounts?: MsConnectedAccountOrderByRelationAggregateInput
+    imapAccounts?: ImapConnectedAccountOrderByRelationAggregateInput
+    jmapAccounts?: JmapConnectedAccountOrderByRelationAggregateInput
     msalCache?: MsalTokenCacheOrderByWithRelationInput
     deltaLinks?: EmailDeltaLinkOrderByRelationAggregateInput
     webhookSubs?: WebhookSubscriptionOrderByRelationAggregateInput
@@ -28254,6 +31158,8 @@ export namespace Prisma {
     lastActiveAccountId?: StringNullableFilter<"User"> | string | null
     org?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
     msAccounts?: MsConnectedAccountListRelationFilter
+    imapAccounts?: ImapConnectedAccountListRelationFilter
+    jmapAccounts?: JmapConnectedAccountListRelationFilter
     msalCache?: XOR<MsalTokenCacheNullableScalarRelationFilter, MsalTokenCacheWhereInput> | null
     deltaLinks?: EmailDeltaLinkListRelationFilter
     webhookSubs?: WebhookSubscriptionListRelationFilter
@@ -28851,6 +31757,7 @@ export namespace Prisma {
     totalCount?: IntFilter<"CachedFolder"> | number
     wellKnownName?: StringNullableFilter<"CachedFolder"> | string | null
     syncedAt?: DateTimeFilter<"CachedFolder"> | Date | string
+    updatedAt?: DateTimeFilter<"CachedFolder"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }
 
@@ -28864,6 +31771,7 @@ export namespace Prisma {
     totalCount?: SortOrder
     wellKnownName?: SortOrderInput | SortOrder
     syncedAt?: SortOrder
+    updatedAt?: SortOrder
     user?: UserOrderByWithRelationInput
   }
 
@@ -28880,6 +31788,7 @@ export namespace Prisma {
     totalCount?: IntFilter<"CachedFolder"> | number
     wellKnownName?: StringNullableFilter<"CachedFolder"> | string | null
     syncedAt?: DateTimeFilter<"CachedFolder"> | Date | string
+    updatedAt?: DateTimeFilter<"CachedFolder"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }, "id">
 
@@ -28893,6 +31802,7 @@ export namespace Prisma {
     totalCount?: SortOrder
     wellKnownName?: SortOrderInput | SortOrder
     syncedAt?: SortOrder
+    updatedAt?: SortOrder
     _count?: CachedFolderCountOrderByAggregateInput
     _avg?: CachedFolderAvgOrderByAggregateInput
     _max?: CachedFolderMaxOrderByAggregateInput
@@ -28913,6 +31823,7 @@ export namespace Prisma {
     totalCount?: IntWithAggregatesFilter<"CachedFolder"> | number
     wellKnownName?: StringNullableWithAggregatesFilter<"CachedFolder"> | string | null
     syncedAt?: DateTimeWithAggregatesFilter<"CachedFolder"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"CachedFolder"> | Date | string
   }
 
   export type CachedEmailWhereInput = {
@@ -28942,6 +31853,7 @@ export namespace Prisma {
     syncStatus?: StringFilter<"CachedEmail"> | string
     lastModifiedDateTime?: DateTimeNullableFilter<"CachedEmail"> | Date | string | null
     syncedAt?: DateTimeFilter<"CachedEmail"> | Date | string
+    updatedAt?: DateTimeFilter<"CachedEmail"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }
 
@@ -28969,6 +31881,7 @@ export namespace Prisma {
     syncStatus?: SortOrder
     lastModifiedDateTime?: SortOrderInput | SortOrder
     syncedAt?: SortOrder
+    updatedAt?: SortOrder
     user?: UserOrderByWithRelationInput
   }
 
@@ -28999,6 +31912,7 @@ export namespace Prisma {
     syncStatus?: StringFilter<"CachedEmail"> | string
     lastModifiedDateTime?: DateTimeNullableFilter<"CachedEmail"> | Date | string | null
     syncedAt?: DateTimeFilter<"CachedEmail"> | Date | string
+    updatedAt?: DateTimeFilter<"CachedEmail"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }, "id">
 
@@ -29026,6 +31940,7 @@ export namespace Prisma {
     syncStatus?: SortOrder
     lastModifiedDateTime?: SortOrderInput | SortOrder
     syncedAt?: SortOrder
+    updatedAt?: SortOrder
     _count?: CachedEmailCountOrderByAggregateInput
     _max?: CachedEmailMaxOrderByAggregateInput
     _min?: CachedEmailMinOrderByAggregateInput
@@ -29058,6 +31973,7 @@ export namespace Prisma {
     syncStatus?: StringWithAggregatesFilter<"CachedEmail"> | string
     lastModifiedDateTime?: DateTimeNullableWithAggregatesFilter<"CachedEmail"> | Date | string | null
     syncedAt?: DateTimeWithAggregatesFilter<"CachedEmail"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"CachedEmail"> | Date | string
   }
 
   export type CachedCalendarEventWhereInput = {
@@ -29094,6 +32010,7 @@ export namespace Prisma {
     createdDateTime?: DateTimeNullableFilter<"CachedCalendarEvent"> | Date | string | null
     lastModifiedDateTime?: DateTimeNullableFilter<"CachedCalendarEvent"> | Date | string | null
     syncedAt?: DateTimeFilter<"CachedCalendarEvent"> | Date | string
+    updatedAt?: DateTimeFilter<"CachedCalendarEvent"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }
 
@@ -29128,6 +32045,7 @@ export namespace Prisma {
     createdDateTime?: SortOrderInput | SortOrder
     lastModifiedDateTime?: SortOrderInput | SortOrder
     syncedAt?: SortOrder
+    updatedAt?: SortOrder
     user?: UserOrderByWithRelationInput
   }
 
@@ -29165,6 +32083,7 @@ export namespace Prisma {
     createdDateTime?: DateTimeNullableFilter<"CachedCalendarEvent"> | Date | string | null
     lastModifiedDateTime?: DateTimeNullableFilter<"CachedCalendarEvent"> | Date | string | null
     syncedAt?: DateTimeFilter<"CachedCalendarEvent"> | Date | string
+    updatedAt?: DateTimeFilter<"CachedCalendarEvent"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }, "id">
 
@@ -29199,6 +32118,7 @@ export namespace Prisma {
     createdDateTime?: SortOrderInput | SortOrder
     lastModifiedDateTime?: SortOrderInput | SortOrder
     syncedAt?: SortOrder
+    updatedAt?: SortOrder
     _count?: CachedCalendarEventCountOrderByAggregateInput
     _avg?: CachedCalendarEventAvgOrderByAggregateInput
     _max?: CachedCalendarEventMaxOrderByAggregateInput
@@ -29240,6 +32160,7 @@ export namespace Prisma {
     createdDateTime?: DateTimeNullableWithAggregatesFilter<"CachedCalendarEvent"> | Date | string | null
     lastModifiedDateTime?: DateTimeNullableWithAggregatesFilter<"CachedCalendarEvent"> | Date | string | null
     syncedAt?: DateTimeWithAggregatesFilter<"CachedCalendarEvent"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"CachedCalendarEvent"> | Date | string
   }
 
   export type CachedContactWhereInput = {
@@ -29272,6 +32193,7 @@ export namespace Prisma {
     isVIP?: BoolFilter<"CachedContact"> | boolean
     isFavorite?: BoolFilter<"CachedContact"> | boolean
     syncedAt?: DateTimeFilter<"CachedContact"> | Date | string
+    updatedAt?: DateTimeFilter<"CachedContact"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }
 
@@ -29302,6 +32224,7 @@ export namespace Prisma {
     isVIP?: SortOrder
     isFavorite?: SortOrder
     syncedAt?: SortOrder
+    updatedAt?: SortOrder
     user?: UserOrderByWithRelationInput
   }
 
@@ -29335,6 +32258,7 @@ export namespace Prisma {
     isVIP?: BoolFilter<"CachedContact"> | boolean
     isFavorite?: BoolFilter<"CachedContact"> | boolean
     syncedAt?: DateTimeFilter<"CachedContact"> | Date | string
+    updatedAt?: DateTimeFilter<"CachedContact"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }, "id">
 
@@ -29365,6 +32289,7 @@ export namespace Prisma {
     isVIP?: SortOrder
     isFavorite?: SortOrder
     syncedAt?: SortOrder
+    updatedAt?: SortOrder
     _count?: CachedContactCountOrderByAggregateInput
     _avg?: CachedContactAvgOrderByAggregateInput
     _max?: CachedContactMaxOrderByAggregateInput
@@ -29402,6 +32327,7 @@ export namespace Prisma {
     isVIP?: BoolWithAggregatesFilter<"CachedContact"> | boolean
     isFavorite?: BoolWithAggregatesFilter<"CachedContact"> | boolean
     syncedAt?: DateTimeWithAggregatesFilter<"CachedContact"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"CachedContact"> | Date | string
   }
 
   export type DeployLogWhereInput = {
@@ -29413,6 +32339,7 @@ export namespace Prisma {
     commits?: JsonFilter<"DeployLog">
     createdAt?: DateTimeFilter<"DeployLog"> | Date | string
     digestSentAt?: DateTimeNullableFilter<"DeployLog"> | Date | string | null
+    updatedAt?: DateTimeFilter<"DeployLog"> | Date | string
   }
 
   export type DeployLogOrderByWithRelationInput = {
@@ -29421,6 +32348,7 @@ export namespace Prisma {
     commits?: SortOrder
     createdAt?: SortOrder
     digestSentAt?: SortOrderInput | SortOrder
+    updatedAt?: SortOrder
   }
 
   export type DeployLogWhereUniqueInput = Prisma.AtLeast<{
@@ -29432,6 +32360,7 @@ export namespace Prisma {
     commits?: JsonFilter<"DeployLog">
     createdAt?: DateTimeFilter<"DeployLog"> | Date | string
     digestSentAt?: DateTimeNullableFilter<"DeployLog"> | Date | string | null
+    updatedAt?: DateTimeFilter<"DeployLog"> | Date | string
   }, "id">
 
   export type DeployLogOrderByWithAggregationInput = {
@@ -29440,6 +32369,7 @@ export namespace Prisma {
     commits?: SortOrder
     createdAt?: SortOrder
     digestSentAt?: SortOrderInput | SortOrder
+    updatedAt?: SortOrder
     _count?: DeployLogCountOrderByAggregateInput
     _max?: DeployLogMaxOrderByAggregateInput
     _min?: DeployLogMinOrderByAggregateInput
@@ -29454,6 +32384,7 @@ export namespace Prisma {
     commits?: JsonWithAggregatesFilter<"DeployLog">
     createdAt?: DateTimeWithAggregatesFilter<"DeployLog"> | Date | string
     digestSentAt?: DateTimeNullableWithAggregatesFilter<"DeployLog"> | Date | string | null
+    updatedAt?: DateTimeWithAggregatesFilter<"DeployLog"> | Date | string
   }
 
   export type EmailRuleWhereInput = {
@@ -29579,6 +32510,7 @@ export namespace Prisma {
     contentId?: StringNullableFilter<"EmailAttachment"> | string | null
     uploadedAt?: DateTimeFilter<"EmailAttachment"> | Date | string
     createdAt?: DateTimeFilter<"EmailAttachment"> | Date | string
+    updatedAt?: DateTimeFilter<"EmailAttachment"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }
 
@@ -29595,6 +32527,7 @@ export namespace Prisma {
     contentId?: SortOrderInput | SortOrder
     uploadedAt?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
     user?: UserOrderByWithRelationInput
   }
 
@@ -29614,6 +32547,7 @@ export namespace Prisma {
     contentId?: StringNullableFilter<"EmailAttachment"> | string | null
     uploadedAt?: DateTimeFilter<"EmailAttachment"> | Date | string
     createdAt?: DateTimeFilter<"EmailAttachment"> | Date | string
+    updatedAt?: DateTimeFilter<"EmailAttachment"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }, "id">
 
@@ -29630,6 +32564,7 @@ export namespace Prisma {
     contentId?: SortOrderInput | SortOrder
     uploadedAt?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
     _count?: EmailAttachmentCountOrderByAggregateInput
     _avg?: EmailAttachmentAvgOrderByAggregateInput
     _max?: EmailAttachmentMaxOrderByAggregateInput
@@ -29653,6 +32588,7 @@ export namespace Prisma {
     contentId?: StringNullableWithAggregatesFilter<"EmailAttachment"> | string | null
     uploadedAt?: DateTimeWithAggregatesFilter<"EmailAttachment"> | Date | string
     createdAt?: DateTimeWithAggregatesFilter<"EmailAttachment"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"EmailAttachment"> | Date | string
   }
 
   export type AiGeneratedReplyWhereInput = {
@@ -29665,6 +32601,7 @@ export namespace Prisma {
     generatedBody?: StringFilter<"AiGeneratedReply"> | string
     createdAt?: DateTimeFilter<"AiGeneratedReply"> | Date | string
     expiresAt?: DateTimeFilter<"AiGeneratedReply"> | Date | string
+    updatedAt?: DateTimeFilter<"AiGeneratedReply"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }
 
@@ -29675,6 +32612,7 @@ export namespace Prisma {
     generatedBody?: SortOrder
     createdAt?: SortOrder
     expiresAt?: SortOrder
+    updatedAt?: SortOrder
     user?: UserOrderByWithRelationInput
   }
 
@@ -29688,6 +32626,7 @@ export namespace Prisma {
     generatedBody?: StringFilter<"AiGeneratedReply"> | string
     createdAt?: DateTimeFilter<"AiGeneratedReply"> | Date | string
     expiresAt?: DateTimeFilter<"AiGeneratedReply"> | Date | string
+    updatedAt?: DateTimeFilter<"AiGeneratedReply"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }, "id">
 
@@ -29698,6 +32637,7 @@ export namespace Prisma {
     generatedBody?: SortOrder
     createdAt?: SortOrder
     expiresAt?: SortOrder
+    updatedAt?: SortOrder
     _count?: AiGeneratedReplyCountOrderByAggregateInput
     _max?: AiGeneratedReplyMaxOrderByAggregateInput
     _min?: AiGeneratedReplyMinOrderByAggregateInput
@@ -29713,6 +32653,7 @@ export namespace Prisma {
     generatedBody?: StringWithAggregatesFilter<"AiGeneratedReply"> | string
     createdAt?: DateTimeWithAggregatesFilter<"AiGeneratedReply"> | Date | string
     expiresAt?: DateTimeWithAggregatesFilter<"AiGeneratedReply"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"AiGeneratedReply"> | Date | string
   }
 
   export type CachedSearchResultWhereInput = {
@@ -29726,6 +32667,7 @@ export namespace Prisma {
     results?: JsonFilter<"CachedSearchResult">
     createdAt?: DateTimeFilter<"CachedSearchResult"> | Date | string
     expiresAt?: DateTimeFilter<"CachedSearchResult"> | Date | string
+    updatedAt?: DateTimeFilter<"CachedSearchResult"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }
 
@@ -29737,6 +32679,7 @@ export namespace Prisma {
     results?: SortOrder
     createdAt?: SortOrder
     expiresAt?: SortOrder
+    updatedAt?: SortOrder
     user?: UserOrderByWithRelationInput
   }
 
@@ -29752,6 +32695,7 @@ export namespace Prisma {
     results?: JsonFilter<"CachedSearchResult">
     createdAt?: DateTimeFilter<"CachedSearchResult"> | Date | string
     expiresAt?: DateTimeFilter<"CachedSearchResult"> | Date | string
+    updatedAt?: DateTimeFilter<"CachedSearchResult"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }, "id" | "userId_homeAccountId_query">
 
@@ -29763,6 +32707,7 @@ export namespace Prisma {
     results?: SortOrder
     createdAt?: SortOrder
     expiresAt?: SortOrder
+    updatedAt?: SortOrder
     _count?: CachedSearchResultCountOrderByAggregateInput
     _max?: CachedSearchResultMaxOrderByAggregateInput
     _min?: CachedSearchResultMinOrderByAggregateInput
@@ -29779,6 +32724,7 @@ export namespace Prisma {
     results?: JsonWithAggregatesFilter<"CachedSearchResult">
     createdAt?: DateTimeWithAggregatesFilter<"CachedSearchResult"> | Date | string
     expiresAt?: DateTimeWithAggregatesFilter<"CachedSearchResult"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"CachedSearchResult"> | Date | string
   }
 
   export type SyncStatusWhereInput = {
@@ -29868,6 +32814,7 @@ export namespace Prisma {
     status?: StringFilter<"NotificationLog"> | string
     errorMessage?: StringNullableFilter<"NotificationLog"> | string | null
     metadata?: JsonFilter<"NotificationLog">
+    updatedAt?: DateTimeFilter<"NotificationLog"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }
 
@@ -29879,6 +32826,7 @@ export namespace Prisma {
     status?: SortOrder
     errorMessage?: SortOrderInput | SortOrder
     metadata?: SortOrder
+    updatedAt?: SortOrder
     user?: UserOrderByWithRelationInput
   }
 
@@ -29893,6 +32841,7 @@ export namespace Prisma {
     status?: StringFilter<"NotificationLog"> | string
     errorMessage?: StringNullableFilter<"NotificationLog"> | string | null
     metadata?: JsonFilter<"NotificationLog">
+    updatedAt?: DateTimeFilter<"NotificationLog"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }, "id">
 
@@ -29904,6 +32853,7 @@ export namespace Prisma {
     status?: SortOrder
     errorMessage?: SortOrderInput | SortOrder
     metadata?: SortOrder
+    updatedAt?: SortOrder
     _count?: NotificationLogCountOrderByAggregateInput
     _max?: NotificationLogMaxOrderByAggregateInput
     _min?: NotificationLogMinOrderByAggregateInput
@@ -29920,6 +32870,7 @@ export namespace Prisma {
     status?: StringWithAggregatesFilter<"NotificationLog"> | string
     errorMessage?: StringNullableWithAggregatesFilter<"NotificationLog"> | string | null
     metadata?: JsonWithAggregatesFilter<"NotificationLog">
+    updatedAt?: DateTimeWithAggregatesFilter<"NotificationLog"> | Date | string
   }
 
   export type MigrationStatusWhereInput = {
@@ -29931,6 +32882,7 @@ export namespace Prisma {
     migrationType?: StringFilter<"MigrationStatus"> | string
     completedAt?: DateTimeFilter<"MigrationStatus"> | Date | string
     metadata?: JsonFilter<"MigrationStatus">
+    updatedAt?: DateTimeFilter<"MigrationStatus"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }
 
@@ -29940,6 +32892,7 @@ export namespace Prisma {
     migrationType?: SortOrder
     completedAt?: SortOrder
     metadata?: SortOrder
+    updatedAt?: SortOrder
     user?: UserOrderByWithRelationInput
   }
 
@@ -29953,6 +32906,7 @@ export namespace Prisma {
     migrationType?: StringFilter<"MigrationStatus"> | string
     completedAt?: DateTimeFilter<"MigrationStatus"> | Date | string
     metadata?: JsonFilter<"MigrationStatus">
+    updatedAt?: DateTimeFilter<"MigrationStatus"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }, "id" | "userId_migrationType">
 
@@ -29962,6 +32916,7 @@ export namespace Prisma {
     migrationType?: SortOrder
     completedAt?: SortOrder
     metadata?: SortOrder
+    updatedAt?: SortOrder
     _count?: MigrationStatusCountOrderByAggregateInput
     _max?: MigrationStatusMaxOrderByAggregateInput
     _min?: MigrationStatusMinOrderByAggregateInput
@@ -29976,6 +32931,7 @@ export namespace Prisma {
     migrationType?: StringWithAggregatesFilter<"MigrationStatus"> | string
     completedAt?: DateTimeWithAggregatesFilter<"MigrationStatus"> | Date | string
     metadata?: JsonWithAggregatesFilter<"MigrationStatus">
+    updatedAt?: DateTimeWithAggregatesFilter<"MigrationStatus"> | Date | string
   }
 
   export type TodoItemWhereInput = {
@@ -30041,6 +32997,242 @@ export namespace Prisma {
     priority?: StringWithAggregatesFilter<"TodoItem"> | string
     createdAt?: DateTimeWithAggregatesFilter<"TodoItem"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"TodoItem"> | Date | string
+  }
+
+  export type ImapConnectedAccountWhereInput = {
+    AND?: ImapConnectedAccountWhereInput | ImapConnectedAccountWhereInput[]
+    OR?: ImapConnectedAccountWhereInput[]
+    NOT?: ImapConnectedAccountWhereInput | ImapConnectedAccountWhereInput[]
+    id?: StringFilter<"ImapConnectedAccount"> | string
+    userId?: StringFilter<"ImapConnectedAccount"> | string
+    accountId?: StringFilter<"ImapConnectedAccount"> | string
+    email?: StringFilter<"ImapConnectedAccount"> | string
+    displayName?: StringNullableFilter<"ImapConnectedAccount"> | string | null
+    isDefault?: BoolFilter<"ImapConnectedAccount"> | boolean
+    connectedAt?: DateTimeFilter<"ImapConnectedAccount"> | Date | string
+    updatedAt?: DateTimeFilter<"ImapConnectedAccount"> | Date | string
+    imapHost?: StringFilter<"ImapConnectedAccount"> | string
+    imapPort?: IntFilter<"ImapConnectedAccount"> | number
+    imapSecurity?: StringFilter<"ImapConnectedAccount"> | string
+    smtpHost?: StringFilter<"ImapConnectedAccount"> | string
+    smtpPort?: IntFilter<"ImapConnectedAccount"> | number
+    smtpSecurity?: StringFilter<"ImapConnectedAccount"> | string
+    encryptedPassword?: StringFilter<"ImapConnectedAccount"> | string
+    encryptionIv?: StringFilter<"ImapConnectedAccount"> | string
+    encryptionTag?: StringFilter<"ImapConnectedAccount"> | string
+    uidValidity?: JsonFilter<"ImapConnectedAccount">
+    highestModSeq?: JsonFilter<"ImapConnectedAccount">
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type ImapConnectedAccountOrderByWithRelationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    accountId?: SortOrder
+    email?: SortOrder
+    displayName?: SortOrderInput | SortOrder
+    isDefault?: SortOrder
+    connectedAt?: SortOrder
+    updatedAt?: SortOrder
+    imapHost?: SortOrder
+    imapPort?: SortOrder
+    imapSecurity?: SortOrder
+    smtpHost?: SortOrder
+    smtpPort?: SortOrder
+    smtpSecurity?: SortOrder
+    encryptedPassword?: SortOrder
+    encryptionIv?: SortOrder
+    encryptionTag?: SortOrder
+    uidValidity?: SortOrder
+    highestModSeq?: SortOrder
+    user?: UserOrderByWithRelationInput
+  }
+
+  export type ImapConnectedAccountWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    userId_accountId?: ImapConnectedAccountUserIdAccountIdCompoundUniqueInput
+    userId_email?: ImapConnectedAccountUserIdEmailCompoundUniqueInput
+    AND?: ImapConnectedAccountWhereInput | ImapConnectedAccountWhereInput[]
+    OR?: ImapConnectedAccountWhereInput[]
+    NOT?: ImapConnectedAccountWhereInput | ImapConnectedAccountWhereInput[]
+    userId?: StringFilter<"ImapConnectedAccount"> | string
+    accountId?: StringFilter<"ImapConnectedAccount"> | string
+    email?: StringFilter<"ImapConnectedAccount"> | string
+    displayName?: StringNullableFilter<"ImapConnectedAccount"> | string | null
+    isDefault?: BoolFilter<"ImapConnectedAccount"> | boolean
+    connectedAt?: DateTimeFilter<"ImapConnectedAccount"> | Date | string
+    updatedAt?: DateTimeFilter<"ImapConnectedAccount"> | Date | string
+    imapHost?: StringFilter<"ImapConnectedAccount"> | string
+    imapPort?: IntFilter<"ImapConnectedAccount"> | number
+    imapSecurity?: StringFilter<"ImapConnectedAccount"> | string
+    smtpHost?: StringFilter<"ImapConnectedAccount"> | string
+    smtpPort?: IntFilter<"ImapConnectedAccount"> | number
+    smtpSecurity?: StringFilter<"ImapConnectedAccount"> | string
+    encryptedPassword?: StringFilter<"ImapConnectedAccount"> | string
+    encryptionIv?: StringFilter<"ImapConnectedAccount"> | string
+    encryptionTag?: StringFilter<"ImapConnectedAccount"> | string
+    uidValidity?: JsonFilter<"ImapConnectedAccount">
+    highestModSeq?: JsonFilter<"ImapConnectedAccount">
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id" | "userId_accountId" | "userId_email">
+
+  export type ImapConnectedAccountOrderByWithAggregationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    accountId?: SortOrder
+    email?: SortOrder
+    displayName?: SortOrderInput | SortOrder
+    isDefault?: SortOrder
+    connectedAt?: SortOrder
+    updatedAt?: SortOrder
+    imapHost?: SortOrder
+    imapPort?: SortOrder
+    imapSecurity?: SortOrder
+    smtpHost?: SortOrder
+    smtpPort?: SortOrder
+    smtpSecurity?: SortOrder
+    encryptedPassword?: SortOrder
+    encryptionIv?: SortOrder
+    encryptionTag?: SortOrder
+    uidValidity?: SortOrder
+    highestModSeq?: SortOrder
+    _count?: ImapConnectedAccountCountOrderByAggregateInput
+    _avg?: ImapConnectedAccountAvgOrderByAggregateInput
+    _max?: ImapConnectedAccountMaxOrderByAggregateInput
+    _min?: ImapConnectedAccountMinOrderByAggregateInput
+    _sum?: ImapConnectedAccountSumOrderByAggregateInput
+  }
+
+  export type ImapConnectedAccountScalarWhereWithAggregatesInput = {
+    AND?: ImapConnectedAccountScalarWhereWithAggregatesInput | ImapConnectedAccountScalarWhereWithAggregatesInput[]
+    OR?: ImapConnectedAccountScalarWhereWithAggregatesInput[]
+    NOT?: ImapConnectedAccountScalarWhereWithAggregatesInput | ImapConnectedAccountScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"ImapConnectedAccount"> | string
+    userId?: StringWithAggregatesFilter<"ImapConnectedAccount"> | string
+    accountId?: StringWithAggregatesFilter<"ImapConnectedAccount"> | string
+    email?: StringWithAggregatesFilter<"ImapConnectedAccount"> | string
+    displayName?: StringNullableWithAggregatesFilter<"ImapConnectedAccount"> | string | null
+    isDefault?: BoolWithAggregatesFilter<"ImapConnectedAccount"> | boolean
+    connectedAt?: DateTimeWithAggregatesFilter<"ImapConnectedAccount"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"ImapConnectedAccount"> | Date | string
+    imapHost?: StringWithAggregatesFilter<"ImapConnectedAccount"> | string
+    imapPort?: IntWithAggregatesFilter<"ImapConnectedAccount"> | number
+    imapSecurity?: StringWithAggregatesFilter<"ImapConnectedAccount"> | string
+    smtpHost?: StringWithAggregatesFilter<"ImapConnectedAccount"> | string
+    smtpPort?: IntWithAggregatesFilter<"ImapConnectedAccount"> | number
+    smtpSecurity?: StringWithAggregatesFilter<"ImapConnectedAccount"> | string
+    encryptedPassword?: StringWithAggregatesFilter<"ImapConnectedAccount"> | string
+    encryptionIv?: StringWithAggregatesFilter<"ImapConnectedAccount"> | string
+    encryptionTag?: StringWithAggregatesFilter<"ImapConnectedAccount"> | string
+    uidValidity?: JsonWithAggregatesFilter<"ImapConnectedAccount">
+    highestModSeq?: JsonWithAggregatesFilter<"ImapConnectedAccount">
+  }
+
+  export type JmapConnectedAccountWhereInput = {
+    AND?: JmapConnectedAccountWhereInput | JmapConnectedAccountWhereInput[]
+    OR?: JmapConnectedAccountWhereInput[]
+    NOT?: JmapConnectedAccountWhereInput | JmapConnectedAccountWhereInput[]
+    id?: StringFilter<"JmapConnectedAccount"> | string
+    userId?: StringFilter<"JmapConnectedAccount"> | string
+    accountId?: StringFilter<"JmapConnectedAccount"> | string
+    email?: StringFilter<"JmapConnectedAccount"> | string
+    displayName?: StringNullableFilter<"JmapConnectedAccount"> | string | null
+    isDefault?: BoolFilter<"JmapConnectedAccount"> | boolean
+    connectedAt?: DateTimeFilter<"JmapConnectedAccount"> | Date | string
+    updatedAt?: DateTimeFilter<"JmapConnectedAccount"> | Date | string
+    sessionUrl?: StringFilter<"JmapConnectedAccount"> | string
+    jmapAccountId?: StringFilter<"JmapConnectedAccount"> | string
+    encryptedToken?: StringFilter<"JmapConnectedAccount"> | string
+    encryptionIv?: StringFilter<"JmapConnectedAccount"> | string
+    encryptionTag?: StringFilter<"JmapConnectedAccount"> | string
+    emailState?: StringNullableFilter<"JmapConnectedAccount"> | string | null
+    mailboxState?: StringNullableFilter<"JmapConnectedAccount"> | string | null
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type JmapConnectedAccountOrderByWithRelationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    accountId?: SortOrder
+    email?: SortOrder
+    displayName?: SortOrderInput | SortOrder
+    isDefault?: SortOrder
+    connectedAt?: SortOrder
+    updatedAt?: SortOrder
+    sessionUrl?: SortOrder
+    jmapAccountId?: SortOrder
+    encryptedToken?: SortOrder
+    encryptionIv?: SortOrder
+    encryptionTag?: SortOrder
+    emailState?: SortOrderInput | SortOrder
+    mailboxState?: SortOrderInput | SortOrder
+    user?: UserOrderByWithRelationInput
+  }
+
+  export type JmapConnectedAccountWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    userId_accountId?: JmapConnectedAccountUserIdAccountIdCompoundUniqueInput
+    userId_email?: JmapConnectedAccountUserIdEmailCompoundUniqueInput
+    AND?: JmapConnectedAccountWhereInput | JmapConnectedAccountWhereInput[]
+    OR?: JmapConnectedAccountWhereInput[]
+    NOT?: JmapConnectedAccountWhereInput | JmapConnectedAccountWhereInput[]
+    userId?: StringFilter<"JmapConnectedAccount"> | string
+    accountId?: StringFilter<"JmapConnectedAccount"> | string
+    email?: StringFilter<"JmapConnectedAccount"> | string
+    displayName?: StringNullableFilter<"JmapConnectedAccount"> | string | null
+    isDefault?: BoolFilter<"JmapConnectedAccount"> | boolean
+    connectedAt?: DateTimeFilter<"JmapConnectedAccount"> | Date | string
+    updatedAt?: DateTimeFilter<"JmapConnectedAccount"> | Date | string
+    sessionUrl?: StringFilter<"JmapConnectedAccount"> | string
+    jmapAccountId?: StringFilter<"JmapConnectedAccount"> | string
+    encryptedToken?: StringFilter<"JmapConnectedAccount"> | string
+    encryptionIv?: StringFilter<"JmapConnectedAccount"> | string
+    encryptionTag?: StringFilter<"JmapConnectedAccount"> | string
+    emailState?: StringNullableFilter<"JmapConnectedAccount"> | string | null
+    mailboxState?: StringNullableFilter<"JmapConnectedAccount"> | string | null
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id" | "userId_accountId" | "userId_email">
+
+  export type JmapConnectedAccountOrderByWithAggregationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    accountId?: SortOrder
+    email?: SortOrder
+    displayName?: SortOrderInput | SortOrder
+    isDefault?: SortOrder
+    connectedAt?: SortOrder
+    updatedAt?: SortOrder
+    sessionUrl?: SortOrder
+    jmapAccountId?: SortOrder
+    encryptedToken?: SortOrder
+    encryptionIv?: SortOrder
+    encryptionTag?: SortOrder
+    emailState?: SortOrderInput | SortOrder
+    mailboxState?: SortOrderInput | SortOrder
+    _count?: JmapConnectedAccountCountOrderByAggregateInput
+    _max?: JmapConnectedAccountMaxOrderByAggregateInput
+    _min?: JmapConnectedAccountMinOrderByAggregateInput
+  }
+
+  export type JmapConnectedAccountScalarWhereWithAggregatesInput = {
+    AND?: JmapConnectedAccountScalarWhereWithAggregatesInput | JmapConnectedAccountScalarWhereWithAggregatesInput[]
+    OR?: JmapConnectedAccountScalarWhereWithAggregatesInput[]
+    NOT?: JmapConnectedAccountScalarWhereWithAggregatesInput | JmapConnectedAccountScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"JmapConnectedAccount"> | string
+    userId?: StringWithAggregatesFilter<"JmapConnectedAccount"> | string
+    accountId?: StringWithAggregatesFilter<"JmapConnectedAccount"> | string
+    email?: StringWithAggregatesFilter<"JmapConnectedAccount"> | string
+    displayName?: StringNullableWithAggregatesFilter<"JmapConnectedAccount"> | string | null
+    isDefault?: BoolWithAggregatesFilter<"JmapConnectedAccount"> | boolean
+    connectedAt?: DateTimeWithAggregatesFilter<"JmapConnectedAccount"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"JmapConnectedAccount"> | Date | string
+    sessionUrl?: StringWithAggregatesFilter<"JmapConnectedAccount"> | string
+    jmapAccountId?: StringWithAggregatesFilter<"JmapConnectedAccount"> | string
+    encryptedToken?: StringWithAggregatesFilter<"JmapConnectedAccount"> | string
+    encryptionIv?: StringWithAggregatesFilter<"JmapConnectedAccount"> | string
+    encryptionTag?: StringWithAggregatesFilter<"JmapConnectedAccount"> | string
+    emailState?: StringNullableWithAggregatesFilter<"JmapConnectedAccount"> | string | null
+    mailboxState?: StringNullableWithAggregatesFilter<"JmapConnectedAccount"> | string | null
   }
 
   export type OrganizationCreateInput = {
@@ -30122,6 +33314,8 @@ export namespace Prisma {
     lastActiveAccountId?: string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
     msAccounts?: MsConnectedAccountCreateNestedManyWithoutUserInput
+    imapAccounts?: ImapConnectedAccountCreateNestedManyWithoutUserInput
+    jmapAccounts?: JmapConnectedAccountCreateNestedManyWithoutUserInput
     msalCache?: MsalTokenCacheCreateNestedOneWithoutUserInput
     deltaLinks?: EmailDeltaLinkCreateNestedManyWithoutUserInput
     webhookSubs?: WebhookSubscriptionCreateNestedManyWithoutUserInput
@@ -30160,6 +33354,8 @@ export namespace Prisma {
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
+    imapAccounts?: ImapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
+    jmapAccounts?: JmapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
     msalCache?: MsalTokenCacheUncheckedCreateNestedOneWithoutUserInput
     deltaLinks?: EmailDeltaLinkUncheckedCreateNestedManyWithoutUserInput
     webhookSubs?: WebhookSubscriptionUncheckedCreateNestedManyWithoutUserInput
@@ -30198,6 +33394,8 @@ export namespace Prisma {
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
     msAccounts?: MsConnectedAccountUpdateManyWithoutUserNestedInput
+    imapAccounts?: ImapConnectedAccountUpdateManyWithoutUserNestedInput
+    jmapAccounts?: JmapConnectedAccountUpdateManyWithoutUserNestedInput
     msalCache?: MsalTokenCacheUpdateOneWithoutUserNestedInput
     deltaLinks?: EmailDeltaLinkUpdateManyWithoutUserNestedInput
     webhookSubs?: WebhookSubscriptionUpdateManyWithoutUserNestedInput
@@ -30236,6 +33434,8 @@ export namespace Prisma {
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
+    imapAccounts?: ImapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
+    jmapAccounts?: JmapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
     msalCache?: MsalTokenCacheUncheckedUpdateOneWithoutUserNestedInput
     deltaLinks?: EmailDeltaLinkUncheckedUpdateManyWithoutUserNestedInput
     webhookSubs?: WebhookSubscriptionUncheckedUpdateManyWithoutUserNestedInput
@@ -30912,6 +34112,7 @@ export namespace Prisma {
     totalCount?: number
     wellKnownName?: string | null
     syncedAt?: Date | string
+    updatedAt?: Date | string
     user: UserCreateNestedOneWithoutCachedFoldersInput
   }
 
@@ -30925,6 +34126,7 @@ export namespace Prisma {
     totalCount?: number
     wellKnownName?: string | null
     syncedAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type CachedFolderUpdateInput = {
@@ -30936,6 +34138,7 @@ export namespace Prisma {
     totalCount?: IntFieldUpdateOperationsInput | number
     wellKnownName?: NullableStringFieldUpdateOperationsInput | string | null
     syncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutCachedFoldersNestedInput
   }
 
@@ -30949,6 +34152,7 @@ export namespace Prisma {
     totalCount?: IntFieldUpdateOperationsInput | number
     wellKnownName?: NullableStringFieldUpdateOperationsInput | string | null
     syncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type CachedFolderCreateManyInput = {
@@ -30961,6 +34165,7 @@ export namespace Prisma {
     totalCount?: number
     wellKnownName?: string | null
     syncedAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type CachedFolderUpdateManyMutationInput = {
@@ -30972,6 +34177,7 @@ export namespace Prisma {
     totalCount?: IntFieldUpdateOperationsInput | number
     wellKnownName?: NullableStringFieldUpdateOperationsInput | string | null
     syncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type CachedFolderUncheckedUpdateManyInput = {
@@ -30984,6 +34190,7 @@ export namespace Prisma {
     totalCount?: IntFieldUpdateOperationsInput | number
     wellKnownName?: NullableStringFieldUpdateOperationsInput | string | null
     syncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type CachedEmailCreateInput = {
@@ -31009,6 +34216,7 @@ export namespace Prisma {
     syncStatus?: string
     lastModifiedDateTime?: Date | string | null
     syncedAt?: Date | string
+    updatedAt?: Date | string
     user: UserCreateNestedOneWithoutCachedEmailsInput
   }
 
@@ -31036,6 +34244,7 @@ export namespace Prisma {
     syncStatus?: string
     lastModifiedDateTime?: Date | string | null
     syncedAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type CachedEmailUpdateInput = {
@@ -31061,6 +34270,7 @@ export namespace Prisma {
     syncStatus?: StringFieldUpdateOperationsInput | string
     lastModifiedDateTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     syncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutCachedEmailsNestedInput
   }
 
@@ -31088,6 +34298,7 @@ export namespace Prisma {
     syncStatus?: StringFieldUpdateOperationsInput | string
     lastModifiedDateTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     syncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type CachedEmailCreateManyInput = {
@@ -31114,6 +34325,7 @@ export namespace Prisma {
     syncStatus?: string
     lastModifiedDateTime?: Date | string | null
     syncedAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type CachedEmailUpdateManyMutationInput = {
@@ -31139,6 +34351,7 @@ export namespace Prisma {
     syncStatus?: StringFieldUpdateOperationsInput | string
     lastModifiedDateTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     syncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type CachedEmailUncheckedUpdateManyInput = {
@@ -31165,6 +34378,7 @@ export namespace Prisma {
     syncStatus?: StringFieldUpdateOperationsInput | string
     lastModifiedDateTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     syncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type CachedCalendarEventCreateInput = {
@@ -31197,6 +34411,7 @@ export namespace Prisma {
     createdDateTime?: Date | string | null
     lastModifiedDateTime?: Date | string | null
     syncedAt?: Date | string
+    updatedAt?: Date | string
     user: UserCreateNestedOneWithoutCachedCalEventsInput
   }
 
@@ -31231,6 +34446,7 @@ export namespace Prisma {
     createdDateTime?: Date | string | null
     lastModifiedDateTime?: Date | string | null
     syncedAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type CachedCalendarEventUpdateInput = {
@@ -31263,6 +34479,7 @@ export namespace Prisma {
     createdDateTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastModifiedDateTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     syncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutCachedCalEventsNestedInput
   }
 
@@ -31297,6 +34514,7 @@ export namespace Prisma {
     createdDateTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastModifiedDateTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     syncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type CachedCalendarEventCreateManyInput = {
@@ -31330,6 +34548,7 @@ export namespace Prisma {
     createdDateTime?: Date | string | null
     lastModifiedDateTime?: Date | string | null
     syncedAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type CachedCalendarEventUpdateManyMutationInput = {
@@ -31362,6 +34581,7 @@ export namespace Prisma {
     createdDateTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastModifiedDateTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     syncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type CachedCalendarEventUncheckedUpdateManyInput = {
@@ -31395,6 +34615,7 @@ export namespace Prisma {
     createdDateTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastModifiedDateTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     syncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type CachedContactCreateInput = {
@@ -31423,6 +34644,7 @@ export namespace Prisma {
     isVIP?: boolean
     isFavorite?: boolean
     syncedAt?: Date | string
+    updatedAt?: Date | string
     user: UserCreateNestedOneWithoutCachedContactsInput
   }
 
@@ -31453,6 +34675,7 @@ export namespace Prisma {
     isVIP?: boolean
     isFavorite?: boolean
     syncedAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type CachedContactUpdateInput = {
@@ -31481,6 +34704,7 @@ export namespace Prisma {
     isVIP?: BoolFieldUpdateOperationsInput | boolean
     isFavorite?: BoolFieldUpdateOperationsInput | boolean
     syncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutCachedContactsNestedInput
   }
 
@@ -31511,6 +34735,7 @@ export namespace Prisma {
     isVIP?: BoolFieldUpdateOperationsInput | boolean
     isFavorite?: BoolFieldUpdateOperationsInput | boolean
     syncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type CachedContactCreateManyInput = {
@@ -31540,6 +34765,7 @@ export namespace Prisma {
     isVIP?: boolean
     isFavorite?: boolean
     syncedAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type CachedContactUpdateManyMutationInput = {
@@ -31568,6 +34794,7 @@ export namespace Prisma {
     isVIP?: BoolFieldUpdateOperationsInput | boolean
     isFavorite?: BoolFieldUpdateOperationsInput | boolean
     syncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type CachedContactUncheckedUpdateManyInput = {
@@ -31597,6 +34824,7 @@ export namespace Prisma {
     isVIP?: BoolFieldUpdateOperationsInput | boolean
     isFavorite?: BoolFieldUpdateOperationsInput | boolean
     syncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type DeployLogCreateInput = {
@@ -31605,6 +34833,7 @@ export namespace Prisma {
     commits: JsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     digestSentAt?: Date | string | null
+    updatedAt?: Date | string
   }
 
   export type DeployLogUncheckedCreateInput = {
@@ -31613,6 +34842,7 @@ export namespace Prisma {
     commits: JsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     digestSentAt?: Date | string | null
+    updatedAt?: Date | string
   }
 
   export type DeployLogUpdateInput = {
@@ -31621,6 +34851,7 @@ export namespace Prisma {
     commits?: JsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     digestSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type DeployLogUncheckedUpdateInput = {
@@ -31629,6 +34860,7 @@ export namespace Prisma {
     commits?: JsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     digestSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type DeployLogCreateManyInput = {
@@ -31637,6 +34869,7 @@ export namespace Prisma {
     commits: JsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     digestSentAt?: Date | string | null
+    updatedAt?: Date | string
   }
 
   export type DeployLogUpdateManyMutationInput = {
@@ -31645,6 +34878,7 @@ export namespace Prisma {
     commits?: JsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     digestSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type DeployLogUncheckedUpdateManyInput = {
@@ -31653,6 +34887,7 @@ export namespace Prisma {
     commits?: JsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     digestSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type EmailRuleCreateInput = {
@@ -31792,6 +35027,7 @@ export namespace Prisma {
     contentId?: string | null
     uploadedAt?: Date | string
     createdAt?: Date | string
+    updatedAt?: Date | string
     user: UserCreateNestedOneWithoutEmailAttachmentsInput
   }
 
@@ -31808,6 +35044,7 @@ export namespace Prisma {
     contentId?: string | null
     uploadedAt?: Date | string
     createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type EmailAttachmentUpdateInput = {
@@ -31822,6 +35059,7 @@ export namespace Prisma {
     contentId?: NullableStringFieldUpdateOperationsInput | string | null
     uploadedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutEmailAttachmentsNestedInput
   }
 
@@ -31838,6 +35076,7 @@ export namespace Prisma {
     contentId?: NullableStringFieldUpdateOperationsInput | string | null
     uploadedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type EmailAttachmentCreateManyInput = {
@@ -31853,6 +35092,7 @@ export namespace Prisma {
     contentId?: string | null
     uploadedAt?: Date | string
     createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type EmailAttachmentUpdateManyMutationInput = {
@@ -31867,6 +35107,7 @@ export namespace Prisma {
     contentId?: NullableStringFieldUpdateOperationsInput | string | null
     uploadedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type EmailAttachmentUncheckedUpdateManyInput = {
@@ -31882,6 +35123,7 @@ export namespace Prisma {
     contentId?: NullableStringFieldUpdateOperationsInput | string | null
     uploadedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type AiGeneratedReplyCreateInput = {
@@ -31890,6 +35132,7 @@ export namespace Prisma {
     generatedBody: string
     createdAt?: Date | string
     expiresAt: Date | string
+    updatedAt?: Date | string
     user: UserCreateNestedOneWithoutAiGeneratedRepliesInput
   }
 
@@ -31900,6 +35143,7 @@ export namespace Prisma {
     generatedBody: string
     createdAt?: Date | string
     expiresAt: Date | string
+    updatedAt?: Date | string
   }
 
   export type AiGeneratedReplyUpdateInput = {
@@ -31908,6 +35152,7 @@ export namespace Prisma {
     generatedBody?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutAiGeneratedRepliesNestedInput
   }
 
@@ -31918,6 +35163,7 @@ export namespace Prisma {
     generatedBody?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type AiGeneratedReplyCreateManyInput = {
@@ -31927,6 +35173,7 @@ export namespace Prisma {
     generatedBody: string
     createdAt?: Date | string
     expiresAt: Date | string
+    updatedAt?: Date | string
   }
 
   export type AiGeneratedReplyUpdateManyMutationInput = {
@@ -31935,6 +35182,7 @@ export namespace Prisma {
     generatedBody?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type AiGeneratedReplyUncheckedUpdateManyInput = {
@@ -31944,6 +35192,7 @@ export namespace Prisma {
     generatedBody?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type CachedSearchResultCreateInput = {
@@ -31953,6 +35202,7 @@ export namespace Prisma {
     results: JsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     expiresAt: Date | string
+    updatedAt?: Date | string
     user: UserCreateNestedOneWithoutCachedSearchResultsInput
   }
 
@@ -31964,6 +35214,7 @@ export namespace Prisma {
     results: JsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     expiresAt: Date | string
+    updatedAt?: Date | string
   }
 
   export type CachedSearchResultUpdateInput = {
@@ -31973,6 +35224,7 @@ export namespace Prisma {
     results?: JsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutCachedSearchResultsNestedInput
   }
 
@@ -31984,6 +35236,7 @@ export namespace Prisma {
     results?: JsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type CachedSearchResultCreateManyInput = {
@@ -31994,6 +35247,7 @@ export namespace Prisma {
     results: JsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     expiresAt: Date | string
+    updatedAt?: Date | string
   }
 
   export type CachedSearchResultUpdateManyMutationInput = {
@@ -32003,6 +35257,7 @@ export namespace Prisma {
     results?: JsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type CachedSearchResultUncheckedUpdateManyInput = {
@@ -32013,6 +35268,7 @@ export namespace Prisma {
     results?: JsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type SyncStatusCreateInput = {
@@ -32105,6 +35361,7 @@ export namespace Prisma {
     status: string
     errorMessage?: string | null
     metadata?: JsonNullValueInput | InputJsonValue
+    updatedAt?: Date | string
     user: UserCreateNestedOneWithoutNotificationLogsInput
   }
 
@@ -32116,6 +35373,7 @@ export namespace Prisma {
     status: string
     errorMessage?: string | null
     metadata?: JsonNullValueInput | InputJsonValue
+    updatedAt?: Date | string
   }
 
   export type NotificationLogUpdateInput = {
@@ -32125,6 +35383,7 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
     metadata?: JsonNullValueInput | InputJsonValue
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutNotificationLogsNestedInput
   }
 
@@ -32136,6 +35395,7 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
     metadata?: JsonNullValueInput | InputJsonValue
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type NotificationLogCreateManyInput = {
@@ -32146,6 +35406,7 @@ export namespace Prisma {
     status: string
     errorMessage?: string | null
     metadata?: JsonNullValueInput | InputJsonValue
+    updatedAt?: Date | string
   }
 
   export type NotificationLogUpdateManyMutationInput = {
@@ -32155,6 +35416,7 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
     metadata?: JsonNullValueInput | InputJsonValue
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type NotificationLogUncheckedUpdateManyInput = {
@@ -32165,6 +35427,7 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
     metadata?: JsonNullValueInput | InputJsonValue
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type MigrationStatusCreateInput = {
@@ -32172,6 +35435,7 @@ export namespace Prisma {
     migrationType: string
     completedAt?: Date | string
     metadata?: JsonNullValueInput | InputJsonValue
+    updatedAt?: Date | string
     user: UserCreateNestedOneWithoutMigrationStatusesInput
   }
 
@@ -32181,6 +35445,7 @@ export namespace Prisma {
     migrationType: string
     completedAt?: Date | string
     metadata?: JsonNullValueInput | InputJsonValue
+    updatedAt?: Date | string
   }
 
   export type MigrationStatusUpdateInput = {
@@ -32188,6 +35453,7 @@ export namespace Prisma {
     migrationType?: StringFieldUpdateOperationsInput | string
     completedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     metadata?: JsonNullValueInput | InputJsonValue
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutMigrationStatusesNestedInput
   }
 
@@ -32197,6 +35463,7 @@ export namespace Prisma {
     migrationType?: StringFieldUpdateOperationsInput | string
     completedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     metadata?: JsonNullValueInput | InputJsonValue
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type MigrationStatusCreateManyInput = {
@@ -32205,6 +35472,7 @@ export namespace Prisma {
     migrationType: string
     completedAt?: Date | string
     metadata?: JsonNullValueInput | InputJsonValue
+    updatedAt?: Date | string
   }
 
   export type MigrationStatusUpdateManyMutationInput = {
@@ -32212,6 +35480,7 @@ export namespace Prisma {
     migrationType?: StringFieldUpdateOperationsInput | string
     completedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     metadata?: JsonNullValueInput | InputJsonValue
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type MigrationStatusUncheckedUpdateManyInput = {
@@ -32220,6 +35489,7 @@ export namespace Prisma {
     migrationType?: StringFieldUpdateOperationsInput | string
     completedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     metadata?: JsonNullValueInput | InputJsonValue
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type TodoItemCreateInput = {
@@ -32289,6 +35559,284 @@ export namespace Prisma {
     priority?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ImapConnectedAccountCreateInput = {
+    id?: string
+    accountId: string
+    email: string
+    displayName?: string | null
+    isDefault?: boolean
+    connectedAt?: Date | string
+    updatedAt?: Date | string
+    imapHost: string
+    imapPort?: number
+    imapSecurity?: string
+    smtpHost: string
+    smtpPort?: number
+    smtpSecurity?: string
+    encryptedPassword: string
+    encryptionIv: string
+    encryptionTag: string
+    uidValidity?: JsonNullValueInput | InputJsonValue
+    highestModSeq?: JsonNullValueInput | InputJsonValue
+    user: UserCreateNestedOneWithoutImapAccountsInput
+  }
+
+  export type ImapConnectedAccountUncheckedCreateInput = {
+    id?: string
+    userId: string
+    accountId: string
+    email: string
+    displayName?: string | null
+    isDefault?: boolean
+    connectedAt?: Date | string
+    updatedAt?: Date | string
+    imapHost: string
+    imapPort?: number
+    imapSecurity?: string
+    smtpHost: string
+    smtpPort?: number
+    smtpSecurity?: string
+    encryptedPassword: string
+    encryptionIv: string
+    encryptionTag: string
+    uidValidity?: JsonNullValueInput | InputJsonValue
+    highestModSeq?: JsonNullValueInput | InputJsonValue
+  }
+
+  export type ImapConnectedAccountUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    accountId?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    displayName?: NullableStringFieldUpdateOperationsInput | string | null
+    isDefault?: BoolFieldUpdateOperationsInput | boolean
+    connectedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    imapHost?: StringFieldUpdateOperationsInput | string
+    imapPort?: IntFieldUpdateOperationsInput | number
+    imapSecurity?: StringFieldUpdateOperationsInput | string
+    smtpHost?: StringFieldUpdateOperationsInput | string
+    smtpPort?: IntFieldUpdateOperationsInput | number
+    smtpSecurity?: StringFieldUpdateOperationsInput | string
+    encryptedPassword?: StringFieldUpdateOperationsInput | string
+    encryptionIv?: StringFieldUpdateOperationsInput | string
+    encryptionTag?: StringFieldUpdateOperationsInput | string
+    uidValidity?: JsonNullValueInput | InputJsonValue
+    highestModSeq?: JsonNullValueInput | InputJsonValue
+    user?: UserUpdateOneRequiredWithoutImapAccountsNestedInput
+  }
+
+  export type ImapConnectedAccountUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    accountId?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    displayName?: NullableStringFieldUpdateOperationsInput | string | null
+    isDefault?: BoolFieldUpdateOperationsInput | boolean
+    connectedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    imapHost?: StringFieldUpdateOperationsInput | string
+    imapPort?: IntFieldUpdateOperationsInput | number
+    imapSecurity?: StringFieldUpdateOperationsInput | string
+    smtpHost?: StringFieldUpdateOperationsInput | string
+    smtpPort?: IntFieldUpdateOperationsInput | number
+    smtpSecurity?: StringFieldUpdateOperationsInput | string
+    encryptedPassword?: StringFieldUpdateOperationsInput | string
+    encryptionIv?: StringFieldUpdateOperationsInput | string
+    encryptionTag?: StringFieldUpdateOperationsInput | string
+    uidValidity?: JsonNullValueInput | InputJsonValue
+    highestModSeq?: JsonNullValueInput | InputJsonValue
+  }
+
+  export type ImapConnectedAccountCreateManyInput = {
+    id?: string
+    userId: string
+    accountId: string
+    email: string
+    displayName?: string | null
+    isDefault?: boolean
+    connectedAt?: Date | string
+    updatedAt?: Date | string
+    imapHost: string
+    imapPort?: number
+    imapSecurity?: string
+    smtpHost: string
+    smtpPort?: number
+    smtpSecurity?: string
+    encryptedPassword: string
+    encryptionIv: string
+    encryptionTag: string
+    uidValidity?: JsonNullValueInput | InputJsonValue
+    highestModSeq?: JsonNullValueInput | InputJsonValue
+  }
+
+  export type ImapConnectedAccountUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    accountId?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    displayName?: NullableStringFieldUpdateOperationsInput | string | null
+    isDefault?: BoolFieldUpdateOperationsInput | boolean
+    connectedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    imapHost?: StringFieldUpdateOperationsInput | string
+    imapPort?: IntFieldUpdateOperationsInput | number
+    imapSecurity?: StringFieldUpdateOperationsInput | string
+    smtpHost?: StringFieldUpdateOperationsInput | string
+    smtpPort?: IntFieldUpdateOperationsInput | number
+    smtpSecurity?: StringFieldUpdateOperationsInput | string
+    encryptedPassword?: StringFieldUpdateOperationsInput | string
+    encryptionIv?: StringFieldUpdateOperationsInput | string
+    encryptionTag?: StringFieldUpdateOperationsInput | string
+    uidValidity?: JsonNullValueInput | InputJsonValue
+    highestModSeq?: JsonNullValueInput | InputJsonValue
+  }
+
+  export type ImapConnectedAccountUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    accountId?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    displayName?: NullableStringFieldUpdateOperationsInput | string | null
+    isDefault?: BoolFieldUpdateOperationsInput | boolean
+    connectedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    imapHost?: StringFieldUpdateOperationsInput | string
+    imapPort?: IntFieldUpdateOperationsInput | number
+    imapSecurity?: StringFieldUpdateOperationsInput | string
+    smtpHost?: StringFieldUpdateOperationsInput | string
+    smtpPort?: IntFieldUpdateOperationsInput | number
+    smtpSecurity?: StringFieldUpdateOperationsInput | string
+    encryptedPassword?: StringFieldUpdateOperationsInput | string
+    encryptionIv?: StringFieldUpdateOperationsInput | string
+    encryptionTag?: StringFieldUpdateOperationsInput | string
+    uidValidity?: JsonNullValueInput | InputJsonValue
+    highestModSeq?: JsonNullValueInput | InputJsonValue
+  }
+
+  export type JmapConnectedAccountCreateInput = {
+    id?: string
+    accountId: string
+    email: string
+    displayName?: string | null
+    isDefault?: boolean
+    connectedAt?: Date | string
+    updatedAt?: Date | string
+    sessionUrl: string
+    jmapAccountId: string
+    encryptedToken: string
+    encryptionIv: string
+    encryptionTag: string
+    emailState?: string | null
+    mailboxState?: string | null
+    user: UserCreateNestedOneWithoutJmapAccountsInput
+  }
+
+  export type JmapConnectedAccountUncheckedCreateInput = {
+    id?: string
+    userId: string
+    accountId: string
+    email: string
+    displayName?: string | null
+    isDefault?: boolean
+    connectedAt?: Date | string
+    updatedAt?: Date | string
+    sessionUrl: string
+    jmapAccountId: string
+    encryptedToken: string
+    encryptionIv: string
+    encryptionTag: string
+    emailState?: string | null
+    mailboxState?: string | null
+  }
+
+  export type JmapConnectedAccountUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    accountId?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    displayName?: NullableStringFieldUpdateOperationsInput | string | null
+    isDefault?: BoolFieldUpdateOperationsInput | boolean
+    connectedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sessionUrl?: StringFieldUpdateOperationsInput | string
+    jmapAccountId?: StringFieldUpdateOperationsInput | string
+    encryptedToken?: StringFieldUpdateOperationsInput | string
+    encryptionIv?: StringFieldUpdateOperationsInput | string
+    encryptionTag?: StringFieldUpdateOperationsInput | string
+    emailState?: NullableStringFieldUpdateOperationsInput | string | null
+    mailboxState?: NullableStringFieldUpdateOperationsInput | string | null
+    user?: UserUpdateOneRequiredWithoutJmapAccountsNestedInput
+  }
+
+  export type JmapConnectedAccountUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    accountId?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    displayName?: NullableStringFieldUpdateOperationsInput | string | null
+    isDefault?: BoolFieldUpdateOperationsInput | boolean
+    connectedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sessionUrl?: StringFieldUpdateOperationsInput | string
+    jmapAccountId?: StringFieldUpdateOperationsInput | string
+    encryptedToken?: StringFieldUpdateOperationsInput | string
+    encryptionIv?: StringFieldUpdateOperationsInput | string
+    encryptionTag?: StringFieldUpdateOperationsInput | string
+    emailState?: NullableStringFieldUpdateOperationsInput | string | null
+    mailboxState?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type JmapConnectedAccountCreateManyInput = {
+    id?: string
+    userId: string
+    accountId: string
+    email: string
+    displayName?: string | null
+    isDefault?: boolean
+    connectedAt?: Date | string
+    updatedAt?: Date | string
+    sessionUrl: string
+    jmapAccountId: string
+    encryptedToken: string
+    encryptionIv: string
+    encryptionTag: string
+    emailState?: string | null
+    mailboxState?: string | null
+  }
+
+  export type JmapConnectedAccountUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    accountId?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    displayName?: NullableStringFieldUpdateOperationsInput | string | null
+    isDefault?: BoolFieldUpdateOperationsInput | boolean
+    connectedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sessionUrl?: StringFieldUpdateOperationsInput | string
+    jmapAccountId?: StringFieldUpdateOperationsInput | string
+    encryptedToken?: StringFieldUpdateOperationsInput | string
+    encryptionIv?: StringFieldUpdateOperationsInput | string
+    encryptionTag?: StringFieldUpdateOperationsInput | string
+    emailState?: NullableStringFieldUpdateOperationsInput | string | null
+    mailboxState?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type JmapConnectedAccountUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    accountId?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    displayName?: NullableStringFieldUpdateOperationsInput | string | null
+    isDefault?: BoolFieldUpdateOperationsInput | boolean
+    connectedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sessionUrl?: StringFieldUpdateOperationsInput | string
+    jmapAccountId?: StringFieldUpdateOperationsInput | string
+    encryptedToken?: StringFieldUpdateOperationsInput | string
+    encryptionIv?: StringFieldUpdateOperationsInput | string
+    encryptionTag?: StringFieldUpdateOperationsInput | string
+    emailState?: NullableStringFieldUpdateOperationsInput | string | null
+    mailboxState?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type StringFilter<$PrismaModel = never> = {
@@ -32414,6 +35962,18 @@ export namespace Prisma {
     none?: MsConnectedAccountWhereInput
   }
 
+  export type ImapConnectedAccountListRelationFilter = {
+    every?: ImapConnectedAccountWhereInput
+    some?: ImapConnectedAccountWhereInput
+    none?: ImapConnectedAccountWhereInput
+  }
+
+  export type JmapConnectedAccountListRelationFilter = {
+    every?: JmapConnectedAccountWhereInput
+    some?: JmapConnectedAccountWhereInput
+    none?: JmapConnectedAccountWhereInput
+  }
+
   export type MsalTokenCacheNullableScalarRelationFilter = {
     is?: MsalTokenCacheWhereInput | null
     isNot?: MsalTokenCacheWhereInput | null
@@ -32521,6 +36081,14 @@ export namespace Prisma {
   }
 
   export type MsConnectedAccountOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ImapConnectedAccountOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type JmapConnectedAccountOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -33054,6 +36622,7 @@ export namespace Prisma {
     totalCount?: SortOrder
     wellKnownName?: SortOrder
     syncedAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type CachedFolderAvgOrderByAggregateInput = {
@@ -33071,6 +36640,7 @@ export namespace Prisma {
     totalCount?: SortOrder
     wellKnownName?: SortOrder
     syncedAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type CachedFolderMinOrderByAggregateInput = {
@@ -33083,6 +36653,7 @@ export namespace Prisma {
     totalCount?: SortOrder
     wellKnownName?: SortOrder
     syncedAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type CachedFolderSumOrderByAggregateInput = {
@@ -33114,6 +36685,7 @@ export namespace Prisma {
     syncStatus?: SortOrder
     lastModifiedDateTime?: SortOrder
     syncedAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type CachedEmailMaxOrderByAggregateInput = {
@@ -33138,6 +36710,7 @@ export namespace Prisma {
     syncStatus?: SortOrder
     lastModifiedDateTime?: SortOrder
     syncedAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type CachedEmailMinOrderByAggregateInput = {
@@ -33162,6 +36735,7 @@ export namespace Prisma {
     syncStatus?: SortOrder
     lastModifiedDateTime?: SortOrder
     syncedAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type IntNullableFilter<$PrismaModel = never> = {
@@ -33206,6 +36780,7 @@ export namespace Prisma {
     createdDateTime?: SortOrder
     lastModifiedDateTime?: SortOrder
     syncedAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type CachedCalendarEventAvgOrderByAggregateInput = {
@@ -33242,6 +36817,7 @@ export namespace Prisma {
     createdDateTime?: SortOrder
     lastModifiedDateTime?: SortOrder
     syncedAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type CachedCalendarEventMinOrderByAggregateInput = {
@@ -33274,6 +36850,7 @@ export namespace Prisma {
     createdDateTime?: SortOrder
     lastModifiedDateTime?: SortOrder
     syncedAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type CachedCalendarEventSumOrderByAggregateInput = {
@@ -33323,6 +36900,7 @@ export namespace Prisma {
     isVIP?: SortOrder
     isFavorite?: SortOrder
     syncedAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type CachedContactAvgOrderByAggregateInput = {
@@ -33350,6 +36928,7 @@ export namespace Prisma {
     isVIP?: SortOrder
     isFavorite?: SortOrder
     syncedAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type CachedContactMinOrderByAggregateInput = {
@@ -33373,6 +36952,7 @@ export namespace Prisma {
     isVIP?: SortOrder
     isFavorite?: SortOrder
     syncedAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type CachedContactSumOrderByAggregateInput = {
@@ -33385,6 +36965,7 @@ export namespace Prisma {
     commits?: SortOrder
     createdAt?: SortOrder
     digestSentAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type DeployLogMaxOrderByAggregateInput = {
@@ -33392,6 +36973,7 @@ export namespace Prisma {
     pusher?: SortOrder
     createdAt?: SortOrder
     digestSentAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type DeployLogMinOrderByAggregateInput = {
@@ -33399,6 +36981,7 @@ export namespace Prisma {
     pusher?: SortOrder
     createdAt?: SortOrder
     digestSentAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type EmailRuleCountOrderByAggregateInput = {
@@ -33476,6 +37059,7 @@ export namespace Prisma {
     contentId?: SortOrder
     uploadedAt?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type EmailAttachmentAvgOrderByAggregateInput = {
@@ -33495,6 +37079,7 @@ export namespace Prisma {
     contentId?: SortOrder
     uploadedAt?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type EmailAttachmentMinOrderByAggregateInput = {
@@ -33510,6 +37095,7 @@ export namespace Prisma {
     contentId?: SortOrder
     uploadedAt?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type EmailAttachmentSumOrderByAggregateInput = {
@@ -33523,6 +37109,7 @@ export namespace Prisma {
     generatedBody?: SortOrder
     createdAt?: SortOrder
     expiresAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type AiGeneratedReplyMaxOrderByAggregateInput = {
@@ -33532,6 +37119,7 @@ export namespace Prisma {
     generatedBody?: SortOrder
     createdAt?: SortOrder
     expiresAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type AiGeneratedReplyMinOrderByAggregateInput = {
@@ -33541,6 +37129,7 @@ export namespace Prisma {
     generatedBody?: SortOrder
     createdAt?: SortOrder
     expiresAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type CachedSearchResultUserIdHomeAccountIdQueryCompoundUniqueInput = {
@@ -33557,6 +37146,7 @@ export namespace Prisma {
     results?: SortOrder
     createdAt?: SortOrder
     expiresAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type CachedSearchResultMaxOrderByAggregateInput = {
@@ -33566,6 +37156,7 @@ export namespace Prisma {
     query?: SortOrder
     createdAt?: SortOrder
     expiresAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type CachedSearchResultMinOrderByAggregateInput = {
@@ -33575,6 +37166,7 @@ export namespace Prisma {
     query?: SortOrder
     createdAt?: SortOrder
     expiresAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type SyncStatusUserIdHomeAccountIdResourceTypeCompoundUniqueInput = {
@@ -33627,6 +37219,7 @@ export namespace Prisma {
     status?: SortOrder
     errorMessage?: SortOrder
     metadata?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type NotificationLogMaxOrderByAggregateInput = {
@@ -33636,6 +37229,7 @@ export namespace Prisma {
     sentAt?: SortOrder
     status?: SortOrder
     errorMessage?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type NotificationLogMinOrderByAggregateInput = {
@@ -33645,6 +37239,7 @@ export namespace Prisma {
     sentAt?: SortOrder
     status?: SortOrder
     errorMessage?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type MigrationStatusUserIdMigrationTypeCompoundUniqueInput = {
@@ -33658,6 +37253,7 @@ export namespace Prisma {
     migrationType?: SortOrder
     completedAt?: SortOrder
     metadata?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type MigrationStatusMaxOrderByAggregateInput = {
@@ -33665,6 +37261,7 @@ export namespace Prisma {
     userId?: SortOrder
     migrationType?: SortOrder
     completedAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type MigrationStatusMinOrderByAggregateInput = {
@@ -33672,6 +37269,7 @@ export namespace Prisma {
     userId?: SortOrder
     migrationType?: SortOrder
     completedAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type TodoItemCountOrderByAggregateInput = {
@@ -33702,6 +37300,152 @@ export namespace Prisma {
     priority?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+  }
+
+  export type ImapConnectedAccountUserIdAccountIdCompoundUniqueInput = {
+    userId: string
+    accountId: string
+  }
+
+  export type ImapConnectedAccountUserIdEmailCompoundUniqueInput = {
+    userId: string
+    email: string
+  }
+
+  export type ImapConnectedAccountCountOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    accountId?: SortOrder
+    email?: SortOrder
+    displayName?: SortOrder
+    isDefault?: SortOrder
+    connectedAt?: SortOrder
+    updatedAt?: SortOrder
+    imapHost?: SortOrder
+    imapPort?: SortOrder
+    imapSecurity?: SortOrder
+    smtpHost?: SortOrder
+    smtpPort?: SortOrder
+    smtpSecurity?: SortOrder
+    encryptedPassword?: SortOrder
+    encryptionIv?: SortOrder
+    encryptionTag?: SortOrder
+    uidValidity?: SortOrder
+    highestModSeq?: SortOrder
+  }
+
+  export type ImapConnectedAccountAvgOrderByAggregateInput = {
+    imapPort?: SortOrder
+    smtpPort?: SortOrder
+  }
+
+  export type ImapConnectedAccountMaxOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    accountId?: SortOrder
+    email?: SortOrder
+    displayName?: SortOrder
+    isDefault?: SortOrder
+    connectedAt?: SortOrder
+    updatedAt?: SortOrder
+    imapHost?: SortOrder
+    imapPort?: SortOrder
+    imapSecurity?: SortOrder
+    smtpHost?: SortOrder
+    smtpPort?: SortOrder
+    smtpSecurity?: SortOrder
+    encryptedPassword?: SortOrder
+    encryptionIv?: SortOrder
+    encryptionTag?: SortOrder
+  }
+
+  export type ImapConnectedAccountMinOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    accountId?: SortOrder
+    email?: SortOrder
+    displayName?: SortOrder
+    isDefault?: SortOrder
+    connectedAt?: SortOrder
+    updatedAt?: SortOrder
+    imapHost?: SortOrder
+    imapPort?: SortOrder
+    imapSecurity?: SortOrder
+    smtpHost?: SortOrder
+    smtpPort?: SortOrder
+    smtpSecurity?: SortOrder
+    encryptedPassword?: SortOrder
+    encryptionIv?: SortOrder
+    encryptionTag?: SortOrder
+  }
+
+  export type ImapConnectedAccountSumOrderByAggregateInput = {
+    imapPort?: SortOrder
+    smtpPort?: SortOrder
+  }
+
+  export type JmapConnectedAccountUserIdAccountIdCompoundUniqueInput = {
+    userId: string
+    accountId: string
+  }
+
+  export type JmapConnectedAccountUserIdEmailCompoundUniqueInput = {
+    userId: string
+    email: string
+  }
+
+  export type JmapConnectedAccountCountOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    accountId?: SortOrder
+    email?: SortOrder
+    displayName?: SortOrder
+    isDefault?: SortOrder
+    connectedAt?: SortOrder
+    updatedAt?: SortOrder
+    sessionUrl?: SortOrder
+    jmapAccountId?: SortOrder
+    encryptedToken?: SortOrder
+    encryptionIv?: SortOrder
+    encryptionTag?: SortOrder
+    emailState?: SortOrder
+    mailboxState?: SortOrder
+  }
+
+  export type JmapConnectedAccountMaxOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    accountId?: SortOrder
+    email?: SortOrder
+    displayName?: SortOrder
+    isDefault?: SortOrder
+    connectedAt?: SortOrder
+    updatedAt?: SortOrder
+    sessionUrl?: SortOrder
+    jmapAccountId?: SortOrder
+    encryptedToken?: SortOrder
+    encryptionIv?: SortOrder
+    encryptionTag?: SortOrder
+    emailState?: SortOrder
+    mailboxState?: SortOrder
+  }
+
+  export type JmapConnectedAccountMinOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    accountId?: SortOrder
+    email?: SortOrder
+    displayName?: SortOrder
+    isDefault?: SortOrder
+    connectedAt?: SortOrder
+    updatedAt?: SortOrder
+    sessionUrl?: SortOrder
+    jmapAccountId?: SortOrder
+    encryptedToken?: SortOrder
+    encryptionIv?: SortOrder
+    encryptionTag?: SortOrder
+    emailState?: SortOrder
+    mailboxState?: SortOrder
   }
 
   export type UserCreateNestedManyWithoutOrgInput = {
@@ -33765,6 +37509,20 @@ export namespace Prisma {
     connectOrCreate?: MsConnectedAccountCreateOrConnectWithoutUserInput | MsConnectedAccountCreateOrConnectWithoutUserInput[]
     createMany?: MsConnectedAccountCreateManyUserInputEnvelope
     connect?: MsConnectedAccountWhereUniqueInput | MsConnectedAccountWhereUniqueInput[]
+  }
+
+  export type ImapConnectedAccountCreateNestedManyWithoutUserInput = {
+    create?: XOR<ImapConnectedAccountCreateWithoutUserInput, ImapConnectedAccountUncheckedCreateWithoutUserInput> | ImapConnectedAccountCreateWithoutUserInput[] | ImapConnectedAccountUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ImapConnectedAccountCreateOrConnectWithoutUserInput | ImapConnectedAccountCreateOrConnectWithoutUserInput[]
+    createMany?: ImapConnectedAccountCreateManyUserInputEnvelope
+    connect?: ImapConnectedAccountWhereUniqueInput | ImapConnectedAccountWhereUniqueInput[]
+  }
+
+  export type JmapConnectedAccountCreateNestedManyWithoutUserInput = {
+    create?: XOR<JmapConnectedAccountCreateWithoutUserInput, JmapConnectedAccountUncheckedCreateWithoutUserInput> | JmapConnectedAccountCreateWithoutUserInput[] | JmapConnectedAccountUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: JmapConnectedAccountCreateOrConnectWithoutUserInput | JmapConnectedAccountCreateOrConnectWithoutUserInput[]
+    createMany?: JmapConnectedAccountCreateManyUserInputEnvelope
+    connect?: JmapConnectedAccountWhereUniqueInput | JmapConnectedAccountWhereUniqueInput[]
   }
 
   export type MsalTokenCacheCreateNestedOneWithoutUserInput = {
@@ -33890,6 +37648,20 @@ export namespace Prisma {
     connectOrCreate?: MsConnectedAccountCreateOrConnectWithoutUserInput | MsConnectedAccountCreateOrConnectWithoutUserInput[]
     createMany?: MsConnectedAccountCreateManyUserInputEnvelope
     connect?: MsConnectedAccountWhereUniqueInput | MsConnectedAccountWhereUniqueInput[]
+  }
+
+  export type ImapConnectedAccountUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<ImapConnectedAccountCreateWithoutUserInput, ImapConnectedAccountUncheckedCreateWithoutUserInput> | ImapConnectedAccountCreateWithoutUserInput[] | ImapConnectedAccountUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ImapConnectedAccountCreateOrConnectWithoutUserInput | ImapConnectedAccountCreateOrConnectWithoutUserInput[]
+    createMany?: ImapConnectedAccountCreateManyUserInputEnvelope
+    connect?: ImapConnectedAccountWhereUniqueInput | ImapConnectedAccountWhereUniqueInput[]
+  }
+
+  export type JmapConnectedAccountUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<JmapConnectedAccountCreateWithoutUserInput, JmapConnectedAccountUncheckedCreateWithoutUserInput> | JmapConnectedAccountCreateWithoutUserInput[] | JmapConnectedAccountUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: JmapConnectedAccountCreateOrConnectWithoutUserInput | JmapConnectedAccountCreateOrConnectWithoutUserInput[]
+    createMany?: JmapConnectedAccountCreateManyUserInputEnvelope
+    connect?: JmapConnectedAccountWhereUniqueInput | JmapConnectedAccountWhereUniqueInput[]
   }
 
   export type MsalTokenCacheUncheckedCreateNestedOneWithoutUserInput = {
@@ -34038,6 +37810,34 @@ export namespace Prisma {
     update?: MsConnectedAccountUpdateWithWhereUniqueWithoutUserInput | MsConnectedAccountUpdateWithWhereUniqueWithoutUserInput[]
     updateMany?: MsConnectedAccountUpdateManyWithWhereWithoutUserInput | MsConnectedAccountUpdateManyWithWhereWithoutUserInput[]
     deleteMany?: MsConnectedAccountScalarWhereInput | MsConnectedAccountScalarWhereInput[]
+  }
+
+  export type ImapConnectedAccountUpdateManyWithoutUserNestedInput = {
+    create?: XOR<ImapConnectedAccountCreateWithoutUserInput, ImapConnectedAccountUncheckedCreateWithoutUserInput> | ImapConnectedAccountCreateWithoutUserInput[] | ImapConnectedAccountUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ImapConnectedAccountCreateOrConnectWithoutUserInput | ImapConnectedAccountCreateOrConnectWithoutUserInput[]
+    upsert?: ImapConnectedAccountUpsertWithWhereUniqueWithoutUserInput | ImapConnectedAccountUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: ImapConnectedAccountCreateManyUserInputEnvelope
+    set?: ImapConnectedAccountWhereUniqueInput | ImapConnectedAccountWhereUniqueInput[]
+    disconnect?: ImapConnectedAccountWhereUniqueInput | ImapConnectedAccountWhereUniqueInput[]
+    delete?: ImapConnectedAccountWhereUniqueInput | ImapConnectedAccountWhereUniqueInput[]
+    connect?: ImapConnectedAccountWhereUniqueInput | ImapConnectedAccountWhereUniqueInput[]
+    update?: ImapConnectedAccountUpdateWithWhereUniqueWithoutUserInput | ImapConnectedAccountUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: ImapConnectedAccountUpdateManyWithWhereWithoutUserInput | ImapConnectedAccountUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: ImapConnectedAccountScalarWhereInput | ImapConnectedAccountScalarWhereInput[]
+  }
+
+  export type JmapConnectedAccountUpdateManyWithoutUserNestedInput = {
+    create?: XOR<JmapConnectedAccountCreateWithoutUserInput, JmapConnectedAccountUncheckedCreateWithoutUserInput> | JmapConnectedAccountCreateWithoutUserInput[] | JmapConnectedAccountUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: JmapConnectedAccountCreateOrConnectWithoutUserInput | JmapConnectedAccountCreateOrConnectWithoutUserInput[]
+    upsert?: JmapConnectedAccountUpsertWithWhereUniqueWithoutUserInput | JmapConnectedAccountUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: JmapConnectedAccountCreateManyUserInputEnvelope
+    set?: JmapConnectedAccountWhereUniqueInput | JmapConnectedAccountWhereUniqueInput[]
+    disconnect?: JmapConnectedAccountWhereUniqueInput | JmapConnectedAccountWhereUniqueInput[]
+    delete?: JmapConnectedAccountWhereUniqueInput | JmapConnectedAccountWhereUniqueInput[]
+    connect?: JmapConnectedAccountWhereUniqueInput | JmapConnectedAccountWhereUniqueInput[]
+    update?: JmapConnectedAccountUpdateWithWhereUniqueWithoutUserInput | JmapConnectedAccountUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: JmapConnectedAccountUpdateManyWithWhereWithoutUserInput | JmapConnectedAccountUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: JmapConnectedAccountScalarWhereInput | JmapConnectedAccountScalarWhereInput[]
   }
 
   export type MsalTokenCacheUpdateOneWithoutUserNestedInput = {
@@ -34286,6 +38086,34 @@ export namespace Prisma {
     update?: MsConnectedAccountUpdateWithWhereUniqueWithoutUserInput | MsConnectedAccountUpdateWithWhereUniqueWithoutUserInput[]
     updateMany?: MsConnectedAccountUpdateManyWithWhereWithoutUserInput | MsConnectedAccountUpdateManyWithWhereWithoutUserInput[]
     deleteMany?: MsConnectedAccountScalarWhereInput | MsConnectedAccountScalarWhereInput[]
+  }
+
+  export type ImapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<ImapConnectedAccountCreateWithoutUserInput, ImapConnectedAccountUncheckedCreateWithoutUserInput> | ImapConnectedAccountCreateWithoutUserInput[] | ImapConnectedAccountUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ImapConnectedAccountCreateOrConnectWithoutUserInput | ImapConnectedAccountCreateOrConnectWithoutUserInput[]
+    upsert?: ImapConnectedAccountUpsertWithWhereUniqueWithoutUserInput | ImapConnectedAccountUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: ImapConnectedAccountCreateManyUserInputEnvelope
+    set?: ImapConnectedAccountWhereUniqueInput | ImapConnectedAccountWhereUniqueInput[]
+    disconnect?: ImapConnectedAccountWhereUniqueInput | ImapConnectedAccountWhereUniqueInput[]
+    delete?: ImapConnectedAccountWhereUniqueInput | ImapConnectedAccountWhereUniqueInput[]
+    connect?: ImapConnectedAccountWhereUniqueInput | ImapConnectedAccountWhereUniqueInput[]
+    update?: ImapConnectedAccountUpdateWithWhereUniqueWithoutUserInput | ImapConnectedAccountUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: ImapConnectedAccountUpdateManyWithWhereWithoutUserInput | ImapConnectedAccountUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: ImapConnectedAccountScalarWhereInput | ImapConnectedAccountScalarWhereInput[]
+  }
+
+  export type JmapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<JmapConnectedAccountCreateWithoutUserInput, JmapConnectedAccountUncheckedCreateWithoutUserInput> | JmapConnectedAccountCreateWithoutUserInput[] | JmapConnectedAccountUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: JmapConnectedAccountCreateOrConnectWithoutUserInput | JmapConnectedAccountCreateOrConnectWithoutUserInput[]
+    upsert?: JmapConnectedAccountUpsertWithWhereUniqueWithoutUserInput | JmapConnectedAccountUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: JmapConnectedAccountCreateManyUserInputEnvelope
+    set?: JmapConnectedAccountWhereUniqueInput | JmapConnectedAccountWhereUniqueInput[]
+    disconnect?: JmapConnectedAccountWhereUniqueInput | JmapConnectedAccountWhereUniqueInput[]
+    delete?: JmapConnectedAccountWhereUniqueInput | JmapConnectedAccountWhereUniqueInput[]
+    connect?: JmapConnectedAccountWhereUniqueInput | JmapConnectedAccountWhereUniqueInput[]
+    update?: JmapConnectedAccountUpdateWithWhereUniqueWithoutUserInput | JmapConnectedAccountUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: JmapConnectedAccountUpdateManyWithWhereWithoutUserInput | JmapConnectedAccountUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: JmapConnectedAccountScalarWhereInput | JmapConnectedAccountScalarWhereInput[]
   }
 
   export type MsalTokenCacheUncheckedUpdateOneWithoutUserNestedInput = {
@@ -34794,6 +38622,34 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutTodoItemsInput, UserUpdateWithoutTodoItemsInput>, UserUncheckedUpdateWithoutTodoItemsInput>
   }
 
+  export type UserCreateNestedOneWithoutImapAccountsInput = {
+    create?: XOR<UserCreateWithoutImapAccountsInput, UserUncheckedCreateWithoutImapAccountsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutImapAccountsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserUpdateOneRequiredWithoutImapAccountsNestedInput = {
+    create?: XOR<UserCreateWithoutImapAccountsInput, UserUncheckedCreateWithoutImapAccountsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutImapAccountsInput
+    upsert?: UserUpsertWithoutImapAccountsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutImapAccountsInput, UserUpdateWithoutImapAccountsInput>, UserUncheckedUpdateWithoutImapAccountsInput>
+  }
+
+  export type UserCreateNestedOneWithoutJmapAccountsInput = {
+    create?: XOR<UserCreateWithoutJmapAccountsInput, UserUncheckedCreateWithoutJmapAccountsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutJmapAccountsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserUpdateOneRequiredWithoutJmapAccountsNestedInput = {
+    create?: XOR<UserCreateWithoutJmapAccountsInput, UserUncheckedCreateWithoutJmapAccountsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutJmapAccountsInput
+    upsert?: UserUpsertWithoutJmapAccountsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutJmapAccountsInput, UserUpdateWithoutJmapAccountsInput>, UserUncheckedUpdateWithoutJmapAccountsInput>
+  }
+
   export type NestedStringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -35036,6 +38892,8 @@ export namespace Prisma {
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
     msAccounts?: MsConnectedAccountCreateNestedManyWithoutUserInput
+    imapAccounts?: ImapConnectedAccountCreateNestedManyWithoutUserInput
+    jmapAccounts?: JmapConnectedAccountCreateNestedManyWithoutUserInput
     msalCache?: MsalTokenCacheCreateNestedOneWithoutUserInput
     deltaLinks?: EmailDeltaLinkCreateNestedManyWithoutUserInput
     webhookSubs?: WebhookSubscriptionCreateNestedManyWithoutUserInput
@@ -35073,6 +38931,8 @@ export namespace Prisma {
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
+    imapAccounts?: ImapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
+    jmapAccounts?: JmapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
     msalCache?: MsalTokenCacheUncheckedCreateNestedOneWithoutUserInput
     deltaLinks?: EmailDeltaLinkUncheckedCreateNestedManyWithoutUserInput
     webhookSubs?: WebhookSubscriptionUncheckedCreateNestedManyWithoutUserInput
@@ -35191,6 +39051,102 @@ export namespace Prisma {
 
   export type MsConnectedAccountCreateManyUserInputEnvelope = {
     data: MsConnectedAccountCreateManyUserInput | MsConnectedAccountCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ImapConnectedAccountCreateWithoutUserInput = {
+    id?: string
+    accountId: string
+    email: string
+    displayName?: string | null
+    isDefault?: boolean
+    connectedAt?: Date | string
+    updatedAt?: Date | string
+    imapHost: string
+    imapPort?: number
+    imapSecurity?: string
+    smtpHost: string
+    smtpPort?: number
+    smtpSecurity?: string
+    encryptedPassword: string
+    encryptionIv: string
+    encryptionTag: string
+    uidValidity?: JsonNullValueInput | InputJsonValue
+    highestModSeq?: JsonNullValueInput | InputJsonValue
+  }
+
+  export type ImapConnectedAccountUncheckedCreateWithoutUserInput = {
+    id?: string
+    accountId: string
+    email: string
+    displayName?: string | null
+    isDefault?: boolean
+    connectedAt?: Date | string
+    updatedAt?: Date | string
+    imapHost: string
+    imapPort?: number
+    imapSecurity?: string
+    smtpHost: string
+    smtpPort?: number
+    smtpSecurity?: string
+    encryptedPassword: string
+    encryptionIv: string
+    encryptionTag: string
+    uidValidity?: JsonNullValueInput | InputJsonValue
+    highestModSeq?: JsonNullValueInput | InputJsonValue
+  }
+
+  export type ImapConnectedAccountCreateOrConnectWithoutUserInput = {
+    where: ImapConnectedAccountWhereUniqueInput
+    create: XOR<ImapConnectedAccountCreateWithoutUserInput, ImapConnectedAccountUncheckedCreateWithoutUserInput>
+  }
+
+  export type ImapConnectedAccountCreateManyUserInputEnvelope = {
+    data: ImapConnectedAccountCreateManyUserInput | ImapConnectedAccountCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type JmapConnectedAccountCreateWithoutUserInput = {
+    id?: string
+    accountId: string
+    email: string
+    displayName?: string | null
+    isDefault?: boolean
+    connectedAt?: Date | string
+    updatedAt?: Date | string
+    sessionUrl: string
+    jmapAccountId: string
+    encryptedToken: string
+    encryptionIv: string
+    encryptionTag: string
+    emailState?: string | null
+    mailboxState?: string | null
+  }
+
+  export type JmapConnectedAccountUncheckedCreateWithoutUserInput = {
+    id?: string
+    accountId: string
+    email: string
+    displayName?: string | null
+    isDefault?: boolean
+    connectedAt?: Date | string
+    updatedAt?: Date | string
+    sessionUrl: string
+    jmapAccountId: string
+    encryptedToken: string
+    encryptionIv: string
+    encryptionTag: string
+    emailState?: string | null
+    mailboxState?: string | null
+  }
+
+  export type JmapConnectedAccountCreateOrConnectWithoutUserInput = {
+    where: JmapConnectedAccountWhereUniqueInput
+    create: XOR<JmapConnectedAccountCreateWithoutUserInput, JmapConnectedAccountUncheckedCreateWithoutUserInput>
+  }
+
+  export type JmapConnectedAccountCreateManyUserInputEnvelope = {
+    data: JmapConnectedAccountCreateManyUserInput | JmapConnectedAccountCreateManyUserInput[]
     skipDuplicates?: boolean
   }
 
@@ -35428,6 +39384,7 @@ export namespace Prisma {
     totalCount?: number
     wellKnownName?: string | null
     syncedAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type CachedFolderUncheckedCreateWithoutUserInput = {
@@ -35439,6 +39396,7 @@ export namespace Prisma {
     totalCount?: number
     wellKnownName?: string | null
     syncedAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type CachedFolderCreateOrConnectWithoutUserInput = {
@@ -35474,6 +39432,7 @@ export namespace Prisma {
     syncStatus?: string
     lastModifiedDateTime?: Date | string | null
     syncedAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type CachedEmailUncheckedCreateWithoutUserInput = {
@@ -35499,6 +39458,7 @@ export namespace Prisma {
     syncStatus?: string
     lastModifiedDateTime?: Date | string | null
     syncedAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type CachedEmailCreateOrConnectWithoutUserInput = {
@@ -35541,6 +39501,7 @@ export namespace Prisma {
     createdDateTime?: Date | string | null
     lastModifiedDateTime?: Date | string | null
     syncedAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type CachedCalendarEventUncheckedCreateWithoutUserInput = {
@@ -35573,6 +39534,7 @@ export namespace Prisma {
     createdDateTime?: Date | string | null
     lastModifiedDateTime?: Date | string | null
     syncedAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type CachedCalendarEventCreateOrConnectWithoutUserInput = {
@@ -35611,6 +39573,7 @@ export namespace Prisma {
     isVIP?: boolean
     isFavorite?: boolean
     syncedAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type CachedContactUncheckedCreateWithoutUserInput = {
@@ -35639,6 +39602,7 @@ export namespace Prisma {
     isVIP?: boolean
     isFavorite?: boolean
     syncedAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type CachedContactCreateOrConnectWithoutUserInput = {
@@ -35663,6 +39627,7 @@ export namespace Prisma {
     contentId?: string | null
     uploadedAt?: Date | string
     createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type EmailAttachmentUncheckedCreateWithoutUserInput = {
@@ -35677,6 +39642,7 @@ export namespace Prisma {
     contentId?: string | null
     uploadedAt?: Date | string
     createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type EmailAttachmentCreateOrConnectWithoutUserInput = {
@@ -35695,6 +39661,7 @@ export namespace Prisma {
     generatedBody: string
     createdAt?: Date | string
     expiresAt: Date | string
+    updatedAt?: Date | string
   }
 
   export type AiGeneratedReplyUncheckedCreateWithoutUserInput = {
@@ -35703,6 +39670,7 @@ export namespace Prisma {
     generatedBody: string
     createdAt?: Date | string
     expiresAt: Date | string
+    updatedAt?: Date | string
   }
 
   export type AiGeneratedReplyCreateOrConnectWithoutUserInput = {
@@ -35722,6 +39690,7 @@ export namespace Prisma {
     results: JsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     expiresAt: Date | string
+    updatedAt?: Date | string
   }
 
   export type CachedSearchResultUncheckedCreateWithoutUserInput = {
@@ -35731,6 +39700,7 @@ export namespace Prisma {
     results: JsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     expiresAt: Date | string
+    updatedAt?: Date | string
   }
 
   export type CachedSearchResultCreateOrConnectWithoutUserInput = {
@@ -35782,6 +39752,7 @@ export namespace Prisma {
     status: string
     errorMessage?: string | null
     metadata?: JsonNullValueInput | InputJsonValue
+    updatedAt?: Date | string
   }
 
   export type NotificationLogUncheckedCreateWithoutUserInput = {
@@ -35791,6 +39762,7 @@ export namespace Prisma {
     status: string
     errorMessage?: string | null
     metadata?: JsonNullValueInput | InputJsonValue
+    updatedAt?: Date | string
   }
 
   export type NotificationLogCreateOrConnectWithoutUserInput = {
@@ -35808,6 +39780,7 @@ export namespace Prisma {
     migrationType: string
     completedAt?: Date | string
     metadata?: JsonNullValueInput | InputJsonValue
+    updatedAt?: Date | string
   }
 
   export type MigrationStatusUncheckedCreateWithoutUserInput = {
@@ -35815,6 +39788,7 @@ export namespace Prisma {
     migrationType: string
     completedAt?: Date | string
     metadata?: JsonNullValueInput | InputJsonValue
+    updatedAt?: Date | string
   }
 
   export type MigrationStatusCreateOrConnectWithoutUserInput = {
@@ -35911,6 +39885,84 @@ export namespace Prisma {
     isDefault?: BoolFilter<"MsConnectedAccount"> | boolean
     connectedAt?: DateTimeFilter<"MsConnectedAccount"> | Date | string
     updatedAt?: DateTimeFilter<"MsConnectedAccount"> | Date | string
+  }
+
+  export type ImapConnectedAccountUpsertWithWhereUniqueWithoutUserInput = {
+    where: ImapConnectedAccountWhereUniqueInput
+    update: XOR<ImapConnectedAccountUpdateWithoutUserInput, ImapConnectedAccountUncheckedUpdateWithoutUserInput>
+    create: XOR<ImapConnectedAccountCreateWithoutUserInput, ImapConnectedAccountUncheckedCreateWithoutUserInput>
+  }
+
+  export type ImapConnectedAccountUpdateWithWhereUniqueWithoutUserInput = {
+    where: ImapConnectedAccountWhereUniqueInput
+    data: XOR<ImapConnectedAccountUpdateWithoutUserInput, ImapConnectedAccountUncheckedUpdateWithoutUserInput>
+  }
+
+  export type ImapConnectedAccountUpdateManyWithWhereWithoutUserInput = {
+    where: ImapConnectedAccountScalarWhereInput
+    data: XOR<ImapConnectedAccountUpdateManyMutationInput, ImapConnectedAccountUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type ImapConnectedAccountScalarWhereInput = {
+    AND?: ImapConnectedAccountScalarWhereInput | ImapConnectedAccountScalarWhereInput[]
+    OR?: ImapConnectedAccountScalarWhereInput[]
+    NOT?: ImapConnectedAccountScalarWhereInput | ImapConnectedAccountScalarWhereInput[]
+    id?: StringFilter<"ImapConnectedAccount"> | string
+    userId?: StringFilter<"ImapConnectedAccount"> | string
+    accountId?: StringFilter<"ImapConnectedAccount"> | string
+    email?: StringFilter<"ImapConnectedAccount"> | string
+    displayName?: StringNullableFilter<"ImapConnectedAccount"> | string | null
+    isDefault?: BoolFilter<"ImapConnectedAccount"> | boolean
+    connectedAt?: DateTimeFilter<"ImapConnectedAccount"> | Date | string
+    updatedAt?: DateTimeFilter<"ImapConnectedAccount"> | Date | string
+    imapHost?: StringFilter<"ImapConnectedAccount"> | string
+    imapPort?: IntFilter<"ImapConnectedAccount"> | number
+    imapSecurity?: StringFilter<"ImapConnectedAccount"> | string
+    smtpHost?: StringFilter<"ImapConnectedAccount"> | string
+    smtpPort?: IntFilter<"ImapConnectedAccount"> | number
+    smtpSecurity?: StringFilter<"ImapConnectedAccount"> | string
+    encryptedPassword?: StringFilter<"ImapConnectedAccount"> | string
+    encryptionIv?: StringFilter<"ImapConnectedAccount"> | string
+    encryptionTag?: StringFilter<"ImapConnectedAccount"> | string
+    uidValidity?: JsonFilter<"ImapConnectedAccount">
+    highestModSeq?: JsonFilter<"ImapConnectedAccount">
+  }
+
+  export type JmapConnectedAccountUpsertWithWhereUniqueWithoutUserInput = {
+    where: JmapConnectedAccountWhereUniqueInput
+    update: XOR<JmapConnectedAccountUpdateWithoutUserInput, JmapConnectedAccountUncheckedUpdateWithoutUserInput>
+    create: XOR<JmapConnectedAccountCreateWithoutUserInput, JmapConnectedAccountUncheckedCreateWithoutUserInput>
+  }
+
+  export type JmapConnectedAccountUpdateWithWhereUniqueWithoutUserInput = {
+    where: JmapConnectedAccountWhereUniqueInput
+    data: XOR<JmapConnectedAccountUpdateWithoutUserInput, JmapConnectedAccountUncheckedUpdateWithoutUserInput>
+  }
+
+  export type JmapConnectedAccountUpdateManyWithWhereWithoutUserInput = {
+    where: JmapConnectedAccountScalarWhereInput
+    data: XOR<JmapConnectedAccountUpdateManyMutationInput, JmapConnectedAccountUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type JmapConnectedAccountScalarWhereInput = {
+    AND?: JmapConnectedAccountScalarWhereInput | JmapConnectedAccountScalarWhereInput[]
+    OR?: JmapConnectedAccountScalarWhereInput[]
+    NOT?: JmapConnectedAccountScalarWhereInput | JmapConnectedAccountScalarWhereInput[]
+    id?: StringFilter<"JmapConnectedAccount"> | string
+    userId?: StringFilter<"JmapConnectedAccount"> | string
+    accountId?: StringFilter<"JmapConnectedAccount"> | string
+    email?: StringFilter<"JmapConnectedAccount"> | string
+    displayName?: StringNullableFilter<"JmapConnectedAccount"> | string | null
+    isDefault?: BoolFilter<"JmapConnectedAccount"> | boolean
+    connectedAt?: DateTimeFilter<"JmapConnectedAccount"> | Date | string
+    updatedAt?: DateTimeFilter<"JmapConnectedAccount"> | Date | string
+    sessionUrl?: StringFilter<"JmapConnectedAccount"> | string
+    jmapAccountId?: StringFilter<"JmapConnectedAccount"> | string
+    encryptedToken?: StringFilter<"JmapConnectedAccount"> | string
+    encryptionIv?: StringFilter<"JmapConnectedAccount"> | string
+    encryptionTag?: StringFilter<"JmapConnectedAccount"> | string
+    emailState?: StringNullableFilter<"JmapConnectedAccount"> | string | null
+    mailboxState?: StringNullableFilter<"JmapConnectedAccount"> | string | null
   }
 
   export type MsalTokenCacheUpsertWithoutUserInput = {
@@ -36144,6 +40196,7 @@ export namespace Prisma {
     totalCount?: IntFilter<"CachedFolder"> | number
     wellKnownName?: StringNullableFilter<"CachedFolder"> | string | null
     syncedAt?: DateTimeFilter<"CachedFolder"> | Date | string
+    updatedAt?: DateTimeFilter<"CachedFolder"> | Date | string
   }
 
   export type CachedEmailUpsertWithWhereUniqueWithoutUserInput = {
@@ -36189,6 +40242,7 @@ export namespace Prisma {
     syncStatus?: StringFilter<"CachedEmail"> | string
     lastModifiedDateTime?: DateTimeNullableFilter<"CachedEmail"> | Date | string | null
     syncedAt?: DateTimeFilter<"CachedEmail"> | Date | string
+    updatedAt?: DateTimeFilter<"CachedEmail"> | Date | string
   }
 
   export type CachedCalendarEventUpsertWithWhereUniqueWithoutUserInput = {
@@ -36241,6 +40295,7 @@ export namespace Prisma {
     createdDateTime?: DateTimeNullableFilter<"CachedCalendarEvent"> | Date | string | null
     lastModifiedDateTime?: DateTimeNullableFilter<"CachedCalendarEvent"> | Date | string | null
     syncedAt?: DateTimeFilter<"CachedCalendarEvent"> | Date | string
+    updatedAt?: DateTimeFilter<"CachedCalendarEvent"> | Date | string
   }
 
   export type CachedContactUpsertWithWhereUniqueWithoutUserInput = {
@@ -36289,6 +40344,7 @@ export namespace Prisma {
     isVIP?: BoolFilter<"CachedContact"> | boolean
     isFavorite?: BoolFilter<"CachedContact"> | boolean
     syncedAt?: DateTimeFilter<"CachedContact"> | Date | string
+    updatedAt?: DateTimeFilter<"CachedContact"> | Date | string
   }
 
   export type EmailAttachmentUpsertWithWhereUniqueWithoutUserInput = {
@@ -36323,6 +40379,7 @@ export namespace Prisma {
     contentId?: StringNullableFilter<"EmailAttachment"> | string | null
     uploadedAt?: DateTimeFilter<"EmailAttachment"> | Date | string
     createdAt?: DateTimeFilter<"EmailAttachment"> | Date | string
+    updatedAt?: DateTimeFilter<"EmailAttachment"> | Date | string
   }
 
   export type AiGeneratedReplyUpsertWithWhereUniqueWithoutUserInput = {
@@ -36351,6 +40408,7 @@ export namespace Prisma {
     generatedBody?: StringFilter<"AiGeneratedReply"> | string
     createdAt?: DateTimeFilter<"AiGeneratedReply"> | Date | string
     expiresAt?: DateTimeFilter<"AiGeneratedReply"> | Date | string
+    updatedAt?: DateTimeFilter<"AiGeneratedReply"> | Date | string
   }
 
   export type CachedSearchResultUpsertWithWhereUniqueWithoutUserInput = {
@@ -36380,6 +40438,7 @@ export namespace Prisma {
     results?: JsonFilter<"CachedSearchResult">
     createdAt?: DateTimeFilter<"CachedSearchResult"> | Date | string
     expiresAt?: DateTimeFilter<"CachedSearchResult"> | Date | string
+    updatedAt?: DateTimeFilter<"CachedSearchResult"> | Date | string
   }
 
   export type SyncStatusUpsertWithWhereUniqueWithoutUserInput = {
@@ -36440,6 +40499,7 @@ export namespace Prisma {
     status?: StringFilter<"NotificationLog"> | string
     errorMessage?: StringNullableFilter<"NotificationLog"> | string | null
     metadata?: JsonFilter<"NotificationLog">
+    updatedAt?: DateTimeFilter<"NotificationLog"> | Date | string
   }
 
   export type MigrationStatusUpsertWithWhereUniqueWithoutUserInput = {
@@ -36467,6 +40527,7 @@ export namespace Prisma {
     migrationType?: StringFilter<"MigrationStatus"> | string
     completedAt?: DateTimeFilter<"MigrationStatus"> | Date | string
     metadata?: JsonFilter<"MigrationStatus">
+    updatedAt?: DateTimeFilter<"MigrationStatus"> | Date | string
   }
 
   export type TodoItemUpsertWithWhereUniqueWithoutUserInput = {
@@ -36516,6 +40577,8 @@ export namespace Prisma {
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
+    imapAccounts?: ImapConnectedAccountCreateNestedManyWithoutUserInput
+    jmapAccounts?: JmapConnectedAccountCreateNestedManyWithoutUserInput
     msalCache?: MsalTokenCacheCreateNestedOneWithoutUserInput
     deltaLinks?: EmailDeltaLinkCreateNestedManyWithoutUserInput
     webhookSubs?: WebhookSubscriptionCreateNestedManyWithoutUserInput
@@ -36553,6 +40616,8 @@ export namespace Prisma {
     emailDensity?: string
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
+    imapAccounts?: ImapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
+    jmapAccounts?: JmapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
     msalCache?: MsalTokenCacheUncheckedCreateNestedOneWithoutUserInput
     deltaLinks?: EmailDeltaLinkUncheckedCreateNestedManyWithoutUserInput
     webhookSubs?: WebhookSubscriptionUncheckedCreateNestedManyWithoutUserInput
@@ -36606,6 +40671,8 @@ export namespace Prisma {
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
+    imapAccounts?: ImapConnectedAccountUpdateManyWithoutUserNestedInput
+    jmapAccounts?: JmapConnectedAccountUpdateManyWithoutUserNestedInput
     msalCache?: MsalTokenCacheUpdateOneWithoutUserNestedInput
     deltaLinks?: EmailDeltaLinkUpdateManyWithoutUserNestedInput
     webhookSubs?: WebhookSubscriptionUpdateManyWithoutUserNestedInput
@@ -36643,6 +40710,8 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    imapAccounts?: ImapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
+    jmapAccounts?: JmapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
     msalCache?: MsalTokenCacheUncheckedUpdateOneWithoutUserNestedInput
     deltaLinks?: EmailDeltaLinkUncheckedUpdateManyWithoutUserNestedInput
     webhookSubs?: WebhookSubscriptionUncheckedUpdateManyWithoutUserNestedInput
@@ -36681,6 +40750,8 @@ export namespace Prisma {
     lastActiveAccountId?: string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
     msAccounts?: MsConnectedAccountCreateNestedManyWithoutUserInput
+    imapAccounts?: ImapConnectedAccountCreateNestedManyWithoutUserInput
+    jmapAccounts?: JmapConnectedAccountCreateNestedManyWithoutUserInput
     deltaLinks?: EmailDeltaLinkCreateNestedManyWithoutUserInput
     webhookSubs?: WebhookSubscriptionCreateNestedManyWithoutUserInput
     drafts?: DraftCreateNestedManyWithoutUserInput
@@ -36718,6 +40789,8 @@ export namespace Prisma {
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
+    imapAccounts?: ImapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
+    jmapAccounts?: JmapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
     deltaLinks?: EmailDeltaLinkUncheckedCreateNestedManyWithoutUserInput
     webhookSubs?: WebhookSubscriptionUncheckedCreateNestedManyWithoutUserInput
     drafts?: DraftUncheckedCreateNestedManyWithoutUserInput
@@ -36771,6 +40844,8 @@ export namespace Prisma {
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
     msAccounts?: MsConnectedAccountUpdateManyWithoutUserNestedInput
+    imapAccounts?: ImapConnectedAccountUpdateManyWithoutUserNestedInput
+    jmapAccounts?: JmapConnectedAccountUpdateManyWithoutUserNestedInput
     deltaLinks?: EmailDeltaLinkUpdateManyWithoutUserNestedInput
     webhookSubs?: WebhookSubscriptionUpdateManyWithoutUserNestedInput
     drafts?: DraftUpdateManyWithoutUserNestedInput
@@ -36808,6 +40883,8 @@ export namespace Prisma {
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
+    imapAccounts?: ImapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
+    jmapAccounts?: JmapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
     deltaLinks?: EmailDeltaLinkUncheckedUpdateManyWithoutUserNestedInput
     webhookSubs?: WebhookSubscriptionUncheckedUpdateManyWithoutUserNestedInput
     drafts?: DraftUncheckedUpdateManyWithoutUserNestedInput
@@ -36845,6 +40922,8 @@ export namespace Prisma {
     lastActiveAccountId?: string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
     msAccounts?: MsConnectedAccountCreateNestedManyWithoutUserInput
+    imapAccounts?: ImapConnectedAccountCreateNestedManyWithoutUserInput
+    jmapAccounts?: JmapConnectedAccountCreateNestedManyWithoutUserInput
     msalCache?: MsalTokenCacheCreateNestedOneWithoutUserInput
     webhookSubs?: WebhookSubscriptionCreateNestedManyWithoutUserInput
     drafts?: DraftCreateNestedManyWithoutUserInput
@@ -36882,6 +40961,8 @@ export namespace Prisma {
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
+    imapAccounts?: ImapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
+    jmapAccounts?: JmapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
     msalCache?: MsalTokenCacheUncheckedCreateNestedOneWithoutUserInput
     webhookSubs?: WebhookSubscriptionUncheckedCreateNestedManyWithoutUserInput
     drafts?: DraftUncheckedCreateNestedManyWithoutUserInput
@@ -36935,6 +41016,8 @@ export namespace Prisma {
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
     msAccounts?: MsConnectedAccountUpdateManyWithoutUserNestedInput
+    imapAccounts?: ImapConnectedAccountUpdateManyWithoutUserNestedInput
+    jmapAccounts?: JmapConnectedAccountUpdateManyWithoutUserNestedInput
     msalCache?: MsalTokenCacheUpdateOneWithoutUserNestedInput
     webhookSubs?: WebhookSubscriptionUpdateManyWithoutUserNestedInput
     drafts?: DraftUpdateManyWithoutUserNestedInput
@@ -36972,6 +41055,8 @@ export namespace Prisma {
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
+    imapAccounts?: ImapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
+    jmapAccounts?: JmapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
     msalCache?: MsalTokenCacheUncheckedUpdateOneWithoutUserNestedInput
     webhookSubs?: WebhookSubscriptionUncheckedUpdateManyWithoutUserNestedInput
     drafts?: DraftUncheckedUpdateManyWithoutUserNestedInput
@@ -37009,6 +41094,8 @@ export namespace Prisma {
     lastActiveAccountId?: string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
     msAccounts?: MsConnectedAccountCreateNestedManyWithoutUserInput
+    imapAccounts?: ImapConnectedAccountCreateNestedManyWithoutUserInput
+    jmapAccounts?: JmapConnectedAccountCreateNestedManyWithoutUserInput
     msalCache?: MsalTokenCacheCreateNestedOneWithoutUserInput
     deltaLinks?: EmailDeltaLinkCreateNestedManyWithoutUserInput
     drafts?: DraftCreateNestedManyWithoutUserInput
@@ -37046,6 +41133,8 @@ export namespace Prisma {
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
+    imapAccounts?: ImapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
+    jmapAccounts?: JmapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
     msalCache?: MsalTokenCacheUncheckedCreateNestedOneWithoutUserInput
     deltaLinks?: EmailDeltaLinkUncheckedCreateNestedManyWithoutUserInput
     drafts?: DraftUncheckedCreateNestedManyWithoutUserInput
@@ -37099,6 +41188,8 @@ export namespace Prisma {
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
     msAccounts?: MsConnectedAccountUpdateManyWithoutUserNestedInput
+    imapAccounts?: ImapConnectedAccountUpdateManyWithoutUserNestedInput
+    jmapAccounts?: JmapConnectedAccountUpdateManyWithoutUserNestedInput
     msalCache?: MsalTokenCacheUpdateOneWithoutUserNestedInput
     deltaLinks?: EmailDeltaLinkUpdateManyWithoutUserNestedInput
     drafts?: DraftUpdateManyWithoutUserNestedInput
@@ -37136,6 +41227,8 @@ export namespace Prisma {
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
+    imapAccounts?: ImapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
+    jmapAccounts?: JmapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
     msalCache?: MsalTokenCacheUncheckedUpdateOneWithoutUserNestedInput
     deltaLinks?: EmailDeltaLinkUncheckedUpdateManyWithoutUserNestedInput
     drafts?: DraftUncheckedUpdateManyWithoutUserNestedInput
@@ -37173,6 +41266,8 @@ export namespace Prisma {
     lastActiveAccountId?: string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
     msAccounts?: MsConnectedAccountCreateNestedManyWithoutUserInput
+    imapAccounts?: ImapConnectedAccountCreateNestedManyWithoutUserInput
+    jmapAccounts?: JmapConnectedAccountCreateNestedManyWithoutUserInput
     msalCache?: MsalTokenCacheCreateNestedOneWithoutUserInput
     deltaLinks?: EmailDeltaLinkCreateNestedManyWithoutUserInput
     webhookSubs?: WebhookSubscriptionCreateNestedManyWithoutUserInput
@@ -37210,6 +41305,8 @@ export namespace Prisma {
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
+    imapAccounts?: ImapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
+    jmapAccounts?: JmapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
     msalCache?: MsalTokenCacheUncheckedCreateNestedOneWithoutUserInput
     deltaLinks?: EmailDeltaLinkUncheckedCreateNestedManyWithoutUserInput
     webhookSubs?: WebhookSubscriptionUncheckedCreateNestedManyWithoutUserInput
@@ -37263,6 +41360,8 @@ export namespace Prisma {
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
     msAccounts?: MsConnectedAccountUpdateManyWithoutUserNestedInput
+    imapAccounts?: ImapConnectedAccountUpdateManyWithoutUserNestedInput
+    jmapAccounts?: JmapConnectedAccountUpdateManyWithoutUserNestedInput
     msalCache?: MsalTokenCacheUpdateOneWithoutUserNestedInput
     deltaLinks?: EmailDeltaLinkUpdateManyWithoutUserNestedInput
     webhookSubs?: WebhookSubscriptionUpdateManyWithoutUserNestedInput
@@ -37300,6 +41399,8 @@ export namespace Prisma {
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
+    imapAccounts?: ImapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
+    jmapAccounts?: JmapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
     msalCache?: MsalTokenCacheUncheckedUpdateOneWithoutUserNestedInput
     deltaLinks?: EmailDeltaLinkUncheckedUpdateManyWithoutUserNestedInput
     webhookSubs?: WebhookSubscriptionUncheckedUpdateManyWithoutUserNestedInput
@@ -37337,6 +41438,8 @@ export namespace Prisma {
     lastActiveAccountId?: string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
     msAccounts?: MsConnectedAccountCreateNestedManyWithoutUserInput
+    imapAccounts?: ImapConnectedAccountCreateNestedManyWithoutUserInput
+    jmapAccounts?: JmapConnectedAccountCreateNestedManyWithoutUserInput
     msalCache?: MsalTokenCacheCreateNestedOneWithoutUserInput
     deltaLinks?: EmailDeltaLinkCreateNestedManyWithoutUserInput
     webhookSubs?: WebhookSubscriptionCreateNestedManyWithoutUserInput
@@ -37374,6 +41477,8 @@ export namespace Prisma {
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
+    imapAccounts?: ImapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
+    jmapAccounts?: JmapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
     msalCache?: MsalTokenCacheUncheckedCreateNestedOneWithoutUserInput
     deltaLinks?: EmailDeltaLinkUncheckedCreateNestedManyWithoutUserInput
     webhookSubs?: WebhookSubscriptionUncheckedCreateNestedManyWithoutUserInput
@@ -37427,6 +41532,8 @@ export namespace Prisma {
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
     msAccounts?: MsConnectedAccountUpdateManyWithoutUserNestedInput
+    imapAccounts?: ImapConnectedAccountUpdateManyWithoutUserNestedInput
+    jmapAccounts?: JmapConnectedAccountUpdateManyWithoutUserNestedInput
     msalCache?: MsalTokenCacheUpdateOneWithoutUserNestedInput
     deltaLinks?: EmailDeltaLinkUpdateManyWithoutUserNestedInput
     webhookSubs?: WebhookSubscriptionUpdateManyWithoutUserNestedInput
@@ -37464,6 +41571,8 @@ export namespace Prisma {
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
+    imapAccounts?: ImapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
+    jmapAccounts?: JmapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
     msalCache?: MsalTokenCacheUncheckedUpdateOneWithoutUserNestedInput
     deltaLinks?: EmailDeltaLinkUncheckedUpdateManyWithoutUserNestedInput
     webhookSubs?: WebhookSubscriptionUncheckedUpdateManyWithoutUserNestedInput
@@ -37501,6 +41610,8 @@ export namespace Prisma {
     lastActiveAccountId?: string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
     msAccounts?: MsConnectedAccountCreateNestedManyWithoutUserInput
+    imapAccounts?: ImapConnectedAccountCreateNestedManyWithoutUserInput
+    jmapAccounts?: JmapConnectedAccountCreateNestedManyWithoutUserInput
     msalCache?: MsalTokenCacheCreateNestedOneWithoutUserInput
     deltaLinks?: EmailDeltaLinkCreateNestedManyWithoutUserInput
     webhookSubs?: WebhookSubscriptionCreateNestedManyWithoutUserInput
@@ -37538,6 +41649,8 @@ export namespace Prisma {
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
+    imapAccounts?: ImapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
+    jmapAccounts?: JmapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
     msalCache?: MsalTokenCacheUncheckedCreateNestedOneWithoutUserInput
     deltaLinks?: EmailDeltaLinkUncheckedCreateNestedManyWithoutUserInput
     webhookSubs?: WebhookSubscriptionUncheckedCreateNestedManyWithoutUserInput
@@ -37591,6 +41704,8 @@ export namespace Prisma {
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
     msAccounts?: MsConnectedAccountUpdateManyWithoutUserNestedInput
+    imapAccounts?: ImapConnectedAccountUpdateManyWithoutUserNestedInput
+    jmapAccounts?: JmapConnectedAccountUpdateManyWithoutUserNestedInput
     msalCache?: MsalTokenCacheUpdateOneWithoutUserNestedInput
     deltaLinks?: EmailDeltaLinkUpdateManyWithoutUserNestedInput
     webhookSubs?: WebhookSubscriptionUpdateManyWithoutUserNestedInput
@@ -37628,6 +41743,8 @@ export namespace Prisma {
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
+    imapAccounts?: ImapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
+    jmapAccounts?: JmapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
     msalCache?: MsalTokenCacheUncheckedUpdateOneWithoutUserNestedInput
     deltaLinks?: EmailDeltaLinkUncheckedUpdateManyWithoutUserNestedInput
     webhookSubs?: WebhookSubscriptionUncheckedUpdateManyWithoutUserNestedInput
@@ -37665,6 +41782,8 @@ export namespace Prisma {
     lastActiveAccountId?: string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
     msAccounts?: MsConnectedAccountCreateNestedManyWithoutUserInput
+    imapAccounts?: ImapConnectedAccountCreateNestedManyWithoutUserInput
+    jmapAccounts?: JmapConnectedAccountCreateNestedManyWithoutUserInput
     msalCache?: MsalTokenCacheCreateNestedOneWithoutUserInput
     deltaLinks?: EmailDeltaLinkCreateNestedManyWithoutUserInput
     webhookSubs?: WebhookSubscriptionCreateNestedManyWithoutUserInput
@@ -37702,6 +41821,8 @@ export namespace Prisma {
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
+    imapAccounts?: ImapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
+    jmapAccounts?: JmapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
     msalCache?: MsalTokenCacheUncheckedCreateNestedOneWithoutUserInput
     deltaLinks?: EmailDeltaLinkUncheckedCreateNestedManyWithoutUserInput
     webhookSubs?: WebhookSubscriptionUncheckedCreateNestedManyWithoutUserInput
@@ -37755,6 +41876,8 @@ export namespace Prisma {
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
     msAccounts?: MsConnectedAccountUpdateManyWithoutUserNestedInput
+    imapAccounts?: ImapConnectedAccountUpdateManyWithoutUserNestedInput
+    jmapAccounts?: JmapConnectedAccountUpdateManyWithoutUserNestedInput
     msalCache?: MsalTokenCacheUpdateOneWithoutUserNestedInput
     deltaLinks?: EmailDeltaLinkUpdateManyWithoutUserNestedInput
     webhookSubs?: WebhookSubscriptionUpdateManyWithoutUserNestedInput
@@ -37792,6 +41915,8 @@ export namespace Prisma {
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
+    imapAccounts?: ImapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
+    jmapAccounts?: JmapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
     msalCache?: MsalTokenCacheUncheckedUpdateOneWithoutUserNestedInput
     deltaLinks?: EmailDeltaLinkUncheckedUpdateManyWithoutUserNestedInput
     webhookSubs?: WebhookSubscriptionUncheckedUpdateManyWithoutUserNestedInput
@@ -37829,6 +41954,8 @@ export namespace Prisma {
     lastActiveAccountId?: string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
     msAccounts?: MsConnectedAccountCreateNestedManyWithoutUserInput
+    imapAccounts?: ImapConnectedAccountCreateNestedManyWithoutUserInput
+    jmapAccounts?: JmapConnectedAccountCreateNestedManyWithoutUserInput
     msalCache?: MsalTokenCacheCreateNestedOneWithoutUserInput
     deltaLinks?: EmailDeltaLinkCreateNestedManyWithoutUserInput
     webhookSubs?: WebhookSubscriptionCreateNestedManyWithoutUserInput
@@ -37866,6 +41993,8 @@ export namespace Prisma {
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
+    imapAccounts?: ImapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
+    jmapAccounts?: JmapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
     msalCache?: MsalTokenCacheUncheckedCreateNestedOneWithoutUserInput
     deltaLinks?: EmailDeltaLinkUncheckedCreateNestedManyWithoutUserInput
     webhookSubs?: WebhookSubscriptionUncheckedCreateNestedManyWithoutUserInput
@@ -37919,6 +42048,8 @@ export namespace Prisma {
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
     msAccounts?: MsConnectedAccountUpdateManyWithoutUserNestedInput
+    imapAccounts?: ImapConnectedAccountUpdateManyWithoutUserNestedInput
+    jmapAccounts?: JmapConnectedAccountUpdateManyWithoutUserNestedInput
     msalCache?: MsalTokenCacheUpdateOneWithoutUserNestedInput
     deltaLinks?: EmailDeltaLinkUpdateManyWithoutUserNestedInput
     webhookSubs?: WebhookSubscriptionUpdateManyWithoutUserNestedInput
@@ -37956,6 +42087,8 @@ export namespace Prisma {
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
+    imapAccounts?: ImapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
+    jmapAccounts?: JmapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
     msalCache?: MsalTokenCacheUncheckedUpdateOneWithoutUserNestedInput
     deltaLinks?: EmailDeltaLinkUncheckedUpdateManyWithoutUserNestedInput
     webhookSubs?: WebhookSubscriptionUncheckedUpdateManyWithoutUserNestedInput
@@ -37993,6 +42126,8 @@ export namespace Prisma {
     lastActiveAccountId?: string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
     msAccounts?: MsConnectedAccountCreateNestedManyWithoutUserInput
+    imapAccounts?: ImapConnectedAccountCreateNestedManyWithoutUserInput
+    jmapAccounts?: JmapConnectedAccountCreateNestedManyWithoutUserInput
     msalCache?: MsalTokenCacheCreateNestedOneWithoutUserInput
     deltaLinks?: EmailDeltaLinkCreateNestedManyWithoutUserInput
     webhookSubs?: WebhookSubscriptionCreateNestedManyWithoutUserInput
@@ -38030,6 +42165,8 @@ export namespace Prisma {
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
+    imapAccounts?: ImapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
+    jmapAccounts?: JmapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
     msalCache?: MsalTokenCacheUncheckedCreateNestedOneWithoutUserInput
     deltaLinks?: EmailDeltaLinkUncheckedCreateNestedManyWithoutUserInput
     webhookSubs?: WebhookSubscriptionUncheckedCreateNestedManyWithoutUserInput
@@ -38083,6 +42220,8 @@ export namespace Prisma {
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
     msAccounts?: MsConnectedAccountUpdateManyWithoutUserNestedInput
+    imapAccounts?: ImapConnectedAccountUpdateManyWithoutUserNestedInput
+    jmapAccounts?: JmapConnectedAccountUpdateManyWithoutUserNestedInput
     msalCache?: MsalTokenCacheUpdateOneWithoutUserNestedInput
     deltaLinks?: EmailDeltaLinkUpdateManyWithoutUserNestedInput
     webhookSubs?: WebhookSubscriptionUpdateManyWithoutUserNestedInput
@@ -38120,6 +42259,8 @@ export namespace Prisma {
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
+    imapAccounts?: ImapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
+    jmapAccounts?: JmapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
     msalCache?: MsalTokenCacheUncheckedUpdateOneWithoutUserNestedInput
     deltaLinks?: EmailDeltaLinkUncheckedUpdateManyWithoutUserNestedInput
     webhookSubs?: WebhookSubscriptionUncheckedUpdateManyWithoutUserNestedInput
@@ -38157,6 +42298,8 @@ export namespace Prisma {
     lastActiveAccountId?: string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
     msAccounts?: MsConnectedAccountCreateNestedManyWithoutUserInput
+    imapAccounts?: ImapConnectedAccountCreateNestedManyWithoutUserInput
+    jmapAccounts?: JmapConnectedAccountCreateNestedManyWithoutUserInput
     msalCache?: MsalTokenCacheCreateNestedOneWithoutUserInput
     deltaLinks?: EmailDeltaLinkCreateNestedManyWithoutUserInput
     webhookSubs?: WebhookSubscriptionCreateNestedManyWithoutUserInput
@@ -38194,6 +42337,8 @@ export namespace Prisma {
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
+    imapAccounts?: ImapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
+    jmapAccounts?: JmapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
     msalCache?: MsalTokenCacheUncheckedCreateNestedOneWithoutUserInput
     deltaLinks?: EmailDeltaLinkUncheckedCreateNestedManyWithoutUserInput
     webhookSubs?: WebhookSubscriptionUncheckedCreateNestedManyWithoutUserInput
@@ -38247,6 +42392,8 @@ export namespace Prisma {
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
     msAccounts?: MsConnectedAccountUpdateManyWithoutUserNestedInput
+    imapAccounts?: ImapConnectedAccountUpdateManyWithoutUserNestedInput
+    jmapAccounts?: JmapConnectedAccountUpdateManyWithoutUserNestedInput
     msalCache?: MsalTokenCacheUpdateOneWithoutUserNestedInput
     deltaLinks?: EmailDeltaLinkUpdateManyWithoutUserNestedInput
     webhookSubs?: WebhookSubscriptionUpdateManyWithoutUserNestedInput
@@ -38284,6 +42431,8 @@ export namespace Prisma {
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
+    imapAccounts?: ImapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
+    jmapAccounts?: JmapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
     msalCache?: MsalTokenCacheUncheckedUpdateOneWithoutUserNestedInput
     deltaLinks?: EmailDeltaLinkUncheckedUpdateManyWithoutUserNestedInput
     webhookSubs?: WebhookSubscriptionUncheckedUpdateManyWithoutUserNestedInput
@@ -38321,6 +42470,8 @@ export namespace Prisma {
     lastActiveAccountId?: string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
     msAccounts?: MsConnectedAccountCreateNestedManyWithoutUserInput
+    imapAccounts?: ImapConnectedAccountCreateNestedManyWithoutUserInput
+    jmapAccounts?: JmapConnectedAccountCreateNestedManyWithoutUserInput
     msalCache?: MsalTokenCacheCreateNestedOneWithoutUserInput
     deltaLinks?: EmailDeltaLinkCreateNestedManyWithoutUserInput
     webhookSubs?: WebhookSubscriptionCreateNestedManyWithoutUserInput
@@ -38358,6 +42509,8 @@ export namespace Prisma {
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
+    imapAccounts?: ImapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
+    jmapAccounts?: JmapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
     msalCache?: MsalTokenCacheUncheckedCreateNestedOneWithoutUserInput
     deltaLinks?: EmailDeltaLinkUncheckedCreateNestedManyWithoutUserInput
     webhookSubs?: WebhookSubscriptionUncheckedCreateNestedManyWithoutUserInput
@@ -38411,6 +42564,8 @@ export namespace Prisma {
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
     msAccounts?: MsConnectedAccountUpdateManyWithoutUserNestedInput
+    imapAccounts?: ImapConnectedAccountUpdateManyWithoutUserNestedInput
+    jmapAccounts?: JmapConnectedAccountUpdateManyWithoutUserNestedInput
     msalCache?: MsalTokenCacheUpdateOneWithoutUserNestedInput
     deltaLinks?: EmailDeltaLinkUpdateManyWithoutUserNestedInput
     webhookSubs?: WebhookSubscriptionUpdateManyWithoutUserNestedInput
@@ -38448,6 +42603,8 @@ export namespace Prisma {
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
+    imapAccounts?: ImapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
+    jmapAccounts?: JmapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
     msalCache?: MsalTokenCacheUncheckedUpdateOneWithoutUserNestedInput
     deltaLinks?: EmailDeltaLinkUncheckedUpdateManyWithoutUserNestedInput
     webhookSubs?: WebhookSubscriptionUncheckedUpdateManyWithoutUserNestedInput
@@ -38485,6 +42642,8 @@ export namespace Prisma {
     lastActiveAccountId?: string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
     msAccounts?: MsConnectedAccountCreateNestedManyWithoutUserInput
+    imapAccounts?: ImapConnectedAccountCreateNestedManyWithoutUserInput
+    jmapAccounts?: JmapConnectedAccountCreateNestedManyWithoutUserInput
     msalCache?: MsalTokenCacheCreateNestedOneWithoutUserInput
     deltaLinks?: EmailDeltaLinkCreateNestedManyWithoutUserInput
     webhookSubs?: WebhookSubscriptionCreateNestedManyWithoutUserInput
@@ -38522,6 +42681,8 @@ export namespace Prisma {
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
+    imapAccounts?: ImapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
+    jmapAccounts?: JmapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
     msalCache?: MsalTokenCacheUncheckedCreateNestedOneWithoutUserInput
     deltaLinks?: EmailDeltaLinkUncheckedCreateNestedManyWithoutUserInput
     webhookSubs?: WebhookSubscriptionUncheckedCreateNestedManyWithoutUserInput
@@ -38575,6 +42736,8 @@ export namespace Prisma {
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
     msAccounts?: MsConnectedAccountUpdateManyWithoutUserNestedInput
+    imapAccounts?: ImapConnectedAccountUpdateManyWithoutUserNestedInput
+    jmapAccounts?: JmapConnectedAccountUpdateManyWithoutUserNestedInput
     msalCache?: MsalTokenCacheUpdateOneWithoutUserNestedInput
     deltaLinks?: EmailDeltaLinkUpdateManyWithoutUserNestedInput
     webhookSubs?: WebhookSubscriptionUpdateManyWithoutUserNestedInput
@@ -38612,6 +42775,8 @@ export namespace Prisma {
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
+    imapAccounts?: ImapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
+    jmapAccounts?: JmapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
     msalCache?: MsalTokenCacheUncheckedUpdateOneWithoutUserNestedInput
     deltaLinks?: EmailDeltaLinkUncheckedUpdateManyWithoutUserNestedInput
     webhookSubs?: WebhookSubscriptionUncheckedUpdateManyWithoutUserNestedInput
@@ -38649,6 +42814,8 @@ export namespace Prisma {
     lastActiveAccountId?: string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
     msAccounts?: MsConnectedAccountCreateNestedManyWithoutUserInput
+    imapAccounts?: ImapConnectedAccountCreateNestedManyWithoutUserInput
+    jmapAccounts?: JmapConnectedAccountCreateNestedManyWithoutUserInput
     msalCache?: MsalTokenCacheCreateNestedOneWithoutUserInput
     deltaLinks?: EmailDeltaLinkCreateNestedManyWithoutUserInput
     webhookSubs?: WebhookSubscriptionCreateNestedManyWithoutUserInput
@@ -38686,6 +42853,8 @@ export namespace Prisma {
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
+    imapAccounts?: ImapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
+    jmapAccounts?: JmapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
     msalCache?: MsalTokenCacheUncheckedCreateNestedOneWithoutUserInput
     deltaLinks?: EmailDeltaLinkUncheckedCreateNestedManyWithoutUserInput
     webhookSubs?: WebhookSubscriptionUncheckedCreateNestedManyWithoutUserInput
@@ -38739,6 +42908,8 @@ export namespace Prisma {
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
     msAccounts?: MsConnectedAccountUpdateManyWithoutUserNestedInput
+    imapAccounts?: ImapConnectedAccountUpdateManyWithoutUserNestedInput
+    jmapAccounts?: JmapConnectedAccountUpdateManyWithoutUserNestedInput
     msalCache?: MsalTokenCacheUpdateOneWithoutUserNestedInput
     deltaLinks?: EmailDeltaLinkUpdateManyWithoutUserNestedInput
     webhookSubs?: WebhookSubscriptionUpdateManyWithoutUserNestedInput
@@ -38776,6 +42947,8 @@ export namespace Prisma {
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
+    imapAccounts?: ImapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
+    jmapAccounts?: JmapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
     msalCache?: MsalTokenCacheUncheckedUpdateOneWithoutUserNestedInput
     deltaLinks?: EmailDeltaLinkUncheckedUpdateManyWithoutUserNestedInput
     webhookSubs?: WebhookSubscriptionUncheckedUpdateManyWithoutUserNestedInput
@@ -38813,6 +42986,8 @@ export namespace Prisma {
     lastActiveAccountId?: string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
     msAccounts?: MsConnectedAccountCreateNestedManyWithoutUserInput
+    imapAccounts?: ImapConnectedAccountCreateNestedManyWithoutUserInput
+    jmapAccounts?: JmapConnectedAccountCreateNestedManyWithoutUserInput
     msalCache?: MsalTokenCacheCreateNestedOneWithoutUserInput
     deltaLinks?: EmailDeltaLinkCreateNestedManyWithoutUserInput
     webhookSubs?: WebhookSubscriptionCreateNestedManyWithoutUserInput
@@ -38850,6 +43025,8 @@ export namespace Prisma {
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
+    imapAccounts?: ImapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
+    jmapAccounts?: JmapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
     msalCache?: MsalTokenCacheUncheckedCreateNestedOneWithoutUserInput
     deltaLinks?: EmailDeltaLinkUncheckedCreateNestedManyWithoutUserInput
     webhookSubs?: WebhookSubscriptionUncheckedCreateNestedManyWithoutUserInput
@@ -38903,6 +43080,8 @@ export namespace Prisma {
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
     msAccounts?: MsConnectedAccountUpdateManyWithoutUserNestedInput
+    imapAccounts?: ImapConnectedAccountUpdateManyWithoutUserNestedInput
+    jmapAccounts?: JmapConnectedAccountUpdateManyWithoutUserNestedInput
     msalCache?: MsalTokenCacheUpdateOneWithoutUserNestedInput
     deltaLinks?: EmailDeltaLinkUpdateManyWithoutUserNestedInput
     webhookSubs?: WebhookSubscriptionUpdateManyWithoutUserNestedInput
@@ -38940,6 +43119,8 @@ export namespace Prisma {
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
+    imapAccounts?: ImapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
+    jmapAccounts?: JmapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
     msalCache?: MsalTokenCacheUncheckedUpdateOneWithoutUserNestedInput
     deltaLinks?: EmailDeltaLinkUncheckedUpdateManyWithoutUserNestedInput
     webhookSubs?: WebhookSubscriptionUncheckedUpdateManyWithoutUserNestedInput
@@ -38977,6 +43158,8 @@ export namespace Prisma {
     lastActiveAccountId?: string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
     msAccounts?: MsConnectedAccountCreateNestedManyWithoutUserInput
+    imapAccounts?: ImapConnectedAccountCreateNestedManyWithoutUserInput
+    jmapAccounts?: JmapConnectedAccountCreateNestedManyWithoutUserInput
     msalCache?: MsalTokenCacheCreateNestedOneWithoutUserInput
     deltaLinks?: EmailDeltaLinkCreateNestedManyWithoutUserInput
     webhookSubs?: WebhookSubscriptionCreateNestedManyWithoutUserInput
@@ -39014,6 +43197,8 @@ export namespace Prisma {
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
+    imapAccounts?: ImapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
+    jmapAccounts?: JmapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
     msalCache?: MsalTokenCacheUncheckedCreateNestedOneWithoutUserInput
     deltaLinks?: EmailDeltaLinkUncheckedCreateNestedManyWithoutUserInput
     webhookSubs?: WebhookSubscriptionUncheckedCreateNestedManyWithoutUserInput
@@ -39067,6 +43252,8 @@ export namespace Prisma {
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
     msAccounts?: MsConnectedAccountUpdateManyWithoutUserNestedInput
+    imapAccounts?: ImapConnectedAccountUpdateManyWithoutUserNestedInput
+    jmapAccounts?: JmapConnectedAccountUpdateManyWithoutUserNestedInput
     msalCache?: MsalTokenCacheUpdateOneWithoutUserNestedInput
     deltaLinks?: EmailDeltaLinkUpdateManyWithoutUserNestedInput
     webhookSubs?: WebhookSubscriptionUpdateManyWithoutUserNestedInput
@@ -39104,6 +43291,8 @@ export namespace Prisma {
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
+    imapAccounts?: ImapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
+    jmapAccounts?: JmapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
     msalCache?: MsalTokenCacheUncheckedUpdateOneWithoutUserNestedInput
     deltaLinks?: EmailDeltaLinkUncheckedUpdateManyWithoutUserNestedInput
     webhookSubs?: WebhookSubscriptionUncheckedUpdateManyWithoutUserNestedInput
@@ -39141,6 +43330,8 @@ export namespace Prisma {
     lastActiveAccountId?: string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
     msAccounts?: MsConnectedAccountCreateNestedManyWithoutUserInput
+    imapAccounts?: ImapConnectedAccountCreateNestedManyWithoutUserInput
+    jmapAccounts?: JmapConnectedAccountCreateNestedManyWithoutUserInput
     msalCache?: MsalTokenCacheCreateNestedOneWithoutUserInput
     deltaLinks?: EmailDeltaLinkCreateNestedManyWithoutUserInput
     webhookSubs?: WebhookSubscriptionCreateNestedManyWithoutUserInput
@@ -39178,6 +43369,8 @@ export namespace Prisma {
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
+    imapAccounts?: ImapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
+    jmapAccounts?: JmapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
     msalCache?: MsalTokenCacheUncheckedCreateNestedOneWithoutUserInput
     deltaLinks?: EmailDeltaLinkUncheckedCreateNestedManyWithoutUserInput
     webhookSubs?: WebhookSubscriptionUncheckedCreateNestedManyWithoutUserInput
@@ -39231,6 +43424,8 @@ export namespace Prisma {
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
     msAccounts?: MsConnectedAccountUpdateManyWithoutUserNestedInput
+    imapAccounts?: ImapConnectedAccountUpdateManyWithoutUserNestedInput
+    jmapAccounts?: JmapConnectedAccountUpdateManyWithoutUserNestedInput
     msalCache?: MsalTokenCacheUpdateOneWithoutUserNestedInput
     deltaLinks?: EmailDeltaLinkUpdateManyWithoutUserNestedInput
     webhookSubs?: WebhookSubscriptionUpdateManyWithoutUserNestedInput
@@ -39268,6 +43463,8 @@ export namespace Prisma {
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
+    imapAccounts?: ImapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
+    jmapAccounts?: JmapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
     msalCache?: MsalTokenCacheUncheckedUpdateOneWithoutUserNestedInput
     deltaLinks?: EmailDeltaLinkUncheckedUpdateManyWithoutUserNestedInput
     webhookSubs?: WebhookSubscriptionUncheckedUpdateManyWithoutUserNestedInput
@@ -39305,6 +43502,8 @@ export namespace Prisma {
     lastActiveAccountId?: string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
     msAccounts?: MsConnectedAccountCreateNestedManyWithoutUserInput
+    imapAccounts?: ImapConnectedAccountCreateNestedManyWithoutUserInput
+    jmapAccounts?: JmapConnectedAccountCreateNestedManyWithoutUserInput
     msalCache?: MsalTokenCacheCreateNestedOneWithoutUserInput
     deltaLinks?: EmailDeltaLinkCreateNestedManyWithoutUserInput
     webhookSubs?: WebhookSubscriptionCreateNestedManyWithoutUserInput
@@ -39342,6 +43541,8 @@ export namespace Prisma {
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
+    imapAccounts?: ImapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
+    jmapAccounts?: JmapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
     msalCache?: MsalTokenCacheUncheckedCreateNestedOneWithoutUserInput
     deltaLinks?: EmailDeltaLinkUncheckedCreateNestedManyWithoutUserInput
     webhookSubs?: WebhookSubscriptionUncheckedCreateNestedManyWithoutUserInput
@@ -39395,6 +43596,8 @@ export namespace Prisma {
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
     msAccounts?: MsConnectedAccountUpdateManyWithoutUserNestedInput
+    imapAccounts?: ImapConnectedAccountUpdateManyWithoutUserNestedInput
+    jmapAccounts?: JmapConnectedAccountUpdateManyWithoutUserNestedInput
     msalCache?: MsalTokenCacheUpdateOneWithoutUserNestedInput
     deltaLinks?: EmailDeltaLinkUpdateManyWithoutUserNestedInput
     webhookSubs?: WebhookSubscriptionUpdateManyWithoutUserNestedInput
@@ -39432,6 +43635,8 @@ export namespace Prisma {
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
+    imapAccounts?: ImapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
+    jmapAccounts?: JmapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
     msalCache?: MsalTokenCacheUncheckedUpdateOneWithoutUserNestedInput
     deltaLinks?: EmailDeltaLinkUncheckedUpdateManyWithoutUserNestedInput
     webhookSubs?: WebhookSubscriptionUncheckedUpdateManyWithoutUserNestedInput
@@ -39448,6 +43653,350 @@ export namespace Prisma {
     syncStatuses?: SyncStatusUncheckedUpdateManyWithoutUserNestedInput
     notificationLogs?: NotificationLogUncheckedUpdateManyWithoutUserNestedInput
     migrationStatuses?: MigrationStatusUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserCreateWithoutImapAccountsInput = {
+    id: string
+    email: string
+    name?: string | null
+    avatarUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    notificationNewEmail?: boolean
+    notificationDailyDigest?: boolean
+    notificationAiReplies?: boolean
+    notificationCalendarReminders?: boolean
+    notificationWeeklyReport?: boolean
+    appTheme?: string
+    fontSize?: string
+    emailDensity?: string
+    preferredTimeZone?: string
+    lastActiveAccountId?: string | null
+    org: OrganizationCreateNestedOneWithoutUsersInput
+    msAccounts?: MsConnectedAccountCreateNestedManyWithoutUserInput
+    jmapAccounts?: JmapConnectedAccountCreateNestedManyWithoutUserInput
+    msalCache?: MsalTokenCacheCreateNestedOneWithoutUserInput
+    deltaLinks?: EmailDeltaLinkCreateNestedManyWithoutUserInput
+    webhookSubs?: WebhookSubscriptionCreateNestedManyWithoutUserInput
+    drafts?: DraftCreateNestedManyWithoutUserInput
+    emailRules?: EmailRuleCreateNestedManyWithoutUserInput
+    signatures?: SignatureCreateNestedManyWithoutUserInput
+    cachedFolders?: CachedFolderCreateNestedManyWithoutUserInput
+    cachedEmails?: CachedEmailCreateNestedManyWithoutUserInput
+    cachedCalEvents?: CachedCalendarEventCreateNestedManyWithoutUserInput
+    cachedContacts?: CachedContactCreateNestedManyWithoutUserInput
+    emailAttachments?: EmailAttachmentCreateNestedManyWithoutUserInput
+    aiGeneratedReplies?: AiGeneratedReplyCreateNestedManyWithoutUserInput
+    cachedSearchResults?: CachedSearchResultCreateNestedManyWithoutUserInput
+    syncStatuses?: SyncStatusCreateNestedManyWithoutUserInput
+    notificationLogs?: NotificationLogCreateNestedManyWithoutUserInput
+    migrationStatuses?: MigrationStatusCreateNestedManyWithoutUserInput
+    todoItems?: TodoItemCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutImapAccountsInput = {
+    id: string
+    email: string
+    name?: string | null
+    avatarUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    orgId: string
+    notificationNewEmail?: boolean
+    notificationDailyDigest?: boolean
+    notificationAiReplies?: boolean
+    notificationCalendarReminders?: boolean
+    notificationWeeklyReport?: boolean
+    appTheme?: string
+    fontSize?: string
+    emailDensity?: string
+    preferredTimeZone?: string
+    lastActiveAccountId?: string | null
+    msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
+    jmapAccounts?: JmapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
+    msalCache?: MsalTokenCacheUncheckedCreateNestedOneWithoutUserInput
+    deltaLinks?: EmailDeltaLinkUncheckedCreateNestedManyWithoutUserInput
+    webhookSubs?: WebhookSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    drafts?: DraftUncheckedCreateNestedManyWithoutUserInput
+    emailRules?: EmailRuleUncheckedCreateNestedManyWithoutUserInput
+    signatures?: SignatureUncheckedCreateNestedManyWithoutUserInput
+    cachedFolders?: CachedFolderUncheckedCreateNestedManyWithoutUserInput
+    cachedEmails?: CachedEmailUncheckedCreateNestedManyWithoutUserInput
+    cachedCalEvents?: CachedCalendarEventUncheckedCreateNestedManyWithoutUserInput
+    cachedContacts?: CachedContactUncheckedCreateNestedManyWithoutUserInput
+    emailAttachments?: EmailAttachmentUncheckedCreateNestedManyWithoutUserInput
+    aiGeneratedReplies?: AiGeneratedReplyUncheckedCreateNestedManyWithoutUserInput
+    cachedSearchResults?: CachedSearchResultUncheckedCreateNestedManyWithoutUserInput
+    syncStatuses?: SyncStatusUncheckedCreateNestedManyWithoutUserInput
+    notificationLogs?: NotificationLogUncheckedCreateNestedManyWithoutUserInput
+    migrationStatuses?: MigrationStatusUncheckedCreateNestedManyWithoutUserInput
+    todoItems?: TodoItemUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutImapAccountsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutImapAccountsInput, UserUncheckedCreateWithoutImapAccountsInput>
+  }
+
+  export type UserUpsertWithoutImapAccountsInput = {
+    update: XOR<UserUpdateWithoutImapAccountsInput, UserUncheckedUpdateWithoutImapAccountsInput>
+    create: XOR<UserCreateWithoutImapAccountsInput, UserUncheckedCreateWithoutImapAccountsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutImapAccountsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutImapAccountsInput, UserUncheckedUpdateWithoutImapAccountsInput>
+  }
+
+  export type UserUpdateWithoutImapAccountsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
+    notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
+    notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
+    notificationCalendarReminders?: BoolFieldUpdateOperationsInput | boolean
+    notificationWeeklyReport?: BoolFieldUpdateOperationsInput | boolean
+    appTheme?: StringFieldUpdateOperationsInput | string
+    fontSize?: StringFieldUpdateOperationsInput | string
+    emailDensity?: StringFieldUpdateOperationsInput | string
+    preferredTimeZone?: StringFieldUpdateOperationsInput | string
+    lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
+    msAccounts?: MsConnectedAccountUpdateManyWithoutUserNestedInput
+    jmapAccounts?: JmapConnectedAccountUpdateManyWithoutUserNestedInput
+    msalCache?: MsalTokenCacheUpdateOneWithoutUserNestedInput
+    deltaLinks?: EmailDeltaLinkUpdateManyWithoutUserNestedInput
+    webhookSubs?: WebhookSubscriptionUpdateManyWithoutUserNestedInput
+    drafts?: DraftUpdateManyWithoutUserNestedInput
+    emailRules?: EmailRuleUpdateManyWithoutUserNestedInput
+    signatures?: SignatureUpdateManyWithoutUserNestedInput
+    cachedFolders?: CachedFolderUpdateManyWithoutUserNestedInput
+    cachedEmails?: CachedEmailUpdateManyWithoutUserNestedInput
+    cachedCalEvents?: CachedCalendarEventUpdateManyWithoutUserNestedInput
+    cachedContacts?: CachedContactUpdateManyWithoutUserNestedInput
+    emailAttachments?: EmailAttachmentUpdateManyWithoutUserNestedInput
+    aiGeneratedReplies?: AiGeneratedReplyUpdateManyWithoutUserNestedInput
+    cachedSearchResults?: CachedSearchResultUpdateManyWithoutUserNestedInput
+    syncStatuses?: SyncStatusUpdateManyWithoutUserNestedInput
+    notificationLogs?: NotificationLogUpdateManyWithoutUserNestedInput
+    migrationStatuses?: MigrationStatusUpdateManyWithoutUserNestedInput
+    todoItems?: TodoItemUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutImapAccountsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    orgId?: StringFieldUpdateOperationsInput | string
+    notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
+    notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
+    notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
+    notificationCalendarReminders?: BoolFieldUpdateOperationsInput | boolean
+    notificationWeeklyReport?: BoolFieldUpdateOperationsInput | boolean
+    appTheme?: StringFieldUpdateOperationsInput | string
+    fontSize?: StringFieldUpdateOperationsInput | string
+    emailDensity?: StringFieldUpdateOperationsInput | string
+    preferredTimeZone?: StringFieldUpdateOperationsInput | string
+    lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
+    jmapAccounts?: JmapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
+    msalCache?: MsalTokenCacheUncheckedUpdateOneWithoutUserNestedInput
+    deltaLinks?: EmailDeltaLinkUncheckedUpdateManyWithoutUserNestedInput
+    webhookSubs?: WebhookSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    drafts?: DraftUncheckedUpdateManyWithoutUserNestedInput
+    emailRules?: EmailRuleUncheckedUpdateManyWithoutUserNestedInput
+    signatures?: SignatureUncheckedUpdateManyWithoutUserNestedInput
+    cachedFolders?: CachedFolderUncheckedUpdateManyWithoutUserNestedInput
+    cachedEmails?: CachedEmailUncheckedUpdateManyWithoutUserNestedInput
+    cachedCalEvents?: CachedCalendarEventUncheckedUpdateManyWithoutUserNestedInput
+    cachedContacts?: CachedContactUncheckedUpdateManyWithoutUserNestedInput
+    emailAttachments?: EmailAttachmentUncheckedUpdateManyWithoutUserNestedInput
+    aiGeneratedReplies?: AiGeneratedReplyUncheckedUpdateManyWithoutUserNestedInput
+    cachedSearchResults?: CachedSearchResultUncheckedUpdateManyWithoutUserNestedInput
+    syncStatuses?: SyncStatusUncheckedUpdateManyWithoutUserNestedInput
+    notificationLogs?: NotificationLogUncheckedUpdateManyWithoutUserNestedInput
+    migrationStatuses?: MigrationStatusUncheckedUpdateManyWithoutUserNestedInput
+    todoItems?: TodoItemUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserCreateWithoutJmapAccountsInput = {
+    id: string
+    email: string
+    name?: string | null
+    avatarUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    notificationNewEmail?: boolean
+    notificationDailyDigest?: boolean
+    notificationAiReplies?: boolean
+    notificationCalendarReminders?: boolean
+    notificationWeeklyReport?: boolean
+    appTheme?: string
+    fontSize?: string
+    emailDensity?: string
+    preferredTimeZone?: string
+    lastActiveAccountId?: string | null
+    org: OrganizationCreateNestedOneWithoutUsersInput
+    msAccounts?: MsConnectedAccountCreateNestedManyWithoutUserInput
+    imapAccounts?: ImapConnectedAccountCreateNestedManyWithoutUserInput
+    msalCache?: MsalTokenCacheCreateNestedOneWithoutUserInput
+    deltaLinks?: EmailDeltaLinkCreateNestedManyWithoutUserInput
+    webhookSubs?: WebhookSubscriptionCreateNestedManyWithoutUserInput
+    drafts?: DraftCreateNestedManyWithoutUserInput
+    emailRules?: EmailRuleCreateNestedManyWithoutUserInput
+    signatures?: SignatureCreateNestedManyWithoutUserInput
+    cachedFolders?: CachedFolderCreateNestedManyWithoutUserInput
+    cachedEmails?: CachedEmailCreateNestedManyWithoutUserInput
+    cachedCalEvents?: CachedCalendarEventCreateNestedManyWithoutUserInput
+    cachedContacts?: CachedContactCreateNestedManyWithoutUserInput
+    emailAttachments?: EmailAttachmentCreateNestedManyWithoutUserInput
+    aiGeneratedReplies?: AiGeneratedReplyCreateNestedManyWithoutUserInput
+    cachedSearchResults?: CachedSearchResultCreateNestedManyWithoutUserInput
+    syncStatuses?: SyncStatusCreateNestedManyWithoutUserInput
+    notificationLogs?: NotificationLogCreateNestedManyWithoutUserInput
+    migrationStatuses?: MigrationStatusCreateNestedManyWithoutUserInput
+    todoItems?: TodoItemCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutJmapAccountsInput = {
+    id: string
+    email: string
+    name?: string | null
+    avatarUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    orgId: string
+    notificationNewEmail?: boolean
+    notificationDailyDigest?: boolean
+    notificationAiReplies?: boolean
+    notificationCalendarReminders?: boolean
+    notificationWeeklyReport?: boolean
+    appTheme?: string
+    fontSize?: string
+    emailDensity?: string
+    preferredTimeZone?: string
+    lastActiveAccountId?: string | null
+    msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
+    imapAccounts?: ImapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
+    msalCache?: MsalTokenCacheUncheckedCreateNestedOneWithoutUserInput
+    deltaLinks?: EmailDeltaLinkUncheckedCreateNestedManyWithoutUserInput
+    webhookSubs?: WebhookSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    drafts?: DraftUncheckedCreateNestedManyWithoutUserInput
+    emailRules?: EmailRuleUncheckedCreateNestedManyWithoutUserInput
+    signatures?: SignatureUncheckedCreateNestedManyWithoutUserInput
+    cachedFolders?: CachedFolderUncheckedCreateNestedManyWithoutUserInput
+    cachedEmails?: CachedEmailUncheckedCreateNestedManyWithoutUserInput
+    cachedCalEvents?: CachedCalendarEventUncheckedCreateNestedManyWithoutUserInput
+    cachedContacts?: CachedContactUncheckedCreateNestedManyWithoutUserInput
+    emailAttachments?: EmailAttachmentUncheckedCreateNestedManyWithoutUserInput
+    aiGeneratedReplies?: AiGeneratedReplyUncheckedCreateNestedManyWithoutUserInput
+    cachedSearchResults?: CachedSearchResultUncheckedCreateNestedManyWithoutUserInput
+    syncStatuses?: SyncStatusUncheckedCreateNestedManyWithoutUserInput
+    notificationLogs?: NotificationLogUncheckedCreateNestedManyWithoutUserInput
+    migrationStatuses?: MigrationStatusUncheckedCreateNestedManyWithoutUserInput
+    todoItems?: TodoItemUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutJmapAccountsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutJmapAccountsInput, UserUncheckedCreateWithoutJmapAccountsInput>
+  }
+
+  export type UserUpsertWithoutJmapAccountsInput = {
+    update: XOR<UserUpdateWithoutJmapAccountsInput, UserUncheckedUpdateWithoutJmapAccountsInput>
+    create: XOR<UserCreateWithoutJmapAccountsInput, UserUncheckedCreateWithoutJmapAccountsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutJmapAccountsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutJmapAccountsInput, UserUncheckedUpdateWithoutJmapAccountsInput>
+  }
+
+  export type UserUpdateWithoutJmapAccountsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
+    notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
+    notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
+    notificationCalendarReminders?: BoolFieldUpdateOperationsInput | boolean
+    notificationWeeklyReport?: BoolFieldUpdateOperationsInput | boolean
+    appTheme?: StringFieldUpdateOperationsInput | string
+    fontSize?: StringFieldUpdateOperationsInput | string
+    emailDensity?: StringFieldUpdateOperationsInput | string
+    preferredTimeZone?: StringFieldUpdateOperationsInput | string
+    lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
+    msAccounts?: MsConnectedAccountUpdateManyWithoutUserNestedInput
+    imapAccounts?: ImapConnectedAccountUpdateManyWithoutUserNestedInput
+    msalCache?: MsalTokenCacheUpdateOneWithoutUserNestedInput
+    deltaLinks?: EmailDeltaLinkUpdateManyWithoutUserNestedInput
+    webhookSubs?: WebhookSubscriptionUpdateManyWithoutUserNestedInput
+    drafts?: DraftUpdateManyWithoutUserNestedInput
+    emailRules?: EmailRuleUpdateManyWithoutUserNestedInput
+    signatures?: SignatureUpdateManyWithoutUserNestedInput
+    cachedFolders?: CachedFolderUpdateManyWithoutUserNestedInput
+    cachedEmails?: CachedEmailUpdateManyWithoutUserNestedInput
+    cachedCalEvents?: CachedCalendarEventUpdateManyWithoutUserNestedInput
+    cachedContacts?: CachedContactUpdateManyWithoutUserNestedInput
+    emailAttachments?: EmailAttachmentUpdateManyWithoutUserNestedInput
+    aiGeneratedReplies?: AiGeneratedReplyUpdateManyWithoutUserNestedInput
+    cachedSearchResults?: CachedSearchResultUpdateManyWithoutUserNestedInput
+    syncStatuses?: SyncStatusUpdateManyWithoutUserNestedInput
+    notificationLogs?: NotificationLogUpdateManyWithoutUserNestedInput
+    migrationStatuses?: MigrationStatusUpdateManyWithoutUserNestedInput
+    todoItems?: TodoItemUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutJmapAccountsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    orgId?: StringFieldUpdateOperationsInput | string
+    notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
+    notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
+    notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
+    notificationCalendarReminders?: BoolFieldUpdateOperationsInput | boolean
+    notificationWeeklyReport?: BoolFieldUpdateOperationsInput | boolean
+    appTheme?: StringFieldUpdateOperationsInput | string
+    fontSize?: StringFieldUpdateOperationsInput | string
+    emailDensity?: StringFieldUpdateOperationsInput | string
+    preferredTimeZone?: StringFieldUpdateOperationsInput | string
+    lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
+    imapAccounts?: ImapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
+    msalCache?: MsalTokenCacheUncheckedUpdateOneWithoutUserNestedInput
+    deltaLinks?: EmailDeltaLinkUncheckedUpdateManyWithoutUserNestedInput
+    webhookSubs?: WebhookSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    drafts?: DraftUncheckedUpdateManyWithoutUserNestedInput
+    emailRules?: EmailRuleUncheckedUpdateManyWithoutUserNestedInput
+    signatures?: SignatureUncheckedUpdateManyWithoutUserNestedInput
+    cachedFolders?: CachedFolderUncheckedUpdateManyWithoutUserNestedInput
+    cachedEmails?: CachedEmailUncheckedUpdateManyWithoutUserNestedInput
+    cachedCalEvents?: CachedCalendarEventUncheckedUpdateManyWithoutUserNestedInput
+    cachedContacts?: CachedContactUncheckedUpdateManyWithoutUserNestedInput
+    emailAttachments?: EmailAttachmentUncheckedUpdateManyWithoutUserNestedInput
+    aiGeneratedReplies?: AiGeneratedReplyUncheckedUpdateManyWithoutUserNestedInput
+    cachedSearchResults?: CachedSearchResultUncheckedUpdateManyWithoutUserNestedInput
+    syncStatuses?: SyncStatusUncheckedUpdateManyWithoutUserNestedInput
+    notificationLogs?: NotificationLogUncheckedUpdateManyWithoutUserNestedInput
+    migrationStatuses?: MigrationStatusUncheckedUpdateManyWithoutUserNestedInput
+    todoItems?: TodoItemUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateManyOrgInput = {
@@ -39487,6 +44036,8 @@ export namespace Prisma {
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     msAccounts?: MsConnectedAccountUpdateManyWithoutUserNestedInput
+    imapAccounts?: ImapConnectedAccountUpdateManyWithoutUserNestedInput
+    jmapAccounts?: JmapConnectedAccountUpdateManyWithoutUserNestedInput
     msalCache?: MsalTokenCacheUpdateOneWithoutUserNestedInput
     deltaLinks?: EmailDeltaLinkUpdateManyWithoutUserNestedInput
     webhookSubs?: WebhookSubscriptionUpdateManyWithoutUserNestedInput
@@ -39524,6 +44075,8 @@ export namespace Prisma {
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
+    imapAccounts?: ImapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
+    jmapAccounts?: JmapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
     msalCache?: MsalTokenCacheUncheckedUpdateOneWithoutUserNestedInput
     deltaLinks?: EmailDeltaLinkUncheckedUpdateManyWithoutUserNestedInput
     webhookSubs?: WebhookSubscriptionUncheckedUpdateManyWithoutUserNestedInput
@@ -39571,6 +44124,44 @@ export namespace Prisma {
     isDefault?: boolean
     connectedAt?: Date | string
     updatedAt?: Date | string
+  }
+
+  export type ImapConnectedAccountCreateManyUserInput = {
+    id?: string
+    accountId: string
+    email: string
+    displayName?: string | null
+    isDefault?: boolean
+    connectedAt?: Date | string
+    updatedAt?: Date | string
+    imapHost: string
+    imapPort?: number
+    imapSecurity?: string
+    smtpHost: string
+    smtpPort?: number
+    smtpSecurity?: string
+    encryptedPassword: string
+    encryptionIv: string
+    encryptionTag: string
+    uidValidity?: JsonNullValueInput | InputJsonValue
+    highestModSeq?: JsonNullValueInput | InputJsonValue
+  }
+
+  export type JmapConnectedAccountCreateManyUserInput = {
+    id?: string
+    accountId: string
+    email: string
+    displayName?: string | null
+    isDefault?: boolean
+    connectedAt?: Date | string
+    updatedAt?: Date | string
+    sessionUrl: string
+    jmapAccountId: string
+    encryptedToken: string
+    encryptionIv: string
+    encryptionTag: string
+    emailState?: string | null
+    mailboxState?: string | null
   }
 
   export type EmailDeltaLinkCreateManyUserInput = {
@@ -39661,6 +44252,7 @@ export namespace Prisma {
     totalCount?: number
     wellKnownName?: string | null
     syncedAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type CachedEmailCreateManyUserInput = {
@@ -39686,6 +44278,7 @@ export namespace Prisma {
     syncStatus?: string
     lastModifiedDateTime?: Date | string | null
     syncedAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type CachedCalendarEventCreateManyUserInput = {
@@ -39718,6 +44311,7 @@ export namespace Prisma {
     createdDateTime?: Date | string | null
     lastModifiedDateTime?: Date | string | null
     syncedAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type CachedContactCreateManyUserInput = {
@@ -39746,6 +44340,7 @@ export namespace Prisma {
     isVIP?: boolean
     isFavorite?: boolean
     syncedAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type EmailAttachmentCreateManyUserInput = {
@@ -39760,6 +44355,7 @@ export namespace Prisma {
     contentId?: string | null
     uploadedAt?: Date | string
     createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type AiGeneratedReplyCreateManyUserInput = {
@@ -39768,6 +44364,7 @@ export namespace Prisma {
     generatedBody: string
     createdAt?: Date | string
     expiresAt: Date | string
+    updatedAt?: Date | string
   }
 
   export type CachedSearchResultCreateManyUserInput = {
@@ -39777,6 +44374,7 @@ export namespace Prisma {
     results: JsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     expiresAt: Date | string
+    updatedAt?: Date | string
   }
 
   export type SyncStatusCreateManyUserInput = {
@@ -39797,6 +44395,7 @@ export namespace Prisma {
     status: string
     errorMessage?: string | null
     metadata?: JsonNullValueInput | InputJsonValue
+    updatedAt?: Date | string
   }
 
   export type MigrationStatusCreateManyUserInput = {
@@ -39804,6 +44403,7 @@ export namespace Prisma {
     migrationType: string
     completedAt?: Date | string
     metadata?: JsonNullValueInput | InputJsonValue
+    updatedAt?: Date | string
   }
 
   export type TodoItemCreateManyUserInput = {
@@ -39846,6 +44446,120 @@ export namespace Prisma {
     isDefault?: BoolFieldUpdateOperationsInput | boolean
     connectedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ImapConnectedAccountUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    accountId?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    displayName?: NullableStringFieldUpdateOperationsInput | string | null
+    isDefault?: BoolFieldUpdateOperationsInput | boolean
+    connectedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    imapHost?: StringFieldUpdateOperationsInput | string
+    imapPort?: IntFieldUpdateOperationsInput | number
+    imapSecurity?: StringFieldUpdateOperationsInput | string
+    smtpHost?: StringFieldUpdateOperationsInput | string
+    smtpPort?: IntFieldUpdateOperationsInput | number
+    smtpSecurity?: StringFieldUpdateOperationsInput | string
+    encryptedPassword?: StringFieldUpdateOperationsInput | string
+    encryptionIv?: StringFieldUpdateOperationsInput | string
+    encryptionTag?: StringFieldUpdateOperationsInput | string
+    uidValidity?: JsonNullValueInput | InputJsonValue
+    highestModSeq?: JsonNullValueInput | InputJsonValue
+  }
+
+  export type ImapConnectedAccountUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    accountId?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    displayName?: NullableStringFieldUpdateOperationsInput | string | null
+    isDefault?: BoolFieldUpdateOperationsInput | boolean
+    connectedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    imapHost?: StringFieldUpdateOperationsInput | string
+    imapPort?: IntFieldUpdateOperationsInput | number
+    imapSecurity?: StringFieldUpdateOperationsInput | string
+    smtpHost?: StringFieldUpdateOperationsInput | string
+    smtpPort?: IntFieldUpdateOperationsInput | number
+    smtpSecurity?: StringFieldUpdateOperationsInput | string
+    encryptedPassword?: StringFieldUpdateOperationsInput | string
+    encryptionIv?: StringFieldUpdateOperationsInput | string
+    encryptionTag?: StringFieldUpdateOperationsInput | string
+    uidValidity?: JsonNullValueInput | InputJsonValue
+    highestModSeq?: JsonNullValueInput | InputJsonValue
+  }
+
+  export type ImapConnectedAccountUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    accountId?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    displayName?: NullableStringFieldUpdateOperationsInput | string | null
+    isDefault?: BoolFieldUpdateOperationsInput | boolean
+    connectedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    imapHost?: StringFieldUpdateOperationsInput | string
+    imapPort?: IntFieldUpdateOperationsInput | number
+    imapSecurity?: StringFieldUpdateOperationsInput | string
+    smtpHost?: StringFieldUpdateOperationsInput | string
+    smtpPort?: IntFieldUpdateOperationsInput | number
+    smtpSecurity?: StringFieldUpdateOperationsInput | string
+    encryptedPassword?: StringFieldUpdateOperationsInput | string
+    encryptionIv?: StringFieldUpdateOperationsInput | string
+    encryptionTag?: StringFieldUpdateOperationsInput | string
+    uidValidity?: JsonNullValueInput | InputJsonValue
+    highestModSeq?: JsonNullValueInput | InputJsonValue
+  }
+
+  export type JmapConnectedAccountUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    accountId?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    displayName?: NullableStringFieldUpdateOperationsInput | string | null
+    isDefault?: BoolFieldUpdateOperationsInput | boolean
+    connectedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sessionUrl?: StringFieldUpdateOperationsInput | string
+    jmapAccountId?: StringFieldUpdateOperationsInput | string
+    encryptedToken?: StringFieldUpdateOperationsInput | string
+    encryptionIv?: StringFieldUpdateOperationsInput | string
+    encryptionTag?: StringFieldUpdateOperationsInput | string
+    emailState?: NullableStringFieldUpdateOperationsInput | string | null
+    mailboxState?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type JmapConnectedAccountUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    accountId?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    displayName?: NullableStringFieldUpdateOperationsInput | string | null
+    isDefault?: BoolFieldUpdateOperationsInput | boolean
+    connectedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sessionUrl?: StringFieldUpdateOperationsInput | string
+    jmapAccountId?: StringFieldUpdateOperationsInput | string
+    encryptedToken?: StringFieldUpdateOperationsInput | string
+    encryptionIv?: StringFieldUpdateOperationsInput | string
+    encryptionTag?: StringFieldUpdateOperationsInput | string
+    emailState?: NullableStringFieldUpdateOperationsInput | string | null
+    mailboxState?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type JmapConnectedAccountUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    accountId?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    displayName?: NullableStringFieldUpdateOperationsInput | string | null
+    isDefault?: BoolFieldUpdateOperationsInput | boolean
+    connectedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sessionUrl?: StringFieldUpdateOperationsInput | string
+    jmapAccountId?: StringFieldUpdateOperationsInput | string
+    encryptedToken?: StringFieldUpdateOperationsInput | string
+    encryptionIv?: StringFieldUpdateOperationsInput | string
+    encryptionTag?: StringFieldUpdateOperationsInput | string
+    emailState?: NullableStringFieldUpdateOperationsInput | string | null
+    mailboxState?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type EmailDeltaLinkUpdateWithoutUserInput = {
@@ -40094,6 +44808,7 @@ export namespace Prisma {
     totalCount?: IntFieldUpdateOperationsInput | number
     wellKnownName?: NullableStringFieldUpdateOperationsInput | string | null
     syncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type CachedFolderUncheckedUpdateWithoutUserInput = {
@@ -40105,6 +44820,7 @@ export namespace Prisma {
     totalCount?: IntFieldUpdateOperationsInput | number
     wellKnownName?: NullableStringFieldUpdateOperationsInput | string | null
     syncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type CachedFolderUncheckedUpdateManyWithoutUserInput = {
@@ -40116,6 +44832,7 @@ export namespace Prisma {
     totalCount?: IntFieldUpdateOperationsInput | number
     wellKnownName?: NullableStringFieldUpdateOperationsInput | string | null
     syncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type CachedEmailUpdateWithoutUserInput = {
@@ -40141,6 +44858,7 @@ export namespace Prisma {
     syncStatus?: StringFieldUpdateOperationsInput | string
     lastModifiedDateTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     syncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type CachedEmailUncheckedUpdateWithoutUserInput = {
@@ -40166,6 +44884,7 @@ export namespace Prisma {
     syncStatus?: StringFieldUpdateOperationsInput | string
     lastModifiedDateTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     syncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type CachedEmailUncheckedUpdateManyWithoutUserInput = {
@@ -40191,6 +44910,7 @@ export namespace Prisma {
     syncStatus?: StringFieldUpdateOperationsInput | string
     lastModifiedDateTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     syncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type CachedCalendarEventUpdateWithoutUserInput = {
@@ -40223,6 +44943,7 @@ export namespace Prisma {
     createdDateTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastModifiedDateTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     syncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type CachedCalendarEventUncheckedUpdateWithoutUserInput = {
@@ -40255,6 +44976,7 @@ export namespace Prisma {
     createdDateTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastModifiedDateTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     syncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type CachedCalendarEventUncheckedUpdateManyWithoutUserInput = {
@@ -40287,6 +45009,7 @@ export namespace Prisma {
     createdDateTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastModifiedDateTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     syncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type CachedContactUpdateWithoutUserInput = {
@@ -40315,6 +45038,7 @@ export namespace Prisma {
     isVIP?: BoolFieldUpdateOperationsInput | boolean
     isFavorite?: BoolFieldUpdateOperationsInput | boolean
     syncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type CachedContactUncheckedUpdateWithoutUserInput = {
@@ -40343,6 +45067,7 @@ export namespace Prisma {
     isVIP?: BoolFieldUpdateOperationsInput | boolean
     isFavorite?: BoolFieldUpdateOperationsInput | boolean
     syncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type CachedContactUncheckedUpdateManyWithoutUserInput = {
@@ -40371,6 +45096,7 @@ export namespace Prisma {
     isVIP?: BoolFieldUpdateOperationsInput | boolean
     isFavorite?: BoolFieldUpdateOperationsInput | boolean
     syncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type EmailAttachmentUpdateWithoutUserInput = {
@@ -40385,6 +45111,7 @@ export namespace Prisma {
     contentId?: NullableStringFieldUpdateOperationsInput | string | null
     uploadedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type EmailAttachmentUncheckedUpdateWithoutUserInput = {
@@ -40399,6 +45126,7 @@ export namespace Prisma {
     contentId?: NullableStringFieldUpdateOperationsInput | string | null
     uploadedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type EmailAttachmentUncheckedUpdateManyWithoutUserInput = {
@@ -40413,6 +45141,7 @@ export namespace Prisma {
     contentId?: NullableStringFieldUpdateOperationsInput | string | null
     uploadedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type AiGeneratedReplyUpdateWithoutUserInput = {
@@ -40421,6 +45150,7 @@ export namespace Prisma {
     generatedBody?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type AiGeneratedReplyUncheckedUpdateWithoutUserInput = {
@@ -40429,6 +45159,7 @@ export namespace Prisma {
     generatedBody?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type AiGeneratedReplyUncheckedUpdateManyWithoutUserInput = {
@@ -40437,6 +45168,7 @@ export namespace Prisma {
     generatedBody?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type CachedSearchResultUpdateWithoutUserInput = {
@@ -40446,6 +45178,7 @@ export namespace Prisma {
     results?: JsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type CachedSearchResultUncheckedUpdateWithoutUserInput = {
@@ -40455,6 +45188,7 @@ export namespace Prisma {
     results?: JsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type CachedSearchResultUncheckedUpdateManyWithoutUserInput = {
@@ -40464,6 +45198,7 @@ export namespace Prisma {
     results?: JsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type SyncStatusUpdateWithoutUserInput = {
@@ -40506,6 +45241,7 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
     metadata?: JsonNullValueInput | InputJsonValue
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type NotificationLogUncheckedUpdateWithoutUserInput = {
@@ -40515,6 +45251,7 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
     metadata?: JsonNullValueInput | InputJsonValue
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type NotificationLogUncheckedUpdateManyWithoutUserInput = {
@@ -40524,6 +45261,7 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
     metadata?: JsonNullValueInput | InputJsonValue
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type MigrationStatusUpdateWithoutUserInput = {
@@ -40531,6 +45269,7 @@ export namespace Prisma {
     migrationType?: StringFieldUpdateOperationsInput | string
     completedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     metadata?: JsonNullValueInput | InputJsonValue
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type MigrationStatusUncheckedUpdateWithoutUserInput = {
@@ -40538,6 +45277,7 @@ export namespace Prisma {
     migrationType?: StringFieldUpdateOperationsInput | string
     completedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     metadata?: JsonNullValueInput | InputJsonValue
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type MigrationStatusUncheckedUpdateManyWithoutUserInput = {
@@ -40545,6 +45285,7 @@ export namespace Prisma {
     migrationType?: StringFieldUpdateOperationsInput | string
     completedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     metadata?: JsonNullValueInput | InputJsonValue
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type TodoItemUpdateWithoutUserInput = {

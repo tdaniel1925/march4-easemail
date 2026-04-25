@@ -53,10 +53,21 @@ const aiToolLinks = [
   { href: "/compose?panel=dictate", label: "AI Dictate", icon: <path strokeLinecap="round" strokeLinejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" /> },
 ];
 
-const labelItems = [
+const DEFAULT_LABELS = [
   { label: "Work", color: "rgb(138 9 9)" },
   { label: "Personal", color: "rgb(16 185 129)" },
   { label: "Newsletters", color: "rgb(82 82 82)" },
+];
+
+const LABEL_COLORS = [
+  "rgb(138 9 9)",
+  "rgb(16 185 129)",
+  "rgb(82 82 82)",
+  "rgb(59 130 246)",
+  "rgb(245 158 11)",
+  "rgb(139 92 246)",
+  "rgb(236 72 153)",
+  "rgb(14 165 233)",
 ];
 
 function NavIcon({ children }: { children: React.ReactNode }) {
@@ -154,9 +165,30 @@ export default function Sidebar({ userName = "You", userEmail = "", isAdmin: isA
   }
 
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [dynamicLabels, setDynamicLabels] = useState<{ label: string; color: string }[] | null>(null);
 
   // Close mobile drawer on route change
   useEffect(() => { setMobileOpen(false); }, [pathname]);
+
+  // Fetch dynamic labels from cached email categories
+  useEffect(() => {
+    if (!activeAccount) return;
+    fetch(`/api/mail/labels?homeAccountId=${encodeURIComponent(activeAccount.homeAccountId)}`)
+      .then((r) => r.ok ? r.json() as Promise<{ labels: string[] }> : null)
+      .then((data) => {
+        if (data && data.labels.length > 0) {
+          setDynamicLabels(
+            data.labels.map((lbl, i) => ({
+              label: lbl,
+              color: LABEL_COLORS[i % LABEL_COLORS.length],
+            }))
+          );
+        } else {
+          setDynamicLabels(null);
+        }
+      })
+      .catch(() => setDynamicLabels(null));
+  }, [activeAccount?.homeAccountId]);
 
   // Fetch custom folders whenever the active account changes
   useEffect(() => {
@@ -279,7 +311,7 @@ export default function Sidebar({ userName = "You", userEmail = "", isAdmin: isA
           {/* Labels */}
           <SidebarSection title="Labels" open={open.labels} onToggle={() => toggle("labels")} className="mt-2">
             <ul className="space-y-0.5">
-              {labelItems.map((item) => {
+              {(dynamicLabels ?? DEFAULT_LABELS).map((item) => {
                 const isLabelActive = activeLabel === item.label;
                 return (
                   <li key={item.label}>

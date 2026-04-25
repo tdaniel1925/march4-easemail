@@ -2,6 +2,23 @@
 
 import { useState, useRef, useEffect, useCallback } from "react";
 import Link from "next/link";
+import DOMPurify from "dompurify";
+
+// ─── Sanitized HTML preview ───────────────────────────────────────────────────
+// Prevents XSS when rendering user-authored signature HTML.
+
+function SanitizedPreview({ html, className }: { html: string; className?: string }) {
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (ref.current) {
+      ref.current.innerHTML = DOMPurify.sanitize(html, {
+        FORBID_TAGS: ["script", "style", "iframe", "object", "embed"],
+        FORBID_ATTR: ["onerror", "onload", "onclick", "onmouseover"],
+      });
+    }
+  }, [html]);
+  return <div ref={ref} className={className} />;
+}
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -142,10 +159,10 @@ function SigCard({
           </button>
         </div>
       </div>
-      {/* Mini preview */}
-      <div
+      {/* Mini preview — sanitized to prevent XSS */}
+      <SanitizedPreview
+        html={sig.html.slice(0, 200)}
         className={`${selected ? "bg-background-50 border-primary-200" : "bg-background-100 border-neutral-200"} border rounded-large p-3 mt-2 text-xs pointer-events-none`}
-        dangerouslySetInnerHTML={{ __html: sig.html.slice(0, 200) }}
       />
     </div>
   );
@@ -569,7 +586,8 @@ export default function SignaturesClient({ userEmail }: { userEmail: string }) {
                       <div className="bg-background-50 rounded-large border border-neutral-200 p-4">
                         <p className="text-xs text-neutral-400 mb-3 pb-2 border-b border-neutral-100">— Your message above —</p>
                         <div className="border-l-2 border-neutral-200 pl-3 text-sm">
-                          <div dangerouslySetInnerHTML={{ __html: selected.html }} />
+                          {/* Sanitized to prevent XSS from user-authored HTML */}
+                          <SanitizedPreview html={selected.html} />
                         </div>
                       </div>
                     </div>

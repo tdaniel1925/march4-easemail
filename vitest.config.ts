@@ -1,6 +1,7 @@
 import { defineConfig } from "vitest/config";
 import path from "path";
 
+// ts-prune-ignore-next
 export default defineConfig({
   test: {
     environment: "jsdom",

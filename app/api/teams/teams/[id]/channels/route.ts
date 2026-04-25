@@ -24,17 +24,29 @@ export async function GET(
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
+  // Fetch user with their MS accounts
   const dbUser = await prisma.user.findUnique({
     where: { id: user.id },
-    include: { msAccounts: { where: { isDefault: true } } },
+    include: { msAccounts: { where: { isDefault: true }, select: { id: true, homeAccountId: true } } },
   });
   if (!dbUser) return NextResponse.json({ error: "User not found" }, { status: 404 });
 
-  const account = dbUser.msAccounts[0];
-  if (!account) return NextResponse.json({ error: "No MS account" }, { status: 400 });
+  const defaultAccount = dbUser.msAccounts[0];
+  if (!defaultAccount) return NextResponse.json({ error: "No MS account" }, { status: 400 });
 
   const { id: teamId } = await params;
-  const homeAccountId = req.nextUrl.searchParams.get("homeAccountId") ?? account.homeAccountId;
+
+  // Validate homeAccountId from query param against the user's own accounts (prevents IDOR)
+  const rawHomeAccountId = req.nextUrl.searchParams.get("homeAccountId");
+  let homeAccountId = defaultAccount.homeAccountId;
+  if (rawHomeAccountId && rawHomeAccountId !== defaultAccount.homeAccountId) {
+    const owned = await prisma.msConnectedAccount.findFirst({
+      where: { userId: user.id, homeAccountId: rawHomeAccountId },
+      select: { homeAccountId: true },
+    });
+    if (!owned) return NextResponse.json({ error: "Account not found" }, { status: 404 });
+    homeAccountId = owned.homeAccountId;
+  }
 
   try {
     const data = await graphGet<GraphChannelList>(

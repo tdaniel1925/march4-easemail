@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
-import { graphFetch } from "@/lib/microsoft/graph";
+import { verifyAccountOwnership, getProvider, getAllAccounts } from "@/lib/providers/registry";
 
 /**
  * POST /api/mail/star
@@ -14,40 +14,38 @@ export async function POST(req: NextRequest) {
 
   const { messageId, homeAccountId, flagged } = await req.json() as {
     messageId: string;
-    homeAccountId: string;
+    homeAccountId?: string;
     flagged: boolean;
   };
 
-  if (!messageId || !homeAccountId) {
-    return NextResponse.json({ error: "messageId and homeAccountId required" }, { status: 400 });
+  if (!messageId) {
+    return NextResponse.json({ error: "messageId required" }, { status: 400 });
   }
 
-  try {
-    // Update in Graph API
-    const graphRes = await graphFetch(
-      user.id,
-      homeAccountId,
-      `/me/messages/${encodeURIComponent(messageId)}`,
-      {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          flag: { flagStatus: flagged ? "flagged" : "notFlagged" },
-        }),
-      }
-    );
+  // Resolve account: use provided homeAccountId or fall back to default
+  let accountId = homeAccountId;
+  if (!accountId) {
+    const accounts = await getAllAccounts(user.id);
+    const defaultAccount = accounts.find((a) => a.isDefault) ?? accounts[0];
+    if (!defaultAccount) return NextResponse.json({ error: "No connected account" }, { status: 404 });
+    accountId = defaultAccount.accountId;
+  }
 
-    if (!graphRes.ok) {
-      const error = await graphRes.text();
-      return NextResponse.json({ error }, { status: 500 });
-    }
+  // Verify ownership
+  const account = await verifyAccountOwnership(user.id, accountId);
+  if (!account) return NextResponse.json({ error: "Account not found" }, { status: 404 });
+
+  try {
+    // Use provider abstraction — works for Microsoft, IMAP, and JMAP
+    const provider = getProvider(accountId);
+    await provider.flagMessage(user.id, accountId, messageId, flagged);
 
     // Update cache
     await prisma.cachedEmail.updateMany({
       where: {
         id: messageId,
         userId: user.id,
-        homeAccountId,
+        homeAccountId: accountId,
       },
       data: {
         flagStatus: flagged ? "flagged" : "notFlagged",

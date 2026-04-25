@@ -4,6 +4,9 @@
  */
 import { createMsalClient, acquireTokenSilent, GRAPH_SCOPES } from "./msal";
 
+// Re-export scope constants so callers can import everything from one place
+export { GRAPH_SCOPES, TEAMS_SCOPES } from "./msal";
+
 const GRAPH_BASE = "https://graph.microsoft.com/v1.0";
 
 // ─── Core Fetch ──────────────────────────────────────────────────────────────

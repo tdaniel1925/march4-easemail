@@ -1,6 +1,6 @@
 "use client";
 
-import { useLayoutEffect } from "react";
+import { useLayoutEffect, useMemo } from "react";
 import { useAccountStore, ConnectedAccount } from "@/lib/stores/account-store";
 
 interface MsAccount {
@@ -38,6 +38,15 @@ export function StoreInitializer({
   jmapAccounts?: JmapAccount[];
   inboxUnread: number;
 }) {
+  // Stable key so we re-init when accounts actually change (L2 fix)
+  const accountKey = useMemo(
+    () =>
+      accounts.map((a) => a.id).join(",") +
+      "|" + (imapAccounts ?? []).map((a) => a.id).join(",") +
+      "|" + (jmapAccounts ?? []).map((a) => a.id).join(","),
+    [accounts, imapAccounts, jmapAccounts]
+  );
+
   useLayoutEffect(() => {
     const allAccounts: ConnectedAccount[] = [
       ...accounts.map((a) => ({
@@ -75,6 +84,6 @@ export function StoreInitializer({
       inboxUnread,
     });
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [accountKey, inboxUnread]);
   return null;
 }

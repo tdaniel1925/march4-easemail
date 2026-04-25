@@ -17,5 +17,6 @@ export interface EmailMessage {
   hasAttachments: boolean;
   flag?: { flagStatus: "flagged" | "notFlagged" };
   body?: { content: string; contentType: "html" | "text" };
+  conversationId?: string;
   attachments?: Array<{ id: string; name: string; size: number; contentType: string }>;
 }

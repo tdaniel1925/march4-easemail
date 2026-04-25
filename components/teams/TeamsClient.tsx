@@ -192,30 +192,22 @@ export default function TeamsClient({ userName, userEmail }: TeamsClientProps) {
   // ── Load chats ──────────────────────────────────────────────────────────────
   const loadChats = useCallback(async () => {
     try {
-      console.log("[TeamsClient] Fetching chats from /api/teams/chats");
       const res = await fetch("/api/teams/chats");
-      console.log("[TeamsClient] Response status:", res.status);
       if (!res.ok) {
-        const body = await res.json() as { error?: string; details?: string };
-        console.log("[TeamsClient] Error response:", body);
+        const body = await res.json() as { error?: string };
         if (body.error === "teams_license_required") {
-          console.log("[TeamsClient] Setting chatsError to 'license'");
           setChatsError("license");
         } else if (body.error === "account_requires_reauth" || body.error === "teams_scope_required" || res.status === 403) {
-          console.log("[TeamsClient] Setting chatsError to 'reauth'");
           setChatsError("reauth");
         } else {
-          console.log("[TeamsClient] Setting chatsError to:", body.error ?? "Failed to load chats");
           setChatsError(body.error ?? "Failed to load chats");
         }
         return;
       }
       const data = await res.json() as { chats: TeamsChat[] };
-      console.log("[TeamsClient] Successfully loaded", data.chats.length, "chats");
       setChats(data.chats);
       setChatsError(null);
-    } catch (err) {
-      console.error("[TeamsClient] Network error:", err);
+    } catch {
       setChatsError("Network error");
     } finally {
       setChatsLoading(false);

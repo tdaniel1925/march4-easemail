@@ -10,9 +10,9 @@ import { defineConfig, devices } from "@playwright/test";
  * Requires .env.local: NEXT_PUBLIC_SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY
  * Optional .env.local: TEST_USER_EMAIL (default: info@tonnerow.com)
  */
-export default defineConfig({
+module.exports = defineConfig({
   testDir: "./tests/e2e",
-  globalSetup: "./tests/e2e/auth/global-setup.ts",
+  // globalSetup: "./tests/e2e/auth/global-setup.ts", // Disabled - using manual session
   fullyParallel: false, // composer tests mutate state — run serially
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 1 : 0,

@@ -6,26 +6,9 @@ import { graphGet } from "@/lib/microsoft/graph";
 import Sidebar from "@/components/Sidebar";
 import InboxClient, { type EmailMessage } from "@/components/inbox/InboxClient";
 import { StoreInitializer } from "@/components/StoreInitializer";
-import { mapCachedEmail } from "@/lib/utils/email-helpers";
-
-// ─── Graph API response shapes ───────────────────────────────────────────────
-
-interface GraphMessage {
-  id: string;
-  subject: string;
-  bodyPreview: string;
-  receivedDateTime: string;
-  isRead: boolean;
-  hasAttachments: boolean;
-  flag: { flagStatus: string };
-  from: { emailAddress: { name: string; address: string } };
-  body: { content: string; contentType: string };
-}
-
-interface GraphMessagesResponse {
-  value: GraphMessage[];
-  "@odata.nextLink"?: string;
-}
+import { mapCachedEmail, mapGraphMessage, mapNormalizedEmail } from "@/lib/utils/email-helpers";
+import { detectProviderType, getProvider } from "@/lib/providers/registry";
+import type { GraphMessagesResponse } from "@/lib/types/graph";
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
@@ -47,7 +30,9 @@ export default async function InboxPage() {
   const defaultAccount = dbUser.defaultAccount;
   if (!defaultAccount) redirect("/onboarding");
 
-  // 3. Fetch emails — cache first, Graph fallback
+  const providerType = detectProviderType(defaultAccount.homeAccountId);
+
+  // 3. Fetch emails — cache first, provider fallback
   let emails: EmailMessage[] = [];
   let initialNextLink: string | null = null;
 
@@ -60,34 +45,36 @@ export default async function InboxPage() {
       });
       if (cached.length > 0) {
         emails = cached.map(mapCachedEmail) as EmailMessage[];
+        // Enable infinite scroll for cached results (C4 fix)
+        if (cached.length === 50) {
+          initialNextLink = cached[cached.length - 1].id;
+        }
       }
     }
 
-    // Fall back to Graph if cache is empty
+    // Fall back to provider if cache is empty
     if (emails.length === 0) {
-      const data = await graphGet<GraphMessagesResponse>(
-        user.id,
-        defaultAccount.homeAccountId,
-        "/me/mailFolders/inbox/messages?$top=50&$select=id,subject,bodyPreview,receivedDateTime,isRead,hasAttachments,flag,from,body&$orderby=receivedDateTime desc"
-      );
-      emails = data.value.map((m): EmailMessage => ({
-        id: m.id,
-        subject: m.subject ?? "(no subject)",
-        bodyPreview: m.bodyPreview ?? "",
-        receivedDateTime: m.receivedDateTime,
-        isRead: m.isRead,
-        hasAttachments: m.hasAttachments,
-        flag: { flagStatus: m.flag?.flagStatus === "flagged" ? "flagged" : "notFlagged" },
-        from: {
-          name: m.from?.emailAddress?.name ?? "Unknown",
-          address: m.from?.emailAddress?.address ?? "",
-        },
-        body: {
-          content: m.body?.content ?? m.bodyPreview ?? "",
-          contentType: (m.body?.contentType as "html" | "text") ?? "text",
-        },
-      }));
-      initialNextLink = data["@odata.nextLink"] ?? null;
+      if (providerType !== "microsoft") {
+        // IMAP/JMAP: use provider abstraction (H4 fix)
+        const provider = getProvider(defaultAccount.homeAccountId);
+        const result = await provider.fetchEmails(
+          user.id,
+          defaultAccount.homeAccountId,
+          "inbox",
+          { top: 50 }
+        );
+        emails = result.emails.map(mapNormalizedEmail);
+        initialNextLink = result.nextCursor ?? null;
+      } else {
+        // Microsoft: use Graph API directly
+        const data = await graphGet<GraphMessagesResponse>(
+          user.id,
+          defaultAccount.homeAccountId,
+          "/me/mailFolders/inbox/messages?$top=50&$select=id,subject,bodyPreview,receivedDateTime,isRead,hasAttachments,flag,from,body,conversationId&$orderby=receivedDateTime desc"
+        );
+        emails = data.value.map(mapGraphMessage);
+        initialNextLink = data["@odata.nextLink"] ?? null;
+      }
     }
   } catch (err) {
     console.error("Failed to fetch inbox:", err);

@@ -185,18 +185,23 @@ export default function LoginPage() {
           </a>
 
           <p className="text-center text-xs mt-5 leading-relaxed" style={{ color: "rgb(155 155 155)" }}>
-            To join this Organization you only need to login with your dmillerlaw.com email address. Once authenticated, EaseMail will sync your emails, contacts and calendar. Please contact David Romero with any questions or issues.
+            To join this Organization you only need to login with your dmillerlaw.com email address.
+            Once authenticated, EaseMail will sync your emails, contacts and calendar.
+            Please contact{" "}
+            <a href="mailto:admin@dmillerlaw.com" className="underline">admin@dmillerlaw.com</a>
+            {" "}if you need access.
           </p>
-
-          <div className="mt-8 flex items-center justify-center gap-4 flex-wrap">
-            <Link href="#" className="text-xs transition-colors" style={{ color: "rgb(155 155 155)" }}>Privacy Policy</Link>
-            <span className="text-xs" style={{ color: "rgb(190 190 190)" }}>·</span>
-            <Link href="#" className="text-xs transition-colors" style={{ color: "rgb(155 155 155)" }}>Terms of Service</Link>
-            <span className="text-xs" style={{ color: "rgb(190 190 190)" }}>·</span>
-            <Link href="/help" className="text-xs transition-colors" style={{ color: "rgb(155 155 155)" }}>Help Center</Link>
-          </div>
-          <p className="text-center text-xs mt-3" style={{ color: "rgb(190 190 190)" }}>© 2025 EaseMail Inc. All rights reserved.</p>
         </div>
+
+        {/* Footer Links */}
+        <div className="mt-8 flex items-center justify-center gap-4 flex-wrap">
+          <Link href="#" className="text-xs transition-colors" style={{ color: "rgb(155 155 155)" }}>Privacy Policy</Link>
+          <span className="text-xs" style={{ color: "rgb(190 190 190)" }}>·</span>
+          <Link href="#" className="text-xs transition-colors" style={{ color: "rgb(155 155 155)" }}>Terms of Service</Link>
+          <span className="text-xs" style={{ color: "rgb(190 190 190)" }}>·</span>
+          <Link href="/help" className="text-xs transition-colors" style={{ color: "rgb(155 155 155)" }}>Help Center</Link>
+        </div>
+        <p className="text-center text-xs mt-3" style={{ color: "rgb(190 190 190)" }}>© 2025 EaseMail Inc. All rights reserved.</p>
       </div>
 
       {/* Animations */}
@@ -214,23 +219,40 @@ export default function LoginPage() {
   );
 }
 
+// ── Error code → human-readable message map ───────────────────────────────────
+// All codes are opaque strings set by our own server — never raw error objects.
 const ERROR_LABELS: Record<string, string> = {
-  ms_oauth_failed: "Microsoft sign-in was cancelled or failed. Please try again.",
-  session_failed: "Failed to create your session. Please try again.",
-  unauthorized_domain: "Access is restricted to dmillerlaw.com accounts. Please sign in with your firm email.",
+  auth_failed:         "Sign-in failed. Please try again. If this keeps happening, contact your IT administrator.",
+  config_error:        "Sign-in is not configured correctly. Please contact your IT administrator.",
+  ms_oauth_failed:     "Microsoft sign-in was cancelled or failed. Please try again.",
+  session_failed:      "Failed to create your session. Please try signing in again.",
+  unauthorized_domain: "Access is restricted to dmillerlaw.com accounts. Please use your firm email address.",
+  no_session:          "Your session could not be established. Please try signing in again.",
+  rate_limited:        "Too many sign-in attempts. Please wait a few minutes and try again.",
 };
 
 function ErrorMessage() {
   const params = useSearchParams();
   const raw = params.get("error");
   if (!raw) return null;
-  const message = ERROR_LABELS[raw] ?? `Sign-in error: ${raw}`;
+
+  // Never display raw/unknown error strings to users — always use a safe fallback
+  const message = ERROR_LABELS[raw] ?? "Sign-in failed. Please try again or contact your IT administrator.";
+
   return (
     <div
       className="mb-5 rounded-[10px] px-4 py-3 text-sm text-left"
       style={{ backgroundColor: "rgb(254 242 242)", border: "1px solid rgb(252 165 165)", color: "rgb(153 27 27)" }}
     >
-      {message}
+      <p className="font-semibold mb-1">Sign-in error</p>
+      <p className="leading-relaxed">{message}</p>
+      <a
+        href="/api/auth/microsoft"
+        className="mt-2 inline-block text-xs font-semibold underline underline-offset-2"
+        style={{ color: "rgb(185 28 28)" }}
+      >
+        Try again →
+      </a>
     </div>
   );
 }

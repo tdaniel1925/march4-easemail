@@ -35,34 +35,28 @@ export async function GET(req: NextRequest) {
   const homeAccountId = req.nextUrl.searchParams.get("homeAccountId") ?? account.homeAccountId;
 
   try {
-    console.log("[teams/chats] Attempting to fetch chats with TEAMS_SCOPES for user:", user.id);
     const data = await graphGet<GraphChatList>(
       user.id,
       homeAccountId,
       "/me/chats?$expand=members&$top=50",
       TEAMS_SCOPES
     );
-    console.log("[teams/chats] Successfully fetched", data.value?.length ?? 0, "chats");
     return NextResponse.json({ chats: data.value ?? [] });
   } catch (err: unknown) {
-    console.error("[teams/chats] Error details:", err);
     if (isReauthError(err)) {
-      console.log("[teams/chats] Detected reauth error - returning account_requires_reauth");
       return NextResponse.json({ error: "account_requires_reauth" }, { status: 401 });
     }
     const msg = String(err);
 
     // Check for licensing error specifically
     if (msg.includes("Failed to get license information") || msg.includes("valid Office365 license")) {
-      console.log("[teams/chats] Detected license error - returning teams_license_required");
-      return NextResponse.json({ error: "teams_license_required", details: msg }, { status: 403 });
+      return NextResponse.json({ error: "teams_license_required" }, { status: 403 });
     }
 
     if (msg.includes("403") || msg.includes("Authorization_RequestDenied") || msg.includes("Forbidden")) {
-      console.log("[teams/chats] Detected 403/Forbidden - returning teams_scope_required");
-      return NextResponse.json({ error: "teams_scope_required", details: msg }, { status: 403 });
+      return NextResponse.json({ error: "teams_scope_required" }, { status: 403 });
     }
-    console.error("[teams/chats] Unexpected error:", err);
-    return NextResponse.json({ error: "Failed to fetch chats", details: msg }, { status: 500 });
+    console.error("[teams/chats]", err);
+    return NextResponse.json({ error: "Failed to fetch chats" }, { status: 500 });
   }
 }

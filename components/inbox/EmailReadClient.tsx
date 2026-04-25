@@ -101,7 +101,7 @@ export default function EmailReadClient({ email, homeAccountId, returnTo = "/inb
       fetch("/api/mail/mark-read", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messageId: email.id }),
+        body: JSON.stringify({ messageId: email.id, homeAccountId }),
       }).catch(console.error);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -221,7 +221,18 @@ export default function EmailReadClient({ email, homeAccountId, returnTo = "/inb
         <div className="flex items-center gap-0.5">
           <button
             title={isStarred ? "Unstar" : "Star"}
-            onClick={() => setIsStarred(!isStarred)}
+            onClick={() => {
+              const newStarred = !isStarred;
+              setIsStarred(newStarred);
+              fetch("/api/mail/star", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ messageId: email.id, homeAccountId, flagged: newStarred }),
+              }).catch((err) => {
+                console.error("Failed to toggle star:", err);
+                setIsStarred(!newStarred);
+              });
+            }}
             className="p-1.5 rounded-small transition-colors"
             style={{ color: isStarred ? "rgb(138 9 9)" : "rgb(155 155 155)" }}
           >
@@ -231,7 +242,18 @@ export default function EmailReadClient({ email, homeAccountId, returnTo = "/inb
           </button>
           <button
             title={isRead ? "Mark unread" : "Mark read"}
-            onClick={() => setIsRead(!isRead)}
+            onClick={() => {
+              const newRead = !isRead;
+              setIsRead(newRead);
+              fetch("/api/mail/mark-read", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ messageId: email.id, homeAccountId, isRead: newRead }),
+              }).catch((err) => {
+                console.error("Failed to toggle read:", err);
+                setIsRead(!newRead);
+              });
+            }}
             className="p-1.5 rounded-small transition-colors hover:bg-background-100"
             style={{ color: "rgb(155 155 155)" }}
           >
@@ -239,12 +261,39 @@ export default function EmailReadClient({ email, homeAccountId, returnTo = "/inb
               <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
             </svg>
           </button>
-          <button title="Archive" className="p-1.5 rounded-small transition-colors hover:bg-background-100" style={{ color: "rgb(155 155 155)" }}>
+          <button
+            title="Archive"
+            onClick={() => {
+              fetch("/api/mail/archive", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ messageId: email.id, homeAccountId }),
+              })
+                .then(() => router.push(returnTo))
+                .catch(console.error);
+            }}
+            className="p-1.5 rounded-small transition-colors hover:bg-background-100"
+            style={{ color: "rgb(155 155 155)" }}
+          >
             <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
             </svg>
           </button>
-          <button title="Delete" className="p-1.5 rounded-small transition-colors hover:bg-background-100" style={{ color: "rgb(155 155 155)" }}>
+          <button
+            title="Delete"
+            onClick={() => {
+              if (!confirm("Move this email to trash?")) return;
+              fetch("/api/mail/delete", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ messageId: email.id, homeAccountId }),
+              })
+                .then(() => router.push(returnTo))
+                .catch(console.error);
+            }}
+            className="p-1.5 rounded-small transition-colors hover:bg-background-100"
+            style={{ color: "rgb(155 155 155)" }}
+          >
             <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
             </svg>
