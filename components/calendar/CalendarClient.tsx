@@ -503,27 +503,48 @@ export default function CalendarClient({ weekStart: initialWeekStart, events: in
         ?? (window as unknown as { webkitSpeechRecognition?: SpeechRecognitionConstructor }).webkitSpeechRecognition)
       : null;
     if (!SR) { setMicError("Voice not supported in this browser"); return; }
-    if (isListening) { recogRef.current?.stop(); return; }
+    if (isListening) { recogRef.current?.stop(); setIsListening(false); return; }
 
     const r = new SR();
     recogRef.current = r;
-    r.lang = "en-US"; r.continuous = false; r.interimResults = false;
+    r.lang = "en-US";
+    r.continuous = true;        // Keep listening through pauses
+    r.interimResults = true;    // Show words as they're recognized
     setIsListening(true); setMicError(null);
 
-    r.onresult = (e) => {
-      const transcript = e.results[0][0].transcript;
-      setNlText(transcript);
-      setIsListening(false);
-      void handleNlCreateWithText(transcript);
+    // Accumulate final transcript across multiple speech segments
+    let finalTranscript = "";
+    r.onresult = (e: SpeechRecognitionEvent) => {
+      let interim = "";
+      for (let i = 0; i < e.results.length; i++) {
+        const result = e.results[i];
+        if (result.isFinal) {
+          finalTranscript += result[0].transcript + " ";
+        } else {
+          interim += result[0].transcript;
+        }
+      }
+      // Show real-time feedback in the text field
+      setNlText(finalTranscript + interim);
     };
-    r.onerror = (e) => {
+    r.onerror = (e: SpeechRecognitionErrorEvent) => {
       setMicError(
-        e.error === "no-speech" ? "No speech detected" :
-        e.error === "not-allowed" ? "Mic access denied" : "Voice error"
+        e.error === "no-speech" ? "No speech detected — try again" :
+        e.error === "not-allowed" ? "Mic access denied — check browser permissions" :
+        e.error === "aborted" ? null : // User stopped, not an error
+        `Voice error: ${e.error}`
       );
       setIsListening(false);
     };
-    r.onend = () => setIsListening(false);
+    r.onend = () => {
+      setIsListening(false);
+      // Auto-submit the accumulated transcript when user stops speaking
+      const text = finalTranscript.trim();
+      if (text) {
+        setNlText(text);
+        void handleNlCreateWithText(text);
+      }
+    };
     r.start();
   }
 
