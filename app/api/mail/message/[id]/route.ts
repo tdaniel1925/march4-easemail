@@ -13,11 +13,17 @@ interface GraphMessage {
   ccRecipients?: { emailAddress?: { name?: string; address?: string } }[];
   body?: { contentType?: string; content?: string };
   receivedDateTime?: string;
-  attachments?: { id: string; name: string; size: number; contentType: string }[];
+  attachments?: {
+    id: string;
+    name: string;
+    size: number;
+    contentType: string;
+    contentId?: string;
+    isInline?: boolean;
+  }[];
 }
 
 // ─── GET /api/mail/message/[id] ───────────────────────────────────────────────
-// Fetches a single message for reply/forward pre-fill.
 
 export async function GET(req: NextRequest, { params }: Params) {
   const supabase = await createClient();
@@ -26,7 +32,6 @@ export async function GET(req: NextRequest, { params }: Params) {
 
   const { id } = await params;
 
-  // Accept homeAccountId from query params; fall back to default account
   let accountId = req.nextUrl.searchParams.get("homeAccountId");
   if (!accountId) {
     const { getAllAccounts } = await import("@/lib/providers/registry");
@@ -36,44 +41,54 @@ export async function GET(req: NextRequest, { params }: Params) {
     accountId = defaultAccount.accountId;
   }
 
-  // Verify ownership
   const account = await verifyAccountOwnership(user.id, accountId);
   if (!account) return NextResponse.json({ error: "No connected account" }, { status: 404 });
 
   const providerType = detectProviderType(accountId);
 
-  // ── Non-Microsoft providers: use provider abstraction ──────────────────────
+  // ── Non-Microsoft providers ──────────────────────────────────────────────
   if (providerType !== "microsoft") {
     try {
       const provider = getProvider(accountId);
       const email = await provider.fetchMessage(user.id, accountId, id);
 
-      // Return in the same shape the frontend expects (Graph-style for backward compat)
+      let bodyContent = email.bodyHtml ?? email.bodyText ?? email.bodyPreview;
+
+      // Rewrite cid: references for JMAP inline images
+      // JMAP inline images use blobId — rewrite cid:blobId to our attachment API
+      if (email.bodyHtml && email.attachments) {
+        for (const att of email.attachments) {
+          if (att.contentType.startsWith("image/")) {
+            // Replace cid references with our API URL
+            const cidPattern = new RegExp(`cid:${att.id.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`, 'gi');
+            bodyContent = bodyContent.replace(cidPattern,
+              `/api/mail/attachments/${encodeURIComponent(id)}/${encodeURIComponent(att.id)}?homeAccountId=${encodeURIComponent(accountId)}&mode=inline`
+            );
+          }
+        }
+      }
+
+      // Filter inline images out of attachment list
+      const visibleAttachments = (email.attachments ?? []).filter((a) => {
+        if (!a.contentType.startsWith("image/")) return true;
+        // If the image is referenced in the body, it's inline — hide from attachment bar
+        if (email.bodyHtml?.includes(a.id)) return false;
+        return true;
+      });
+
       return NextResponse.json({
         id: email.id,
         subject: email.subject,
-        from: {
-          emailAddress: {
-            name: email.from.name,
-            address: email.from.address,
-          },
-        },
-        toRecipients: email.toRecipients.map((r) => ({
-          emailAddress: { name: r.name, address: r.address },
-        })),
-        ccRecipients: (email.ccRecipients ?? []).map((r) => ({
-          emailAddress: { name: r.name, address: r.address },
-        })),
+        from: { emailAddress: { name: email.from.name, address: email.from.address } },
+        toRecipients: email.toRecipients.map((r) => ({ emailAddress: { name: r.name, address: r.address } })),
+        ccRecipients: (email.ccRecipients ?? []).map((r) => ({ emailAddress: { name: r.name, address: r.address } })),
         body: {
           contentType: email.bodyHtml ? "html" : "text",
-          content: email.bodyHtml ?? email.bodyText ?? email.bodyPreview,
+          content: bodyContent,
         },
         receivedDateTime: email.receivedDateTime,
-        attachments: (email.attachments ?? []).map((a) => ({
-          id: a.id,
-          name: a.name,
-          size: a.size,
-          contentType: a.contentType,
+        attachments: visibleAttachments.map((a) => ({
+          id: a.id, name: a.name, size: a.size, contentType: a.contentType,
         })),
       });
     } catch (err) {
@@ -85,12 +100,34 @@ export async function GET(req: NextRequest, { params }: Params) {
     }
   }
 
-  // ── Microsoft path: direct Graph call (existing behavior) ──────────────────
+  // ── Microsoft Graph ──────────────────────────────────────────────────────
   const msg = await graphGet<GraphMessage>(
     user.id,
     accountId,
-    `/me/messages/${id}?$select=id,subject,from,toRecipients,ccRecipients,body,receivedDateTime&$expand=attachments($select=id,name,size,contentType)`
+    `/me/messages/${id}?$select=id,subject,from,toRecipients,ccRecipients,body,receivedDateTime&$expand=attachments($select=id,name,size,contentType,contentId,isInline)`
   );
 
-  return NextResponse.json(msg);
+  // Rewrite cid: references to our attachment API so inline images render
+  let bodyContent = msg.body?.content ?? "";
+  const allAttachments = msg.attachments ?? [];
+
+  for (const att of allAttachments) {
+    if (att.contentId && att.isInline) {
+      const cidPattern = new RegExp(`cid:${att.contentId.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`, 'gi');
+      bodyContent = bodyContent.replace(cidPattern,
+        `/api/mail/attachments/${encodeURIComponent(msg.id)}/${encodeURIComponent(att.id)}?homeAccountId=${encodeURIComponent(accountId)}&mode=inline`
+      );
+    }
+  }
+
+  // Filter inline attachments out of visible attachment list
+  const visibleAttachments = allAttachments.filter((a) => !a.isInline);
+
+  return NextResponse.json({
+    ...msg,
+    body: { ...msg.body, content: bodyContent },
+    attachments: visibleAttachments.map((a) => ({
+      id: a.id, name: a.name, size: a.size, contentType: a.contentType,
+    })),
+  });
 }
