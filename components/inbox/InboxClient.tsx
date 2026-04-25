@@ -1184,29 +1184,7 @@ export default function InboxClient({
           }
           bodyHtml = sections.join("") || `<p>${withLinks.replace(/\n/g, "<br>")}</p>`;
         }
-        const iframeStyles = `
-*{box-sizing:border-box}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',sans-serif;font-size:14px;line-height:1.65;color:#1b1d1d;margin:0;padding:16px 0;word-wrap:break-word;overflow-wrap:break-word;-webkit-font-smoothing:antialiased;max-width:100%;overflow-x:hidden}
-a{color:#8a0909;text-decoration:underline}
-a:hover{opacity:.8}
-img{max-width:100%!important;height:auto!important;display:inline-block}
-img[src=""]{display:none}
-img:not([src]){display:none}
-blockquote{border-left:3px solid #e0e0e0;margin:16px 0;padding:8px 16px;color:#6b7280;font-size:13px}
-pre{background:#f5f5f5;border-radius:8px;padding:12px 16px;overflow-x:auto;font-size:13px}
-code{background:#f5f5f5;border-radius:4px;padding:2px 6px;font-size:13px}
-table{max-width:100%!important;width:auto!important;border-collapse:collapse;table-layout:auto}
-table[width]{width:100%!important}
-td,th{word-break:break-word;max-width:100%}
-hr{border:none;border-top:1px solid #e5e7eb;margin:20px 0}
-p{margin:0 0 12px}
-h1{font-size:20px;margin:20px 0 8px}h2{font-size:18px;margin:18px 0 8px}h3{font-size:16px;margin:16px 0 6px}
-ul,ol{margin:8px 0;padding-left:24px}
-li{margin:4px 0}
-.gmail_quote,.yahoo_quoted{border-left:3px solid #e0e0e0;padding:8px 16px;margin:16px 0;color:#6b7280}
-div[style*="width"]{max-width:100%!important}
-center{max-width:100%}
-`;
+        // Email body styles are in globals.css under .email-body-render
 
         return (
           <div className="flex flex-col flex-1 bg-white" style={{ height: "100vh", overflow: "hidden" }}>
@@ -1313,18 +1291,9 @@ center{max-width:100%}
                     <span className="text-xs font-medium" style={{ color: "rgb(155 155 155)" }}>Loading email...</span>
                   </div>
                 ) : (
-                  <iframe
-                    srcDoc={`<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>${iframeStyles}</style></head><body>${bodyHtml}</body></html>`}
-                    className="w-full border-0"
-                    style={{ minHeight: 200 }}
-                    sandbox="allow-same-origin allow-popups"
-                    onLoad={(e) => {
-                      const frame = e.currentTarget;
-                      if (frame.contentDocument) {
-                        frame.style.height = `${frame.contentDocument.documentElement.scrollHeight + 24}px`;
-                      }
-                    }}
-                    title="Email content"
+                  <div
+                    className="email-body-render"
+                    dangerouslySetInnerHTML={{ __html: bodyHtml }}
                   />
                 )}
               </div>

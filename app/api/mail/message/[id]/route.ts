@@ -23,6 +23,21 @@ interface GraphMessage {
   }[];
 }
 
+/** Strip dangerous HTML elements and attributes for safe rendering with dangerouslySetInnerHTML */
+function sanitizeHtml(html: string): string {
+  return html
+    // Remove script tags and their content
+    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, "")
+    // Remove iframe tags
+    .replace(/<iframe\b[^>]*>[\s\S]*?<\/iframe>/gi, "")
+    // Remove event handler attributes
+    .replace(/\s+on\w+\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]+)/gi, "")
+    // Remove javascript: URLs
+    .replace(/href\s*=\s*(?:"javascript:[^"]*"|'javascript:[^']*')/gi, 'href="#"')
+    // Remove object/embed tags
+    .replace(/<(?:object|embed|applet)\b[^>]*>[\s\S]*?<\/(?:object|embed|applet)>/gi, "");
+}
+
 // ─── GET /api/mail/message/[id] ───────────────────────────────────────────────
 
 export async function GET(req: NextRequest, { params }: Params) {
@@ -84,7 +99,7 @@ export async function GET(req: NextRequest, { params }: Params) {
         ccRecipients: (email.ccRecipients ?? []).map((r) => ({ emailAddress: { name: r.name, address: r.address } })),
         body: {
           contentType: email.bodyHtml ? "html" : "text",
-          content: bodyContent,
+          content: sanitizeHtml(bodyContent),
         },
         receivedDateTime: email.receivedDateTime,
         attachments: visibleAttachments.map((a) => ({
@@ -125,7 +140,7 @@ export async function GET(req: NextRequest, { params }: Params) {
 
   return NextResponse.json({
     ...msg,
-    body: { ...msg.body, content: bodyContent },
+    body: { ...msg.body, content: sanitizeHtml(bodyContent) },
     attachments: visibleAttachments.map((a) => ({
       id: a.id, name: a.name, size: a.size, contentType: a.contentType,
     })),
