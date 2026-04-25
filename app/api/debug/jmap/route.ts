@@ -101,5 +101,24 @@ export async function GET(req: NextRequest) {
     }
   }
 
+  // Step 4: Test via the actual provider path (same as inbox route)
+  try {
+    const { JmapProvider } = await import("@/lib/providers/jmap");
+    const provider = new JmapProvider();
+    const result = await provider.fetchEmails(user.id, account.accountId, "inbox", { top: 3 });
+    steps.providerTest = {
+      ok: true,
+      emailCount: result.emails.length,
+      firstSubjects: result.emails.slice(0, 3).map((e) => e.subject),
+      nextCursor: result.nextCursor,
+    };
+  } catch (err) {
+    steps.providerTest = {
+      ok: false,
+      error: String(err),
+      stack: err instanceof Error ? err.stack?.split("\n").slice(0, 5) : undefined,
+    };
+  }
+
   return NextResponse.json(steps);
 }

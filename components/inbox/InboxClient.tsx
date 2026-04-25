@@ -479,7 +479,10 @@ export default function InboxClient({
           if (body.error === "Unauthorized") { window.location.href = "/login"; return null; }
           setRequiresReauth(true); return null;
         }
-        if (!r.ok) throw new Error(`inbox ${r.status}`);
+        if (!r.ok) {
+          const errBody = await r.json().catch(() => ({} as { error?: string })) as { error?: string };
+          throw new Error(errBody.error ?? `inbox ${r.status}`);
+        }
         return r.json() as Promise<{ emails: EmailMessage[]; nextLink: string | null }>;
       })
       .then((data) => {
