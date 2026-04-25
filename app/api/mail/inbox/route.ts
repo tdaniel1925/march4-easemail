@@ -3,13 +3,14 @@ import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { graphGet } from "@/lib/microsoft/graph";
 import { isReauthError } from "@/lib/microsoft/auth-errors";
-import { mapCachedEmail } from "@/lib/utils/email-helpers";
+import { mapCachedEmail, mapGraphMessage, mapNormalizedEmail } from "@/lib/utils/email-helpers";
 import { verifyAccountOwnership, detectProviderType, getProvider } from "@/lib/providers/registry";
 import type { NormalizedEmail, FetchEmailsOptions } from "@/lib/providers/types";
 import type { EmailMessage } from "@/lib/types/email";
+import type { GraphMessage, GraphMessagesResponse } from "@/lib/types/graph";
 
 const GRAPH_BASE = "https://graph.microsoft.com/v1.0";
-const SELECT = "id,subject,bodyPreview,receivedDateTime,isRead,hasAttachments,flag,from,body";
+const SELECT = "id,subject,bodyPreview,receivedDateTime,isRead,hasAttachments,flag,from,body,conversationId";
 const DEFAULT_PATH =
   `/me/mailFolders/inbox/messages?$top=50&$select=${SELECT}&$orderby=receivedDateTime desc`;
 
@@ -22,65 +23,8 @@ const TAB_PATHS: Record<string, string> = {
 /** Allowed tab values — prevents arbitrary string injection into query paths */
 const ALLOWED_TABS = new Set(["", "unread", "starred", "attachments", "label"]);
 
-interface GraphMessage {
-  id: string;
-  subject: string;
-  bodyPreview: string;
-  receivedDateTime: string;
-  isRead: boolean;
-  hasAttachments: boolean;
-  flag: { flagStatus: string };
-  from: { emailAddress: { name: string; address: string } };
-  body: { content: string; contentType: string };
-}
-
-interface GraphMessagesResponse {
-  value: GraphMessage[];
-  "@odata.nextLink"?: string;
-}
-
-function mapGraphMessage(m: GraphMessage): EmailMessage {
-  return {
-    id: m.id,
-    subject: m.subject ?? "(no subject)",
-    bodyPreview: m.bodyPreview ?? "",
-    receivedDateTime: m.receivedDateTime,
-    isRead: m.isRead,
-    hasAttachments: m.hasAttachments,
-    flag: { flagStatus: m.flag?.flagStatus === "flagged" ? "flagged" : "notFlagged" },
-    from: {
-      name: m.from?.emailAddress?.name ?? "Unknown",
-      address: m.from?.emailAddress?.address ?? "",
-    },
-    body: {
-      content: m.body?.content ?? m.bodyPreview ?? "",
-      contentType: (m.body?.contentType as "html" | "text") ?? "text",
-    },
-  };
-}
-
-/** Map a NormalizedEmail (from provider) to the frontend EmailMessage format */
-function mapNormalizedToEmailMessage(e: NormalizedEmail): EmailMessage {
-  return {
-    id: e.id,
-    subject: e.subject || "(no subject)",
-    bodyPreview: e.bodyPreview ?? "",
-    receivedDateTime: e.receivedDateTime,
-    sentDateTime: e.sentDateTime,
-    isRead: e.isRead,
-    hasAttachments: e.hasAttachments,
-    flag: { flagStatus: e.flagStatus },
-    from: {
-      name: e.from?.name ?? "Unknown",
-      address: e.from?.address ?? "",
-    },
-    toRecipients: e.toRecipients,
-    body: e.bodyHtml
-      ? { content: e.bodyHtml, contentType: "html" }
-      : { content: e.bodyText ?? e.bodyPreview ?? "", contentType: "text" },
-    attachments: e.attachments,
-  };
-}
+/** mapNormalizedToEmailMessage — alias for backward compat in this route */
+const mapNormalizedToEmailMessage = mapNormalizedEmail;
 
 export async function GET(req: NextRequest) {
   const supabase = await createClient();
@@ -90,10 +34,6 @@ export async function GET(req: NextRequest) {
   const homeAccountId = req.nextUrl.searchParams.get("homeAccountId");
   if (!homeAccountId) return NextResponse.json({ error: "homeAccountId required" }, { status: 400 });
 
-  // Verify the homeAccountId belongs to this authenticated user (prevents IDOR / parameter tampering)
-  const account = await verifyAccountOwnership(user.id, homeAccountId);
-  if (!account) return NextResponse.json({ error: "Account not found" }, { status: 404 });
-
   const providerType = detectProviderType(homeAccountId);
   const nextLinkParam = req.nextUrl.searchParams.get("nextLink");
   const rawTab = req.nextUrl.searchParams.get("tab") ?? "";
@@ -102,6 +42,15 @@ export async function GET(req: NextRequest) {
   // Sanitize label: only allow alphanumeric, spaces, hyphens, underscores — prevents OData injection
   const rawLabel = req.nextUrl.searchParams.get("label") ?? "";
   const labelParam = rawLabel.replace(/[^a-zA-Z0-9 \-_]/g, "").slice(0, 64);
+
+  // Verify ownership + look up inbox folder in parallel (saves a DB round trip)
+  const [account, inboxFolder] = await Promise.all([
+    verifyAccountOwnership(user.id, homeAccountId),
+    providerType === "microsoft"
+      ? prisma.cachedFolder.findFirst({ where: { userId: user.id, homeAccountId, wellKnownName: "inbox" } })
+      : Promise.resolve(null),
+  ]);
+  if (!account) return NextResponse.json({ error: "Account not found" }, { status: 404 });
 
   // ── IMAP / JMAP provider path ─────────────────────────────────────────────
   if (providerType !== "microsoft") {
@@ -148,11 +97,6 @@ export async function GET(req: NextRequest) {
   // ── Cache-first path ──────────────────────────────────────────────────────
 
   try {
-    // Look up inbox folder
-    const inboxFolder = await prisma.cachedFolder.findFirst({
-      where: { userId: user.id, homeAccountId, wellKnownName: "inbox" },
-    });
-
     if (inboxFolder) {
       type WhereClause = {
         userId: string;
