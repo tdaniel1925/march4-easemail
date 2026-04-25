@@ -1,17 +1,18 @@
 import { prisma } from "@/lib/prisma";
+import { detectProviderType } from "@/lib/providers/registry";
 
 /**
- * Get unread email count for a specific user and account
- * @param userId - The user's ID from Supabase auth
- * @param homeAccountId - The MS account's homeAccountId
- * @returns Count of unread emails in inbox folder
+ * Get unread email count for a specific user and account.
+ * Uses the cached folder's unreadCount (set by Graph/sync) as the primary
+ * source since it's always accurate. Falls back to counting cached emails
+ * if the folder record doesn't have a count, and to Graph API as last resort.
  */
 export async function getUnreadCount(
   userId: string,
   homeAccountId: string
 ): Promise<number> {
   try {
-    // First, find the inbox folder for this account
+    // Find the inbox folder for this account
     const inboxFolder = await prisma.cachedFolder.findFirst({
       where: {
         userId,
@@ -20,23 +21,43 @@ export async function getUnreadCount(
       },
     });
 
-    if (!inboxFolder) {
-      return 0;
+    // Use the folder's unreadCount if available (set by folder sync from Graph)
+    if (inboxFolder && inboxFolder.unreadCount > 0) {
+      return inboxFolder.unreadCount;
     }
 
-    // Count unread emails in that inbox folder
-    const count = await prisma.cachedEmail.count({
-      where: {
-        userId,
-        homeAccountId,
-        folderId: inboxFolder.id,
-        isRead: false,
-      },
-    });
+    // Fall back to counting cached unread emails
+    if (inboxFolder) {
+      const count = await prisma.cachedEmail.count({
+        where: {
+          userId,
+          homeAccountId,
+          folderId: inboxFolder.id,
+          isRead: false,
+        },
+      });
+      if (count > 0) return count;
+    }
 
-    return count;
+    // Last resort for MS accounts: fetch directly from Graph API
+    const providerType = detectProviderType(homeAccountId);
+    if (providerType === "microsoft") {
+      try {
+        const { graphGet } = await import("@/lib/microsoft/graph");
+        const folder = await graphGet<{ unreadItemCount: number }>(
+          userId,
+          homeAccountId,
+          "/me/mailFolders/inbox?$select=unreadItemCount"
+        );
+        return folder.unreadItemCount ?? 0;
+      } catch {
+        // Graph call failed — return 0
+      }
+    }
+
+    return 0;
   } catch (error) {
     console.error("[getUnreadCount] Error:", error);
-    return 0; // Fail gracefully
+    return 0;
   }
 }
