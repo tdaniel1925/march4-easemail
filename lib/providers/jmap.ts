@@ -485,19 +485,21 @@ export class JmapProvider implements EmailProvider, CalendarProvider, ContactsPr
     const jmapRole = WELL_KNOWN_ROLES[jmapMailboxId];
     if (jmapRole || jmapMailboxId === "inbox") {
       const role = jmapRole ?? "inbox";
+      // Get all mailboxes and find by role (JMAP spec doesn't support role filter on query)
       const mbResponse = await jmapCall(session.apiUrl, token, jmapAccountId, [
         [
-          "Mailbox/query",
+          "Mailbox/get",
           {
             accountId: jmapAccountId,
-            filter: { role, hasAnyRole: true },
+            properties: ["id", "role"],
           },
           "0",
         ],
       ]);
       const [, mbResult] = mbResponse.methodResponses[0];
-      const ids = (mbResult.ids as string[]) ?? [];
-      if (ids.length > 0) jmapMailboxId = ids[0];
+      const mailboxes = (mbResult.list as { id: string; role: string | null }[]) ?? [];
+      const match = mailboxes.find((mb) => mb.role === role);
+      if (match) jmapMailboxId = match.id;
     }
 
     // Build filter
@@ -945,11 +947,12 @@ export class JmapProvider implements EmailProvider, CalendarProvider, ContactsPr
     if (jmapRole || jmapMailboxId === "inbox") {
       const role = jmapRole ?? "inbox";
       const mbResponse = await jmapCall(session.apiUrl, token, jmapAccountId, [
-        ["Mailbox/query", { accountId: jmapAccountId, filter: { role, hasAnyRole: true } }, "0"],
+        ["Mailbox/get", { accountId: jmapAccountId, properties: ["id", "role"] }, "0"],
       ]);
       const [, mbResult] = mbResponse.methodResponses[0];
-      const ids = (mbResult.ids as string[]) ?? [];
-      if (ids.length > 0) jmapMailboxId = ids[0];
+      const mailboxes = (mbResult.list as { id: string; role: string | null }[]) ?? [];
+      const match = mailboxes.find((mb) => mb.role === role);
+      if (match) jmapMailboxId = match.id;
     }
 
     if (account.emailState) {
