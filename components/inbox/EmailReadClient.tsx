@@ -81,7 +81,60 @@ function SafeHtml({ html }: { html: string }) {
 
 // ─── EmailReadClient ──────────────────────────────────────────────────────────
 
-export default function EmailReadClient({ email, homeAccountId, returnTo = "/inbox" }: { email: EmailDetail; homeAccountId: string; returnTo?: string }) {
+export default function EmailReadClient({ email: initialEmail, homeAccountId, returnTo = "/inbox" }: { email: EmailDetail; homeAccountId: string; returnTo?: string }) {
+  const [email, setEmail] = useState<EmailDetail>(initialEmail);
+  const [emailLoading, setEmailLoading] = useState(!initialEmail.subject);
+  const [emailError, setEmailError] = useState<string | null>(null);
+
+  // Fetch full email on mount when we only have a placeholder (SPA mode)
+  useEffect(() => {
+    if (initialEmail.subject) { setEmailLoading(false); return; }
+    if (!initialEmail.id) { setEmailLoading(false); return; }
+    setEmailLoading(true);
+    setEmailError(null);
+    const params = new URLSearchParams();
+    if (homeAccountId) params.set("homeAccountId", homeAccountId);
+    fetch(`/api/mail/message/${encodeURIComponent(initialEmail.id)}?${params}`)
+      .then(async (r) => {
+        if (!r.ok) throw new Error("Failed to load email");
+        return r.json();
+      })
+      .then((data) => {
+        setEmail({
+          id: data.id,
+          subject: data.subject ?? "(no subject)",
+          bodyPreview: data.bodyPreview ?? "",
+          receivedDateTime: data.receivedDateTime ?? "",
+          isRead: true,
+          hasAttachments: (data.attachments?.length ?? 0) > 0,
+          flag: { flagStatus: data.flag?.flagStatus ?? "notFlagged" },
+          from: {
+            name: data.from?.emailAddress?.name ?? "Unknown",
+            address: data.from?.emailAddress?.address ?? "",
+          },
+          to: (data.toRecipients ?? []).map((r: { emailAddress?: { name?: string; address?: string } }) => ({
+            name: r.emailAddress?.name ?? "",
+            address: r.emailAddress?.address ?? "",
+          })),
+          cc: (data.ccRecipients ?? []).map((r: { emailAddress?: { name?: string; address?: string } }) => ({
+            name: r.emailAddress?.name ?? "",
+            address: r.emailAddress?.address ?? "",
+          })),
+          body: {
+            content: data.body?.content ?? "",
+            contentType: (data.body?.contentType as "html" | "text") ?? "text",
+          },
+          attachments: (data.attachments ?? []).map((a: { id: string; name: string; size: number; contentType: string }) => ({
+            id: a.id, name: a.name, size: a.size, contentType: a.contentType,
+          })),
+        });
+      })
+      .catch((err) => {
+        setEmailError(err instanceof Error ? err.message : "Failed to load email");
+      })
+      .finally(() => setEmailLoading(false));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialEmail.id]);
   /** SPA-aware navigation — updates store + pushState instead of server round-trip */
   function navigateTo(href: string) {
     const { view, folderId, emailId } = pathToView(href.split("?")[0]);
@@ -163,10 +216,36 @@ export default function EmailReadClient({ email, homeAccountId, returnTo = "/inb
   }
 
   const color = getAvatarColor(email.from.name);
-  const receivedAt = new Date(email.receivedDateTime).toLocaleString("en", {
-    dateStyle: "long",
-    timeStyle: "short",
-  });
+  const receivedAt = email.receivedDateTime
+    ? new Date(email.receivedDateTime).toLocaleString("en", {
+        dateStyle: "long",
+        timeStyle: "short",
+      })
+    : "";
+
+  if (emailLoading) {
+    return (
+      <div className="flex flex-col flex-1 items-center justify-center" style={{ height: "100vh" }}>
+        <div className="w-8 h-8 border-2 rounded-full animate-spin mb-3" style={{ borderColor: "rgb(220 220 220)", borderTopColor: "rgb(138 9 9)" }} />
+        <p className="text-sm font-medium" style={{ color: "rgb(115 115 115)" }}>Loading email...</p>
+      </div>
+    );
+  }
+
+  if (emailError) {
+    return (
+      <div className="flex flex-col flex-1 items-center justify-center gap-3" style={{ height: "100vh" }}>
+        <p className="text-sm font-medium" style={{ color: "rgb(138 9 9)" }}>{emailError}</p>
+        <button
+          onClick={() => navigateTo(returnTo)}
+          className="text-sm underline font-medium"
+          style={{ color: "rgb(138 9 9)" }}
+        >
+          Go back
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col flex-1 bg-background-100" style={{ height: "100vh", overflow: "hidden" }}>

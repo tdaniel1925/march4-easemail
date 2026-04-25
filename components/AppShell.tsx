@@ -273,23 +273,24 @@ export default function AppShell(props: AppShellProps) {
         );
 
       case "contacts":
-        return <ContactsClient contacts={[]} />;
+        return <ContactsClient key={activeAccount?.homeAccountId ?? "contacts"} contacts={[]} />;
 
       case "drafts":
-        return <FolderClient folder="drafts" folderLabel="Drafts" initialEmails={[]} initialNextLink={null} />;
+        return <FolderClient key={`drafts-${activeAccount?.homeAccountId}`} folder="drafts" folderLabel="Drafts" initialEmails={[]} initialNextLink={null} />;
 
       case "sent":
-        return <FolderClient folder="sent" folderLabel="Sent" initialEmails={[]} initialNextLink={null} />;
+        return <FolderClient key={`sent-${activeAccount?.homeAccountId}`} folder="sent" folderLabel="Sent" initialEmails={[]} initialNextLink={null} />;
 
       case "starred":
-        return <FolderClient folder="starred" folderLabel="Starred" initialEmails={[]} initialNextLink={null} />;
+        return <FolderClient key={`starred-${activeAccount?.homeAccountId}`} folder="starred" folderLabel="Starred" initialEmails={[]} initialNextLink={null} />;
 
       case "trash":
-        return <FolderClient folder="trash" folderLabel="Trash" initialEmails={[]} initialNextLink={null} />;
+        return <FolderClient key={`trash-${activeAccount?.homeAccountId}`} folder="trash" folderLabel="Trash" initialEmails={[]} initialNextLink={null} />;
 
       case "attachments":
         return (
           <AttachmentsClient
+            key={`attachments-${activeAccount?.homeAccountId}`}
             attachments={[]}
             receivedNextLink={null}
             sentNextLink={null}
@@ -336,6 +337,7 @@ export default function AppShell(props: AppShellProps) {
       case "folder":
         return (
           <FolderClient
+            key={`folder-${activeFolderId}-${activeAccount?.homeAccountId}`}
             folder={activeFolderId ?? ""}
             folderLabel="Folder"
             initialEmails={[]}

@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useDataCacheStore } from "@/lib/stores/data-cache";
+import { useAccountStore } from "@/lib/stores/account-store";
 import type { Contact } from "@/lib/types/contacts";
 
 /** SPA-aware compose navigation for contacts */
@@ -156,6 +157,30 @@ export default function ContactsClient({ contacts: initialContacts }: Props) {
   const [deleting, setDeleting] = useState(false);
   // FIX: Add error state for user feedback
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [initialLoading, setInitialLoading] = useState(initialContacts.length === 0);
+  const [initialError, setInitialError] = useState<string | null>(null);
+
+  // Fetch contacts on mount when the prop is empty (SPA mode)
+  useEffect(() => {
+    if (initialContacts.length > 0) { setInitialLoading(false); return; }
+    const hid = useAccountStore.getState().activeAccount?.homeAccountId;
+    if (!hid) { setInitialLoading(false); return; }
+    setInitialLoading(true);
+    setInitialError(null);
+    fetch(`/api/contacts/list?homeAccountId=${encodeURIComponent(hid)}`)
+      .then(async (r) => {
+        if (!r.ok) throw new Error("Failed to load contacts");
+        return r.json() as Promise<{ contacts: Contact[] }>;
+      })
+      .then((data) => {
+        setContacts(data.contacts ?? []);
+      })
+      .catch((err) => {
+        setInitialError(err instanceof Error ? err.message : "Failed to load contacts");
+      })
+      .finally(() => setInitialLoading(false));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   async function handleCreate(data: ContactFormData) {
     setSaving(true);
@@ -366,7 +391,27 @@ export default function ContactsClient({ contacts: initialContacts }: Props) {
 
         {/* Contact list */}
         <div className="flex-1 overflow-y-auto">
-          {contacts.length === 0 ? (
+          {initialLoading ? (
+            <div className="flex flex-col items-center justify-center h-full gap-2 px-6 text-center">
+              <div className="w-8 h-8 border-2 rounded-full animate-spin" style={{ borderColor: "rgb(220 220 220)", borderTopColor: "rgb(138 9 9)" }} />
+              <p className="text-sm font-medium" style={{ color: "rgb(163 163 163)" }}>
+                Loading contacts...
+              </p>
+            </div>
+          ) : initialError ? (
+            <div className="flex flex-col items-center justify-center h-full gap-2 px-6 text-center">
+              <p className="text-sm font-medium" style={{ color: "rgb(138 9 9)" }}>
+                {initialError}
+              </p>
+              <button
+                onClick={() => window.location.reload()}
+                className="text-sm underline font-medium"
+                style={{ color: "rgb(138 9 9)" }}
+              >
+                Retry
+              </button>
+            </div>
+          ) : contacts.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full gap-2 px-6 text-center">
               <svg
                 xmlns="http://www.w3.org/2000/svg"

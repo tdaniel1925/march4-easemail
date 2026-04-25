@@ -101,7 +101,7 @@ export default function FolderClient({
 
   const [emails, setEmails] = useState<EmailMessage[]>(initialEmails);
   const [search, setSearch] = useState("");
-  const [loadingEmails, setLoadingEmails] = useState(false);
+  const [loadingEmails, setLoadingEmails] = useState(initialEmails.length === 0);
   const [nextLink, setNextLink] = useState<string | null>(initialNextLink);
   const [loadingMore, setLoadingMore] = useState(false);
   const [searchResults, setSearchResults] = useState<EmailMessage[] | null>(null);
@@ -116,6 +116,32 @@ export default function FolderClient({
   const SYSTEM_FOLDERS = new Set(["sent", "drafts", "trash", "starred"]);
   const isCustomFolder = !SYSTEM_FOLDERS.has(folder);
 
+  // Fetch on mount when initialEmails is empty (SPA mode)
+  useEffect(() => {
+    if (initialEmails.length > 0) { setLoadingEmails(false); return; }
+    const hid = activeAccount?.homeAccountId;
+    if (!hid) { setLoadingEmails(false); return; }
+    setLoadingEmails(true);
+    setRequiresReauth(false);
+    fetch(`/api/mail/folder?folder=${encodeURIComponent(folder)}&homeAccountId=${encodeURIComponent(hid)}`)
+      .then(async (r) => {
+        if (r.status === 401) {
+          const body = await r.json().catch(() => ({} as { error?: string })) as { error?: string };
+          if (body.error === "Unauthorized") { window.location.href = "/login"; return null; }
+          setRequiresReauth(true); return null;
+        }
+        return r.json() as Promise<{ emails?: EmailMessage[]; nextLink?: string | null }>;
+      })
+      .then((data) => {
+        if (!data) return;
+        setEmails(data.emails ?? []);
+        setNextLink(data.nextLink ?? null);
+      })
+      .catch(console.error)
+      .finally(() => setLoadingEmails(false));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   // Account switch: reload system folders, redirect away from custom folders
   useEffect(() => {
     if (firstRender.current) { firstRender.current = false; return; }
@@ -124,7 +150,7 @@ export default function FolderClient({
     setLoadingEmails(true);
     setNextLink(null);
     setRequiresReauth(false);
-    fetch(`/api/mail/folder?folder=${folder}&homeAccountId=${encodeURIComponent(activeAccount.homeAccountId)}`)
+    fetch(`/api/mail/folder?folder=${encodeURIComponent(folder)}&homeAccountId=${encodeURIComponent(activeAccount.homeAccountId)}`)
       .then(async (r) => {
         if (r.status === 401) {
           const body = await r.json().catch(() => ({} as { error?: string })) as { error?: string };

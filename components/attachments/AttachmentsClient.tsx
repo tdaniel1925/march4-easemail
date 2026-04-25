@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useDataCacheStore, pathToView } from "@/lib/stores/data-cache";
+import { useAccountStore } from "@/lib/stores/account-store";
 import type { AttachmentItem } from "@/lib/types/attachments";
 
 type FileType = "image" | "pdf" | "doc" | "sheet" | "other";
@@ -137,6 +138,32 @@ export default function AttachmentsClient({
   const [sentNextLinkState, setSentNextLink] = useState<string | null>(sentNextLink);
   const [loadingMore, setLoadingMore] = useState(false);
   const [loadError, setLoadError] = useState<string | null>(null);
+  const [initialLoading, setInitialLoading] = useState(attachments.length === 0);
+  const [initialError, setInitialError] = useState<string | null>(null);
+
+  // Fetch attachments on mount when the prop is empty (SPA mode)
+  useEffect(() => {
+    if (attachments.length > 0) { setInitialLoading(false); return; }
+    const hid = homeAccountId || useAccountStore.getState().activeAccount?.homeAccountId;
+    if (!hid) { setInitialLoading(false); return; }
+    setInitialLoading(true);
+    setInitialError(null);
+    fetch(`/api/attachments/list?homeAccountId=${encodeURIComponent(hid)}`)
+      .then(async (r) => {
+        if (!r.ok) throw new Error("Failed to load attachments");
+        return r.json() as Promise<{ items: AttachmentItem[]; receivedNextLink: string | null; sentNextLink: string | null }>;
+      })
+      .then((data) => {
+        setItems(data.items ?? []);
+        setReceivedNextLink(data.receivedNextLink ?? null);
+        setSentNextLink(data.sentNextLink ?? null);
+      })
+      .catch((err) => {
+        setInitialError(err instanceof Error ? err.message : "Failed to load attachments");
+      })
+      .finally(() => setInitialLoading(false));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const [sortField, setSortField] = useState<SortField>("date");
   const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
@@ -453,7 +480,33 @@ export default function AttachmentsClient({
       </div>
 
       <div className="flex-1 overflow-y-auto px-8 py-6">
-        {sorted.length === 0 ? (
+        {initialLoading ? (
+          <div
+            className="flex flex-col items-center justify-center rounded-[14px] py-20"
+            style={{ backgroundColor: "white", boxShadow: "0 1px 4px rgba(0,0,0,0.06)" }}
+          >
+            <div className="w-8 h-8 border-2 rounded-full animate-spin mb-3" style={{ borderColor: "rgb(220 220 220)", borderTopColor: "rgb(138 9 9)" }} />
+            <p className="text-sm font-medium" style={{ color: "rgb(115 115 115)" }}>
+              Loading attachments...
+            </p>
+          </div>
+        ) : initialError ? (
+          <div
+            className="flex flex-col items-center justify-center rounded-[14px] py-20"
+            style={{ backgroundColor: "white", boxShadow: "0 1px 4px rgba(0,0,0,0.06)" }}
+          >
+            <p className="text-sm font-medium mb-2" style={{ color: "rgb(138 9 9)" }}>
+              {initialError}
+            </p>
+            <button
+              onClick={() => window.location.reload()}
+              className="text-sm underline font-medium"
+              style={{ color: "rgb(138 9 9)" }}
+            >
+              Retry
+            </button>
+          </div>
+        ) : sorted.length === 0 ? (
           <div
             className="flex flex-col items-center justify-center rounded-[14px] py-20"
             style={{ backgroundColor: "white", boxShadow: "0 1px 4px rgba(0,0,0,0.06)" }}
