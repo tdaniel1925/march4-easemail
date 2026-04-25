@@ -28,13 +28,14 @@ const SIGNATURE_PATTERNS = /^(image\d+|logo|signature|banner|spacer|pixel|icon|f
 const MIN_ATTACHMENT_SIZE = 5 * 1024; // 5KB — smaller files are usually inline images/tracking pixels
 
 function isRealAttachment(att: { name: string; size: number; contentType: string; isInline?: boolean }): boolean {
-  // Skip inline attachments (embedded in email body)
-  if (att.isInline) return false;
-  // Skip very small images (tracking pixels, spacer gifs, signature logos)
-  if (att.contentType.startsWith("image/") && att.size < MIN_ATTACHMENT_SIZE) return false;
-  // Skip files matching common signature image patterns
-  const baseName = att.name.replace(/\.[^.]+$/, "");
-  if (SIGNATURE_PATTERNS.test(baseName)) return false;
+  // Only filter out obvious non-attachments — be conservative to avoid hiding real files
+  // Skip very small images (under 2KB = tracking pixels, spacer gifs)
+  if (att.contentType.startsWith("image/") && att.size < 2048) return false;
+  // Skip files matching obvious signature patterns only when they're small images
+  if (att.contentType.startsWith("image/") && att.size < MIN_ATTACHMENT_SIZE) {
+    const baseName = att.name.replace(/\.[^.]+$/, "");
+    if (SIGNATURE_PATTERNS.test(baseName)) return false;
+  }
   return true;
 }
 
