@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-import type { AttachmentItem } from "@/app/(app)/attachments/page";
+import type { AttachmentItem } from "@/lib/types/attachments";
 
 type FileType = "image" | "pdf" | "doc" | "sheet" | "other";
 type FilterTab = "all" | "documents" | "images" | "spreadsheets" | "other";

@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from "react";
 import Link from "next/link";
-import type { Contact } from "@/app/(app)/contacts/page";
+import type { Contact } from "@/lib/types/contacts";
 
 // ─── Presence helpers ─────────────────────────────────────────────────────────
 
