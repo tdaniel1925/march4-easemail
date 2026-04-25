@@ -34,9 +34,9 @@ type SpeechRecognitionConstructor = new () => SpeechRecognitionInstance;
 
 const BRAND = "rgb(138, 9, 9)";
 const BRAND_LIGHT = "rgba(138, 9, 9, 0.08)";
-const HOUR_START = 7;
-const HOUR_END = 21;
-const ROW_HEIGHT = 80; // px per hour
+const HOUR_START = 0;
+const HOUR_END = 24;
+const ROW_HEIGHT = 60; // px per hour (smaller to fit 24 hours better)
 const DAY_LABELS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 const HOURS = Array.from({ length: HOUR_END - HOUR_START }, (_, i) => HOUR_START + i);
 
@@ -51,9 +51,9 @@ const ACCOUNT_PALETTES = [
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 function addDays(isoDate: string, days: number): string {
-  const d = new Date(`${isoDate}T00:00:00`);
-  d.setDate(d.getDate() + days);
-  return d.toISOString().split("T")[0];
+  const [y, m, d] = isoDate.split("-").map(Number);
+  const date = new Date(y, m - 1, d + days);
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
 }
 
 function getWeekDates(weekStart: string): string[] {
@@ -73,8 +73,18 @@ function getMonthYearLabel(weekStart: string): string {
   return `${startMonth} ${startYear}`;
 }
 
-function getTodayStr(): string {
-  return new Date().toISOString().split("T")[0];
+function getTodayStr(tz?: string): string {
+  if (tz) {
+    return new Intl.DateTimeFormat("en-CA", {
+      timeZone: tz,
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    }).format(new Date());
+  }
+  // Fallback: local date without UTC conversion
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 }
 
 /** Extract hours and minutes in a specific IANA timezone */
@@ -113,7 +123,9 @@ function getEventHeight(startIso: string, endIso: string): number {
 }
 
 function getEventDateStr(startIso: string): string {
-  return new Date(startIso).toISOString().split("T")[0];
+  // Extract date portion directly — avoid UTC conversion that shifts dates
+  if (startIso.includes("T")) return startIso.split("T")[0];
+  return startIso.substring(0, 10);
 }
 
 function getAccountPalette(homeAccountId: string) {
@@ -144,11 +156,11 @@ function getMonthGrid(yearMonth: string): string[][] {
 }
 
 function getMondayOf(dateStr: string): string {
-  const d = new Date(`${dateStr}T00:00:00`);
-  const dow = d.getDay();
+  const [y, m, d] = dateStr.split("-").map(Number);
+  const date = new Date(y, m - 1, d);
+  const dow = date.getDay();
   const diff = dow === 0 ? 6 : dow - 1;
-  d.setDate(d.getDate() - diff);
-  return d.toISOString().split("T")[0];
+  return addDays(dateStr, -diff);
 }
 
 // ─── Overlap layout ───────────────────────────────────────────────────────────
@@ -418,7 +430,12 @@ export default function CalendarClient({ weekStart: initialWeekStart, events: in
   useEffect(() => () => { recogRef.current?.stop(); }, []);
 
   useEffect(() => {
-    if (scrollRef.current) scrollRef.current.scrollTop = 0;
+    if (scrollRef.current && (activeView === "day" || activeView === "week")) {
+      // Auto-scroll to current time with some buffer above
+      const scrollTarget = Math.max(0, timeLineTop - 150);
+      scrollRef.current.scrollTop = scrollTarget;
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeView]);
 
   // ── Data fetching ─────────────────────────────────────────────────────────────
@@ -549,7 +566,8 @@ export default function CalendarClient({ weekStart: initialWeekStart, events: in
     else if (activeView === "day") setSelectedDay((d) => addDays(d, -1));
     else if (activeView === "month") setCurrentMonth((m) => {
       const [y, mo] = m.split("-").map(Number);
-      return new Date(y, mo - 2, 1).toISOString().substring(0, 7);
+      const prev = new Date(y, mo - 2, 1);
+      return `${prev.getFullYear()}-${String(prev.getMonth() + 1).padStart(2, "0")}`;
     });
     else if (activeView === "year") setCurrentMonth((m) => `${parseInt(m.substring(0, 4)) - 1}${m.substring(4)}`);
   }
@@ -559,24 +577,25 @@ export default function CalendarClient({ weekStart: initialWeekStart, events: in
     else if (activeView === "day") setSelectedDay((d) => addDays(d, 1));
     else if (activeView === "month") setCurrentMonth((m) => {
       const [y, mo] = m.split("-").map(Number);
-      return new Date(y, mo, 1).toISOString().substring(0, 7);
+      const next = new Date(y, mo, 1);
+      return `${next.getFullYear()}-${String(next.getMonth() + 1).padStart(2, "0")}`;
     });
     else if (activeView === "year") setCurrentMonth((m) => `${parseInt(m.substring(0, 4)) + 1}${m.substring(4)}`);
   }
 
   function goToToday() {
-    const today = getTodayStr();
-    setWeekStart(getMondayOf(today));
-    setSelectedDay(today);
-    setCurrentMonth(today.substring(0, 7));
+    const todayStr = getTodayStr(userTimeZone);
+    setWeekStart(getMondayOf(todayStr));
+    setSelectedDay(todayStr);
+    setCurrentMonth(todayStr.substring(0, 7));
   }
 
   // ── Derived values ────────────────────────────────────────────────────────────
 
   const weekDates = getWeekDates(weekStart);
-  const today = getTodayStr();
-  const currentHour = currentTime.getHours();
-  const currentMins = currentTime.getMinutes();
+  const today = getTodayStr(userTimeZone);
+  // Use user's timezone for the current time indicator, not browser local time
+  const { h: currentHour, m: currentMins } = getTimeInZone(currentTime.toISOString(), userTimeZone);
   const showTimeLine = currentHour >= HOUR_START && currentHour < HOUR_END;
   const timeLineTop = (currentHour - HOUR_START) * ROW_HEIGHT + currentMins * (ROW_HEIGHT / 60);
 
