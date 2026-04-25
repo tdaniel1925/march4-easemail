@@ -35,27 +35,24 @@ export default async function InboxPage() {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  // 2. Load user + ALL connected accounts from DB
-  const dbUser = await getUserWithAccounts(user.id);
+  // 2. Load user + inbox data in parallel
+  const [dbUser, inboxFolder] = await Promise.all([
+    getUserWithAccounts(user.id),
+    prisma.cachedFolder.findFirst({
+      where: { userId: user.id, wellKnownName: "inbox" },
+    }),
+  ]);
   if (!dbUser) redirect("/onboarding");
 
   const defaultAccount = dbUser.defaultAccount;
   if (!defaultAccount) redirect("/onboarding");
 
-  // 3. Try DB cache first, fall back to Graph API
+  // 3. Fetch emails — cache first, Graph fallback
   let emails: EmailMessage[] = [];
   let initialNextLink: string | null = null;
 
   try {
-    const inboxFolder = await prisma.cachedFolder.findFirst({
-      where: {
-        userId: user.id,
-        homeAccountId: defaultAccount.homeAccountId,
-        wellKnownName: "inbox",
-      },
-    });
-
-    if (inboxFolder) {
+    if (inboxFolder && inboxFolder.homeAccountId === defaultAccount.homeAccountId) {
       const cached = await prisma.cachedEmail.findMany({
         where: { userId: user.id, homeAccountId: defaultAccount.homeAccountId, folderId: inboxFolder.id },
         orderBy: { receivedDateTime: "desc" },
@@ -94,10 +91,10 @@ export default async function InboxPage() {
     }
   } catch (err) {
     console.error("Failed to fetch inbox:", err);
-    // Show empty inbox rather than crash
   }
 
-  const unreadCount = emails.filter((e) => !e.isRead).length;
+  // Use folder's unread count (from sync) or count from loaded emails
+  const unreadCount = inboxFolder?.unreadCount || emails.filter((e) => !e.isRead).length;
 
   return (
     <div className="flex" style={{ height: "100vh", overflow: "hidden" }}>
