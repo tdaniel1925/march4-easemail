@@ -27,14 +27,14 @@ const nextConfig: NextConfig = {
               "img-src 'self' data: https://graph.microsoft.com https://*.sharepoint.com",
               "font-src 'self' data:",
               "connect-src 'self' https://graph.microsoft.com https://login.microsoftonline.com https://*.supabase.co",
-              "frame-ancestors 'none'",
+              "frame-ancestors 'self'",
               "base-uri 'self'",
               "form-action 'self'",
             ].join("; "),
           },
           {
             key: "X-Frame-Options",
-            value: "DENY",
+            value: "SAMEORIGIN",
           },
           {
             key: "X-Content-Type-Options",
@@ -50,7 +50,7 @@ const nextConfig: NextConfig = {
           },
           {
             key: "Permissions-Policy",
-            value: "camera=(), microphone=(), geolocation=()",
+            value: "camera=(), microphone=(self), geolocation=()",
           },
         ],
       },
@@ -58,4 +58,4 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+module.exports = nextConfig;
