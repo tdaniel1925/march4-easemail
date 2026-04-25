@@ -6,7 +6,7 @@ import { syncCalendar } from "@/lib/sync/calendar-sync";
 import type { CalEvent } from "@/lib/types/calendar";
 
 // ─── GET /api/calendar/range?start={YYYY-MM-DD}&end={YYYY-MM-DD} ──────────────
-// Syncs calendar cache, then reads from DB cache.
+// Returns events from cache immediately, fires background sync to keep cache fresh.
 
 export async function GET(req: NextRequest): Promise<NextResponse> {
   const supabase = await createClient();
@@ -22,17 +22,18 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
   const rangeStart = new Date(`${startParam}T00:00:00`);
   const rangeEnd = new Date(`${endParam}T23:59:59.999`);
 
-  // Sync all accounts before reading cache
   const accounts = await getAllAccounts(user.id);
+
+  // Fire background sync — don't block the response
   if (accounts.length > 0) {
-    await Promise.allSettled(
+    void Promise.allSettled(
       accounts.map((acc) => syncCalendar(user.id, acc.accountId))
-    );
+    ).catch(() => {});
   }
 
   const emailByAccount = new Map(accounts.map((a) => [a.accountId, a.email]));
 
-  // Read from cache (now fresh after sync)
+  // Return cached data immediately
   const cached = await prisma.cachedCalendarEvent.findMany({
     where: {
       userId: user.id,

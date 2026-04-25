@@ -12,7 +12,6 @@ import {
   CALENDAR_SELECT,
 } from "@/lib/types/calendar";
 import { getUnreadCount } from "@/lib/utils/get-unread-count";
-import { syncCalendar } from "@/lib/sync/calendar-sync";
 
 export default async function CalendarPage() {
   const supabase = await createClient();
@@ -37,11 +36,6 @@ export default async function CalendarPage() {
   weekEnd.setHours(23, 59, 59, 999);
 
   const weekStartStr = weekStart.toISOString().split("T")[0];
-
-  // Sync calendar cache in background — don't block page render
-  await Promise.allSettled(
-    dbUser.msAccounts.map((acc) => syncCalendar(user.id, acc.homeAccountId))
-  );
 
   const graphPath =
     `/me/calendarView` +

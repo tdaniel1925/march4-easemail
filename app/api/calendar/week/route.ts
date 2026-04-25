@@ -4,10 +4,16 @@ import { prisma } from "@/lib/prisma";
 import { getAllAccounts } from "@/lib/providers/registry";
 import { syncCalendar } from "@/lib/sync/calendar-sync";
 import { isReauthError } from "@/lib/microsoft/auth-errors";
-import type { CalEvent } from "@/lib/types/calendar";
+import { graphGet } from "@/lib/microsoft/graph";
+import {
+  type CalEvent,
+  type GraphCalEventList,
+  mapGraphEvent,
+  CALENDAR_SELECT,
+} from "@/lib/types/calendar";
 
 // ─── GET /api/calendar/week?start={YYYY-MM-DD} ────────────────────────────────
-// Fetches events for the given week across ALL connected accounts.
+// Returns week events immediately from Graph, fires background sync to keep cache fresh.
 
 export async function GET(req: NextRequest): Promise<NextResponse> {
   const supabase = await createClient();
@@ -29,52 +35,43 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
   weekEnd.setDate(weekStart.getDate() + 6);
   weekEnd.setHours(23, 59, 59, 999);
 
-  // Sync calendar cache in background for each account
-  const syncResults = await Promise.allSettled(
+  // Fire background sync — don't block the response
+  const syncPromise = Promise.allSettled(
     accounts.map((acc) => syncCalendar(user.id, acc.accountId))
   );
 
-  // Detect reauth errors
-  const requiresReauth = syncResults.some(
+  // Fetch live from Graph for immediate response
+  const graphPath =
+    `/me/calendarView` +
+    `?startDateTime=${encodeURIComponent(weekStart.toISOString())}` +
+    `&endDateTime=${encodeURIComponent(weekEnd.toISOString())}` +
+    `&$select=${CALENDAR_SELECT}` +
+    `&$top=200`;
+
+  const results = await Promise.allSettled(
+    accounts.map((acc) =>
+      graphGet<GraphCalEventList>(user.id, acc.accountId, graphPath).then((data) =>
+        (data.value ?? []).map((e) => mapGraphEvent(e, acc.accountId, acc.email))
+      )
+    )
+  );
+
+  const events: CalEvent[] = results
+    .filter((r): r is PromiseFulfilledResult<CalEvent[]> => r.status === "fulfilled")
+    .flatMap((r) => r.value)
+    .sort((a, b) => new Date(a.startDateTime).getTime() - new Date(b.startDateTime).getTime());
+
+  // Check for reauth errors from Graph fetch
+  const requiresReauth = results.some(
     (r) => r.status === "rejected" && isReauthError(r.reason)
   );
 
-  // Read from cache
-  const cached = await prisma.cachedCalendarEvent.findMany({
-    where: {
-      userId: user.id,
-      startDateTime: { lte: weekEnd },
-      endDateTime: { gte: weekStart },
-    },
-    orderBy: { startDateTime: "asc" },
-  });
-
-  const emailByAccount = new Map(accounts.map((a) => [a.accountId, a.email]));
-
-  const events: CalEvent[] = cached.map((e) => ({
-    id: e.id,
-    subject: e.subject || "(no subject)",
-    startDateTime: e.startDateTime.toISOString(),
-    endDateTime: e.endDateTime.toISOString(),
-    timeZone: e.timeZone ?? "UTC",
-    isAllDay: e.isAllDay,
-    location: e.location ?? undefined,
-    bodyPreview: e.bodyPreview || undefined,
-    organizer:
-      e.organizerName || e.organizerEmail
-        ? { name: e.organizerName ?? "", address: e.organizerEmail ?? "" }
-        : undefined,
-    attendees: (e.attendees as { name: string; address: string; responseStatus?: string }[]) ?? [],
-    onlineMeetingUrl: e.onlineMeetingUrl ?? undefined,
-    responseStatus: (e.responseStatus as CalEvent["responseStatus"]) ?? "none",
-    accountHomeId: e.homeAccountId,
-    accountEmail: emailByAccount.get(e.homeAccountId) ?? "",
-    isRecurring: e.isRecurring,
-  }));
-
-  const errors = syncResults
+  const errors = results
     .filter((r): r is PromiseRejectedResult => r.status === "rejected")
     .map((r) => String(r.reason));
+
+  // Wait for background sync to finish (best-effort, don't fail if it errors)
+  void syncPromise.catch(() => {});
 
   return NextResponse.json({
     events,
