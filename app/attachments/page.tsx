@@ -53,14 +53,20 @@ export default async function AttachmentsPage() {
   if (!defaultAccount) redirect("/onboarding");
 
   let attachments: AttachmentItem[] = [];
-  let nextLink: string | null = null;
+  let receivedNextLink: string | null = null;
+  let sentNextLink: string | null = null;
+
+  // Default to last 30 days
+  const thirtyDaysAgo = new Date();
+  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+  const dateFilter = `receivedDateTime ge ${thirtyDaysAgo.toISOString()}`;
 
   try {
-    // Fetch received attachments
+    // Fetch received attachments (last 30 days, ordered by date)
     const receivedData = await graphGet<GraphMessagesResponse>(
       user.id,
       defaultAccount.homeAccountId,
-      "/me/messages?$filter=hasAttachments eq true&$top=50&$select=id,subject,from,receivedDateTime,hasAttachments&$expand=attachments($select=id,name,size,contentType)"
+      `/me/messages?$filter=hasAttachments eq true and ${dateFilter}&$top=50&$orderby=receivedDateTime desc&$select=id,subject,from,receivedDateTime,hasAttachments&$expand=attachments($select=id,name,size,contentType)`
     );
 
     for (const message of receivedData.value ?? []) {
@@ -80,12 +86,14 @@ export default async function AttachmentsPage() {
         });
       }
     }
+    receivedNextLink = receivedData["@odata.nextLink"] || null;
 
-    // Fetch sent attachments
+    // Fetch sent attachments (last 30 days, ordered by date)
+    const sentDateFilter = `sentDateTime ge ${thirtyDaysAgo.toISOString()}`;
     const sentData = await graphGet<GraphMessagesResponse>(
       user.id,
       defaultAccount.homeAccountId,
-      "/me/mailFolders/sentitems/messages?$filter=hasAttachments eq true&$top=50&$select=id,subject,toRecipients,sentDateTime,hasAttachments&$expand=attachments($select=id,name,size,contentType)"
+      `/me/mailFolders/sentitems/messages?$filter=hasAttachments eq true and ${sentDateFilter}&$top=50&$orderby=sentDateTime desc&$select=id,subject,toRecipients,sentDateTime,hasAttachments&$expand=attachments($select=id,name,size,contentType)`
     );
 
     for (const message of sentData.value ?? []) {
@@ -106,9 +114,9 @@ export default async function AttachmentsPage() {
         });
       }
     }
+    sentNextLink = sentData["@odata.nextLink"] || null;
 
     attachments.sort((a, b) => b.receivedDateTime.localeCompare(a.receivedDateTime));
-    nextLink = receivedData["@odata.nextLink"] || null;
   } catch (err) {
     console.error("Failed to fetch attachments:", err);
   }
@@ -122,7 +130,12 @@ export default async function AttachmentsPage() {
         userName={dbUser.name ?? user.email ?? "You"}
         userEmail={defaultAccount.email}
       />
-      <AttachmentsClient attachments={attachments} nextLink={nextLink} />
+      <AttachmentsClient
+        attachments={attachments}
+        receivedNextLink={receivedNextLink}
+        sentNextLink={sentNextLink}
+        homeAccountId={defaultAccount.homeAccountId}
+      />
     </div>
   );
 }

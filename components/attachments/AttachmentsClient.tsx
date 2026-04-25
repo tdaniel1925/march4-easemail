@@ -101,7 +101,17 @@ function matchesTab(item: AttachmentItem, tab: FilterTab): boolean {
   return true;
 }
 
-export default function AttachmentsClient({ attachments, nextLink }: { attachments: AttachmentItem[]; nextLink: string | null }) {
+export default function AttachmentsClient({
+  attachments,
+  receivedNextLink,
+  sentNextLink,
+  homeAccountId,
+}: {
+  attachments: AttachmentItem[];
+  receivedNextLink: string | null;
+  sentNextLink: string | null;
+  homeAccountId: string;
+}) {
   const router = useRouter();
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
@@ -110,8 +120,10 @@ export default function AttachmentsClient({ attachments, nextLink }: { attachmen
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const columnMenuRef = useRef<HTMLDivElement>(null);
   const [items, setItems] = useState<AttachmentItem[]>(attachments);
-  const [nextLinkState, setNextLink] = useState<string | null>(nextLink);
+  const [receivedNextLinkState, setReceivedNextLink] = useState<string | null>(receivedNextLink);
+  const [sentNextLinkState, setSentNextLink] = useState<string | null>(sentNextLink);
   const [loadingMore, setLoadingMore] = useState(false);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [sortField, setSortField] = useState<SortField>("date");
   const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
@@ -242,17 +254,29 @@ export default function AttachmentsClient({ attachments, nextLink }: { attachmen
   }).length;
   const totalSize = totalBytes(directionFiltered);
 
+  const currentNextLink = directionTab === "received" ? receivedNextLinkState : sentNextLinkState;
+
   async function loadMore() {
-    if (!nextLinkState || loadingMore) return;
+    if (!currentNextLink || loadingMore) return;
     setLoadingMore(true);
+    setLoadError(null);
     try {
-      const res = await fetch(`/api/attachments/paginate?nextLink=${encodeURIComponent(nextLinkState)}`);
-      if (!res.ok) throw new Error("Failed to load more");
+      const params = new URLSearchParams({
+        nextLink: currentNextLink,
+        homeAccountId,
+        direction: directionTab,
+      });
+      const res = await fetch(`/api/attachments/paginate?${params}`);
+      if (!res.ok) throw new Error("Failed to load more attachments");
       const data = await res.json();
       setItems(prev => [...prev, ...data.items]);
-      setNextLink(data.nextLink || null);
+      if (directionTab === "received") {
+        setReceivedNextLink(data.nextLink || null);
+      } else {
+        setSentNextLink(data.nextLink || null);
+      }
     } catch (err) {
-      console.error("[loadMore]", err);
+      setLoadError(err instanceof Error ? err.message : "Failed to load more");
     } finally {
       setLoadingMore(false);
     }
@@ -628,7 +652,13 @@ export default function AttachmentsClient({ attachments, nextLink }: { attachmen
                 ))}
               </tbody>
             </table>
-            {nextLinkState && (
+            {loadError && (
+              <div className="text-center py-3 text-sm" style={{ color: "rgb(138 9 9)" }}>
+                {loadError}
+                <button onClick={loadMore} className="ml-2 underline font-medium">Retry</button>
+              </div>
+            )}
+            {currentNextLink && (
               <div className="flex justify-center py-4 border-t border-neutral-200">
                 <button
                   onClick={loadMore}
@@ -638,7 +668,7 @@ export default function AttachmentsClient({ attachments, nextLink }: { attachmen
                   onMouseEnter={(e) => { if (!loadingMore) { e.currentTarget.style.backgroundColor = "rgb(115 7 7)"; } }}
                   onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "rgb(138 9 9)"; }}
                 >
-                  {loadingMore ? "Loading..." : "Load More"}
+                  {loadingMore ? "Loading..." : "Load More Attachments"}
                 </button>
               </div>
             )}

@@ -1,11 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { graphFetch } from "@/lib/microsoft/graph";
 
 interface GraphMessage {
   id: string;
   subject: string;
   receivedDateTime: string;
+  sentDateTime?: string;
   from: { emailAddress: { name: string; address: string } };
+  toRecipients?: { emailAddress: { name: string; address: string } }[];
   attachments?: {
     id: string;
     name: string;
@@ -19,28 +22,40 @@ interface GraphMessagesResponse {
   "@odata.nextLink"?: string;
 }
 
+const GRAPH_BASE = "https://graph.microsoft.com/v1.0";
+
 export async function GET(req: NextRequest): Promise<NextResponse> {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const nextLink = req.nextUrl.searchParams.get("nextLink");
-  if (!nextLink) return NextResponse.json({ error: "nextLink required" }, { status: 400 });
+  const homeAccountId = req.nextUrl.searchParams.get("homeAccountId");
+  const direction = req.nextUrl.searchParams.get("direction") ?? "received";
+
+  if (!nextLink || !homeAccountId) {
+    return NextResponse.json({ error: "nextLink and homeAccountId required" }, { status: 400 });
+  }
 
   try {
-    const res = await fetch(nextLink, {
-      headers: {
-        "Authorization": `Bearer ${process.env.GRAPH_ACCESS_TOKEN}`,
-      },
-    });
+    // Extract relative path from full Graph URL
+    const path = nextLink.startsWith(GRAPH_BASE)
+      ? nextLink.slice(GRAPH_BASE.length)
+      : nextLink;
 
-    if (!res.ok) throw new Error(`Graph API error: ${res.status}`);
+    const res = await graphFetch(user.id, homeAccountId, path);
+    if (!res.ok) {
+      const err = await res.text();
+      throw new Error(`Graph API error ${res.status}: ${err}`);
+    }
 
     const data: GraphMessagesResponse = await res.json();
 
     const items = [];
     for (const message of data.value ?? []) {
       for (const att of message.attachments ?? []) {
+        const isSent = direction === "sent";
+        const firstRecipient = message.toRecipients?.[0];
         items.push({
           id: att.id,
           name: att.name,
@@ -48,10 +63,15 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
           contentType: att.contentType,
           messageId: message.id,
           messageSubject: message.subject ?? "(no subject)",
-          senderName: message.from?.emailAddress?.name ?? "Unknown",
-          senderAddress: message.from?.emailAddress?.address ?? "",
-          receivedDateTime: message.receivedDateTime,
-          homeAccountId: "", // Will be filled by client
+          senderName: isSent
+            ? (firstRecipient?.emailAddress?.name ?? "Unknown")
+            : (message.from?.emailAddress?.name ?? "Unknown"),
+          senderAddress: isSent
+            ? (firstRecipient?.emailAddress?.address ?? "")
+            : (message.from?.emailAddress?.address ?? ""),
+          receivedDateTime: message.receivedDateTime ?? message.sentDateTime ?? new Date().toISOString(),
+          homeAccountId,
+          direction,
         });
       }
     }
@@ -61,7 +81,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
       nextLink: data["@odata.nextLink"] || null,
     });
   } catch (err) {
-    console.error("Failed to paginate attachments:", err);
-    return NextResponse.json({ error: "Failed to fetch" }, { status: 500 });
+    console.error("[attachments/paginate]", err);
+    return NextResponse.json({ error: "Failed to fetch attachments" }, { status: 500 });
   }
 }
