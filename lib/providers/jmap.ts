@@ -67,8 +67,8 @@ interface JmapEmail {
   receivedAt: string;
   sentAt: string | null;
   hasAttachment: boolean;
-  htmlBody?: { blobId: string; type: string }[];
-  textBody?: { blobId: string; type: string }[];
+  htmlBody?: { partId: string; blobId: string; type: string }[];
+  textBody?: { partId: string; blobId: string; type: string }[];
   bodyValues?: Record<string, { value: string; isEncodingProblem: boolean }>;
   attachments?: { blobId: string; name: string; size: number; type: string }[];
 }
@@ -263,13 +263,26 @@ function normalizeJmapEmail(
   const keywords = email.keywords ?? {};
   const mailboxId = Object.keys(email.mailboxIds ?? {})[0] ?? "";
 
+  // Resolve body content: prefer HTML body, fall back to text body
+  // JMAP bodyValues are keyed by partId from htmlBody/textBody arrays
+  const htmlPartId = email.htmlBody?.[0]?.partId;
+  const textPartId = email.textBody?.[0]?.partId;
+  const bodyValues = email.bodyValues ?? {};
+  const htmlValue = htmlPartId ? bodyValues[htmlPartId]?.value : undefined;
+  const textValue = textPartId ? bodyValues[textPartId]?.value : undefined;
+  // Fallback: scan bodyValues for HTML content if partId lookup failed
+  const fallbackHtml = !htmlValue
+    ? Object.values(bodyValues).find((v) => v.value?.includes("<div") || v.value?.includes("<p") || v.value?.includes("<html"))?.value
+    : undefined;
+  const resolvedHtml = htmlValue ?? fallbackHtml;
+  const resolvedText = textValue ?? (!resolvedHtml ? Object.values(bodyValues)[0]?.value : undefined);
+
   return {
     id: `${accountId}:${email.id}`,
     subject: email.subject ?? "",
     bodyPreview: email.preview ?? "",
-    bodyHtml: email.bodyValues
-      ? Object.values(email.bodyValues)[0]?.value
-      : undefined,
+    bodyHtml: resolvedHtml,
+    bodyText: resolvedText,
     receivedDateTime: email.receivedAt ?? new Date().toISOString(),
     sentDateTime: email.sentAt ?? undefined,
     isRead: !!keywords["$seen"],
