@@ -169,6 +169,7 @@ export default function InboxClient({
   const [tabEmails, setTabEmails] = useState<EmailMessage[] | null>(null);
   const [loadingTab, setLoadingTab] = useState(false);
   const [requiresReauth, setRequiresReauth] = useState(false);
+  const [fetchError, setFetchError] = useState<string | null>(null);
 
   const [pendingNewEmails, setPendingNewEmails] = useState<EmailMessage[]>([]);
 
@@ -467,6 +468,7 @@ export default function InboxClient({
     if (firstRender.current) { firstRender.current = false; return; }
     if (!activeAccount) return;
     setRequiresReauth(false);
+    setFetchError(null);
     setLoadingEmails(true);
     setNextLink(null);
     setTabEmails(null);
@@ -485,7 +487,10 @@ export default function InboxClient({
         setEmails(processWithRules(data.emails, activeAccount.homeAccountId));
         setNextLink(data.nextLink ?? null);
       })
-      .catch(console.error)
+      .catch((err) => {
+        console.error("[inbox] account switch error:", err);
+        setFetchError(err instanceof Error ? err.message : "Failed to load emails");
+      })
       .finally(() => setLoadingEmails(false));
   }, [activeAccount?.homeAccountId]);
 
@@ -938,6 +943,14 @@ export default function InboxClient({
             >
               Reconnect
             </a>
+          </div>
+        )}
+
+        {/* Fetch error banner */}
+        {fetchError && (
+          <div className="mx-4 mt-3 px-4 py-3 rounded-[10px] border flex items-center justify-between gap-3" style={{ backgroundColor: "rgb(254 243 199)", borderColor: "rgb(253 224 71)" }}>
+            <p className="text-xs" style={{ color: "rgb(113 63 18)" }}>{fetchError}</p>
+            <button onClick={() => setFetchError(null)} className="text-xs font-semibold flex-shrink-0" style={{ color: "rgb(113 63 18)" }}>Dismiss</button>
           </div>
         )}
 
