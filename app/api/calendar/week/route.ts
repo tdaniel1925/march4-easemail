@@ -13,7 +13,8 @@ import {
 } from "@/lib/types/calendar";
 
 // ─── GET /api/calendar/week?start={YYYY-MM-DD} ────────────────────────────────
-// Returns week events immediately from Graph, fires background sync to keep cache fresh.
+// Cache-first: returns cached events instantly (~5ms), falls back to Graph if
+// cache is empty. Background sync keeps cache fresh for subsequent requests.
 
 export async function GET(req: NextRequest): Promise<NextResponse> {
   const supabase = await createClient();
@@ -35,12 +36,48 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
   weekEnd.setDate(weekStart.getDate() + 6);
   weekEnd.setHours(23, 59, 59, 999);
 
-  // Fire background sync — don't block the response
-  const syncPromise = Promise.allSettled(
-    accounts.map((acc) => syncCalendar(user.id, acc.accountId))
-  );
+  const emailByAccount = new Map(accounts.map((a) => [a.accountId, a.email]));
 
-  // Fetch live from Graph for immediate response
+  // ── Cache-first: return instantly if we have data ─────────────────────────
+  const cached = await prisma.cachedCalendarEvent.findMany({
+    where: {
+      userId: user.id,
+      startDateTime: { lte: weekEnd },
+      endDateTime: { gte: weekStart },
+    },
+    orderBy: { startDateTime: "asc" },
+  });
+
+  // Fire background sync regardless — keeps cache fresh for next request
+  void Promise.allSettled(
+    accounts.map((acc) => syncCalendar(user.id, acc.accountId))
+  ).catch(() => {});
+
+  if (cached.length > 0) {
+    const events: CalEvent[] = cached.map((e) => ({
+      id: e.id,
+      subject: e.subject || "(no subject)",
+      startDateTime: e.startDateTime.toISOString(),
+      endDateTime: e.endDateTime.toISOString(),
+      timeZone: e.timeZone ?? "UTC",
+      isAllDay: e.isAllDay,
+      location: e.location ?? undefined,
+      bodyPreview: e.bodyPreview || undefined,
+      organizer:
+        e.organizerName || e.organizerEmail
+          ? { name: e.organizerName ?? "", address: e.organizerEmail ?? "" }
+          : undefined,
+      attendees: (e.attendees as { name: string; address: string; responseStatus?: string }[]) ?? [],
+      onlineMeetingUrl: e.onlineMeetingUrl ?? undefined,
+      responseStatus: (e.responseStatus as CalEvent["responseStatus"]) ?? "none",
+      accountHomeId: e.homeAccountId,
+      accountEmail: emailByAccount.get(e.homeAccountId) ?? "",
+      isRecurring: e.isRecurring,
+    }));
+    return NextResponse.json({ events });
+  }
+
+  // ── Cache empty — fall back to Graph (first load only) ────────────────────
   const graphPath =
     `/me/calendarView` +
     `?startDateTime=${encodeURIComponent(weekStart.toISOString())}` +
@@ -61,7 +98,6 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     .flatMap((r) => r.value)
     .sort((a, b) => new Date(a.startDateTime).getTime() - new Date(b.startDateTime).getTime());
 
-  // Check for reauth errors from Graph fetch
   const requiresReauth = results.some(
     (r) => r.status === "rejected" && isReauthError(r.reason)
   );
@@ -69,9 +105,6 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
   const errors = results
     .filter((r): r is PromiseRejectedResult => r.status === "rejected")
     .map((r) => String(r.reason));
-
-  // Wait for background sync to finish (best-effort, don't fail if it errors)
-  void syncPromise.catch(() => {});
 
   return NextResponse.json({
     events,

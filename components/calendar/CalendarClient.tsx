@@ -486,6 +486,17 @@ export default function CalendarClient({ weekStart: initialWeekStart, events: in
     }
   }, [activeView, currentMonth, fetchRangeEvents, accountCount]);
 
+  // Poll every 30s to keep calendar fresh (like inbox does)
+  useEffect(() => {
+    const poll = () => {
+      if (document.hidden) return;
+      if (activeView === "week") void fetchWeekEvents(weekStart);
+      else if (activeView === "day") void fetchWeekEvents(getMondayOf(selectedDay));
+    };
+    const id = setInterval(poll, 30_000);
+    return () => clearInterval(id);
+  }, [activeView, weekStart, selectedDay, fetchWeekEvents]);
+
   // ── Voice input ───────────────────────────────────────────────────────────────
 
   function startVoiceInput() {

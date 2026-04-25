@@ -74,16 +74,23 @@ export default async function AttachmentsPage() {
   let sentNextLink: string | null = null;
 
   try {
-    // Fetch received attachments — newest first, including isInline for filtering
-    const receivedData = await graphGet<GraphMessagesResponse>(
-      user.id,
-      defaultAccount.homeAccountId,
-      `/me/messages?$filter=hasAttachments eq true&$top=50&$select=id,subject,from,receivedDateTime,hasAttachments&$expand=attachments`
-    );
+    // Fetch received + sent in parallel — cuts load time in half
+    const [receivedData, sentData] = await Promise.all([
+      graphGet<GraphMessagesResponse>(
+        user.id,
+        defaultAccount.homeAccountId,
+        `/me/messages?$filter=hasAttachments eq true&$top=50&$select=id,subject,from,receivedDateTime,hasAttachments&$expand=attachments`
+      ),
+      graphGet<GraphMessagesResponse>(
+        user.id,
+        defaultAccount.homeAccountId,
+        `/me/mailFolders/sentitems/messages?$filter=hasAttachments eq true&$top=50&$select=id,subject,toRecipients,sentDateTime,hasAttachments&$expand=attachments`
+      ),
+    ]);
 
     for (const message of receivedData.value ?? []) {
       for (const att of message.attachments ?? []) {
-        if (!isRealAttachment(att)) continue; // Skip inline/signature attachments
+        if (!isRealAttachment(att)) continue;
         attachments.push({
           id: att.id,
           name: att.name,
@@ -101,17 +108,10 @@ export default async function AttachmentsPage() {
     }
     receivedNextLink = receivedData["@odata.nextLink"] || null;
 
-    // Fetch sent attachments — newest first
-    const sentData = await graphGet<GraphMessagesResponse>(
-      user.id,
-      defaultAccount.homeAccountId,
-      `/me/mailFolders/sentitems/messages?$filter=hasAttachments eq true&$top=50&$select=id,subject,toRecipients,sentDateTime,hasAttachments&$expand=attachments`
-    );
-
     for (const message of sentData.value ?? []) {
       const firstRecipient = message.toRecipients?.[0];
       for (const att of message.attachments ?? []) {
-        if (!isRealAttachment(att)) continue; // Skip inline/signature attachments
+        if (!isRealAttachment(att)) continue;
         attachments.push({
           id: att.id,
           name: att.name,
