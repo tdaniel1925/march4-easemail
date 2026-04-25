@@ -140,7 +140,6 @@ async function jmapCall(
       using: [
         "urn:ietf:params:jmap:core",
         "urn:ietf:params:jmap:mail",
-        "urn:ietf:params:jmap:submission",
       ],
       methodCalls,
     }),
@@ -215,6 +214,35 @@ function parseIsoDuration(duration: string): number {
   const minutes = parseInt(match[3] || "0", 10);
   const seconds = parseInt(match[4] || "0", 10);
   return ((days * 24 + hours) * 60 + minutes) * 60000 + seconds * 1000;
+}
+
+/** jmapCall with submission capability — only for sending emails */
+async function jmapSendCall(
+  apiUrl: string,
+  token: string,
+  jmapAccountId: string,
+  methodCalls: [string, Record<string, unknown>, string][]
+): Promise<JmapResponse> {
+  const res = await fetch(apiUrl, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      using: [
+        "urn:ietf:params:jmap:core",
+        "urn:ietf:params:jmap:mail",
+        "urn:ietf:params:jmap:submission",
+      ],
+      methodCalls,
+    }),
+  });
+  if (!res.ok) {
+    const err = await res.text();
+    throw new Error(`JMAP send failed ${res.status}: ${err}`);
+  }
+  return res.json() as Promise<JmapResponse>;
 }
 
 async function getSessionAndToken(userId: string, accountId: string) {
@@ -684,7 +712,7 @@ export class JmapProvider implements EmailProvider, CalendarProvider, ContactsPr
     }
 
     // Resolve identity ID (Fastmail uses separate identity IDs from account IDs)
-    const identityResponse = await jmapCall(
+    const identityResponse = await jmapSendCall(
       session.apiUrl,
       token,
       jmapAccountId,
@@ -695,7 +723,7 @@ export class JmapProvider implements EmailProvider, CalendarProvider, ContactsPr
     const primaryIdentity = identities.find((i) => i.email === account.email) ?? identities[0];
     if (!primaryIdentity) throw new Error("No JMAP identity found for sending");
 
-    const response = await jmapCall(session.apiUrl, token, jmapAccountId, [
+    const response = await jmapSendCall(session.apiUrl, token, jmapAccountId, [
       [
         "Email/set",
         {
