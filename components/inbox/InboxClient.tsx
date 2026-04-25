@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useAccountStore } from "@/lib/stores/account-store";
 import type { EmailMessage } from "@/lib/types/email";
@@ -170,6 +170,16 @@ export default function InboxClient({
   const [loadingTab, setLoadingTab] = useState(false);
   const [requiresReauth, setRequiresReauth] = useState(false);
   const [fetchError, setFetchError] = useState<string | null>(null);
+
+  // Inline email expansion
+  const [expandedEmailId, setExpandedEmailId] = useState<string | null>(null);
+  const [expandedBody, setExpandedBody] = useState<{ content: string; contentType: "html" | "text" } | null>(null);
+  const [expandedLoading, setExpandedLoading] = useState(false);
+  const [expandedDetails, setExpandedDetails] = useState<{
+    to: { name: string; address: string }[];
+    cc: { name: string; address: string }[];
+    attachments: { id: string; name: string; size: number; contentType: string }[];
+  } | null>(null);
 
   const [pendingNewEmails, setPendingNewEmails] = useState<EmailMessage[]>([]);
 
@@ -1062,18 +1072,74 @@ export default function InboxClient({
             </div>
           ) : (
             displayEmails.map((email) => (
+              <React.Fragment key={email.id}>
               <EmailRow
-                key={email.id}
                 email={email}
                 onClick={() => {
-                  if (bulkMode) return; // Don't navigate in bulk mode
+                  if (bulkMode) return;
+                  // Toggle expanded state
+                  if (expandedEmailId === email.id) {
+                    setExpandedEmailId(null);
+                    setExpandedBody(null);
+                    setExpandedDetails(null);
+                    return;
+                  }
                   if (!email.isRead) {
                     setEmails((prev) =>
                       prev.map((e) => (e.id === email.id ? { ...e, isRead: true } : e))
                     );
+                    // Mark as read on server
+                    if (activeAccount) {
+                      void fetch("/api/mail/read", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ messageId: email.id, homeAccountId: activeAccount.homeAccountId, isRead: true }),
+                      }).catch(() => {});
+                    }
                   }
-                  const acctParam = activeAccount ? `?homeAccountId=${encodeURIComponent(activeAccount.homeAccountId)}` : "";
-                  router.push(`/inbox/${email.id}${acctParam}`);
+                  setExpandedEmailId(email.id);
+                  setExpandedBody(null);
+                  setExpandedDetails(null);
+                  // Use existing body if available (MS Graph includes it in list)
+                  if (email.body?.content && email.body.content !== email.bodyPreview) {
+                    setExpandedBody({ content: email.body.content, contentType: email.body.contentType ?? "text" });
+                    setExpandedDetails({
+                      to: email.toRecipients ?? [],
+                      cc: [],
+                      attachments: email.attachments ?? [],
+                    });
+                  } else if (activeAccount) {
+                    // Fetch full body client-side
+                    setExpandedLoading(true);
+                    const acctParam = encodeURIComponent(activeAccount.homeAccountId);
+                    fetch(`/api/mail/message/${encodeURIComponent(email.id)}?homeAccountId=${acctParam}`)
+                      .then((r) => r.ok ? r.json() : null)
+                      .then((data: Record<string, unknown> | null) => {
+                        if (data) {
+                          const body = data.body as { content?: string; contentType?: string } | undefined;
+                          // Handle both Graph-style (nested emailAddress) and flat formats
+                          const toRaw = data.toRecipients as { emailAddress?: { name?: string; address?: string }; name?: string; address?: string }[] | undefined;
+                          const ccRaw = data.ccRecipients as { emailAddress?: { name?: string; address?: string }; name?: string; address?: string }[] | undefined;
+                          const mapRecipients = (arr?: typeof toRaw) => (arr ?? []).map((r) => ({
+                            name: r.emailAddress?.name ?? r.name ?? "",
+                            address: r.emailAddress?.address ?? r.address ?? "",
+                          }));
+                          setExpandedBody({
+                            content: body?.content ?? email.bodyPreview,
+                            contentType: (body?.contentType as "html" | "text") ?? "text",
+                          });
+                          setExpandedDetails({
+                            to: mapRecipients(toRaw),
+                            cc: mapRecipients(ccRaw),
+                            attachments: (data.attachments as { id: string; name: string; size: number; contentType: string }[]) ?? [],
+                          });
+                        } else {
+                          setExpandedBody({ content: email.bodyPreview, contentType: "text" });
+                        }
+                      })
+                      .catch(() => setExpandedBody({ content: email.bodyPreview, contentType: "text" }))
+                      .finally(() => setExpandedLoading(false));
+                  }
                 }}
                 onAiReply={(e) => { e.stopPropagation(); setAiReplyEmail(email); }}
                 onStar={(e) => { e.stopPropagation(); handleStarToggle(email); }}
@@ -1081,6 +1147,95 @@ export default function InboxClient({
                 isSelected={selectedIds.has(email.id)}
                 onToggleSelect={(e) => { e.stopPropagation(); toggleSelect(email.id); }}
               />
+              {/* Inline email expansion */}
+              {expandedEmailId === email.id && (
+                <div className="border-t border-neutral-100 bg-white" style={{ borderLeft: "3px solid rgb(138 9 9)" }}>
+                  {/* Header bar */}
+                  <div className="flex items-center justify-between px-5 py-3 border-b border-neutral-100" style={{ backgroundColor: "rgb(250 250 250)" }}>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-semibold truncate" style={{ color: "rgb(27 29 29)" }}>{email.subject}</p>
+                      <p className="text-xs mt-0.5" style={{ color: "rgb(115 115 115)" }}>
+                        {email.from.name} &lt;{email.from.address}&gt;
+                        {expandedDetails?.to && expandedDetails.to.length > 0 && (
+                          <span> &rarr; {expandedDetails.to.map((r) => r.name || r.address).join(", ")}</span>
+                        )}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2 flex-shrink-0">
+                      <button
+                        onClick={(e) => { e.stopPropagation(); setAiReplyEmail(email); }}
+                        className="flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-[8px]"
+                        style={{ backgroundColor: "rgb(254 242 242)", color: "rgb(138 9 9)" }}
+                      >
+                        <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
+                        </svg>
+                        Reply
+                      </button>
+                      <a
+                        href={`/inbox/${encodeURIComponent(email.id)}?homeAccountId=${encodeURIComponent(activeAccount?.homeAccountId ?? "")}`}
+                        onClick={(e) => e.stopPropagation()}
+                        className="text-xs font-medium px-3 py-1.5 rounded-[8px] border border-neutral-200 transition-colors hover:bg-neutral-50"
+                        style={{ color: "rgb(82 82 82)" }}
+                      >
+                        Full view
+                      </a>
+                      <button
+                        onClick={(e) => { e.stopPropagation(); setExpandedEmailId(null); setExpandedBody(null); setExpandedDetails(null); }}
+                        className="p-1 rounded-[6px] transition-colors hover:bg-neutral-100"
+                        style={{ color: "rgb(155 155 155)" }}
+                      >
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                  {/* Attachments */}
+                  {expandedDetails?.attachments && expandedDetails.attachments.length > 0 && (
+                    <div className="flex items-center gap-2 px-5 py-2 border-b border-neutral-100 flex-wrap">
+                      {expandedDetails.attachments.map((att) => (
+                        <a
+                          key={att.id}
+                          href={`/api/mail/attachments/${encodeURIComponent(email.id)}/${encodeURIComponent(att.id)}?homeAccountId=${encodeURIComponent(activeAccount?.homeAccountId ?? "")}`}
+                          onClick={(e) => e.stopPropagation()}
+                          className="flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-[6px] border border-neutral-200 hover:bg-neutral-50 transition-colors"
+                          style={{ color: "rgb(82 82 82)" }}
+                        >
+                          <svg className="w-3 h-3 flex-shrink-0" style={{ color: "rgb(155 155 155)" }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
+                          </svg>
+                          <span className="truncate max-w-[150px]">{att.name}</span>
+                          <span style={{ color: "rgb(155 155 155)" }}>({Math.round(att.size / 1024)}KB)</span>
+                        </a>
+                      ))}
+                    </div>
+                  )}
+                  {/* Body */}
+                  <div className="px-5 py-4" style={{ maxHeight: 400, overflowY: "auto" }}>
+                    {expandedLoading ? (
+                      <div className="flex items-center gap-2 py-6 justify-center">
+                        <svg className="w-4 h-4 animate-spin" style={{ color: "rgb(138 9 9)" }} fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+                        </svg>
+                        <span className="text-xs" style={{ color: "rgb(155 155 155)" }}>Loading email...</span>
+                      </div>
+                    ) : expandedBody?.contentType === "html" ? (
+                      <div
+                        className="prose prose-sm max-w-none text-sm"
+                        style={{ color: "rgb(38 38 38)" }}
+                        dangerouslySetInnerHTML={{ __html: expandedBody.content }}
+                      />
+                    ) : (
+                      <pre className="whitespace-pre-wrap text-sm font-sans" style={{ color: "rgb(38 38 38)" }}>
+                        {expandedBody?.content ?? email.bodyPreview}
+                      </pre>
+                    )}
+                  </div>
+                </div>
+              )}
+            </React.Fragment>
             ))
           )}
 
