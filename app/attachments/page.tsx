@@ -56,17 +56,14 @@ export default async function AttachmentsPage() {
   let receivedNextLink: string | null = null;
   let sentNextLink: string | null = null;
 
-  // Default to last 30 days
-  const thirtyDaysAgo = new Date();
-  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-  const dateFilter = `receivedDateTime ge ${thirtyDaysAgo.toISOString()}`;
-
   try {
-    // Fetch received attachments (last 30 days, ordered by date)
+    // Fetch received attachments (ordered by date, top 50)
+    // Note: Graph API $filter combining hasAttachments with date ranges can fail,
+    // so we filter hasAttachments only and rely on $orderby for recency
     const receivedData = await graphGet<GraphMessagesResponse>(
       user.id,
       defaultAccount.homeAccountId,
-      `/me/messages?$filter=hasAttachments eq true and ${dateFilter}&$top=50&$orderby=receivedDateTime desc&$select=id,subject,from,receivedDateTime,hasAttachments&$expand=attachments($select=id,name,size,contentType)`
+      `/me/messages?$filter=hasAttachments eq true&$top=50&$orderby=receivedDateTime desc&$select=id,subject,from,receivedDateTime,hasAttachments&$expand=attachments($select=id,name,size,contentType)`
     );
 
     for (const message of receivedData.value ?? []) {
@@ -88,12 +85,11 @@ export default async function AttachmentsPage() {
     }
     receivedNextLink = receivedData["@odata.nextLink"] || null;
 
-    // Fetch sent attachments (last 30 days, ordered by date)
-    const sentDateFilter = `sentDateTime ge ${thirtyDaysAgo.toISOString()}`;
+    // Fetch sent attachments (ordered by date, top 50)
     const sentData = await graphGet<GraphMessagesResponse>(
       user.id,
       defaultAccount.homeAccountId,
-      `/me/mailFolders/sentitems/messages?$filter=hasAttachments eq true and ${sentDateFilter}&$top=50&$orderby=sentDateTime desc&$select=id,subject,toRecipients,sentDateTime,hasAttachments&$expand=attachments($select=id,name,size,contentType)`
+      `/me/mailFolders/sentitems/messages?$filter=hasAttachments eq true&$top=50&$orderby=sentDateTime desc&$select=id,subject,toRecipients,sentDateTime,hasAttachments&$expand=attachments($select=id,name,size,contentType)`
     );
 
     for (const message of sentData.value ?? []) {
