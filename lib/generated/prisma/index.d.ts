@@ -4189,6 +4189,7 @@ export namespace Prisma {
     emailDensity: string | null
     preferredTimeZone: string | null
     lastActiveAccountId: string | null
+    voiceProfileUpdatedAt: Date | null
   }
 
   export type UserMaxAggregateOutputType = {
@@ -4209,6 +4210,7 @@ export namespace Prisma {
     emailDensity: string | null
     preferredTimeZone: string | null
     lastActiveAccountId: string | null
+    voiceProfileUpdatedAt: Date | null
   }
 
   export type UserCountAggregateOutputType = {
@@ -4229,6 +4231,8 @@ export namespace Prisma {
     emailDensity: number
     preferredTimeZone: number
     lastActiveAccountId: number
+    voiceProfile: number
+    voiceProfileUpdatedAt: number
     _all: number
   }
 
@@ -4251,6 +4255,7 @@ export namespace Prisma {
     emailDensity?: true
     preferredTimeZone?: true
     lastActiveAccountId?: true
+    voiceProfileUpdatedAt?: true
   }
 
   export type UserMaxAggregateInputType = {
@@ -4271,6 +4276,7 @@ export namespace Prisma {
     emailDensity?: true
     preferredTimeZone?: true
     lastActiveAccountId?: true
+    voiceProfileUpdatedAt?: true
   }
 
   export type UserCountAggregateInputType = {
@@ -4291,6 +4297,8 @@ export namespace Prisma {
     emailDensity?: true
     preferredTimeZone?: true
     lastActiveAccountId?: true
+    voiceProfile?: true
+    voiceProfileUpdatedAt?: true
     _all?: true
   }
 
@@ -4384,6 +4392,8 @@ export namespace Prisma {
     emailDensity: string
     preferredTimeZone: string
     lastActiveAccountId: string | null
+    voiceProfile: JsonValue | null
+    voiceProfileUpdatedAt: Date | null
     _count: UserCountAggregateOutputType | null
     _min: UserMinAggregateOutputType | null
     _max: UserMaxAggregateOutputType | null
@@ -4421,6 +4431,8 @@ export namespace Prisma {
     emailDensity?: boolean
     preferredTimeZone?: boolean
     lastActiveAccountId?: boolean
+    voiceProfile?: boolean
+    voiceProfileUpdatedAt?: boolean
     org?: boolean | OrganizationDefaultArgs<ExtArgs>
     msAccounts?: boolean | User$msAccountsArgs<ExtArgs>
     imapAccounts?: boolean | User$imapAccountsArgs<ExtArgs>
@@ -4463,6 +4475,8 @@ export namespace Prisma {
     emailDensity?: boolean
     preferredTimeZone?: boolean
     lastActiveAccountId?: boolean
+    voiceProfile?: boolean
+    voiceProfileUpdatedAt?: boolean
     org?: boolean | OrganizationDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -4484,6 +4498,8 @@ export namespace Prisma {
     emailDensity?: boolean
     preferredTimeZone?: boolean
     lastActiveAccountId?: boolean
+    voiceProfile?: boolean
+    voiceProfileUpdatedAt?: boolean
     org?: boolean | OrganizationDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -4505,9 +4521,11 @@ export namespace Prisma {
     emailDensity?: boolean
     preferredTimeZone?: boolean
     lastActiveAccountId?: boolean
+    voiceProfile?: boolean
+    voiceProfileUpdatedAt?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "name" | "avatarUrl" | "createdAt" | "updatedAt" | "orgId" | "notificationNewEmail" | "notificationDailyDigest" | "notificationAiReplies" | "notificationCalendarReminders" | "notificationWeeklyReport" | "appTheme" | "fontSize" | "emailDensity" | "preferredTimeZone" | "lastActiveAccountId", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "name" | "avatarUrl" | "createdAt" | "updatedAt" | "orgId" | "notificationNewEmail" | "notificationDailyDigest" | "notificationAiReplies" | "notificationCalendarReminders" | "notificationWeeklyReport" | "appTheme" | "fontSize" | "emailDensity" | "preferredTimeZone" | "lastActiveAccountId" | "voiceProfile" | "voiceProfileUpdatedAt", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     org?: boolean | OrganizationDefaultArgs<ExtArgs>
     msAccounts?: boolean | User$msAccountsArgs<ExtArgs>
@@ -4582,6 +4600,8 @@ export namespace Prisma {
       emailDensity: string
       preferredTimeZone: string
       lastActiveAccountId: string | null
+      voiceProfile: Prisma.JsonValue | null
+      voiceProfileUpdatedAt: Date | null
     }, ExtArgs["result"]["user"]>
     composites: {}
   }
@@ -5043,6 +5063,8 @@ export namespace Prisma {
     readonly emailDensity: FieldRef<"User", 'String'>
     readonly preferredTimeZone: FieldRef<"User", 'String'>
     readonly lastActiveAccountId: FieldRef<"User", 'String'>
+    readonly voiceProfile: FieldRef<"User", 'Json'>
+    readonly voiceProfileUpdatedAt: FieldRef<"User", 'DateTime'>
   }
     
 
@@ -30466,7 +30488,9 @@ export namespace Prisma {
     fontSize: 'fontSize',
     emailDensity: 'emailDensity',
     preferredTimeZone: 'preferredTimeZone',
-    lastActiveAccountId: 'lastActiveAccountId'
+    lastActiveAccountId: 'lastActiveAccountId',
+    voiceProfile: 'voiceProfile',
+    voiceProfileUpdatedAt: 'voiceProfileUpdatedAt'
   };
 
   export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -30878,6 +30902,14 @@ export namespace Prisma {
   export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
 
 
+  export const NullableJsonNullValueInput: {
+    DbNull: typeof DbNull,
+    JsonNull: typeof JsonNull
+  };
+
+  export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
+
+
   export const JsonNullValueInput: {
     JsonNull: typeof JsonNull
   };
@@ -30893,14 +30925,6 @@ export namespace Prisma {
   export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
 
 
-  export const NullsOrder: {
-    first: 'first',
-    last: 'last'
-  };
-
-  export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
-
-
   export const JsonNullValueFilter: {
     DbNull: typeof DbNull,
     JsonNull: typeof JsonNull,
@@ -30908,6 +30932,14 @@ export namespace Prisma {
   };
 
   export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
+
+
+  export const NullsOrder: {
+    first: 'first',
+    last: 'last'
+  };
+
+  export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
 
 
   /**
@@ -31071,6 +31103,8 @@ export namespace Prisma {
     emailDensity?: StringFilter<"User"> | string
     preferredTimeZone?: StringFilter<"User"> | string
     lastActiveAccountId?: StringNullableFilter<"User"> | string | null
+    voiceProfile?: JsonNullableFilter<"User">
+    voiceProfileUpdatedAt?: DateTimeNullableFilter<"User"> | Date | string | null
     org?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
     msAccounts?: MsConnectedAccountListRelationFilter
     imapAccounts?: ImapConnectedAccountListRelationFilter
@@ -31112,6 +31146,8 @@ export namespace Prisma {
     emailDensity?: SortOrder
     preferredTimeZone?: SortOrder
     lastActiveAccountId?: SortOrderInput | SortOrder
+    voiceProfile?: SortOrderInput | SortOrder
+    voiceProfileUpdatedAt?: SortOrderInput | SortOrder
     org?: OrganizationOrderByWithRelationInput
     msAccounts?: MsConnectedAccountOrderByRelationAggregateInput
     imapAccounts?: ImapConnectedAccountOrderByRelationAggregateInput
@@ -31156,6 +31192,8 @@ export namespace Prisma {
     emailDensity?: StringFilter<"User"> | string
     preferredTimeZone?: StringFilter<"User"> | string
     lastActiveAccountId?: StringNullableFilter<"User"> | string | null
+    voiceProfile?: JsonNullableFilter<"User">
+    voiceProfileUpdatedAt?: DateTimeNullableFilter<"User"> | Date | string | null
     org?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
     msAccounts?: MsConnectedAccountListRelationFilter
     imapAccounts?: ImapConnectedAccountListRelationFilter
@@ -31197,6 +31235,8 @@ export namespace Prisma {
     emailDensity?: SortOrder
     preferredTimeZone?: SortOrder
     lastActiveAccountId?: SortOrderInput | SortOrder
+    voiceProfile?: SortOrderInput | SortOrder
+    voiceProfileUpdatedAt?: SortOrderInput | SortOrder
     _count?: UserCountOrderByAggregateInput
     _max?: UserMaxOrderByAggregateInput
     _min?: UserMinOrderByAggregateInput
@@ -31223,6 +31263,8 @@ export namespace Prisma {
     emailDensity?: StringWithAggregatesFilter<"User"> | string
     preferredTimeZone?: StringWithAggregatesFilter<"User"> | string
     lastActiveAccountId?: StringNullableWithAggregatesFilter<"User"> | string | null
+    voiceProfile?: JsonNullableWithAggregatesFilter<"User">
+    voiceProfileUpdatedAt?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
   }
 
   export type MsConnectedAccountWhereInput = {
@@ -33312,6 +33354,8 @@ export namespace Prisma {
     emailDensity?: string
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: Date | string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
     msAccounts?: MsConnectedAccountCreateNestedManyWithoutUserInput
     imapAccounts?: ImapConnectedAccountCreateNestedManyWithoutUserInput
@@ -33353,6 +33397,8 @@ export namespace Prisma {
     emailDensity?: string
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: Date | string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
     imapAccounts?: ImapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
     jmapAccounts?: JmapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
@@ -33392,6 +33438,8 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
     msAccounts?: MsConnectedAccountUpdateManyWithoutUserNestedInput
     imapAccounts?: ImapConnectedAccountUpdateManyWithoutUserNestedInput
@@ -33433,6 +33481,8 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
     imapAccounts?: ImapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
     jmapAccounts?: JmapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
@@ -33473,6 +33523,8 @@ export namespace Prisma {
     emailDensity?: string
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: Date | string | null
   }
 
   export type UserUpdateManyMutationInput = {
@@ -33492,6 +33544,8 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type UserUncheckedUpdateManyInput = {
@@ -33512,6 +33566,8 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type MsConnectedAccountCreateInput = {
@@ -35950,6 +36006,40 @@ export namespace Prisma {
     equals?: boolean | BooleanFieldRefInput<$PrismaModel>
     not?: NestedBoolFilter<$PrismaModel> | boolean
   }
+  export type JsonNullableFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonNullableFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonNullableFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
+
+  export type DateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
 
   export type OrganizationScalarRelationFilter = {
     is?: OrganizationWhereInput
@@ -36174,6 +36264,8 @@ export namespace Prisma {
     emailDensity?: SortOrder
     preferredTimeZone?: SortOrder
     lastActiveAccountId?: SortOrder
+    voiceProfile?: SortOrder
+    voiceProfileUpdatedAt?: SortOrder
   }
 
   export type UserMaxOrderByAggregateInput = {
@@ -36194,6 +36286,7 @@ export namespace Prisma {
     emailDensity?: SortOrder
     preferredTimeZone?: SortOrder
     lastActiveAccountId?: SortOrder
+    voiceProfileUpdatedAt?: SortOrder
   }
 
   export type UserMinOrderByAggregateInput = {
@@ -36214,6 +36307,7 @@ export namespace Prisma {
     emailDensity?: SortOrder
     preferredTimeZone?: SortOrder
     lastActiveAccountId?: SortOrder
+    voiceProfileUpdatedAt?: SortOrder
   }
 
   export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -36240,6 +36334,46 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedBoolFilter<$PrismaModel>
     _max?: NestedBoolFilter<$PrismaModel>
+  }
+  export type JsonNullableWithAggregatesFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonNullableWithAggregatesFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedJsonNullableFilter<$PrismaModel>
+    _max?: NestedJsonNullableFilter<$PrismaModel>
+  }
+
+  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
   export type UserScalarRelationFilter = {
@@ -36401,17 +36535,6 @@ export namespace Prisma {
     not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
 
-  export type DateTimeNullableFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
-  }
-
   export type IntFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
     in?: number[] | ListIntFieldRefInput<$PrismaModel>
@@ -36532,20 +36655,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedJsonFilter<$PrismaModel>
     _max?: NestedJsonFilter<$PrismaModel>
-  }
-
-  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedDateTimeNullableFilter<$PrismaModel>
-    _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
   export type IntWithAggregatesFilter<$PrismaModel = never> = {
@@ -37790,6 +37899,10 @@ export namespace Prisma {
     set?: boolean
   }
 
+  export type NullableDateTimeFieldUpdateOperationsInput = {
+    set?: Date | string | null
+  }
+
   export type OrganizationUpdateOneRequiredWithoutUsersNestedInput = {
     create?: XOR<OrganizationCreateWithoutUsersInput, OrganizationUncheckedCreateWithoutUsersInput>
     connectOrCreate?: OrganizationCreateOrConnectWithoutUsersInput
@@ -38412,10 +38525,6 @@ export namespace Prisma {
     connect?: UserWhereUniqueInput
   }
 
-  export type NullableDateTimeFieldUpdateOperationsInput = {
-    set?: Date | string | null
-  }
-
   export type IntFieldUpdateOperationsInput = {
     set?: number
     increment?: number
@@ -38736,6 +38845,17 @@ export namespace Prisma {
     not?: NestedBoolFilter<$PrismaModel> | boolean
   }
 
+  export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
   export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | null
     in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
@@ -38771,25 +38891,14 @@ export namespace Prisma {
     _min?: NestedBoolFilter<$PrismaModel>
     _max?: NestedBoolFilter<$PrismaModel>
   }
-
-  export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
-  }
-  export type NestedJsonFilter<$PrismaModel = never> =
+  export type NestedJsonNullableFilter<$PrismaModel = never> =
     | PatchUndefined<
-        Either<Required<NestedJsonFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonFilterBase<$PrismaModel>>, 'path'>>,
-        Required<NestedJsonFilterBase<$PrismaModel>>
+        Either<Required<NestedJsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>,
+        Required<NestedJsonNullableFilterBase<$PrismaModel>>
       >
-    | OptionalFlat<Omit<Required<NestedJsonFilterBase<$PrismaModel>>, 'path'>>
+    | OptionalFlat<Omit<Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>
 
-  export type NestedJsonFilterBase<$PrismaModel = never> = {
+  export type NestedJsonNullableFilterBase<$PrismaModel = never> = {
     equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
     path?: string[]
     mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
@@ -38818,6 +38927,29 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedDateTimeNullableFilter<$PrismaModel>
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+  export type NestedJsonFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<NestedJsonFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonFilterBase<$PrismaModel>>, 'path'>>,
+        Required<NestedJsonFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<NestedJsonFilterBase<$PrismaModel>>, 'path'>>
+
+  export type NestedJsonFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
 
   export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
@@ -38891,6 +39023,8 @@ export namespace Prisma {
     emailDensity?: string
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: Date | string | null
     msAccounts?: MsConnectedAccountCreateNestedManyWithoutUserInput
     imapAccounts?: ImapConnectedAccountCreateNestedManyWithoutUserInput
     jmapAccounts?: JmapConnectedAccountCreateNestedManyWithoutUserInput
@@ -38930,6 +39064,8 @@ export namespace Prisma {
     emailDensity?: string
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: Date | string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
     imapAccounts?: ImapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
     jmapAccounts?: JmapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
@@ -38999,6 +39135,8 @@ export namespace Prisma {
     emailDensity?: StringFilter<"User"> | string
     preferredTimeZone?: StringFilter<"User"> | string
     lastActiveAccountId?: StringNullableFilter<"User"> | string | null
+    voiceProfile?: JsonNullableFilter<"User">
+    voiceProfileUpdatedAt?: DateTimeNullableFilter<"User"> | Date | string | null
   }
 
   export type OrganizationCreateWithoutUsersInput = {
@@ -40576,6 +40714,8 @@ export namespace Prisma {
     emailDensity?: string
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: Date | string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
     imapAccounts?: ImapConnectedAccountCreateNestedManyWithoutUserInput
     jmapAccounts?: JmapConnectedAccountCreateNestedManyWithoutUserInput
@@ -40616,6 +40756,8 @@ export namespace Prisma {
     emailDensity?: string
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: Date | string | null
     imapAccounts?: ImapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
     jmapAccounts?: JmapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
     msalCache?: MsalTokenCacheUncheckedCreateNestedOneWithoutUserInput
@@ -40670,6 +40812,8 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
     imapAccounts?: ImapConnectedAccountUpdateManyWithoutUserNestedInput
     jmapAccounts?: JmapConnectedAccountUpdateManyWithoutUserNestedInput
@@ -40710,6 +40854,8 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     imapAccounts?: ImapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
     jmapAccounts?: JmapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
     msalCache?: MsalTokenCacheUncheckedUpdateOneWithoutUserNestedInput
@@ -40748,6 +40894,8 @@ export namespace Prisma {
     emailDensity?: string
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: Date | string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
     msAccounts?: MsConnectedAccountCreateNestedManyWithoutUserInput
     imapAccounts?: ImapConnectedAccountCreateNestedManyWithoutUserInput
@@ -40788,6 +40936,8 @@ export namespace Prisma {
     emailDensity?: string
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: Date | string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
     imapAccounts?: ImapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
     jmapAccounts?: JmapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
@@ -40842,6 +40992,8 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
     msAccounts?: MsConnectedAccountUpdateManyWithoutUserNestedInput
     imapAccounts?: ImapConnectedAccountUpdateManyWithoutUserNestedInput
@@ -40882,6 +41034,8 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
     imapAccounts?: ImapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
     jmapAccounts?: JmapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
@@ -40920,6 +41074,8 @@ export namespace Prisma {
     emailDensity?: string
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: Date | string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
     msAccounts?: MsConnectedAccountCreateNestedManyWithoutUserInput
     imapAccounts?: ImapConnectedAccountCreateNestedManyWithoutUserInput
@@ -40960,6 +41116,8 @@ export namespace Prisma {
     emailDensity?: string
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: Date | string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
     imapAccounts?: ImapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
     jmapAccounts?: JmapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
@@ -41014,6 +41172,8 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
     msAccounts?: MsConnectedAccountUpdateManyWithoutUserNestedInput
     imapAccounts?: ImapConnectedAccountUpdateManyWithoutUserNestedInput
@@ -41054,6 +41214,8 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
     imapAccounts?: ImapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
     jmapAccounts?: JmapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
@@ -41092,6 +41254,8 @@ export namespace Prisma {
     emailDensity?: string
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: Date | string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
     msAccounts?: MsConnectedAccountCreateNestedManyWithoutUserInput
     imapAccounts?: ImapConnectedAccountCreateNestedManyWithoutUserInput
@@ -41132,6 +41296,8 @@ export namespace Prisma {
     emailDensity?: string
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: Date | string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
     imapAccounts?: ImapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
     jmapAccounts?: JmapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
@@ -41186,6 +41352,8 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
     msAccounts?: MsConnectedAccountUpdateManyWithoutUserNestedInput
     imapAccounts?: ImapConnectedAccountUpdateManyWithoutUserNestedInput
@@ -41226,6 +41394,8 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
     imapAccounts?: ImapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
     jmapAccounts?: JmapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
@@ -41264,6 +41434,8 @@ export namespace Prisma {
     emailDensity?: string
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: Date | string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
     msAccounts?: MsConnectedAccountCreateNestedManyWithoutUserInput
     imapAccounts?: ImapConnectedAccountCreateNestedManyWithoutUserInput
@@ -41304,6 +41476,8 @@ export namespace Prisma {
     emailDensity?: string
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: Date | string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
     imapAccounts?: ImapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
     jmapAccounts?: JmapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
@@ -41358,6 +41532,8 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
     msAccounts?: MsConnectedAccountUpdateManyWithoutUserNestedInput
     imapAccounts?: ImapConnectedAccountUpdateManyWithoutUserNestedInput
@@ -41398,6 +41574,8 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
     imapAccounts?: ImapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
     jmapAccounts?: JmapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
@@ -41436,6 +41614,8 @@ export namespace Prisma {
     emailDensity?: string
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: Date | string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
     msAccounts?: MsConnectedAccountCreateNestedManyWithoutUserInput
     imapAccounts?: ImapConnectedAccountCreateNestedManyWithoutUserInput
@@ -41476,6 +41656,8 @@ export namespace Prisma {
     emailDensity?: string
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: Date | string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
     imapAccounts?: ImapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
     jmapAccounts?: JmapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
@@ -41530,6 +41712,8 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
     msAccounts?: MsConnectedAccountUpdateManyWithoutUserNestedInput
     imapAccounts?: ImapConnectedAccountUpdateManyWithoutUserNestedInput
@@ -41570,6 +41754,8 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
     imapAccounts?: ImapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
     jmapAccounts?: JmapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
@@ -41608,6 +41794,8 @@ export namespace Prisma {
     emailDensity?: string
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: Date | string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
     msAccounts?: MsConnectedAccountCreateNestedManyWithoutUserInput
     imapAccounts?: ImapConnectedAccountCreateNestedManyWithoutUserInput
@@ -41648,6 +41836,8 @@ export namespace Prisma {
     emailDensity?: string
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: Date | string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
     imapAccounts?: ImapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
     jmapAccounts?: JmapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
@@ -41702,6 +41892,8 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
     msAccounts?: MsConnectedAccountUpdateManyWithoutUserNestedInput
     imapAccounts?: ImapConnectedAccountUpdateManyWithoutUserNestedInput
@@ -41742,6 +41934,8 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
     imapAccounts?: ImapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
     jmapAccounts?: JmapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
@@ -41780,6 +41974,8 @@ export namespace Prisma {
     emailDensity?: string
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: Date | string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
     msAccounts?: MsConnectedAccountCreateNestedManyWithoutUserInput
     imapAccounts?: ImapConnectedAccountCreateNestedManyWithoutUserInput
@@ -41820,6 +42016,8 @@ export namespace Prisma {
     emailDensity?: string
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: Date | string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
     imapAccounts?: ImapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
     jmapAccounts?: JmapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
@@ -41874,6 +42072,8 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
     msAccounts?: MsConnectedAccountUpdateManyWithoutUserNestedInput
     imapAccounts?: ImapConnectedAccountUpdateManyWithoutUserNestedInput
@@ -41914,6 +42114,8 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
     imapAccounts?: ImapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
     jmapAccounts?: JmapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
@@ -41952,6 +42154,8 @@ export namespace Prisma {
     emailDensity?: string
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: Date | string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
     msAccounts?: MsConnectedAccountCreateNestedManyWithoutUserInput
     imapAccounts?: ImapConnectedAccountCreateNestedManyWithoutUserInput
@@ -41992,6 +42196,8 @@ export namespace Prisma {
     emailDensity?: string
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: Date | string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
     imapAccounts?: ImapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
     jmapAccounts?: JmapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
@@ -42046,6 +42252,8 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
     msAccounts?: MsConnectedAccountUpdateManyWithoutUserNestedInput
     imapAccounts?: ImapConnectedAccountUpdateManyWithoutUserNestedInput
@@ -42086,6 +42294,8 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
     imapAccounts?: ImapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
     jmapAccounts?: JmapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
@@ -42124,6 +42334,8 @@ export namespace Prisma {
     emailDensity?: string
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: Date | string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
     msAccounts?: MsConnectedAccountCreateNestedManyWithoutUserInput
     imapAccounts?: ImapConnectedAccountCreateNestedManyWithoutUserInput
@@ -42164,6 +42376,8 @@ export namespace Prisma {
     emailDensity?: string
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: Date | string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
     imapAccounts?: ImapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
     jmapAccounts?: JmapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
@@ -42218,6 +42432,8 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
     msAccounts?: MsConnectedAccountUpdateManyWithoutUserNestedInput
     imapAccounts?: ImapConnectedAccountUpdateManyWithoutUserNestedInput
@@ -42258,6 +42474,8 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
     imapAccounts?: ImapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
     jmapAccounts?: JmapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
@@ -42296,6 +42514,8 @@ export namespace Prisma {
     emailDensity?: string
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: Date | string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
     msAccounts?: MsConnectedAccountCreateNestedManyWithoutUserInput
     imapAccounts?: ImapConnectedAccountCreateNestedManyWithoutUserInput
@@ -42336,6 +42556,8 @@ export namespace Prisma {
     emailDensity?: string
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: Date | string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
     imapAccounts?: ImapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
     jmapAccounts?: JmapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
@@ -42390,6 +42612,8 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
     msAccounts?: MsConnectedAccountUpdateManyWithoutUserNestedInput
     imapAccounts?: ImapConnectedAccountUpdateManyWithoutUserNestedInput
@@ -42430,6 +42654,8 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
     imapAccounts?: ImapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
     jmapAccounts?: JmapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
@@ -42468,6 +42694,8 @@ export namespace Prisma {
     emailDensity?: string
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: Date | string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
     msAccounts?: MsConnectedAccountCreateNestedManyWithoutUserInput
     imapAccounts?: ImapConnectedAccountCreateNestedManyWithoutUserInput
@@ -42508,6 +42736,8 @@ export namespace Prisma {
     emailDensity?: string
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: Date | string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
     imapAccounts?: ImapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
     jmapAccounts?: JmapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
@@ -42562,6 +42792,8 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
     msAccounts?: MsConnectedAccountUpdateManyWithoutUserNestedInput
     imapAccounts?: ImapConnectedAccountUpdateManyWithoutUserNestedInput
@@ -42602,6 +42834,8 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
     imapAccounts?: ImapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
     jmapAccounts?: JmapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
@@ -42640,6 +42874,8 @@ export namespace Prisma {
     emailDensity?: string
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: Date | string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
     msAccounts?: MsConnectedAccountCreateNestedManyWithoutUserInput
     imapAccounts?: ImapConnectedAccountCreateNestedManyWithoutUserInput
@@ -42680,6 +42916,8 @@ export namespace Prisma {
     emailDensity?: string
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: Date | string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
     imapAccounts?: ImapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
     jmapAccounts?: JmapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
@@ -42734,6 +42972,8 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
     msAccounts?: MsConnectedAccountUpdateManyWithoutUserNestedInput
     imapAccounts?: ImapConnectedAccountUpdateManyWithoutUserNestedInput
@@ -42774,6 +43014,8 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
     imapAccounts?: ImapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
     jmapAccounts?: JmapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
@@ -42812,6 +43054,8 @@ export namespace Prisma {
     emailDensity?: string
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: Date | string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
     msAccounts?: MsConnectedAccountCreateNestedManyWithoutUserInput
     imapAccounts?: ImapConnectedAccountCreateNestedManyWithoutUserInput
@@ -42852,6 +43096,8 @@ export namespace Prisma {
     emailDensity?: string
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: Date | string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
     imapAccounts?: ImapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
     jmapAccounts?: JmapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
@@ -42906,6 +43152,8 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
     msAccounts?: MsConnectedAccountUpdateManyWithoutUserNestedInput
     imapAccounts?: ImapConnectedAccountUpdateManyWithoutUserNestedInput
@@ -42946,6 +43194,8 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
     imapAccounts?: ImapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
     jmapAccounts?: JmapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
@@ -42984,6 +43234,8 @@ export namespace Prisma {
     emailDensity?: string
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: Date | string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
     msAccounts?: MsConnectedAccountCreateNestedManyWithoutUserInput
     imapAccounts?: ImapConnectedAccountCreateNestedManyWithoutUserInput
@@ -43024,6 +43276,8 @@ export namespace Prisma {
     emailDensity?: string
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: Date | string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
     imapAccounts?: ImapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
     jmapAccounts?: JmapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
@@ -43078,6 +43332,8 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
     msAccounts?: MsConnectedAccountUpdateManyWithoutUserNestedInput
     imapAccounts?: ImapConnectedAccountUpdateManyWithoutUserNestedInput
@@ -43118,6 +43374,8 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
     imapAccounts?: ImapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
     jmapAccounts?: JmapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
@@ -43156,6 +43414,8 @@ export namespace Prisma {
     emailDensity?: string
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: Date | string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
     msAccounts?: MsConnectedAccountCreateNestedManyWithoutUserInput
     imapAccounts?: ImapConnectedAccountCreateNestedManyWithoutUserInput
@@ -43196,6 +43456,8 @@ export namespace Prisma {
     emailDensity?: string
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: Date | string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
     imapAccounts?: ImapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
     jmapAccounts?: JmapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
@@ -43250,6 +43512,8 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
     msAccounts?: MsConnectedAccountUpdateManyWithoutUserNestedInput
     imapAccounts?: ImapConnectedAccountUpdateManyWithoutUserNestedInput
@@ -43290,6 +43554,8 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
     imapAccounts?: ImapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
     jmapAccounts?: JmapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
@@ -43328,6 +43594,8 @@ export namespace Prisma {
     emailDensity?: string
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: Date | string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
     msAccounts?: MsConnectedAccountCreateNestedManyWithoutUserInput
     imapAccounts?: ImapConnectedAccountCreateNestedManyWithoutUserInput
@@ -43368,6 +43636,8 @@ export namespace Prisma {
     emailDensity?: string
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: Date | string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
     imapAccounts?: ImapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
     jmapAccounts?: JmapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
@@ -43422,6 +43692,8 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
     msAccounts?: MsConnectedAccountUpdateManyWithoutUserNestedInput
     imapAccounts?: ImapConnectedAccountUpdateManyWithoutUserNestedInput
@@ -43462,6 +43734,8 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
     imapAccounts?: ImapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
     jmapAccounts?: JmapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
@@ -43500,6 +43774,8 @@ export namespace Prisma {
     emailDensity?: string
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: Date | string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
     msAccounts?: MsConnectedAccountCreateNestedManyWithoutUserInput
     imapAccounts?: ImapConnectedAccountCreateNestedManyWithoutUserInput
@@ -43540,6 +43816,8 @@ export namespace Prisma {
     emailDensity?: string
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: Date | string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
     imapAccounts?: ImapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
     jmapAccounts?: JmapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
@@ -43594,6 +43872,8 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
     msAccounts?: MsConnectedAccountUpdateManyWithoutUserNestedInput
     imapAccounts?: ImapConnectedAccountUpdateManyWithoutUserNestedInput
@@ -43634,6 +43914,8 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
     imapAccounts?: ImapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
     jmapAccounts?: JmapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
@@ -43672,6 +43954,8 @@ export namespace Prisma {
     emailDensity?: string
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: Date | string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
     msAccounts?: MsConnectedAccountCreateNestedManyWithoutUserInput
     jmapAccounts?: JmapConnectedAccountCreateNestedManyWithoutUserInput
@@ -43712,6 +43996,8 @@ export namespace Prisma {
     emailDensity?: string
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: Date | string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
     jmapAccounts?: JmapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
     msalCache?: MsalTokenCacheUncheckedCreateNestedOneWithoutUserInput
@@ -43766,6 +44052,8 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
     msAccounts?: MsConnectedAccountUpdateManyWithoutUserNestedInput
     jmapAccounts?: JmapConnectedAccountUpdateManyWithoutUserNestedInput
@@ -43806,6 +44094,8 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
     jmapAccounts?: JmapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
     msalCache?: MsalTokenCacheUncheckedUpdateOneWithoutUserNestedInput
@@ -43844,6 +44134,8 @@ export namespace Prisma {
     emailDensity?: string
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: Date | string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
     msAccounts?: MsConnectedAccountCreateNestedManyWithoutUserInput
     imapAccounts?: ImapConnectedAccountCreateNestedManyWithoutUserInput
@@ -43884,6 +44176,8 @@ export namespace Prisma {
     emailDensity?: string
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: Date | string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
     imapAccounts?: ImapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
     msalCache?: MsalTokenCacheUncheckedCreateNestedOneWithoutUserInput
@@ -43938,6 +44232,8 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
     msAccounts?: MsConnectedAccountUpdateManyWithoutUserNestedInput
     imapAccounts?: ImapConnectedAccountUpdateManyWithoutUserNestedInput
@@ -43978,6 +44274,8 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
     imapAccounts?: ImapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
     msalCache?: MsalTokenCacheUncheckedUpdateOneWithoutUserNestedInput
@@ -44016,6 +44314,8 @@ export namespace Prisma {
     emailDensity?: string
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: Date | string | null
   }
 
   export type UserUpdateWithoutOrgInput = {
@@ -44035,6 +44335,8 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     msAccounts?: MsConnectedAccountUpdateManyWithoutUserNestedInput
     imapAccounts?: ImapConnectedAccountUpdateManyWithoutUserNestedInput
     jmapAccounts?: JmapConnectedAccountUpdateManyWithoutUserNestedInput
@@ -44074,6 +44376,8 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
     imapAccounts?: ImapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
     jmapAccounts?: JmapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
@@ -44113,6 +44417,8 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type MsConnectedAccountCreateManyUserInput = {

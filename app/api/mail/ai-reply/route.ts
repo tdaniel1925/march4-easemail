@@ -26,7 +26,17 @@ export async function POST(req: NextRequest) {
   // Extract sender first name for greeting (e.g. "John Smith <john@firm.com>" → "John")
   const senderName = from.replace(/<[^>]+>/, "").trim().split(/\s+/)[0] ?? "there";
 
-  const system = `You are an email assistant for Darren Miller Law Firm. You help attorneys and staff draft professional, precise replies to emails. You understand legal context: court deadlines, client matters, opposing counsel, depositions, hearings, motions, and billing. Always maintain a tone appropriate for a law firm — formal with clients and courts, collegial with colleagues. Return ONLY valid JSON with no markdown or explanation.`;
+  // Fetch user's writing voice profile for personalized replies
+  let voiceInstruction = "";
+  try {
+    const { getVoiceProfile, buildVoicePrompt } = await import("@/lib/utils/voice-profile");
+    const profile = await getVoiceProfile(user.id);
+    if (profile) voiceInstruction = "\n\n" + buildVoicePrompt(profile);
+  } catch {
+    // Voice profile not available — use default tone
+  }
+
+  const system = `You are an email assistant for Darren Miller Law Firm. You help attorneys and staff draft professional, precise replies to emails. You understand legal context: court deadlines, client matters, opposing counsel, depositions, hearings, motions, and billing. Return ONLY valid JSON with no markdown or explanation.${voiceInstruction}`;
 
   const prompt = `Analyze this email and return this exact JSON structure:
 {

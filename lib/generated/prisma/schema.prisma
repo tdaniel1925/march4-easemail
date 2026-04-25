@@ -53,6 +53,10 @@ model User {
   // Multi-account preference
   lastActiveAccountId String?
 
+  // AI voice profile — cached analysis of user's writing style
+  voiceProfile          Json?
+  voiceProfileUpdatedAt DateTime?
+
   msAccounts          MsConnectedAccount[]
   imapAccounts        ImapConnectedAccount[]
   jmapAccounts        JmapConnectedAccount[]
