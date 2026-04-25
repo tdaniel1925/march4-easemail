@@ -11,6 +11,10 @@ import type {
   NormalizedFolder,
   SendEmailParams,
   FetchEmailsOptions,
+  NormalizedContact,
+  NormalizedCalendarEvent,
+  CalendarProvider,
+  ContactsProvider,
 } from "./types";
 
 // JMAP role → wellKnownName mapping
@@ -69,6 +73,34 @@ interface JmapEmail {
   attachments?: { blobId: string; name: string; size: number; type: string }[];
 }
 
+interface JmapContactCard {
+  id: string;
+  name?: { full?: string; given?: string; surname?: string };
+  emails?: Record<string, { address: string }>;
+  phones?: Record<string, { number: string }>;
+  titles?: Record<string, { name: string }>;
+  organizations?: Record<string, { name: string }>;
+}
+
+interface JmapCalendarEvent {
+  id: string;
+  title?: string;
+  start?: string;
+  duration?: string; // ISO 8601 duration e.g. "PT1H"
+  timeZone?: string;
+  isAllDay?: boolean;
+  locations?: Record<string, { name?: string }>;
+  description?: string;
+  participants?: Record<string, {
+    name?: string;
+    sendTo?: { imip?: string };
+    roles?: Record<string, boolean>;
+    participationStatus?: string;
+  }>;
+  recurrenceRules?: unknown[];
+  status?: string;
+}
+
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
 async function getJmapAccount(userId: string, accountId: string) {
@@ -118,6 +150,71 @@ async function jmapCall(
     throw new Error(`JMAP API call failed ${res.status}: ${err}`);
   }
   return res.json() as Promise<JmapResponse>;
+}
+
+async function jmapCalendarCall(
+  apiUrl: string,
+  token: string,
+  _jmapAccountId: string,
+  methodCalls: [string, Record<string, unknown>, string][]
+): Promise<JmapResponse> {
+  const res = await fetch(apiUrl, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      using: [
+        "urn:ietf:params:jmap:core",
+        "urn:ietf:params:jmap:calendars",
+        "urn:ietf:params:jmap:principals",
+      ],
+      methodCalls,
+    }),
+  });
+  if (!res.ok) {
+    const err = await res.text();
+    throw new Error(`JMAP Calendar API call failed ${res.status}: ${err}`);
+  }
+  return res.json() as Promise<JmapResponse>;
+}
+
+async function jmapContactsCall(
+  apiUrl: string,
+  token: string,
+  _jmapAccountId: string,
+  methodCalls: [string, Record<string, unknown>, string][]
+): Promise<JmapResponse> {
+  const res = await fetch(apiUrl, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      using: [
+        "urn:ietf:params:jmap:core",
+        "https://www.fastmail.com/dev/contacts",
+      ],
+      methodCalls,
+    }),
+  });
+  if (!res.ok) {
+    const err = await res.text();
+    throw new Error(`JMAP Contacts API call failed ${res.status}: ${err}`);
+  }
+  return res.json() as Promise<JmapResponse>;
+}
+
+function parseIsoDuration(duration: string): number {
+  const match = duration.match(/^P(?:(\d+)D)?(?:T(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?)?$/);
+  if (!match) return 3600000; // default 1h
+  const days = parseInt(match[1] || "0", 10);
+  const hours = parseInt(match[2] || "0", 10);
+  const minutes = parseInt(match[3] || "0", 10);
+  const seconds = parseInt(match[4] || "0", 10);
+  return ((days * 24 + hours) * 60 + minutes) * 60000 + seconds * 1000;
 }
 
 async function getSessionAndToken(userId: string, accountId: string) {
@@ -181,7 +278,7 @@ function normalizeJmapEmail(
 
 // ─── Provider Implementation ─────────────────────────────────────────────────
 
-export class JmapProvider implements EmailProvider {
+export class JmapProvider implements EmailProvider, CalendarProvider, ContactsProvider {
   readonly type = "jmap" as const;
 
   async fetchFolders(
@@ -1077,5 +1174,338 @@ export class JmapProvider implements EmailProvider {
         data: { emailState: newState },
       });
     }
+  }
+
+  // ─── Contacts ───────────────────────────────────────────────────────────────
+
+  async fetchContacts(
+    userId: string,
+    accountId: string,
+    options?: { top?: number; query?: string }
+  ): Promise<NormalizedContact[]> {
+    const { token, session, jmapAccountId } = await getSessionAndToken(userId, accountId);
+
+    const filter: Record<string, unknown> = {};
+    if (options?.query) filter.text = options.query;
+
+    const response = await jmapContactsCall(session.apiUrl, token, jmapAccountId, [
+      [
+        "ContactCard/query",
+        {
+          accountId: jmapAccountId,
+          filter,
+          sort: [{ property: "name/full", isAscending: true }],
+          limit: options?.top ?? 100,
+        },
+        "0",
+      ],
+      [
+        "ContactCard/get",
+        {
+          accountId: jmapAccountId,
+          "#ids": { resultOf: "0", name: "ContactCard/query", path: "/ids" },
+        },
+        "1",
+      ],
+    ]);
+
+    const getResult = response.methodResponses.find(([method]) => method === "ContactCard/get");
+    if (!getResult) return [];
+
+    const [, data] = getResult;
+    const cards = (data.list as JmapContactCard[]) ?? [];
+
+    return cards.map((c): NormalizedContact => ({
+      id: `${accountId}:${c.id}`,
+      displayName: c.name?.full ?? c.name?.given ?? "",
+      email: Object.values(c.emails ?? {})[0]?.address ?? "",
+      jobTitle: Object.values(c.titles ?? {})[0]?.name ?? "",
+      company: Object.values(c.organizations ?? {})[0]?.name ?? "",
+      phone: Object.values(c.phones ?? {})[0]?.number ?? "",
+    }));
+  }
+
+  // ─── Calendar ───────────────────────────────────────────────────────────────
+
+  async fetchEvents(
+    userId: string,
+    accountId: string,
+    startDate: string,
+    endDate: string
+  ): Promise<NormalizedCalendarEvent[]> {
+    const { token, session, jmapAccountId } = await getSessionAndToken(userId, accountId);
+
+    const response = await jmapCalendarCall(session.apiUrl, token, jmapAccountId, [
+      [
+        "CalendarEvent/query",
+        {
+          accountId: jmapAccountId,
+          filter: {
+            after: `${startDate}T00:00:00`,
+            before: `${endDate}T23:59:59`,
+          },
+          sort: [{ property: "start", isAscending: true }],
+          limit: 200,
+        },
+        "0",
+      ],
+      [
+        "CalendarEvent/get",
+        {
+          accountId: jmapAccountId,
+          "#ids": { resultOf: "0", name: "CalendarEvent/query", path: "/ids" },
+          properties: [
+            "id", "title", "start", "duration", "timeZone", "isAllDay",
+            "locations", "description", "participants", "recurrenceRules",
+            "status",
+          ],
+        },
+        "1",
+      ],
+    ]);
+
+    const getResult = response.methodResponses.find(([method]) => method === "CalendarEvent/get");
+    if (!getResult) return [];
+
+    const [, data] = getResult;
+    const events = (data.list as JmapCalendarEvent[]) ?? [];
+
+    return events.map((e): NormalizedCalendarEvent => {
+      const startDt = e.start ?? "";
+      // JMAP duration is ISO 8601 duration (e.g. "PT1H"). Calculate end from start + duration.
+      let endDt = startDt;
+      if (e.duration && startDt) {
+        const startMs = new Date(startDt).getTime();
+        const durationMs = parseIsoDuration(e.duration);
+        endDt = new Date(startMs + durationMs).toISOString();
+      }
+
+      const attendees: { name: string; address: string; responseStatus?: string }[] = [];
+      let organizer: { name: string; address: string } | undefined;
+      if (e.participants) {
+        for (const p of Object.values(e.participants)) {
+          const entry = {
+            name: p.name ?? "",
+            address: p.sendTo?.imip?.replace("mailto:", "") ?? "",
+            responseStatus: p.participationStatus,
+          };
+          if (p.roles?.owner) organizer = { name: entry.name, address: entry.address };
+          else attendees.push(entry);
+        }
+      }
+
+      const location = e.locations
+        ? Object.values(e.locations)[0]?.name
+        : undefined;
+
+      return {
+        id: `${accountId}:${e.id}`,
+        subject: e.title ?? "(no title)",
+        startDateTime: startDt,
+        endDateTime: endDt,
+        timeZone: e.timeZone ?? "UTC",
+        isAllDay: e.isAllDay ?? false,
+        location,
+        bodyPreview: e.description ?? undefined,
+        organizer,
+        attendees,
+        isRecurring: !!e.recurrenceRules,
+        recurrence: e.recurrenceRules ? "recurring" : null,
+      };
+    });
+  }
+
+  async createEvent(
+    userId: string,
+    accountId: string,
+    event: {
+      subject: string;
+      start: string;
+      end: string;
+      isAllDay?: boolean;
+      location?: string;
+      body?: string;
+      attendees?: string[];
+      timeZone?: string;
+    }
+  ): Promise<NormalizedCalendarEvent> {
+    const { token, session, jmapAccountId } = await getSessionAndToken(userId, accountId);
+
+    // Calculate duration from start and end
+    const startMs = new Date(event.start).getTime();
+    const endMs = new Date(event.end).getTime();
+    const diffMs = endMs - startMs;
+    const hours = Math.floor(diffMs / 3600000);
+    const minutes = Math.floor((diffMs % 3600000) / 60000);
+    const duration = `PT${hours}H${minutes > 0 ? `${minutes}M` : ""}`;
+
+    // Get default calendar
+    const calResponse = await jmapCalendarCall(session.apiUrl, token, jmapAccountId, [
+      ["Calendar/query", { accountId: jmapAccountId, filter: { isDefault: true } }, "0"],
+    ]);
+    const [, calResult] = calResponse.methodResponses[0];
+    const calendarIds = (calResult.ids as string[]) ?? [];
+    const calendarId = calendarIds[0];
+    if (!calendarId) throw new Error("No default calendar found");
+
+    const jmapEvent: Record<string, unknown> = {
+      calendarIds: { [calendarId]: true },
+      title: event.subject,
+      start: event.start,
+      duration,
+      timeZone: event.timeZone ?? "UTC",
+      isAllDay: event.isAllDay ?? false,
+    };
+
+    if (event.location) {
+      jmapEvent.locations = { loc1: { name: event.location } };
+    }
+    if (event.body) {
+      jmapEvent.description = event.body;
+    }
+    if (event.attendees?.length) {
+      const participants: Record<string, unknown> = {};
+      event.attendees.forEach((email, i) => {
+        participants[`p${i}`] = {
+          sendTo: { imip: `mailto:${email}` },
+          roles: { attendee: true },
+          participationStatus: "needs-action",
+        };
+      });
+      jmapEvent.participants = participants;
+    }
+
+    const response = await jmapCalendarCall(session.apiUrl, token, jmapAccountId, [
+      [
+        "CalendarEvent/set",
+        {
+          accountId: jmapAccountId,
+          create: { newEvent: jmapEvent },
+        },
+        "0",
+      ],
+    ]);
+
+    const [, setResult] = response.methodResponses[0];
+    const created = (setResult.created as Record<string, { id: string }>) ?? {};
+    const newId = created.newEvent?.id ?? "unknown";
+
+    return {
+      id: `${accountId}:${newId}`,
+      subject: event.subject,
+      startDateTime: event.start,
+      endDateTime: event.end,
+      timeZone: event.timeZone ?? "UTC",
+      isAllDay: event.isAllDay ?? false,
+      location: event.location,
+      bodyPreview: event.body,
+      attendees: (event.attendees ?? []).map((a) => ({ name: "", address: a })),
+      isRecurring: false,
+      recurrence: null,
+    };
+  }
+
+  async updateEvent(
+    userId: string,
+    accountId: string,
+    eventId: string,
+    updates: {
+      subject?: string;
+      start?: string;
+      end?: string;
+      isAllDay?: boolean;
+      location?: string;
+      body?: string;
+      attendees?: string[];
+      timeZone?: string;
+    }
+  ): Promise<NormalizedCalendarEvent> {
+    const jmapEventId = eventId.replace(`${accountId}:`, "");
+    const { token, session, jmapAccountId } = await getSessionAndToken(userId, accountId);
+
+    const patch: Record<string, unknown> = {};
+    if (updates.subject !== undefined) patch.title = updates.subject;
+    if (updates.start !== undefined) patch.start = updates.start;
+    if (updates.isAllDay !== undefined) patch.isAllDay = updates.isAllDay;
+    if (updates.timeZone !== undefined) patch.timeZone = updates.timeZone;
+    if (updates.location !== undefined) {
+      patch.locations = updates.location ? { loc1: { name: updates.location } } : null;
+    }
+    if (updates.body !== undefined) patch.description = updates.body;
+
+    if (updates.start && updates.end) {
+      const diffMs = new Date(updates.end).getTime() - new Date(updates.start).getTime();
+      const hours = Math.floor(diffMs / 3600000);
+      const minutes = Math.floor((diffMs % 3600000) / 60000);
+      patch.duration = `PT${hours}H${minutes > 0 ? `${minutes}M` : ""}`;
+    }
+
+    await jmapCalendarCall(session.apiUrl, token, jmapAccountId, [
+      [
+        "CalendarEvent/set",
+        {
+          accountId: jmapAccountId,
+          update: { [jmapEventId]: patch },
+        },
+        "0",
+      ],
+    ]);
+
+    // Return updated event — fetch it back
+    const getResponse = await jmapCalendarCall(session.apiUrl, token, jmapAccountId, [
+      [
+        "CalendarEvent/get",
+        {
+          accountId: jmapAccountId,
+          ids: [jmapEventId],
+          properties: ["id", "title", "start", "duration", "timeZone", "isAllDay", "locations", "description", "participants", "recurrenceRules"],
+        },
+        "0",
+      ],
+    ]);
+
+    const [, getData] = getResponse.methodResponses[0];
+    const events = (getData.list as JmapCalendarEvent[]) ?? [];
+    const e = events[0];
+    if (!e) throw new Error("Event not found after update");
+
+    let endDt = e.start ?? "";
+    if (e.duration && e.start) {
+      endDt = new Date(new Date(e.start).getTime() + parseIsoDuration(e.duration)).toISOString();
+    }
+
+    return {
+      id: `${accountId}:${e.id}`,
+      subject: e.title ?? "",
+      startDateTime: e.start ?? "",
+      endDateTime: endDt,
+      timeZone: e.timeZone ?? "UTC",
+      isAllDay: e.isAllDay ?? false,
+      location: e.locations ? Object.values(e.locations)[0]?.name : undefined,
+      bodyPreview: e.description,
+      attendees: [],
+      isRecurring: !!e.recurrenceRules,
+      recurrence: e.recurrenceRules ? "recurring" : null,
+    };
+  }
+
+  async deleteEvent(
+    userId: string,
+    accountId: string,
+    eventId: string
+  ): Promise<void> {
+    const jmapEventId = eventId.replace(`${accountId}:`, "");
+    const { token, session, jmapAccountId } = await getSessionAndToken(userId, accountId);
+
+    await jmapCalendarCall(session.apiUrl, token, jmapAccountId, [
+      [
+        "CalendarEvent/set",
+        {
+          accountId: jmapAccountId,
+          destroy: [jmapEventId],
+        },
+        "0",
+      ],
+    ]);
   }
 }

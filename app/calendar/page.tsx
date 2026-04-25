@@ -45,9 +45,12 @@ export default async function CalendarPage() {
     `&$top=200`;
 
   const defaultAccount = dbUser.defaultAccount;
+  const weekStartDate = weekStart.toISOString().split("T")[0];
+  const weekEndDate = weekEnd.toISOString().split("T")[0];
 
-  // Fetch calendar events and unread count in parallel
-  const [results, unreadCount] = await Promise.all([
+  // Fetch calendar events from all providers + unread count in parallel
+  const [msResults, jmapResults, unreadCount] = await Promise.all([
+    // Microsoft accounts
     Promise.allSettled(
       dbUser.msAccounts.map((acc) =>
         graphGet<GraphCalEventList>(user.id, acc.homeAccountId, graphPath).then((data) =>
@@ -55,13 +58,43 @@ export default async function CalendarPage() {
         )
       )
     ),
+    // JMAP accounts
+    Promise.allSettled(
+      dbUser.jmapAccounts.map(async (acc) => {
+        const { JmapProvider } = await import("@/lib/providers/jmap");
+        const provider = new JmapProvider();
+        const jmapEvents = await provider.fetchEvents(user.id, acc.accountId, weekStartDate, weekEndDate);
+        return jmapEvents.map((e): CalEvent => ({
+          id: e.id,
+          subject: e.subject,
+          startDateTime: e.startDateTime,
+          endDateTime: e.endDateTime,
+          timeZone: e.timeZone,
+          isAllDay: e.isAllDay,
+          location: e.location,
+          bodyPreview: e.bodyPreview,
+          organizer: e.organizer,
+          attendees: e.attendees,
+          onlineMeetingUrl: e.onlineMeetingUrl,
+          responseStatus: e.responseStatus as CalEvent["responseStatus"],
+          accountHomeId: acc.accountId,
+          accountEmail: acc.email,
+          isRecurring: e.isRecurring,
+          recurrence: e.recurrence,
+        }));
+      })
+    ),
     defaultAccount ? getUnreadCount(user.id, defaultAccount.homeAccountId) : Promise.resolve(0),
   ]);
 
-  const events: CalEvent[] = results
-    .filter((r): r is PromiseFulfilledResult<CalEvent[]> => r.status === "fulfilled")
-    .flatMap((r) => r.value)
-    .sort((a, b) => new Date(a.startDateTime).getTime() - new Date(b.startDateTime).getTime());
+  const events: CalEvent[] = [
+    ...msResults
+      .filter((r): r is PromiseFulfilledResult<CalEvent[]> => r.status === "fulfilled")
+      .flatMap((r) => r.value),
+    ...jmapResults
+      .filter((r): r is PromiseFulfilledResult<CalEvent[]> => r.status === "fulfilled")
+      .flatMap((r) => r.value),
+  ].sort((a, b) => new Date(a.startDateTime).getTime() - new Date(b.startDateTime).getTime());
 
   const userName = dbUser.name ?? defaultAccount?.displayName ?? user.email ?? "You";
 

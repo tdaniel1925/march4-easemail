@@ -145,3 +145,87 @@ export interface EmailProvider {
     folderId: string
   ): Promise<void>;
 }
+
+/** Normalized contact returned by all providers */
+export interface NormalizedContact {
+  id: string;
+  displayName: string;
+  email: string;
+  jobTitle: string;
+  company: string;
+  phone: string;
+}
+
+/** Normalized calendar event returned by all providers */
+export interface NormalizedCalendarEvent {
+  id: string;
+  subject: string;
+  startDateTime: string;
+  endDateTime: string;
+  timeZone: string;
+  isAllDay: boolean;
+  location?: string;
+  bodyPreview?: string;
+  organizer?: { name: string; address: string };
+  attendees: { name: string; address: string; responseStatus?: string }[];
+  onlineMeetingUrl?: string;
+  responseStatus?: string;
+  isRecurring?: boolean;
+  recurrence?: string | null;
+}
+
+/** Calendar provider interface */
+export interface CalendarProvider {
+  fetchEvents(
+    userId: string,
+    accountId: string,
+    startDate: string,
+    endDate: string
+  ): Promise<NormalizedCalendarEvent[]>;
+
+  createEvent(
+    userId: string,
+    accountId: string,
+    event: {
+      subject: string;
+      start: string;
+      end: string;
+      isAllDay?: boolean;
+      location?: string;
+      body?: string;
+      attendees?: string[];
+      timeZone?: string;
+    }
+  ): Promise<NormalizedCalendarEvent>;
+
+  updateEvent(
+    userId: string,
+    accountId: string,
+    eventId: string,
+    updates: {
+      subject?: string;
+      start?: string;
+      end?: string;
+      isAllDay?: boolean;
+      location?: string;
+      body?: string;
+      attendees?: string[];
+      timeZone?: string;
+    }
+  ): Promise<NormalizedCalendarEvent>;
+
+  deleteEvent(
+    userId: string,
+    accountId: string,
+    eventId: string
+  ): Promise<void>;
+}
+
+/** Contacts provider interface */
+export interface ContactsProvider {
+  fetchContacts(
+    userId: string,
+    accountId: string,
+    options?: { top?: number; query?: string }
+  ): Promise<NormalizedContact[]>;
+}

@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { getUserWithAccounts } from "@/lib/utils/get-user-accounts";
 import { prisma } from "@/lib/prisma";
 import { graphGet } from "@/lib/microsoft/graph";
+import { detectProviderType } from "@/lib/providers/registry";
 import Sidebar from "@/components/Sidebar";
 import { StoreInitializer } from "@/components/StoreInitializer";
 import ContactsClient from "@/components/contacts/ContactsClient";
@@ -73,24 +74,49 @@ export default async function ContactsPage() {
         frequencyScore: c.frequencyScore,
       }));
     } else {
-      const data = await graphGet<GraphContactList>(
-        user.id,
-        defaultAccount.homeAccountId,
-        `/me/contacts?$top=100&$select=id,displayName,emailAddresses,jobTitle,companyName,department&$orderby=displayName`
-      );
-      contacts = (data.value ?? [])
-        .filter((c) => c.displayName)
-        .map((c): Contact => ({
-          id: c.id,
-          displayName: c.displayName,
-          email: c.emailAddresses?.[0]?.address ?? "",
-          jobTitle: c.jobTitle ?? "",
-          company: c.companyName ?? "",
-          phone: c.mobilePhone ?? "",
-          initials: c.displayName.slice(0, 2).toUpperCase(),
-          isVIP: false,
-          frequencyScore: 0,
-        }));
+      const providerType = detectProviderType(defaultAccount.homeAccountId);
+
+      if (providerType === "jmap") {
+        // Use JMAP provider for contacts
+        const { JmapProvider } = await import("@/lib/providers/jmap");
+        const provider = new JmapProvider();
+        try {
+          const jmapContacts = await provider.fetchContacts(user.id, defaultAccount.homeAccountId, { top: 100 });
+          contacts = jmapContacts.map((c): Contact => ({
+            id: c.id,
+            displayName: c.displayName,
+            email: c.email,
+            jobTitle: c.jobTitle,
+            company: c.company,
+            phone: c.phone,
+            initials: c.displayName.slice(0, 2).toUpperCase(),
+            isVIP: false,
+            frequencyScore: 0,
+          }));
+        } catch {
+          // JMAP contacts scope may not be available
+        }
+      } else {
+        // Microsoft Graph path (existing code)
+        const data = await graphGet<GraphContactList>(
+          user.id,
+          defaultAccount.homeAccountId,
+          `/me/contacts?$top=100&$select=id,displayName,emailAddresses,jobTitle,companyName,department&$orderby=displayName`
+        );
+        contacts = (data.value ?? [])
+          .filter((c) => c.displayName)
+          .map((c): Contact => ({
+            id: c.id,
+            displayName: c.displayName,
+            email: c.emailAddresses?.[0]?.address ?? "",
+            jobTitle: c.jobTitle ?? "",
+            company: c.companyName ?? "",
+            phone: c.mobilePhone ?? "",
+            initials: c.displayName.slice(0, 2).toUpperCase(),
+            isVIP: false,
+            frequencyScore: 0,
+          }));
+      }
     }
   } catch {
     // Contacts scope may not be consented — not fatal
