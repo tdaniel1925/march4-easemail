@@ -499,7 +499,11 @@ export class JmapProvider implements EmailProvider, CalendarProvider, ContactsPr
       const [, mbResult] = mbResponse.methodResponses[0];
       const mailboxes = (mbResult.list as { id: string; role: string | null }[]) ?? [];
       const match = mailboxes.find((mb) => mb.role === role);
-      if (match) jmapMailboxId = match.id;
+      if (match) {
+        jmapMailboxId = match.id;
+      } else {
+        console.error(`[jmap] No mailbox found with role "${role}". Available roles:`, mailboxes.map((mb) => `${mb.id}:${mb.role}`));
+      }
     }
 
     // Build filter
@@ -530,7 +534,7 @@ export class JmapProvider implements EmailProvider, CalendarProvider, ContactsPr
         "Email/get",
         {
           accountId: jmapAccountId,
-          "#ids": { resultOf: "0", name: "Email/query", path: "/ids" },
+          "#ids": { resultOf: "0", name: "Email/query", path: "/ids/*" },
           properties: [
             "id",
             "threadId",
@@ -899,7 +903,7 @@ export class JmapProvider implements EmailProvider, CalendarProvider, ContactsPr
         "Email/get",
         {
           accountId: jmapAccountId,
-          "#ids": { resultOf: "0", name: "Email/query", path: "/ids" },
+          "#ids": { resultOf: "0", name: "Email/query", path: "/ids/*" },
           properties: [
             "id",
             "threadId",
@@ -1099,7 +1103,7 @@ export class JmapProvider implements EmailProvider, CalendarProvider, ContactsPr
         "Email/get",
         {
           accountId: jmapAccountId,
-          "#ids": { resultOf: "0", name: "Email/query", path: "/ids" },
+          "#ids": { resultOf: "0", name: "Email/query", path: "/ids/*" },
           properties: [
             "id",
             "threadId",
@@ -1206,7 +1210,7 @@ export class JmapProvider implements EmailProvider, CalendarProvider, ContactsPr
         "ContactCard/get",
         {
           accountId: jmapAccountId,
-          "#ids": { resultOf: "0", name: "ContactCard/query", path: "/ids" },
+          "#ids": { resultOf: "0", name: "ContactCard/query", path: "/ids/*" },
         },
         "1",
       ],
@@ -1256,7 +1260,7 @@ export class JmapProvider implements EmailProvider, CalendarProvider, ContactsPr
         "CalendarEvent/get",
         {
           accountId: jmapAccountId,
-          "#ids": { resultOf: "0", name: "CalendarEvent/query", path: "/ids" },
+          "#ids": { resultOf: "0", name: "CalendarEvent/query", path: "/ids/*" },
           properties: [
             "id", "title", "start", "duration", "timeZone", "isAllDay",
             "locations", "description", "participants", "recurrenceRules",
