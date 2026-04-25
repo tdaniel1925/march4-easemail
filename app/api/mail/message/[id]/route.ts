@@ -13,6 +13,7 @@ interface GraphMessage {
   ccRecipients?: { emailAddress?: { name?: string; address?: string } }[];
   body?: { contentType?: string; content?: string };
   receivedDateTime?: string;
+  attachments?: { id: string; name: string; size: number; contentType: string }[];
 }
 
 // ─── GET /api/mail/message/[id] ───────────────────────────────────────────────
@@ -68,6 +69,12 @@ export async function GET(req: NextRequest, { params }: Params) {
           content: email.bodyHtml ?? email.bodyText ?? email.bodyPreview,
         },
         receivedDateTime: email.receivedDateTime,
+        attachments: (email.attachments ?? []).map((a) => ({
+          id: a.id,
+          name: a.name,
+          size: a.size,
+          contentType: a.contentType,
+        })),
       });
     } catch (err) {
       console.error("[message] Error (provider):", err);
@@ -82,7 +89,7 @@ export async function GET(req: NextRequest, { params }: Params) {
   const msg = await graphGet<GraphMessage>(
     user.id,
     accountId,
-    `/me/messages/${id}?$select=id,subject,from,toRecipients,ccRecipients,body,receivedDateTime`
+    `/me/messages/${id}?$select=id,subject,from,toRecipients,ccRecipients,body,receivedDateTime&$expand=attachments($select=id,name,size,contentType)`
   );
 
   return NextResponse.json(msg);
