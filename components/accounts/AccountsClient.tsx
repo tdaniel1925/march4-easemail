@@ -638,7 +638,8 @@ function AddJmapAccountModal({
       });
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
-        throw new Error(data.error ?? data.details ?? "Failed to connect");
+        const msg = data.details ? `${data.error}: ${data.details}` : (data.error ?? "Failed to connect");
+        throw new Error(msg);
       }
       const data = await res.json();
       onSuccess({

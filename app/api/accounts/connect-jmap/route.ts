@@ -66,46 +66,48 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  // Encrypt token
-  const encrypted = encryptCredential(token);
+  // Encrypt token + save account
+  try {
+    const encrypted = encryptCredential(token);
+    const accountId = `jmap:${createId()}`;
 
-  // Generate synthetic accountId
-  const accountId = `jmap:${createId()}`;
+    // Check if user has any default accounts (parallel)
+    const [hasDefault, hasImapDefault, hasJmapDefault] = await Promise.all([
+      prisma.msConnectedAccount.findFirst({ where: { userId: user.id, isDefault: true } }),
+      prisma.imapConnectedAccount.findFirst({ where: { userId: user.id, isDefault: true } }),
+      prisma.jmapConnectedAccount.findFirst({ where: { userId: user.id, isDefault: true } }),
+    ]);
+    const isDefault = !hasDefault && !hasImapDefault && !hasJmapDefault;
 
-  // Check if user has any default accounts
-  const hasDefault = await prisma.msConnectedAccount.findFirst({
-    where: { userId: user.id, isDefault: true },
-  });
-  const hasImapDefault = await prisma.imapConnectedAccount.findFirst({
-    where: { userId: user.id, isDefault: true },
-  });
-  const hasJmapDefault = await prisma.jmapConnectedAccount.findFirst({
-    where: { userId: user.id, isDefault: true },
-  });
-  const isDefault = !hasDefault && !hasImapDefault && !hasJmapDefault;
+    const account = await prisma.jmapConnectedAccount.create({
+      data: {
+        userId: user.id,
+        accountId,
+        email,
+        displayName: displayName || email,
+        isDefault,
+        sessionUrl,
+        jmapAccountId,
+        encryptedToken: encrypted.encrypted,
+        encryptionIv: encrypted.iv,
+        encryptionTag: encrypted.tag,
+      },
+    });
 
-  // Create account
-  const account = await prisma.jmapConnectedAccount.create({
-    data: {
-      userId: user.id,
-      accountId,
-      email,
-      displayName: displayName || email,
-      isDefault,
-      sessionUrl,
-      jmapAccountId,
-      encryptedToken: encrypted.encrypted,
-      encryptionIv: encrypted.iv,
-      encryptionTag: encrypted.tag,
-    },
-  });
-
-  return NextResponse.json({
-    id: account.id,
-    accountId: account.accountId,
-    email: account.email,
-    displayName: account.displayName,
-    isDefault: account.isDefault,
-    providerType: "jmap",
-  });
+    return NextResponse.json({
+      id: account.id,
+      accountId: account.accountId,
+      email: account.email,
+      displayName: account.displayName,
+      isDefault: account.isDefault,
+      providerType: "jmap",
+    });
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : "Unknown error";
+    console.error("[connect-jmap] save failed:", msg);
+    return NextResponse.json(
+      { error: "Failed to save account", details: msg },
+      { status: 500 }
+    );
+  }
 }
