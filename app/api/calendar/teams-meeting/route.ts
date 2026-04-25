@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
-import { graphPost, TEAMS_SCOPES } from "@/lib/microsoft/graph";
+import { graphPost } from "@/lib/microsoft/graph";
+import { TEAMS_SCOPES } from "@/lib/microsoft/msal";
 import { isReauthError } from "@/lib/microsoft/auth-errors";
 
 interface GraphOnlineMeeting {
