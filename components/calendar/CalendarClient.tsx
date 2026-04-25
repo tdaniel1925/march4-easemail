@@ -516,7 +516,15 @@ export default function CalendarClient({ weekStart: initialWeekStart, events: in
       const res = await fetch("/api/calendar/nl-create", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text, now: new Date().toISOString() }),
+        body: JSON.stringify({
+          text,
+          now: new Intl.DateTimeFormat("en-CA", {
+            timeZone: userTimeZone,
+            year: "numeric", month: "2-digit", day: "2-digit",
+            hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false,
+          }).format(new Date()).replace(/, /, "T"),
+          timeZone: userTimeZone,
+        }),
       });
       const data = await res.json() as { ok?: boolean; prefill?: NlCreateResponse; error?: string };
       if (!res.ok || !data.ok || !data.prefill) throw new Error(data.error ?? "Failed to parse");
@@ -1059,6 +1067,7 @@ export default function CalendarClient({ weekStart: initialWeekStart, events: in
       {/* ── Event Form Modal ── */}
       {showForm && (
         <EventFormModal
+          userTimeZone={userTimeZone}
           editEvent={editingEvent ?? undefined}
           prefill={!editingEvent && nlPrefill ? {
             subject: nlPrefill.subject,

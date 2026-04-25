@@ -25,7 +25,8 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
   const prompt = `Convert this natural language into a structured calendar event.
 
-Current local date/time: ${now}${timeZone ? ` (${timeZone})` : ""}
+Current local date/time: ${now}
+User's timezone: ${timeZone ?? "America/Chicago"}
 
 Return this exact JSON:
 {
@@ -37,11 +38,14 @@ Return this exact JSON:
   "body": "Relevant notes, case number, or description — empty string if none"
 }
 
+CRITICAL: All datetimes must be in the user's LOCAL timezone (${timeZone ?? "America/Chicago"}), NOT UTC. Do NOT append a Z suffix. Return plain local ISO strings like "2026-03-10T14:00:00".
+
 Rules:
-- Resolve relative dates from the current date/time (tomorrow, next Monday, in 3 days)
+- Resolve relative dates from the current local date/time (tomorrow, next Monday, in 3 days)
 - Default duration: 1 hour unless the type implies otherwise (depositions → 2 hours, hearings → 1 hour)
 - No time given but date is clear → use 09:00 as default
 - Ambiguous time (e.g. "3") → PM if < 8, AM if 8+, unless context says otherwise
+- If user says "all day", use the date with T00:00:00 for start and T23:59:59 for end
 - Extract email addresses for attendees; names only → leave attendees empty
 - For legal events, include the event type in the subject (e.g. "Deposition — Smith v. Jones")
 

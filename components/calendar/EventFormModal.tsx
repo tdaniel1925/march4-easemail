@@ -58,7 +58,9 @@ function toLocalTime(iso: string): string {
   return `${pad(d.getHours())}:${pad(d.getMinutes())}`;
 }
 function combineToIso(date: string, time: string): string {
-  return new Date(`${date}T${time}:00`).toISOString();
+  // Keep as local time — do NOT convert to UTC via toISOString()
+  // The Graph API will interpret this with the timeZone field we pass alongside it
+  return `${date}T${time}:00`;
 }
 function defaultStartDate(): string {
   return toLocalDate(new Date().toISOString());
@@ -78,7 +80,7 @@ function defaultEndTime(startTime: string): string {
 
 // ─────────────────────────────────────────────────────────────────────────────
 
-export default function EventFormModal({ prefill, onClose, onSaved, editEvent }: Props) {
+export default function EventFormModal({ prefill, onClose, onSaved, editEvent, userTimeZone }: Props & { userTimeZone?: string }) {
   const accounts = useAccountStore((s) => s.accounts);
   const defaultAccount = useAccountStore((s) => s.activeAccount);
 
@@ -143,7 +145,7 @@ export default function EventFormModal({ prefill, onClose, onSaved, editEvent }:
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const subjectRef = useRef<HTMLInputElement>(null);
-  const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const tz = userTimeZone ?? Intl.DateTimeFormat().resolvedOptions().timeZone;
 
   useEffect(() => { subjectRef.current?.focus(); }, []);
   useEffect(() => {

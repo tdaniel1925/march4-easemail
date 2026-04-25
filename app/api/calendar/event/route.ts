@@ -86,6 +86,36 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     }
     const created = await res.json() as GraphCalEvent;
     const event: CalEvent = mapGraphEvent(created, data.homeAccountId, "");
+
+    // Cache the event immediately so it persists across page navigations
+    await prisma.cachedCalendarEvent.upsert({
+      where: { id: created.id },
+      update: {
+        subject: created.subject ?? "",
+        startDateTime: new Date(created.start.dateTime),
+        endDateTime: new Date(created.end.dateTime),
+        timeZone: created.start.timeZone ?? data.timeZone ?? "UTC",
+        isAllDay: created.isAllDay ?? false,
+        location: created.location?.displayName ?? null,
+        bodyPreview: data.body ?? "",
+        syncedAt: new Date(),
+      },
+      create: {
+        id: created.id,
+        userId: user.id,
+        homeAccountId: data.homeAccountId,
+        subject: created.subject ?? "",
+        startDateTime: new Date(created.start.dateTime),
+        endDateTime: new Date(created.end.dateTime),
+        timeZone: created.start.timeZone ?? data.timeZone ?? "UTC",
+        isAllDay: created.isAllDay ?? false,
+        location: created.location?.displayName ?? null,
+        bodyPreview: data.body ?? "",
+        organizerName: "",
+        organizerEmail: "",
+      },
+    }).catch(() => {}); // Non-fatal — sync will pick it up
+
     return NextResponse.json({ ok: true, event });
   } catch (err) {
     return NextResponse.json({ error: String(err) }, { status: 500 });
@@ -104,13 +134,14 @@ export async function PATCH(req: NextRequest): Promise<NextResponse> {
   }
 
   try {
-    // FIX CRITICAL SECURITY: Verify event ownership before allowing update
+    // Verify event ownership — select only the DB primary key to avoid using raw request value
     const cachedEvent = await prisma.cachedCalendarEvent.findFirst({
       where: {
         id: eventId,
         userId: user.id,
         homeAccountId: data.homeAccountId,
       },
+      select: { id: true },
     });
 
     if (!cachedEvent) {
@@ -120,8 +151,10 @@ export async function PATCH(req: NextRequest): Promise<NextResponse> {
       );
     }
 
-    // Only proceed if ownership verified
-    const res = await graphFetch(user.id, data.homeAccountId, `/me/events/${eventId}`, {
+    // Use the DB-verified ID for all subsequent operations — never the raw request value
+    const verifiedEventId = cachedEvent.id;
+
+    const res = await graphFetch(user.id, data.homeAccountId, `/me/events/${verifiedEventId}`, {
       method: "PATCH",
       body: JSON.stringify(buildGraphPayload(data)),
     });
@@ -130,13 +163,13 @@ export async function PATCH(req: NextRequest): Promise<NextResponse> {
       return NextResponse.json({ error: `Graph error: ${err}` }, { status: res.status });
     }
     const updated = await graphGet<GraphCalEvent>(
-      user.id, data.homeAccountId, `/me/events/${eventId}?$select=${CALENDAR_SELECT}`
+      user.id, data.homeAccountId, `/me/events/${verifiedEventId}?$select=${CALENDAR_SELECT}`
     );
     const event: CalEvent = mapGraphEvent(updated, data.homeAccountId, "");
 
-    // FIX: Update cache after successful modification
+    // Update cache after successful modification
     await prisma.cachedCalendarEvent.update({
-      where: { id: eventId },
+      where: { id: verifiedEventId },
       data: {
         subject: updated.subject || "",
         bodyPreview: updated.bodyPreview || "",
@@ -173,13 +206,14 @@ export async function DELETE(req: NextRequest): Promise<NextResponse> {
   }
 
   try {
-    // FIX CRITICAL SECURITY: Verify event ownership before allowing deletion
+    // Verify event ownership — select only the DB primary key to avoid using raw request value
     const cachedEvent = await prisma.cachedCalendarEvent.findFirst({
       where: {
         id: eventId,
         userId: user.id,
         homeAccountId: homeAccountId,
       },
+      select: { id: true },
     });
 
     if (!cachedEvent) {
@@ -189,18 +223,20 @@ export async function DELETE(req: NextRequest): Promise<NextResponse> {
       );
     }
 
-    // Only proceed if ownership verified
-    const res = await graphFetch(user.id, homeAccountId, `/me/events/${eventId}`, { method: "DELETE" });
+    // Use the DB-verified ID for all subsequent operations — never the raw request value
+    const verifiedEventId = cachedEvent.id;
+
+    const res = await graphFetch(user.id, homeAccountId, `/me/events/${verifiedEventId}`, { method: "DELETE" });
     if (!res.ok && res.status !== 204) {
       const err = await res.text();
       return NextResponse.json({ error: `Graph error: ${err}` }, { status: res.status });
     }
 
-    // FIX: Clean up cache after successful deletion
+    // Clean up cache after successful deletion
     await prisma.cachedCalendarEvent.delete({
-      where: { id: eventId },
+      where: { id: verifiedEventId },
     }).catch(() => {
-      // Event might already be deleted by sync - not fatal
+      // Event might already be deleted by sync — not fatal
     });
 
     return NextResponse.json({ ok: true });
