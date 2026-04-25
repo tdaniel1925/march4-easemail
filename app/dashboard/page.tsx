@@ -114,13 +114,25 @@ export default async function DashboardPage() {
     // Not fatal
   }
 
-  // Fetch weekly email activity data (last 7 days)
-  // We use findMany + JS aggregation because groupBy on a DateTime field groups by exact
-  // timestamp (not by calendar day), which would return one row per email.
+  // Fetch all independent dashboard data in parallel
   const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
-  let emailsData = [0, 0, 0, 0, 0, 0, 0]; // Mon–Sun default
-  try {
-    const receivedRows = await prisma.cachedEmail.findMany({
+  const startOfTodayDate = new Date(userDate.getFullYear(), userDate.getMonth(), userDate.getDate());
+  const yesterdayStart = new Date(Date.now() - 24 * 60 * 60 * 1000);
+  yesterdayStart.setHours(0, 0, 0, 0);
+  const yesterdayEnd = new Date(yesterdayStart);
+  yesterdayEnd.setHours(23, 59, 59, 999);
+
+  const [
+    receivedRowsResult,
+    unreadCountResult,
+    oldestUnreadResult,
+    sentRowsResult,
+    attachmentsTodayResult,
+    yesterdayUnreadResult,
+    draftsResult,
+  ] = await Promise.all([
+    // Weekly email activity data (last 7 days)
+    prisma.cachedEmail.findMany({
       where: {
         userId: user.id,
         homeAccountId: defaultAccount.homeAccountId,
@@ -128,15 +140,78 @@ export default async function DashboardPage() {
         isDraft: false,
       },
       select: { receivedDateTime: true },
-    });
+    }).catch(() => [] as { receivedDateTime: Date }[]),
 
-    // Map JS day (0=Sun…6=Sat) → Mon-first index [Mon=0 … Sun=6]
+    // Real unread count
+    getUnreadCount(user.id, defaultAccount.homeAccountId).catch(() => 0),
+
+    // Oldest unread email
+    prisma.cachedEmail.findFirst({
+      where: {
+        userId: user.id,
+        homeAccountId: defaultAccount.homeAccountId,
+        isRead: false,
+      },
+      orderBy: { receivedDateTime: 'asc' as const },
+      select: { receivedDateTime: true },
+    }).catch(() => null),
+
+    // Sent emails for the week (for dual chart)
+    prisma.cachedEmail.findMany({
+      where: {
+        userId: user.id,
+        sentDateTime: { gte: sevenDaysAgo },
+        isDraft: false,
+        NOT: { sentDateTime: null },
+        folderId: { in: ["sentitems", "sentItems", "SentItems"] },
+      },
+      select: { sentDateTime: true },
+    }).catch(() => [] as { sentDateTime: Date | null }[]),
+
+    // Attachments count for today
+    prisma.cachedEmail.count({
+      where: {
+        userId: user.id,
+        homeAccountId: defaultAccount.homeAccountId,
+        hasAttachments: true,
+        receivedDateTime: { gte: startOfTodayDate },
+      },
+    }).catch(() => 0),
+
+    // Yesterday's unread count for trend
+    prisma.cachedEmail.count({
+      where: {
+        userId: user.id,
+        homeAccountId: defaultAccount.homeAccountId,
+        isRead: false,
+        receivedDateTime: {
+          gte: yesterdayStart,
+          lte: yesterdayEnd,
+        },
+      },
+    }).catch(() => 0),
+
+    // Drafts count across all accounts
+    Promise.allSettled(
+      dbUser.msAccounts.map(acc =>
+        graphGet<{ value: unknown[] }>(
+          user.id,
+          acc.homeAccountId,
+          `/me/mailFolders/drafts/messages?$top=1&$count=true&$select=id`
+        )
+      )
+    ).catch(() => [] as PromiseSettledResult<{ value: unknown[] }>[]),
+  ]);
+
+  // Process weekly received email data
+  // Map JS day (0=Sun…6=Sat) → Mon-first index [Mon=0 … Sun=6]
+  let emailsData = [0, 0, 0, 0, 0, 0, 0];
+  {
     const dayCountsMap: Record<number, number> = {};
-    receivedRows.forEach(({ receivedDateTime }) => {
+    receivedRowsResult.forEach(({ receivedDateTime }) => {
       const day = new Date(receivedDateTime).getDay(); // 0=Sun
       dayCountsMap[day] = (dayCountsMap[day] ?? 0) + 1;
     });
-
     emailsData = [
       dayCountsMap[1] ?? 0, // Monday
       dayCountsMap[2] ?? 0, // Tuesday
@@ -146,77 +221,26 @@ export default async function DashboardPage() {
       dayCountsMap[6] ?? 0, // Saturday
       dayCountsMap[0] ?? 0, // Sunday
     ];
-  } catch {
-    // Not fatal, use defaults
   }
 
   const userName = dbUser.name ?? defaultAccount.displayName ?? user.email ?? "You";
+  const unreadCount = unreadCountResult;
 
-  // Get real unread count
-  const unreadCount = await getUnreadCount(user.id, defaultAccount.homeAccountId);
-
-  // Fetch drafts count across all accounts
-  let draftsCount = 0;
-  try {
-    const draftsResults = await Promise.allSettled(
-      dbUser.msAccounts.map(acc =>
-        graphGet<{ value: unknown[] }>(
-          user.id,
-          acc.homeAccountId,
-          `/me/mailFolders/drafts/messages?$top=1&$count=true&$select=id`
-        )
-      )
-    );
-    draftsCount = draftsResults
-      .filter((r): r is PromiseFulfilledResult<{ value: unknown[]; "@odata.count"?: number }> => r.status === "fulfilled")
-      .reduce((sum, r) => sum + (r.value["@odata.count"] ?? r.value.value?.length ?? 0), 0);
-  } catch {
-    // Not fatal
-  }
-
-  // Get oldest unread email
+  // Process oldest unread → hoursWaiting
   let hoursWaiting = 0;
-  try {
-    const oldestUnread = await prisma.cachedEmail.findFirst({
-      where: {
-        userId: user.id,
-        homeAccountId: defaultAccount.homeAccountId,
-        isRead: false,
-      },
-      orderBy: { receivedDateTime: 'asc' },
-      select: { receivedDateTime: true }
-    });
-    if (oldestUnread) {
-      hoursWaiting = Math.floor((Date.now() - new Date(oldestUnread.receivedDateTime).getTime()) / 3600000);
-    }
-  } catch {
-    // Not fatal
+  if (oldestUnreadResult) {
+    hoursWaiting = Math.floor((Date.now() - new Date(oldestUnreadResult.receivedDateTime).getTime()) / 3600000);
   }
 
-  // Get sent emails for the week (for dual chart)
-  // Use the DB cache (sentDateTime field) rather than a live Graph call so this is fast.
+  // Process sent email data
   let sentData = [0, 0, 0, 0, 0, 0, 0];
-  try {
-    const sentRows = await prisma.cachedEmail.findMany({
-      where: {
-        userId: user.id,
-        // Include all connected accounts for a full picture
-        sentDateTime: { gte: sevenDaysAgo },
-        isDraft: false,
-        // sentDateTime being non-null implies it's a sent item
-        NOT: { sentDateTime: null },
-        folderId: { in: ["sentitems", "sentItems", "SentItems"] },
-      },
-      select: { sentDateTime: true },
-    });
-
+  {
     const sentDayMap: Record<number, number> = {};
-    sentRows.forEach(({ sentDateTime }) => {
+    sentRowsResult.forEach(({ sentDateTime }) => {
       if (!sentDateTime) return;
       const day = new Date(sentDateTime).getDay(); // 0=Sun
       sentDayMap[day] = (sentDayMap[day] ?? 0) + 1;
     });
-
     sentData = [
       sentDayMap[1] ?? 0,
       sentDayMap[2] ?? 0,
@@ -226,48 +250,15 @@ export default async function DashboardPage() {
       sentDayMap[6] ?? 0,
       sentDayMap[0] ?? 0,
     ];
-  } catch {
-    // Not fatal
   }
 
-  // Get attachments count for today
-  let attachmentsToday = 0;
-  try {
-    const startOfTodayDate = new Date(userDate.getFullYear(), userDate.getMonth(), userDate.getDate());
-    attachmentsToday = await prisma.cachedEmail.count({
-      where: {
-        userId: user.id,
-        homeAccountId: defaultAccount.homeAccountId,
-        hasAttachments: true,
-        receivedDateTime: { gte: startOfTodayDate }
-      }
-    });
-  } catch {
-    // Not fatal
-  }
+  const attachmentsToday = attachmentsTodayResult;
+  const yesterdayUnread = yesterdayUnreadResult;
 
-  // Get yesterday's unread count for trend
-  const yesterdayStart = new Date(Date.now() - 24 * 60 * 60 * 1000);
-  yesterdayStart.setHours(0, 0, 0, 0);
-  const yesterdayEnd = new Date(yesterdayStart);
-  yesterdayEnd.setHours(23, 59, 59, 999);
-
-  let yesterdayUnread = 0;
-  try {
-    yesterdayUnread = await prisma.cachedEmail.count({
-      where: {
-        userId: user.id,
-        homeAccountId: defaultAccount.homeAccountId,
-        isRead: false,
-        receivedDateTime: {
-          gte: yesterdayStart,
-          lte: yesterdayEnd
-        }
-      }
-    });
-  } catch {
-    // Not fatal
-  }
+  // Process drafts count
+  const draftsCount = (draftsResult as PromiseSettledResult<{ value: unknown[]; "@odata.count"?: number }>[])
+    .filter((r): r is PromiseFulfilledResult<{ value: unknown[]; "@odata.count"?: number }> => r.status === "fulfilled")
+    .reduce((sum, r) => sum + (r.value["@odata.count"] ?? r.value.value?.length ?? 0), 0);
 
   return (
     <div className="flex" style={{ height: "100vh", overflow: "hidden" }}>

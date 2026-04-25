@@ -35,6 +35,7 @@ export default async function SentPage() {
 
   let emails: EmailMessage[] = [];
   let initialNextLink: string | null = null;
+  const unreadCountPromise = getUnreadCount(user.id, defaultAccount.homeAccountId);
 
   try {
     const sentFolder = await prisma.cachedFolder.findFirst({
@@ -72,7 +73,7 @@ export default async function SentPage() {
     }
   } catch (err) { console.error("Failed to fetch sent:", err); }
 
-  const unreadCount = await getUnreadCount(user.id, defaultAccount.homeAccountId);
+  const unreadCount = await unreadCountPromise;
 
   return (
     <div className="flex" style={{ height: "100vh", overflow: "hidden" }}>

@@ -29,6 +29,7 @@ export default async function StarredPage() {
 
   let emails: EmailMessage[] = [];
   let initialNextLink: string | null = null;
+  const unreadCountPromise = getUnreadCount(user.id, defaultAccount.homeAccountId);
 
   try {
     // Starred emails can be in any folder — query by flagStatus across all folders
@@ -57,7 +58,7 @@ export default async function StarredPage() {
     }
   } catch (err) { console.error("Failed to fetch starred:", err); }
 
-  const unreadCount = await getUnreadCount(user.id, defaultAccount.homeAccountId);
+  const unreadCount = await unreadCountPromise;
 
   return (
     <div className="flex" style={{ height: "100vh", overflow: "hidden" }}>

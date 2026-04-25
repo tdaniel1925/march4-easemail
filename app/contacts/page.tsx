@@ -52,6 +52,7 @@ export default async function ContactsPage() {
   if (!defaultAccount) redirect("/onboarding");
 
   let contacts: Contact[] = [];
+  const unreadCountPromise = getUnreadCount(user.id, defaultAccount.homeAccountId);
   try {
     // Try DB cache first
     const cached = await prisma.cachedContact.findMany({
@@ -97,7 +98,7 @@ export default async function ContactsPage() {
 
   const userName = dbUser.name ?? defaultAccount.displayName ?? user.email ?? "You";
 
-  const unreadCount = await getUnreadCount(user.id, defaultAccount.homeAccountId);
+  const unreadCount = await unreadCountPromise;
 
   return (
     <div className="flex" style={{ height: "100vh", overflow: "hidden" }}>

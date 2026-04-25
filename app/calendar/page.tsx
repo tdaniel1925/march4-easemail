@@ -44,24 +44,26 @@ export default async function CalendarPage() {
     `&$select=${CALENDAR_SELECT}` +
     `&$top=200`;
 
-  // Fetch from all connected accounts — partial failures don't block the page
-  const results = await Promise.allSettled(
-    dbUser.msAccounts.map((acc) =>
-      graphGet<GraphCalEventList>(user.id, acc.homeAccountId, graphPath).then((data) =>
-        (data.value ?? []).map((e) => mapGraphEvent(e, acc.homeAccountId, acc.msEmail))
+  const defaultAccount = dbUser.defaultAccount;
+
+  // Fetch calendar events and unread count in parallel
+  const [results, unreadCount] = await Promise.all([
+    Promise.allSettled(
+      dbUser.msAccounts.map((acc) =>
+        graphGet<GraphCalEventList>(user.id, acc.homeAccountId, graphPath).then((data) =>
+          (data.value ?? []).map((e) => mapGraphEvent(e, acc.homeAccountId, acc.msEmail))
+        )
       )
-    )
-  );
+    ),
+    defaultAccount ? getUnreadCount(user.id, defaultAccount.homeAccountId) : Promise.resolve(0),
+  ]);
 
   const events: CalEvent[] = results
     .filter((r): r is PromiseFulfilledResult<CalEvent[]> => r.status === "fulfilled")
     .flatMap((r) => r.value)
     .sort((a, b) => new Date(a.startDateTime).getTime() - new Date(b.startDateTime).getTime());
 
-  const defaultAccount = dbUser.defaultAccount;
   const userName = dbUser.name ?? defaultAccount?.displayName ?? user.email ?? "You";
-
-  const unreadCount = defaultAccount ? await getUnreadCount(user.id, defaultAccount.homeAccountId) : 0;
 
   return (
     <div className="flex" style={{ height: "100vh", overflow: "hidden" }}>
