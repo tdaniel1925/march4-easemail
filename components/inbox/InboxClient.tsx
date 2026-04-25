@@ -1100,16 +1100,8 @@ export default function InboxClient({
                   setExpandedEmailId(email.id);
                   setExpandedBody(null);
                   setExpandedDetails(null);
-                  // Use existing body if available (MS Graph includes it in list)
-                  if (email.body?.content && email.body.content !== email.bodyPreview) {
-                    setExpandedBody({ content: email.body.content, contentType: email.body.contentType ?? "text" });
-                    setExpandedDetails({
-                      to: email.toRecipients ?? [],
-                      cc: [],
-                      attachments: email.attachments ?? [],
-                    });
-                  } else if (activeAccount) {
-                    // Fetch full body client-side
+                  // Always fetch full message body for proper formatting
+                  if (activeAccount) {
                     setExpandedLoading(true);
                     const acctParam = encodeURIComponent(activeAccount.homeAccountId);
                     fetch(`/api/mail/message/${encodeURIComponent(email.id)}?homeAccountId=${acctParam}`)
@@ -1243,7 +1235,7 @@ export default function InboxClient({
                   )}
 
                   {/* ── Email body ── */}
-                  <div className="px-6 py-5" style={{ maxHeight: 500, overflowY: "auto" }} onClick={(e) => e.stopPropagation()}>
+                  <div className="px-6 py-1" onClick={(e) => e.stopPropagation()}>
                     {expandedLoading ? (
                       <div className="flex flex-col items-center gap-3 py-10">
                         <svg className="w-5 h-5 animate-spin" style={{ color: "rgb(138 9 9)" }} fill="none" viewBox="0 0 24 24">
@@ -1252,38 +1244,93 @@ export default function InboxClient({
                         </svg>
                         <span className="text-xs font-medium" style={{ color: "rgb(155 155 155)" }}>Loading email content...</span>
                       </div>
-                    ) : expandedBody?.contentType === "html" ? (
-                      <iframe
-                        srcDoc={`<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>
-                          body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 14px; line-height: 1.6; color: #1b1d1d; margin: 0; padding: 0; word-wrap: break-word; overflow-wrap: break-word; }
-                          a { color: #8a0909; }
-                          img { max-width: 100%; height: auto; }
-                          blockquote { border-left: 3px solid #e5e7eb; margin: 12px 0; padding: 8px 16px; color: #6b7280; }
-                          pre, code { background: #f5f5f5; border-radius: 4px; padding: 2px 6px; font-size: 13px; }
-                          pre { padding: 12px; overflow-x: auto; }
-                          table { border-collapse: collapse; max-width: 100%; }
-                          td, th { padding: 4px 8px; }
-                          hr { border: none; border-top: 1px solid #e5e7eb; margin: 16px 0; }
-                          p { margin: 0 0 10px 0; }
-                          h1,h2,h3,h4,h5,h6 { margin: 16px 0 8px; }
-                        </style></head><body>${expandedBody.content}</body></html>`}
-                        className="w-full border-0"
-                        style={{ minHeight: 200 }}
-                        sandbox="allow-same-origin"
-                        onLoad={(e) => {
-                          const frame = e.currentTarget;
-                          if (frame.contentDocument) {
-                            const h = frame.contentDocument.documentElement.scrollHeight;
-                            frame.style.height = `${Math.min(h + 20, 600)}px`;
+                    ) : (() => {
+                      const raw = expandedBody?.content ?? email.bodyPreview;
+                      const isHtml = expandedBody?.contentType === "html" && /<[a-z][\s\S]*>/i.test(raw);
+                      // Convert plain text to structured HTML
+                      let bodyHtml: string;
+                      if (isHtml) {
+                        bodyHtml = raw;
+                      } else {
+                        // Parse plain text: detect reply chains, signatures, paragraphs
+                        const escaped = raw
+                          .replace(/&/g, "&amp;")
+                          .replace(/</g, "&lt;")
+                          .replace(/>/g, "&gt;");
+                        // Detect URLs and make them clickable
+                        const withLinks = escaped.replace(
+                          /(https?:\/\/[^\s<]+)/g,
+                          '<a href="$1" target="_blank" rel="noopener" style="color:#8a0909">$1</a>'
+                        );
+                        // Split into sections by reply headers
+                        const replyPattern = /(?:^|\n)((?:From:|On .+ wrote:|Sent from|_{5,}|-{5,}).*)$/m;
+                        const parts = withLinks.split(replyPattern);
+                        const sections: string[] = [];
+                        for (let i = 0; i < parts.length; i++) {
+                          const part = parts[i].trim();
+                          if (!part) continue;
+                          // Check if this part is a reply header marker
+                          if (/^(?:From:|On .+ wrote:|Sent from|_{5,}|-{5,})/.test(part.replace(/&[a-z]+;/g, m => m === "&gt;" ? ">" : m === "&lt;" ? "<" : m))) {
+                            // Everything from here is quoted — wrap rest in blockquote
+                            const remaining = parts.slice(i).join("").trim();
+                            if (remaining) {
+                              sections.push(`<div style="border-left:3px solid #e0e0e0;padding:12px 16px;margin:16px 0;color:#6b7280;font-size:13px;line-height:1.5">${remaining.replace(/\n/g, "<br>")}</div>`);
+                            }
+                            break;
                           }
-                        }}
-                        title="Email content"
-                      />
-                    ) : (
-                      <div className="text-sm leading-relaxed whitespace-pre-wrap" style={{ color: "rgb(38 38 38)", fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" }}>
-                        {expandedBody?.content ?? email.bodyPreview}
-                      </div>
-                    )}
+                          // Regular content — convert double newlines to paragraphs, single to <br>
+                          const paragraphs = part.split(/\n{2,}/).map(p => p.trim()).filter(Boolean);
+                          sections.push(paragraphs.map(p => `<p style="margin:0 0 12px">${p.replace(/\n/g, "<br>")}</p>`).join(""));
+                        }
+                        bodyHtml = sections.join("") || `<p>${withLinks.replace(/\n/g, "<br>")}</p>`;
+                      }
+                      const iframeStyles = `
+                        * { box-sizing: border-box; }
+                        body {
+                          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+                          font-size: 14px; line-height: 1.65; color: #1b1d1d;
+                          margin: 0; padding: 16px 0;
+                          word-wrap: break-word; overflow-wrap: break-word;
+                          -webkit-font-smoothing: antialiased;
+                        }
+                        a { color: #8a0909; text-decoration: underline; }
+                        a:hover { opacity: 0.8; }
+                        img { max-width: 100%; height: auto; border-radius: 4px; }
+                        blockquote {
+                          border-left: 3px solid #e0e0e0; margin: 16px 0; padding: 8px 16px;
+                          color: #6b7280; font-size: 13px;
+                        }
+                        pre { background: #f5f5f5; border-radius: 8px; padding: 12px 16px; overflow-x: auto; font-size: 13px; }
+                        code { background: #f5f5f5; border-radius: 4px; padding: 2px 6px; font-size: 13px; }
+                        table { border-collapse: collapse; max-width: 100%; margin: 8px 0; }
+                        td, th { padding: 6px 10px; border: 1px solid #e5e7eb; }
+                        th { background: #f9fafb; font-weight: 600; }
+                        hr { border: none; border-top: 1px solid #e5e7eb; margin: 20px 0; }
+                        p { margin: 0 0 12px; }
+                        h1 { font-size: 20px; margin: 20px 0 8px; }
+                        h2 { font-size: 18px; margin: 18px 0 8px; }
+                        h3 { font-size: 16px; margin: 16px 0 6px; }
+                        ul, ol { margin: 8px 0; padding-left: 24px; }
+                        li { margin: 4px 0; }
+                        .gmail_quote, .yahoo_quoted { border-left: 3px solid #e0e0e0; padding: 8px 16px; margin: 16px 0; color: #6b7280; }
+                      `;
+                      return (
+                        <iframe
+                          srcDoc={`<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>${iframeStyles}</style></head><body>${bodyHtml}</body></html>`}
+                          className="w-full border-0"
+                          style={{ minHeight: 120 }}
+                          sandbox="allow-same-origin allow-popups"
+                          onLoad={(e) => {
+                            const frame = e.currentTarget;
+                            if (frame.contentDocument) {
+                              const h = frame.contentDocument.documentElement.scrollHeight;
+                              frame.style.height = `${Math.min(h + 24, 800)}px`;
+                            }
+                          }}
+                          title="Email content"
+                        />
+                      );
+                    })()}
                   </div>
 
                   {/* ── Action bar ── */}
