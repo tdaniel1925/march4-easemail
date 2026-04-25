@@ -19,7 +19,23 @@ interface GraphMessage {
     name: string;
     size: number;
     contentType: string;
+    isInline?: boolean;
   }[];
+}
+
+// Filter out inline/signature attachments (logos, tracking pixels, signature images)
+const SIGNATURE_PATTERNS = /^(image\d+|logo|signature|banner|spacer|pixel|icon|footer|header|cid)/i;
+const MIN_ATTACHMENT_SIZE = 5 * 1024; // 5KB — smaller files are usually inline images/tracking pixels
+
+function isRealAttachment(att: { name: string; size: number; contentType: string; isInline?: boolean }): boolean {
+  // Skip inline attachments (embedded in email body)
+  if (att.isInline) return false;
+  // Skip very small images (tracking pixels, spacer gifs, signature logos)
+  if (att.contentType.startsWith("image/") && att.size < MIN_ATTACHMENT_SIZE) return false;
+  // Skip files matching common signature image patterns
+  const baseName = att.name.replace(/\.[^.]+$/, "");
+  if (SIGNATURE_PATTERNS.test(baseName)) return false;
+  return true;
 }
 
 interface GraphMessagesResponse {
@@ -57,17 +73,16 @@ export default async function AttachmentsPage() {
   let sentNextLink: string | null = null;
 
   try {
-    // Fetch received attachments (ordered by date, top 50)
-    // Note: Graph API $filter combining hasAttachments with date ranges can fail,
-    // so we filter hasAttachments only and rely on $orderby for recency
+    // Fetch received attachments — newest first, including isInline for filtering
     const receivedData = await graphGet<GraphMessagesResponse>(
       user.id,
       defaultAccount.homeAccountId,
-      `/me/messages?$filter=hasAttachments eq true&$top=50&$select=id,subject,from,receivedDateTime,hasAttachments&$expand=attachments($select=id,name,size,contentType)`
+      `/me/messages?$filter=hasAttachments eq true&$orderby=receivedDateTime desc&$top=50&$select=id,subject,from,receivedDateTime,hasAttachments&$expand=attachments($select=id,name,size,contentType,isInline)`
     );
 
     for (const message of receivedData.value ?? []) {
       for (const att of message.attachments ?? []) {
+        if (!isRealAttachment(att)) continue; // Skip inline/signature attachments
         attachments.push({
           id: att.id,
           name: att.name,
@@ -85,16 +100,17 @@ export default async function AttachmentsPage() {
     }
     receivedNextLink = receivedData["@odata.nextLink"] || null;
 
-    // Fetch sent attachments (ordered by date, top 50)
+    // Fetch sent attachments — newest first
     const sentData = await graphGet<GraphMessagesResponse>(
       user.id,
       defaultAccount.homeAccountId,
-      `/me/mailFolders/sentitems/messages?$filter=hasAttachments eq true&$top=50&$select=id,subject,toRecipients,sentDateTime,hasAttachments&$expand=attachments($select=id,name,size,contentType)`
+      `/me/mailFolders/sentitems/messages?$filter=hasAttachments eq true&$orderby=sentDateTime desc&$top=50&$select=id,subject,toRecipients,sentDateTime,hasAttachments&$expand=attachments($select=id,name,size,contentType,isInline)`
     );
 
     for (const message of sentData.value ?? []) {
       const firstRecipient = message.toRecipients?.[0];
       for (const att of message.attachments ?? []) {
+        if (!isRealAttachment(att)) continue; // Skip inline/signature attachments
         attachments.push({
           id: att.id,
           name: att.name,

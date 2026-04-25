@@ -14,7 +14,19 @@ interface GraphMessage {
     name: string;
     size: number;
     contentType: string;
+    isInline?: boolean;
   }[];
+}
+
+const SIGNATURE_PATTERNS = /^(image\d+|logo|signature|banner|spacer|pixel|icon|footer|header|cid)/i;
+const MIN_ATTACHMENT_SIZE = 5 * 1024;
+
+function isRealAttachment(att: { name: string; size: number; contentType: string; isInline?: boolean }): boolean {
+  if (att.isInline) return false;
+  if (att.contentType.startsWith("image/") && att.size < MIN_ATTACHMENT_SIZE) return false;
+  const baseName = att.name.replace(/\.[^.]+$/, "");
+  if (SIGNATURE_PATTERNS.test(baseName)) return false;
+  return true;
 }
 
 interface GraphMessagesResponse {
@@ -54,6 +66,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     const items = [];
     for (const message of data.value ?? []) {
       for (const att of message.attachments ?? []) {
+        if (!isRealAttachment(att)) continue; // Skip inline/signature attachments
         const isSent = direction === "sent";
         const firstRecipient = message.toRecipients?.[0];
         items.push({
