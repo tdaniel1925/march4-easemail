@@ -70,7 +70,7 @@ interface JmapEmail {
   htmlBody?: { partId: string; blobId: string; type: string }[];
   textBody?: { partId: string; blobId: string; type: string }[];
   bodyValues?: Record<string, { value: string; isEncodingProblem: boolean }>;
-  attachments?: { blobId: string; name: string; size: number; type: string }[];
+  attachments?: { blobId: string; name: string; size: number; type: string; cid?: string; disposition?: string }[];
 }
 
 interface JmapContactCard {
@@ -308,12 +308,14 @@ function normalizeJmapEmail(
     importance: "normal",
     folderId: `${accountId}:${mailboxId}`,
     isDraft: !!keywords["$draft"],
-    attachments: email.attachments?.map((a) => ({
-      id: a.blobId,
-      name: a.name ?? "attachment",
-      size: a.size ?? 0,
-      contentType: a.type ?? "application/octet-stream",
-    })),
+    attachments: email.attachments
+      ?.filter((a) => a.disposition !== "inline" || !a.type?.startsWith("image/"))
+      .map((a) => ({
+        id: a.blobId,
+        name: a.name || `file.${(a.type ?? "bin").split("/").pop()}`,
+        size: a.size ?? 0,
+        contentType: a.type ?? "application/octet-stream",
+      })),
   };
 }
 

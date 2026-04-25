@@ -747,28 +747,7 @@ export default function InboxClient({
                 </span>
               )}
             </h2>
-            <div className="flex items-center gap-2">
-              <a
-                href="/compose"
-                className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-[8px] transition-colors text-white flex-shrink-0"
-                style={{ backgroundColor: "rgb(138 9 9)" }}
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
-                </svg>
-                New Email
-              </a>
-              <button
-                onClick={() => setShowEventForm(true)}
-                className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-[8px] transition-colors flex-shrink-0"
-                style={{ backgroundColor: "rgb(245 245 245)", color: "rgb(82 82 82)", border: "1px solid rgb(229 229 229)" }}
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                </svg>
-                Event
-              </button>
-              <div className="w-px h-5 bg-neutral-200" />
+            <div className="flex items-center gap-1">
               <button
                 onClick={() => setConversationView(!conversationView)}
                 className="p-1.5 rounded-[10px] transition-colors"
@@ -1205,7 +1184,29 @@ export default function InboxClient({
           }
           bodyHtml = sections.join("") || `<p>${withLinks.replace(/\n/g, "<br>")}</p>`;
         }
-        const iframeStyles = `*{box-sizing:border-box}body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',sans-serif;font-size:14px;line-height:1.65;color:#1b1d1d;margin:0;padding:16px 0;word-wrap:break-word;overflow-wrap:break-word;-webkit-font-smoothing:antialiased}a{color:#8a0909;text-decoration:underline}a:hover{opacity:.8}img{max-width:100%;height:auto;border-radius:4px}blockquote{border-left:3px solid #e0e0e0;margin:16px 0;padding:8px 16px;color:#6b7280;font-size:13px}pre{background:#f5f5f5;border-radius:8px;padding:12px 16px;overflow-x:auto;font-size:13px}code{background:#f5f5f5;border-radius:4px;padding:2px 6px;font-size:13px}table{border-collapse:collapse;max-width:100%;margin:8px 0}td,th{padding:6px 10px;border:1px solid #e5e7eb}th{background:#f9fafb;font-weight:600}hr{border:none;border-top:1px solid #e5e7eb;margin:20px 0}p{margin:0 0 12px}h1{font-size:20px;margin:20px 0 8px}h2{font-size:18px;margin:18px 0 8px}h3{font-size:16px;margin:16px 0 6px}ul,ol{margin:8px 0;padding-left:24px}li{margin:4px 0}.gmail_quote,.yahoo_quoted{border-left:3px solid #e0e0e0;padding:8px 16px;margin:16px 0;color:#6b7280}`;
+        const iframeStyles = `
+*{box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',sans-serif;font-size:14px;line-height:1.65;color:#1b1d1d;margin:0;padding:16px 0;word-wrap:break-word;overflow-wrap:break-word;-webkit-font-smoothing:antialiased;max-width:100%;overflow-x:hidden}
+a{color:#8a0909;text-decoration:underline}
+a:hover{opacity:.8}
+img{max-width:100%!important;height:auto!important;display:inline-block}
+img[src=""]{display:none}
+img:not([src]){display:none}
+blockquote{border-left:3px solid #e0e0e0;margin:16px 0;padding:8px 16px;color:#6b7280;font-size:13px}
+pre{background:#f5f5f5;border-radius:8px;padding:12px 16px;overflow-x:auto;font-size:13px}
+code{background:#f5f5f5;border-radius:4px;padding:2px 6px;font-size:13px}
+table{max-width:100%!important;width:auto!important;border-collapse:collapse;table-layout:auto}
+table[width]{width:100%!important}
+td,th{word-break:break-word;max-width:100%}
+hr{border:none;border-top:1px solid #e5e7eb;margin:20px 0}
+p{margin:0 0 12px}
+h1{font-size:20px;margin:20px 0 8px}h2{font-size:18px;margin:18px 0 8px}h3{font-size:16px;margin:16px 0 6px}
+ul,ol{margin:8px 0;padding-left:24px}
+li{margin:4px 0}
+.gmail_quote,.yahoo_quoted{border-left:3px solid #e0e0e0;padding:8px 16px;margin:16px 0;color:#6b7280}
+div[style*="width"]{max-width:100%!important}
+center{max-width:100%}
+`;
 
         return (
           <div className="flex flex-col flex-1 bg-white" style={{ height: "100vh", overflow: "hidden" }}>

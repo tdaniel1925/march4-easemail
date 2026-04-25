@@ -78,11 +78,9 @@ export function StoreInitializer({
       })),
     ];
 
-    useAccountStore.setState({
-      accounts: allAccounts,
-      activeAccount: allAccounts.find((a) => a.isDefault) ?? allAccounts[0] ?? null,
-      inboxUnread,
-    });
+    // Use setAccounts action — it restores the last-used account from localStorage
+    useAccountStore.getState().setAccounts(allAccounts);
+    useAccountStore.setState({ inboxUnread });
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [accountKey, inboxUnread]);
   return null;
