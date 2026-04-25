@@ -1276,16 +1276,30 @@ export default function InboxClient({
                     {expandedDetails.attachments.length} attachment{expandedDetails.attachments.length !== 1 ? "s" : ""}
                   </p>
                   <div className="flex gap-2 flex-wrap">
-                    {expandedDetails.attachments.map((att) => (
-                      <a key={att.id} href={`/api/mail/attachments/${encodeURIComponent(selectedEmail.id)}/${encodeURIComponent(att.id)}?homeAccountId=${encodeURIComponent(acctId)}`} className="flex items-center gap-2.5 px-3 py-2.5 rounded-[10px] border border-neutral-200 bg-white hover:border-neutral-300 hover:shadow-sm transition-all" style={{ minWidth: 180, maxWidth: 260 }}>
-                        <span className="text-lg flex-shrink-0">{fileIcon(att.contentType)}</span>
-                        <div className="flex-1 min-w-0">
-                          <p className="text-xs font-medium truncate" style={{ color: "rgb(27 29 29)" }}>{att.name}</p>
-                          <p className="text-xs" style={{ color: "rgb(155 155 155)" }}>{formatSize(att.size)}</p>
-                        </div>
-                        <svg className="w-4 h-4 flex-shrink-0" style={{ color: "rgb(155 155 155)" }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
-                      </a>
-                    ))}
+                    {expandedDetails.attachments.map((att) => {
+                      const attUrl = `/api/mail/attachments/${encodeURIComponent(selectedEmail.id)}/${encodeURIComponent(att.id)}?homeAccountId=${encodeURIComponent(acctId)}`;
+                      const isImage = att.contentType.startsWith("image/");
+                      return isImage ? (
+                        <a key={att.id} href={`${attUrl}&mode=inline`} target="_blank" rel="noopener noreferrer" className="flex flex-col rounded-[10px] border border-neutral-200 bg-white hover:border-neutral-300 hover:shadow-sm transition-all overflow-hidden" style={{ width: 160 }}>
+                          <div className="h-24 bg-neutral-50 flex items-center justify-center overflow-hidden">
+                            <img src={`${attUrl}&mode=inline`} alt={att.name} className="max-w-full max-h-full object-cover" loading="lazy" />
+                          </div>
+                          <div className="px-2.5 py-2">
+                            <p className="text-xs font-medium truncate" style={{ color: "rgb(27 29 29)" }}>{att.name}</p>
+                            <p className="text-xs" style={{ color: "rgb(155 155 155)" }}>{formatSize(att.size)}</p>
+                          </div>
+                        </a>
+                      ) : (
+                        <a key={att.id} href={attUrl} className="flex items-center gap-2.5 px-3 py-2.5 rounded-[10px] border border-neutral-200 bg-white hover:border-neutral-300 hover:shadow-sm transition-all" style={{ minWidth: 180, maxWidth: 260 }}>
+                          <span className="text-lg flex-shrink-0">{fileIcon(att.contentType)}</span>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-xs font-medium truncate" style={{ color: "rgb(27 29 29)" }}>{att.name}</p>
+                            <p className="text-xs" style={{ color: "rgb(155 155 155)" }}>{formatSize(att.size)}</p>
+                          </div>
+                          <svg className="w-4 h-4 flex-shrink-0" style={{ color: "rgb(155 155 155)" }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+                        </a>
+                      );
+                    })}
                   </div>
                 </div>
               )}
