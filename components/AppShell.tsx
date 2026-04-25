@@ -1,11 +1,10 @@
 "use client";
 
-import { useEffect, useCallback, Suspense, lazy, useRef } from "react";
+import { useState, useEffect, useCallback, Suspense, lazy, useRef } from "react";
 import { useAccountStore } from "@/lib/stores/account-store";
 import {
   useDataCacheStore,
   pathToView,
-  viewToPath,
   type AppView,
 } from "@/lib/stores/data-cache";
 
@@ -60,39 +59,33 @@ interface AccountItem {
   providerType: ProviderType;
 }
 
+interface DashboardData {
+  userName: string;
+  events: CalendarEvent[];
+  recentUnread: (EmailMessage & { accountName?: string })[];
+  eventsToday: number;
+  emailsData: number[];
+  sentData: number[];
+  draftsCount: number;
+  hoursWaiting: number;
+  attachmentsToday: number;
+  unreadTrend: number;
+}
+
 /** Initial SSR data passed from the layout */
 export interface AppShellProps {
-  /** Initial inbox emails for the active account */
   initialEmails: EmailMessage[];
   initialNextLink: string | null;
   totalUnread: number;
-  /** Initial calendar events for the current week */
   initialEvents: CalEvent[];
   weekStart: string;
   userTimeZone: string;
-  /** Dashboard data */
-  dashboardData: {
-    userName: string;
-    events: CalendarEvent[];
-    recentUnread: (EmailMessage & { accountName?: string })[];
-    eventsToday: number;
-    emailsData: number[];
-    sentData: number[];
-    draftsCount: number;
-    hoursWaiting: number;
-    attachmentsToday: number;
-    unreadTrend: number;
-  };
-  /** User profile */
+  dashboardData: DashboardData;
   profile: { name: string; email: string };
-  /** Compose accounts */
   composeAccounts: ComposeAccount[];
-  /** Accounts list */
   accountsList: AccountItem[];
-  /** User info for Teams/Sidebar */
   userName: string;
   userEmail: string;
-  /** The initial view to render based on the URL */
   initialView: AppView;
   initialFolderId?: string;
   initialEmailId?: string;
@@ -122,6 +115,14 @@ export default function AppShell(props: AppShellProps) {
   const composeParams = useDataCacheStore((s) => s.composeParams);
   const activeAccount = useAccountStore((s) => s.activeAccount);
   const prevAccountRef = useRef(activeAccount?.homeAccountId);
+
+  // ── Account-specific data (starts with SSR props, refetched on account switch)
+  const [inboxEmails, setInboxEmails] = useState(props.initialEmails);
+  const [inboxNextLink, setInboxNextLink] = useState(props.initialNextLink);
+  const [calEvents, setCalEvents] = useState(props.initialEvents);
+  const [calWeekStart, setCalWeekStart] = useState(props.weekStart);
+  const [dashData, setDashData] = useState(props.dashboardData);
+  const [accountSwitching, setAccountSwitching] = useState(false);
 
   // ── Initialize view from URL on mount ──────────────────────────────────────
   useEffect(() => {
@@ -177,6 +178,39 @@ export default function AppShell(props: AppShellProps) {
     return () => window.removeEventListener("popstate", onPopState);
   }, []);
 
+  // ── Refetch data when account changes ──────────────────────────────────────
+  useEffect(() => {
+    const currentId = activeAccount?.homeAccountId;
+    if (!currentId || currentId === prevAccountRef.current) return;
+    prevAccountRef.current = currentId;
+    setAccountSwitching(true);
+
+    const hid = encodeURIComponent(currentId);
+
+    // Fetch inbox + calendar in parallel
+    Promise.all([
+      fetch(`/api/mail/inbox?homeAccountId=${hid}&$top=50`)
+        .then((r) => r.ok ? r.json() : null)
+        .catch(() => null),
+      fetch(`/api/calendar/week?homeAccountId=${hid}`)
+        .then((r) => r.ok ? r.json() : null)
+        .catch(() => null),
+    ]).then(([inboxData, calData]) => {
+      if (inboxData) {
+        setInboxEmails(inboxData.emails ?? []);
+        setInboxNextLink(inboxData.nextLink ?? null);
+        if (inboxData.unreadCount != null) {
+          useAccountStore.getState().setInboxUnread(inboxData.unreadCount);
+        }
+      }
+      if (calData) {
+        setCalEvents(calData.events ?? []);
+        if (calData.weekStart) setCalWeekStart(calData.weekStart);
+      }
+      setAccountSwitching(false);
+    });
+  }, [activeAccount?.homeAccountId]);
+
   // ── Background polling (30s) for active account inbox ──────────────────────
   useEffect(() => {
     if (!activeAccount) return;
@@ -196,12 +230,17 @@ export default function AppShell(props: AppShellProps) {
 
   // ── Render view ────────────────────────────────────────────────────────────
   const renderView = useCallback(() => {
+    // Show skeleton during account switch for data-heavy views
+    if (accountSwitching && ["inbox", "calendar", "dashboard"].includes(activeView)) {
+      return <ViewSkeleton />;
+    }
+
     switch (activeView) {
       case "inbox":
         return (
           <InboxClient
-            initialEmails={props.initialEmails}
-            initialNextLink={props.initialNextLink}
+            initialEmails={inboxEmails}
+            initialNextLink={inboxNextLink}
             totalUnread={props.totalUnread}
           />
         );
@@ -209,8 +248,8 @@ export default function AppShell(props: AppShellProps) {
       case "calendar":
         return (
           <CalendarClient
-            weekStart={props.weekStart}
-            events={props.initialEvents}
+            weekStart={calWeekStart}
+            events={calEvents}
             userTimeZone={props.userTimeZone}
           />
         );
@@ -218,16 +257,16 @@ export default function AppShell(props: AppShellProps) {
       case "dashboard":
         return (
           <DashboardClient
-            userName={props.dashboardData.userName}
-            events={props.dashboardData.events}
-            recentUnread={props.dashboardData.recentUnread}
-            eventsToday={props.dashboardData.eventsToday}
-            emailsData={props.dashboardData.emailsData}
-            sentData={props.dashboardData.sentData}
-            draftsCount={props.dashboardData.draftsCount}
-            hoursWaiting={props.dashboardData.hoursWaiting}
-            attachmentsToday={props.dashboardData.attachmentsToday}
-            unreadTrend={props.dashboardData.unreadTrend}
+            userName={dashData.userName}
+            events={dashData.events}
+            recentUnread={dashData.recentUnread}
+            eventsToday={dashData.eventsToday}
+            emailsData={dashData.emailsData}
+            sentData={dashData.sentData}
+            draftsCount={dashData.draftsCount}
+            hoursWaiting={dashData.hoursWaiting}
+            attachmentsToday={dashData.attachmentsToday}
+            unreadTrend={dashData.unreadTrend}
           />
         );
 
@@ -326,13 +365,13 @@ export default function AppShell(props: AppShellProps) {
       default:
         return (
           <InboxClient
-            initialEmails={props.initialEmails}
-            initialNextLink={props.initialNextLink}
+            initialEmails={inboxEmails}
+            initialNextLink={inboxNextLink}
             totalUnread={props.totalUnread}
           />
         );
     }
-  }, [activeView, activeFolderId, activeEmailId, activeEmailAccountId, activeEmailReturnTo, composeParams, activeAccount?.homeAccountId, props]);
+  }, [activeView, activeFolderId, activeEmailId, activeEmailAccountId, activeEmailReturnTo, composeParams, activeAccount?.homeAccountId, props, inboxEmails, inboxNextLink, calEvents, calWeekStart, dashData, accountSwitching]);
 
   return (
     <Suspense fallback={<ViewSkeleton />}>

@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import Link from "next/link";
 import { useAccountStore } from "@/lib/stores/account-store";
+import { useDataCacheStore } from "@/lib/stores/data-cache";
 
 function getInitials(name: string) {
   return name.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2);
@@ -93,10 +93,13 @@ export default function AccountSwitcher() {
             );
           })}
           <div className="border-t border-neutral-100">
-            <Link
-              href="/accounts"
-              onClick={() => setOpen(false)}
-              className="flex items-center gap-2 px-3 py-2.5 text-xs transition-colors"
+            <button
+              onClick={() => {
+                setOpen(false);
+                useDataCacheStore.getState().setActiveView("accounts");
+                window.history.pushState(null, "", "/accounts");
+              }}
+              className="w-full flex items-center gap-2 px-3 py-2.5 text-xs transition-colors text-left"
               style={{ color: "rgb(115 115 115)" }}
               onMouseEnter={(e) => { e.currentTarget.style.color = "rgb(138 9 9)"; e.currentTarget.style.backgroundColor = "rgb(253 235 235)"; }}
               onMouseLeave={(e) => { e.currentTarget.style.color = "rgb(115 115 115)"; e.currentTarget.style.backgroundColor = "white"; }}
@@ -105,7 +108,7 @@ export default function AccountSwitcher() {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
               </svg>
               Add another account
-            </Link>
+            </button>
           </div>
         </div>
       )}

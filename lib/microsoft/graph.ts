@@ -1,6 +1,9 @@
 /**
  * Microsoft Graph API helper.
  * All calls go through graphFetch() which handles token acquisition.
+ *
+ * Performance: tokens are cached per (userId, homeAccountId, scopes) within
+ * a request so that N Graph calls only trigger 1 DB lookup + 1 MSAL refresh.
  */
 import { createMsalClient, acquireTokenSilent, GRAPH_SCOPES } from "./msal";
 
@@ -8,6 +11,40 @@ import { createMsalClient, acquireTokenSilent, GRAPH_SCOPES } from "./msal";
 export { GRAPH_SCOPES, TEAMS_SCOPES } from "./msal";
 
 const GRAPH_BASE = "https://graph.microsoft.com/v1.0";
+
+// ─── Per-request token cache ─────────────────────────────────────────────────
+// Avoids hitting the DB for every single graphGet() call in the same request.
+// The cache is module-scoped but tokens expire after 5 minutes to be safe.
+
+const tokenCache = new Map<string, { token: string; expiresAt: number }>();
+
+async function getToken(
+  userId: string,
+  homeAccountId: string,
+  scopes: string[]
+): Promise<string> {
+  const key = `${userId}:${homeAccountId}:${scopes.join(",")}`;
+  const cached = tokenCache.get(key);
+  if (cached && cached.expiresAt > Date.now()) {
+    return cached.token;
+  }
+
+  const msal = createMsalClient(userId);
+  const token = await acquireTokenSilent(msal, homeAccountId, userId, scopes);
+
+  // Cache for 5 minutes (tokens typically last 60 min, this is conservative)
+  tokenCache.set(key, { token, expiresAt: Date.now() + 5 * 60 * 1000 });
+
+  // Prevent unbounded growth — evict entries if cache is too large
+  if (tokenCache.size > 100) {
+    const now = Date.now();
+    for (const [k, v] of tokenCache) {
+      if (v.expiresAt < now) tokenCache.delete(k);
+    }
+  }
+
+  return token;
+}
 
 // ─── Core Fetch ──────────────────────────────────────────────────────────────
 
@@ -18,8 +55,7 @@ export async function graphFetch(
   options: RequestInit = {},
   scopes: string[] = GRAPH_SCOPES
 ): Promise<Response> {
-  const msal = createMsalClient(userId);
-  const token = await acquireTokenSilent(msal, homeAccountId, userId, scopes);
+  const token = await getToken(userId, homeAccountId, scopes);
 
   return fetch(`${GRAPH_BASE}${path}`, {
     ...options,

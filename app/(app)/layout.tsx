@@ -78,14 +78,18 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   // ── Fetch all initial data in parallel ─────────────────────────────────────
   const providerType = detectProviderType(activeAccount.homeAccountId);
 
+  // Shared promises to avoid duplicate queries
+  const sharedUnreadPromise = getUnreadCount(user.id, activeAccount.homeAccountId).catch(() => 0);
+  const sharedInboxFolderPromise = prisma.cachedFolder.findFirst({
+    where: { userId: user.id, homeAccountId: activeAccount.homeAccountId, wellKnownName: "inbox" },
+  }).catch(() => null);
+
   // Inbox data
   const inboxPromise = (async (): Promise<{ emails: EmailMessage[]; nextLink: string | null; unreadCount: number }> => {
     try {
       const [inboxFolder, unreadCount] = await Promise.all([
-        prisma.cachedFolder.findFirst({
-          where: { userId: user.id, wellKnownName: "inbox" },
-        }),
-        getUnreadCount(user.id, activeAccount.homeAccountId),
+        sharedInboxFolderPromise,
+        sharedUnreadPromise,
       ]);
 
       let emails: EmailMessage[] = [];
@@ -295,7 +299,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
           where: { userId: user.id, homeAccountId: activeAccount.homeAccountId, receivedDateTime: { gte: sevenDaysAgo }, isDraft: false },
           select: { receivedDateTime: true },
         }).catch(() => [] as { receivedDateTime: Date }[]),
-        getUnreadCount(user.id, activeAccount.homeAccountId).catch(() => 0),
+        sharedUnreadPromise,
         prisma.cachedEmail.findFirst({
           where: { userId: user.id, homeAccountId: activeAccount.homeAccountId, isRead: false },
           orderBy: { receivedDateTime: "asc" as const },
