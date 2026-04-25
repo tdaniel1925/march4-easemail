@@ -58,18 +58,42 @@ export default async function DashboardPage() {
   const startOfDay = new Date(userDate.getFullYear(), userDate.getMonth(), userDate.getDate()).toISOString();
   const endOfDay = new Date(userDate.getFullYear(), userDate.getMonth(), userDate.getDate(), 23, 59, 59).toISOString();
 
+  // Fetch today's events from ALL providers (MS + JMAP) in parallel
   let events: GraphEventList["value"] = [];
   try {
-    const results = await Promise.allSettled(
-      dbUser.msAccounts.map((acc) =>
-        graphGet<GraphEventList>(
-          user.id,
-          acc.homeAccountId,
-          `/me/calendarView?startDateTime=${encodeURIComponent(startOfDay)}&endDateTime=${encodeURIComponent(endOfDay)}&$top=10&$select=id,subject,start,end,location,attendees&$orderby=start/dateTime`
+    const todayDateStr = startOfDay.split("T")[0];
+    const [msResults, jmapResults] = await Promise.all([
+      Promise.allSettled(
+        dbUser.msAccounts.map((acc) =>
+          graphGet<GraphEventList>(
+            user.id,
+            acc.homeAccountId,
+            `/me/calendarView?startDateTime=${encodeURIComponent(startOfDay)}&endDateTime=${encodeURIComponent(endOfDay)}&$top=10&$select=id,subject,start,end,location,attendees&$orderby=start/dateTime`
+          )
         )
-      )
-    );
-    events = results
+      ),
+      (async () => {
+        if (!dbUser.jmapAccounts.length) return [] as PromiseSettledResult<GraphEventList>[];
+        const { JmapProvider } = await import("@/lib/providers/jmap");
+        const provider = new JmapProvider();
+        return Promise.allSettled(
+          dbUser.jmapAccounts.map(async (acc) => {
+            const jmapEvents = await provider.fetchEvents(user.id, acc.accountId, todayDateStr, todayDateStr);
+            return {
+              value: jmapEvents.map((e) => ({
+                id: e.id,
+                subject: e.subject,
+                start: { dateTime: e.startDateTime, timeZone: e.timeZone },
+                end: { dateTime: e.endDateTime, timeZone: e.timeZone },
+                location: e.location ? { displayName: e.location } : undefined,
+                attendees: e.attendees.map((a) => ({ emailAddress: { name: a.name } })),
+              })),
+            } as GraphEventList;
+          })
+        );
+      })(),
+    ]);
+    events = [...msResults, ...jmapResults]
       .filter((r): r is PromiseFulfilledResult<GraphEventList> => r.status === "fulfilled")
       .flatMap((r) => r.value.value ?? [])
       .sort((a, b) => new Date(a.start.dateTime).getTime() - new Date(b.start.dateTime).getTime())
@@ -78,20 +102,46 @@ export default async function DashboardPage() {
     // Not fatal
   }
 
-  // Fetch top unread emails across all accounts
+  // Fetch top unread emails from ALL providers (MS + JMAP)
   let recentUnread: (EmailMessage & { accountName?: string })[] = [];
   try {
-    const results = await Promise.allSettled(
-      dbUser.msAccounts.map(acc =>
-        graphGet<GraphMessageList>(
-          user.id,
-          acc.homeAccountId,
-          `/me/messages?$filter=isRead eq false&$top=3&$select=id,subject,bodyPreview,receivedDateTime,isRead,hasAttachments,flag,from,toRecipients,ccRecipients&$orderby=receivedDateTime desc`
+    const [msResults, jmapResults] = await Promise.all([
+      Promise.allSettled(
+        dbUser.msAccounts.map(acc =>
+          graphGet<GraphMessageList>(
+            user.id,
+            acc.homeAccountId,
+            `/me/messages?$filter=isRead eq false&$top=3&$select=id,subject,bodyPreview,receivedDateTime,isRead,hasAttachments,flag,from,toRecipients,ccRecipients&$orderby=receivedDateTime desc`
+          )
         )
-      )
-    );
+      ),
+      (async () => {
+        if (!dbUser.jmapAccounts.length) return [] as PromiseSettledResult<{ emails: EmailMessage[]; accountName: string }>[];
+        const { JmapProvider } = await import("@/lib/providers/jmap");
+        const provider = new JmapProvider();
+        return Promise.allSettled(
+          dbUser.jmapAccounts.map(async (acc) => {
+            const result = await provider.fetchEmails(user.id, acc.accountId, "inbox", { top: 3, filter: "unread" });
+            return {
+              emails: result.emails.map((e) => ({
+                id: e.id,
+                subject: e.subject || "(no subject)",
+                bodyPreview: e.bodyPreview,
+                receivedDateTime: e.receivedDateTime,
+                isRead: e.isRead,
+                hasAttachments: e.hasAttachments,
+                flag: { flagStatus: e.flagStatus as "flagged" | "notFlagged" },
+                from: { name: e.from.name, address: e.from.address },
+                toRecipients: e.toRecipients,
+              })),
+              accountName: acc.displayName ?? acc.email,
+            };
+          })
+        );
+      })(),
+    ]);
 
-    recentUnread = results
+    const msEmails = msResults
       .filter((r): r is PromiseFulfilledResult<GraphMessageList> => r.status === "fulfilled")
       .flatMap((r, idx) =>
         (r.value.value ?? []).map((m) => ({
@@ -104,10 +154,17 @@ export default async function DashboardPage() {
           flag: { flagStatus: (m.flag?.flagStatus === "flagged" ? "flagged" : "notFlagged") as "flagged" | "notFlagged" },
           from: { name: m.from?.emailAddress?.name ?? "Unknown", address: m.from?.emailAddress?.address ?? "" },
           toRecipients: (m.toRecipients ?? []).map((r) => ({ name: r.emailAddress.name, address: r.emailAddress.address })),
-          ccRecipients: (m.ccRecipients ?? []).map((r) => ({ name: r.emailAddress.name, address: r.emailAddress.address })),
-          accountName: dbUser.msAccounts[idx].displayName || undefined,
+          accountName: dbUser.msAccounts[idx]?.displayName || undefined,
         }))
-      )
+      );
+
+    const jmapEmails = (jmapResults as PromiseSettledResult<{ emails: EmailMessage[]; accountName: string }>[])
+      .filter((r): r is PromiseFulfilledResult<{ emails: EmailMessage[]; accountName: string }> => r.status === "fulfilled")
+      .flatMap((r) =>
+        r.value.emails.map((e) => ({ ...e, accountName: r.value.accountName }))
+      );
+
+    recentUnread = [...msEmails, ...jmapEmails]
       .sort((a, b) => new Date(b.receivedDateTime).getTime() - new Date(a.receivedDateTime).getTime())
       .slice(0, 10);
   } catch {

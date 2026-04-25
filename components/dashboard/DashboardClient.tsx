@@ -315,28 +315,54 @@ export default function DashboardClient({
   return (
     <div className="flex flex-col flex-1" style={{ height: "100vh", overflow: "hidden" }}>
       {/* Welcome Header */}
-      <header className="bg-white border-b border-neutral-200 px-6 lg:px-10 py-5 flex-shrink-0">
-        <div className="max-w-7xl mx-auto flex items-end justify-between gap-4 flex-wrap">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-widest mb-1" style={{ color: "rgb(155 155 155)" }}>Dashboard</p>
-            <h1 className="font-bold" style={{ fontSize: "clamp(1.4rem,3vw,2rem)", lineHeight: 1.15, color: "rgb(27 29 29)" }}>
-              Welcome back, <span style={{ color: "rgb(138 9 9)" }}>{userName}</span>
-            </h1>
-            <p className="text-sm mt-1 font-medium" style={{ color: "rgb(115 115 115)" }}>
-              {dateStr} &nbsp;·&nbsp; {timeStr}
-            </p>
+      <header className="relative flex-shrink-0 overflow-hidden" style={{
+        background: (() => {
+          const h = parseInt(timeStr.split(":")[0]) || 0;
+          const isPM = timeStr.includes("PM");
+          const hour24 = isPM && h !== 12 ? h + 12 : (!isPM && h === 12 ? 0 : h);
+          if (hour24 >= 6 && hour24 < 12) return "linear-gradient(180deg, rgb(100 5 5) 0%, rgb(138 9 9) 40%, rgb(180 40 40) 80%, rgb(250 250 250) 100%)";
+          if (hour24 >= 12 && hour24 < 18) return "linear-gradient(180deg, rgb(110 8 8) 0%, rgb(150 20 20) 40%, rgb(190 50 50) 80%, rgb(250 250 250) 100%)";
+          return "linear-gradient(180deg, rgb(60 3 3) 0%, rgb(90 6 6) 40%, rgb(138 9 9) 80%, rgb(250 250 250) 100%)";
+        })(),
+        minHeight: 160,
+      }}>
+        <div className="max-w-7xl mx-auto px-6 lg:px-10 pt-6 pb-10 relative z-10">
+          <div className="flex items-end justify-between gap-4 flex-wrap">
+            <div>
+              <p className="text-lg font-light mb-1" style={{ color: "rgba(255,255,255,0.7)" }}>
+                {(() => {
+                  const h = parseInt(timeStr.split(":")[0]) || 0;
+                  const isPM = timeStr.includes("PM");
+                  const hour24 = isPM && h !== 12 ? h + 12 : (!isPM && h === 12 ? 0 : h);
+                  if (hour24 >= 5 && hour24 < 12) return "Good morning";
+                  if (hour24 >= 12 && hour24 < 17) return "Good afternoon";
+                  return "Good evening";
+                })()}
+              </p>
+              <h1 className="text-white font-bold" style={{ fontSize: "clamp(1.6rem,3.5vw,2.2rem)", lineHeight: 1.15 }}>
+                {userName}
+              </h1>
+              <div className="flex items-center gap-3 mt-2">
+                <span className="text-2xl font-semibold text-white">{timeStr}</span>
+                <span className="text-sm font-medium" style={{ color: "rgba(255,255,255,0.6)" }}>{dateStr}</span>
+              </div>
+            </div>
+            <a
+              href="/compose"
+              className="flex items-center gap-2 text-sm font-semibold px-4 py-2.5 rounded-[10px] shadow-lg transition-all flex-shrink-0"
+              style={{ backgroundColor: "rgba(255,255,255,0.95)", color: "rgb(138 9 9)" }}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+              </svg>
+              Compose
+            </a>
           </div>
-          <a
-            href="/compose"
-            className="flex items-center gap-2 text-white text-sm font-semibold px-4 py-2.5 rounded-small shadow-custom transition-all flex-shrink-0"
-            style={{ backgroundColor: "rgb(138 9 9)" }}
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
-            </svg>
-            Compose
-          </a>
         </div>
+        {/* Subtle mountain silhouette */}
+        <svg className="absolute bottom-0 left-0 right-0 w-full" style={{ height: 40 }} viewBox="0 0 1440 40" preserveAspectRatio="none" fill="none">
+          <path d="M0 40V28L120 20L240 30L360 15L480 25L600 10L720 22L840 8L960 18L1080 12L1200 24L1320 16L1440 28V40H0Z" fill="rgb(250 250 250)" />
+        </svg>
       </header>
 
       {/* Content */}
