@@ -253,6 +253,8 @@ export default function ComposeClient({
   draftId,
   draftData,
   defaultAccountId,
+  initialTo,
+  initialPanel,
 }: {
   accounts: Account[];
   mode?: ComposeMode;
@@ -260,6 +262,8 @@ export default function ComposeClient({
   draftId?: string;
   draftData?: any | null;
   defaultAccountId?: string;
+  initialTo?: string;
+  initialPanel?: string;
 }) {
   const defaultAccount = (defaultAccountId
     ? accounts.find((a) => a.homeAccountId === defaultAccountId)
@@ -1201,6 +1205,18 @@ export default function ComposeClient({
     setRequestReadReceipt(draftData.requestReadReceipt ?? false);
     setDraftSaved(true);
   }, [draftData]);
+
+  // ── Pre-fill To from initialTo (e.g. from contacts) ──────────────────────────
+  useEffect(() => {
+    if (initialTo && !mode && !draftId) {
+      setTo([initialTo]);
+    }
+    // Open AI panel if requested (from sidebar AI Tools links)
+    if (initialPanel === "remix") setActivePanel("remix");
+    else if (initialPanel === "dictate") setActivePanel("dictate");
+    else if (initialPanel === "voice") setActivePanel("voice");
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Cleanup on unmount
   useEffect(() => {

@@ -39,6 +39,7 @@ interface DataCacheStore {
     draftId?: string;
     homeAccountId?: string;
     panel?: string;
+    to?: string;
   } | null;
   /** Track which views have been loaded at least once */
   loadedViews: Set<AppView>;
@@ -75,6 +76,7 @@ export function viewToPath(view: AppView, extra?: { folderId?: string; emailId?:
       if (p.draftId) qs.set("draftId", p.draftId);
       if (p.homeAccountId) qs.set("homeAccountId", p.homeAccountId);
       if (p.panel) qs.set("panel", p.panel);
+      if (p.to) qs.set("to", p.to);
       const str = qs.toString();
       return str ? `/compose?${str}` : "/compose";
     }

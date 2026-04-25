@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useAccountStore } from "@/lib/stores/account-store";
+import { useDataCacheStore, pathToView } from "@/lib/stores/data-cache";
 import type { EmailMessage } from "@/lib/types/email";
 import { formatDate, getInitials, getAvatarColor } from "@/lib/utils/email-helpers";
 import { applyRules } from "@/lib/utils/rule-engine";
@@ -151,6 +152,28 @@ export default function InboxClient({
   totalUnread?: number;
 }) {
   const router = useRouter();
+
+  /** SPA-aware navigation — updates store + pushState instead of server round-trip */
+  function navigateTo(href: string) {
+    const { view, folderId, emailId } = pathToView(href.split("?")[0]);
+    useDataCacheStore.getState().setActiveView(view);
+    if (folderId) useDataCacheStore.getState().setActiveFolderId(folderId);
+    if (view === "email-read" && emailId) {
+      useDataCacheStore.getState().setActiveEmail(emailId);
+    }
+    if (view === "compose") {
+      const sp = new URLSearchParams(href.includes("?") ? href.split("?")[1] : "");
+      useDataCacheStore.getState().setComposeParams({
+        mode: (sp.get("mode") as "reply" | "replyAll" | "forward") || undefined,
+        messageId: sp.get("messageId") || undefined,
+        draftId: sp.get("draftId") || undefined,
+        homeAccountId: sp.get("homeAccountId") || undefined,
+        panel: sp.get("panel") || undefined,
+      });
+    }
+    window.history.pushState(null, "", href);
+  }
+
   const [emails, setEmails] = useState<EmailMessage[]>(initialEmails);
   const [aiReplyEmail, setAiReplyEmail] = useState<EmailMessage | null>(null);
   const [showEventForm, setShowEventForm] = useState(false);
@@ -1194,14 +1217,14 @@ export default function InboxClient({
                 <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" /></svg>
                 Reply
               </button>
-              <a href={`/compose?replyTo=${encodeURIComponent(selectedEmail.id)}&homeAccountId=${encodeURIComponent(acctId)}&mode=replyAll`} className="flex items-center gap-1.5 text-xs font-semibold px-3.5 py-1.5 rounded-[8px] border border-neutral-200 bg-white hover:bg-neutral-50" style={{ color: "rgb(82 82 82)" }}>
+              <button onClick={() => navigateTo(`/compose?mode=replyAll&messageId=${encodeURIComponent(selectedEmail.id)}&homeAccountId=${encodeURIComponent(acctId)}`)} className="flex items-center gap-1.5 text-xs font-semibold px-3.5 py-1.5 rounded-[8px] border border-neutral-200 bg-white hover:bg-neutral-50" style={{ color: "rgb(82 82 82)" }}>
                 <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" /></svg>
                 Reply All
-              </a>
-              <a href={`/compose?forwardId=${encodeURIComponent(selectedEmail.id)}&homeAccountId=${encodeURIComponent(acctId)}`} className="flex items-center gap-1.5 text-xs font-semibold px-3.5 py-1.5 rounded-[8px] border border-neutral-200 bg-white hover:bg-neutral-50" style={{ color: "rgb(82 82 82)" }}>
+              </button>
+              <button onClick={() => navigateTo(`/compose?mode=forward&messageId=${encodeURIComponent(selectedEmail.id)}&homeAccountId=${encodeURIComponent(acctId)}`)} className="flex items-center gap-1.5 text-xs font-semibold px-3.5 py-1.5 rounded-[8px] border border-neutral-200 bg-white hover:bg-neutral-50" style={{ color: "rgb(82 82 82)" }}>
                 <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>
                 Forward
-              </a>
+              </button>
               <div className="flex-1" />
               <button onClick={() => { setAiReplyEmail(selectedEmail); }} className="flex items-center gap-1.5 text-xs font-semibold px-3.5 py-1.5 rounded-[8px]" style={{ backgroundColor: "rgb(254 242 242)", color: "rgb(138 9 9)" }}>
                 <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>
@@ -1323,7 +1346,7 @@ export default function InboxClient({
             console.error("Failed to save AI reply:", err);
             // Continue anyway - user can still compose manually
           }
-          router.push(`/compose?mode=reply&messageId=${aiReplyEmail.id}`);
+          navigateTo(`/compose?mode=reply&messageId=${encodeURIComponent(aiReplyEmail.id)}`);
           setAiReplyEmail(null);
         }}
       />

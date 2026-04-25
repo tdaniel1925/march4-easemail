@@ -163,6 +163,7 @@ export default function Sidebar({ userName = "You", userEmail = "", isAdmin: isA
         draftId: sp.get("draftId") || undefined,
         homeAccountId: sp.get("homeAccountId") || undefined,
         panel: sp.get("panel") || undefined,
+        to: sp.get("to") || undefined,
       });
     }
     window.history.pushState(null, "", href);

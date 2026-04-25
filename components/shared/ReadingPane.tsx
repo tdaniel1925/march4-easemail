@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import Link from "next/link";
+import { useDataCacheStore } from "@/lib/stores/data-cache";
 import type { EmailMessage } from "@/lib/types/email";
 import { getInitials, getAvatarColor } from "@/lib/utils/email-helpers";
 
@@ -194,8 +194,15 @@ export function ReadingPane({
 
           {/* Open reply in full composer */}
           {email && (
-            <Link
-              href={`/compose?mode=reply&messageId=${email.id}`}
+            <button
+              onClick={() => {
+                useDataCacheStore.getState().setComposeParams({
+                  mode: "reply",
+                  messageId: email.id,
+                });
+                useDataCacheStore.getState().setActiveView("compose");
+                window.history.pushState(null, "", `/compose?mode=reply&messageId=${encodeURIComponent(email.id)}`);
+              }}
               title="Open in full composer (AI features + attachments)"
               className="flex items-center gap-1 px-2.5 py-1.5 rounded-[8px] text-xs font-medium transition-colors ml-1"
               style={{ color: "rgb(138 9 9)", border: "1px solid rgb(252 216 216)", backgroundColor: "rgb(253 235 235)" }}
@@ -204,7 +211,7 @@ export function ReadingPane({
                 <path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
               </svg>
               Full Compose
-            </Link>
+            </button>
           )}
         </div>
       </div>

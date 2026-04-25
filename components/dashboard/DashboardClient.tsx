@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useAccountStore } from "@/lib/stores/account-store";
+import { useDataCacheStore, pathToView } from "@/lib/stores/data-cache";
 import type { EmailMessage } from "@/lib/types/email";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -183,6 +184,27 @@ export default function DashboardClient({
   const router = useRouter();
   const inboxUnread = useAccountStore((s) => s.inboxUnread);
 
+  /** SPA-aware navigation — updates store + pushState instead of server round-trip */
+  function navigateTo(href: string) {
+    const { view, folderId, emailId } = pathToView(href.split("?")[0]);
+    useDataCacheStore.getState().setActiveView(view);
+    if (folderId) useDataCacheStore.getState().setActiveFolderId(folderId);
+    if (view === "email-read" && emailId) {
+      useDataCacheStore.getState().setActiveEmail(emailId);
+    }
+    if (view === "compose") {
+      const sp = new URLSearchParams(href.includes("?") ? href.split("?")[1] : "");
+      useDataCacheStore.getState().setComposeParams({
+        mode: (sp.get("mode") as "reply" | "replyAll" | "forward") || undefined,
+        messageId: sp.get("messageId") || undefined,
+        draftId: sp.get("draftId") || undefined,
+        homeAccountId: sp.get("homeAccountId") || undefined,
+        panel: sp.get("panel") || undefined,
+      });
+    }
+    window.history.pushState(null, "", href);
+  }
+
   const [dateStr, setDateStr] = useState("");
   const [timeStr, setTimeStr] = useState("");
   const [todos, setTodos] = useState<TodoItem[]>([]);
@@ -332,10 +354,10 @@ export default function DashboardClient({
           <div className="mb-8">
             <div className="flex items-center justify-between mb-1">
               <p className="text-sm font-medium" style={{ color: "rgb(155 155 155)" }}>{timeStr} · {dateStr}</p>
-              <a href="/compose" className="flex items-center gap-1.5 text-xs font-semibold px-3.5 py-2 rounded-[10px] text-white" style={{ backgroundColor: "rgb(138 9 9)" }}>
+              <button onClick={() => navigateTo("/compose")} className="flex items-center gap-1.5 text-xs font-semibold px-3.5 py-2 rounded-[10px] text-white" style={{ backgroundColor: "rgb(138 9 9)" }}>
                 <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" /></svg>
                 Compose
-              </a>
+              </button>
             </div>
             <h1 className="text-2xl font-bold" style={{ color: "rgb(27 29 29)" }}>
               {greeting}, {userName}
@@ -442,7 +464,7 @@ export default function DashboardClient({
               ) : (
                 <div className="flex flex-col">
                   {recentUnread.slice(0, 5).map((email, i) => (
-                    <button key={email.id} onClick={() => router.push(`/inbox/${email.id}`)} className="flex items-start gap-3 py-2.5 text-left group" style={{ borderTop: i > 0 ? "1px solid rgb(245 245 245)" : "none" }}>
+                    <button key={email.id} onClick={() => navigateTo(`/inbox/${encodeURIComponent(email.id)}`)} className="flex items-start gap-3 py-2.5 text-left group" style={{ borderTop: i > 0 ? "1px solid rgb(245 245 245)" : "none" }}>
                       <div className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 text-xs font-bold text-white mt-0.5" style={{ backgroundColor: "rgb(138 9 9)" }}>
                         {email.from.name.charAt(0).toUpperCase()}
                       </div>

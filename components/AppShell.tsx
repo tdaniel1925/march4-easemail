@@ -145,6 +145,7 @@ export default function AppShell(props: AppShellProps) {
         draftId: sp.get("draftId") || undefined,
         homeAccountId: sp.get("homeAccountId") || undefined,
         panel: sp.get("panel") || undefined,
+        to: sp.get("to") || undefined,
       });
     }
   }, []);
@@ -171,6 +172,7 @@ export default function AppShell(props: AppShellProps) {
           draftId: sp.get("draftId") || undefined,
           homeAccountId: sp.get("homeAccountId") || undefined,
           panel: sp.get("panel") || undefined,
+          to: sp.get("to") || undefined,
         });
       }
     }
@@ -303,6 +305,8 @@ export default function AppShell(props: AppShellProps) {
             messageId={composeParams?.messageId}
             draftId={composeParams?.draftId}
             defaultAccountId={composeParams?.homeAccountId ?? activeAccount?.homeAccountId}
+            initialTo={composeParams?.to}
+            initialPanel={composeParams?.panel}
           />
         );
 

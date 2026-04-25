@@ -1,8 +1,15 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import Link from "next/link";
+import { useDataCacheStore } from "@/lib/stores/data-cache";
 import type { Contact } from "@/lib/types/contacts";
+
+/** SPA-aware compose navigation for contacts */
+function navigateToCompose(email: string) {
+  useDataCacheStore.getState().setComposeParams({ to: email });
+  useDataCacheStore.getState().setActiveView("compose");
+  window.history.pushState(null, "", `/compose?to=${encodeURIComponent(email)}`);
+}
 
 // ─── Presence helpers ─────────────────────────────────────────────────────────
 
@@ -559,9 +566,8 @@ function ContactRow({ contact, color, isSelected, onSelect }: ContactRowProps) {
 
       {/* Compose button — visible on hover or selected */}
       {(hovered || isSelected) && contact.email && (
-        <Link
-          href={`/compose?to=${encodeURIComponent(contact.email)}`}
-          onClick={(e) => e.stopPropagation()}
+        <button
+          onClick={(e) => { e.stopPropagation(); navigateToCompose(contact.email!); }}
           className="flex-shrink-0 w-7 h-7 rounded-[10px] flex items-center justify-center transition-colors"
           style={{ backgroundColor: "rgb(138 9 9)" }}
           title={`Email ${contact.displayName}`}
@@ -580,7 +586,7 @@ function ContactRow({ contact, color, isSelected, onSelect }: ContactRowProps) {
               d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
             />
           </svg>
-        </Link>
+        </button>
       )}
     </button>
   );
@@ -644,15 +650,15 @@ function ContactDetail({ contact, onEdit, onDelete }: { contact: Contact; onEdit
 
       {/* Compose button */}
       {contact.email && (
-        <Link
-          href={`/compose?to=${encodeURIComponent(contact.email)}`}
+        <button
+          onClick={() => navigateToCompose(contact.email!)}
           className="flex items-center gap-2 px-5 py-2.5 rounded-[10px] text-sm font-medium text-white transition-colors shadow-sm"
           style={{ backgroundColor: "rgb(138 9 9)" }}
           onMouseEnter={(e) =>
-            ((e.currentTarget as HTMLAnchorElement).style.backgroundColor = "rgb(110 7 7)")
+            ((e.currentTarget as HTMLButtonElement).style.backgroundColor = "rgb(110 7 7)")
           }
           onMouseLeave={(e) =>
-            ((e.currentTarget as HTMLAnchorElement).style.backgroundColor = "rgb(138 9 9)")
+            ((e.currentTarget as HTMLButtonElement).style.backgroundColor = "rgb(138 9 9)")
           }
         >
           <svg
@@ -670,7 +676,7 @@ function ContactDetail({ contact, onEdit, onDelete }: { contact: Contact; onEdit
             />
           </svg>
           Send Email
-        </Link>
+        </button>
       )}
 
       {/* Detail cards */}

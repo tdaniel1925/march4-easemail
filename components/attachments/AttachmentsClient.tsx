@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
+import { useDataCacheStore, pathToView } from "@/lib/stores/data-cache";
 import type { AttachmentItem } from "@/lib/types/attachments";
 
 type FileType = "image" | "pdf" | "doc" | "sheet" | "other";
@@ -113,6 +114,18 @@ export default function AttachmentsClient({
   homeAccountId: string;
 }) {
   const router = useRouter();
+
+  /** SPA-aware navigation — updates store + pushState instead of server round-trip */
+  function navigateTo(href: string) {
+    const { view, folderId, emailId } = pathToView(href.split("?")[0]);
+    useDataCacheStore.getState().setActiveView(view);
+    if (folderId) useDataCacheStore.getState().setActiveFolderId(folderId);
+    if (view === "email-read" && emailId) {
+      useDataCacheStore.getState().setActiveEmail(emailId);
+    }
+    window.history.pushState(null, "", href);
+  }
+
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [directionTab, setDirectionTab] = useState<DirectionTab>("received");
@@ -645,7 +658,7 @@ export default function AttachmentsClient({
                     isLast={idx === sorted.length - 1}
                     isSelected={selectedIds.has(`${item.messageId}-${item.id}`)}
                     visibleColumns={visibleColumns}
-                    onRowClick={() => router.push(`/inbox/${item.messageId}?returnTo=/attachments`)}
+                    onRowClick={() => navigateTo(`/inbox/${encodeURIComponent(item.messageId)}?returnTo=/attachments`)}
                     onToggleSelection={() => toggleSelection(`${item.messageId}-${item.id}`)}
                     onPreview={() => setPreviewItem(item)}
                   />

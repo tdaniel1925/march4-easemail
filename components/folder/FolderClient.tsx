@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
-import { useRouter } from "next/navigation";
 import { useAccountStore } from "@/lib/stores/account-store";
+import { useDataCacheStore, pathToView } from "@/lib/stores/data-cache";
 import type { EmailMessage } from "@/lib/types/email";
 import { formatDate, getInitials, getAvatarColor } from "@/lib/utils/email-helpers";
 
@@ -78,7 +78,27 @@ export default function FolderClient({
   initialEmails: EmailMessage[];
   initialNextLink: string | null;
 }) {
-  const router = useRouter();
+  /** SPA-aware navigation — updates store + pushState instead of server round-trip */
+  function navigateTo(href: string) {
+    const { view, folderId, emailId } = pathToView(href.split("?")[0]);
+    useDataCacheStore.getState().setActiveView(view);
+    if (folderId) useDataCacheStore.getState().setActiveFolderId(folderId);
+    if (view === "email-read" && emailId) {
+      useDataCacheStore.getState().setActiveEmail(emailId);
+    }
+    if (view === "compose") {
+      const sp = new URLSearchParams(href.includes("?") ? href.split("?")[1] : "");
+      useDataCacheStore.getState().setComposeParams({
+        mode: (sp.get("mode") as "reply" | "replyAll" | "forward") || undefined,
+        messageId: sp.get("messageId") || undefined,
+        draftId: sp.get("draftId") || undefined,
+        homeAccountId: sp.get("homeAccountId") || undefined,
+        panel: sp.get("panel") || undefined,
+      });
+    }
+    window.history.pushState(null, "", href);
+  }
+
   const [emails, setEmails] = useState<EmailMessage[]>(initialEmails);
   const [search, setSearch] = useState("");
   const [loadingEmails, setLoadingEmails] = useState(false);
@@ -100,7 +120,7 @@ export default function FolderClient({
   useEffect(() => {
     if (firstRender.current) { firstRender.current = false; return; }
     if (!activeAccount) return;
-    if (isCustomFolder) { router.push("/inbox"); return; }
+    if (isCustomFolder) { navigateTo("/inbox"); return; }
     setLoadingEmails(true);
     setNextLink(null);
     setRequiresReauth(false);
@@ -252,14 +272,14 @@ export default function FolderClient({
                 showRecipient={folder === "sent" || folder === "drafts"}
                 onClick={() => {
                   if (folder === "drafts") {
-                    router.push(`/compose?draftId=${email.id}`);
+                    navigateTo(`/compose?draftId=${encodeURIComponent(email.id)}`);
                     return;
                   }
 
                   if (!email.isRead) {
                     setEmails((prev) => prev.map((e) => e.id === email.id ? { ...e, isRead: true } : e));
                   }
-                  router.push(`/inbox/${email.id}`);
+                  navigateTo(`/inbox/${encodeURIComponent(email.id)}`);
                 }}
               />
             ))

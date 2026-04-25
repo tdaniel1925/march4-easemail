@@ -1,8 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useDataCacheStore, pathToView } from "@/lib/stores/data-cache";
 import { getInitials, getAvatarColor } from "@/lib/utils/email-helpers";
 import EventFormModal from "@/components/calendar/EventFormModal";
 import type { ParseInviteResponse } from "@/app/api/calendar/parse-invite/route";
@@ -83,7 +82,27 @@ function SafeHtml({ html }: { html: string }) {
 // ─── EmailReadClient ──────────────────────────────────────────────────────────
 
 export default function EmailReadClient({ email, homeAccountId, returnTo = "/inbox" }: { email: EmailDetail; homeAccountId: string; returnTo?: string }) {
-  const router = useRouter();
+  /** SPA-aware navigation — updates store + pushState instead of server round-trip */
+  function navigateTo(href: string) {
+    const { view, folderId, emailId } = pathToView(href.split("?")[0]);
+    useDataCacheStore.getState().setActiveView(view);
+    if (folderId) useDataCacheStore.getState().setActiveFolderId(folderId);
+    if (view === "email-read" && emailId) {
+      useDataCacheStore.getState().setActiveEmail(emailId);
+    }
+    if (view === "compose") {
+      const sp = new URLSearchParams(href.includes("?") ? href.split("?")[1] : "");
+      useDataCacheStore.getState().setComposeParams({
+        mode: (sp.get("mode") as "reply" | "replyAll" | "forward") || undefined,
+        messageId: sp.get("messageId") || undefined,
+        draftId: sp.get("draftId") || undefined,
+        homeAccountId: sp.get("homeAccountId") || undefined,
+        panel: sp.get("panel") || undefined,
+      });
+    }
+    window.history.pushState(null, "", href);
+  }
+
   const [isRead, setIsRead] = useState(email.isRead);
   const [isStarred, setIsStarred] = useState(email.flag.flagStatus === "flagged");
   const [showAllRecipients, setShowAllRecipients] = useState(false);
@@ -108,7 +127,7 @@ export default function EmailReadClient({ email, homeAccountId, returnTo = "/inb
   }, [email.id]);
 
   function openCompose(mode: "reply" | "replyAll" | "forward") {
-    router.push(`/compose?mode=${mode}&messageId=${email.id}`);
+    navigateTo(`/compose?mode=${mode}&messageId=${encodeURIComponent(email.id)}`);
   }
 
   async function handleAddToCalendar() {
@@ -156,15 +175,15 @@ export default function EmailReadClient({ email, homeAccountId, returnTo = "/inb
       <div className="flex items-center justify-between px-5 py-3 bg-white border-b border-neutral-200 flex-shrink-0">
         {/* Left: back + actions */}
         <div className="flex items-center gap-2">
-          <Link
-            href={returnTo}
+          <button
+            onClick={() => navigateTo(returnTo)}
             className="flex items-center gap-1.5 text-sm text-neutral-500 hover:text-primary-600 transition-colors px-2.5 py-1.5 rounded-small hover:bg-background-100 font-medium"
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M11 17l-5-5m0 0l5-5m-5 5h12" />
             </svg>
             {returnTo === "/attachments" ? "Attachments" : "Inbox"}
-          </Link>
+          </button>
 
           <div className="w-px h-5 bg-neutral-200" />
 
@@ -269,7 +288,7 @@ export default function EmailReadClient({ email, homeAccountId, returnTo = "/inb
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ messageId: email.id, homeAccountId }),
               })
-                .then(() => router.push(returnTo))
+                .then(() => navigateTo(returnTo))
                 .catch(console.error);
             }}
             className="p-1.5 rounded-small transition-colors hover:bg-background-100"
@@ -288,7 +307,7 @@ export default function EmailReadClient({ email, homeAccountId, returnTo = "/inb
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ messageId: email.id, homeAccountId }),
               })
-                .then(() => router.push(returnTo))
+                .then(() => navigateTo(returnTo))
                 .catch(console.error);
             }}
             className="p-1.5 rounded-small transition-colors hover:bg-background-100"
