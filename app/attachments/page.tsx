@@ -77,7 +77,7 @@ export default async function AttachmentsPage() {
     const receivedData = await graphGet<GraphMessagesResponse>(
       user.id,
       defaultAccount.homeAccountId,
-      `/me/messages?$filter=hasAttachments eq true&$orderby=receivedDateTime desc&$top=50&$select=id,subject,from,receivedDateTime,hasAttachments&$expand=attachments($select=id,name,size,contentType,isInline)`
+      `/me/messages?$filter=hasAttachments eq true&$top=50&$select=id,subject,from,receivedDateTime,hasAttachments&$expand=attachments`
     );
 
     for (const message of receivedData.value ?? []) {
@@ -104,7 +104,7 @@ export default async function AttachmentsPage() {
     const sentData = await graphGet<GraphMessagesResponse>(
       user.id,
       defaultAccount.homeAccountId,
-      `/me/mailFolders/sentitems/messages?$filter=hasAttachments eq true&$orderby=sentDateTime desc&$top=50&$select=id,subject,toRecipients,sentDateTime,hasAttachments&$expand=attachments($select=id,name,size,contentType,isInline)`
+      `/me/mailFolders/sentitems/messages?$filter=hasAttachments eq true&$top=50&$select=id,subject,toRecipients,sentDateTime,hasAttachments&$expand=attachments`
     );
 
     for (const message of sentData.value ?? []) {
