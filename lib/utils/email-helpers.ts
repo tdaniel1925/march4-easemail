@@ -1,5 +1,6 @@
 import type { EmailMessage } from "@/lib/types/email";
 import type { NormalizedEmail } from "@/lib/providers/types";
+import type { GraphMessage } from "@/lib/types/graph";
 
 export function mapCachedEmail(row: {
   id: string;
@@ -13,6 +14,7 @@ export function mapCachedEmail(row: {
   isRead: boolean;
   hasAttachments: boolean;
   flagStatus: string;
+  conversationId?: string | null;
 }): EmailMessage {
   return {
     id: row.id,
@@ -25,6 +27,41 @@ export function mapCachedEmail(row: {
     flag: { flagStatus: row.flagStatus === "flagged" ? "flagged" : "notFlagged" },
     from: { name: row.fromName, address: row.fromAddress },
     toRecipients: (row.toRecipients as { name: string; address: string }[]) ?? [],
+    body: { content: row.bodyPreview, contentType: "text" },
+    conversationId: row.conversationId ?? undefined,
+  };
+}
+
+/** Map a Microsoft Graph API message to the frontend EmailMessage shape */
+export function mapGraphMessage(m: GraphMessage): EmailMessage {
+  return {
+    id: m.id,
+    subject: m.subject ?? "(no subject)",
+    bodyPreview: m.bodyPreview ?? "",
+    receivedDateTime: m.receivedDateTime,
+    sentDateTime: m.sentDateTime,
+    isRead: m.isRead,
+    hasAttachments: m.hasAttachments,
+    flag: { flagStatus: m.flag?.flagStatus === "flagged" ? "flagged" : "notFlagged" },
+    from: {
+      name: m.from?.emailAddress?.name ?? "Unknown",
+      address: m.from?.emailAddress?.address ?? "",
+    },
+    toRecipients: m.toRecipients?.map((r) => ({
+      name: r.emailAddress?.name ?? "",
+      address: r.emailAddress?.address ?? "",
+    })),
+    body: {
+      content: m.body?.content ?? m.bodyPreview ?? "",
+      contentType: (m.body?.contentType as "html" | "text") ?? "text",
+    },
+    conversationId: m.conversationId,
+    attachments: m.attachments?.map((a) => ({
+      id: a.id,
+      name: a.name,
+      size: a.size,
+      contentType: a.contentType,
+    })),
   };
 }
 
@@ -46,6 +83,7 @@ export function mapNormalizedEmail(e: NormalizedEmail): EmailMessage {
       : e.bodyText
         ? { content: e.bodyText, contentType: "text" }
         : { content: e.bodyPreview, contentType: "text" },
+    conversationId: e.conversationId,
     attachments: e.attachments,
   };
 }
