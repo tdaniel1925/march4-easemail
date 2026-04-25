@@ -40,15 +40,16 @@ function formatRelative(dt: string): string {
 }
 
 const EVENT_COLORS = [
-  "rgb(138 9 9)",   // primary
-  "rgb(22 163 74)", // green
-  "rgb(37 99 235)", // blue
+  "rgb(138 9 9)",
+  "rgb(22 163 74)",
+  "rgb(37 99 235)",
 ];
 
 // ─── Weekly Chart ─────────────────────────────────────────────────────────────
 
 function WeeklyChart({ receivedData, sentData }: { receivedData: number[]; sentData: number[] }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const hasData = receivedData.some((v) => v > 0) || sentData.some((v) => v > 0);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -65,7 +66,7 @@ function WeeklyChart({ receivedData, sentData }: { receivedData: number[]; sentD
     canvas.height = totalH * window.devicePixelRatio;
     ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
 
-    const maxVal = Math.max(...receivedData, ...sentData) + 2;
+    const maxVal = Math.max(...receivedData, ...sentData, 1) + 2;
     const chartH = totalH - 28;
     const startX = 20;
     const availW = totalW - startX - 10;
@@ -82,19 +83,19 @@ function WeeklyChart({ receivedData, sentData }: { receivedData: number[]; sentD
       ctx.fillText(String(Math.round(maxVal - (maxVal / 4) * i)), 2, y + 4);
     }
 
-    // Bars (Received and Sent)
+    // Bars
     labels.forEach((label, i) => {
       const cx = startX + slotW * i + slotW / 2;
+      const r = 3;
 
       // Received bar (red)
       const receivedVal = receivedData[i];
-      const receivedBarH = (receivedVal / maxVal) * chartH;
+      const receivedBarH = Math.max((receivedVal / maxVal) * chartH, receivedVal > 0 ? 4 : 0);
       const receivedX = cx - barW - gap / 2;
       const receivedY = chartH - receivedBarH + 4;
 
       ctx.fillStyle = "rgba(220,38,38,0.85)";
       ctx.beginPath();
-      const r = 3;
       ctx.moveTo(receivedX + r, receivedY);
       ctx.lineTo(receivedX + barW - r, receivedY);
       ctx.quadraticCurveTo(receivedX + barW, receivedY, receivedX + barW, receivedY + r);
@@ -107,7 +108,7 @@ function WeeklyChart({ receivedData, sentData }: { receivedData: number[]; sentD
 
       // Sent bar (blue)
       const sentVal = sentData[i];
-      const sentBarH = (sentVal / maxVal) * chartH;
+      const sentBarH = Math.max((sentVal / maxVal) * chartH, sentVal > 0 ? 4 : 0);
       const sentX = cx + gap / 2;
       const sentY = chartH - sentBarH + 4;
 
@@ -131,7 +132,27 @@ function WeeklyChart({ receivedData, sentData }: { receivedData: number[]; sentD
     });
   }, [receivedData, sentData]);
 
-  return <canvas ref={canvasRef} style={{ width: "100%", height: "144px", display: "block" }} />;
+  return (
+    <div style={{ position: "relative" }}>
+      <canvas ref={canvasRef} style={{ width: "100%", height: "144px", display: "block" }} />
+      {!hasData && (
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            pointerEvents: "none",
+          }}
+        >
+          <p className="text-xs font-medium" style={{ color: "rgb(155 155 155)" }}>
+            No email data yet for this week
+          </p>
+        </div>
+      )}
+    </div>
+  );
 }
 
 // ─── Dashboard Client ─────────────────────────────────────────────────────────
@@ -167,7 +188,9 @@ export default function DashboardClient({
   const [todos, setTodos] = useState<TodoItem[]>([]);
   const [todosLoading, setTodosLoading] = useState(true);
   const [newTodo, setNewTodo] = useState("");
+  const [newTodoPriority, setNewTodoPriority] = useState<"normal" | "high">("normal");
   const [addingTodo, setAddingTodo] = useState(false);
+  const [deletingTodoId, setDeletingTodoId] = useState<string | null>(null);
   const [timeUntilNext, setTimeUntilNext] = useState("");
 
   useEffect(() => {
@@ -205,39 +228,27 @@ export default function DashboardClient({
       const centralTime = now.toLocaleString("en-US", {
         timeZone: "America/Chicago",
         hour: "numeric",
-        hour12: false
+        hour12: false,
       });
       const hour = parseInt(centralTime);
-
-      if (hour >= 8 && hour < 18) return 5 * 60 * 1000; // 5 min
-      return 30 * 60 * 1000; // 30 min
+      if (hour >= 8 && hour < 18) return 5 * 60 * 1000;
+      return 30 * 60 * 1000;
     }
-
-    const interval = setInterval(() => {
-      router.refresh();
-    }, getRefreshInterval());
-
+    const interval = setInterval(() => router.refresh(), getRefreshInterval());
     return () => clearInterval(interval);
   }, [router]);
 
   // Next event countdown
   useEffect(() => {
-    const nextEvent = events.find(e => new Date(e.startDateTime) > new Date());
-    if (!nextEvent) {
-      setTimeUntilNext("");
-      return;
-    }
+    const nextEvent = events.find((e) => new Date(e.startDateTime) > new Date());
+    if (!nextEvent) { setTimeUntilNext(""); return; }
 
     function updateCountdown() {
       if (!nextEvent) return;
       const ms = new Date(nextEvent.startDateTime).getTime() - Date.now();
-      if (ms < 0) {
-        setTimeUntilNext("");
-        return;
-      }
+      if (ms < 0) { setTimeUntilNext(""); return; }
       const mins = Math.floor(ms / 60000);
       const hrs = Math.floor(mins / 60);
-
       if (mins < 60) setTimeUntilNext(`${mins}m`);
       else if (hrs < 24) setTimeUntilNext(`${hrs}h ${mins % 60}m`);
       else setTimeUntilNext(`${Math.floor(hrs / 24)}d`);
@@ -249,45 +260,51 @@ export default function DashboardClient({
   }, [events]);
 
   async function toggleTodo(id: string) {
-    const todo = todos.find(t => t.id === id);
+    const todo = todos.find((t) => t.id === id);
     if (!todo) return;
-
-    // Optimistic update
-    setTodos(prev => prev.map(t => t.id === id ? { ...t, done: !t.done } : t));
-
+    setTodos((prev) => prev.map((t) => (t.id === id ? { ...t, done: !t.done } : t)));
     try {
       const res = await fetch(`/api/todos/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ done: !todo.done }),
       });
-
       if (!res.ok) {
-        // Revert on error
-        setTodos(prev => prev.map(t => t.id === id ? { ...t, done: todo.done } : t));
+        setTodos((prev) => prev.map((t) => (t.id === id ? { ...t, done: todo.done } : t)));
+      }
+    } catch {
+      setTodos((prev) => prev.map((t) => (t.id === id ? { ...t, done: todo.done } : t)));
+    }
+  }
+
+  async function deleteTodo(id: string) {
+    setDeletingTodoId(id);
+    try {
+      const res = await fetch(`/api/todos/${id}`, { method: "DELETE" });
+      if (res.ok) {
+        setTodos((prev) => prev.filter((t) => t.id !== id));
       }
     } catch (error) {
-      console.error("Failed to toggle todo:", error);
-      // Revert on error
-      setTodos(prev => prev.map(t => t.id === id ? { ...t, done: todo.done } : t));
+      console.error("Failed to delete todo:", error);
+    } finally {
+      setDeletingTodoId(null);
     }
   }
 
   async function addTodo() {
     const text = newTodo.trim();
     if (!text) return;
-
     try {
       const res = await fetch("/api/todos", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text }),
+        body: JSON.stringify({ text, priority: newTodoPriority }),
       });
-
       if (res.ok) {
         const created = await res.json();
-        setTodos(prev => [created, ...prev]);
+        setTodos((prev) => [created, ...prev]);
         setNewTodo("");
+        setNewTodoPriority("normal");
         setAddingTodo(false);
       }
     } catch (error) {
@@ -325,108 +342,104 @@ export default function DashboardClient({
       {/* Content */}
       <main className="flex-1 overflow-y-auto px-6 lg:px-10 py-6" style={{ backgroundColor: "rgb(250 250 250)" }}>
         <div className="max-w-7xl mx-auto">
-          {/* Quick Actions Bar */}
-          <div className="flex items-center gap-2 mb-5 flex-wrap">
-            <a
-              href="/inbox"
-              className="flex items-center gap-2 px-4 py-2.5 rounded-small text-sm font-medium transition-colors border"
-              style={{ backgroundColor: "white", borderColor: "rgb(229 229 229)", color: "rgb(82 82 82)" }}
-              onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "rgb(250 250 250)"; }}
-              onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "white"; }}
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
-              </svg>
-              Inbox
+
+          {/* ── Stats Row ── */}
+          <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 mb-5">
+            <a href="/inbox" className="bg-white rounded-[12px] border border-neutral-200 p-4 flex items-center gap-4 transition-colors hover:border-neutral-300" style={{ textDecoration: "none" }}>
+              <div className="w-10 h-10 rounded-[10px] flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "rgb(253 235 235)" }}>
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" style={{ color: "rgb(138 9 9)" }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+                </svg>
+              </div>
+              <div>
+                <p className="text-2xl font-bold" style={{ color: "rgb(27 29 29)" }}>{inboxUnread}</p>
+                <p className="text-xs font-medium" style={{ color: "rgb(115 115 115)" }}>
+                  Unread
+                  {unreadTrend !== 0 && (
+                    <span className="ml-1.5" style={{ color: unreadTrend > 0 ? "rgb(220 38 38)" : "rgb(22 163 74)" }}>
+                      {unreadTrend > 0 ? "↑" : "↓"}{Math.abs(unreadTrend)}
+                    </span>
+                  )}
+                </p>
+              </div>
             </a>
-            <a
-              href="/compose"
-              className="flex items-center gap-2 px-4 py-2.5 rounded-small text-sm font-medium transition-colors border"
-              style={{ backgroundColor: "white", borderColor: "rgb(229 229 229)", color: "rgb(82 82 82)" }}
-              onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "rgb(250 250 250)"; }}
-              onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "white"; }}
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
-              </svg>
-              Compose
+
+            <a href="/calendar" className="bg-white rounded-[12px] border border-neutral-200 p-4 flex items-center gap-4 transition-colors hover:border-neutral-300" style={{ textDecoration: "none" }}>
+              <div className="w-10 h-10 rounded-[10px] flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "rgb(219 234 254)" }}>
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" style={{ color: "rgb(37 99 235)" }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+              </div>
+              <div>
+                <p className="text-2xl font-bold" style={{ color: "rgb(27 29 29)" }}>{eventsToday}</p>
+                <p className="text-xs font-medium" style={{ color: "rgb(115 115 115)" }}>Events Today</p>
+              </div>
             </a>
-            <a
-              href="/calendar"
-              className="flex items-center gap-2 px-4 py-2.5 rounded-small text-sm font-medium transition-colors border"
-              style={{ backgroundColor: "white", borderColor: "rgb(229 229 229)", color: "rgb(82 82 82)" }}
-              onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "rgb(250 250 250)"; }}
-              onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "white"; }}
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-              </svg>
-              Calendar
+
+            <div className="bg-white rounded-[12px] border border-neutral-200 p-4 flex items-center gap-4">
+              <div className="w-10 h-10 rounded-[10px] flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "rgb(220 252 231)" }}>
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" style={{ color: "rgb(22 163 74)" }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                </svg>
+              </div>
+              <div>
+                <p className="text-2xl font-bold" style={{ color: "rgb(27 29 29)" }}>{todos.filter((t) => !t.done).length}</p>
+                <p className="text-xs font-medium" style={{ color: "rgb(115 115 115)" }}>Tasks Pending</p>
+              </div>
+            </div>
+
+            <a href="/drafts" className="bg-white rounded-[12px] border border-neutral-200 p-4 flex items-center gap-4 transition-colors hover:border-neutral-300" style={{ textDecoration: "none" }}>
+              <div className="w-10 h-10 rounded-[10px] flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "rgb(254 243 199)" }}>
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" style={{ color: "rgb(245 158 11)" }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                </svg>
+              </div>
+              <div>
+                <p className="text-2xl font-bold" style={{ color: "rgb(27 29 29)" }}>{draftsCount}</p>
+                <p className="text-xs font-medium" style={{ color: "rgb(115 115 115)" }}>Drafts</p>
+              </div>
             </a>
-            <a
-              href="/attachments"
-              className="flex items-center gap-2 px-4 py-2.5 rounded-small text-sm font-medium transition-colors border"
-              style={{ backgroundColor: "white", borderColor: "rgb(229 229 229)", color: "rgb(82 82 82)" }}
-              onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "rgb(250 250 250)"; }}
-              onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "white"; }}
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
-              </svg>
-              Attachments
-            </a>
-            <a
-              href="/settings"
-              className="flex items-center gap-2 px-4 py-2.5 rounded-small text-sm font-medium transition-colors border"
-              style={{ backgroundColor: "white", borderColor: "rgb(229 229 229)", color: "rgb(82 82 82)" }}
-              onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "rgb(250 250 250)"; }}
-              onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "white"; }}
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-              </svg>
-              Settings
+
+            <a href="/inbox" className="bg-white rounded-[12px] border border-neutral-200 p-4 flex items-center gap-4 transition-colors hover:border-neutral-300" style={{ textDecoration: "none" }}>
+              <div className="w-10 h-10 rounded-[10px] flex items-center justify-center flex-shrink-0" style={{ backgroundColor: hoursWaiting > 24 ? "rgb(254 226 226)" : hoursWaiting > 0 ? "rgb(255 237 213)" : "rgb(220 252 231)" }}>
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" style={{ color: hoursWaiting > 24 ? "rgb(220 38 38)" : hoursWaiting > 0 ? "rgb(234 88 12)" : "rgb(22 163 74)" }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <div>
+                <p className="text-2xl font-bold" style={{ color: "rgb(27 29 29)" }}>{hoursWaiting > 0 ? `${hoursWaiting}h` : "0"}</p>
+                <p className="text-xs font-medium" style={{ color: "rgb(115 115 115)" }}>{hoursWaiting > 0 ? "Oldest Waiting" : "All Addressed"}</p>
+              </div>
             </a>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-
-          {/* ── Left Column (2/3) ── */}
-          <div className="lg:col-span-2 flex flex-col gap-5">
-
-            {/* Next Event Countdown Banner */}
-            {timeUntilNext && events.length > 0 && (() => {
-              const nextEvent = events.find(e => new Date(e.startDateTime) > new Date());
-              return nextEvent ? (
-                <div className="bg-blue-50 border border-blue-200 rounded-large p-4">
-                  <div className="flex items-center justify-between gap-4">
-                    <div className="flex-1 min-w-0">
-                      <p className="text-xs font-semibold mb-1" style={{ color: "rgb(37 99 235)" }}>NEXT EVENT</p>
-                      <p className="text-sm font-bold truncate" style={{ color: "rgb(27 29 29)" }}>{nextEvent.subject}</p>
-                      {nextEvent.location && (
-                        <p className="text-xs mt-0.5" style={{ color: "rgb(115 115 115)" }}>{nextEvent.location}</p>
-                      )}
-                    </div>
-                    <div className="text-right flex-shrink-0">
-                      <p className="text-2xl font-bold" style={{ color: "rgb(37 99 235)" }}>{timeUntilNext}</p>
-                      <a
-                        href="/calendar"
-                        className="mt-1 inline-block text-xs px-3 py-1 rounded-small text-white font-semibold transition-colors"
-                        style={{ backgroundColor: "rgb(37 99 235)" }}
-                        onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "rgb(29 78 216)"; }}
-                        onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "rgb(37 99 235)"; }}
-                      >
-                        View
-                      </a>
-                    </div>
+          {/* ── Next Event Banner ── */}
+          {timeUntilNext && events.length > 0 && (() => {
+            const nextEvent = events.find((e) => new Date(e.startDateTime) > new Date());
+            return nextEvent ? (
+              <div className="bg-blue-50 border border-blue-200 rounded-[12px] p-4 mb-5">
+                <div className="flex items-center justify-between gap-4">
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs font-semibold mb-1" style={{ color: "rgb(37 99 235)" }}>NEXT EVENT</p>
+                    <p className="text-sm font-bold truncate" style={{ color: "rgb(27 29 29)" }}>{nextEvent.subject}</p>
+                    {nextEvent.location && (
+                      <p className="text-xs mt-0.5" style={{ color: "rgb(115 115 115)" }}>{nextEvent.location}</p>
+                    )}
+                  </div>
+                  <div className="text-right flex-shrink-0">
+                    <p className="text-2xl font-bold" style={{ color: "rgb(37 99 235)" }}>{timeUntilNext}</p>
+                    <a href="/calendar" className="mt-1 inline-block text-xs px-3 py-1 rounded-[8px] text-white font-semibold" style={{ backgroundColor: "rgb(37 99 235)" }}>View</a>
                   </div>
                 </div>
-              ) : null;
-            })()}
+              </div>
+            ) : null;
+          })()}
+
+          {/* ── Two Column Grid (50/50) ── */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
 
             {/* Today's Agenda */}
-            <section className="bg-white rounded-large border border-neutral-200 shadow-custom p-6">
+            <section className="bg-white rounded-[12px] border border-neutral-200 p-6">
               <div className="flex items-center justify-between mb-5">
                 <h2 className="text-base font-semibold flex items-center gap-2" style={{ color: "rgb(27 29 29)" }}>
                   <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" style={{ color: "rgb(138 9 9)" }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -434,11 +447,8 @@ export default function DashboardClient({
                   </svg>
                   Today&apos;s Agenda
                 </h2>
-                <a href="/calendar" className="text-sm font-medium transition-colors" style={{ color: "rgb(138 9 9)" }}>
-                  View Calendar →
-                </a>
+                <a href="/calendar" className="text-xs font-semibold transition-colors" style={{ color: "rgb(138 9 9)" }}>View Calendar →</a>
               </div>
-
               {events.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-8 text-sm" style={{ color: "rgb(155 155 155)" }}>
                   <svg xmlns="http://www.w3.org/2000/svg" className="w-8 h-8 mb-2 opacity-40" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
@@ -448,148 +458,33 @@ export default function DashboardClient({
                 </div>
               ) : (
                 <div className="flex flex-col gap-3">
-                  {events.map((event, i) => {
-                    const color = EVENT_COLORS[i % EVENT_COLORS.length];
-                    const now = new Date();
-                    const month = now.toLocaleString("en-US", { month: "short" }).toUpperCase();
-                    const day = now.getDate();
+                  {events.map((event, idx) => {
+                    const color = EVENT_COLORS[idx % EVENT_COLORS.length];
+                    const isPast = new Date(event.endDateTime) < new Date();
+                    const isNow = new Date(event.startDateTime) <= new Date() && new Date(event.endDateTime) >= new Date();
                     return (
-                      <a
-                        key={event.id}
-                        href="/calendar"
-                        className="flex gap-4 p-4 rounded-large border border-neutral-200 hover:border-neutral-300 transition-colors group"
-                        style={{ backgroundColor: "rgb(250 250 250)", textDecoration: "none" }}
-                      >
-                        <div className="flex-shrink-0 w-14 flex flex-col items-center justify-center rounded-large" style={{ backgroundColor: color }}>
-                          <span className="text-xs font-bold uppercase" style={{ color: "rgba(255,255,255,0.7)" }}>{month}</span>
-                          <span className="text-2xl font-bold text-white leading-none">{day}</span>
-                        </div>
+                      <div key={event.id} className="flex items-start gap-3 p-3 rounded-[10px] border" style={{ borderColor: isNow ? color : "rgb(229 231 235)", backgroundColor: isNow ? "rgba(138,9,9,0.04)" : isPast ? "rgb(250 250 250)" : "white" }}>
+                        <div className="w-1 self-stretch rounded-full flex-shrink-0" style={{ backgroundColor: isPast ? "rgb(200 200 200)" : color }} />
                         <div className="flex-1 min-w-0">
-                          <div className="flex flex-wrap justify-between items-start gap-2">
-                            <h3 className="font-semibold truncate group-hover:underline" style={{ color: "rgb(27 29 29)" }}>{event.subject}</h3>
-                            <span className="text-xs font-semibold px-2 py-1 rounded-small border flex-shrink-0"
-                              style={{ color: "rgb(138 9 9)", backgroundColor: "rgb(253 235 235)", borderColor: "rgb(252 216 216)" }}>
-                              {formatEventTime(event.startDateTime)}
-                            </span>
+                          <div className="flex items-start justify-between gap-2">
+                            <p className="font-semibold text-sm truncate" style={{ color: isPast ? "rgb(155 155 155)" : "rgb(27 29 29)", textDecoration: isPast ? "line-through" : "none" }}>{event.subject}</p>
+                            {isNow && <span className="text-xs font-bold px-2 py-0.5 rounded-[6px] flex-shrink-0" style={{ backgroundColor: "rgb(253 235 235)", color: "rgb(138 9 9)" }}>NOW</span>}
                           </div>
-                          {event.location && (
-                            <p className="text-sm mt-1" style={{ color: "rgb(115 115 115)" }}>{event.location}</p>
-                          )}
-                          {event.attendeeCount > 0 && (
-                            <p className="text-xs mt-2" style={{ color: "rgb(155 155 155)" }}>+{event.attendeeCount} attendees</p>
-                          )}
+                          <p className="text-xs mt-0.5" style={{ color: "rgb(115 115 115)" }}>
+                            {formatEventTime(event.startDateTime)} – {formatEventTime(event.endDateTime)}
+                            {event.location && ` · ${event.location}`}
+                            {event.attendeeCount > 0 && ` · ${event.attendeeCount} attendee${event.attendeeCount !== 1 ? "s" : ""}`}
+                          </p>
                         </div>
-                      </a>
+                      </div>
                     );
                   })}
                 </div>
               )}
             </section>
 
-            {/* To Do List */}
-            <section className="bg-white rounded-large border border-neutral-200 shadow-custom p-6">
-              <div className="flex items-center justify-between mb-5">
-                <h2 className="text-base font-semibold flex items-center gap-2" style={{ color: "rgb(27 29 29)" }}>
-                  <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" style={{ color: "rgb(22 163 74)" }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
-                  </svg>
-                  To Do List
-                </h2>
-                <button
-                  onClick={() => setAddingTodo(true)}
-                  className="p-2 rounded-large transition-colors"
-                  style={{ color: "rgb(155 155 155)" }}
-                  onMouseEnter={(e) => { e.currentTarget.style.color = "rgb(138 9 9)"; e.currentTarget.style.backgroundColor = "rgb(253 235 235)"; }}
-                  onMouseLeave={(e) => { e.currentTarget.style.color = "rgb(155 155 155)"; e.currentTarget.style.backgroundColor = "transparent"; }}
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
-                  </svg>
-                </button>
-              </div>
-
-              <div className="flex flex-col gap-1">
-                {todosLoading ? (
-                  <div className="flex flex-col gap-2">
-                    {[1, 2, 3].map((i) => (
-                      <div
-                        key={i}
-                        className="flex items-start gap-3 p-3 rounded-large"
-                        style={{ backgroundColor: "rgb(245 245 245)" }}
-                      >
-                        <div className="w-5 h-5 rounded flex-shrink-0 mt-0.5" style={{ backgroundColor: "rgb(229 231 235)" }} />
-                        <div className="flex-1 min-w-0">
-                          <div className="h-4 rounded" style={{ backgroundColor: "rgb(229 231 235)" }} />
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                ) : todos.length === 0 && !addingTodo ? (
-                  <div className="flex flex-col items-center justify-center py-6 text-sm" style={{ color: "rgb(155 155 155)" }}>
-                    <svg xmlns="http://www.w3.org/2000/svg" className="w-8 h-8 mb-2 opacity-40" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
-                    </svg>
-                    No tasks yet
-                  </div>
-                ) : null}
-                {!todosLoading && todos.map((todo) => (
-                  <label
-                    key={todo.id}
-                    className="flex items-start gap-3 p-3 rounded-large cursor-pointer transition-colors"
-                    style={{ backgroundColor: "transparent" }}
-                    onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "rgb(250 250 250)"; }}
-                    onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "transparent"; }}
-                  >
-                    <input
-                      type="checkbox"
-                      checked={todo.done}
-                      onChange={() => toggleTodo(todo.id)}
-                      className="mt-0.5 w-5 h-5 rounded flex-shrink-0"
-                      style={{ accentColor: "rgb(138 9 9)" }}
-                    />
-                    <div className="flex-1 min-w-0">
-                      <span className="font-medium block" style={{ color: todo.done ? "rgb(155 155 155)" : "rgb(38 38 38)", textDecoration: todo.done ? "line-through" : "none" }}>
-                        {todo.text}
-                      </span>
-                      {todo.priority && !todo.done && (
-                        <span className="text-xs font-semibold px-2 py-0.5 rounded-small border mt-1 inline-block"
-                          style={todo.priority === "high"
-                            ? { color: "rgb(83 5 5)", backgroundColor: "rgb(253 235 235)", borderColor: "rgb(252 216 216)" }
-                            : { color: "rgb(75 85 99)", backgroundColor: "rgb(243 244 246)", borderColor: "rgb(229 231 235)" }
-                          }>
-                          {todo.priority === "high" ? "High Priority" : "Normal"}
-                        </span>
-                      )}
-                    </div>
-                  </label>
-                ))}
-
-                {addingTodo && (
-                  <div className="flex items-center gap-3 p-3 rounded-large border" style={{ backgroundColor: "rgb(253 235 235)", borderColor: "rgb(252 216 216)" }}>
-                    <input type="checkbox" disabled className="mt-0.5 w-5 h-5 rounded flex-shrink-0" style={{ accentColor: "rgb(138 9 9)" }} />
-                    <input
-                      type="text"
-                      value={newTodo}
-                      onChange={(e) => setNewTodo(e.target.value)}
-                      onKeyDown={(e) => { if (e.key === "Enter") addTodo(); if (e.key === "Escape") { setAddingTodo(false); setNewTodo(""); } }}
-                      placeholder="New task…"
-                      autoFocus
-                      className="flex-1 text-sm font-medium bg-transparent outline-none border-none"
-                      style={{ color: "rgb(38 38 38)" }}
-                    />
-                    <button onClick={addTodo} className="text-xs font-semibold flex-shrink-0" style={{ color: "rgb(138 9 9)" }}>Add</button>
-                    <button onClick={() => { setAddingTodo(false); setNewTodo(""); }} className="text-xs flex-shrink-0" style={{ color: "rgb(115 115 115)" }}>Cancel</button>
-                  </div>
-                )}
-              </div>
-            </section>
-          </div>
-
-          {/* ── Right Column (1/3) ── */}
-          <div className="flex flex-col gap-5">
-
-            {/* Recent Unread */}
-            <section className="bg-white rounded-large border border-neutral-200 shadow-custom p-6">
+            {/* New Emails */}
+            <section className="bg-white rounded-[12px] border border-neutral-200 p-6">
               <div className="flex items-center justify-between mb-5">
                 <h2 className="text-base font-semibold flex items-center gap-2" style={{ color: "rgb(27 29 29)" }}>
                   <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" style={{ color: "rgb(138 9 9)" }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -597,53 +492,30 @@ export default function DashboardClient({
                   </svg>
                   New Emails
                 </h2>
-                {inboxUnread > 0 && (
-                  <span className="text-white text-xs font-bold px-2.5 py-1 rounded-small" style={{ backgroundColor: "rgb(138 9 9)" }}>
-                    {inboxUnread} New
-                  </span>
-                )}
+                {inboxUnread > 0 && <span className="text-white text-xs font-bold px-2.5 py-1 rounded-[6px]" style={{ backgroundColor: "rgb(138 9 9)" }}>{inboxUnread} New</span>}
               </div>
-
               {recentUnread.length === 0 ? (
-                <p className="text-sm text-center py-4" style={{ color: "rgb(155 155 155)" }}>All caught up!</p>
+                <p className="text-sm text-center py-8" style={{ color: "rgb(155 155 155)" }}>All caught up!</p>
               ) : (
                 <div className="flex flex-col gap-4">
                   {recentUnread.map((email, i) => {
                     const isFlagged = email.flag?.flagStatus === "flagged";
                     const hoursOld = Math.floor((Date.now() - new Date(email.receivedDateTime).getTime()) / 3600000);
                     const isOld = hoursOld > 24;
-
                     return (
                       <div key={email.id}>
-                        {email.accountName && (
-                          <div className="text-xs font-semibold mb-1" style={{ color: "rgb(138 9 9)" }}>
-                            {email.accountName}
-                          </div>
-                        )}
-                        <button
-                          onClick={() => router.push(`/inbox/${email.id}`)}
-                          className="w-full text-left group"
-                        >
+                        {email.accountName && <div className="text-xs font-semibold mb-1" style={{ color: "rgb(138 9 9)" }}>{email.accountName}</div>}
+                        <button onClick={() => router.push(`/inbox/${email.id}`)} className="w-full text-left group">
                           <div className="flex justify-between items-start mb-0.5">
                             <div className="flex items-center gap-1.5 flex-1 min-w-0">
-                              {isFlagged && (
-                                <span className="text-sm flex-shrink-0">⭐</span>
-                              )}
-                              <h4 className="font-semibold text-sm truncate group-hover:underline" style={{ color: "rgb(27 29 29)" }}>
-                                {email.from.name}
-                              </h4>
+                              {isFlagged && <span className="text-sm flex-shrink-0">⭐</span>}
+                              <h4 className="font-semibold text-sm truncate group-hover:underline" style={{ color: "rgb(27 29 29)" }}>{email.from.name}</h4>
                             </div>
-                            <span className="text-xs flex-shrink-0 ml-2" style={{ color: "rgb(155 155 155)" }}>
-                              {formatRelative(email.receivedDateTime)}
-                            </span>
+                            <span className="text-xs flex-shrink-0 ml-2" style={{ color: "rgb(155 155 155)" }}>{formatRelative(email.receivedDateTime)}</span>
                           </div>
                           <div className="flex items-start gap-2">
                             <p className="text-sm font-medium truncate flex-1" style={{ color: "rgb(58 58 58)" }}>{email.subject}</p>
-                            {isOld && (
-                              <span className="text-xs px-2 py-0.5 rounded-small font-semibold flex-shrink-0" style={{ backgroundColor: "rgb(254 226 226)", color: "rgb(153 27 27)" }}>
-                                REPLY
-                              </span>
-                            )}
+                            {isOld && <span className="text-xs px-2 py-0.5 rounded-[6px] font-semibold flex-shrink-0" style={{ backgroundColor: "rgb(254 226 226)", color: "rgb(153 27 27)" }}>REPLY</span>}
                           </div>
                           <p className="text-xs mt-0.5 line-clamp-2" style={{ color: "rgb(115 115 115)" }}>{email.bodyPreview}</p>
                         </button>
@@ -653,20 +525,86 @@ export default function DashboardClient({
                   })}
                 </div>
               )}
+              <a href="/inbox" className="w-full mt-5 py-2.5 text-sm font-semibold rounded-[8px] transition-colors border flex items-center justify-center" style={{ color: "rgb(82 82 82)", backgroundColor: "rgb(245 245 245)", borderColor: "rgb(229 229 229)" }}>View All Inbox</a>
+            </section>
 
-              <a
-                href="/inbox"
-                className="w-full mt-5 py-2.5 text-sm font-semibold rounded-small transition-colors border flex items-center justify-center"
-                style={{ color: "rgb(82 82 82)", backgroundColor: "rgb(245 245 245)", borderColor: "rgb(229 229 229)" }}
-                onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "rgb(238 238 238)"; }}
-                onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "rgb(245 245 245)"; }}
-              >
-                View All Inbox
-              </a>
+            {/* To Do List */}
+            <section className="bg-white rounded-[12px] border border-neutral-200 p-6">
+              <div className="flex items-center justify-between mb-5">
+                <h2 className="text-base font-semibold flex items-center gap-2" style={{ color: "rgb(27 29 29)" }}>
+                  <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" style={{ color: "rgb(22 163 74)" }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                  </svg>
+                  To Do List
+                  {todos.filter((t) => !t.done).length > 0 && (
+                    <span className="text-xs font-bold px-2 py-0.5 rounded-[6px]" style={{ backgroundColor: "rgb(220 252 231)", color: "rgb(21 128 61)" }}>
+                      {todos.filter((t) => !t.done).length} pending
+                    </span>
+                  )}
+                </h2>
+                <button onClick={() => setAddingTodo(true)} className="p-2 rounded-[10px] transition-colors" style={{ color: "rgb(155 155 155)" }} title="Add task">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+                  </svg>
+                </button>
+              </div>
+              <div className="flex flex-col gap-1">
+                {addingTodo && (
+                  <div className="flex flex-col gap-2 p-3 mb-2 rounded-[10px] border" style={{ backgroundColor: "rgb(253 251 235)", borderColor: "rgb(253 224 132)" }}>
+                    <div className="flex items-center gap-2">
+                      <input type="checkbox" disabled className="w-5 h-5 rounded flex-shrink-0" style={{ accentColor: "rgb(138 9 9)" }} />
+                      <input type="text" value={newTodo} onChange={(e) => setNewTodo(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter") addTodo(); if (e.key === "Escape") { setAddingTodo(false); setNewTodo(""); setNewTodoPriority("normal"); } }} placeholder="What needs to be done?" autoFocus className="flex-1 text-sm font-medium bg-transparent outline-none border-none" style={{ color: "rgb(38 38 38)" }} />
+                    </div>
+                    <div className="flex items-center justify-between pl-7">
+                      <div className="flex items-center gap-1">
+                        <button onClick={() => setNewTodoPriority("normal")} className="text-xs font-semibold px-2.5 py-1 rounded-[6px] border transition-colors" style={newTodoPriority === "normal" ? { backgroundColor: "rgb(243 244 246)", borderColor: "rgb(156 163 175)", color: "rgb(55 65 81)" } : { backgroundColor: "transparent", borderColor: "rgb(229 231 235)", color: "rgb(156 163 175)" }}>Normal</button>
+                        <button onClick={() => setNewTodoPriority("high")} className="text-xs font-semibold px-2.5 py-1 rounded-[6px] border transition-colors" style={newTodoPriority === "high" ? { backgroundColor: "rgb(253 235 235)", borderColor: "rgb(252 165 165)", color: "rgb(153 27 27)" } : { backgroundColor: "transparent", borderColor: "rgb(229 231 235)", color: "rgb(156 163 175)" }}>High</button>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <button onClick={addTodo} className="text-xs font-semibold px-3 py-1 rounded-[6px] text-white" style={{ backgroundColor: "rgb(138 9 9)" }}>Add</button>
+                        <button onClick={() => { setAddingTodo(false); setNewTodo(""); setNewTodoPriority("normal"); }} className="text-xs font-medium" style={{ color: "rgb(115 115 115)" }}>Cancel</button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                {todosLoading ? (
+                  <div className="flex flex-col gap-2">
+                    {[1, 2, 3].map((i) => (
+                      <div key={i} className="flex items-start gap-3 p-3 rounded-[10px]" style={{ backgroundColor: "rgb(245 245 245)" }}>
+                        <div className="w-5 h-5 rounded flex-shrink-0 mt-0.5" style={{ backgroundColor: "rgb(229 231 235)" }} />
+                        <div className="flex-1"><div className="h-4 rounded" style={{ backgroundColor: "rgb(229 231 235)", width: `${60 + i * 15}%` }} /></div>
+                      </div>
+                    ))}
+                  </div>
+                ) : todos.length === 0 && !addingTodo ? (
+                  <div className="flex flex-col items-center justify-center py-6 text-sm" style={{ color: "rgb(155 155 155)" }}>
+                    <svg xmlns="http://www.w3.org/2000/svg" className="w-8 h-8 mb-2 opacity-40" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                    </svg>
+                    No tasks yet — click + to add one
+                  </div>
+                ) : null}
+                {!todosLoading && todos.map((todo) => (
+                  <div key={todo.id} className="group flex items-start gap-3 p-3 rounded-[10px] transition-colors hover:bg-neutral-50">
+                    <input type="checkbox" checked={todo.done} onChange={() => toggleTodo(todo.id)} className="mt-0.5 w-5 h-5 rounded flex-shrink-0 cursor-pointer" style={{ accentColor: "rgb(138 9 9)" }} />
+                    <div className="flex-1 min-w-0">
+                      <span className="font-medium block" style={{ color: todo.done ? "rgb(155 155 155)" : "rgb(38 38 38)", textDecoration: todo.done ? "line-through" : "none" }}>{todo.text}</span>
+                      {todo.priority === "high" && !todo.done && <span className="text-xs font-semibold px-2 py-0.5 rounded-[6px] border mt-1 inline-block" style={{ color: "rgb(83 5 5)", backgroundColor: "rgb(253 235 235)", borderColor: "rgb(252 216 216)" }}>High Priority</span>}
+                    </div>
+                    <button onClick={() => deleteTodo(todo.id)} disabled={deletingTodoId === todo.id} className="opacity-0 group-hover:opacity-100 flex-shrink-0 p-1 rounded transition-all hover:text-red-600 hover:bg-red-50" style={{ color: "rgb(155 155 155)" }} title="Delete task">
+                      {deletingTodoId === todo.id ? (
+                        <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" /></svg>
+                      ) : (
+                        <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                      )}
+                    </button>
+                  </div>
+                ))}
+              </div>
             </section>
 
             {/* Weekly Activity */}
-            <section className="bg-white rounded-large border border-neutral-200 shadow-custom p-6">
+            <section className="bg-white rounded-[12px] border border-neutral-200 p-6">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-base font-semibold" style={{ color: "rgb(27 29 29)" }}>Weekly Activity</h2>
                 <div className="flex items-center gap-3 text-xs font-medium">
@@ -681,84 +619,19 @@ export default function DashboardClient({
                 </div>
               </div>
               <WeeklyChart receivedData={emailsData} sentData={sentData} />
-            </section>
-
-            {/* Quick Stats */}
-            <section className="grid grid-cols-2 gap-3">
-              {/* Unread with Trend */}
-              <div className="rounded-large shadow-custom p-4 flex flex-col gap-1" style={{ backgroundColor: "rgb(138 9 9)" }}>
-                <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" style={{ color: "rgb(252 216 216)" }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
-                </svg>
-                <span className="text-2xl font-bold text-white">{inboxUnread}</span>
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-medium" style={{ color: "rgb(252 216 216)" }}>Unread</span>
-                  {unreadTrend !== 0 && (
-                    <span className="text-xs font-semibold flex items-center gap-0.5" style={{ color: "rgb(252 216 216)" }}>
-                      {unreadTrend > 0 ? "↑" : "↓"} {Math.abs(unreadTrend)}
-                    </span>
-                  )}
+              <div className="flex items-center justify-between mt-3 pt-3 border-t border-neutral-100">
+                <div className="text-center flex-1">
+                  <p className="text-lg font-bold" style={{ color: "rgb(220 38 38)" }}>{emailsData.reduce((a, b) => a + b, 0)}</p>
+                  <p className="text-xs" style={{ color: "rgb(115 115 115)" }}>Received</p>
+                </div>
+                <div className="w-px h-8" style={{ backgroundColor: "rgb(229 231 235)" }} />
+                <div className="text-center flex-1">
+                  <p className="text-lg font-bold" style={{ color: "rgb(37 99 235)" }}>{sentData.reduce((a, b) => a + b, 0)}</p>
+                  <p className="text-xs" style={{ color: "rgb(115 115 115)" }}>Sent</p>
                 </div>
               </div>
-
-              {/* Tasks */}
-              <div className="rounded-large shadow-custom p-4 flex flex-col gap-1" style={{ backgroundColor: "rgb(22 163 74)" }}>
-                <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" style={{ color: "rgba(255,255,255,0.7)" }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
-                </svg>
-                <span className="text-2xl font-bold text-white">{todos.filter((t) => !t.done).length}</span>
-                <span className="text-xs font-medium text-white opacity-70">Tasks Pending</span>
-              </div>
-
-              {/* Events */}
-              <div className="rounded-large shadow-custom p-4 flex flex-col gap-1" style={{ backgroundColor: "rgb(37 99 235)" }}>
-                <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" style={{ color: "rgba(255,255,255,0.7)" }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                </svg>
-                <span className="text-2xl font-bold text-white">{eventsToday}</span>
-                <span className="text-xs font-medium text-white opacity-70">Events Today</span>
-              </div>
-
-              {/* Drafts */}
-              <div className="rounded-large shadow-custom p-4 flex flex-col gap-1" style={{ backgroundColor: "rgb(245 158 11)" }}>
-                <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" style={{ color: "rgba(255,255,255,0.7)" }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                </svg>
-                <span className="text-2xl font-bold text-white">{draftsCount}</span>
-                <span className="text-xs font-medium text-white opacity-70">Drafts</span>
-              </div>
-
-              {/* Response Time */}
-              <a
-                href="/inbox"
-                className="rounded-large shadow-custom p-4 flex flex-col gap-1 transition-opacity hover:opacity-90"
-                style={{ backgroundColor: hoursWaiting > 24 ? "rgb(220 38 38)" : hoursWaiting > 0 ? "rgb(251 146 60)" : "rgb(22 163 74)", textDecoration: "none" }}
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" style={{ color: "rgba(255,255,255,0.7)" }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <span className="text-2xl font-bold text-white">{hoursWaiting}h</span>
-                <span className="text-xs font-medium text-white opacity-70">
-                  {hoursWaiting > 24 ? "NEEDS REPLY" : hoursWaiting > 0 ? "Oldest Unread" : "All Caught Up"}
-                </span>
-              </a>
-
-              {/* Attachments */}
-              <a
-                href="/attachments"
-                className="rounded-large shadow-custom p-4 flex flex-col gap-1 transition-opacity hover:opacity-90"
-                style={{ backgroundColor: "rgb(139 92 246)", textDecoration: "none" }}
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" style={{ color: "rgba(255,255,255,0.7)" }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
-                </svg>
-                <span className="text-2xl font-bold text-white">{attachmentsToday}</span>
-                <span className="text-xs font-medium text-white opacity-70">Today&apos;s Attachments</span>
-              </a>
             </section>
-
           </div>
-        </div>
         </div>
       </main>
     </div>
