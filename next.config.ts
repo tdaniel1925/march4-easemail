@@ -23,9 +23,9 @@ const nextConfig: NextConfig = {
             value: [
               "default-src 'self'",
               "script-src 'self' 'unsafe-eval' 'unsafe-inline'", // Next.js requires unsafe-eval and unsafe-inline
-              "style-src 'self' 'unsafe-inline'", // Tailwind requires unsafe-inline
+              "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://rsms.me",
               "img-src 'self' data: https://graph.microsoft.com https://*.sharepoint.com",
-              "font-src 'self' data:",
+              "font-src 'self' data: https://fonts.gstatic.com https://rsms.me",
               "connect-src 'self' https://graph.microsoft.com https://login.microsoftonline.com https://*.supabase.co",
               "frame-ancestors 'self'",
               "base-uri 'self'",
