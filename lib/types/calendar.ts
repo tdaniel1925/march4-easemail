@@ -16,6 +16,9 @@ export interface CalEvent {
   accountHomeId: string;   // which connected account this event belongs to
   accountEmail: string;    // display label for that account
   isRecurring?: boolean;
+  reminderMinutes?: number | null;
+  showAs?: string;
+  recurrence?: string | null;
 }
 
 export type CalendarView = "day" | "week" | "month" | "agenda" | "year";
@@ -39,7 +42,10 @@ export interface GraphCalEvent {
   }[];
   onlineMeeting?: { joinUrl: string };
   responseStatus?: { response: string };
-  recurrence?: object | null;
+  recurrence?: {
+    pattern?: { type: string; interval: number };
+    range?: { type: string; startDate: string; endDate?: string };
+  } | null;
 }
 
 export interface GraphCalEventList {
@@ -75,6 +81,7 @@ export function mapGraphEvent(
     accountHomeId,
     accountEmail,
     isRecurring: e.recurrence != null,
+    recurrence: e.recurrence ? (e.recurrence.pattern?.type ?? "recurring") : null,
   };
 }
 

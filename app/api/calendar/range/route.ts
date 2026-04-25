@@ -1,37 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
-import { graphGet } from "@/lib/microsoft/graph";
-import {
-  type CalEvent,
-  type GraphCalEvent,
-  type GraphCalEventList,
-  mapGraphEvent,
-  CALENDAR_SELECT,
-} from "@/lib/types/calendar";
-
-const GRAPH_BASE = "https://graph.microsoft.com/v1.0";
-
-type PagedCalEventList = GraphCalEventList & { "@odata.nextLink"?: string };
-
-async function fetchAllPages(
-  userId: string,
-  homeAccountId: string,
-  initialPath: string
-): Promise<GraphCalEvent[]> {
-  const all: GraphCalEvent[] = [];
-  let path: string | null = initialPath;
-  while (path) {
-    const data: PagedCalEventList = await graphGet<PagedCalEventList>(userId, homeAccountId, path);
-    all.push(...(data.value ?? []));
-    const next: string | null = data["@odata.nextLink"] ?? null;
-    path = next ? (next.startsWith(GRAPH_BASE) ? next.slice(GRAPH_BASE.length) : next) : null;
-  }
-  return all;
-}
+import { getAllAccounts } from "@/lib/providers/registry";
+import { syncCalendar } from "@/lib/sync/calendar-sync";
+import type { CalEvent } from "@/lib/types/calendar";
 
 // ─── GET /api/calendar/range?start={YYYY-MM-DD}&end={YYYY-MM-DD} ──────────────
-// Returns events for an arbitrary date range. Reads from DB cache first.
+// Syncs calendar cache, then reads from DB cache.
 
 export async function GET(req: NextRequest): Promise<NextResponse> {
   const supabase = await createClient();
@@ -47,8 +22,17 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
   const rangeStart = new Date(`${startParam}T00:00:00`);
   const rangeEnd = new Date(`${endParam}T23:59:59.999`);
 
-  // ── Cache-first ────────────────────────────────────────────────────────────
+  // Sync all accounts before reading cache
+  const accounts = await getAllAccounts(user.id);
+  if (accounts.length > 0) {
+    await Promise.allSettled(
+      accounts.map((acc) => syncCalendar(user.id, acc.accountId))
+    );
+  }
 
+  const emailByAccount = new Map(accounts.map((a) => [a.accountId, a.email]));
+
+  // Read from cache (now fresh after sync)
   const cached = await prisma.cachedCalendarEvent.findMany({
     where: {
       userId: user.id,
@@ -58,57 +42,26 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     orderBy: { startDateTime: "asc" },
   });
 
-  if (cached.length > 0) {
-    const events: CalEvent[] = cached.map((e) => ({
-      id: e.id,
-      subject: e.subject || "(no subject)",
-      startDateTime: e.startDateTime.toISOString(),
-      endDateTime: e.endDateTime.toISOString(),
-      timeZone: e.timeZone ?? "UTC",
-      isAllDay: e.isAllDay,
-      location: e.location ?? undefined,
-      bodyPreview: e.bodyPreview || undefined,
-      organizer:
-        e.organizerName || e.organizerEmail
-          ? { name: e.organizerName ?? "", address: e.organizerEmail ?? "" }
-          : undefined,
-      attendees: (e.attendees as { name: string; address: string; responseStatus?: string }[]) ?? [],
-      onlineMeetingUrl: e.onlineMeetingUrl ?? undefined,
-      responseStatus: (e.responseStatus as CalEvent["responseStatus"]) ?? "none",
-      accountHomeId: e.homeAccountId,
-      accountEmail: "",
-      isRecurring: e.isRecurring,
-    }));
-    return NextResponse.json({ events });
-  }
-
-  // ── Fallback to Graph ──────────────────────────────────────────────────────
-
-  const accounts = await prisma.msConnectedAccount.findMany({
-    where: { userId: user.id },
-    orderBy: { isDefault: "desc" },
-  });
-  if (!accounts.length) return NextResponse.json({ events: [] });
-
-  const graphPath =
-    `/me/calendarView` +
-    `?startDateTime=${encodeURIComponent(rangeStart.toISOString())}` +
-    `&endDateTime=${encodeURIComponent(rangeEnd.toISOString())}` +
-    `&$select=${CALENDAR_SELECT}` +
-    `&$top=100`;
-
-  const results = await Promise.allSettled(
-    accounts.map((acc) =>
-      fetchAllPages(user.id, acc.homeAccountId, graphPath).then((events) =>
-        events.map((e) => mapGraphEvent(e, acc.homeAccountId, acc.msEmail))
-      )
-    )
-  );
-
-  const events: CalEvent[] = results
-    .filter((r): r is PromiseFulfilledResult<CalEvent[]> => r.status === "fulfilled")
-    .flatMap((r) => r.value)
-    .sort((a, b) => new Date(a.startDateTime).getTime() - new Date(b.startDateTime).getTime());
+  const events: CalEvent[] = cached.map((e) => ({
+    id: e.id,
+    subject: e.subject || "(no subject)",
+    startDateTime: e.startDateTime.toISOString(),
+    endDateTime: e.endDateTime.toISOString(),
+    timeZone: e.timeZone ?? "UTC",
+    isAllDay: e.isAllDay,
+    location: e.location ?? undefined,
+    bodyPreview: e.bodyPreview || undefined,
+    organizer:
+      e.organizerName || e.organizerEmail
+        ? { name: e.organizerName ?? "", address: e.organizerEmail ?? "" }
+        : undefined,
+    attendees: (e.attendees as { name: string; address: string; responseStatus?: string }[]) ?? [],
+    onlineMeetingUrl: e.onlineMeetingUrl ?? undefined,
+    responseStatus: (e.responseStatus as CalEvent["responseStatus"]) ?? "none",
+    accountHomeId: e.homeAccountId,
+    accountEmail: emailByAccount.get(e.homeAccountId) ?? "",
+    isRecurring: e.isRecurring,
+  }));
 
   return NextResponse.json({ events });
 }

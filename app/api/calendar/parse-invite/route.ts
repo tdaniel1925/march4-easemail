@@ -1,17 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import Anthropic from "@anthropic-ai/sdk";
+import { z } from "zod";
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
-export interface ParseInviteResponse {
-  subject: string;
-  start: string;        // ISO datetime or empty string
-  end: string;          // ISO datetime or empty string
-  location: string;
-  attendees: string[];  // email addresses
-  body: string;         // cleaned description
-}
+const ParseInviteSchema = z.object({
+  subject: z.string().default(""),
+  start: z.string().default(""),
+  end: z.string().default(""),
+  location: z.string().default(""),
+  attendees: z.array(z.string()).default([]),
+  body: z.string().default(""),
+});
+
+export type ParseInviteResponse = z.infer<typeof ParseInviteSchema>;
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
   const supabase = await createClient();
@@ -71,7 +74,11 @@ ${emailContent.slice(0, 4000)}`;
 
   let result: ParseInviteResponse;
   try {
-    result = JSON.parse(cleaned) as ParseInviteResponse;
+    const parsed = ParseInviteSchema.safeParse(JSON.parse(cleaned));
+    if (!parsed.success) {
+      return NextResponse.json({ error: "AI response invalid" }, { status: 500 });
+    }
+    result = parsed.data;
   } catch {
     return NextResponse.json({ error: "AI response could not be parsed" }, { status: 500 });
   }

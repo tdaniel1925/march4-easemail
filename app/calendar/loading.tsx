@@ -1,7 +1,7 @@
 export default function CalendarLoading() {
   return (
     <div className="flex" style={{ height: "100vh", overflow: "hidden" }}>
-      <div className="w-[260px] flex-shrink-0 border-r border-neutral-200 bg-white">
+      <div className="w-64 flex-shrink-0 border-r border-neutral-200 bg-white">
         <div className="p-4 space-y-3 animate-pulse">
           <div className="h-10 bg-neutral-100 rounded-[10px]" />
           <div className="space-y-1 mt-6">

@@ -13,15 +13,10 @@ import { test, expect, type Page } from "@playwright/test";
  *  6. Modal: Cancel button closes the modal
  *  7. Modal: Escape key closes the modal
  *  8. Modal: submitting without a subject shows a validation error
- *  9. Modal: All-day toggle switches date inputs between datetime-local and date
+ *  9. Modal: All-day toggle hides time inputs
  * 10. Modal: attendee chip — typing email + Enter creates a chip
  * 11. NL input bar — visible, accepts text, Create button disabled when empty
  * 12. View toggle — Week active by default, Day button present
- *
- * Skipped (require live Graph data or AI):
- *  - Clicking a calendar event opens the detail modal
- *  - NL create → AI parse → form prefilled
- *  - RSVP buttons appear on invite events
  */
 
 const CAL_URL = "/calendar";
@@ -37,7 +32,7 @@ async function goToCalendar(page: Page) {
 
 async function openNewEventModal(page: Page) {
   await page.locator("button", { hasText: "New Event" }).click();
-  await expect(page.locator("h2", { hasText: "New Event" })).toBeVisible({ timeout: 5000 });
+  await expect(page.locator("h2", { hasText: "Create New Event" })).toBeVisible({ timeout: 5000 });
 }
 
 // ─── Test 1: Page loads ───────────────────────────────────────────────────────
@@ -50,7 +45,7 @@ test("1. Calendar page loads with 7 day columns and time grid", async ({ page })
     await expect(page.locator(`text=${label}`).first()).toBeVisible();
   }
 
-  // Time labels: 8 AM and 12 PM always in range HOUR_START=7 to HOUR_END=21
+  // Time labels: 8 AM and 12 PM always in range HOUR_START=0 to HOUR_END=24
   await expect(page.locator("text=8 AM").first()).toBeVisible();
   await expect(page.locator("text=12 PM").first()).toBeVisible();
 });
@@ -61,7 +56,7 @@ test("2. Prev-week button changes the month/year label", async ({ page }) => {
   await goToCalendar(page);
 
   // Capture current label (e.g. "March 2026")
-  const label = page.locator("span.font-semibold.text-neutral-700.min-w-\\[140px\\]").first();
+  const label = page.locator("span.font-semibold.text-neutral-700.min-w-\\[200px\\]").first();
   const before = await label.textContent();
 
   // Navigate back 5 weeks so we cross a month boundary regardless of current date
@@ -76,7 +71,7 @@ test("2. Prev-week button changes the month/year label", async ({ page }) => {
 test("2b. Next-week button changes the month/year label", async ({ page }) => {
   await goToCalendar(page);
 
-  const label = page.locator("span.font-semibold.text-neutral-700.min-w-\\[140px\\]").first();
+  const label = page.locator("span.font-semibold.text-neutral-700.min-w-\\[200px\\]").first();
   const before = await label.textContent();
 
   for (let i = 0; i < 5; i++) {
@@ -92,7 +87,7 @@ test("2b. Next-week button changes the month/year label", async ({ page }) => {
 test("3. Today button returns to the current week after navigating away", async ({ page }) => {
   await goToCalendar(page);
 
-  const label = page.locator("span.font-semibold.text-neutral-700.min-w-\\[140px\\]").first();
+  const label = page.locator("span.font-semibold.text-neutral-700.min-w-\\[200px\\]").first();
   const original = await label.textContent();
 
   // Navigate away 5 weeks
@@ -113,7 +108,7 @@ test("4. New Event button opens the create-event modal", async ({ page }) => {
   await openNewEventModal(page);
 
   // Modal must contain the subject input and action buttons
-  await expect(page.locator('input[placeholder="Event title"]')).toBeVisible();
+  await expect(page.locator('input[placeholder="Add event title…"]')).toBeVisible();
   await expect(page.locator("button", { hasText: "Create Event" })).toBeVisible();
   await expect(page.locator("button", { hasText: "Cancel" })).toBeVisible();
 });
@@ -124,7 +119,7 @@ test("5. Subject input is auto-focused when the modal opens", async ({ page }) =
   await goToCalendar(page);
   await openNewEventModal(page);
 
-  const subjectInput = page.locator('input[placeholder="Event title"]');
+  const subjectInput = page.locator('input[placeholder="Add event title…"]');
   await expect(subjectInput).toBeFocused({ timeout: 3000 });
 });
 
@@ -136,7 +131,7 @@ test("6. Cancel button closes the event form modal", async ({ page }) => {
 
   await page.locator("button", { hasText: "Cancel" }).click();
 
-  await expect(page.locator("h2", { hasText: "New Event" })).not.toBeVisible({ timeout: 3000 });
+  await expect(page.locator("h2", { hasText: "Create New Event" })).not.toBeVisible({ timeout: 3000 });
 });
 
 test("6b. Clicking the backdrop (outside modal) closes it", async ({ page }) => {
@@ -146,7 +141,7 @@ test("6b. Clicking the backdrop (outside modal) closes it", async ({ page }) => 
   // Click at (10, 10) — top-left corner of the overlay, outside the modal card
   await page.mouse.click(10, 10);
 
-  await expect(page.locator("h2", { hasText: "New Event" })).not.toBeVisible({ timeout: 3000 });
+  await expect(page.locator("h2", { hasText: "Create New Event" })).not.toBeVisible({ timeout: 3000 });
 });
 
 // ─── Test 7: Escape closes modal ─────────────────────────────────────────────
@@ -157,7 +152,7 @@ test("7. Escape key closes the event form modal", async ({ page }) => {
 
   await page.keyboard.press("Escape");
 
-  await expect(page.locator("h2", { hasText: "New Event" })).not.toBeVisible({ timeout: 3000 });
+  await expect(page.locator("h2", { hasText: "Create New Event" })).not.toBeVisible({ timeout: 3000 });
 });
 
 // ─── Test 8: Form validation ──────────────────────────────────────────────────
@@ -169,10 +164,10 @@ test("8. Submitting without a subject shows a validation error", async ({ page }
   // Click Create Event with empty subject
   await page.locator("button", { hasText: "Create Event" }).click();
 
-  await expect(page.locator("text=Subject is required")).toBeVisible({ timeout: 3000 });
+  await expect(page.locator("text=Event title is required.")).toBeVisible({ timeout: 3000 });
 
   // Modal must stay open
-  await expect(page.locator("h2", { hasText: "New Event" })).toBeVisible();
+  await expect(page.locator("h2", { hasText: "Create New Event" })).toBeVisible();
 });
 
 test("8b. End time before start time shows a validation error", async ({ page }) => {
@@ -180,57 +175,50 @@ test("8b. End time before start time shows a validation error", async ({ page })
   await openNewEventModal(page);
 
   // Fill a subject so we get past the first validation
-  await page.locator('input[placeholder="Event title"]').fill("Test Meeting");
+  await page.locator('input[placeholder="Add event title…"]').fill("Test Meeting");
 
-  // Set end to a well-past datetime — default start is always "next full hour" (future).
-  // React 18 exposes props directly via __reactProps$<hash> on the DOM node.
-  await page.locator('[data-testid="event-end"]').evaluate((el, value) => {
-    const propsKey = Object.keys(el).find((k) => k.startsWith("__reactProps$"));
-    if (!propsKey) throw new Error("__reactProps$ not found on event-end input");
-    const onChange = (el as any)[propsKey].onChange;
-    if (typeof onChange !== "function") throw new Error("onChange is not a function");
-    onChange({ target: { value } });
-  }, "2020-01-01T00:00");
+  // Set end date to the past and end time to midnight
+  const endDateInput = page.locator('input[type="date"]').last();
+  await endDateInput.fill("2020-01-01");
 
-  // Confirm React re-rendered with the new end value before submitting
-  await expect(page.locator('[data-testid="event-end"]')).toHaveValue("2020-01-01T00:00", { timeout: 2000 });
+  const endTimeInput = page.locator('input[type="time"]').last();
+  await endTimeInput.fill("00:00");
 
   await page.locator("button", { hasText: "Create Event" }).click();
 
-  await expect(page.locator("text=End time must be after start time")).toBeVisible({ timeout: 3000 });
+  await expect(page.locator("text=End time must be after start time.")).toBeVisible({ timeout: 3000 });
 });
 
 // ─── Test 9: All-day toggle ───────────────────────────────────────────────────
 
-test("9. All-day toggle switches date inputs between datetime-local and date type", async ({ page }) => {
+test("9. All-day toggle hides time inputs", async ({ page }) => {
   await goToCalendar(page);
   await openNewEventModal(page);
 
-  // Default: datetime-local inputs
-  const startInput = page.locator('input[type="datetime-local"]').first();
-  await expect(startInput).toBeVisible();
+  // Default: date and time inputs present
+  await expect(page.locator('input[type="date"]').first()).toBeVisible();
+  await expect(page.locator('input[type="time"]').first()).toBeVisible();
 
-  // Toggle all-day on — button is a toggle pill next to the "All day" label
-  // Locate via the parent flex row containing the text "All day"
-  await page.locator("text=All day").locator("..").locator("button").click();
+  // Toggle all-day on — the button wraps a toggle + "All day" text
+  await page.locator("button", { hasText: "All day" }).click();
 
-  // Now inputs should be type="date"
+  // Now time inputs should be hidden, date inputs remain
   await expect(page.locator('input[type="date"]').first()).toBeVisible({ timeout: 2000 });
-  await expect(page.locator('input[type="datetime-local"]')).toHaveCount(0);
+  await expect(page.locator('input[type="time"]')).toHaveCount(0);
 });
 
-test("9b. Toggling all-day off restores datetime-local inputs", async ({ page }) => {
+test("9b. Toggling all-day off restores time inputs", async ({ page }) => {
   await goToCalendar(page);
   await openNewEventModal(page);
 
+  const allDayBtn = page.locator("button", { hasText: "All day" });
+
   // Toggle on then off
-  const allDayBtn = page.locator("text=All day").locator("..").locator("button");
   await allDayBtn.click();
-  await expect(page.locator('input[type="date"]').first()).toBeVisible();
+  await expect(page.locator('input[type="time"]')).toHaveCount(0);
 
   await allDayBtn.click();
-  await expect(page.locator('input[type="datetime-local"]').first()).toBeVisible({ timeout: 2000 });
-  await expect(page.locator('input[type="date"]')).toHaveCount(0);
+  await expect(page.locator('input[type="time"]').first()).toBeVisible({ timeout: 2000 });
 });
 
 // ─── Test 10: Attendee chip ───────────────────────────────────────────────────
@@ -258,10 +246,11 @@ test("10b. Clicking × on attendee chip removes it", async ({ page }) => {
   await attendeeInput.fill("remove@lawfirm.com");
   await attendeeInput.press("Enter");
 
-  const chip = page.locator("span", { hasText: "remove@lawfirm.com" });
+  // The chip is a <div> with rounded-full containing a <span> with the address text and a <button> to remove
+  const chip = page.locator("div.rounded-full", { hasText: "remove@lawfirm.com" });
   await expect(chip).toBeVisible();
 
-  // The × button is inside the chip span
+  // The × button is inside the chip div
   await chip.locator("button").click();
   await expect(chip).not.toBeVisible();
 });

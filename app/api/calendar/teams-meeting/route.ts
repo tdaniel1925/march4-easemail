@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { prisma } from "@/lib/prisma";
 import { graphPost } from "@/lib/microsoft/graph";
 import { TEAMS_SCOPES } from "@/lib/microsoft/msal";
 import { isReauthError } from "@/lib/microsoft/auth-errors";
+import { verifyAccountOwnership, getAllAccounts } from "@/lib/providers/registry";
 
 interface GraphOnlineMeeting {
   id: string;
@@ -19,15 +19,6 @@ export async function POST(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const dbUser = await prisma.user.findUnique({
-    where: { id: user.id },
-    include: { msAccounts: { where: { isDefault: true } } },
-  });
-  if (!dbUser) return NextResponse.json({ error: "User not found" }, { status: 404 });
-
-  const account = dbUser.msAccounts[0];
-  if (!account) return NextResponse.json({ error: "No MS account" }, { status: 400 });
-
   const { subject, startDateTime, endDateTime, homeAccountId } = await req.json() as {
     subject: string;
     startDateTime: string;
@@ -38,7 +29,18 @@ export async function POST(req: NextRequest) {
   if (!subject?.trim()) return NextResponse.json({ error: "subject required" }, { status: 400 });
   if (!startDateTime || !endDateTime) return NextResponse.json({ error: "startDateTime and endDateTime required" }, { status: 400 });
 
-  const accountId = homeAccountId ?? account.homeAccountId;
+  // Resolve account: use provided homeAccountId or fall back to default
+  let accountId = homeAccountId;
+  if (!accountId) {
+    const accounts = await getAllAccounts(user.id);
+    const defaultAccount = accounts.find((a) => a.isDefault) ?? accounts[0];
+    if (!defaultAccount) return NextResponse.json({ error: "No connected account" }, { status: 404 });
+    accountId = defaultAccount.accountId;
+  }
+
+  // Verify ownership
+  const account = await verifyAccountOwnership(user.id, accountId);
+  if (!account) return NextResponse.json({ error: "Account not found" }, { status: 404 });
 
   try {
     const meeting = await graphPost<GraphOnlineMeeting>(

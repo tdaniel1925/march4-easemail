@@ -14,16 +14,16 @@ export default function SectionError({
   }, [error]);
 
   return (
-    <div className="flex-1 flex items-center justify-center">
+    <div className="flex-1 flex items-center justify-center bg-white">
       <div className="text-center max-w-sm px-6">
-        <div className="w-12 h-12 rounded-full bg-red-900/30 flex items-center justify-center mx-auto mb-4">
-          <svg className="w-6 h-6 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <div className="w-12 h-12 rounded-full bg-red-50 flex items-center justify-center mx-auto mb-4">
+          <svg className="w-6 h-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
               d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
           </svg>
         </div>
-        <p className="text-white font-medium mb-1">Something went wrong</p>
-        <p className="text-gray-400 text-sm mb-6">
+        <p className="text-neutral-900 font-medium mb-1">Something went wrong</p>
+        <p className="text-neutral-500 text-sm mb-6">
           Could not load this section. Try reloading.
         </p>
         <div className="flex gap-3 justify-center">
@@ -35,7 +35,7 @@ export default function SectionError({
           </button>
           <a
             href="/inbox"
-            className="px-4 py-2 bg-white/10 text-white text-sm rounded-lg hover:bg-white/15 transition-colors"
+            className="px-4 py-2 bg-neutral-100 text-neutral-700 text-sm rounded-lg hover:bg-neutral-200 transition-colors"
           >
             Go to inbox
           </a>

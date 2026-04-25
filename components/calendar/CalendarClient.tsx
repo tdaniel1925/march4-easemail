@@ -11,24 +11,12 @@ import type { NlCreateResponse } from "@/app/api/calendar/nl-create/route";
 // ─── Re-export for any legacy imports ─────────────────────────────────────────
 export type { CalEvent };
 
-// ─── Speech Recognition types (browser API, not in all TS libs) ───────────────
-interface SpeechRecognitionEvent extends Event {
-  results: SpeechRecognitionResultList;
-}
-interface SpeechRecognitionErrorEvent extends Event {
-  error: string;
-}
-interface SpeechRecognitionInstance extends EventTarget {
-  lang: string;
-  continuous: boolean;
-  interimResults: boolean;
-  onresult: ((e: SpeechRecognitionEvent) => void) | null;
-  onerror: ((e: SpeechRecognitionErrorEvent) => void) | null;
-  onend: (() => void) | null;
-  start(): void;
-  stop(): void;
-}
-type SpeechRecognitionConstructor = new () => SpeechRecognitionInstance;
+import type {
+  SpeechRecognitionEvent,
+  SpeechRecognitionErrorEvent,
+  SpeechRecognitionInstance,
+  SpeechRecognitionConstructor,
+} from "@/lib/types/speech";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -399,6 +387,7 @@ export default function CalendarClient({ weekStart: initialWeekStart, events: in
   const [teamsMeetingUrl, setTeamsMeetingUrl] = useState<string | null>(null);
   const [nlPrefill, setNlPrefill] = useState<NlCreateResponse | null>(null);
   const [showNlPreview, setShowNlPreview] = useState(false);
+  const [requiresReauth, setRequiresReauth] = useState(false);
 
   // Voice + confirmation
   const [isListening, setIsListening] = useState(false);
@@ -445,8 +434,9 @@ export default function CalendarClient({ weekStart: initialWeekStart, events: in
     try {
       const res = await fetch(`/api/calendar/week?start=${encodeURIComponent(start)}`);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const data = await res.json() as { events: CalEvent[] };
+      const data = await res.json() as { events: CalEvent[]; requiresReauth?: boolean };
       setEvents(data.events);
+      if (data.requiresReauth) setRequiresReauth(true);
     } catch { setFetchError("Could not load calendar events."); setEvents([]); }
     finally { setLoading(false); }
   }, []);
@@ -462,17 +452,18 @@ export default function CalendarClient({ weekStart: initialWeekStart, events: in
     finally { setRangeLoading(false); }
   }, []);
 
-  // Week view re-fetch on navigation
+  // Week view re-fetch on navigation or account change
+  const accountCount = accounts.length;
   useEffect(() => {
     if (isInitialMount.current) { isInitialMount.current = false; return; }
     if (activeView === "week") void fetchWeekEvents(weekStart);
-  }, [weekStart, activeView, fetchWeekEvents]);
+  }, [weekStart, activeView, fetchWeekEvents, accountCount]);
 
   // Day view: fetch the week containing selectedDay
   useEffect(() => {
     if (activeView !== "day") return;
     void fetchWeekEvents(getMondayOf(selectedDay));
-  }, [selectedDay, activeView, fetchWeekEvents]);
+  }, [selectedDay, activeView, fetchWeekEvents, accountCount]);
 
   // Month / agenda / year: fetch range
   useEffect(() => {
@@ -493,7 +484,7 @@ export default function CalendarClient({ weekStart: initialWeekStart, events: in
       const year = currentMonth.substring(0, 4);
       void fetchRangeEvents(`${year}-01-01`, `${year}-12-31`);
     }
-  }, [activeView, currentMonth, fetchRangeEvents]);
+  }, [activeView, currentMonth, fetchRangeEvents, accountCount]);
 
   // ── Voice input ───────────────────────────────────────────────────────────────
 
@@ -898,7 +889,7 @@ export default function CalendarClient({ weekStart: initialWeekStart, events: in
 
           <button onClick={goToPrev}
             className="w-8 h-8 flex items-center justify-center rounded-[10px] bg-neutral-100 hover:bg-neutral-200 transition-colors"
-            aria-label="Previous">
+            aria-label={`Previous ${activeView}`}>
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
               <path d="M10 12L6 8L10 4" stroke="#374151" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
@@ -910,7 +901,7 @@ export default function CalendarClient({ weekStart: initialWeekStart, events: in
 
           <button onClick={goToNext}
             className="w-8 h-8 flex items-center justify-center rounded-[10px] bg-neutral-100 hover:bg-neutral-200 transition-colors"
-            aria-label="Next">
+            aria-label={`Next ${activeView}`}>
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
               <path d="M6 4L10 8L6 12" stroke="#374151" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
@@ -995,6 +986,13 @@ export default function CalendarClient({ weekStart: initialWeekStart, events: in
             </div>
           )}
 
+          {requiresReauth && (
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-[8px] text-xs font-medium bg-amber-50 text-amber-800 border border-amber-200">
+              <span>Account needs reconnection</span>
+              <a href="/api/auth/microsoft" className="underline font-semibold">Reconnect</a>
+              <button onClick={() => setRequiresReauth(false)} className="opacity-60 hover:opacity-100 ml-1">✕</button>
+            </div>
+          )}
           {fetchError && <span className="text-xs font-medium" style={{ color: BRAND }}>{fetchError}</span>}
 
           <div className="flex-1" />
@@ -1209,6 +1207,7 @@ export default function CalendarClient({ weekStart: initialWeekStart, events: in
                     const data = await res.json() as { ok?: boolean; event?: CalEvent; error?: string };
                     if (data.ok && data.event) {
                       setEvents((prev) => [...prev, data.event!]);
+                      setRangeEvents((prev) => [...prev, data.event!]);
                       setSavedConfirmation(data.event.subject);
                       setTimeout(() => setSavedConfirmation(null), 4000);
                     } else { setShowForm(true); }
@@ -1241,6 +1240,11 @@ export default function CalendarClient({ weekStart: initialWeekStart, events: in
           onClose={() => { setShowForm(false); setEditingEvent(null); setNlPrefill(null); }}
           onSaved={(savedEvent) => {
             setEvents((prev) => {
+              const idx = prev.findIndex((e) => e.id === savedEvent.id);
+              if (idx >= 0) { const next = [...prev]; next[idx] = savedEvent; return next; }
+              return [...prev, savedEvent];
+            });
+            setRangeEvents((prev) => {
               const idx = prev.findIndex((e) => e.id === savedEvent.id);
               if (idx >= 0) { const next = [...prev]; next[idx] = savedEvent; return next; }
               return [...prev, savedEvent];

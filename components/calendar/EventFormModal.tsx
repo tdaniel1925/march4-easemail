@@ -3,19 +3,9 @@
 import { useState, useEffect, useRef } from "react";
 import { useAccountStore } from "@/lib/stores/account-store";
 import type { CalEvent } from "@/lib/types/calendar";
+import type { SpeechRecognitionInstance, SpeechRecognitionConstructor } from "@/lib/types/speech";
 
 const BRAND = "rgb(138, 9, 9)";
-
-const COLORS = [
-  { name: "brand",  hex: "rgb(138, 9, 9)" },
-  { name: "blue",   hex: "#3b82f6" },
-  { name: "green",  hex: "#10b981" },
-  { name: "purple", hex: "#8b5cf6" },
-  { name: "pink",   hex: "#ec4899" },
-  { name: "sky",    hex: "#0ea5e9" },
-  { name: "orange", hex: "#f97316" },
-  { name: "gray",   hex: "#6b7280" },
-];
 
 const LOCATION_SUGGESTIONS = ["Conference Room A", "Conference Room B", "Zoom", "Teams", "Remote"];
 
@@ -98,7 +88,6 @@ export default function EventFormModal({ prefill, onClose, onSaved, editEvent, u
 
   // ── Core fields ──────────────────────────────────────────────────────────────
   const [subject, setSubject] = useState(editEvent?.subject ?? prefill?.subject ?? "");
-  const [color, setColor] = useState("brand");
   const [isAllDay, setIsAllDay] = useState(editEvent?.isAllDay ?? prefill?.isAllDay ?? false);
 
   const initStartDate = () => {
@@ -138,9 +127,9 @@ export default function EventFormModal({ prefill, onClose, onSaved, editEvent, u
   );
 
   // ── New fields ────────────────────────────────────────────────────────────────
-  const [recurrence, setRecurrence] = useState<Recurrence>("none");
-  const [reminderMinutes, setReminderMinutes] = useState<number | null>(30);
-  const [showAs, setShowAs] = useState<"busy" | "free" | "tentative">("busy");
+  const [recurrence, setRecurrence] = useState<Recurrence>(editEvent?.recurrence as Recurrence ?? "none");
+  const [reminderMinutes, setReminderMinutes] = useState<number | null>(editEvent?.reminderMinutes ?? 30);
+  const [showAs, setShowAs] = useState<"busy" | "free" | "tentative">(editEvent?.showAs as "busy" | "free" | "tentative" ?? "busy");
   const [teamsEnabled, setTeamsEnabled] = useState(false);
   const [teamsMeetingUrl, setTeamsMeetingUrl] = useState("");
   const [teamsLoading, setTeamsLoading] = useState(false);
@@ -150,8 +139,7 @@ export default function EventFormModal({ prefill, onClose, onSaved, editEvent, u
   const [nlText, setNlText] = useState("");
   const [nlLoading, setNlLoading] = useState(false);
   const [isListening, setIsListening] = useState(false);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const speechRef = useRef<any>(null);
+  const speechRef = useRef<SpeechRecognitionInstance | null>(null);
 
   // ── UI ────────────────────────────────────────────────────────────────────────
   const [loading, setLoading] = useState(false);
@@ -223,9 +211,10 @@ export default function EventFormModal({ prefill, onClose, onSaved, editEvent, u
 
   // ── Voice input ───────────────────────────────────────────────────────────────
   function toggleVoice() {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const w = window as any;
-    const SR = w.SpeechRecognition ?? w.webkitSpeechRecognition;
+    const SR = typeof window !== "undefined"
+      ? ((window as unknown as { SpeechRecognition?: SpeechRecognitionConstructor }).SpeechRecognition
+        ?? (window as unknown as { webkitSpeechRecognition?: SpeechRecognitionConstructor }).webkitSpeechRecognition)
+      : null;
     if (!SR) return;
     if (isListening) { speechRef.current?.stop(); setIsListening(false); return; }
     const rec = new SR();
@@ -236,10 +225,9 @@ export default function EventFormModal({ prefill, onClose, onSaved, editEvent, u
     // Collect final transcript in a closure variable — avoids React state staleness
     // when onend fires before the last setState call has flushed.
     let finalTranscript = "";
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    rec.onresult = (e: any) => {
+    rec.onresult = (e) => {
       let interim = "";
-      for (let i = e.resultIndex; i < e.results.length; i++) {
+      for (let i = 0; i < e.results.length; i++) {
         if (e.results[i].isFinal) finalTranscript += e.results[i][0].transcript + " ";
         else interim += e.results[i][0].transcript;
       }
@@ -342,7 +330,7 @@ export default function EventFormModal({ prefill, onClose, onSaved, editEvent, u
     }
   }
 
-  const activeColor = COLORS.find((c) => c.name === color)?.hex ?? BRAND;
+  const activeColor = BRAND;
 
   // ─────────────────────────────────────────────────────────────────────────────
 
@@ -441,38 +429,17 @@ export default function EventFormModal({ prefill, onClose, onSaved, editEvent, u
         {/* ── Scrollable Body ── */}
         <form id="event-form" noValidate onSubmit={(e) => void handleSubmit(e)} className="flex-1 px-6 py-5 space-y-5 overflow-y-auto">
 
-          {/* Title + Color */}
-          <div className="flex items-start gap-4">
-            <div className="flex-1">
-              <label className="text-xs font-semibold text-neutral-500 uppercase tracking-wide block mb-1">Event Title</label>
-              <input
-                ref={subjectRef}
-                type="text"
-                value={subject}
-                onChange={(e) => setSubject(e.target.value)}
-                placeholder="Add event title…"
-                className="w-full text-base font-semibold border border-neutral-200 rounded-lg px-3 py-2.5 focus:outline-none focus:border-neutral-400"
-              />
-            </div>
-            <div className="flex-shrink-0">
-              <label className="text-xs font-semibold text-neutral-500 uppercase tracking-wide block mb-1">Color</label>
-              <div className="flex items-center gap-2 mt-1.5">
-                {COLORS.map((c) => (
-                  <button
-                    key={c.name}
-                    type="button"
-                    onClick={() => setColor(c.name)}
-                    className="rounded transition-transform hover:scale-110"
-                    style={{
-                      width: 20, height: 20,
-                      background: c.hex,
-                      outline: color === c.name ? `2px solid ${c.hex}` : "none",
-                      outlineOffset: 2,
-                    }}
-                  />
-                ))}
-              </div>
-            </div>
+          {/* Title */}
+          <div>
+            <label className="text-xs font-semibold text-neutral-500 uppercase tracking-wide block mb-1">Event Title</label>
+            <input
+              ref={subjectRef}
+              type="text"
+              value={subject}
+              onChange={(e) => setSubject(e.target.value)}
+              placeholder="Add event title…"
+              className="w-full text-base font-semibold border border-neutral-200 rounded-lg px-3 py-2.5 focus:outline-none focus:border-neutral-400"
+            />
           </div>
 
           {/* Date & Time */}

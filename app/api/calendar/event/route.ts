@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
-import { graphFetch, graphGet } from "@/lib/microsoft/graph";
+import { graphFetch, graphGet, graphPost } from "@/lib/microsoft/graph";
 import { mapGraphEvent, type CalEvent, type GraphCalEvent, CALENDAR_SELECT } from "@/lib/types/calendar";
+import { verifyAccountOwnership, getAllAccounts } from "@/lib/providers/registry";
 
 interface EventBody {
   homeAccountId: string;
@@ -71,23 +72,35 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const data = await req.json() as EventBody;
-  if (!data.homeAccountId || !data.subject || !data.start || !data.end) {
-    return NextResponse.json({ error: "homeAccountId, subject, start, end required" }, { status: 400 });
+  if (!data.subject || !data.start || !data.end) {
+    return NextResponse.json({ error: "subject, start, end required" }, { status: 400 });
   }
 
+  // Resolve account: use provided homeAccountId or fall back to default
+  let accountId = data.homeAccountId;
+  if (!accountId) {
+    const accounts = await getAllAccounts(user.id);
+    const defaultAccount = accounts.find((a) => a.isDefault) ?? accounts[0];
+    if (!defaultAccount) return NextResponse.json({ error: "No connected account" }, { status: 404 });
+    accountId = defaultAccount.accountId;
+  }
+
+  // Verify ownership
+  const account = await verifyAccountOwnership(user.id, accountId);
+  if (!account) return NextResponse.json({ error: "Account not found" }, { status: 404 });
+
   try {
-    const res = await graphFetch(user.id, data.homeAccountId, "/me/events", {
-      method: "POST",
-      body: JSON.stringify(buildGraphPayload(data)),
-    });
-    if (!res.ok) {
-      const err = await res.text();
-      return NextResponse.json({ error: `Graph error: ${err}` }, { status: res.status });
-    }
-    const created = await res.json() as GraphCalEvent;
-    const event: CalEvent = mapGraphEvent(created, data.homeAccountId, "");
+    const created = await graphPost<GraphCalEvent>(user.id, accountId, "/me/events", buildGraphPayload(data));
+    const event: CalEvent = mapGraphEvent(created, accountId, account.email ?? "");
 
     // Cache the event immediately so it persists across page navigations
+    const attendees = JSON.parse(JSON.stringify(
+      (created.attendees ?? []).map((a) => ({
+        name: a.emailAddress?.name ?? "",
+        address: a.emailAddress?.address ?? "",
+        responseStatus: a.status?.response,
+      }))
+    ));
     await prisma.cachedCalendarEvent.upsert({
       where: { id: created.id },
       update: {
@@ -98,12 +111,21 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         isAllDay: created.isAllDay ?? false,
         location: created.location?.displayName ?? null,
         bodyPreview: data.body ?? "",
+        attendees,
+        organizerName: created.organizer?.emailAddress?.name ?? "",
+        organizerEmail: created.organizer?.emailAddress?.address ?? "",
+        responseStatus: created.responseStatus?.response ?? "organizer",
+        onlineMeetingUrl: created.onlineMeeting?.joinUrl ?? null,
+        isRecurring: created.recurrence != null,
+        reminderMinutes: data.reminderMinutes ?? null,
+        showAs: data.showAs ?? "busy",
+        recurrence: data.recurrence ?? null,
         syncedAt: new Date(),
       },
       create: {
         id: created.id,
         userId: user.id,
-        homeAccountId: data.homeAccountId,
+        homeAccountId: accountId,
         subject: created.subject ?? "",
         startDateTime: new Date(created.start.dateTime),
         endDateTime: new Date(created.end.dateTime),
@@ -111,8 +133,15 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         isAllDay: created.isAllDay ?? false,
         location: created.location?.displayName ?? null,
         bodyPreview: data.body ?? "",
-        organizerName: "",
-        organizerEmail: "",
+        attendees,
+        organizerName: created.organizer?.emailAddress?.name ?? "",
+        organizerEmail: created.organizer?.emailAddress?.address ?? "",
+        responseStatus: created.responseStatus?.response ?? "organizer",
+        onlineMeetingUrl: created.onlineMeeting?.joinUrl ?? null,
+        isRecurring: created.recurrence != null,
+        reminderMinutes: data.reminderMinutes ?? null,
+        showAs: data.showAs ?? "busy",
+        recurrence: data.recurrence ?? null,
       },
     }).catch(() => {}); // Non-fatal — sync will pick it up
 
@@ -132,6 +161,10 @@ export async function PATCH(req: NextRequest): Promise<NextResponse> {
   if (!eventId || !data.homeAccountId) {
     return NextResponse.json({ error: "eventId and homeAccountId required" }, { status: 400 });
   }
+
+  // Verify account ownership before any data access
+  const account = await verifyAccountOwnership(user.id, data.homeAccountId);
+  if (!account) return NextResponse.json({ error: "Account not found" }, { status: 404 });
 
   try {
     // Verify event ownership — select only the DB primary key to avoid using raw request value
@@ -165,7 +198,7 @@ export async function PATCH(req: NextRequest): Promise<NextResponse> {
     const updated = await graphGet<GraphCalEvent>(
       user.id, data.homeAccountId, `/me/events/${verifiedEventId}?$select=${CALENDAR_SELECT}`
     );
-    const event: CalEvent = mapGraphEvent(updated, data.homeAccountId, "");
+    const event: CalEvent = mapGraphEvent(updated, data.homeAccountId, account.email ?? "");
 
     // Update cache after successful modification
     await prisma.cachedCalendarEvent.update({
@@ -204,6 +237,10 @@ export async function DELETE(req: NextRequest): Promise<NextResponse> {
   if (!eventId || !homeAccountId) {
     return NextResponse.json({ error: "eventId and homeAccountId required" }, { status: 400 });
   }
+
+  // Verify account ownership before any data access
+  const ownershipCheck = await verifyAccountOwnership(user.id, homeAccountId);
+  if (!ownershipCheck) return NextResponse.json({ error: "Account not found" }, { status: 404 });
 
   try {
     // Verify event ownership — select only the DB primary key to avoid using raw request value
