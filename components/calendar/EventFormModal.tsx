@@ -271,13 +271,20 @@ export default function EventFormModal({ prefill, onClose, onSaved, editEvent, u
           homeAccountId,
         }),
       });
-      const data = await res.json() as { joinWebUrl?: string };
+      const data = await res.json() as { joinWebUrl?: string; error?: string; message?: string };
       if (data.joinWebUrl) {
         setTeamsMeetingUrl(data.joinWebUrl);
         setTeamsEnabled(true);
         if (!location) setLocation(data.joinWebUrl);
+      } else if (data.error === "teams_consent_required") {
+        setError("Teams access not granted. Redirecting to grant permissions...");
+        setTimeout(() => { window.location.href = "/api/auth/microsoft/teams-consent"; }, 1500);
+      } else {
+        setError(data.message ?? "Failed to create Teams meeting. Please try again.");
       }
-    } catch { /* fail silently */ }
+    } catch {
+      setError("Failed to create Teams meeting. Check your connection and try again.");
+    }
     setTeamsLoading(false);
   }
 

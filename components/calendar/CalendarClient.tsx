@@ -933,6 +933,14 @@ export default function CalendarClient({ weekStart: initialWeekStart, events: in
                 if (res.ok) {
                   const data = await res.json() as { joinWebUrl: string };
                   setTeamsMeetingUrl(data.joinWebUrl);
+                } else {
+                  const data = await res.json().catch(() => ({ error: "unknown" }));
+                  if (data.error === "teams_consent_required") {
+                    // Redirect to Teams consent flow
+                    window.location.href = "/api/auth/microsoft/teams-consent";
+                    return;
+                  }
+                  setFetchError(data.message ?? "Failed to create Teams meeting. Please try again.");
                 }
               } finally {
                 setTeamsMeetingLoading(false);

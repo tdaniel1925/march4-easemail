@@ -5,6 +5,20 @@ export function isReauthError(err: unknown): boolean {
     msg.includes("REAUTH_REQUIRED") ||
     msg.includes("not found in MSAL cache") ||
     msg.includes("no_tokens_found") ||
-    msg.includes("InteractionRequired")
+    msg.includes("InteractionRequired") ||
+    msg.includes("consent_required") ||
+    msg.includes("interaction_required")
+  );
+}
+
+/** Returns true if the error indicates missing Teams/scope consent. */
+export function isConsentError(err: unknown): boolean {
+  const msg = String(err);
+  return (
+    msg.includes("403") ||
+    msg.includes("Forbidden") ||
+    msg.includes("Authorization_RequestDenied") ||
+    msg.includes("insufficient") ||
+    msg.includes("consent")
   );
 }

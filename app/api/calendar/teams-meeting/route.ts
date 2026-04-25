@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
-import { graphPost } from "@/lib/microsoft/graph";
-import { TEAMS_SCOPES } from "@/lib/microsoft/msal";
+import { graphPost, TEAMS_SCOPES } from "@/lib/microsoft/graph";
 import { isReauthError } from "@/lib/microsoft/auth-errors";
 
 interface GraphOnlineMeeting {
@@ -61,8 +60,22 @@ export async function POST(req: NextRequest) {
       endDateTime: meeting.endDateTime,
     });
   } catch (err: unknown) {
+    const errMsg = String(err);
     if (isReauthError(err)) {
       return NextResponse.json({ error: "account_requires_reauth" }, { status: 401 });
+    }
+    // Detect missing Teams consent (Graph returns 403 or mentions consent/scope)
+    if (
+      errMsg.includes("403") ||
+      errMsg.includes("Forbidden") ||
+      errMsg.includes("consent") ||
+      errMsg.includes("insufficient") ||
+      errMsg.includes("Authorization_RequestDenied")
+    ) {
+      return NextResponse.json(
+        { error: "teams_consent_required", message: "Teams permissions not granted. Please grant Teams access first." },
+        { status: 403 }
+      );
     }
     console.error("[calendar/teams-meeting]", err);
     return NextResponse.json({ error: "Failed to create Teams meeting" }, { status: 500 });
