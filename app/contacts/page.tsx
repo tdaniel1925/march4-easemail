@@ -49,8 +49,11 @@ export default async function ContactsPage() {
   const dbUser = await getUserWithAccounts(user.id);
   if (!dbUser) redirect("/onboarding");
 
-  const defaultAccount = dbUser.defaultAccount;
-  if (!defaultAccount) redirect("/onboarding");
+  const dbDefault = dbUser.defaultAccount;
+  if (!dbDefault) redirect("/onboarding");
+  const { getActiveAccountId } = await import("@/lib/utils/get-active-account");
+  const savedAccountId = await getActiveAccountId();
+  const defaultAccount = (savedAccountId ? dbUser.allAccounts.find((a) => a.homeAccountId === savedAccountId) : null) ?? dbDefault;
 
   let contacts: Contact[] = [];
   const unreadCountPromise = getUnreadCount(user.id, defaultAccount.homeAccountId);

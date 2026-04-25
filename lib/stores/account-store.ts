@@ -36,9 +36,17 @@ export const useAccountStore = create<AccountStore>((set) => ({
   mailFolders: [],
   activeLabel: null,
   setAccounts: (accounts) => {
-    // Restore last-used account from localStorage
+    // Restore last-used account from cookie (SSR-accessible) or localStorage fallback
     let saved: string | null = null;
-    try { saved = typeof window !== "undefined" ? localStorage.getItem("easemail:activeAccountId") : null; } catch {}
+    try {
+      if (typeof document !== "undefined") {
+        const match = document.cookie.match(/(?:^|;\s*)easemail_account=([^;]*)/);
+        saved = match ? decodeURIComponent(match[1]) : null;
+      }
+      if (!saved && typeof window !== "undefined") {
+        saved = localStorage.getItem("easemail:activeAccountId");
+      }
+    } catch {}
     const restored = saved ? accounts.find((a) => a.homeAccountId === saved) : null;
     set({
       accounts,
@@ -46,7 +54,11 @@ export const useAccountStore = create<AccountStore>((set) => ({
     });
   },
   setActiveAccount: (activeAccount) => {
-    try { localStorage.setItem("easemail:activeAccountId", activeAccount.homeAccountId); } catch {}
+    // Persist to both cookie (SSR-readable) and localStorage (fallback)
+    try {
+      document.cookie = `easemail_account=${encodeURIComponent(activeAccount.homeAccountId)};path=/;max-age=31536000;SameSite=Lax`;
+      localStorage.setItem("easemail:activeAccountId", activeAccount.homeAccountId);
+    } catch {}
     set({ activeAccount });
   },
   removeAccount: (homeAccountId) =>

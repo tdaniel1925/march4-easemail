@@ -27,8 +27,15 @@ export default async function InboxPage() {
   ]);
   if (!dbUser) redirect("/onboarding");
 
-  const defaultAccount = dbUser.defaultAccount;
-  if (!defaultAccount) redirect("/onboarding");
+  const dbDefault = dbUser.defaultAccount;
+  if (!dbDefault) redirect("/onboarding");
+
+  // Respect the user's last-selected account (cookie), fall back to DB default
+  const { getActiveAccountId } = await import("@/lib/utils/get-active-account");
+  const savedAccountId = await getActiveAccountId();
+  const defaultAccount = (savedAccountId
+    ? dbUser.allAccounts.find((a) => a.homeAccountId === savedAccountId)
+    : null) ?? dbDefault;
 
   const providerType = detectProviderType(defaultAccount.homeAccountId);
 

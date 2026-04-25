@@ -47,8 +47,11 @@ export default async function DashboardPage() {
   const dbUser = await getUserWithAccounts(user.id);
   if (!dbUser) redirect("/onboarding");
 
-  const defaultAccount = dbUser.defaultAccount;
-  if (!defaultAccount) redirect("/onboarding");
+  const dbDefault = dbUser.defaultAccount;
+  if (!dbDefault) redirect("/onboarding");
+  const { getActiveAccountId } = await import("@/lib/utils/get-active-account");
+  const savedAccountId = await getActiveAccountId();
+  const defaultAccount = (savedAccountId ? dbUser.allAccounts.find((a) => a.homeAccountId === savedAccountId) : null) ?? dbDefault;
 
   // Fetch today's calendar events across all accounts
   const userTimeZone = dbUser.preferredTimeZone || "America/Chicago";

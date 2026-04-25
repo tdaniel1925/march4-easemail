@@ -253,15 +253,19 @@ export default function ComposeClient({
   messageId,
   draftId,
   draftData,
+  defaultAccountId,
 }: {
   accounts: Account[];
   mode?: ComposeMode;
   messageId?: string;
   draftId?: string;
   draftData?: any | null;
+  defaultAccountId?: string;
 }) {
   const router = useRouter();
-  const defaultAccount = accounts.find((a) => a.isDefault) ?? accounts[0];
+  const defaultAccount = (defaultAccountId
+    ? accounts.find((a) => a.homeAccountId === defaultAccountId)
+    : null) ?? accounts.find((a) => a.isDefault) ?? accounts[0];
 
   // ── Composer state ──────────────────────────────────────────────────────────
   const [to, setTo] = useState<string[]>([]);
@@ -1114,7 +1118,7 @@ export default function ComposeClient({
   // ── Reply/Forward context: fetch original message on mount ───────────────────
   useEffect(() => {
     if (!mode || !messageId) return;
-    fetch(`/api/mail/message/${messageId}`)
+    fetch(`/api/mail/message/${messageId}?homeAccountId=${encodeURIComponent(defaultAccount?.homeAccountId ?? "")}`)
       .then((r) => r.json() as Promise<{
         subject?: string;
         from?: { emailAddress?: { name?: string; address?: string } };

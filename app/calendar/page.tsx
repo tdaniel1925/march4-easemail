@@ -44,7 +44,11 @@ export default async function CalendarPage() {
     `&$select=${CALENDAR_SELECT}` +
     `&$top=200`;
 
-  const defaultAccount = dbUser.defaultAccount;
+  const dbDefault = dbUser.defaultAccount;
+  if (!dbDefault) redirect("/onboarding");
+  const { getActiveAccountId } = await import("@/lib/utils/get-active-account");
+  const savedAccountId = await getActiveAccountId();
+  const defaultAccount = (savedAccountId ? dbUser.allAccounts.find((a) => a.homeAccountId === savedAccountId) : null) ?? dbDefault;
   const weekStartDate = weekStart.toISOString().split("T")[0];
   const weekEndDate = weekEnd.toISOString().split("T")[0];
 

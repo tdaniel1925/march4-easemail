@@ -6,11 +6,13 @@ import Sidebar from "@/components/Sidebar";
 import { StoreInitializer } from "@/components/StoreInitializer";
 import ComposeClient from "@/components/compose/ComposeClient";
 import { getUnreadCount } from "@/lib/utils/get-unread-count";
+import { getActiveAccountId } from "@/lib/utils/get-active-account";
 
 type SearchParams = Promise<{
   mode?: string;
   messageId?: string;
   draftId?: string;
+  homeAccountId?: string;
 }>;
 
 export default async function ComposePage({
@@ -25,10 +27,18 @@ export default async function ComposePage({
   const dbUser = await getUserWithAccounts(user.id);
   if (!dbUser) redirect("/onboarding");
 
-  const defaultAccount = dbUser.defaultAccount;
-  if (!defaultAccount) redirect("/onboarding");
+  const dbDefault = dbUser.defaultAccount;
+  if (!dbDefault) redirect("/onboarding");
+
   const params = await searchParams;
   const mode = params.mode as "reply" | "replyAll" | "forward" | undefined;
+
+  // Resolve which account to compose from:
+  // 1. URL param (reply/forward from specific account)
+  // 2. Cookie (last-used account)
+  // 3. DB default
+  const savedAccountId = await getActiveAccountId();
+  const resolvedAccountId = params.homeAccountId ?? savedAccountId ?? dbDefault.homeAccountId;
 
   // Load draft if draftId provided
   let draftData = null;
@@ -38,27 +48,32 @@ export default async function ComposePage({
     });
   }
 
-  const unreadCount = await getUnreadCount(user.id, defaultAccount.homeAccountId);
+  const activeAccount = dbUser.allAccounts.find((a) => a.homeAccountId === resolvedAccountId) ?? dbDefault;
+  const unreadCount = await getUnreadCount(user.id, activeAccount.homeAccountId);
+
+  // Build unified account list for the "From" dropdown
+  const allAccounts = dbUser.allAccounts.map((a) => ({
+    id: a.id ?? "",
+    homeAccountId: a.homeAccountId,
+    msEmail: a.email,
+    displayName: a.displayName,
+    isDefault: a.isDefault,
+  }));
 
   return (
     <div className="flex" style={{ height: "100vh", overflow: "hidden" }}>
       <StoreInitializer accounts={dbUser.msAccounts} imapAccounts={dbUser.imapAccounts} jmapAccounts={dbUser.jmapAccounts} inboxUnread={unreadCount} />
       <Sidebar
         userName={dbUser.name ?? user.email ?? "You"}
-        userEmail={defaultAccount.email}
+        userEmail={activeAccount.email}
       />
       <ComposeClient
-        accounts={dbUser.msAccounts.map((a) => ({
-          id: a.id,
-          homeAccountId: a.homeAccountId,
-          msEmail: a.msEmail,
-          displayName: a.displayName,
-          isDefault: a.isDefault,
-        }))}
+        accounts={allAccounts}
         mode={mode}
         messageId={params.messageId}
         draftId={params.draftId}
         draftData={draftData}
+        defaultAccountId={resolvedAccountId}
       />
     </div>
   );
