@@ -4,8 +4,10 @@ import { prisma } from "@/lib/prisma";
 const GRAPH_BASE = "https://graph.microsoft.com/v1.0";
 const CALENDAR_DELTA_KEY = "calendar";
 const MAX_PAGES = 100;
+// Note: timeZone is NOT a top-level event property — it's nested inside start.timeZone / end.timeZone
+// which are automatically included when selecting start and end
 const CAL_SELECT =
-  "id,subject,bodyPreview,start,end,isAllDay,location,organizer,responseStatus,onlineMeeting,attendees,recurrence,timeZone";
+  "id,subject,bodyPreview,start,end,isAllDay,location,organizer,responseStatus,onlineMeeting,attendees,recurrence";
 
 interface CalDeltaResponse {
   value: CalDeltaItem[];
