@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import Anthropic from "@anthropic-ai/sdk";
+import { withRateLimit, rateLimiters } from "@/lib/rate-limit";
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
@@ -10,7 +11,7 @@ export interface AiReplyResponse {
   options: Array<{ title: string; body: string }>;
 }
 
-export async function POST(req: NextRequest) {
+async function aiReplyHandler(req: NextRequest) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -107,3 +108,5 @@ ${emailContent.slice(0, 4000)}`;
 
   return NextResponse.json(result);
 }
+
+export const POST = withRateLimit(aiReplyHandler, rateLimiters.ai);

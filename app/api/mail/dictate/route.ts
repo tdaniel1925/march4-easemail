@@ -1,13 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import Anthropic from "@anthropic-ai/sdk";
+import { withRateLimit, rateLimiters } from "@/lib/rate-limit";
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
 // ─── POST /api/mail/dictate ───────────────────────────────────────────────────
 // Takes a raw speech transcript and returns a properly formatted email body.
 
-export async function POST(req: NextRequest) {
+async function dictateHandler(req: NextRequest) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -59,3 +60,5 @@ Best regards,`;
   const formatted = message.content[0].type === "text" ? message.content[0].text.trim() : "";
   return NextResponse.json({ formatted });
 }
+
+export const POST = withRateLimit(dictateHandler, rateLimiters.ai);

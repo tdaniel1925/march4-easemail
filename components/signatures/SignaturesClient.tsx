@@ -12,8 +12,7 @@ function SanitizedPreview({ html, className }: { html: string; className?: strin
   useEffect(() => {
     if (ref.current) {
       ref.current.innerHTML = DOMPurify.sanitize(html, {
-        FORBID_TAGS: ["script", "style", "iframe", "object", "embed"],
-        FORBID_ATTR: ["onerror", "onload", "onclick", "onmouseover"],
+        FORBID_TAGS: ["script", "iframe", "object", "embed"],
       });
     }
   }, [html]);

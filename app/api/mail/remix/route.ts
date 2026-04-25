@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import Anthropic from "@anthropic-ai/sdk";
+import { withRateLimit, rateLimiters } from "@/lib/rate-limit";
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
-export async function POST(req: NextRequest) {
+async function remixHandler(req: NextRequest) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -73,3 +74,5 @@ ${body.slice(0, 4000)}`;
   const remixed = message.content[0].type === "text" ? message.content[0].text.trim() : "";
   return NextResponse.json({ remixed });
 }
+
+export const POST = withRateLimit(remixHandler, rateLimiters.ai);

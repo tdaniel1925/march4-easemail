@@ -12,8 +12,7 @@ function SafeHtml({ html }: { html: string }) {
     import("dompurify").then(({ default: DOMPurify }) => {
       if (ref.current) {
         ref.current.innerHTML = DOMPurify.sanitize(html, {
-          FORBID_TAGS: ["script", "style", "iframe", "object", "embed"],
-          FORBID_ATTR: ["onerror", "onload", "onclick", "onmouseover"],
+          FORBID_TAGS: ["script", "iframe", "object", "embed"],
         });
       }
     });

@@ -45,6 +45,8 @@ const LIMITER_CONFIGS = {
   read: { requests: 100, window: "1 m", prefix: "@easemail/ratelimit/read" },
   /** 200 general API calls per minute. */
   general: { requests: 200, window: "1 m", prefix: "@easemail/ratelimit/general" },
+  /** 30 AI/LLM calls per hour. */
+  ai: { requests: 30, window: "1 h", prefix: "@easemail/ratelimit/ai" },
 } satisfies Record<string, LimiterConfig>;
 
 export type RateLimiterKey = keyof typeof LIMITER_CONFIGS;

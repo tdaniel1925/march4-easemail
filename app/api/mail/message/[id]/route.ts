@@ -24,20 +24,11 @@ interface GraphMessage {
   }[];
 }
 
-/** Strip dangerous HTML elements and attributes for safe rendering with dangerouslySetInnerHTML */
-function sanitizeHtml(html: string): string {
-  return html
-    // Remove script tags and their content
-    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, "")
-    // Remove iframe tags
-    .replace(/<iframe\b[^>]*>[\s\S]*?<\/iframe>/gi, "")
-    // Remove event handler attributes
-    .replace(/\s+on\w+\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]+)/gi, "")
-    // Remove javascript: URLs
-    .replace(/href\s*=\s*(?:"javascript:[^"]*"|'javascript:[^']*')/gi, 'href="#"')
-    // Remove object/embed tags
-    .replace(/<(?:object|embed|applet)\b[^>]*>[\s\S]*?<\/(?:object|embed|applet)>/gi, "");
-}
+// NOTE: Server-side HTML sanitization intentionally omitted.
+// DOMPurify on the client (parser-based) handles sanitization securely.
+// Regex-based server sanitization is fundamentally bypassable and creates
+// a false sense of security. The server only rewrites image URLs via
+// proxyExternalImages().
 
 // ─── GET /api/mail/message/[id] ───────────────────────────────────────────────
 
@@ -100,7 +91,7 @@ export async function GET(req: NextRequest, { params }: Params) {
         ccRecipients: (email.ccRecipients ?? []).map((r) => ({ emailAddress: { name: r.name, address: r.address } })),
         body: {
           contentType: email.bodyHtml ? "html" : "text",
-          content: proxyExternalImages(sanitizeHtml(bodyContent)),
+          content: proxyExternalImages(bodyContent),
         },
         receivedDateTime: email.receivedDateTime,
         attachments: visibleAttachments.map((a) => ({
@@ -141,7 +132,7 @@ export async function GET(req: NextRequest, { params }: Params) {
 
   return NextResponse.json({
     ...msg,
-    body: { ...msg.body, content: proxyExternalImages(sanitizeHtml(bodyContent)) },
+    body: { ...msg.body, content: proxyExternalImages(bodyContent) },
     attachments: visibleAttachments.map((a) => ({
       id: a.id, name: a.name, size: a.size, contentType: a.contentType,
     })),

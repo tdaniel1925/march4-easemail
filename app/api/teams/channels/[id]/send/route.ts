@@ -34,6 +34,10 @@ export async function POST(
 
   const accountId = homeAccountId ?? account.homeAccountId;
 
+  const { verifyAccountOwnership } = await import("@/lib/providers/registry");
+  const verifiedAccount = await verifyAccountOwnership(user.id, accountId);
+  if (!verifiedAccount) return NextResponse.json({ error: "Account not found" }, { status: 404 });
+
   try {
     const message = await graphPost(
       user.id,

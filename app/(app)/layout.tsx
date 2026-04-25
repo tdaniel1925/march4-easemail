@@ -11,6 +11,7 @@ import { detectProviderType, getProvider } from "@/lib/providers/registry";
 import Sidebar from "@/components/Sidebar";
 import { StoreInitializer } from "@/components/StoreInitializer";
 import AppShell from "@/components/AppShell";
+import ErrorBoundary from "@/components/ErrorBoundary";
 import { pathToView, type AppView } from "@/lib/stores/data-cache";
 import type { EmailMessage } from "@/lib/types/email";
 import type {
@@ -412,6 +413,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
         inboxUnread={inboxData.unreadCount}
       />
       <Sidebar userName={userName} userEmail={activeAccount.email} />
+      <ErrorBoundary>
       <AppShell
         initialEmails={inboxData.emails}
         initialNextLink={inboxData.nextLink}
@@ -429,6 +431,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
         initialFolderId={initialFolderId}
         initialEmailId={initialEmailId}
       />
+      </ErrorBoundary>
     </div>
   );
 }

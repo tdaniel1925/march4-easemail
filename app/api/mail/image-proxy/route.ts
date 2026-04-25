@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import dns from "node:dns/promises";
+import net from "node:net";
 
 /**
  * Image proxy — fetches external images through EaseMail's server.
@@ -45,19 +47,58 @@ export async function GET(req: NextRequest) {
     return new NextResponse("Only http/https URLs allowed", { status: 400 });
   }
 
-  // Block localhost/private IPs (SSRF protection)
-  const hostname = parsed.hostname.toLowerCase();
-  if (
-    hostname === "localhost" ||
-    hostname === "127.0.0.1" ||
-    hostname === "0.0.0.0" ||
-    hostname.startsWith("192.168.") ||
-    hostname.startsWith("10.") ||
-    hostname.startsWith("172.") ||
-    hostname === "[::1]" ||
-    hostname.endsWith(".local")
-  ) {
-    return new NextResponse("Blocked", { status: 403 });
+  // ── SSRF protection: resolve DNS and validate the resolved IP ────────────
+  const hostname = parsed.hostname.replace(/^\[|\]$/g, ""); // strip brackets from IPv6
+
+  /** Check if an IP address is in a private/reserved range */
+  function isPrivateIP(ip: string): boolean {
+    // Handle IPv4-mapped IPv6 (::ffff:x.x.x.x)
+    const v4Mapped = ip.match(/^::ffff:(\d+\.\d+\.\d+\.\d+)$/i);
+    if (v4Mapped) return isPrivateIP(v4Mapped[1]);
+
+    if (net.isIPv4(ip)) {
+      const parts = ip.split(".").map(Number);
+      if (parts[0] === 0) return true;                                   // 0.0.0.0/8
+      if (parts[0] === 10) return true;                                  // 10.0.0.0/8
+      if (parts[0] === 127) return true;                                 // 127.0.0.0/8
+      if (parts[0] === 169 && parts[1] === 254) return true;            // 169.254.0.0/16
+      if (parts[0] === 172 && parts[1] >= 16 && parts[1] <= 31) return true; // 172.16.0.0/12
+      if (parts[0] === 192 && parts[1] === 168) return true;            // 192.168.0.0/16
+      return false;
+    }
+
+    if (net.isIPv6(ip)) {
+      const lower = ip.toLowerCase();
+      if (lower === "::1") return true;                                   // IPv6 loopback
+      if (lower.startsWith("fc") || lower.startsWith("fd")) return true;  // fc00::/7
+      if (lower.startsWith("fe8") || lower.startsWith("fe9") ||
+          lower.startsWith("fea") || lower.startsWith("feb")) return true; // fe80::/10
+      return false;
+    }
+
+    return false;
+  }
+
+  // Resolve hostname to IP and validate
+  try {
+    let resolvedIPs: string[];
+    if (net.isIP(hostname)) {
+      resolvedIPs = [hostname];
+    } else {
+      const result = await dns.resolve4(hostname).catch(() => [] as string[]);
+      const result6 = await dns.resolve6(hostname).catch(() => [] as string[]);
+      resolvedIPs = [...result, ...result6];
+    }
+
+    if (resolvedIPs.length === 0) {
+      return new NextResponse("Cannot resolve hostname", { status: 400 });
+    }
+
+    if (resolvedIPs.some(isPrivateIP)) {
+      return new NextResponse("Blocked", { status: 403 });
+    }
+  } catch {
+    return new NextResponse("DNS resolution failed", { status: 400 });
   }
 
   try {
@@ -70,9 +111,14 @@ export async function GET(req: NextRequest) {
         "User-Agent": "EaseMail/1.0 ImageProxy",
         "Accept": "image/*",
       },
-      redirect: "follow",
+      redirect: "manual",
     });
     clearTimeout(timeout);
+
+    // Block redirects to prevent redirect-based SSRF
+    if (response.status >= 300 && response.status < 400) {
+      return new NextResponse("Redirects not allowed", { status: 403 });
+    }
 
     if (!response.ok) {
       return new NextResponse("Upstream error", { status: 502 });

@@ -25,6 +25,28 @@ export async function middleware(request: NextRequest) {
   if (PUBLIC_PATHS.has(pathname)) return NextResponse.next();
   if (PUBLIC_PREFIXES.some((p) => pathname.startsWith(p))) return NextResponse.next();
 
+  // ── CSRF protection for mutation endpoints ──────────────────────────────────
+  // Require Content-Type: application/json on all POST/PUT/PATCH/DELETE to /api/
+  // routes. A non-simple Content-Type triggers CORS preflight, which blocks
+  // cross-origin form submissions. Exempt: /api/auth/, /api/cron/, /api/webhooks/,
+  // and attachment download paths (which use GET).
+  const method = request.method.toUpperCase();
+  if (
+    pathname.startsWith("/api/") &&
+    !pathname.startsWith("/api/auth/") &&
+    !pathname.startsWith("/api/cron/") &&
+    !pathname.startsWith("/api/webhooks/") &&
+    ["POST", "PUT", "PATCH", "DELETE"].includes(method)
+  ) {
+    const contentType = request.headers.get("content-type") ?? "";
+    if (!contentType.includes("application/json")) {
+      return NextResponse.json(
+        { error: "Content-Type must be application/json" },
+        { status: 415 },
+      );
+    }
+  }
+
   // Build a response to pass through so Supabase can update session cookies
   let response = NextResponse.next({ request });
 
@@ -47,8 +69,14 @@ export async function middleware(request: NextRequest) {
     }
   );
 
-  // Use getSession() for fast cookie-based check (no network call).
-  // Real auth verification happens in each page's getUser() before data access.
+  // ── IMPORTANT: Middleware auth is a UX convenience, NOT a security boundary ──
+  // getSession() reads the JWT from cookies without a network roundtrip to
+  // Supabase. This means the token could be expired or tampered with. The
+  // domain/admin gating below is only for fast redirects and UI routing.
+  //
+  // REAL auth verification happens in each API route and server component via
+  // supabase.auth.getUser(), which validates the token server-side. Routes MUST
+  // NOT rely on middleware for authorization — they must always call getUser().
   const { data: { session } } = await supabase.auth.getSession();
 
   if (!session) {

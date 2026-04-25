@@ -3,7 +3,7 @@ import { Resend } from "resend";
 import Anthropic from "@anthropic-ai/sdk";
 import { prisma } from "@/lib/prisma";
 
-const RECIPIENTS = ["david@dmillerlaw.com", "tdaniel@botmakers.ai"];
+const RECIPIENTS = (process.env.DEPLOY_DIGEST_RECIPIENTS ?? "").split(",").map(e => e.trim()).filter(Boolean);
 
 function escHtml(s: string) {
   return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
@@ -41,8 +41,16 @@ function buildEmailHtml(summary: string, date: string): string {
 }
 
 export async function GET(req: NextRequest): Promise<NextResponse> {
-  if (req.headers.get("authorization") !== `Bearer ${process.env.CRON_SECRET}`) {
+  const cronSecret = process.env.CRON_SECRET;
+  if (!cronSecret) {
+    return NextResponse.json({ error: "CRON_SECRET not configured" }, { status: 500 });
+  }
+  if (req.headers.get("authorization") !== `Bearer ${cronSecret}`) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  if (RECIPIENTS.length === 0) {
+    return NextResponse.json({ error: "No recipients configured" }, { status: 500 });
   }
 
   // Instantiate clients inside the handler so env vars are available at runtime

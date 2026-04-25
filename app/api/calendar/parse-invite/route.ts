@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import Anthropic from "@anthropic-ai/sdk";
 import { z } from "zod";
+import { withRateLimit, rateLimiters } from "@/lib/rate-limit";
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
@@ -16,7 +17,7 @@ const ParseInviteSchema = z.object({
 
 export type ParseInviteResponse = z.infer<typeof ParseInviteSchema>;
 
-export async function POST(req: NextRequest): Promise<NextResponse> {
+async function parseInviteHandler(req: NextRequest): Promise<NextResponse> {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -85,3 +86,5 @@ ${emailContent.slice(0, 4000)}`;
 
   return NextResponse.json({ ok: true, prefill: result });
 }
+
+export const POST = withRateLimit(parseInviteHandler, rateLimiters.ai);

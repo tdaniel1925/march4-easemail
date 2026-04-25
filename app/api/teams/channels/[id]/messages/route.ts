@@ -40,6 +40,10 @@ export async function GET(
   const teamId = req.nextUrl.searchParams.get("teamId");
   const homeAccountId = req.nextUrl.searchParams.get("homeAccountId") ?? account.homeAccountId;
 
+  const { verifyAccountOwnership } = await import("@/lib/providers/registry");
+  const verifiedAccount = await verifyAccountOwnership(user.id, homeAccountId);
+  if (!verifiedAccount) return NextResponse.json({ error: "Account not found" }, { status: 404 });
+
   if (!teamId) return NextResponse.json({ error: "teamId required" }, { status: 400 });
 
   try {

@@ -28,6 +28,10 @@ export async function GET(req: NextRequest) {
   const userId = req.nextUrl.searchParams.get("userId");
   const homeAccountId = req.nextUrl.searchParams.get("homeAccountId") ?? account.homeAccountId;
 
+  const { verifyAccountOwnership } = await import("@/lib/providers/registry");
+  const verifiedAccount = await verifyAccountOwnership(user.id, homeAccountId);
+  if (!verifiedAccount) return NextResponse.json({ error: "Account not found" }, { status: 404 });
+
   if (!userId) return NextResponse.json({ error: "userId required" }, { status: 400 });
 
   try {

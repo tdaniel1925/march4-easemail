@@ -34,6 +34,10 @@ export async function GET(req: NextRequest) {
 
   const homeAccountId = req.nextUrl.searchParams.get("homeAccountId") ?? account.homeAccountId;
 
+  const { verifyAccountOwnership } = await import("@/lib/providers/registry");
+  const verifiedAccount = await verifyAccountOwnership(user.id, homeAccountId);
+  if (!verifiedAccount) return NextResponse.json({ error: "Account not found" }, { status: 404 });
+
   try {
     const data = await graphGet<GraphChatList>(
       user.id,
