@@ -25,6 +25,7 @@ function EmailRow({
   onStar,
   bulkMode = false,
   isSelected = false,
+  isActive = false,
   onToggleSelect,
 }: {
   email: EmailMessage;
@@ -33,6 +34,7 @@ function EmailRow({
   onStar: (e: React.MouseEvent) => void;
   bulkMode?: boolean;
   isSelected?: boolean;
+  isActive?: boolean;
   onToggleSelect?: (e: React.MouseEvent) => void;
 }) {
   const color = getAvatarColor(email.from.name);
@@ -42,7 +44,11 @@ function EmailRow({
   return (
     <div
       onClick={onClick}
-      className="relative flex items-start gap-3 px-4 py-3.5 cursor-pointer transition-colors hover:bg-neutral-50 border-l-2 border-transparent"
+      className="relative flex items-start gap-3 px-4 py-3.5 cursor-pointer transition-colors hover:bg-neutral-50"
+      style={{
+        borderLeft: isActive ? "3px solid rgb(138 9 9)" : "3px solid transparent",
+        backgroundColor: isActive ? "rgb(254 242 242)" : undefined,
+      }}
     >
       {/* Bulk mode checkbox */}
       {bulkMode && (
@@ -740,8 +746,8 @@ export default function InboxClient({
   return (
     <>
     <div className="flex flex-1" style={{ overflow: "hidden" }}>
-      {/* Email List — full width */}
-      <div className="flex flex-col w-full bg-white flex-shrink-0" style={{ height: "100vh", overflow: "hidden" }}>
+      {/* Email List — left column */}
+      <div className="flex flex-col bg-white flex-shrink-0 border-r border-neutral-200" style={{ height: "100vh", overflow: "hidden", width: expandedEmailId ? 380 : "100%" }}>
         {/* Header */}
         <div className="px-4 pt-4 pb-3 border-b border-neutral-200 flex-shrink-0">
           <div className="flex items-center justify-between mb-3">
@@ -1077,13 +1083,6 @@ export default function InboxClient({
                 email={email}
                 onClick={() => {
                   if (bulkMode) return;
-                  // Toggle expanded state
-                  if (expandedEmailId === email.id) {
-                    setExpandedEmailId(null);
-                    setExpandedBody(null);
-                    setExpandedDetails(null);
-                    return;
-                  }
                   if (!email.isRead) {
                     setEmails((prev) =>
                       prev.map((e) => (e.id === email.id ? { ...e, isRead: true } : e))
@@ -1137,261 +1136,12 @@ export default function InboxClient({
                 onStar={(e) => { e.stopPropagation(); handleStarToggle(email); }}
                 bulkMode={bulkMode}
                 isSelected={selectedIds.has(email.id)}
+                isActive={expandedEmailId === email.id}
                 onToggleSelect={(e) => { e.stopPropagation(); toggleSelect(email.id); }}
               />
-              {/* Inline email expansion */}
-              {expandedEmailId === email.id && (() => {
-                const senderColor = getAvatarColor(email.from.name);
-                const acctId = activeAccount?.homeAccountId ?? "";
-                const fileIcon = (type: string) => {
-                  if (type.startsWith("image/")) return "🖼";
-                  if (type.includes("pdf")) return "📄";
-                  if (type.includes("word") || type.includes("document")) return "📝";
-                  if (type.includes("sheet") || type.includes("excel")) return "📊";
-                  if (type.includes("zip") || type.includes("compressed")) return "📦";
-                  return "📎";
-                };
-                const formatSize = (bytes: number) => {
-                  if (bytes < 1024) return `${bytes} B`;
-                  if (bytes < 1048576) return `${(bytes / 1024).toFixed(1)} KB`;
-                  return `${(bytes / 1048576).toFixed(1)} MB`;
-                };
-                const emailDate = new Date(email.receivedDateTime);
-                const dateFormatted = emailDate.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric", year: "numeric" });
-                const timeFormatted = emailDate.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
-
-                return (
-                <div className="bg-white border-t border-neutral-200" style={{ borderLeft: "3px solid rgb(138 9 9)" }}>
-
-                  {/* ── Sender header ── */}
-                  <div className="px-6 py-4 border-b border-neutral-100">
-                    <div className="flex items-start gap-3">
-                      <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold" style={{ backgroundColor: senderColor.bg, color: senderColor.text }}>
-                        {getInitials(email.from.name)}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center justify-between gap-2">
-                          <div className="min-w-0">
-                            <span className="text-sm font-semibold" style={{ color: "rgb(27 29 29)" }}>{email.from.name}</span>
-                            <span className="text-xs ml-1.5" style={{ color: "rgb(155 155 155)" }}>&lt;{email.from.address}&gt;</span>
-                          </div>
-                          <div className="flex items-center gap-2 flex-shrink-0">
-                            <span className="text-xs" style={{ color: "rgb(155 155 155)" }}>{dateFormatted} at {timeFormatted}</span>
-                            <button
-                              onClick={(e) => { e.stopPropagation(); setExpandedEmailId(null); setExpandedBody(null); setExpandedDetails(null); }}
-                              className="p-1.5 rounded-[8px] transition-colors hover:bg-neutral-100"
-                              style={{ color: "rgb(155 155 155)" }}
-                            >
-                              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
-                              </svg>
-                            </button>
-                          </div>
-                        </div>
-                        {expandedDetails?.to && expandedDetails.to.length > 0 && (
-                          <p className="text-xs mt-1" style={{ color: "rgb(155 155 155)" }}>
-                            <span className="font-medium" style={{ color: "rgb(115 115 115)" }}>To:</span>{" "}
-                            {expandedDetails.to.map((r) => r.name || r.address).join(", ")}
-                          </p>
-                        )}
-                        {expandedDetails?.cc && expandedDetails.cc.length > 0 && (
-                          <p className="text-xs mt-0.5" style={{ color: "rgb(155 155 155)" }}>
-                            <span className="font-medium" style={{ color: "rgb(115 115 115)" }}>CC:</span>{" "}
-                            {expandedDetails.cc.map((r) => r.name || r.address).join(", ")}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                    <h3 className="text-base font-semibold mt-3" style={{ color: "rgb(27 29 29)" }}>{email.subject}</h3>
-                  </div>
-
-                  {/* ── Attachments ── */}
-                  {expandedDetails?.attachments && expandedDetails.attachments.length > 0 && (
-                    <div className="px-6 py-3 border-b border-neutral-100" style={{ backgroundColor: "rgb(252 252 252)" }}>
-                      <p className="text-xs font-semibold mb-2" style={{ color: "rgb(115 115 115)" }}>
-                        {expandedDetails.attachments.length} attachment{expandedDetails.attachments.length !== 1 ? "s" : ""}
-                      </p>
-                      <div className="flex gap-2 flex-wrap">
-                        {expandedDetails.attachments.map((att) => (
-                          <a
-                            key={att.id}
-                            href={`/api/mail/attachments/${encodeURIComponent(email.id)}/${encodeURIComponent(att.id)}?homeAccountId=${encodeURIComponent(acctId)}`}
-                            onClick={(e) => e.stopPropagation()}
-                            className="flex items-center gap-2.5 px-3 py-2.5 rounded-[10px] border border-neutral-200 bg-white hover:border-neutral-300 hover:shadow-sm transition-all"
-                            style={{ minWidth: 180, maxWidth: 260 }}
-                          >
-                            <span className="text-lg flex-shrink-0">{fileIcon(att.contentType)}</span>
-                            <div className="flex-1 min-w-0">
-                              <p className="text-xs font-medium truncate" style={{ color: "rgb(27 29 29)" }}>{att.name}</p>
-                              <p className="text-xs" style={{ color: "rgb(155 155 155)" }}>{formatSize(att.size)}</p>
-                            </div>
-                            <svg className="w-4 h-4 flex-shrink-0" style={{ color: "rgb(155 155 155)" }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                              <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                            </svg>
-                          </a>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* ── Email body ── */}
-                  <div className="px-6 py-1" onClick={(e) => e.stopPropagation()}>
-                    {expandedLoading ? (
-                      <div className="flex flex-col items-center gap-3 py-10">
-                        <svg className="w-5 h-5 animate-spin" style={{ color: "rgb(138 9 9)" }} fill="none" viewBox="0 0 24 24">
-                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
-                        </svg>
-                        <span className="text-xs font-medium" style={{ color: "rgb(155 155 155)" }}>Loading email content...</span>
-                      </div>
-                    ) : (() => {
-                      const raw = expandedBody?.content ?? email.bodyPreview;
-                      const isHtml = expandedBody?.contentType === "html" && /<[a-z][\s\S]*>/i.test(raw);
-                      // Convert plain text to structured HTML
-                      let bodyHtml: string;
-                      if (isHtml) {
-                        bodyHtml = raw;
-                      } else {
-                        // Parse plain text: detect reply chains, signatures, paragraphs
-                        const escaped = raw
-                          .replace(/&/g, "&amp;")
-                          .replace(/</g, "&lt;")
-                          .replace(/>/g, "&gt;");
-                        // Detect URLs and make them clickable
-                        const withLinks = escaped.replace(
-                          /(https?:\/\/[^\s<]+)/g,
-                          '<a href="$1" target="_blank" rel="noopener" style="color:#8a0909">$1</a>'
-                        );
-                        // Split into sections by reply headers
-                        const replyPattern = /(?:^|\n)((?:From:|On .+ wrote:|Sent from|_{5,}|-{5,}).*)$/m;
-                        const parts = withLinks.split(replyPattern);
-                        const sections: string[] = [];
-                        for (let i = 0; i < parts.length; i++) {
-                          const part = parts[i].trim();
-                          if (!part) continue;
-                          // Check if this part is a reply header marker
-                          if (/^(?:From:|On .+ wrote:|Sent from|_{5,}|-{5,})/.test(part.replace(/&[a-z]+;/g, m => m === "&gt;" ? ">" : m === "&lt;" ? "<" : m))) {
-                            // Everything from here is quoted — wrap rest in blockquote
-                            const remaining = parts.slice(i).join("").trim();
-                            if (remaining) {
-                              sections.push(`<div style="border-left:3px solid #e0e0e0;padding:12px 16px;margin:16px 0;color:#6b7280;font-size:13px;line-height:1.5">${remaining.replace(/\n/g, "<br>")}</div>`);
-                            }
-                            break;
-                          }
-                          // Regular content — convert double newlines to paragraphs, single to <br>
-                          const paragraphs = part.split(/\n{2,}/).map(p => p.trim()).filter(Boolean);
-                          sections.push(paragraphs.map(p => `<p style="margin:0 0 12px">${p.replace(/\n/g, "<br>")}</p>`).join(""));
-                        }
-                        bodyHtml = sections.join("") || `<p>${withLinks.replace(/\n/g, "<br>")}</p>`;
-                      }
-                      const iframeStyles = `
-                        * { box-sizing: border-box; }
-                        body {
-                          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
-                          font-size: 14px; line-height: 1.65; color: #1b1d1d;
-                          margin: 0; padding: 16px 0;
-                          word-wrap: break-word; overflow-wrap: break-word;
-                          -webkit-font-smoothing: antialiased;
-                        }
-                        a { color: #8a0909; text-decoration: underline; }
-                        a:hover { opacity: 0.8; }
-                        img { max-width: 100%; height: auto; border-radius: 4px; }
-                        blockquote {
-                          border-left: 3px solid #e0e0e0; margin: 16px 0; padding: 8px 16px;
-                          color: #6b7280; font-size: 13px;
-                        }
-                        pre { background: #f5f5f5; border-radius: 8px; padding: 12px 16px; overflow-x: auto; font-size: 13px; }
-                        code { background: #f5f5f5; border-radius: 4px; padding: 2px 6px; font-size: 13px; }
-                        table { border-collapse: collapse; max-width: 100%; margin: 8px 0; }
-                        td, th { padding: 6px 10px; border: 1px solid #e5e7eb; }
-                        th { background: #f9fafb; font-weight: 600; }
-                        hr { border: none; border-top: 1px solid #e5e7eb; margin: 20px 0; }
-                        p { margin: 0 0 12px; }
-                        h1 { font-size: 20px; margin: 20px 0 8px; }
-                        h2 { font-size: 18px; margin: 18px 0 8px; }
-                        h3 { font-size: 16px; margin: 16px 0 6px; }
-                        ul, ol { margin: 8px 0; padding-left: 24px; }
-                        li { margin: 4px 0; }
-                        .gmail_quote, .yahoo_quoted { border-left: 3px solid #e0e0e0; padding: 8px 16px; margin: 16px 0; color: #6b7280; }
-                      `;
-                      return (
-                        <iframe
-                          srcDoc={`<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>${iframeStyles}</style></head><body>${bodyHtml}</body></html>`}
-                          className="w-full border-0"
-                          style={{ minHeight: 120 }}
-                          sandbox="allow-same-origin allow-popups"
-                          onLoad={(e) => {
-                            const frame = e.currentTarget;
-                            if (frame.contentDocument) {
-                              const h = frame.contentDocument.documentElement.scrollHeight;
-                              frame.style.height = `${Math.min(h + 24, 800)}px`;
-                            }
-                          }}
-                          title="Email content"
-                        />
-                      );
-                    })()}
-                  </div>
-
-                  {/* ── Action bar ── */}
-                  <div className="flex items-center gap-2 px-6 py-3 border-t border-neutral-200" style={{ backgroundColor: "rgb(250 250 250)" }}>
-                    <button
-                      onClick={(e) => { e.stopPropagation(); setAiReplyEmail(email); }}
-                      className="flex items-center gap-1.5 text-xs font-semibold px-4 py-2 rounded-[8px] text-white transition-colors"
-                      style={{ backgroundColor: "rgb(138 9 9)" }}
-                    >
-                      <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
-                      </svg>
-                      Reply
-                    </button>
-                    <a
-                      href={`/compose?replyTo=${encodeURIComponent(email.id)}&homeAccountId=${encodeURIComponent(acctId)}&mode=replyAll`}
-                      onClick={(e) => e.stopPropagation()}
-                      className="flex items-center gap-1.5 text-xs font-semibold px-4 py-2 rounded-[8px] border border-neutral-200 transition-colors hover:bg-white"
-                      style={{ color: "rgb(82 82 82)", backgroundColor: "rgb(255 255 255)" }}
-                    >
-                      <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
-                      </svg>
-                      Reply All
-                    </a>
-                    <a
-                      href={`/compose?forwardId=${encodeURIComponent(email.id)}&homeAccountId=${encodeURIComponent(acctId)}`}
-                      onClick={(e) => e.stopPropagation()}
-                      className="flex items-center gap-1.5 text-xs font-semibold px-4 py-2 rounded-[8px] border border-neutral-200 transition-colors hover:bg-white"
-                      style={{ color: "rgb(82 82 82)", backgroundColor: "rgb(255 255 255)" }}
-                    >
-                      <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                      </svg>
-                      Forward
-                    </a>
-                    <div className="flex-1" />
-                    <button
-                      onClick={(e) => { e.stopPropagation(); setAiReplyEmail(email); }}
-                      className="flex items-center gap-1.5 text-xs font-semibold px-4 py-2 rounded-[8px] transition-colors"
-                      style={{ backgroundColor: "rgb(254 242 242)", color: "rgb(138 9 9)" }}
-                    >
-                      <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-                      </svg>
-                      AI Reply
-                    </button>
-                    <a
-                      href={`/inbox/${encodeURIComponent(email.id)}?homeAccountId=${encodeURIComponent(acctId)}`}
-                      onClick={(e) => e.stopPropagation()}
-                      className="flex items-center gap-1.5 text-xs font-medium px-4 py-2 rounded-[8px] border border-neutral-200 transition-colors hover:bg-white"
-                      style={{ color: "rgb(115 115 115)" }}
-                    >
-                      Open full view
-                    </a>
-                  </div>
-                </div>
-                );
-              })()}
             </React.Fragment>
             ))
+
           )}
 
           {/* Infinite scroll sentinel */}
@@ -1413,6 +1163,163 @@ export default function InboxClient({
           )}
         </div>
       </div>
+
+      {/* ── Reading Pane — right column ── */}
+      {expandedEmailId && (() => {
+        const selectedEmail = displayEmails.find((e) => e.id === expandedEmailId);
+        if (!selectedEmail) return null;
+        const senderColor = getAvatarColor(selectedEmail.from.name);
+        const acctId = activeAccount?.homeAccountId ?? "";
+        const emailDate = new Date(selectedEmail.receivedDateTime);
+        const dateFormatted = emailDate.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric", year: "numeric" });
+        const timeFormatted = emailDate.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
+        const fileIcon = (type: string) => {
+          if (type.startsWith("image/")) return "🖼";
+          if (type.includes("pdf")) return "📄";
+          if (type.includes("word") || type.includes("document")) return "📝";
+          if (type.includes("sheet") || type.includes("excel")) return "📊";
+          if (type.includes("zip") || type.includes("compressed")) return "📦";
+          return "📎";
+        };
+        const formatSize = (bytes: number) => bytes < 1024 ? `${bytes} B` : bytes < 1048576 ? `${(bytes / 1024).toFixed(1)} KB` : `${(bytes / 1048576).toFixed(1)} MB`;
+
+        // Build body HTML
+        const raw = expandedBody?.content ?? selectedEmail.bodyPreview;
+        const isHtml = expandedBody?.contentType === "html" && /<[a-z][\s\S]*>/i.test(raw);
+        let bodyHtml: string;
+        if (isHtml) {
+          bodyHtml = raw;
+        } else {
+          const escaped = raw.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+          const withLinks = escaped.replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener" style="color:#8a0909">$1</a>');
+          const replyPattern = /(?:^|\n)((?:From:|On .+ wrote:|Sent from|_{5,}|-{5,}).*)$/m;
+          const parts = withLinks.split(replyPattern);
+          const sections: string[] = [];
+          for (let i = 0; i < parts.length; i++) {
+            const part = parts[i].trim();
+            if (!part) continue;
+            if (/^(?:From:|On .+ wrote:|Sent from|_{5,}|-{5,})/.test(part.replace(/&[a-z]+;/g, m => m === "&gt;" ? ">" : m === "&lt;" ? "<" : m))) {
+              const remaining = parts.slice(i).join("").trim();
+              if (remaining) sections.push(`<div style="border-left:3px solid #e0e0e0;padding:12px 16px;margin:16px 0;color:#6b7280;font-size:13px;line-height:1.5">${remaining.replace(/\n/g, "<br>")}</div>`);
+              break;
+            }
+            const paragraphs = part.split(/\n{2,}/).map(p => p.trim()).filter(Boolean);
+            sections.push(paragraphs.map(p => `<p style="margin:0 0 12px">${p.replace(/\n/g, "<br>")}</p>`).join(""));
+          }
+          bodyHtml = sections.join("") || `<p>${withLinks.replace(/\n/g, "<br>")}</p>`;
+        }
+        const iframeStyles = `*{box-sizing:border-box}body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',sans-serif;font-size:14px;line-height:1.65;color:#1b1d1d;margin:0;padding:16px 0;word-wrap:break-word;overflow-wrap:break-word;-webkit-font-smoothing:antialiased}a{color:#8a0909;text-decoration:underline}a:hover{opacity:.8}img{max-width:100%;height:auto;border-radius:4px}blockquote{border-left:3px solid #e0e0e0;margin:16px 0;padding:8px 16px;color:#6b7280;font-size:13px}pre{background:#f5f5f5;border-radius:8px;padding:12px 16px;overflow-x:auto;font-size:13px}code{background:#f5f5f5;border-radius:4px;padding:2px 6px;font-size:13px}table{border-collapse:collapse;max-width:100%;margin:8px 0}td,th{padding:6px 10px;border:1px solid #e5e7eb}th{background:#f9fafb;font-weight:600}hr{border:none;border-top:1px solid #e5e7eb;margin:20px 0}p{margin:0 0 12px}h1{font-size:20px;margin:20px 0 8px}h2{font-size:18px;margin:18px 0 8px}h3{font-size:16px;margin:16px 0 6px}ul,ol{margin:8px 0;padding-left:24px}li{margin:4px 0}.gmail_quote,.yahoo_quoted{border-left:3px solid #e0e0e0;padding:8px 16px;margin:16px 0;color:#6b7280}`;
+
+        return (
+          <div className="flex flex-col flex-1 bg-white" style={{ height: "100vh", overflow: "hidden" }}>
+            {/* Action bar top */}
+            <div className="flex items-center gap-2 px-5 py-2.5 border-b border-neutral-200 flex-shrink-0" style={{ backgroundColor: "rgb(250 250 250)" }}>
+              <button onClick={() => { setAiReplyEmail(selectedEmail); }} className="flex items-center gap-1.5 text-xs font-semibold px-3.5 py-1.5 rounded-[8px] text-white" style={{ backgroundColor: "rgb(138 9 9)" }}>
+                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" /></svg>
+                Reply
+              </button>
+              <a href={`/compose?replyTo=${encodeURIComponent(selectedEmail.id)}&homeAccountId=${encodeURIComponent(acctId)}&mode=replyAll`} className="flex items-center gap-1.5 text-xs font-semibold px-3.5 py-1.5 rounded-[8px] border border-neutral-200 bg-white hover:bg-neutral-50" style={{ color: "rgb(82 82 82)" }}>
+                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" /></svg>
+                Reply All
+              </a>
+              <a href={`/compose?forwardId=${encodeURIComponent(selectedEmail.id)}&homeAccountId=${encodeURIComponent(acctId)}`} className="flex items-center gap-1.5 text-xs font-semibold px-3.5 py-1.5 rounded-[8px] border border-neutral-200 bg-white hover:bg-neutral-50" style={{ color: "rgb(82 82 82)" }}>
+                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>
+                Forward
+              </a>
+              <div className="flex-1" />
+              <button onClick={() => { setAiReplyEmail(selectedEmail); }} className="flex items-center gap-1.5 text-xs font-semibold px-3.5 py-1.5 rounded-[8px]" style={{ backgroundColor: "rgb(254 242 242)", color: "rgb(138 9 9)" }}>
+                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>
+                AI Reply
+              </button>
+              <button onClick={() => { setExpandedEmailId(null); setExpandedBody(null); setExpandedDetails(null); }} className="p-1.5 rounded-[8px] hover:bg-neutral-100" style={{ color: "rgb(155 155 155)" }} title="Close">
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+              </button>
+            </div>
+
+            {/* Scrollable content */}
+            <div className="flex-1 overflow-y-auto">
+              {/* Sender + subject header */}
+              <div className="px-6 py-5 border-b border-neutral-100">
+                <h2 className="text-lg font-semibold mb-4" style={{ color: "rgb(27 29 29)" }}>{selectedEmail.subject}</h2>
+                <div className="flex items-start gap-3">
+                  <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold" style={{ backgroundColor: senderColor.bg, color: senderColor.text }}>
+                    {getInitials(selectedEmail.from.name)}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between gap-2">
+                      <div>
+                        <span className="text-sm font-semibold" style={{ color: "rgb(27 29 29)" }}>{selectedEmail.from.name}</span>
+                        <span className="text-xs ml-1.5" style={{ color: "rgb(155 155 155)" }}>&lt;{selectedEmail.from.address}&gt;</span>
+                      </div>
+                      <span className="text-xs flex-shrink-0" style={{ color: "rgb(155 155 155)" }}>{dateFormatted} at {timeFormatted}</span>
+                    </div>
+                    {expandedDetails?.to && expandedDetails.to.length > 0 && (
+                      <p className="text-xs mt-1" style={{ color: "rgb(155 155 155)" }}>
+                        <span className="font-medium" style={{ color: "rgb(115 115 115)" }}>To:</span>{" "}
+                        {expandedDetails.to.map((r) => r.name || r.address).join(", ")}
+                      </p>
+                    )}
+                    {expandedDetails?.cc && expandedDetails.cc.length > 0 && (
+                      <p className="text-xs mt-0.5" style={{ color: "rgb(155 155 155)" }}>
+                        <span className="font-medium" style={{ color: "rgb(115 115 115)" }}>CC:</span>{" "}
+                        {expandedDetails.cc.map((r) => r.name || r.address).join(", ")}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* Attachments */}
+              {expandedDetails?.attachments && expandedDetails.attachments.length > 0 && (
+                <div className="px-6 py-3 border-b border-neutral-100" style={{ backgroundColor: "rgb(252 252 252)" }}>
+                  <p className="text-xs font-semibold mb-2" style={{ color: "rgb(115 115 115)" }}>
+                    {expandedDetails.attachments.length} attachment{expandedDetails.attachments.length !== 1 ? "s" : ""}
+                  </p>
+                  <div className="flex gap-2 flex-wrap">
+                    {expandedDetails.attachments.map((att) => (
+                      <a key={att.id} href={`/api/mail/attachments/${encodeURIComponent(selectedEmail.id)}/${encodeURIComponent(att.id)}?homeAccountId=${encodeURIComponent(acctId)}`} className="flex items-center gap-2.5 px-3 py-2.5 rounded-[10px] border border-neutral-200 bg-white hover:border-neutral-300 hover:shadow-sm transition-all" style={{ minWidth: 180, maxWidth: 260 }}>
+                        <span className="text-lg flex-shrink-0">{fileIcon(att.contentType)}</span>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-xs font-medium truncate" style={{ color: "rgb(27 29 29)" }}>{att.name}</p>
+                          <p className="text-xs" style={{ color: "rgb(155 155 155)" }}>{formatSize(att.size)}</p>
+                        </div>
+                        <svg className="w-4 h-4 flex-shrink-0" style={{ color: "rgb(155 155 155)" }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Email body */}
+              <div className="px-6 py-4">
+                {expandedLoading ? (
+                  <div className="flex flex-col items-center gap-3 py-16">
+                    <svg className="w-5 h-5 animate-spin" style={{ color: "rgb(138 9 9)" }} fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+                    </svg>
+                    <span className="text-xs font-medium" style={{ color: "rgb(155 155 155)" }}>Loading email...</span>
+                  </div>
+                ) : (
+                  <iframe
+                    srcDoc={`<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>${iframeStyles}</style></head><body>${bodyHtml}</body></html>`}
+                    className="w-full border-0"
+                    style={{ minHeight: 200 }}
+                    sandbox="allow-same-origin allow-popups"
+                    onLoad={(e) => {
+                      const frame = e.currentTarget;
+                      if (frame.contentDocument) {
+                        frame.style.height = `${frame.contentDocument.documentElement.scrollHeight + 24}px`;
+                      }
+                    }}
+                    title="Email content"
+                  />
+                )}
+              </div>
+            </div>
+          </div>
+        );
+      })()}
 
     </div>
 
