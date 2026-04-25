@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { verifyAccountOwnership, getProvider, detectProviderType } from "@/lib/providers/registry";
 import { graphGet } from "@/lib/microsoft/graph";
+import { proxyExternalImages } from "@/lib/utils/proxy-images";
 
 type Params = { params: Promise<{ id: string }> };
 
@@ -99,7 +100,7 @@ export async function GET(req: NextRequest, { params }: Params) {
         ccRecipients: (email.ccRecipients ?? []).map((r) => ({ emailAddress: { name: r.name, address: r.address } })),
         body: {
           contentType: email.bodyHtml ? "html" : "text",
-          content: sanitizeHtml(bodyContent),
+          content: proxyExternalImages(sanitizeHtml(bodyContent)),
         },
         receivedDateTime: email.receivedDateTime,
         attachments: visibleAttachments.map((a) => ({
@@ -140,7 +141,7 @@ export async function GET(req: NextRequest, { params }: Params) {
 
   return NextResponse.json({
     ...msg,
-    body: { ...msg.body, content: sanitizeHtml(bodyContent) },
+    body: { ...msg.body, content: proxyExternalImages(sanitizeHtml(bodyContent)) },
     attachments: visibleAttachments.map((a) => ({
       id: a.id, name: a.name, size: a.size, contentType: a.contentType,
     })),

@@ -1,6 +1,7 @@
 import type { EmailMessage } from "@/lib/types/email";
 import type { NormalizedEmail } from "@/lib/providers/types";
 import type { GraphMessage } from "@/lib/types/graph";
+import { proxyExternalImages } from "@/lib/utils/proxy-images";
 
 export function mapCachedEmail(row: {
   id: string;
@@ -34,6 +35,9 @@ export function mapCachedEmail(row: {
 
 /** Map a Microsoft Graph API message to the frontend EmailMessage shape */
 export function mapGraphMessage(m: GraphMessage): EmailMessage {
+  const bodyContent = m.body?.content ?? m.bodyPreview ?? "";
+  const contentType = (m.body?.contentType as "html" | "text") ?? "text";
+  const proxiedContent = contentType === "html" ? proxyExternalImages(bodyContent) : bodyContent;
   return {
     id: m.id,
     subject: m.subject ?? "(no subject)",
@@ -52,8 +56,8 @@ export function mapGraphMessage(m: GraphMessage): EmailMessage {
       address: r.emailAddress?.address ?? "",
     })),
     body: {
-      content: m.body?.content ?? m.bodyPreview ?? "",
-      contentType: (m.body?.contentType as "html" | "text") ?? "text",
+      content: proxiedContent,
+      contentType,
     },
     conversationId: m.conversationId,
     attachments: m.attachments?.map((a) => ({
@@ -79,7 +83,7 @@ export function mapNormalizedEmail(e: NormalizedEmail): EmailMessage {
     from: { name: e.from.name, address: e.from.address },
     toRecipients: e.toRecipients.map((r) => ({ name: r.name, address: r.address })),
     body: e.bodyHtml
-      ? { content: e.bodyHtml, contentType: "html" }
+      ? { content: proxyExternalImages(e.bodyHtml), contentType: "html" }
       : e.bodyText
         ? { content: e.bodyText, contentType: "text" }
         : { content: e.bodyPreview, contentType: "text" },
