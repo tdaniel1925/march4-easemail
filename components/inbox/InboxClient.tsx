@@ -204,6 +204,28 @@ export default function InboxClient({
   const rulesRef = useRef<Rule[]>([]);
   const knownIdsRef = useRef<Set<string>>(new Set(initialEmails.map((e) => e.id)));
 
+  // Pending actions for delayed undo (C5 fix) — actions fire after 10s unless undone
+  const pendingActionsRef = useRef<Map<number, { timer: ReturnType<typeof setTimeout>; action: () => void }>>(new Map());
+
+  const scheduleAction = useCallback((key: number, action: () => void) => {
+    const timer = setTimeout(() => {
+      action();
+      pendingActionsRef.current.delete(key);
+    }, 10_000);
+    pendingActionsRef.current.set(key, { timer, action });
+  }, []);
+
+  // Flush all pending actions on unmount (so navigation doesn't lose deletes)
+  useEffect(() => {
+    return () => {
+      pendingActionsRef.current.forEach(({ timer, action }) => {
+        clearTimeout(timer);
+        action();
+      });
+      pendingActionsRef.current.clear();
+    };
+  }, []);
+
   // ── Rule engine helpers ──
 
   function fireSideEffects(ses: SideEffect[], mc: Map<string, number>) {
@@ -295,63 +317,63 @@ export default function InboxClient({
     if (!activeAccount || selectedIds.size === 0) return;
 
     const selectedEmails = emails.filter((e) => selectedIds.has(e.id));
+    const ts = Date.now();
+    const idsToDelete = [...selectedIds];
+    const hid = activeAccount.homeAccountId;
 
     // Add to undo stack
     setUndoStack((prev) => [...prev, {
       action: "delete",
       emails: selectedEmails,
-      timestamp: Date.now(),
+      timestamp: ts,
     }]);
 
-    // Remove from UI
+    // Remove from UI immediately
     setEmails((prev) => prev.filter((e) => !selectedIds.has(e.id)));
 
-    // Delete via API
-    selectedIds.forEach((id) => {
-      void fetch("/api/mail/delete", {
+    // Delay API call — cancel on undo (C5 fix)
+    scheduleAction(ts, () => {
+      void fetch("/api/mail/batch", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          messageId: id,
-          homeAccountId: activeAccount.homeAccountId,
-        }),
+        body: JSON.stringify({ action: "delete", messageIds: idsToDelete, homeAccountId: hid }),
       });
     });
 
     setSelectedIds(new Set());
     setBulkMode(false);
-  }, [activeAccount, selectedIds, emails]);
+  }, [activeAccount, selectedIds, emails, scheduleAction]);
 
   const bulkArchive = useCallback(() => {
     if (!activeAccount || selectedIds.size === 0) return;
 
     const selectedEmails = emails.filter((e) => selectedIds.has(e.id));
+    const ts = Date.now();
+    const idsToArchive = [...selectedIds];
+    const hid = activeAccount.homeAccountId;
 
     // Add to undo stack
     setUndoStack((prev) => [...prev, {
       action: "archive",
       emails: selectedEmails,
-      timestamp: Date.now(),
+      timestamp: ts,
     }]);
 
-    // Remove from UI
+    // Remove from UI immediately
     setEmails((prev) => prev.filter((e) => !selectedIds.has(e.id)));
 
-    // Archive via API
-    selectedIds.forEach((id) => {
-      void fetch("/api/mail/archive", {
+    // Delay API call — cancel on undo (C5 fix)
+    scheduleAction(ts, () => {
+      void fetch("/api/mail/batch", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          messageId: id,
-          homeAccountId: activeAccount.homeAccountId,
-        }),
+        body: JSON.stringify({ action: "archive", messageIds: idsToArchive, homeAccountId: hid }),
       });
     });
 
     setSelectedIds(new Set());
     setBulkMode(false);
-  }, [activeAccount, selectedIds, emails]);
+  }, [activeAccount, selectedIds, emails, scheduleAction]);
 
   const bulkMarkRead = useCallback(() => {
     if (!activeAccount || selectedIds.size === 0) return;
@@ -363,17 +385,15 @@ export default function InboxClient({
       )
     );
 
-    // Update via API
-    selectedIds.forEach((id) => {
-      void fetch("/api/mail/mark-read", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          messageId: id,
-          homeAccountId: activeAccount.homeAccountId,
-          isRead: true,
-        }),
-      });
+    // Update via batch API
+    void fetch("/api/mail/batch", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        action: "markRead",
+        messageIds: [...selectedIds],
+        homeAccountId: activeAccount.homeAccountId,
+      }),
     });
 
     setSelectedIds(new Set());
@@ -385,6 +405,13 @@ export default function InboxClient({
   const handleUndo = useCallback(() => {
     const lastAction = undoStack[undoStack.length - 1];
     if (!lastAction) return;
+
+    // Cancel the pending server action (C5 fix)
+    const pending = pendingActionsRef.current.get(lastAction.timestamp);
+    if (pending) {
+      clearTimeout(pending.timer);
+      pendingActionsRef.current.delete(lastAction.timestamp);
+    }
 
     // Restore emails to UI
     setEmails((prev) => {
@@ -409,8 +436,7 @@ export default function InboxClient({
     return () => clearTimeout(timer);
   }, [undoStack]);
 
-  // Load rules once on mount; apply to initial email batch
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+  // Load rules on mount and when account changes; apply to current email batch
   useEffect(() => {
     if (!activeAccount) return;
     const hid = activeAccount.homeAccountId;
@@ -424,7 +450,8 @@ export default function InboxClient({
         fireSideEffects(sideEffects, matchCounts);
       })
       .catch(() => {}); // rules must never break the inbox
-  }, []);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeAccount?.homeAccountId]);
 
   // Keep sidebar unread badge in sync — use server total if available, otherwise count loaded
   const loadedUnread = emails.filter((e) => !e.isRead).length;
@@ -501,29 +528,20 @@ export default function InboxClient({
     emails.forEach((e) => knownIdsRef.current.add(e.id));
   }, [emails]);
 
-  // Poll every 30s for new emails across ALL connected accounts
+  // Poll every 30s for new emails in the active account only (C3 fix)
   useEffect(() => {
-    if (!activeAccount || accounts.length === 0) return;
+    if (!activeAccount) return;
     const poll = async () => {
       if (document.hidden || activeTab !== "all" || search) return;
       try {
-        const results = await Promise.allSettled(
-          accounts.map((acc) =>
-            fetch(`/api/mail/inbox?homeAccountId=${encodeURIComponent(acc.homeAccountId)}`)
-              .then((r) => r.ok ? r.json() as Promise<{ emails: EmailMessage[] }> : Promise.reject())
-              .then((data) => data.emails)
-          )
-        );
-        const allFresh: EmailMessage[] = [];
-        results.forEach((r) => {
-          if (r.status === "fulfilled") {
-            allFresh.push(...r.value.filter((e) => !knownIdsRef.current.has(e.id)));
-          }
-        });
-        if (allFresh.length > 0) {
+        const res = await fetch(`/api/mail/inbox?homeAccountId=${encodeURIComponent(activeAccount.homeAccountId)}`);
+        if (!res.ok) return;
+        const data = await res.json() as { emails: EmailMessage[] };
+        const fresh = data.emails.filter((e) => !knownIdsRef.current.has(e.id));
+        if (fresh.length > 0) {
           setPendingNewEmails((prev) => {
             const existingIds = new Set(prev.map((e) => e.id));
-            return [...allFresh.filter((e) => !existingIds.has(e.id)), ...prev];
+            return [...fresh.filter((e) => !existingIds.has(e.id)), ...prev];
           });
         }
       } catch {
@@ -532,7 +550,7 @@ export default function InboxClient({
     };
     const id = setInterval(poll, 30_000);
     return () => clearInterval(id);
-  }, [activeAccount?.homeAccountId, accounts.length, activeTab, search]);
+  }, [activeAccount?.homeAccountId, activeTab, search]);
 
   // Clear pending banner when account switches
   useEffect(() => {
@@ -665,7 +683,7 @@ export default function InboxClient({
   if (conversationView && !search) {
     const conversations = new Map<string, EmailMessage[]>();
     displayEmails.forEach((email) => {
-      const convId = (email as any).conversationId || email.id;
+      const convId = email.conversationId || email.id;
       if (!conversations.has(convId)) {
         conversations.set(convId, []);
       }
@@ -706,40 +724,8 @@ export default function InboxClient({
     <div className="flex flex-1" style={{ overflow: "hidden" }}>
       {/* Email List — full width */}
       <div className="flex flex-col w-full bg-white flex-shrink-0" style={{ height: "100vh", overflow: "hidden" }}>
-        {/* Action Banner */}
-        <div className="flex items-center justify-between px-4 py-3 bg-primary-50 border-b border-primary-200 flex-shrink-0">
-          <div className="flex items-center gap-2">
-            <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-primary-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
-            </svg>
-            <span className="text-xs font-semibold text-primary-700">AI-powered email, ready when you are</span>
-          </div>
-          <div className="flex items-center gap-2 flex-shrink-0">
-            <a
-              href="/compose"
-              className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-small transition-all flex-shrink-0"
-              style={{ background: "rgb(254 242 242)", color: "rgb(138 9 9)", border: "1px solid rgb(220 38 38)" }}
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
-              </svg>
-              New Email
-            </a>
-            <button
-              onClick={() => setShowEventForm(true)}
-              className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-small transition-all flex-shrink-0"
-              style={{ background: "rgb(254 242 242)", color: "rgb(138 9 9)", border: "1px solid rgb(220 38 38)" }}
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-              </svg>
-              Create Event
-            </button>
-          </div>
-        </div>
-
         {/* Header */}
-        <div className="px-4 pt-5 pb-3 border-b border-neutral-200 flex-shrink-0">
+        <div className="px-4 pt-4 pb-3 border-b border-neutral-200 flex-shrink-0">
           <div className="flex items-center justify-between mb-3">
             <h2 className="font-semibold text-base" style={{ color: "rgb(27 29 29)" }}>
               Inbox {unreadCount > 0 && (
@@ -748,7 +734,28 @@ export default function InboxClient({
                 </span>
               )}
             </h2>
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-2">
+              <a
+                href="/compose"
+                className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-[8px] transition-colors text-white flex-shrink-0"
+                style={{ backgroundColor: "rgb(138 9 9)" }}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+                </svg>
+                New Email
+              </a>
+              <button
+                onClick={() => setShowEventForm(true)}
+                className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-[8px] transition-colors flex-shrink-0"
+                style={{ backgroundColor: "rgb(245 245 245)", color: "rgb(82 82 82)", border: "1px solid rgb(229 229 229)" }}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                Event
+              </button>
+              <div className="w-px h-5 bg-neutral-200" />
               <button
                 onClick={() => setConversationView(!conversationView)}
                 className="p-1.5 rounded-[10px] transition-colors"
@@ -1049,7 +1056,8 @@ export default function InboxClient({
                       prev.map((e) => (e.id === email.id ? { ...e, isRead: true } : e))
                     );
                   }
-                  router.push(`/inbox/${email.id}`);
+                  const acctParam = activeAccount ? `?homeAccountId=${encodeURIComponent(activeAccount.homeAccountId)}` : "";
+                  router.push(`/inbox/${email.id}${acctParam}`);
                 }}
                 onAiReply={(e) => { e.stopPropagation(); setAiReplyEmail(email); }}
                 onStar={(e) => { e.stopPropagation(); handleStarToggle(email); }}
