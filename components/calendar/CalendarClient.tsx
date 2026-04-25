@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import type { CalEvent } from "@/lib/types/calendar";
 import { useCalendarStore } from "@/lib/stores/calendar-store";
+import { useAccountStore } from "@/lib/stores/account-store";
 import EventDetailModal from "@/components/calendar/EventDetailModal";
 import EventFormModal from "@/components/calendar/EventFormModal";
 import type { NlCreateResponse } from "@/app/api/calendar/nl-create/route";
@@ -385,6 +386,7 @@ export default function CalendarClient({ weekStart: initialWeekStart, events: in
   const [teamsMeetingLoading, setTeamsMeetingLoading] = useState(false);
   const [teamsMeetingUrl, setTeamsMeetingUrl] = useState<string | null>(null);
   const [nlPrefill, setNlPrefill] = useState<NlCreateResponse | null>(null);
+  const [showNlPreview, setShowNlPreview] = useState(false);
 
   // Voice + confirmation
   const [isListening, setIsListening] = useState(false);
@@ -402,6 +404,7 @@ export default function CalendarClient({ weekStart: initialWeekStart, events: in
   const recogRef = useRef<SpeechRecognitionInstance | null>(null);
 
   const { selectedEvent, setSelectedEvent, activeView, setActiveView, setCurrentWeekStart } = useCalendarStore();
+  const accounts = useAccountStore((s) => s.accounts);
 
   // ── Effects ──────────────────────────────────────────────────────────────────
 
@@ -531,7 +534,8 @@ export default function CalendarClient({ weekStart: initialWeekStart, events: in
       setNlPrefill(data.prefill);
       setEditingEvent(null);
       setNlText("");
-      setShowForm(true);
+      // Show preview instead of opening form directly
+      setShowNlPreview(true);
     } catch (e) { setNlError((e as Error).message); }
     finally { setNlLoading(false); }
   }
@@ -1062,6 +1066,107 @@ export default function CalendarClient({ weekStart: initialWeekStart, events: in
             setShowForm(true);
           }}
         />
+      )}
+
+      {/* ── NL Parsed Preview ── */}
+      {showNlPreview && nlPrefill && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center px-4" style={{ backgroundColor: "rgba(0,0,0,0.45)" }} onClick={() => setShowNlPreview(false)}>
+          <div className="bg-white rounded-[14px] shadow-lg w-full max-w-md overflow-hidden" onClick={(e) => e.stopPropagation()}>
+            <div className="px-5 py-4 border-b border-neutral-100">
+              <h3 className="font-semibold text-sm" style={{ color: "rgb(27 29 29)" }}>AI Parsed Event</h3>
+              <p className="text-xs mt-0.5" style={{ color: "rgb(115 115 115)" }}>Review what was understood from your input</p>
+            </div>
+            <div className="px-5 py-4 space-y-3">
+              <div>
+                <span className="text-[10px] font-semibold uppercase tracking-wider" style={{ color: "rgb(115 115 115)" }}>Title</span>
+                <p className="text-sm font-medium" style={{ color: "rgb(27 29 29)" }}>{nlPrefill.subject || "(none)"}</p>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <span className="text-[10px] font-semibold uppercase tracking-wider" style={{ color: "rgb(115 115 115)" }}>Start</span>
+                  <p className="text-sm font-medium" style={{ color: "rgb(27 29 29)" }}>
+                    {nlPrefill.start ? new Date(nlPrefill.start.endsWith("Z") ? nlPrefill.start : nlPrefill.start).toLocaleString("en-US", { weekday: "short", month: "short", day: "numeric", hour: "numeric", minute: "2-digit", hour12: true }) : "(not set)"}
+                  </p>
+                </div>
+                <div>
+                  <span className="text-[10px] font-semibold uppercase tracking-wider" style={{ color: "rgb(115 115 115)" }}>End</span>
+                  <p className="text-sm font-medium" style={{ color: "rgb(27 29 29)" }}>
+                    {nlPrefill.end ? new Date(nlPrefill.end.endsWith("Z") ? nlPrefill.end : nlPrefill.end).toLocaleString("en-US", { weekday: "short", month: "short", day: "numeric", hour: "numeric", minute: "2-digit", hour12: true }) : "(not set)"}
+                  </p>
+                </div>
+              </div>
+              {nlPrefill.location && (
+                <div>
+                  <span className="text-[10px] font-semibold uppercase tracking-wider" style={{ color: "rgb(115 115 115)" }}>Location</span>
+                  <p className="text-sm" style={{ color: "rgb(27 29 29)" }}>{nlPrefill.location}</p>
+                </div>
+              )}
+              {nlPrefill.attendees.length > 0 && (
+                <div>
+                  <span className="text-[10px] font-semibold uppercase tracking-wider" style={{ color: "rgb(115 115 115)" }}>Attendees</span>
+                  <p className="text-sm" style={{ color: "rgb(27 29 29)" }}>{nlPrefill.attendees.join(", ")}</p>
+                </div>
+              )}
+              {nlPrefill.body && (
+                <div>
+                  <span className="text-[10px] font-semibold uppercase tracking-wider" style={{ color: "rgb(115 115 115)" }}>Notes</span>
+                  <p className="text-sm" style={{ color: "rgb(82 82 82)" }}>{nlPrefill.body}</p>
+                </div>
+              )}
+            </div>
+            <div className="px-5 py-3 border-t border-neutral-100 flex justify-end gap-2">
+              <button
+                onClick={() => { setShowNlPreview(false); setNlPrefill(null); }}
+                className="px-4 py-2 text-xs font-medium rounded-[8px] border border-neutral-200 transition-colors hover:bg-neutral-50"
+                style={{ color: "rgb(82 82 82)" }}
+              >
+                Discard
+              </button>
+              <button
+                onClick={() => { setShowNlPreview(false); setShowForm(true); }}
+                className="px-4 py-2 text-xs font-semibold rounded-[8px] text-white transition-colors"
+                style={{ backgroundColor: BRAND }}
+              >
+                Edit & Create
+              </button>
+              <button
+                onClick={async () => {
+                  setShowNlPreview(false);
+                  // Quick-create directly from prefill without opening form
+                  const acc = accounts[0]?.homeAccountId;
+                  if (!acc || !nlPrefill.start || !nlPrefill.end) { setShowForm(true); return; }
+                  try {
+                    const res = await fetch("/api/calendar/event", {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({
+                        homeAccountId: acc,
+                        subject: nlPrefill.subject,
+                        start: nlPrefill.start,
+                        end: nlPrefill.end,
+                        location: nlPrefill.location || undefined,
+                        body: nlPrefill.body || undefined,
+                        attendees: nlPrefill.attendees.length ? nlPrefill.attendees : undefined,
+                        timeZone: userTimeZone,
+                      }),
+                    });
+                    const data = await res.json() as { ok?: boolean; event?: CalEvent; error?: string };
+                    if (data.ok && data.event) {
+                      setEvents((prev) => [...prev, data.event!]);
+                      setSavedConfirmation(data.event.subject);
+                      setTimeout(() => setSavedConfirmation(null), 4000);
+                    } else { setShowForm(true); }
+                  } catch { setShowForm(true); }
+                  setNlPrefill(null);
+                }}
+                className="px-4 py-2 text-xs font-semibold rounded-[8px] text-white transition-colors"
+                style={{ backgroundColor: "rgb(21 128 61)" }}
+              >
+                Looks Good — Create
+              </button>
+            </div>
+          </div>
+        </div>
       )}
 
       {/* ── Event Form Modal ── */}

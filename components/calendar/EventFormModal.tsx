@@ -50,10 +50,22 @@ interface Props {
 const pad = (n: number) => String(n).padStart(2, "0");
 
 function toLocalDate(iso: string): string {
+  // Parse directly from ISO string to avoid timezone conversion
+  // Handles both "2026-04-24T22:00:00" (local) and "2026-04-24T22:00:00Z" (UTC)
+  if (iso.includes("T") && !iso.endsWith("Z") && !iso.includes("+")) {
+    // Local time string — extract date directly
+    return iso.split("T")[0];
+  }
   const d = new Date(iso);
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
 }
 function toLocalTime(iso: string): string {
+  // Parse directly from ISO string to avoid timezone conversion
+  if (iso.includes("T") && !iso.endsWith("Z") && !iso.includes("+")) {
+    // Local time string — extract time directly
+    const timePart = iso.split("T")[1].split(":"); // ["22", "00", "00"]
+    return `${timePart[0]}:${timePart[1]}`;
+  }
   const d = new Date(iso);
   return `${pad(d.getHours())}:${pad(d.getMinutes())}`;
 }
