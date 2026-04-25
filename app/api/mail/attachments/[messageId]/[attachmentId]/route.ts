@@ -29,11 +29,12 @@ export async function GET(
     );
 
     const bytes = Buffer.from(att.contentBytes, "base64");
+    const mode = req.nextUrl.searchParams.get("mode") === "inline" ? "inline" : "attachment";
 
     return new NextResponse(bytes, {
       headers: {
         "Content-Type": att.contentType || "application/octet-stream",
-        "Content-Disposition": `attachment; filename="${att.name.replace(/"/g, '\\"')}"`,
+        "Content-Disposition": `${mode}; filename="${att.name.replace(/"/g, '\\"')}"`,
         "Content-Length": String(bytes.length),
       },
     });

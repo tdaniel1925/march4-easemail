@@ -716,14 +716,14 @@ export default function AttachmentsClient({
             <div className="p-6 max-h-[calc(100vh-16rem)] overflow-auto">
               {getFileType(previewItem.contentType, previewItem.name) === "image" ? (
                 <img
-                  src={`/api/mail/attachments/${encodeURIComponent(previewItem.messageId)}/${encodeURIComponent(previewItem.id)}?homeAccountId=${encodeURIComponent(previewItem.homeAccountId)}`}
+                  src={`/api/mail/attachments/${encodeURIComponent(previewItem.messageId)}/${encodeURIComponent(previewItem.id)}?homeAccountId=${encodeURIComponent(previewItem.homeAccountId)}&mode=inline`}
                   alt={previewItem.name}
                   className="max-w-full h-auto mx-auto"
                   style={{ maxHeight: "70vh" }}
                 />
               ) : getFileType(previewItem.contentType, previewItem.name) === "pdf" ? (
                 <iframe
-                  src={`/api/mail/attachments/${encodeURIComponent(previewItem.messageId)}/${encodeURIComponent(previewItem.id)}?homeAccountId=${encodeURIComponent(previewItem.homeAccountId)}`}
+                  src={`/api/mail/attachments/${encodeURIComponent(previewItem.messageId)}/${encodeURIComponent(previewItem.id)}?homeAccountId=${encodeURIComponent(previewItem.homeAccountId)}&mode=inline`}
                   className="w-full"
                   style={{ height: "70vh", border: "none" }}
                   title={previewItem.name}
