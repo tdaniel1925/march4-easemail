@@ -35,12 +35,20 @@ export const useAccountStore = create<AccountStore>((set) => ({
   draftCount: 0,
   mailFolders: [],
   activeLabel: null,
-  setAccounts: (accounts) =>
+  setAccounts: (accounts) => {
+    // Restore last-used account from localStorage
+    let saved: string | null = null;
+    try { saved = typeof window !== "undefined" ? localStorage.getItem("easemail:activeAccountId") : null; } catch {}
+    const restored = saved ? accounts.find((a) => a.homeAccountId === saved) : null;
     set({
       accounts,
-      activeAccount: accounts.find((a) => a.isDefault) ?? accounts[0] ?? null,
-    }),
-  setActiveAccount: (activeAccount) => set({ activeAccount }),
+      activeAccount: restored ?? accounts.find((a) => a.isDefault) ?? accounts[0] ?? null,
+    });
+  },
+  setActiveAccount: (activeAccount) => {
+    try { localStorage.setItem("easemail:activeAccountId", activeAccount.homeAccountId); } catch {}
+    set({ activeAccount });
+  },
   removeAccount: (homeAccountId) =>
     set((state) => {
       const remaining = state.accounts.filter((a) => a.homeAccountId !== homeAccountId);
