@@ -149,9 +149,11 @@ function EmailRow({
 export default function InboxClient({
   initialEmails,
   initialNextLink,
+  totalUnread,
 }: {
   initialEmails: EmailMessage[];
   initialNextLink?: string | null;
+  totalUnread?: number;
 }) {
   const router = useRouter();
   const [emails, setEmails] = useState<EmailMessage[]>(initialEmails);
@@ -424,10 +426,14 @@ export default function InboxClient({
       .catch(() => {}); // rules must never break the inbox
   }, []);
 
-  // Keep sidebar unread badge in sync with local email state
+  // Keep sidebar unread badge in sync — use server total if available, otherwise count loaded
+  const loadedUnread = emails.filter((e) => !e.isRead).length;
+  const serverUnread = totalUnread ?? 0;
+  // Use whichever is higher — server total is accurate, loaded count tracks local mark-read actions
+  const effectiveUnread = Math.max(serverUnread, loadedUnread);
   useEffect(() => {
-    setInboxUnread(emails.filter((e) => !e.isRead).length);
-  }, [emails, setInboxUnread]);
+    setInboxUnread(effectiveUnread);
+  }, [effectiveUnread, setInboxUnread]);
 
   // Account switch: reload from scratch
   useEffect(() => {
@@ -685,7 +691,7 @@ export default function InboxClient({
     }
   }, [selectedIds.size, displayEmails]);
 
-  const unreadCount = emails.filter((e) => !e.isRead).length;
+  const unreadCount = effectiveUnread;
 
   const tabs: { key: FilterTab; label: string }[] = [
     { key: "all", label: "All" },
@@ -736,7 +742,11 @@ export default function InboxClient({
         <div className="px-4 pt-5 pb-3 border-b border-neutral-200 flex-shrink-0">
           <div className="flex items-center justify-between mb-3">
             <h2 className="font-semibold text-base" style={{ color: "rgb(27 29 29)" }}>
-              Inbox {unreadCount > 0 && <span className="ml-1 text-xs font-normal" style={{ color: "rgb(155 155 155)" }}>({unreadCount} unread)</span>}
+              Inbox {unreadCount > 0 && (
+                <span className="ml-1 text-xs font-normal" style={{ color: "rgb(155 155 155)" }}>
+                  ({unreadCount} unread{nextLink ? ` · ${emails.length} loaded` : ""})
+                </span>
+              )}
             </h2>
             <div className="flex items-center gap-1">
               <button

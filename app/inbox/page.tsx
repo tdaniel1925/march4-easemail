@@ -103,7 +103,7 @@ export default async function InboxPage() {
         userName={dbUser.name ?? user.email ?? "You"}
         userEmail={defaultAccount.email}
       />
-      <InboxClient initialEmails={emails} initialNextLink={initialNextLink} />
+      <InboxClient initialEmails={emails} initialNextLink={initialNextLink} totalUnread={unreadCount} />
     </div>
   );
 }
