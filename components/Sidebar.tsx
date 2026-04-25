@@ -35,8 +35,12 @@ const mailboxLinks = [
   },
 ];
 
+const dashboardLink = {
+  href: "/dashboard", label: "Dashboard",
+  icon: <path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />,
+};
+
 const navLinks = [
-  { href: "/dashboard", label: "Dashboard", icon: <path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /> },
   { href: "/attachments", label: "Attachments", icon: <path strokeLinecap="round" strokeLinejoin="round" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" /> },
   { href: "/calendar", label: "Calendar", icon: <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /> },
 ];
@@ -265,6 +269,17 @@ export default function Sidebar({ userName = "You", userEmail = "", isAdmin: isA
         {/* Nav */}
         <nav className="flex-1 px-3 pb-4 overflow-y-auto space-y-1">
 
+          {/* Dashboard — top of sidebar */}
+          <div className="mb-1">
+            <NavLink
+              href={dashboardLink.href}
+              label={dashboardLink.label}
+              icon={dashboardLink.icon}
+              active={isActive(dashboardLink.href)}
+              onNavigate={navigateTo}
+            />
+          </div>
+
           {/* Mailboxes */}
           <SidebarSection title="Mailboxes" open={open.mailboxes} onToggle={() => toggle("mailboxes")}>
             <ul className="space-y-0.5">
@@ -477,6 +492,9 @@ export default function Sidebar({ userName = "You", userEmail = "", isAdmin: isA
             {/* Drawer uses same nav content as desktop aside */}
             <AccountSwitcher />
             <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-1">
+              <div className="mb-1">
+                <NavLink href={dashboardLink.href} label={dashboardLink.label} icon={dashboardLink.icon} active={isActive(dashboardLink.href)} onNavigate={navigateTo} />
+              </div>
               <SidebarSection title="Mailboxes" open={open.mailboxes} onToggle={() => toggle("mailboxes")}>
                 <ul className="space-y-0.5">
                   {mailboxLinks.map((l) => (

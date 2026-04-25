@@ -85,9 +85,9 @@ export function viewToPath(view: AppView, extra?: { folderId?: string; emailId?:
     case "signatures": return "/signatures";
     case "email-rules": return "/email-rules";
     case "teams": return "/teams";
-    case "folder": return extra?.folderId ? `/folder/${extra.folderId}` : "/inbox";
-    case "email-read": return extra?.emailId ? `/inbox/${extra.emailId}` : "/inbox";
-    default: return "/inbox";
+    case "folder": return extra?.folderId ? `/folder/${extra.folderId}` : "/dashboard";
+    case "email-read": return extra?.emailId ? `/inbox/${extra.emailId}` : "/dashboard";
+    default: return "/dashboard";
   }
 }
 
@@ -118,12 +118,12 @@ export function pathToView(pathname: string): { view: AppView; folderId?: string
     case "/signatures": return { view: "signatures" };
     case "/email-rules": return { view: "email-rules" };
     case "/teams": return { view: "teams" };
-    default: return { view: "inbox" };
+    default: return { view: "dashboard" };
   }
 }
 
 export const useDataCacheStore = create<DataCacheStore>((set) => ({
-  activeView: "inbox",
+  activeView: "dashboard",
   activeFolderId: null,
   activeEmailId: null,
   activeEmailAccountId: null,
