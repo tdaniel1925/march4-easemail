@@ -1,9 +1,8 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
 import diff from "fast-diff";
+import { useDataCacheStore, pathToView } from "@/lib/stores/data-cache";
 
 // Lazy DOMPurify sanitizer — avoids SSR issues.
 // require() interop varies by bundler: .default may or may not exist.
@@ -262,10 +261,26 @@ export default function ComposeClient({
   draftData?: any | null;
   defaultAccountId?: string;
 }) {
-  const router = useRouter();
   const defaultAccount = (defaultAccountId
     ? accounts.find((a) => a.homeAccountId === defaultAccountId)
     : null) ?? accounts.find((a) => a.isDefault) ?? accounts[0];
+
+  /** SPA-aware navigation — updates store + pushState instead of server round-trip */
+  function navigateTo(href: string) {
+    const { view, folderId } = pathToView(href.split("?")[0]);
+    useDataCacheStore.getState().setActiveView(view);
+    if (folderId) useDataCacheStore.getState().setActiveFolderId(folderId);
+    window.history.pushState(null, "", href);
+  }
+
+  /** Go back — use history.back() if there's history, otherwise go to inbox */
+  function goBack() {
+    if (window.history.length > 1) {
+      window.history.back();
+    } else {
+      navigateTo("/inbox");
+    }
+  }
 
   // ── Composer state ──────────────────────────────────────────────────────────
   const [to, setTo] = useState<string[]>([]);
@@ -502,7 +517,7 @@ export default function ComposeClient({
     if (sendAt) {
       try {
         await saveDraftFn(sendAt);
-        router.push("/drafts");
+        navigateTo("/drafts");
       } catch {
         setSendError("Failed to schedule. Please try again.");
       } finally {
@@ -552,7 +567,7 @@ export default function ComposeClient({
         setSendError((err as { error?: string }).error ?? "Send failed");
         return;
       }
-      router.back();
+      goBack();
     } catch {
       setSendError("Network error. Please try again.");
     } finally {
@@ -1237,12 +1252,12 @@ export default function ComposeClient({
       {/* TOP HEADER */}
       <header className="flex items-center justify-between px-6 py-4 bg-background-50 border-b border-neutral-200 flex-shrink-0">
         <div className="flex items-center gap-3">
-          <Link href="/inbox" className="flex items-center gap-2 text-sm text-neutral-500 hover:text-primary-600 transition-colors">
+          <button onClick={() => navigateTo("/inbox")} className="flex items-center gap-2 text-sm text-neutral-500 hover:text-primary-600 transition-colors">
             <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M11 17l-5-5m0 0l5-5m-5 5h12" />
             </svg>
             Back to Inbox
-          </Link>
+          </button>
           <span className="text-neutral-300">/</span>
           <h1 className="font-heading font-semibold text-neutral-900 text-base">
             {mode === "reply" ? "Reply" : mode === "replyAll" ? "Reply All" : mode === "forward" ? "Forward" : "New Message"}
@@ -1306,11 +1321,11 @@ export default function ComposeClient({
               </h2>
             </div>
             <div className="flex items-center gap-1">
-              <Link href="/inbox" className="p-1.5 text-neutral-400 hover:text-neutral-600 hover:bg-background-100 rounded-small transition-colors" title="Close">
+              <button onClick={() => navigateTo("/inbox")} className="p-1.5 text-neutral-400 hover:text-neutral-600 hover:bg-background-100 rounded-small transition-colors" title="Close">
                 <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                 </svg>
-              </Link>
+              </button>
             </div>
           </div>
 
@@ -2108,14 +2123,14 @@ export default function ComposeClient({
                 </button>
               )}
 
-              <Link href="/email-rules" className="flex items-center gap-1.5 text-xs text-neutral-400 hover:text-primary-600 transition-colors px-2 py-1.5 rounded-small hover:bg-background-100">
+              <button onClick={() => navigateTo("/email-rules")} className="flex items-center gap-1.5 text-xs text-neutral-400 hover:text-primary-600 transition-colors px-2 py-1.5 rounded-small hover:bg-background-100">
                 <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                 </svg>
                 Rules
-              </Link>
+              </button>
               <button
-                onClick={() => hasComposerContent() ? setShowDiscardConfirm(true) : router.push("/inbox")}
+                onClick={() => hasComposerContent() ? setShowDiscardConfirm(true) : navigateTo("/inbox")}
                 className="flex items-center gap-1.5 text-xs text-neutral-500 hover:text-primary-600 transition-colors px-2 py-1.5 rounded-small hover:bg-background-100"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -2138,7 +2153,7 @@ export default function ComposeClient({
                         Keep editing
                       </button>
                       <button
-                        onClick={() => router.push("/inbox")}
+                        onClick={() => navigateTo("/inbox")}
                         className="px-4 py-2 text-sm font-semibold text-white rounded-small transition-colors"
                         style={{ backgroundColor: "rgb(138 9 9)" }}
                       >
