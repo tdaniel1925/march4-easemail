@@ -38,6 +38,9 @@ export default async function EmailReadPage({
   const accountId = searchAccountId ?? defaultAccount.homeAccountId;
   const providerType = detectProviderType(accountId);
 
+  // Start unread count fetch early — don't wait for email
+  const unreadCountPromise = getUnreadCount(user.id, accountId);
+
   // Build the email detail object used by EmailReadClient
   let email: {
     id: string;
@@ -123,13 +126,13 @@ export default async function EmailReadPage({
     }
   } catch (err) {
     console.error("Failed to fetch message:", err);
-    redirect("/inbox");
+    redirect(returnTo);
   }
 
-  if (!email) redirect("/inbox");
+  if (!email) redirect(returnTo);
 
-  // Get real unread count for sidebar badge (H5 fix)
-  const inboxUnread = await getUnreadCount(user.id, defaultAccount.homeAccountId);
+  // Await the unread count we started earlier
+  const inboxUnread = await unreadCountPromise;
 
   return (
     <div className="flex" style={{ height: "100vh", overflow: "hidden" }}>
