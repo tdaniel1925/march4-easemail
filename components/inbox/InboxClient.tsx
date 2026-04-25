@@ -1148,93 +1148,201 @@ export default function InboxClient({
                 onToggleSelect={(e) => { e.stopPropagation(); toggleSelect(email.id); }}
               />
               {/* Inline email expansion */}
-              {expandedEmailId === email.id && (
-                <div className="border-t border-neutral-100 bg-white" style={{ borderLeft: "3px solid rgb(138 9 9)" }}>
-                  {/* Header bar */}
-                  <div className="flex items-center justify-between px-5 py-3 border-b border-neutral-100" style={{ backgroundColor: "rgb(250 250 250)" }}>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-semibold truncate" style={{ color: "rgb(27 29 29)" }}>{email.subject}</p>
-                      <p className="text-xs mt-0.5" style={{ color: "rgb(115 115 115)" }}>
-                        {email.from.name} &lt;{email.from.address}&gt;
+              {expandedEmailId === email.id && (() => {
+                const senderColor = getAvatarColor(email.from.name);
+                const acctId = activeAccount?.homeAccountId ?? "";
+                const fileIcon = (type: string) => {
+                  if (type.startsWith("image/")) return "🖼";
+                  if (type.includes("pdf")) return "📄";
+                  if (type.includes("word") || type.includes("document")) return "📝";
+                  if (type.includes("sheet") || type.includes("excel")) return "📊";
+                  if (type.includes("zip") || type.includes("compressed")) return "📦";
+                  return "📎";
+                };
+                const formatSize = (bytes: number) => {
+                  if (bytes < 1024) return `${bytes} B`;
+                  if (bytes < 1048576) return `${(bytes / 1024).toFixed(1)} KB`;
+                  return `${(bytes / 1048576).toFixed(1)} MB`;
+                };
+                const emailDate = new Date(email.receivedDateTime);
+                const dateFormatted = emailDate.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric", year: "numeric" });
+                const timeFormatted = emailDate.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
+
+                return (
+                <div className="bg-white border-t border-neutral-200" style={{ borderLeft: "3px solid rgb(138 9 9)" }}>
+
+                  {/* ── Sender header ── */}
+                  <div className="px-6 py-4 border-b border-neutral-100">
+                    <div className="flex items-start gap-3">
+                      <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold" style={{ backgroundColor: senderColor.bg, color: senderColor.text }}>
+                        {getInitials(email.from.name)}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between gap-2">
+                          <div className="min-w-0">
+                            <span className="text-sm font-semibold" style={{ color: "rgb(27 29 29)" }}>{email.from.name}</span>
+                            <span className="text-xs ml-1.5" style={{ color: "rgb(155 155 155)" }}>&lt;{email.from.address}&gt;</span>
+                          </div>
+                          <div className="flex items-center gap-2 flex-shrink-0">
+                            <span className="text-xs" style={{ color: "rgb(155 155 155)" }}>{dateFormatted} at {timeFormatted}</span>
+                            <button
+                              onClick={(e) => { e.stopPropagation(); setExpandedEmailId(null); setExpandedBody(null); setExpandedDetails(null); }}
+                              className="p-1.5 rounded-[8px] transition-colors hover:bg-neutral-100"
+                              style={{ color: "rgb(155 155 155)" }}
+                            >
+                              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
+                              </svg>
+                            </button>
+                          </div>
+                        </div>
                         {expandedDetails?.to && expandedDetails.to.length > 0 && (
-                          <span> &rarr; {expandedDetails.to.map((r) => r.name || r.address).join(", ")}</span>
+                          <p className="text-xs mt-1" style={{ color: "rgb(155 155 155)" }}>
+                            <span className="font-medium" style={{ color: "rgb(115 115 115)" }}>To:</span>{" "}
+                            {expandedDetails.to.map((r) => r.name || r.address).join(", ")}
+                          </p>
                         )}
-                      </p>
+                        {expandedDetails?.cc && expandedDetails.cc.length > 0 && (
+                          <p className="text-xs mt-0.5" style={{ color: "rgb(155 155 155)" }}>
+                            <span className="font-medium" style={{ color: "rgb(115 115 115)" }}>CC:</span>{" "}
+                            {expandedDetails.cc.map((r) => r.name || r.address).join(", ")}
+                          </p>
+                        )}
+                      </div>
                     </div>
-                    <div className="flex items-center gap-2 flex-shrink-0">
-                      <button
-                        onClick={(e) => { e.stopPropagation(); setAiReplyEmail(email); }}
-                        className="flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-[8px]"
-                        style={{ backgroundColor: "rgb(254 242 242)", color: "rgb(138 9 9)" }}
-                      >
-                        <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
-                        </svg>
-                        Reply
-                      </button>
-                      <a
-                        href={`/inbox/${encodeURIComponent(email.id)}?homeAccountId=${encodeURIComponent(activeAccount?.homeAccountId ?? "")}`}
-                        onClick={(e) => e.stopPropagation()}
-                        className="text-xs font-medium px-3 py-1.5 rounded-[8px] border border-neutral-200 transition-colors hover:bg-neutral-50"
-                        style={{ color: "rgb(82 82 82)" }}
-                      >
-                        Full view
-                      </a>
-                      <button
-                        onClick={(e) => { e.stopPropagation(); setExpandedEmailId(null); setExpandedBody(null); setExpandedDetails(null); }}
-                        className="p-1 rounded-[6px] transition-colors hover:bg-neutral-100"
-                        style={{ color: "rgb(155 155 155)" }}
-                      >
-                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                      </button>
-                    </div>
+                    <h3 className="text-base font-semibold mt-3" style={{ color: "rgb(27 29 29)" }}>{email.subject}</h3>
                   </div>
-                  {/* Attachments */}
+
+                  {/* ── Attachments ── */}
                   {expandedDetails?.attachments && expandedDetails.attachments.length > 0 && (
-                    <div className="flex items-center gap-2 px-5 py-2 border-b border-neutral-100 flex-wrap">
-                      {expandedDetails.attachments.map((att) => (
-                        <a
-                          key={att.id}
-                          href={`/api/mail/attachments/${encodeURIComponent(email.id)}/${encodeURIComponent(att.id)}?homeAccountId=${encodeURIComponent(activeAccount?.homeAccountId ?? "")}`}
-                          onClick={(e) => e.stopPropagation()}
-                          className="flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-[6px] border border-neutral-200 hover:bg-neutral-50 transition-colors"
-                          style={{ color: "rgb(82 82 82)" }}
-                        >
-                          <svg className="w-3 h-3 flex-shrink-0" style={{ color: "rgb(155 155 155)" }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
-                          </svg>
-                          <span className="truncate max-w-[150px]">{att.name}</span>
-                          <span style={{ color: "rgb(155 155 155)" }}>({Math.round(att.size / 1024)}KB)</span>
-                        </a>
-                      ))}
+                    <div className="px-6 py-3 border-b border-neutral-100" style={{ backgroundColor: "rgb(252 252 252)" }}>
+                      <p className="text-xs font-semibold mb-2" style={{ color: "rgb(115 115 115)" }}>
+                        {expandedDetails.attachments.length} attachment{expandedDetails.attachments.length !== 1 ? "s" : ""}
+                      </p>
+                      <div className="flex gap-2 flex-wrap">
+                        {expandedDetails.attachments.map((att) => (
+                          <a
+                            key={att.id}
+                            href={`/api/mail/attachments/${encodeURIComponent(email.id)}/${encodeURIComponent(att.id)}?homeAccountId=${encodeURIComponent(acctId)}`}
+                            onClick={(e) => e.stopPropagation()}
+                            className="flex items-center gap-2.5 px-3 py-2.5 rounded-[10px] border border-neutral-200 bg-white hover:border-neutral-300 hover:shadow-sm transition-all"
+                            style={{ minWidth: 180, maxWidth: 260 }}
+                          >
+                            <span className="text-lg flex-shrink-0">{fileIcon(att.contentType)}</span>
+                            <div className="flex-1 min-w-0">
+                              <p className="text-xs font-medium truncate" style={{ color: "rgb(27 29 29)" }}>{att.name}</p>
+                              <p className="text-xs" style={{ color: "rgb(155 155 155)" }}>{formatSize(att.size)}</p>
+                            </div>
+                            <svg className="w-4 h-4 flex-shrink-0" style={{ color: "rgb(155 155 155)" }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                            </svg>
+                          </a>
+                        ))}
+                      </div>
                     </div>
                   )}
-                  {/* Body */}
-                  <div className="px-5 py-4" style={{ maxHeight: 400, overflowY: "auto" }}>
+
+                  {/* ── Email body ── */}
+                  <div className="px-6 py-5" style={{ maxHeight: 500, overflowY: "auto" }} onClick={(e) => e.stopPropagation()}>
                     {expandedLoading ? (
-                      <div className="flex items-center gap-2 py-6 justify-center">
-                        <svg className="w-4 h-4 animate-spin" style={{ color: "rgb(138 9 9)" }} fill="none" viewBox="0 0 24 24">
+                      <div className="flex flex-col items-center gap-3 py-10">
+                        <svg className="w-5 h-5 animate-spin" style={{ color: "rgb(138 9 9)" }} fill="none" viewBox="0 0 24 24">
                           <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                           <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
                         </svg>
-                        <span className="text-xs" style={{ color: "rgb(155 155 155)" }}>Loading email...</span>
+                        <span className="text-xs font-medium" style={{ color: "rgb(155 155 155)" }}>Loading email content...</span>
                       </div>
                     ) : expandedBody?.contentType === "html" ? (
-                      <div
-                        className="prose prose-sm max-w-none text-sm"
-                        style={{ color: "rgb(38 38 38)" }}
-                        dangerouslySetInnerHTML={{ __html: expandedBody.content }}
+                      <iframe
+                        srcDoc={`<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>
+                          body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 14px; line-height: 1.6; color: #1b1d1d; margin: 0; padding: 0; word-wrap: break-word; overflow-wrap: break-word; }
+                          a { color: #8a0909; }
+                          img { max-width: 100%; height: auto; }
+                          blockquote { border-left: 3px solid #e5e7eb; margin: 12px 0; padding: 8px 16px; color: #6b7280; }
+                          pre, code { background: #f5f5f5; border-radius: 4px; padding: 2px 6px; font-size: 13px; }
+                          pre { padding: 12px; overflow-x: auto; }
+                          table { border-collapse: collapse; max-width: 100%; }
+                          td, th { padding: 4px 8px; }
+                          hr { border: none; border-top: 1px solid #e5e7eb; margin: 16px 0; }
+                          p { margin: 0 0 10px 0; }
+                          h1,h2,h3,h4,h5,h6 { margin: 16px 0 8px; }
+                        </style></head><body>${expandedBody.content}</body></html>`}
+                        className="w-full border-0"
+                        style={{ minHeight: 200 }}
+                        sandbox="allow-same-origin"
+                        onLoad={(e) => {
+                          const frame = e.currentTarget;
+                          if (frame.contentDocument) {
+                            const h = frame.contentDocument.documentElement.scrollHeight;
+                            frame.style.height = `${Math.min(h + 20, 600)}px`;
+                          }
+                        }}
+                        title="Email content"
                       />
                     ) : (
-                      <pre className="whitespace-pre-wrap text-sm font-sans" style={{ color: "rgb(38 38 38)" }}>
+                      <div className="text-sm leading-relaxed whitespace-pre-wrap" style={{ color: "rgb(38 38 38)", fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" }}>
                         {expandedBody?.content ?? email.bodyPreview}
-                      </pre>
+                      </div>
                     )}
                   </div>
+
+                  {/* ── Action bar ── */}
+                  <div className="flex items-center gap-2 px-6 py-3 border-t border-neutral-200" style={{ backgroundColor: "rgb(250 250 250)" }}>
+                    <button
+                      onClick={(e) => { e.stopPropagation(); setAiReplyEmail(email); }}
+                      className="flex items-center gap-1.5 text-xs font-semibold px-4 py-2 rounded-[8px] text-white transition-colors"
+                      style={{ backgroundColor: "rgb(138 9 9)" }}
+                    >
+                      <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
+                      </svg>
+                      Reply
+                    </button>
+                    <a
+                      href={`/compose?replyTo=${encodeURIComponent(email.id)}&homeAccountId=${encodeURIComponent(acctId)}&mode=replyAll`}
+                      onClick={(e) => e.stopPropagation()}
+                      className="flex items-center gap-1.5 text-xs font-semibold px-4 py-2 rounded-[8px] border border-neutral-200 transition-colors hover:bg-white"
+                      style={{ color: "rgb(82 82 82)", backgroundColor: "rgb(255 255 255)" }}
+                    >
+                      <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
+                      </svg>
+                      Reply All
+                    </a>
+                    <a
+                      href={`/compose?forwardId=${encodeURIComponent(email.id)}&homeAccountId=${encodeURIComponent(acctId)}`}
+                      onClick={(e) => e.stopPropagation()}
+                      className="flex items-center gap-1.5 text-xs font-semibold px-4 py-2 rounded-[8px] border border-neutral-200 transition-colors hover:bg-white"
+                      style={{ color: "rgb(82 82 82)", backgroundColor: "rgb(255 255 255)" }}
+                    >
+                      <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                      </svg>
+                      Forward
+                    </a>
+                    <div className="flex-1" />
+                    <button
+                      onClick={(e) => { e.stopPropagation(); setAiReplyEmail(email); }}
+                      className="flex items-center gap-1.5 text-xs font-semibold px-4 py-2 rounded-[8px] transition-colors"
+                      style={{ backgroundColor: "rgb(254 242 242)", color: "rgb(138 9 9)" }}
+                    >
+                      <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                      </svg>
+                      AI Reply
+                    </button>
+                    <a
+                      href={`/inbox/${encodeURIComponent(email.id)}?homeAccountId=${encodeURIComponent(acctId)}`}
+                      onClick={(e) => e.stopPropagation()}
+                      className="flex items-center gap-1.5 text-xs font-medium px-4 py-2 rounded-[8px] border border-neutral-200 transition-colors hover:bg-white"
+                      style={{ color: "rgb(115 115 115)" }}
+                    >
+                      Open full view
+                    </a>
+                  </div>
                 </div>
-              )}
+                );
+              })()}
             </React.Fragment>
             ))
           )}
