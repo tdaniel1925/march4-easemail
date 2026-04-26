@@ -105,7 +105,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
       graphGet<GraphMessagesResponse>(
         user.id,
         homeAccountId,
-        `/me/messages?$filter=hasAttachments eq true&$top=50&$select=id,subject,receivedDateTime,from,toRecipients,hasAttachments&$expand=attachments($select=id,name,size,contentType,isInline)&$orderby=receivedDateTime desc`
+        `/me/messages?$top=50&$select=id,subject,receivedDateTime,from,toRecipients,hasAttachments&$expand=attachments($select=id,name,size,contentType,isInline)&$orderby=receivedDateTime desc`
       ),
       graphGet<GraphMessagesResponse>(
         user.id,
