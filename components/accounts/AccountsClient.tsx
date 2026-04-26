@@ -98,9 +98,11 @@ function DisconnectModal({
 function AccountCard({
   account,
   onDisconnect,
+  onEdit,
 }: {
   account: Account;
   onDisconnect: (account: Account) => void;
+  onEdit: (account: Account) => void;
 }) {
   const connectedDate = new Date(account.connectedAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
 
@@ -146,7 +148,19 @@ function AccountCard({
         </div>
 
         {/* Actions */}
-        <div className="flex-shrink-0">
+        <div className="flex-shrink-0 flex items-center gap-2">
+          <button
+            onClick={() => onEdit(account)}
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-small border transition-colors"
+            style={{ color: "rgb(58 58 58)", borderColor: "rgb(229 229 229)", backgroundColor: "white" }}
+            onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "rgb(245 245 245)"; }}
+            onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "white"; }}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+            </svg>
+            Edit
+          </button>
           <button
             onClick={() => onDisconnect(account)}
             className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-small border transition-colors"
@@ -179,6 +193,7 @@ export default function AccountsClient({ accounts: initialAccounts }: { accounts
   const [showAddMenu, setShowAddMenu] = useState(false);
   const [showImapModal, setShowImapModal] = useState(false);
   const [showJmapModal, setShowJmapModal] = useState(false);
+  const [editingAccount, setEditingAccount] = useState<Account | null>(null);
 
   useEffect(() => {
     if (searchParams.get("added") === "1") {
@@ -353,7 +368,7 @@ export default function AccountsClient({ accounts: initialAccounts }: { accounts
             ) : (
               <div className="space-y-3">
                 {accounts.map((account) => (
-                  <AccountCard key={account.id} account={account} onDisconnect={setDisconnecting} />
+                  <AccountCard key={account.id} account={account} onDisconnect={setDisconnecting} onEdit={setEditingAccount} />
                 ))}
               </div>
             )}
@@ -419,6 +434,18 @@ export default function AccountsClient({ accounts: initialAccounts }: { accounts
             setShowJmapModal(false);
             setAddedSuccess(true);
             router.refresh();
+          }}
+        />
+      )}
+
+      {editingAccount && (
+        <EditAccountModal
+          account={editingAccount}
+          onClose={() => setEditingAccount(null)}
+          onSuccess={(updated) => {
+            setAccounts((prev) => prev.map((a) => a.id === updated.id ? { ...a, displayName: updated.displayName } : a));
+            setEditingAccount(null);
+            setAddedSuccess(true);
           }}
         />
       )}
@@ -708,6 +735,130 @@ function AddJmapAccountModal({
           </button>
           <button onClick={handleConnect} disabled={connecting || !email || !token} className="px-4 py-2 text-sm font-semibold rounded-small text-white transition-colors shadow-custom disabled:opacity-50" style={{ backgroundColor: "rgb(138 9 9)" }}>
             {connecting ? "Connecting..." : "Connect"}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── Edit Account Modal ─────────────────────────────────────────────────────
+
+function EditAccountModal({
+  account,
+  onClose,
+  onSuccess,
+}: {
+  account: Account;
+  onClose: () => void;
+  onSuccess: (updated: { id: string; displayName: string }) => void;
+}) {
+  const [displayName, setDisplayName] = useState(account.displayName);
+  const [token, setToken] = useState("");
+  const [saving, setSaving] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
+  const [successMsg, setSuccessMsg] = useState<string | null>(null);
+
+  const isJmap = account.providerType === "jmap";
+  const isImap = account.providerType === "imap";
+  const isMicrosoft = account.providerType === "microsoft";
+
+  async function handleSave() {
+    setSaving(true);
+    setFormError(null);
+    setSuccessMsg(null);
+    try {
+      const payload: Record<string, string> = { homeAccountId: account.homeAccountId };
+      if (displayName !== account.displayName) payload.displayName = displayName;
+      if (isJmap && token) payload.token = token;
+      if (isImap && token) payload.password = token;
+
+      const res = await fetch("/api/accounts/update", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        const msg = (data as { details?: string; error?: string }).details
+          ? `${(data as { error?: string }).error}: ${(data as { details?: string }).details}`
+          : ((data as { error?: string }).error ?? "Update failed");
+        throw new Error(msg);
+      }
+
+      setSuccessMsg("Account updated successfully");
+      setToken("");
+      onSuccess({ id: account.id, displayName });
+    } catch (err) {
+      setFormError(err instanceof Error ? err.message : "Update failed");
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  const editInputStyle = "w-full px-3 py-2 text-sm border border-neutral-200 rounded-small focus:outline-none focus:border-neutral-400";
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center px-4" style={{ backgroundColor: "rgba(0,0,0,0.45)" }} onClick={onClose}>
+      <div className="bg-white rounded-large shadow-custom-hover w-full max-w-lg overflow-hidden" style={{ maxHeight: "calc(100vh - 48px)" }} onClick={(e) => e.stopPropagation()}>
+        <div className="px-6 py-4 border-b border-neutral-200">
+          <h3 className="font-semibold text-base" style={{ color: "rgb(27 29 29)" }}>Edit Account</h3>
+          <p className="text-xs mt-1" style={{ color: "rgb(115 115 115)" }}>{account.email} &middot; {PROVIDER_LABELS[account.providerType]}</p>
+        </div>
+        <div className="px-6 py-4 space-y-3 overflow-y-auto" style={{ maxHeight: "60vh" }}>
+          <div>
+            <label className="block text-xs font-medium mb-1" style={{ color: "rgb(82 82 82)" }}>Display name</label>
+            <input type="text" value={displayName} onChange={(e) => setDisplayName(e.target.value)} className={editInputStyle} placeholder="Your Name" />
+          </div>
+
+          {isJmap && (
+            <div>
+              <label className="block text-xs font-medium mb-1" style={{ color: "rgb(82 82 82)" }}>New API Token</label>
+              <input type="password" value={token} onChange={(e) => setToken(e.target.value)} className={editInputStyle} placeholder="Leave blank to keep current token" />
+              <p className="text-xs mt-1.5" style={{ color: "rgb(165 165 165)" }}>
+                Fastmail: Settings &rarr; Privacy &amp; Security &rarr; App Passwords.
+                Make sure <strong>Mail submission</strong> scope is enabled for sending.
+              </p>
+            </div>
+          )}
+
+          {isImap && (
+            <div>
+              <label className="block text-xs font-medium mb-1" style={{ color: "rgb(82 82 82)" }}>New Password / App Password</label>
+              <input type="password" value={token} onChange={(e) => setToken(e.target.value)} className={editInputStyle} placeholder="Leave blank to keep current password" />
+            </div>
+          )}
+
+          {isMicrosoft && (
+            <p className="text-xs p-3 rounded-small" style={{ backgroundColor: "rgb(243 244 246)", color: "rgb(115 115 115)" }}>
+              Microsoft accounts use OAuth — tokens are managed automatically. You can only update the display name here.
+            </p>
+          )}
+
+          {successMsg && (
+            <div className="text-xs p-3 rounded-small" style={{ backgroundColor: "rgb(220 252 231)", color: "rgb(21 128 61)" }}>
+              {successMsg}
+            </div>
+          )}
+
+          {formError && (
+            <div className="text-xs p-3 rounded-small" style={{ backgroundColor: "rgb(253 235 235)", color: "rgb(138 9 9)" }}>
+              {formError}
+            </div>
+          )}
+        </div>
+        <div className="px-6 py-4 border-t border-neutral-200 flex justify-end gap-3">
+          <button onClick={onClose} className="px-4 py-2 text-sm font-medium rounded-small border transition-colors" style={{ color: "rgb(82 82 82)", borderColor: "rgb(229 229 229)" }}>
+            Cancel
+          </button>
+          <button
+            onClick={handleSave}
+            disabled={saving || (displayName === account.displayName && !token)}
+            className="px-4 py-2 text-sm font-semibold rounded-small text-white transition-colors shadow-custom disabled:opacity-50"
+            style={{ backgroundColor: "rgb(138 9 9)" }}
+          >
+            {saving ? "Saving..." : "Save Changes"}
           </button>
         </div>
       </div>
