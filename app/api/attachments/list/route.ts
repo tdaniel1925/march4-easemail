@@ -99,6 +99,8 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
   }
 
   try {
+    // Note: Graph API sentItems folder rejects $filter + $expand + $orderby
+    // combined ("InefficientFilter" error). Use simpler queries and sort in JS.
     const [receivedData, sentData] = await Promise.all([
       graphGet<GraphMessagesResponse>(
         user.id,
@@ -108,7 +110,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
       graphGet<GraphMessagesResponse>(
         user.id,
         homeAccountId,
-        `/me/mailFolders/sentItems/messages?$filter=hasAttachments eq true&$top=50&$select=id,subject,sentDateTime,receivedDateTime,from,toRecipients,hasAttachments&$expand=attachments($select=id,name,size,contentType,isInline)&$orderby=sentDateTime desc`
+        `/me/mailFolders/sentItems/messages?$top=50&$select=id,subject,sentDateTime,receivedDateTime,from,toRecipients,hasAttachments&$expand=attachments($select=id,name,size,contentType,isInline)&$orderby=sentDateTime desc`
       ),
     ]);
 

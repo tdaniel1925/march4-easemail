@@ -189,12 +189,20 @@ export default function AppShell(props: AppShellProps) {
 
     const hid = encodeURIComponent(currentId);
 
+    // Compute current week start (Monday) for calendar fetch
+    const now = new Date();
+    const dow = now.getDay();
+    const mondayOffset = dow === 0 ? 6 : dow - 1;
+    const monday = new Date(now);
+    monday.setDate(now.getDate() - mondayOffset);
+    const weekStartStr = `${monday.getFullYear()}-${String(monday.getMonth() + 1).padStart(2, "0")}-${String(monday.getDate()).padStart(2, "0")}`;
+
     // Fetch inbox + calendar in parallel
     Promise.all([
       fetch(`/api/mail/inbox?homeAccountId=${hid}&$top=50`)
         .then((r) => r.ok ? r.json() : null)
         .catch(() => null),
-      fetch(`/api/calendar/week?homeAccountId=${hid}`)
+      fetch(`/api/calendar/week?start=${weekStartStr}&homeAccountId=${hid}`)
         .then((r) => r.ok ? r.json() : null)
         .catch(() => null),
     ]).then(([inboxData, calData]) => {
