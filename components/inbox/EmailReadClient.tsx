@@ -95,7 +95,10 @@ export default function EmailReadClient({ email: initialEmail, homeAccountId, re
     if (homeAccountId) params.set("homeAccountId", homeAccountId);
     fetch(`/api/mail/message/${encodeURIComponent(initialEmail.id)}?${params}`)
       .then(async (r) => {
-        if (!r.ok) throw new Error("Failed to load email");
+        if (!r.ok) {
+          const body = await r.json().catch(() => ({ error: `HTTP ${r.status}` }));
+          throw new Error((body as { error?: string }).error ?? `HTTP ${r.status}`);
+        }
         return r.json();
       })
       .then((data) => {

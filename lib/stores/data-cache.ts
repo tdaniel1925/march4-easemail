@@ -94,11 +94,11 @@ export function viewToPath(view: AppView, extra?: { folderId?: string; emailId?:
 /** Map a pathname to a view */
 export function pathToView(pathname: string): { view: AppView; folderId?: string; emailId?: string } {
   if (pathname.startsWith("/inbox/")) {
-    const id = pathname.slice("/inbox/".length);
+    const id = decodeURIComponent(pathname.slice("/inbox/".length));
     return { view: "email-read", emailId: id };
   }
   if (pathname.startsWith("/folder/")) {
-    const id = pathname.slice("/folder/".length);
+    const id = decodeURIComponent(pathname.slice("/folder/".length));
     return { view: "folder", folderId: id };
   }
   switch (pathname) {
