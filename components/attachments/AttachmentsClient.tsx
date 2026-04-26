@@ -118,11 +118,17 @@ export default function AttachmentsClient({
 
   /** SPA-aware navigation — updates store + pushState instead of server round-trip */
   function navigateTo(href: string) {
-    const { view, folderId, emailId } = pathToView(href.split("?")[0]);
+    const [path, qs] = href.split("?");
+    const { view, folderId, emailId } = pathToView(path);
     useDataCacheStore.getState().setActiveView(view);
     if (folderId) useDataCacheStore.getState().setActiveFolderId(folderId);
     if (view === "email-read" && emailId) {
-      useDataCacheStore.getState().setActiveEmail(emailId);
+      const sp = qs ? new URLSearchParams(qs) : new URLSearchParams();
+      useDataCacheStore.getState().setActiveEmail(
+        emailId,
+        sp.get("homeAccountId") ?? homeAccountId,
+        sp.get("returnTo") ?? "/attachments"
+      );
     }
     window.history.pushState(null, "", href);
   }
@@ -721,7 +727,7 @@ export default function AttachmentsClient({
                     isLast={idx === sorted.length - 1}
                     isSelected={selectedIds.has(`${item.messageId}-${item.id}`)}
                     visibleColumns={visibleColumns}
-                    onRowClick={() => navigateTo(`/inbox/${encodeURIComponent(item.messageId)}?returnTo=/attachments`)}
+                    onRowClick={() => navigateTo(`/inbox/${encodeURIComponent(item.messageId)}?homeAccountId=${encodeURIComponent(item.homeAccountId)}&returnTo=/attachments`)}
                     onToggleSelection={() => toggleSelection(`${item.messageId}-${item.id}`)}
                     onPreview={() => setPreviewItem(item)}
                   />
