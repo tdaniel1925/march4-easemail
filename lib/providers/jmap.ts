@@ -33,8 +33,9 @@ interface JmapSession {
   apiUrl: string;
   downloadUrl: string;
   uploadUrl: string;
-  accounts: Record<string, { name: string; isPersonal: boolean }>;
+  accounts: Record<string, { name: string; isPersonal: boolean; accountCapabilities?: Record<string, unknown> }>;
   primaryAccounts: Record<string, string>;
+  capabilities?: Record<string, unknown>;
 }
 
 interface JmapResponse {
@@ -677,6 +678,17 @@ export class JmapProvider implements EmailProvider, CalendarProvider, ContactsPr
   ): Promise<void> {
     const { token, session, jmapAccountId, account } =
       await getSessionAndToken(userId, accountId);
+
+    // Check if the JMAP token/session has submission capability
+    const hasSubmission =
+      session.capabilities?.["urn:ietf:params:jmap:submission"] !== undefined ||
+      session.accounts?.[jmapAccountId]?.accountCapabilities?.["urn:ietf:params:jmap:submission"] !== undefined;
+    if (!hasSubmission) {
+      throw new Error(
+        "Your JMAP API token does not have email sending permission. " +
+        "Please create a new API token with the 'Mail submission' (urn:ietf:params:jmap:submission) capability enabled in your email provider settings."
+      );
+    }
 
     // Find the drafts mailbox
     const foldersResponse = await jmapCall(

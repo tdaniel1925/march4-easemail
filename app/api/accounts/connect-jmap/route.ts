@@ -56,6 +56,14 @@ export async function POST(req: NextRequest) {
       throw new Error("No primary mail account found in JMAP session");
     }
     jmapAccountId = primaryAccountId;
+
+    // Warn (but don't block) if submission capability is missing
+    const hasSubmission =
+      session.capabilities?.["urn:ietf:params:jmap:submission"] !== undefined ||
+      session.accounts?.[primaryAccountId]?.accountCapabilities?.["urn:ietf:params:jmap:submission"] !== undefined;
+    if (!hasSubmission) {
+      console.warn("[connect-jmap] Token lacks urn:ietf:params:jmap:submission — sending will fail. User should regenerate token with Mail submission scope.");
+    }
   } catch (err) {
     return NextResponse.json(
       {
