@@ -141,29 +141,39 @@ export default function AttachmentsClient({
   const [initialLoading, setInitialLoading] = useState(attachments.length === 0);
   const [initialError, setInitialError] = useState<string | null>(null);
 
-  // Fetch attachments on mount when the prop is empty (SPA mode)
+  // Fetch attachments on mount (SPA mode — AppShell passes empty arrays)
   useEffect(() => {
-    if (attachments.length > 0) { setInitialLoading(false); return; }
+    if (attachments.length > 0) {
+      setItems(attachments);
+      setInitialLoading(false);
+      return;
+    }
     const hid = homeAccountId || useAccountStore.getState().activeAccount?.homeAccountId;
-    if (!hid) { setInitialLoading(false); return; }
+    if (!hid) { setInitialLoading(false); setInitialError("No account selected"); return; }
+    let cancelled = false;
     setInitialLoading(true);
     setInitialError(null);
     fetch(`/api/attachments/list?homeAccountId=${encodeURIComponent(hid)}`)
       .then(async (r) => {
-        if (!r.ok) throw new Error("Failed to load attachments");
+        if (!r.ok) {
+          const body = await r.json().catch(() => ({ error: `HTTP ${r.status}` }));
+          throw new Error((body as { error?: string }).error ?? `HTTP ${r.status}`);
+        }
         return r.json() as Promise<{ items: AttachmentItem[]; receivedNextLink: string | null; sentNextLink: string | null }>;
       })
       .then((data) => {
+        if (cancelled) return;
         setItems(data.items ?? []);
         setReceivedNextLink(data.receivedNextLink ?? null);
         setSentNextLink(data.sentNextLink ?? null);
       })
       .catch((err) => {
+        if (cancelled) return;
         setInitialError(err instanceof Error ? err.message : "Failed to load attachments");
       })
-      .finally(() => setInitialLoading(false));
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+      .finally(() => { if (!cancelled) setInitialLoading(false); });
+    return () => { cancelled = true; };
+  }, [attachments, homeAccountId]);
   const [sortField, setSortField] = useState<SortField>("date");
   const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());

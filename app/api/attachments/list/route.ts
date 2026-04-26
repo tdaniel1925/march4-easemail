@@ -3,6 +3,14 @@ import { createClient } from "@/lib/supabase/server";
 import { graphGet } from "@/lib/microsoft/graph";
 import { verifyAccountOwnership, detectProviderType } from "@/lib/providers/registry";
 
+interface GraphAttachment {
+  id: string;
+  name: string;
+  size: number;
+  contentType: string;
+  isInline?: boolean;
+}
+
 interface GraphMessage {
   id: string;
   subject: string;
@@ -10,13 +18,7 @@ interface GraphMessage {
   sentDateTime?: string;
   from: { emailAddress: { name: string; address: string } };
   toRecipients?: { emailAddress: { name: string; address: string } }[];
-  attachments?: {
-    id: string;
-    name: string;
-    size: number;
-    contentType: string;
-    isInline?: boolean;
-  }[];
+  attachments?: GraphAttachment[];
 }
 
 interface GraphMessagesResponse {
@@ -24,14 +26,22 @@ interface GraphMessagesResponse {
   "@odata.nextLink"?: string;
 }
 
+/**
+ * Conservative filter — only exclude obvious non-attachments:
+ * - Tracking pixels (images under 2KB)
+ * - Signature images that match common patterns AND are small
+ */
 const SIGNATURE_PATTERNS = /^(image\d+|logo|signature|banner|spacer|pixel|icon|footer|header|cid)/i;
-const MIN_ATTACHMENT_SIZE = 5 * 1024;
 
-function isRealAttachment(att: { name: string; size: number; contentType: string; isInline?: boolean }): boolean {
-  if (att.isInline) return false;
-  if (att.contentType.startsWith("image/") && att.size < MIN_ATTACHMENT_SIZE) return false;
-  const baseName = att.name.replace(/\.[^.]+$/, "");
-  if (SIGNATURE_PATTERNS.test(baseName)) return false;
+function isRealAttachment(att: GraphAttachment): boolean {
+  // Skip very small images (tracking pixels, spacer gifs)
+  if (att.contentType.startsWith("image/") && att.size < 2048) return false;
+  // Skip small images matching signature patterns
+  if (att.contentType.startsWith("image/") && att.size < 10240) {
+    const baseName = att.name.replace(/\.[^.]+$/, "");
+    if (SIGNATURE_PATTERNS.test(baseName)) return false;
+  }
+  // Keep everything else — including inline images that are real attachments
   return true;
 }
 
@@ -59,7 +69,7 @@ function extractAttachments(
         senderAddress: isSent
           ? (firstRecipient?.emailAddress?.address ?? "")
           : (message.from?.emailAddress?.address ?? ""),
-        receivedDateTime: message.receivedDateTime ?? message.sentDateTime ?? new Date().toISOString(),
+        receivedDateTime: (isSent ? message.sentDateTime : message.receivedDateTime) ?? new Date().toISOString(),
         homeAccountId,
         direction,
       });
@@ -69,7 +79,6 @@ function extractAttachments(
 }
 
 // ─── GET /api/attachments/list?homeAccountId=xxx ─────────────────────────────
-// Fetches emails with attachments from both received and sent folders
 
 export async function GET(req: NextRequest): Promise<NextResponse> {
   const supabase = await createClient();
@@ -86,7 +95,6 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
 
   const providerType = detectProviderType(homeAccountId);
   if (providerType !== "microsoft") {
-    // Non-Microsoft providers don't support this endpoint yet
     return NextResponse.json({ items: [], receivedNextLink: null, sentNextLink: null });
   }
 
@@ -95,25 +103,30 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
       graphGet<GraphMessagesResponse>(
         user.id,
         homeAccountId,
-        `/me/messages?$filter=hasAttachments eq true&$top=50&$expand=attachments&$select=id,subject,receivedDateTime,from,toRecipients&$orderby=receivedDateTime desc`
+        `/me/messages?$filter=hasAttachments eq true&$top=50&$select=id,subject,receivedDateTime,from,toRecipients,hasAttachments&$expand=attachments($select=id,name,size,contentType,isInline)&$orderby=receivedDateTime desc`
       ),
       graphGet<GraphMessagesResponse>(
         user.id,
         homeAccountId,
-        `/me/mailFolders/sentItems/messages?$filter=hasAttachments eq true&$top=50&$expand=attachments&$select=id,subject,receivedDateTime,sentDateTime,from,toRecipients&$orderby=sentDateTime desc`
+        `/me/mailFolders/sentItems/messages?$filter=hasAttachments eq true&$top=50&$select=id,subject,sentDateTime,receivedDateTime,from,toRecipients,hasAttachments&$expand=attachments($select=id,name,size,contentType,isInline)&$orderby=sentDateTime desc`
       ),
     ]);
 
     const receivedItems = extractAttachments(receivedData.value ?? [], "received", homeAccountId);
     const sentItems = extractAttachments(sentData.value ?? [], "sent", homeAccountId);
 
+    const allItems = [...receivedItems, ...sentItems].sort(
+      (a, b) => new Date(b.receivedDateTime).getTime() - new Date(a.receivedDateTime).getTime()
+    );
+
     return NextResponse.json({
-      items: [...receivedItems, ...sentItems],
+      items: allItems,
       receivedNextLink: receivedData["@odata.nextLink"] ?? null,
       sentNextLink: sentData["@odata.nextLink"] ?? null,
     });
   } catch (err) {
     console.error("[attachments/list]", err);
-    return NextResponse.json({ error: "Failed to fetch attachments" }, { status: 500 });
+    const message = err instanceof Error ? err.message : "Failed to fetch attachments";
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
