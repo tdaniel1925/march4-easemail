@@ -124,6 +124,20 @@ export default function AppShell(props: AppShellProps) {
   const [dashData, setDashData] = useState(props.dashboardData);
   const [accountSwitching, setAccountSwitching] = useState(false);
 
+  // ── Load draft count on mount (no SSR equivalent) ─────────────────────────
+  useEffect(() => {
+    fetch("/api/drafts")
+      .then((r) => r.ok ? r.json() : null)
+      .then((data) => {
+        if (data?.drafts != null) {
+          useAccountStore.getState().setDraftCount(
+            Array.isArray(data.drafts) ? data.drafts.length : 0
+          );
+        }
+      })
+      .catch(() => {});
+  }, []);
+
   // ── Initialize view from URL on mount ──────────────────────────────────────
   useEffect(() => {
     const { view, folderId, emailId } = pathToView(window.location.pathname);
@@ -197,7 +211,7 @@ export default function AppShell(props: AppShellProps) {
     monday.setDate(now.getDate() - mondayOffset);
     const weekStartStr = `${monday.getFullYear()}-${String(monday.getMonth() + 1).padStart(2, "0")}-${String(monday.getDate()).padStart(2, "0")}`;
 
-    // Fetch inbox + calendar in parallel
+    // Fetch inbox + calendar + drafts count in parallel on account switch
     Promise.all([
       fetch(`/api/mail/inbox?homeAccountId=${hid}&$top=50`)
         .then((r) => r.ok ? r.json() : null)
@@ -205,7 +219,10 @@ export default function AppShell(props: AppShellProps) {
       fetch(`/api/calendar/week?start=${weekStartStr}&homeAccountId=${hid}`)
         .then((r) => r.ok ? r.json() : null)
         .catch(() => null),
-    ]).then(([inboxData, calData]) => {
+      fetch("/api/drafts")
+        .then((r) => r.ok ? r.json() : null)
+        .catch(() => null),
+    ]).then(([inboxData, calData, draftsData]) => {
       if (inboxData) {
         setInboxEmails(inboxData.emails ?? []);
         setInboxNextLink(inboxData.nextLink ?? null);
@@ -216,6 +233,11 @@ export default function AppShell(props: AppShellProps) {
       if (calData) {
         setCalEvents(calData.events ?? []);
         if (calData.weekStart) setCalWeekStart(calData.weekStart);
+      }
+      if (draftsData?.drafts != null) {
+        useAccountStore.getState().setDraftCount(
+          Array.isArray(draftsData.drafts) ? draftsData.drafts.length : 0
+        );
       }
       setAccountSwitching(false);
     });

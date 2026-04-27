@@ -1,9 +1,22 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useRef, useCallback } from "react";
 import { useDataCacheStore } from "@/lib/stores/data-cache";
 import { useAccountStore } from "@/lib/stores/account-store";
 import type { Contact } from "@/lib/types/contacts";
+
+// ─── Email history item ───────────────────────────────────────────────────────
+
+interface ContactEmail {
+  id: string;
+  subject: string;
+  from: string;
+  preview: string;
+  date: string;
+  isRead: boolean;
+  folderId: string;
+  homeAccountId: string;
+}
 
 /** SPA-aware compose navigation for contacts */
 function navigateToCompose(email: string) {
@@ -157,16 +170,20 @@ export default function ContactsClient({ contacts: initialContacts }: Props) {
   const [deleting, setDeleting] = useState(false);
   // FIX: Add error state for user feedback
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
-  const [initialLoading, setInitialLoading] = useState(initialContacts.length === 0);
+  const [initialLoading, setInitialLoading] = useState(true);
   const [initialError, setInitialError] = useState<string | null>(null);
   const [nextLink, setNextLink] = useState<string | null>(null);
   const [loadingMore, setLoadingMore] = useState(false);
 
-  // Fetch contacts on mount when the prop is empty (SPA mode)
+  const activeAccountId = useAccountStore((s) => s.activeAccount?.homeAccountId);
+
+  // Fetch contacts whenever the active account changes (covers mount + account switch)
   useEffect(() => {
-    if (initialContacts.length > 0) { setInitialLoading(false); return; }
     const hid = useAccountStore.getState().activeAccount?.homeAccountId;
     if (!hid) { setInitialLoading(false); return; }
+    setContacts([]);
+    setSelectedContact(null);
+    setNextLink(null);
     setInitialLoading(true);
     setInitialError(null);
     fetch(`/api/contacts/list?homeAccountId=${encodeURIComponent(hid)}`)
@@ -182,8 +199,9 @@ export default function ContactsClient({ contacts: initialContacts }: Props) {
         setInitialError(err instanceof Error ? err.message : "Failed to load contacts");
       })
       .finally(() => setInitialLoading(false));
+  // activeAccountId drives re-fetch; initialContacts ignored after mount
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [activeAccountId]);
 
   async function loadMore() {
     if (!nextLink || loadingMore) return;
@@ -705,21 +723,103 @@ function ContactRow({ contact, color, isSelected, onSelect }: ContactRowProps) {
 
 // ─── Contact detail ───────────────────────────────────────────────────────────
 
-function ContactDetail({ contact, onEdit, onDelete }: { contact: Contact; onEdit: () => void; onDelete: () => void }) {
+function ContactDetail({
+  contact,
+  onEdit,
+  onDelete,
+}: {
+  contact: Contact;
+  onEdit: () => void;
+  onDelete: () => void;
+}) {
   const color = getColor(contact.displayName);
 
+  // ── Notes auto-save ──────────────────────────────────────────────────────────
+  const [notes, setNotes] = useState<string>("");
+  const [notesSaving, setNotesSaving] = useState(false);
+  const [notesSaved, setNotesSaved] = useState(false);
+  const [notesError, setNotesError] = useState<string | null>(null);
+  const notesTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // ── Email history ────────────────────────────────────────────────────────────
+  const [emails, setEmails] = useState<ContactEmail[]>([]);
+  const [emailsLoading, setEmailsLoading] = useState(false);
+  const [emailsError, setEmailsError] = useState<string | null>(null);
+
+  // Reset state when contact changes
+  useEffect(() => {
+    setNotes("");
+    setNotesSaved(false);
+    setNotesError(null);
+    setEmails([]);
+    setEmailsError(null);
+
+    if (!contact.email) return;
+
+    // Fetch email history
+    setEmailsLoading(true);
+    fetch(`/api/contacts/${encodeURIComponent(contact.id)}/emails?email=${encodeURIComponent(contact.email)}`)
+      .then(async (r) => {
+        if (!r.ok) throw new Error("Failed to load email history");
+        return r.json() as Promise<{ emails: ContactEmail[] }>;
+      })
+      .then((data) => setEmails(data.emails ?? []))
+      .catch((err) => setEmailsError(err instanceof Error ? err.message : "Failed to load"))
+      .finally(() => setEmailsLoading(false));
+  }, [contact.id, contact.email]);
+
+  // Auto-save notes 800ms after last keystroke
+  const handleNotesChange = useCallback((value: string) => {
+    setNotes(value);
+    setNotesSaved(false);
+    setNotesError(null);
+    if (notesTimer.current) clearTimeout(notesTimer.current);
+    notesTimer.current = setTimeout(async () => {
+      setNotesSaving(true);
+      try {
+        const hid = useAccountStore.getState().activeAccount?.homeAccountId;
+        const res = await fetch(`/api/contacts/${encodeURIComponent(contact.id)}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ notes: value, homeAccountId: hid }),
+        });
+        if (!res.ok) throw new Error("Save failed");
+        setNotesSaved(true);
+        setTimeout(() => setNotesSaved(false), 2000);
+      } catch {
+        setNotesError("Could not save note. Please try again.");
+      } finally {
+        setNotesSaving(false);
+      }
+    }, 800);
+  }, [contact.id]);
+
+  function navigateToEmail(email: ContactEmail) {
+    useDataCacheStore.getState().setActiveView("email-read");
+    window.history.pushState(null, "", `/inbox/${email.id}`);
+  }
+
+  function formatEmailDate(iso: string): string {
+    const d = new Date(iso);
+    const now = new Date();
+    const diffDays = Math.floor((now.getTime() - d.getTime()) / 86400000);
+    if (diffDays === 0) return d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+    if (diffDays < 7) return d.toLocaleDateString([], { weekday: "short" });
+    return d.toLocaleDateString([], { month: "short", day: "numeric" });
+  }
+
   return (
-    <div className="flex flex-col items-center px-8 pt-16 pb-8">
+    <div className="flex flex-col items-center px-8 pt-16 pb-8 w-full">
       {/* Large avatar */}
       <div
-        className="w-24 h-24 rounded-[20px] flex items-center justify-center text-3xl font-bold mb-5"
+        className="w-16 h-16 rounded-[16px] flex items-center justify-center text-2xl font-bold mb-4"
         style={{ backgroundColor: color.bg, color: color.text }}
       >
         {contact.initials}
       </div>
 
       {/* Name */}
-      <h2 className="text-xl font-semibold mb-1" style={{ color: "rgb(27 29 29)" }}>
+      <h2 className="text-xl font-bold mb-1" style={{ color: "rgb(27 29 29)" }}>
         {contact.displayName}
       </h2>
 
@@ -732,77 +832,125 @@ function ContactDetail({ contact, onEdit, onDelete }: { contact: Contact; onEdit
 
       {/* Email */}
       {contact.email && (
-        <p className="text-sm mb-6" style={{ color: "rgb(82 82 82)" }}>
+        <p className="text-sm mb-5" style={{ color: "rgb(82 82 82)" }}>
           {contact.email}
         </p>
       )}
 
-      {/* Edit + Delete actions */}
-      <div className="flex gap-2 mb-4">
+      {/* Actions row */}
+      <div className="flex gap-2 mb-8">
+        {contact.email && (
+          <button
+            onClick={() => navigateToCompose(contact.email)}
+            className="flex items-center gap-1.5 px-4 py-2 rounded-[10px] text-sm font-medium text-white"
+            style={{ backgroundColor: "rgb(138 9 9)" }}
+            onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = "rgb(110 7 7)"; }}
+            onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = "rgb(138 9 9)"; }}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+            </svg>
+            Send Email
+          </button>
+        )}
         <button
           onClick={onEdit}
-          className="px-3 py-1.5 text-xs rounded-[8px] font-medium"
+          className="flex items-center gap-1.5 px-4 py-2 rounded-[10px] text-sm font-medium"
           style={{ backgroundColor: "rgb(245 245 245)", color: "rgb(58 58 58)" }}
-          onMouseEnter={(e) => { (e.currentTarget).style.backgroundColor = "rgb(229 229 229)"; }}
-          onMouseLeave={(e) => { (e.currentTarget).style.backgroundColor = "rgb(245 245 245)"; }}
+          onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = "rgb(229 229 229)"; }}
+          onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = "rgb(245 245 245)"; }}
         >
           Edit
         </button>
         <button
           onClick={onDelete}
-          className="px-3 py-1.5 text-xs rounded-[8px] font-medium"
+          className="flex items-center gap-1.5 px-4 py-2 rounded-[10px] text-sm font-medium"
           style={{ backgroundColor: "rgb(253 235 235)", color: "rgb(138 9 9)" }}
-          onMouseEnter={(e) => { (e.currentTarget).style.backgroundColor = "rgb(220 38 38)"; (e.currentTarget).style.color = "white"; }}
-          onMouseLeave={(e) => { (e.currentTarget).style.backgroundColor = "rgb(253 235 235)"; (e.currentTarget).style.color = "rgb(138 9 9)"; }}
+          onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = "rgb(220 38 38)"; (e.currentTarget as HTMLButtonElement).style.color = "white"; }}
+          onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = "rgb(253 235 235)"; (e.currentTarget as HTMLButtonElement).style.color = "rgb(138 9 9)"; }}
         >
           Delete
         </button>
       </div>
 
-      {/* Compose button */}
-      {contact.email && (
-        <button
-          onClick={() => navigateToCompose(contact.email)}
-          className="flex items-center gap-2 px-5 py-2.5 rounded-[10px] text-sm font-medium text-white transition-colors shadow-sm"
-          style={{ backgroundColor: "rgb(138 9 9)" }}
-          onMouseEnter={(e) =>
-            ((e.currentTarget as HTMLButtonElement).style.backgroundColor = "rgb(110 7 7)")
-          }
-          onMouseLeave={(e) =>
-            ((e.currentTarget as HTMLButtonElement).style.backgroundColor = "rgb(138 9 9)")
-          }
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="w-4 h-4"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth={2}
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-            />
-          </svg>
-          Send Email
-        </button>
-      )}
+      {/* Detail fields */}
+      <div className="w-full max-w-md space-y-3 mb-8">
+        {contact.email && <DetailRow label="Email" value={contact.email} />}
+        {contact.phone && <DetailRow label="Phone" value={contact.phone} />}
+        {contact.jobTitle && <DetailRow label="Job Title" value={contact.jobTitle} />}
+        {contact.company && <DetailRow label="Company" value={contact.company} />}
+      </div>
 
-      {/* Detail cards */}
-      <div className="w-full max-w-md mt-10 space-y-3">
-        {contact.email && (
-          <DetailRow label="Email" value={contact.email} />
-        )}
-        {contact.phone && (
-          <DetailRow label="Phone" value={contact.phone} />
-        )}
-        {contact.jobTitle && (
-          <DetailRow label="Job Title" value={contact.jobTitle} />
-        )}
-        {contact.company && (
-          <DetailRow label="Company" value={contact.company} />
+      {/* Notes */}
+      <div className="w-full max-w-md mb-8">
+        <div className="flex items-center justify-between mb-2">
+          <span className="text-xs font-semibold" style={{ color: "rgb(115 115 115)" }}>Notes</span>
+          {notesSaving && (
+            <span className="text-xs" style={{ color: "rgb(163 163 163)" }}>Saving…</span>
+          )}
+          {notesSaved && !notesSaving && (
+            <span className="text-xs" style={{ color: "rgb(21 128 61)" }}>Saved</span>
+          )}
+          {notesError && (
+            <span className="text-xs" style={{ color: "rgb(138 9 9)" }}>{notesError}</span>
+          )}
+        </div>
+        <textarea
+          value={notes}
+          onChange={(e) => handleNotesChange(e.target.value)}
+          placeholder="Add a private note…"
+          rows={3}
+          className="w-full px-3 py-2.5 rounded-[10px] text-sm border outline-none resize-none transition-colors"
+          style={{ backgroundColor: "rgb(245 245 245)", borderColor: "transparent", color: "rgb(27 29 29)" }}
+          onFocus={(e) => { e.target.style.borderColor = "rgb(218 100 100)"; e.target.style.backgroundColor = "white"; }}
+          onBlur={(e) => { e.target.style.borderColor = "transparent"; e.target.style.backgroundColor = "rgb(245 245 245)"; }}
+        />
+      </div>
+
+      {/* Email history */}
+      <div className="w-full max-w-md">
+        <h3 className="text-xs font-semibold mb-3" style={{ color: "rgb(115 115 115)" }}>Recent Emails</h3>
+
+        {emailsLoading ? (
+          <div className="space-y-2">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="h-14 rounded-[10px] animate-pulse" style={{ backgroundColor: "rgb(229 229 229)" }} />
+            ))}
+          </div>
+        ) : emailsError ? (
+          <p className="text-sm" style={{ color: "rgb(163 163 163)" }}>{emailsError}</p>
+        ) : emails.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-8 gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5} style={{ color: "rgb(212 212 212)" }}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+            </svg>
+            <p className="text-sm" style={{ color: "rgb(163 163 163)" }}>No emails with this contact yet</p>
+          </div>
+        ) : (
+          <div className="space-y-2">
+            {emails.map((email) => (
+              <button
+                key={email.id}
+                onClick={() => navigateToEmail(email)}
+                className="w-full text-left px-3 py-2.5 rounded-[10px] bg-white border border-neutral-100 hover:border-neutral-200 transition-colors"
+              >
+                <div className="flex items-start justify-between gap-2">
+                  <p
+                    className="text-sm font-medium truncate flex-1"
+                    style={{ color: email.isRead ? "rgb(82 82 82)" : "rgb(27 29 29)", fontWeight: email.isRead ? 400 : 600 }}
+                  >
+                    {email.subject}
+                  </p>
+                  <span className="text-xs flex-shrink-0" style={{ color: "rgb(163 163 163)" }}>
+                    {formatEmailDate(email.date)}
+                  </span>
+                </div>
+                <p className="text-xs truncate mt-0.5" style={{ color: "rgb(163 163 163)" }}>
+                  {email.preview}
+                </p>
+              </button>
+            ))}
+          </div>
         )}
       </div>
     </div>

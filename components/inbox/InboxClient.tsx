@@ -660,6 +660,8 @@ export default function InboxClient({
   useEffect(() => {
     if (firstRender.current) { firstRender.current = false; return; }
     if (!activeAccount) return;
+    // Clear email list immediately so stale emails aren't shown during fetch
+    setEmails([]);
     setRequiresReauth(false);
     setFetchError(null);
     setLoadingEmails(true);
@@ -676,12 +678,16 @@ export default function InboxClient({
           const errBody = await r.json().catch(() => ({} as { error?: string })) as { error?: string };
           throw new Error(errBody.error ?? `inbox ${r.status}`);
         }
-        return r.json() as Promise<{ emails: EmailMessage[]; nextLink: string | null }>;
+        return r.json() as Promise<{ emails: EmailMessage[]; nextLink: string | null; unreadCount?: number }>;
       })
       .then((data) => {
         if (!data) return;
         setEmails(processWithRules(data.emails, activeAccount.homeAccountId));
         setNextLink(data.nextLink ?? null);
+        // Update unread count from the new account's response
+        if (data.unreadCount != null) {
+          setInboxUnread(data.unreadCount);
+        }
       })
       .catch((err) => {
         console.error("[inbox] account switch error:", err);

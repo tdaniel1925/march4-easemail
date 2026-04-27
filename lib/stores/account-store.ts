@@ -62,7 +62,15 @@ export const useAccountStore = create<AccountStore>((set) => ({
       document.cookie = `easemail_account=${encodeURIComponent(activeAccount.homeAccountId)};path=/;max-age=31536000;SameSite=Lax`;
       localStorage.setItem("easemail:activeAccountId", activeAccount.homeAccountId);
     } catch {}
-    set({ activeAccount });
+    // Zero out all account-scoped counts immediately so stale counts
+    // from the previous account are never shown while the new data loads.
+    set({
+      activeAccount,
+      inboxUnread: 0,
+      draftCount: 0,
+      scheduledCount: 0,
+      mailFolders: [],
+    });
   },
   removeAccount: (homeAccountId) =>
     set((state) => {
