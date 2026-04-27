@@ -346,7 +346,7 @@ function TimeGrid({
             const isToday = dateStr === today;
             const positioned = computeEventPositions(timedByDay[dateStr] ?? [], tz);
             return (
-              <div key={dateStr} className="flex-1 relative border-l border-neutral-100"
+              <div key={dateStr} className="flex-1 relative border-l border-neutral-100 cursor-pointer"
                 style={{ background: isWeekend ? "#fafafa" : isToday ? BRAND_LIGHT : "#fff", height: ROW_HEIGHT * HOURS.length }}
                 onClick={(ev) => {
                   // Click on empty area → create event at that time
@@ -378,7 +378,7 @@ function TimeGrid({
                 }}
               >
                 {HOURS.map((h) => (
-                  <div key={h} className="absolute left-0 right-0 border-t border-neutral-100" style={{ top: (h - HOUR_START) * ROW_HEIGHT }} />
+                  <div key={h} className="absolute left-0 right-0 border-t border-neutral-100 pointer-events-none" style={{ top: (h - HOUR_START) * ROW_HEIGHT }} />
                 ))}
                 {positioned.map((p) => (
                   <EventCard key={p.event.id} positioned={p} onClick={() => onEventClick(p.event)} tz={tz} />
