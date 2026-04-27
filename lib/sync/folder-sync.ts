@@ -46,6 +46,31 @@ export interface FolderRef {
   wellKnownName: string | null;
 }
 
+const MAX_DEPTH = 10;
+
+/** Recursively fetch all child folders up to MAX_DEPTH levels deep */
+async function fetchChildrenRecursive(
+  userId: string,
+  homeAccountId: string,
+  parentId: string,
+  depth: number
+): Promise<GraphFolder[]> {
+  if (depth > MAX_DEPTH) return [];
+  const children = await fetchAllFolders(
+    userId,
+    homeAccountId,
+    `/me/mailFolders/${parentId}/childFolders?$select=${FOLDER_SELECT}&$top=100`
+  );
+  const deeper: GraphFolder[] = [];
+  for (const child of children) {
+    if (child.childFolderCount > 0) {
+      const grandchildren = await fetchChildrenRecursive(userId, homeAccountId, child.id, depth + 1);
+      deeper.push(...grandchildren);
+    }
+  }
+  return [...children, ...deeper];
+}
+
 export async function syncFolders(
   userId: string,
   homeAccountId: string
@@ -56,15 +81,11 @@ export async function syncFolders(
     `/me/mailFolders?$select=${FOLDER_SELECT}&$top=100`
   );
 
-  // Fetch child folders for any folder that has children
+  // Recursively fetch children up to 10 levels deep
   const childFolders: GraphFolder[] = [];
   for (const f of topFolders) {
     if (f.childFolderCount > 0) {
-      const children = await fetchAllFolders(
-        userId,
-        homeAccountId,
-        `/me/mailFolders/${f.id}/childFolders?$select=${FOLDER_SELECT}&$top=100`
-      );
+      const children = await fetchChildrenRecursive(userId, homeAccountId, f.id, 1);
       childFolders.push(...children);
     }
   }

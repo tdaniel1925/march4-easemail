@@ -323,41 +323,31 @@ export default function Sidebar({ userName = "You", userEmail = "", isAdmin: isA
           ) : mailFolders.length > 0 && (
             <SidebarSection title="Folders" open={open.folders} onToggle={() => toggle("folders")} className="mt-2">
               <ul className="space-y-0.5">
-                {mailFolders
-                  .filter((f) => !f.parentId && f.wellKnownName !== "archive") // top-level, exclude archive (shown separately)
-                  .map((folder) => {
-                    const href = `/folder/${folder.id}`;
-                    const active = isActive(href);
-                    const children = mailFolders.filter((c) => c.parentId === folder.id);
-                    return (
-                      <li key={folder.id}>
-                        <NavLink
-                          href={href}
-                          label={folder.displayName}
-                          badge={folder.unreadItemCount}
-                          active={active}
-                          onNavigate={navigateTo}
-                          icon={<path strokeLinecap="round" strokeLinejoin="round" d="M3 7a2 2 0 012-2h3.586a1 1 0 01.707.293L10.707 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V7z" />}
-                        />
-                        {/* Child folders indented (Fix 9) */}
-                        {children.map((child) => {
-                          const childHref = `/folder/${child.id}`;
-                          return (
-                            <div key={child.id} className="pl-4">
-                              <NavLink
-                                href={childHref}
-                                label={child.displayName}
-                                badge={child.unreadItemCount}
-                                active={isActive(childHref)}
-                                onNavigate={navigateTo}
-                                icon={<path strokeLinecap="round" strokeLinejoin="round" d="M3 7a2 2 0 012-2h3.586a1 1 0 01.707.293L10.707 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V7z" />}
-                              />
-                            </div>
-                          );
-                        })}
-                      </li>
-                    );
-                  })}
+                {/* Recursive folder tree — up to 10 levels deep */}
+                {(function renderFolderTree(parentId: string | null, depth: number): React.ReactNode {
+                  return mailFolders
+                    .filter((f) => (f.parentId ?? null) === parentId && f.wellKnownName !== "archive")
+                    .map((folder) => {
+                      const href = `/folder/${folder.id}`;
+                      return (
+                        <li key={folder.id}>
+                          <div style={{ paddingLeft: depth * 12 }}>
+                            <NavLink
+                              href={href}
+                              label={folder.displayName}
+                              badge={folder.unreadItemCount}
+                              active={isActive(href)}
+                              onNavigate={navigateTo}
+                              icon={<path strokeLinecap="round" strokeLinejoin="round" d="M3 7a2 2 0 012-2h3.586a1 1 0 01.707.293L10.707 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V7z" />}
+                            />
+                          </div>
+                          {depth < 10 && (
+                            <ul>{renderFolderTree(folder.id, depth + 1)}</ul>
+                          )}
+                        </li>
+                      );
+                    });
+                })(null, 0)}
               </ul>
             </SidebarSection>
           )}
