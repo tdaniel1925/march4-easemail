@@ -39,9 +39,13 @@ function buildGraphPayload(data: EventBody) {
     };
   }
 
+  // Detect if event body contains a Teams meeting URL — if so, mark as online meeting
+  // so Graph API includes the join link in the ICS invite sent to attendees
+  const hasTeamsUrl = data.body?.includes("teams.microsoft.com") ?? false;
+
   return {
     subject: data.subject,
-    ...(data.body ? { body: { contentType: "text", content: data.body } } : {}),
+    ...(data.body ? { body: { contentType: "HTML", content: data.body } } : {}),
     start: { dateTime: data.start, timeZone: tz },
     end: { dateTime: data.end, timeZone: tz },
     isAllDay: data.isAllDay ?? false,
@@ -49,10 +53,17 @@ function buildGraphPayload(data: EventBody) {
     ...(data.attendees?.length
       ? {
           attendees: data.attendees.map((a) => ({
-            emailAddress: { address: a },
-            type: "required",
+            emailAddress: { address: a, name: a },
+            type: "required" as const,
           })),
         }
+      : {}),
+    // Tell Graph to send invites when attendees are present
+    // responseRequested ensures attendees get the ICS invitation email
+    ...(data.attendees?.length ? { responseRequested: true } : {}),
+    // Mark as online Teams meeting when a Teams URL is present
+    ...(hasTeamsUrl
+      ? { isOnlineMeeting: true, onlineMeetingProvider: "teamsForBusiness" }
       : {}),
     ...(data.reminderMinutes !== undefined && data.reminderMinutes !== null
       ? {

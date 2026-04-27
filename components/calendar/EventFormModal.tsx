@@ -141,6 +141,9 @@ export default function EventFormModal({ prefill, onClose, onSaved, editEvent, u
   const [isListening, setIsListening] = useState(false);
   const speechRef = useRef<SpeechRecognitionInstance | null>(null);
 
+  // ── NL auto-parse debounce ──────────────────────────────────────────────────
+  const nlDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
   // ── Attendee autocomplete ──────────────────────────────────────────────────
   const [attendeeSuggestions, setAttendeeSuggestions] = useState<{ name: string; email: string }[]>([]);
   const suggestTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -163,6 +166,10 @@ export default function EventFormModal({ prefill, onClose, onSaved, editEvent, u
   const tz = userTimeZone ?? Intl.DateTimeFormat().resolvedOptions().timeZone;
 
   useEffect(() => { subjectRef.current?.focus(); }, []);
+  // Clean up NL debounce timer on unmount
+  useEffect(() => {
+    return () => { if (nlDebounceRef.current) clearTimeout(nlDebounceRef.current); };
+  }, []);
   useEffect(() => {
     const handler = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
     document.addEventListener("keydown", handler);
@@ -315,7 +322,9 @@ export default function EventFormModal({ prefill, onClose, onSaved, editEvent, u
     setLoading(true); setError(null);
 
     const bodyText = teamsEnabled && teamsMeetingUrl
-      ? (body.trim() ? `${body.trim()}\n\nTeams meeting: ${teamsMeetingUrl}` : `Teams meeting: ${teamsMeetingUrl}`)
+      ? (body.trim()
+          ? `${body.trim()}<br><br><b>Join Teams Meeting:</b> <a href="${teamsMeetingUrl}">${teamsMeetingUrl}</a>`
+          : `<b>Join Teams Meeting:</b> <a href="${teamsMeetingUrl}">${teamsMeetingUrl}</a>`)
       : body.trim() || undefined;
 
     const payload = {
@@ -401,8 +410,22 @@ export default function EventFormModal({ prefill, onClose, onSaved, editEvent, u
               <input
                 type="text"
                 value={nlText}
-                onChange={(e) => setNlText(e.target.value)}
-                onKeyDown={(e) => { if (e.key === "Enter") void handleParseFill(); }}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  setNlText(val);
+                  // Auto-parse after 2s pause in typing
+                  if (nlDebounceRef.current) clearTimeout(nlDebounceRef.current);
+                  if (val.trim()) {
+                    nlDebounceRef.current = setTimeout(() => { void parseFill(val); }, 2000);
+                  }
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    // Immediate parse on Enter — cancel any pending debounce
+                    if (nlDebounceRef.current) clearTimeout(nlDebounceRef.current);
+                    void handleParseFill();
+                  }
+                }}
                 placeholder="e.g. Client deposition next Tuesday at 2pm for 2 hours with sarah@firm.com"
                 className="w-full text-sm border border-neutral-200 rounded-lg px-3 py-2 pr-8 focus:outline-none focus:border-red-300 bg-white"
               />
@@ -429,7 +452,11 @@ export default function EventFormModal({ prefill, onClose, onSaved, editEvent, u
             </button>
             <button
               type="button"
-              onClick={() => void handleParseFill()}
+              onClick={() => {
+                // Immediate parse on click — cancel any pending debounce
+                if (nlDebounceRef.current) clearTimeout(nlDebounceRef.current);
+                void handleParseFill();
+              }}
               disabled={nlLoading || !nlText.trim()}
               className="px-4 py-2 text-white rounded-lg text-sm font-semibold flex-shrink-0 transition-opacity disabled:opacity-40"
               style={{ backgroundColor: BRAND }}

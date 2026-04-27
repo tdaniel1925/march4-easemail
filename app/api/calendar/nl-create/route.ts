@@ -33,69 +33,114 @@ async function nlCreateHandler(req: NextRequest): Promise<NextResponse> {
     parseInt(todayParts[0]), parseInt(todayParts[1]) - 1, parseInt(todayParts[2])
   ).toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" });
 
-  const system = `You are a calendar assistant for Darren Miller Law Firm. You create structured calendar events from natural language. You understand legal event types: client consultations, depositions, court hearings, mediations, settlement conferences, filing deadlines, and opposing counsel calls. Return ONLY valid JSON with no markdown or explanation.`;
+  // Compute useful reference dates for the prompt
+  const tomorrowDate = (() => { const d = new Date(todayDate + "T12:00:00"); d.setDate(d.getDate() + 1); return d.toISOString().split("T")[0]; })();
+  const todayDow = new Date(todayDate + "T12:00:00").getDay(); // 0=Sun … 6=Sat
+  const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+  // Build "next Monday" through "next Sunday" reference table
+  const nextDayDates = dayNames.map((name, i) => {
+    let diff = i - todayDow;
+    if (diff <= 0) diff += 7; // always next occurrence
+    const d = new Date(todayDate + "T12:00:00");
+    d.setDate(d.getDate() + diff);
+    return `${name} = ${d.toISOString().split("T")[0]}`;
+  }).join(", ");
 
-  const prompt = `Convert this natural language into a structured calendar event.
+  const system = `You are a calendar assistant for Darren Miller Law Firm — a legal/law firm. You create structured calendar events from natural language. You deeply understand legal event types: client consultations, depositions, court hearings, mediations, settlement conferences, filing deadlines, opposing counsel calls, case reviews, status conferences, and motion hearings. Return ONLY valid JSON with no markdown, code fences, or explanation.`;
 
-RIGHT NOW it is: ${now} (local time)
-TODAY'S DATE is: ${todayReadable} (${todayDate})
-User's timezone: ${tz}
+  const prompt = `Parse this text into a calendar event JSON object.
 
-Return this exact JSON:
+CURRENT CONTEXT:
+- Right now: ${now} (local time in ${tz})
+- Today: ${todayReadable} (${todayDate}, ${dayNames[todayDow]})
+- Tomorrow: ${tomorrowDate}
+- Next weekdays: ${nextDayDates}
+
+OUTPUT FORMAT (return ONLY this JSON, nothing else):
 {
-  "subject": "Clear, specific event title",
-  "start": "ISO datetime like ${todayDate}T14:00:00 or empty string if unclear",
-  "end": "ISO datetime like ${todayDate}T15:00:00 or empty string if unclear",
-  "location": "Courtroom/address/video link or empty string",
-  "attendees": ["email@example.com"],
-  "body": "Relevant notes, case number, or description — empty string if none"
+  "subject": "string — clear event title",
+  "start": "string — ISO local datetime like ${todayDate}T14:00:00 (NO Z suffix, NO timezone offset)",
+  "end": "string — ISO local datetime (empty string if truly unclear)",
+  "location": "string — place, room, or link (empty string if none mentioned)",
+  "attendees": ["only@valid.emails"],
+  "body": "string — notes, case refs, agenda (empty string if none)"
 }
 
-CRITICAL RULES:
-1. All datetimes MUST be in the user's LOCAL timezone (${tz}), NOT UTC. Do NOT append a Z suffix. Return plain local ISO strings like "${todayDate}T14:00:00".
-2. "tonight", "today", "this evening", "this afternoon" = USE TODAY'S DATE (${todayDate}). NEVER push to tomorrow.
-3. "tomorrow" = the day AFTER today = ${(() => { const d = new Date(todayDate + "T12:00:00"); d.setDate(d.getDate() + 1); return d.toISOString().split("T")[0]; })()}
-4. If the user mentions a time that has already passed today, STILL use today's date unless they explicitly say "tomorrow" or "next".
+ABSOLUTE RULES:
+1. Datetimes MUST be LOCAL (${tz}). NEVER append Z or +00:00. Format: YYYY-MM-DDTHH:MM:00
+2. "today"/"tonight"/"this evening"/"this afternoon" = ${todayDate}. NEVER push to tomorrow.
+3. "tomorrow" = ${tomorrowDate}
+4. Past times today still use ${todayDate} unless user says "tomorrow" or "next"
+5. Only include email addresses in attendees — names without emails go into the body instead
 
-Examples with today = ${todayDate}:
-- "meeting at 10pm tonight" → start: "${todayDate}T22:00:00", end: "${todayDate}T23:00:00"
-- "call at 3pm today" → start: "${todayDate}T15:00:00", end: "${todayDate}T16:00:00"
-- "meeting tomorrow at 9am" → start: "${(() => { const d = new Date(todayDate + "T12:00:00"); d.setDate(d.getDate() + 1); return d.toISOString().split("T")[0]; })()}T09:00:00"
-- "lunch meeting" → start: "${todayDate}T12:00:00", end: "${todayDate}T13:00:00"
-
-Duration defaults:
-- General meetings: 1 hour
-- Depositions: 2 hours
-- Court hearings: 1 hour
-- Lunch: 1 hour
-- Phone calls: 30 minutes
-- No time given but date is clear: use 09:00 as default start
-
-Time interpretation:
-- Ambiguous time (e.g. "3") → PM if 1-7, AM if 8-11
-- "morning" → 10:00 | "afternoon" → 14:00 | "lunch" → 12:00
-- "EOD" / "end of day" / "COB" → 17:00
-- "tonight" → 19:00 if no specific time given
-
-Date interpretation:
+DATE RESOLUTION:
+- "next Monday" / "next Tuesday" etc. → Use the reference dates above
+- "this Friday" → the coming Friday (if today IS Friday, use today)
 - "next week" → Monday of next week
-- "in N weeks" → N × 7 days from today
+- "in 2 weeks" → 14 days from today
 - "next month" → 1st of next month
 - "end of month" → last business day of current month
-- "this Friday" → the coming Friday (even if today is Friday, use today)
 
-Other rules:
-- If user says "all day", set isAllDay-style times: start T00:00:00, end T23:59:59
-- Extract email addresses for attendees; names only → leave attendees empty
-- For legal events, include event type in subject (e.g. "Deposition — Smith v. Jones")
+TIME RESOLUTION:
+- Explicit: "2pm" → 14:00, "14:00" → 14:00, "2:30pm" → 14:30
+- Bare number: "at 3" → 15:00 (PM for 1-7), "at 9" → 09:00 (AM for 8-11)
+- "noon" / "lunch" → 12:00
+- "morning" → 10:00, "afternoon" → 14:00, "evening" → 18:00
+- "tonight" (no time) → 19:00
+- "EOD" / "COB" / "end of day" → 17:00
+- No time given → 09:00 default start
 
-Input: "${text.slice(0, 600)}"`;
+DURATION RESOLUTION:
+- "for 3 hours" / "3 hours" → add 3h to start
+- "for 30 minutes" / "30 min" → add 30min to start
+- "for 1.5 hours" → add 1h30m to start
+- No duration specified → use these defaults:
+  * General meeting / call: 1 hour
+  * Deposition: 2 hours
+  * Court hearing / motion hearing: 1 hour
+  * Mediation / settlement conference: 3 hours
+  * Filing deadline: 30 minutes (reminder-style)
+  * Lunch: 1 hour
+  * Phone call / quick call: 30 minutes
+  * Status conference: 30 minutes
+  * Client consultation / intake: 1 hour
+  * Standup / check-in: 30 minutes
+
+SUBJECT FORMATTING:
+- For legal events, prefix with type: "Deposition — [parties/topic]", "Hearing — [case/motion]", "Mediation — [case]"
+- For casual events, keep it natural: "Lunch with David", "Team Standup"
+- If no clear subject, generate a reasonable one from context
+
+LOCATION EXTRACTION:
+- "at Conference Room A" → "Conference Room A"
+- "at the courthouse" → "Courthouse"
+- "via Zoom" / "on Zoom" → "Zoom"
+- "via Teams" / "on Teams" → "Microsoft Teams"
+- Address patterns (123 Main St) → extract as-is
+
+EXAMPLES:
+Input: "Deposition with sarah@firm.com next Tuesday 2pm for 3 hours at Conference Room A"
+→ {"subject":"Deposition","start":"[next-tuesday]T14:00:00","end":"[next-tuesday]T17:00:00","location":"Conference Room A","attendees":["sarah@firm.com"],"body":""}
+
+Input: "Client call tomorrow morning"
+→ {"subject":"Client Call","start":"${tomorrowDate}T10:00:00","end":"${tomorrowDate}T11:00:00","location":"","attendees":[],"body":""}
+
+Input: "Team standup every Monday 9am 30 minutes"
+→ {"subject":"Team Standup","start":"[next-monday]T09:00:00","end":"[next-monday]T09:30:00","location":"","attendees":[],"body":"Recurring weekly standup"}
+
+Input: "Lunch with David noon Friday"
+→ {"subject":"Lunch with David","start":"[this-friday]T12:00:00","end":"[this-friday]T13:00:00","location":"","attendees":[],"body":""}
+
+Input: "Mediation Johnson v. Smith next Thursday 1pm with opposing@counsel.com at 500 Main St"
+→ {"subject":"Mediation — Johnson v. Smith","start":"[next-thursday]T13:00:00","end":"[next-thursday]T16:00:00","location":"500 Main St","attendees":["opposing@counsel.com"],"body":""}
+
+USER INPUT: "${text.slice(0, 800)}"`;
 
   let message;
   try {
     message = await client.messages.create({
       model: "claude-haiku-4-5-20251001",
-      max_tokens: 400,
+      max_tokens: 500,
       system,
       messages: [{ role: "user", content: prompt }],
     });
