@@ -200,7 +200,10 @@ export default function Sidebar({ userName = "You", userEmail = "", isAdmin: isA
         try {
           if (attempt > 0) await new Promise((res) => setTimeout(res, 1000));
           if (signal?.aborted) return;
-          const r = await fetch(`/api/mail/folders?homeAccountId=${encodeURIComponent(hid)}`, { signal });
+          // Always force-refresh on first attempt so we bypass any cached
+          // data left over from a previous account for the same user session.
+          const refresh = attempt === 0 ? "&refresh=1" : "";
+          const r = await fetch(`/api/mail/folders?homeAccountId=${encodeURIComponent(hid)}${refresh}`, { signal });
           const data = await r.json() as { folders?: MailFolder[]; error?: string; errorCode?: string };
           if (!r.ok) {
             lastErrorCode = data.errorCode ?? null;
@@ -253,11 +256,14 @@ export default function Sidebar({ userName = "You", userEmail = "", isAdmin: isA
     if (!activeAccount) return;
     const controller = new AbortController();
     const hid = activeAccount.homeAccountId;
+    // Clear stale folders from the previous account immediately so the
+    // sidebar doesn't show the wrong account's folders while fetching.
+    setMailFolders([]);
     void fetchFoldersWithRetry(hid, controller.signal);
     // Kick off a background recursive sync so child folders are populated
     triggerBackgroundSync(hid, controller.signal);
     return () => { controller.abort(); };
-  }, [activeAccount?.homeAccountId, fetchFoldersWithRetry, triggerBackgroundSync]);
+  }, [activeAccount?.homeAccountId, fetchFoldersWithRetry, triggerBackgroundSync, setMailFolders]);
 
   const initials = userName.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2);
 
