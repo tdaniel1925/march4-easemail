@@ -265,13 +265,16 @@ export default function EventFormModal({ prefill, onClose, onSaved, editEvent, u
     if (teamsEnabled) { setTeamsEnabled(false); setTeamsMeetingUrl(""); return; }
     setTeamsLoading(true);
     try {
+      // Graph /me/onlineMeetings expects UTC datetime strings
+      const startUtc = new Date(combineToIso(startDate, startTime)).toISOString();
+      const endUtc = new Date(combineToIso(endDate, endTime)).toISOString();
       const res = await fetch("/api/calendar/teams-meeting", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           subject: subject.trim() || "New Meeting",
-          startDateTime: combineToIso(startDate, startTime),
-          endDateTime: combineToIso(endDate, endTime),
+          startDateTime: startUtc,
+          endDateTime: endUtc,
           homeAccountId,
         }),
       });
@@ -283,8 +286,10 @@ export default function EventFormModal({ prefill, onClose, onSaved, editEvent, u
       } else if (data.error === "teams_consent_required") {
         setError("Teams access not granted. Redirecting to grant permissions...");
         setTimeout(() => { window.location.href = "/api/auth/microsoft/teams-consent"; }, 1500);
+      } else if (data.error === "account_requires_reauth") {
+        setError("Your Microsoft session has expired. Please reconnect your account in Settings.");
       } else {
-        setError(data.message ?? "Failed to create Teams meeting. Please try again.");
+        setError(data.message ?? data.error ?? `Failed to create Teams meeting (${res.status}). Please try again.`);
       }
     } catch {
       setError("Failed to create Teams meeting. Check your connection and try again.");
