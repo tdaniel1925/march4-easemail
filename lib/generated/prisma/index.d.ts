@@ -119,6 +119,16 @@ export type NotificationLog = $Result.DefaultSelection<Prisma.$NotificationLogPa
  */
 export type MigrationStatus = $Result.DefaultSelection<Prisma.$MigrationStatusPayload>
 /**
+ * Model SnoozedEmail
+ * 
+ */
+export type SnoozedEmail = $Result.DefaultSelection<Prisma.$SnoozedEmailPayload>
+/**
+ * Model ReadReceipt
+ * 
+ */
+export type ReadReceipt = $Result.DefaultSelection<Prisma.$ReadReceiptPayload>
+/**
  * Model TodoItem
  * 
  */
@@ -464,6 +474,26 @@ export class PrismaClient<
     * ```
     */
   get migrationStatus(): Prisma.MigrationStatusDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.snoozedEmail`: Exposes CRUD operations for the **SnoozedEmail** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more SnoozedEmails
+    * const snoozedEmails = await prisma.snoozedEmail.findMany()
+    * ```
+    */
+  get snoozedEmail(): Prisma.SnoozedEmailDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.readReceipt`: Exposes CRUD operations for the **ReadReceipt** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ReadReceipts
+    * const readReceipts = await prisma.readReceipt.findMany()
+    * ```
+    */
+  get readReceipt(): Prisma.ReadReceiptDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.todoItem`: Exposes CRUD operations for the **TodoItem** model.
@@ -949,6 +979,8 @@ export namespace Prisma {
     SyncStatus: 'SyncStatus',
     NotificationLog: 'NotificationLog',
     MigrationStatus: 'MigrationStatus',
+    SnoozedEmail: 'SnoozedEmail',
+    ReadReceipt: 'ReadReceipt',
     TodoItem: 'TodoItem',
     ImapConnectedAccount: 'ImapConnectedAccount',
     JmapConnectedAccount: 'JmapConnectedAccount'
@@ -967,7 +999,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "organization" | "orgContact" | "user" | "msConnectedAccount" | "msalTokenCache" | "emailDeltaLink" | "webhookSubscription" | "draft" | "signature" | "cachedFolder" | "cachedEmail" | "cachedCalendarEvent" | "cachedContact" | "deployLog" | "emailRule" | "emailAttachment" | "aiGeneratedReply" | "cachedSearchResult" | "syncStatus" | "notificationLog" | "migrationStatus" | "todoItem" | "imapConnectedAccount" | "jmapConnectedAccount"
+      modelProps: "organization" | "orgContact" | "user" | "msConnectedAccount" | "msalTokenCache" | "emailDeltaLink" | "webhookSubscription" | "draft" | "signature" | "cachedFolder" | "cachedEmail" | "cachedCalendarEvent" | "cachedContact" | "deployLog" | "emailRule" | "emailAttachment" | "aiGeneratedReply" | "cachedSearchResult" | "syncStatus" | "notificationLog" | "migrationStatus" | "snoozedEmail" | "readReceipt" | "todoItem" | "imapConnectedAccount" | "jmapConnectedAccount"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -2525,6 +2557,154 @@ export namespace Prisma {
           }
         }
       }
+      SnoozedEmail: {
+        payload: Prisma.$SnoozedEmailPayload<ExtArgs>
+        fields: Prisma.SnoozedEmailFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.SnoozedEmailFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SnoozedEmailPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.SnoozedEmailFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SnoozedEmailPayload>
+          }
+          findFirst: {
+            args: Prisma.SnoozedEmailFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SnoozedEmailPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.SnoozedEmailFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SnoozedEmailPayload>
+          }
+          findMany: {
+            args: Prisma.SnoozedEmailFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SnoozedEmailPayload>[]
+          }
+          create: {
+            args: Prisma.SnoozedEmailCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SnoozedEmailPayload>
+          }
+          createMany: {
+            args: Prisma.SnoozedEmailCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.SnoozedEmailCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SnoozedEmailPayload>[]
+          }
+          delete: {
+            args: Prisma.SnoozedEmailDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SnoozedEmailPayload>
+          }
+          update: {
+            args: Prisma.SnoozedEmailUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SnoozedEmailPayload>
+          }
+          deleteMany: {
+            args: Prisma.SnoozedEmailDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.SnoozedEmailUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.SnoozedEmailUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SnoozedEmailPayload>[]
+          }
+          upsert: {
+            args: Prisma.SnoozedEmailUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SnoozedEmailPayload>
+          }
+          aggregate: {
+            args: Prisma.SnoozedEmailAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateSnoozedEmail>
+          }
+          groupBy: {
+            args: Prisma.SnoozedEmailGroupByArgs<ExtArgs>
+            result: $Utils.Optional<SnoozedEmailGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.SnoozedEmailCountArgs<ExtArgs>
+            result: $Utils.Optional<SnoozedEmailCountAggregateOutputType> | number
+          }
+        }
+      }
+      ReadReceipt: {
+        payload: Prisma.$ReadReceiptPayload<ExtArgs>
+        fields: Prisma.ReadReceiptFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ReadReceiptFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReadReceiptPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ReadReceiptFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReadReceiptPayload>
+          }
+          findFirst: {
+            args: Prisma.ReadReceiptFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReadReceiptPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ReadReceiptFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReadReceiptPayload>
+          }
+          findMany: {
+            args: Prisma.ReadReceiptFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReadReceiptPayload>[]
+          }
+          create: {
+            args: Prisma.ReadReceiptCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReadReceiptPayload>
+          }
+          createMany: {
+            args: Prisma.ReadReceiptCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ReadReceiptCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReadReceiptPayload>[]
+          }
+          delete: {
+            args: Prisma.ReadReceiptDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReadReceiptPayload>
+          }
+          update: {
+            args: Prisma.ReadReceiptUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReadReceiptPayload>
+          }
+          deleteMany: {
+            args: Prisma.ReadReceiptDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ReadReceiptUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ReadReceiptUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReadReceiptPayload>[]
+          }
+          upsert: {
+            args: Prisma.ReadReceiptUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReadReceiptPayload>
+          }
+          aggregate: {
+            args: Prisma.ReadReceiptAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateReadReceipt>
+          }
+          groupBy: {
+            args: Prisma.ReadReceiptGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ReadReceiptGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ReadReceiptCountArgs<ExtArgs>
+            result: $Utils.Optional<ReadReceiptCountAggregateOutputType> | number
+          }
+        }
+      }
       TodoItem: {
         payload: Prisma.$TodoItemPayload<ExtArgs>
         fields: Prisma.TodoItemFieldRefs
@@ -2876,6 +3056,8 @@ export namespace Prisma {
     syncStatus?: SyncStatusOmit
     notificationLog?: NotificationLogOmit
     migrationStatus?: MigrationStatusOmit
+    snoozedEmail?: SnoozedEmailOmit
+    readReceipt?: ReadReceiptOmit
     todoItem?: TodoItemOmit
     imapConnectedAccount?: ImapConnectedAccountOmit
     jmapConnectedAccount?: JmapConnectedAccountOmit
@@ -3018,6 +3200,8 @@ export namespace Prisma {
     notificationLogs: number
     migrationStatuses: number
     todoItems: number
+    snoozedEmails: number
+    readReceipts: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -3040,6 +3224,8 @@ export namespace Prisma {
     notificationLogs?: boolean | UserCountOutputTypeCountNotificationLogsArgs
     migrationStatuses?: boolean | UserCountOutputTypeCountMigrationStatusesArgs
     todoItems?: boolean | UserCountOutputTypeCountTodoItemsArgs
+    snoozedEmails?: boolean | UserCountOutputTypeCountSnoozedEmailsArgs
+    readReceipts?: boolean | UserCountOutputTypeCountReadReceiptsArgs
   }
 
   // Custom InputTypes
@@ -3184,6 +3370,20 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountTodoItemsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: TodoItemWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountSnoozedEmailsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SnoozedEmailWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountReadReceiptsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ReadReceiptWhereInput
   }
 
 
@@ -5666,6 +5866,8 @@ export namespace Prisma {
     notificationLogs?: boolean | User$notificationLogsArgs<ExtArgs>
     migrationStatuses?: boolean | User$migrationStatusesArgs<ExtArgs>
     todoItems?: boolean | User$todoItemsArgs<ExtArgs>
+    snoozedEmails?: boolean | User$snoozedEmailsArgs<ExtArgs>
+    readReceipts?: boolean | User$readReceiptsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -5760,6 +5962,8 @@ export namespace Prisma {
     notificationLogs?: boolean | User$notificationLogsArgs<ExtArgs>
     migrationStatuses?: boolean | User$migrationStatusesArgs<ExtArgs>
     todoItems?: boolean | User$todoItemsArgs<ExtArgs>
+    snoozedEmails?: boolean | User$snoozedEmailsArgs<ExtArgs>
+    readReceipts?: boolean | User$readReceiptsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -5793,6 +5997,8 @@ export namespace Prisma {
       notificationLogs: Prisma.$NotificationLogPayload<ExtArgs>[]
       migrationStatuses: Prisma.$MigrationStatusPayload<ExtArgs>[]
       todoItems: Prisma.$TodoItemPayload<ExtArgs>[]
+      snoozedEmails: Prisma.$SnoozedEmailPayload<ExtArgs>[]
+      readReceipts: Prisma.$ReadReceiptPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -6229,6 +6435,8 @@ export namespace Prisma {
     notificationLogs<T extends User$notificationLogsArgs<ExtArgs> = {}>(args?: Subset<T, User$notificationLogsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$NotificationLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     migrationStatuses<T extends User$migrationStatusesArgs<ExtArgs> = {}>(args?: Subset<T, User$migrationStatusesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MigrationStatusPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     todoItems<T extends User$todoItemsArgs<ExtArgs> = {}>(args?: Subset<T, User$todoItemsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TodoItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    snoozedEmails<T extends User$snoozedEmailsArgs<ExtArgs> = {}>(args?: Subset<T, User$snoozedEmailsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SnoozedEmailPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    readReceipts<T extends User$readReceiptsArgs<ExtArgs> = {}>(args?: Subset<T, User$readReceiptsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReadReceiptPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -7145,6 +7353,54 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: TodoItemScalarFieldEnum | TodoItemScalarFieldEnum[]
+  }
+
+  /**
+   * User.snoozedEmails
+   */
+  export type User$snoozedEmailsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SnoozedEmail
+     */
+    select?: SnoozedEmailSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SnoozedEmail
+     */
+    omit?: SnoozedEmailOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SnoozedEmailInclude<ExtArgs> | null
+    where?: SnoozedEmailWhereInput
+    orderBy?: SnoozedEmailOrderByWithRelationInput | SnoozedEmailOrderByWithRelationInput[]
+    cursor?: SnoozedEmailWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: SnoozedEmailScalarFieldEnum | SnoozedEmailScalarFieldEnum[]
+  }
+
+  /**
+   * User.readReceipts
+   */
+  export type User$readReceiptsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReadReceipt
+     */
+    select?: ReadReceiptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReadReceipt
+     */
+    omit?: ReadReceiptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReadReceiptInclude<ExtArgs> | null
+    where?: ReadReceiptWhereInput
+    orderBy?: ReadReceiptOrderByWithRelationInput | ReadReceiptOrderByWithRelationInput[]
+    cursor?: ReadReceiptWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ReadReceiptScalarFieldEnum | ReadReceiptScalarFieldEnum[]
   }
 
   /**
@@ -28117,6 +28373,2213 @@ export namespace Prisma {
 
 
   /**
+   * Model SnoozedEmail
+   */
+
+  export type AggregateSnoozedEmail = {
+    _count: SnoozedEmailCountAggregateOutputType | null
+    _min: SnoozedEmailMinAggregateOutputType | null
+    _max: SnoozedEmailMaxAggregateOutputType | null
+  }
+
+  export type SnoozedEmailMinAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    homeAccountId: string | null
+    messageId: string | null
+    snoozeUntil: Date | null
+    subject: string | null
+    senderName: string | null
+    senderEmail: string | null
+    isReturned: boolean | null
+    createdAt: Date | null
+  }
+
+  export type SnoozedEmailMaxAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    homeAccountId: string | null
+    messageId: string | null
+    snoozeUntil: Date | null
+    subject: string | null
+    senderName: string | null
+    senderEmail: string | null
+    isReturned: boolean | null
+    createdAt: Date | null
+  }
+
+  export type SnoozedEmailCountAggregateOutputType = {
+    id: number
+    userId: number
+    homeAccountId: number
+    messageId: number
+    snoozeUntil: number
+    subject: number
+    senderName: number
+    senderEmail: number
+    isReturned: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type SnoozedEmailMinAggregateInputType = {
+    id?: true
+    userId?: true
+    homeAccountId?: true
+    messageId?: true
+    snoozeUntil?: true
+    subject?: true
+    senderName?: true
+    senderEmail?: true
+    isReturned?: true
+    createdAt?: true
+  }
+
+  export type SnoozedEmailMaxAggregateInputType = {
+    id?: true
+    userId?: true
+    homeAccountId?: true
+    messageId?: true
+    snoozeUntil?: true
+    subject?: true
+    senderName?: true
+    senderEmail?: true
+    isReturned?: true
+    createdAt?: true
+  }
+
+  export type SnoozedEmailCountAggregateInputType = {
+    id?: true
+    userId?: true
+    homeAccountId?: true
+    messageId?: true
+    snoozeUntil?: true
+    subject?: true
+    senderName?: true
+    senderEmail?: true
+    isReturned?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type SnoozedEmailAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SnoozedEmail to aggregate.
+     */
+    where?: SnoozedEmailWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SnoozedEmails to fetch.
+     */
+    orderBy?: SnoozedEmailOrderByWithRelationInput | SnoozedEmailOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: SnoozedEmailWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SnoozedEmails from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SnoozedEmails.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned SnoozedEmails
+    **/
+    _count?: true | SnoozedEmailCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: SnoozedEmailMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: SnoozedEmailMaxAggregateInputType
+  }
+
+  export type GetSnoozedEmailAggregateType<T extends SnoozedEmailAggregateArgs> = {
+        [P in keyof T & keyof AggregateSnoozedEmail]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateSnoozedEmail[P]>
+      : GetScalarType<T[P], AggregateSnoozedEmail[P]>
+  }
+
+
+
+
+  export type SnoozedEmailGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SnoozedEmailWhereInput
+    orderBy?: SnoozedEmailOrderByWithAggregationInput | SnoozedEmailOrderByWithAggregationInput[]
+    by: SnoozedEmailScalarFieldEnum[] | SnoozedEmailScalarFieldEnum
+    having?: SnoozedEmailScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: SnoozedEmailCountAggregateInputType | true
+    _min?: SnoozedEmailMinAggregateInputType
+    _max?: SnoozedEmailMaxAggregateInputType
+  }
+
+  export type SnoozedEmailGroupByOutputType = {
+    id: string
+    userId: string
+    homeAccountId: string
+    messageId: string
+    snoozeUntil: Date
+    subject: string
+    senderName: string | null
+    senderEmail: string
+    isReturned: boolean
+    createdAt: Date
+    _count: SnoozedEmailCountAggregateOutputType | null
+    _min: SnoozedEmailMinAggregateOutputType | null
+    _max: SnoozedEmailMaxAggregateOutputType | null
+  }
+
+  type GetSnoozedEmailGroupByPayload<T extends SnoozedEmailGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<SnoozedEmailGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof SnoozedEmailGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], SnoozedEmailGroupByOutputType[P]>
+            : GetScalarType<T[P], SnoozedEmailGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type SnoozedEmailSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    homeAccountId?: boolean
+    messageId?: boolean
+    snoozeUntil?: boolean
+    subject?: boolean
+    senderName?: boolean
+    senderEmail?: boolean
+    isReturned?: boolean
+    createdAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["snoozedEmail"]>
+
+  export type SnoozedEmailSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    homeAccountId?: boolean
+    messageId?: boolean
+    snoozeUntil?: boolean
+    subject?: boolean
+    senderName?: boolean
+    senderEmail?: boolean
+    isReturned?: boolean
+    createdAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["snoozedEmail"]>
+
+  export type SnoozedEmailSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    homeAccountId?: boolean
+    messageId?: boolean
+    snoozeUntil?: boolean
+    subject?: boolean
+    senderName?: boolean
+    senderEmail?: boolean
+    isReturned?: boolean
+    createdAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["snoozedEmail"]>
+
+  export type SnoozedEmailSelectScalar = {
+    id?: boolean
+    userId?: boolean
+    homeAccountId?: boolean
+    messageId?: boolean
+    snoozeUntil?: boolean
+    subject?: boolean
+    senderName?: boolean
+    senderEmail?: boolean
+    isReturned?: boolean
+    createdAt?: boolean
+  }
+
+  export type SnoozedEmailOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "homeAccountId" | "messageId" | "snoozeUntil" | "subject" | "senderName" | "senderEmail" | "isReturned" | "createdAt", ExtArgs["result"]["snoozedEmail"]>
+  export type SnoozedEmailInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type SnoozedEmailIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type SnoozedEmailIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $SnoozedEmailPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "SnoozedEmail"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      userId: string
+      homeAccountId: string
+      messageId: string
+      snoozeUntil: Date
+      subject: string
+      senderName: string | null
+      senderEmail: string
+      isReturned: boolean
+      createdAt: Date
+    }, ExtArgs["result"]["snoozedEmail"]>
+    composites: {}
+  }
+
+  type SnoozedEmailGetPayload<S extends boolean | null | undefined | SnoozedEmailDefaultArgs> = $Result.GetResult<Prisma.$SnoozedEmailPayload, S>
+
+  type SnoozedEmailCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<SnoozedEmailFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: SnoozedEmailCountAggregateInputType | true
+    }
+
+  export interface SnoozedEmailDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['SnoozedEmail'], meta: { name: 'SnoozedEmail' } }
+    /**
+     * Find zero or one SnoozedEmail that matches the filter.
+     * @param {SnoozedEmailFindUniqueArgs} args - Arguments to find a SnoozedEmail
+     * @example
+     * // Get one SnoozedEmail
+     * const snoozedEmail = await prisma.snoozedEmail.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends SnoozedEmailFindUniqueArgs>(args: SelectSubset<T, SnoozedEmailFindUniqueArgs<ExtArgs>>): Prisma__SnoozedEmailClient<$Result.GetResult<Prisma.$SnoozedEmailPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one SnoozedEmail that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {SnoozedEmailFindUniqueOrThrowArgs} args - Arguments to find a SnoozedEmail
+     * @example
+     * // Get one SnoozedEmail
+     * const snoozedEmail = await prisma.snoozedEmail.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends SnoozedEmailFindUniqueOrThrowArgs>(args: SelectSubset<T, SnoozedEmailFindUniqueOrThrowArgs<ExtArgs>>): Prisma__SnoozedEmailClient<$Result.GetResult<Prisma.$SnoozedEmailPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first SnoozedEmail that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SnoozedEmailFindFirstArgs} args - Arguments to find a SnoozedEmail
+     * @example
+     * // Get one SnoozedEmail
+     * const snoozedEmail = await prisma.snoozedEmail.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends SnoozedEmailFindFirstArgs>(args?: SelectSubset<T, SnoozedEmailFindFirstArgs<ExtArgs>>): Prisma__SnoozedEmailClient<$Result.GetResult<Prisma.$SnoozedEmailPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first SnoozedEmail that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SnoozedEmailFindFirstOrThrowArgs} args - Arguments to find a SnoozedEmail
+     * @example
+     * // Get one SnoozedEmail
+     * const snoozedEmail = await prisma.snoozedEmail.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends SnoozedEmailFindFirstOrThrowArgs>(args?: SelectSubset<T, SnoozedEmailFindFirstOrThrowArgs<ExtArgs>>): Prisma__SnoozedEmailClient<$Result.GetResult<Prisma.$SnoozedEmailPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more SnoozedEmails that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SnoozedEmailFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all SnoozedEmails
+     * const snoozedEmails = await prisma.snoozedEmail.findMany()
+     * 
+     * // Get first 10 SnoozedEmails
+     * const snoozedEmails = await prisma.snoozedEmail.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const snoozedEmailWithIdOnly = await prisma.snoozedEmail.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends SnoozedEmailFindManyArgs>(args?: SelectSubset<T, SnoozedEmailFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SnoozedEmailPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a SnoozedEmail.
+     * @param {SnoozedEmailCreateArgs} args - Arguments to create a SnoozedEmail.
+     * @example
+     * // Create one SnoozedEmail
+     * const SnoozedEmail = await prisma.snoozedEmail.create({
+     *   data: {
+     *     // ... data to create a SnoozedEmail
+     *   }
+     * })
+     * 
+     */
+    create<T extends SnoozedEmailCreateArgs>(args: SelectSubset<T, SnoozedEmailCreateArgs<ExtArgs>>): Prisma__SnoozedEmailClient<$Result.GetResult<Prisma.$SnoozedEmailPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many SnoozedEmails.
+     * @param {SnoozedEmailCreateManyArgs} args - Arguments to create many SnoozedEmails.
+     * @example
+     * // Create many SnoozedEmails
+     * const snoozedEmail = await prisma.snoozedEmail.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends SnoozedEmailCreateManyArgs>(args?: SelectSubset<T, SnoozedEmailCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many SnoozedEmails and returns the data saved in the database.
+     * @param {SnoozedEmailCreateManyAndReturnArgs} args - Arguments to create many SnoozedEmails.
+     * @example
+     * // Create many SnoozedEmails
+     * const snoozedEmail = await prisma.snoozedEmail.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many SnoozedEmails and only return the `id`
+     * const snoozedEmailWithIdOnly = await prisma.snoozedEmail.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends SnoozedEmailCreateManyAndReturnArgs>(args?: SelectSubset<T, SnoozedEmailCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SnoozedEmailPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a SnoozedEmail.
+     * @param {SnoozedEmailDeleteArgs} args - Arguments to delete one SnoozedEmail.
+     * @example
+     * // Delete one SnoozedEmail
+     * const SnoozedEmail = await prisma.snoozedEmail.delete({
+     *   where: {
+     *     // ... filter to delete one SnoozedEmail
+     *   }
+     * })
+     * 
+     */
+    delete<T extends SnoozedEmailDeleteArgs>(args: SelectSubset<T, SnoozedEmailDeleteArgs<ExtArgs>>): Prisma__SnoozedEmailClient<$Result.GetResult<Prisma.$SnoozedEmailPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one SnoozedEmail.
+     * @param {SnoozedEmailUpdateArgs} args - Arguments to update one SnoozedEmail.
+     * @example
+     * // Update one SnoozedEmail
+     * const snoozedEmail = await prisma.snoozedEmail.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends SnoozedEmailUpdateArgs>(args: SelectSubset<T, SnoozedEmailUpdateArgs<ExtArgs>>): Prisma__SnoozedEmailClient<$Result.GetResult<Prisma.$SnoozedEmailPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more SnoozedEmails.
+     * @param {SnoozedEmailDeleteManyArgs} args - Arguments to filter SnoozedEmails to delete.
+     * @example
+     * // Delete a few SnoozedEmails
+     * const { count } = await prisma.snoozedEmail.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends SnoozedEmailDeleteManyArgs>(args?: SelectSubset<T, SnoozedEmailDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more SnoozedEmails.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SnoozedEmailUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many SnoozedEmails
+     * const snoozedEmail = await prisma.snoozedEmail.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends SnoozedEmailUpdateManyArgs>(args: SelectSubset<T, SnoozedEmailUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more SnoozedEmails and returns the data updated in the database.
+     * @param {SnoozedEmailUpdateManyAndReturnArgs} args - Arguments to update many SnoozedEmails.
+     * @example
+     * // Update many SnoozedEmails
+     * const snoozedEmail = await prisma.snoozedEmail.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more SnoozedEmails and only return the `id`
+     * const snoozedEmailWithIdOnly = await prisma.snoozedEmail.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends SnoozedEmailUpdateManyAndReturnArgs>(args: SelectSubset<T, SnoozedEmailUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SnoozedEmailPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one SnoozedEmail.
+     * @param {SnoozedEmailUpsertArgs} args - Arguments to update or create a SnoozedEmail.
+     * @example
+     * // Update or create a SnoozedEmail
+     * const snoozedEmail = await prisma.snoozedEmail.upsert({
+     *   create: {
+     *     // ... data to create a SnoozedEmail
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the SnoozedEmail we want to update
+     *   }
+     * })
+     */
+    upsert<T extends SnoozedEmailUpsertArgs>(args: SelectSubset<T, SnoozedEmailUpsertArgs<ExtArgs>>): Prisma__SnoozedEmailClient<$Result.GetResult<Prisma.$SnoozedEmailPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of SnoozedEmails.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SnoozedEmailCountArgs} args - Arguments to filter SnoozedEmails to count.
+     * @example
+     * // Count the number of SnoozedEmails
+     * const count = await prisma.snoozedEmail.count({
+     *   where: {
+     *     // ... the filter for the SnoozedEmails we want to count
+     *   }
+     * })
+    **/
+    count<T extends SnoozedEmailCountArgs>(
+      args?: Subset<T, SnoozedEmailCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], SnoozedEmailCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a SnoozedEmail.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SnoozedEmailAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends SnoozedEmailAggregateArgs>(args: Subset<T, SnoozedEmailAggregateArgs>): Prisma.PrismaPromise<GetSnoozedEmailAggregateType<T>>
+
+    /**
+     * Group by SnoozedEmail.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SnoozedEmailGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends SnoozedEmailGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: SnoozedEmailGroupByArgs['orderBy'] }
+        : { orderBy?: SnoozedEmailGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, SnoozedEmailGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetSnoozedEmailGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the SnoozedEmail model
+   */
+  readonly fields: SnoozedEmailFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for SnoozedEmail.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__SnoozedEmailClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the SnoozedEmail model
+   */
+  interface SnoozedEmailFieldRefs {
+    readonly id: FieldRef<"SnoozedEmail", 'String'>
+    readonly userId: FieldRef<"SnoozedEmail", 'String'>
+    readonly homeAccountId: FieldRef<"SnoozedEmail", 'String'>
+    readonly messageId: FieldRef<"SnoozedEmail", 'String'>
+    readonly snoozeUntil: FieldRef<"SnoozedEmail", 'DateTime'>
+    readonly subject: FieldRef<"SnoozedEmail", 'String'>
+    readonly senderName: FieldRef<"SnoozedEmail", 'String'>
+    readonly senderEmail: FieldRef<"SnoozedEmail", 'String'>
+    readonly isReturned: FieldRef<"SnoozedEmail", 'Boolean'>
+    readonly createdAt: FieldRef<"SnoozedEmail", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * SnoozedEmail findUnique
+   */
+  export type SnoozedEmailFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SnoozedEmail
+     */
+    select?: SnoozedEmailSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SnoozedEmail
+     */
+    omit?: SnoozedEmailOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SnoozedEmailInclude<ExtArgs> | null
+    /**
+     * Filter, which SnoozedEmail to fetch.
+     */
+    where: SnoozedEmailWhereUniqueInput
+  }
+
+  /**
+   * SnoozedEmail findUniqueOrThrow
+   */
+  export type SnoozedEmailFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SnoozedEmail
+     */
+    select?: SnoozedEmailSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SnoozedEmail
+     */
+    omit?: SnoozedEmailOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SnoozedEmailInclude<ExtArgs> | null
+    /**
+     * Filter, which SnoozedEmail to fetch.
+     */
+    where: SnoozedEmailWhereUniqueInput
+  }
+
+  /**
+   * SnoozedEmail findFirst
+   */
+  export type SnoozedEmailFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SnoozedEmail
+     */
+    select?: SnoozedEmailSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SnoozedEmail
+     */
+    omit?: SnoozedEmailOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SnoozedEmailInclude<ExtArgs> | null
+    /**
+     * Filter, which SnoozedEmail to fetch.
+     */
+    where?: SnoozedEmailWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SnoozedEmails to fetch.
+     */
+    orderBy?: SnoozedEmailOrderByWithRelationInput | SnoozedEmailOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SnoozedEmails.
+     */
+    cursor?: SnoozedEmailWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SnoozedEmails from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SnoozedEmails.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SnoozedEmails.
+     */
+    distinct?: SnoozedEmailScalarFieldEnum | SnoozedEmailScalarFieldEnum[]
+  }
+
+  /**
+   * SnoozedEmail findFirstOrThrow
+   */
+  export type SnoozedEmailFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SnoozedEmail
+     */
+    select?: SnoozedEmailSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SnoozedEmail
+     */
+    omit?: SnoozedEmailOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SnoozedEmailInclude<ExtArgs> | null
+    /**
+     * Filter, which SnoozedEmail to fetch.
+     */
+    where?: SnoozedEmailWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SnoozedEmails to fetch.
+     */
+    orderBy?: SnoozedEmailOrderByWithRelationInput | SnoozedEmailOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SnoozedEmails.
+     */
+    cursor?: SnoozedEmailWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SnoozedEmails from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SnoozedEmails.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SnoozedEmails.
+     */
+    distinct?: SnoozedEmailScalarFieldEnum | SnoozedEmailScalarFieldEnum[]
+  }
+
+  /**
+   * SnoozedEmail findMany
+   */
+  export type SnoozedEmailFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SnoozedEmail
+     */
+    select?: SnoozedEmailSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SnoozedEmail
+     */
+    omit?: SnoozedEmailOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SnoozedEmailInclude<ExtArgs> | null
+    /**
+     * Filter, which SnoozedEmails to fetch.
+     */
+    where?: SnoozedEmailWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SnoozedEmails to fetch.
+     */
+    orderBy?: SnoozedEmailOrderByWithRelationInput | SnoozedEmailOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing SnoozedEmails.
+     */
+    cursor?: SnoozedEmailWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SnoozedEmails from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SnoozedEmails.
+     */
+    skip?: number
+    distinct?: SnoozedEmailScalarFieldEnum | SnoozedEmailScalarFieldEnum[]
+  }
+
+  /**
+   * SnoozedEmail create
+   */
+  export type SnoozedEmailCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SnoozedEmail
+     */
+    select?: SnoozedEmailSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SnoozedEmail
+     */
+    omit?: SnoozedEmailOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SnoozedEmailInclude<ExtArgs> | null
+    /**
+     * The data needed to create a SnoozedEmail.
+     */
+    data: XOR<SnoozedEmailCreateInput, SnoozedEmailUncheckedCreateInput>
+  }
+
+  /**
+   * SnoozedEmail createMany
+   */
+  export type SnoozedEmailCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many SnoozedEmails.
+     */
+    data: SnoozedEmailCreateManyInput | SnoozedEmailCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * SnoozedEmail createManyAndReturn
+   */
+  export type SnoozedEmailCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SnoozedEmail
+     */
+    select?: SnoozedEmailSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the SnoozedEmail
+     */
+    omit?: SnoozedEmailOmit<ExtArgs> | null
+    /**
+     * The data used to create many SnoozedEmails.
+     */
+    data: SnoozedEmailCreateManyInput | SnoozedEmailCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SnoozedEmailIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * SnoozedEmail update
+   */
+  export type SnoozedEmailUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SnoozedEmail
+     */
+    select?: SnoozedEmailSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SnoozedEmail
+     */
+    omit?: SnoozedEmailOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SnoozedEmailInclude<ExtArgs> | null
+    /**
+     * The data needed to update a SnoozedEmail.
+     */
+    data: XOR<SnoozedEmailUpdateInput, SnoozedEmailUncheckedUpdateInput>
+    /**
+     * Choose, which SnoozedEmail to update.
+     */
+    where: SnoozedEmailWhereUniqueInput
+  }
+
+  /**
+   * SnoozedEmail updateMany
+   */
+  export type SnoozedEmailUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update SnoozedEmails.
+     */
+    data: XOR<SnoozedEmailUpdateManyMutationInput, SnoozedEmailUncheckedUpdateManyInput>
+    /**
+     * Filter which SnoozedEmails to update
+     */
+    where?: SnoozedEmailWhereInput
+    /**
+     * Limit how many SnoozedEmails to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * SnoozedEmail updateManyAndReturn
+   */
+  export type SnoozedEmailUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SnoozedEmail
+     */
+    select?: SnoozedEmailSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the SnoozedEmail
+     */
+    omit?: SnoozedEmailOmit<ExtArgs> | null
+    /**
+     * The data used to update SnoozedEmails.
+     */
+    data: XOR<SnoozedEmailUpdateManyMutationInput, SnoozedEmailUncheckedUpdateManyInput>
+    /**
+     * Filter which SnoozedEmails to update
+     */
+    where?: SnoozedEmailWhereInput
+    /**
+     * Limit how many SnoozedEmails to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SnoozedEmailIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * SnoozedEmail upsert
+   */
+  export type SnoozedEmailUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SnoozedEmail
+     */
+    select?: SnoozedEmailSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SnoozedEmail
+     */
+    omit?: SnoozedEmailOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SnoozedEmailInclude<ExtArgs> | null
+    /**
+     * The filter to search for the SnoozedEmail to update in case it exists.
+     */
+    where: SnoozedEmailWhereUniqueInput
+    /**
+     * In case the SnoozedEmail found by the `where` argument doesn't exist, create a new SnoozedEmail with this data.
+     */
+    create: XOR<SnoozedEmailCreateInput, SnoozedEmailUncheckedCreateInput>
+    /**
+     * In case the SnoozedEmail was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<SnoozedEmailUpdateInput, SnoozedEmailUncheckedUpdateInput>
+  }
+
+  /**
+   * SnoozedEmail delete
+   */
+  export type SnoozedEmailDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SnoozedEmail
+     */
+    select?: SnoozedEmailSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SnoozedEmail
+     */
+    omit?: SnoozedEmailOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SnoozedEmailInclude<ExtArgs> | null
+    /**
+     * Filter which SnoozedEmail to delete.
+     */
+    where: SnoozedEmailWhereUniqueInput
+  }
+
+  /**
+   * SnoozedEmail deleteMany
+   */
+  export type SnoozedEmailDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SnoozedEmails to delete
+     */
+    where?: SnoozedEmailWhereInput
+    /**
+     * Limit how many SnoozedEmails to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * SnoozedEmail without action
+   */
+  export type SnoozedEmailDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SnoozedEmail
+     */
+    select?: SnoozedEmailSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SnoozedEmail
+     */
+    omit?: SnoozedEmailOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SnoozedEmailInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model ReadReceipt
+   */
+
+  export type AggregateReadReceipt = {
+    _count: ReadReceiptCountAggregateOutputType | null
+    _min: ReadReceiptMinAggregateOutputType | null
+    _max: ReadReceiptMaxAggregateOutputType | null
+  }
+
+  export type ReadReceiptMinAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    messageId: string | null
+    recipientEmail: string | null
+    deliveredAt: Date | null
+    readAt: Date | null
+    createdAt: Date | null
+  }
+
+  export type ReadReceiptMaxAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    messageId: string | null
+    recipientEmail: string | null
+    deliveredAt: Date | null
+    readAt: Date | null
+    createdAt: Date | null
+  }
+
+  export type ReadReceiptCountAggregateOutputType = {
+    id: number
+    userId: number
+    messageId: number
+    recipientEmail: number
+    deliveredAt: number
+    readAt: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type ReadReceiptMinAggregateInputType = {
+    id?: true
+    userId?: true
+    messageId?: true
+    recipientEmail?: true
+    deliveredAt?: true
+    readAt?: true
+    createdAt?: true
+  }
+
+  export type ReadReceiptMaxAggregateInputType = {
+    id?: true
+    userId?: true
+    messageId?: true
+    recipientEmail?: true
+    deliveredAt?: true
+    readAt?: true
+    createdAt?: true
+  }
+
+  export type ReadReceiptCountAggregateInputType = {
+    id?: true
+    userId?: true
+    messageId?: true
+    recipientEmail?: true
+    deliveredAt?: true
+    readAt?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type ReadReceiptAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ReadReceipt to aggregate.
+     */
+    where?: ReadReceiptWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ReadReceipts to fetch.
+     */
+    orderBy?: ReadReceiptOrderByWithRelationInput | ReadReceiptOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ReadReceiptWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ReadReceipts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ReadReceipts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ReadReceipts
+    **/
+    _count?: true | ReadReceiptCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ReadReceiptMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ReadReceiptMaxAggregateInputType
+  }
+
+  export type GetReadReceiptAggregateType<T extends ReadReceiptAggregateArgs> = {
+        [P in keyof T & keyof AggregateReadReceipt]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateReadReceipt[P]>
+      : GetScalarType<T[P], AggregateReadReceipt[P]>
+  }
+
+
+
+
+  export type ReadReceiptGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ReadReceiptWhereInput
+    orderBy?: ReadReceiptOrderByWithAggregationInput | ReadReceiptOrderByWithAggregationInput[]
+    by: ReadReceiptScalarFieldEnum[] | ReadReceiptScalarFieldEnum
+    having?: ReadReceiptScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ReadReceiptCountAggregateInputType | true
+    _min?: ReadReceiptMinAggregateInputType
+    _max?: ReadReceiptMaxAggregateInputType
+  }
+
+  export type ReadReceiptGroupByOutputType = {
+    id: string
+    userId: string
+    messageId: string
+    recipientEmail: string
+    deliveredAt: Date | null
+    readAt: Date | null
+    createdAt: Date
+    _count: ReadReceiptCountAggregateOutputType | null
+    _min: ReadReceiptMinAggregateOutputType | null
+    _max: ReadReceiptMaxAggregateOutputType | null
+  }
+
+  type GetReadReceiptGroupByPayload<T extends ReadReceiptGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ReadReceiptGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ReadReceiptGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ReadReceiptGroupByOutputType[P]>
+            : GetScalarType<T[P], ReadReceiptGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ReadReceiptSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    messageId?: boolean
+    recipientEmail?: boolean
+    deliveredAt?: boolean
+    readAt?: boolean
+    createdAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["readReceipt"]>
+
+  export type ReadReceiptSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    messageId?: boolean
+    recipientEmail?: boolean
+    deliveredAt?: boolean
+    readAt?: boolean
+    createdAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["readReceipt"]>
+
+  export type ReadReceiptSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    messageId?: boolean
+    recipientEmail?: boolean
+    deliveredAt?: boolean
+    readAt?: boolean
+    createdAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["readReceipt"]>
+
+  export type ReadReceiptSelectScalar = {
+    id?: boolean
+    userId?: boolean
+    messageId?: boolean
+    recipientEmail?: boolean
+    deliveredAt?: boolean
+    readAt?: boolean
+    createdAt?: boolean
+  }
+
+  export type ReadReceiptOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "messageId" | "recipientEmail" | "deliveredAt" | "readAt" | "createdAt", ExtArgs["result"]["readReceipt"]>
+  export type ReadReceiptInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type ReadReceiptIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type ReadReceiptIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $ReadReceiptPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ReadReceipt"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      userId: string
+      messageId: string
+      recipientEmail: string
+      deliveredAt: Date | null
+      readAt: Date | null
+      createdAt: Date
+    }, ExtArgs["result"]["readReceipt"]>
+    composites: {}
+  }
+
+  type ReadReceiptGetPayload<S extends boolean | null | undefined | ReadReceiptDefaultArgs> = $Result.GetResult<Prisma.$ReadReceiptPayload, S>
+
+  type ReadReceiptCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ReadReceiptFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ReadReceiptCountAggregateInputType | true
+    }
+
+  export interface ReadReceiptDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ReadReceipt'], meta: { name: 'ReadReceipt' } }
+    /**
+     * Find zero or one ReadReceipt that matches the filter.
+     * @param {ReadReceiptFindUniqueArgs} args - Arguments to find a ReadReceipt
+     * @example
+     * // Get one ReadReceipt
+     * const readReceipt = await prisma.readReceipt.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ReadReceiptFindUniqueArgs>(args: SelectSubset<T, ReadReceiptFindUniqueArgs<ExtArgs>>): Prisma__ReadReceiptClient<$Result.GetResult<Prisma.$ReadReceiptPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ReadReceipt that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ReadReceiptFindUniqueOrThrowArgs} args - Arguments to find a ReadReceipt
+     * @example
+     * // Get one ReadReceipt
+     * const readReceipt = await prisma.readReceipt.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ReadReceiptFindUniqueOrThrowArgs>(args: SelectSubset<T, ReadReceiptFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ReadReceiptClient<$Result.GetResult<Prisma.$ReadReceiptPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ReadReceipt that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReadReceiptFindFirstArgs} args - Arguments to find a ReadReceipt
+     * @example
+     * // Get one ReadReceipt
+     * const readReceipt = await prisma.readReceipt.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ReadReceiptFindFirstArgs>(args?: SelectSubset<T, ReadReceiptFindFirstArgs<ExtArgs>>): Prisma__ReadReceiptClient<$Result.GetResult<Prisma.$ReadReceiptPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ReadReceipt that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReadReceiptFindFirstOrThrowArgs} args - Arguments to find a ReadReceipt
+     * @example
+     * // Get one ReadReceipt
+     * const readReceipt = await prisma.readReceipt.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ReadReceiptFindFirstOrThrowArgs>(args?: SelectSubset<T, ReadReceiptFindFirstOrThrowArgs<ExtArgs>>): Prisma__ReadReceiptClient<$Result.GetResult<Prisma.$ReadReceiptPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ReadReceipts that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReadReceiptFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ReadReceipts
+     * const readReceipts = await prisma.readReceipt.findMany()
+     * 
+     * // Get first 10 ReadReceipts
+     * const readReceipts = await prisma.readReceipt.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const readReceiptWithIdOnly = await prisma.readReceipt.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ReadReceiptFindManyArgs>(args?: SelectSubset<T, ReadReceiptFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReadReceiptPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ReadReceipt.
+     * @param {ReadReceiptCreateArgs} args - Arguments to create a ReadReceipt.
+     * @example
+     * // Create one ReadReceipt
+     * const ReadReceipt = await prisma.readReceipt.create({
+     *   data: {
+     *     // ... data to create a ReadReceipt
+     *   }
+     * })
+     * 
+     */
+    create<T extends ReadReceiptCreateArgs>(args: SelectSubset<T, ReadReceiptCreateArgs<ExtArgs>>): Prisma__ReadReceiptClient<$Result.GetResult<Prisma.$ReadReceiptPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ReadReceipts.
+     * @param {ReadReceiptCreateManyArgs} args - Arguments to create many ReadReceipts.
+     * @example
+     * // Create many ReadReceipts
+     * const readReceipt = await prisma.readReceipt.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ReadReceiptCreateManyArgs>(args?: SelectSubset<T, ReadReceiptCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ReadReceipts and returns the data saved in the database.
+     * @param {ReadReceiptCreateManyAndReturnArgs} args - Arguments to create many ReadReceipts.
+     * @example
+     * // Create many ReadReceipts
+     * const readReceipt = await prisma.readReceipt.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ReadReceipts and only return the `id`
+     * const readReceiptWithIdOnly = await prisma.readReceipt.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ReadReceiptCreateManyAndReturnArgs>(args?: SelectSubset<T, ReadReceiptCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReadReceiptPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ReadReceipt.
+     * @param {ReadReceiptDeleteArgs} args - Arguments to delete one ReadReceipt.
+     * @example
+     * // Delete one ReadReceipt
+     * const ReadReceipt = await prisma.readReceipt.delete({
+     *   where: {
+     *     // ... filter to delete one ReadReceipt
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ReadReceiptDeleteArgs>(args: SelectSubset<T, ReadReceiptDeleteArgs<ExtArgs>>): Prisma__ReadReceiptClient<$Result.GetResult<Prisma.$ReadReceiptPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ReadReceipt.
+     * @param {ReadReceiptUpdateArgs} args - Arguments to update one ReadReceipt.
+     * @example
+     * // Update one ReadReceipt
+     * const readReceipt = await prisma.readReceipt.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ReadReceiptUpdateArgs>(args: SelectSubset<T, ReadReceiptUpdateArgs<ExtArgs>>): Prisma__ReadReceiptClient<$Result.GetResult<Prisma.$ReadReceiptPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ReadReceipts.
+     * @param {ReadReceiptDeleteManyArgs} args - Arguments to filter ReadReceipts to delete.
+     * @example
+     * // Delete a few ReadReceipts
+     * const { count } = await prisma.readReceipt.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ReadReceiptDeleteManyArgs>(args?: SelectSubset<T, ReadReceiptDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ReadReceipts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReadReceiptUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ReadReceipts
+     * const readReceipt = await prisma.readReceipt.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ReadReceiptUpdateManyArgs>(args: SelectSubset<T, ReadReceiptUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ReadReceipts and returns the data updated in the database.
+     * @param {ReadReceiptUpdateManyAndReturnArgs} args - Arguments to update many ReadReceipts.
+     * @example
+     * // Update many ReadReceipts
+     * const readReceipt = await prisma.readReceipt.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more ReadReceipts and only return the `id`
+     * const readReceiptWithIdOnly = await prisma.readReceipt.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ReadReceiptUpdateManyAndReturnArgs>(args: SelectSubset<T, ReadReceiptUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReadReceiptPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ReadReceipt.
+     * @param {ReadReceiptUpsertArgs} args - Arguments to update or create a ReadReceipt.
+     * @example
+     * // Update or create a ReadReceipt
+     * const readReceipt = await prisma.readReceipt.upsert({
+     *   create: {
+     *     // ... data to create a ReadReceipt
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ReadReceipt we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ReadReceiptUpsertArgs>(args: SelectSubset<T, ReadReceiptUpsertArgs<ExtArgs>>): Prisma__ReadReceiptClient<$Result.GetResult<Prisma.$ReadReceiptPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ReadReceipts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReadReceiptCountArgs} args - Arguments to filter ReadReceipts to count.
+     * @example
+     * // Count the number of ReadReceipts
+     * const count = await prisma.readReceipt.count({
+     *   where: {
+     *     // ... the filter for the ReadReceipts we want to count
+     *   }
+     * })
+    **/
+    count<T extends ReadReceiptCountArgs>(
+      args?: Subset<T, ReadReceiptCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ReadReceiptCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ReadReceipt.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReadReceiptAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ReadReceiptAggregateArgs>(args: Subset<T, ReadReceiptAggregateArgs>): Prisma.PrismaPromise<GetReadReceiptAggregateType<T>>
+
+    /**
+     * Group by ReadReceipt.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReadReceiptGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ReadReceiptGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ReadReceiptGroupByArgs['orderBy'] }
+        : { orderBy?: ReadReceiptGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ReadReceiptGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetReadReceiptGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ReadReceipt model
+   */
+  readonly fields: ReadReceiptFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ReadReceipt.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ReadReceiptClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ReadReceipt model
+   */
+  interface ReadReceiptFieldRefs {
+    readonly id: FieldRef<"ReadReceipt", 'String'>
+    readonly userId: FieldRef<"ReadReceipt", 'String'>
+    readonly messageId: FieldRef<"ReadReceipt", 'String'>
+    readonly recipientEmail: FieldRef<"ReadReceipt", 'String'>
+    readonly deliveredAt: FieldRef<"ReadReceipt", 'DateTime'>
+    readonly readAt: FieldRef<"ReadReceipt", 'DateTime'>
+    readonly createdAt: FieldRef<"ReadReceipt", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ReadReceipt findUnique
+   */
+  export type ReadReceiptFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReadReceipt
+     */
+    select?: ReadReceiptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReadReceipt
+     */
+    omit?: ReadReceiptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReadReceiptInclude<ExtArgs> | null
+    /**
+     * Filter, which ReadReceipt to fetch.
+     */
+    where: ReadReceiptWhereUniqueInput
+  }
+
+  /**
+   * ReadReceipt findUniqueOrThrow
+   */
+  export type ReadReceiptFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReadReceipt
+     */
+    select?: ReadReceiptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReadReceipt
+     */
+    omit?: ReadReceiptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReadReceiptInclude<ExtArgs> | null
+    /**
+     * Filter, which ReadReceipt to fetch.
+     */
+    where: ReadReceiptWhereUniqueInput
+  }
+
+  /**
+   * ReadReceipt findFirst
+   */
+  export type ReadReceiptFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReadReceipt
+     */
+    select?: ReadReceiptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReadReceipt
+     */
+    omit?: ReadReceiptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReadReceiptInclude<ExtArgs> | null
+    /**
+     * Filter, which ReadReceipt to fetch.
+     */
+    where?: ReadReceiptWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ReadReceipts to fetch.
+     */
+    orderBy?: ReadReceiptOrderByWithRelationInput | ReadReceiptOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ReadReceipts.
+     */
+    cursor?: ReadReceiptWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ReadReceipts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ReadReceipts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ReadReceipts.
+     */
+    distinct?: ReadReceiptScalarFieldEnum | ReadReceiptScalarFieldEnum[]
+  }
+
+  /**
+   * ReadReceipt findFirstOrThrow
+   */
+  export type ReadReceiptFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReadReceipt
+     */
+    select?: ReadReceiptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReadReceipt
+     */
+    omit?: ReadReceiptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReadReceiptInclude<ExtArgs> | null
+    /**
+     * Filter, which ReadReceipt to fetch.
+     */
+    where?: ReadReceiptWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ReadReceipts to fetch.
+     */
+    orderBy?: ReadReceiptOrderByWithRelationInput | ReadReceiptOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ReadReceipts.
+     */
+    cursor?: ReadReceiptWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ReadReceipts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ReadReceipts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ReadReceipts.
+     */
+    distinct?: ReadReceiptScalarFieldEnum | ReadReceiptScalarFieldEnum[]
+  }
+
+  /**
+   * ReadReceipt findMany
+   */
+  export type ReadReceiptFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReadReceipt
+     */
+    select?: ReadReceiptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReadReceipt
+     */
+    omit?: ReadReceiptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReadReceiptInclude<ExtArgs> | null
+    /**
+     * Filter, which ReadReceipts to fetch.
+     */
+    where?: ReadReceiptWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ReadReceipts to fetch.
+     */
+    orderBy?: ReadReceiptOrderByWithRelationInput | ReadReceiptOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ReadReceipts.
+     */
+    cursor?: ReadReceiptWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ReadReceipts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ReadReceipts.
+     */
+    skip?: number
+    distinct?: ReadReceiptScalarFieldEnum | ReadReceiptScalarFieldEnum[]
+  }
+
+  /**
+   * ReadReceipt create
+   */
+  export type ReadReceiptCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReadReceipt
+     */
+    select?: ReadReceiptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReadReceipt
+     */
+    omit?: ReadReceiptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReadReceiptInclude<ExtArgs> | null
+    /**
+     * The data needed to create a ReadReceipt.
+     */
+    data: XOR<ReadReceiptCreateInput, ReadReceiptUncheckedCreateInput>
+  }
+
+  /**
+   * ReadReceipt createMany
+   */
+  export type ReadReceiptCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ReadReceipts.
+     */
+    data: ReadReceiptCreateManyInput | ReadReceiptCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ReadReceipt createManyAndReturn
+   */
+  export type ReadReceiptCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReadReceipt
+     */
+    select?: ReadReceiptSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReadReceipt
+     */
+    omit?: ReadReceiptOmit<ExtArgs> | null
+    /**
+     * The data used to create many ReadReceipts.
+     */
+    data: ReadReceiptCreateManyInput | ReadReceiptCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReadReceiptIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ReadReceipt update
+   */
+  export type ReadReceiptUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReadReceipt
+     */
+    select?: ReadReceiptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReadReceipt
+     */
+    omit?: ReadReceiptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReadReceiptInclude<ExtArgs> | null
+    /**
+     * The data needed to update a ReadReceipt.
+     */
+    data: XOR<ReadReceiptUpdateInput, ReadReceiptUncheckedUpdateInput>
+    /**
+     * Choose, which ReadReceipt to update.
+     */
+    where: ReadReceiptWhereUniqueInput
+  }
+
+  /**
+   * ReadReceipt updateMany
+   */
+  export type ReadReceiptUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ReadReceipts.
+     */
+    data: XOR<ReadReceiptUpdateManyMutationInput, ReadReceiptUncheckedUpdateManyInput>
+    /**
+     * Filter which ReadReceipts to update
+     */
+    where?: ReadReceiptWhereInput
+    /**
+     * Limit how many ReadReceipts to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ReadReceipt updateManyAndReturn
+   */
+  export type ReadReceiptUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReadReceipt
+     */
+    select?: ReadReceiptSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReadReceipt
+     */
+    omit?: ReadReceiptOmit<ExtArgs> | null
+    /**
+     * The data used to update ReadReceipts.
+     */
+    data: XOR<ReadReceiptUpdateManyMutationInput, ReadReceiptUncheckedUpdateManyInput>
+    /**
+     * Filter which ReadReceipts to update
+     */
+    where?: ReadReceiptWhereInput
+    /**
+     * Limit how many ReadReceipts to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReadReceiptIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ReadReceipt upsert
+   */
+  export type ReadReceiptUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReadReceipt
+     */
+    select?: ReadReceiptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReadReceipt
+     */
+    omit?: ReadReceiptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReadReceiptInclude<ExtArgs> | null
+    /**
+     * The filter to search for the ReadReceipt to update in case it exists.
+     */
+    where: ReadReceiptWhereUniqueInput
+    /**
+     * In case the ReadReceipt found by the `where` argument doesn't exist, create a new ReadReceipt with this data.
+     */
+    create: XOR<ReadReceiptCreateInput, ReadReceiptUncheckedCreateInput>
+    /**
+     * In case the ReadReceipt was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ReadReceiptUpdateInput, ReadReceiptUncheckedUpdateInput>
+  }
+
+  /**
+   * ReadReceipt delete
+   */
+  export type ReadReceiptDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReadReceipt
+     */
+    select?: ReadReceiptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReadReceipt
+     */
+    omit?: ReadReceiptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReadReceiptInclude<ExtArgs> | null
+    /**
+     * Filter which ReadReceipt to delete.
+     */
+    where: ReadReceiptWhereUniqueInput
+  }
+
+  /**
+   * ReadReceipt deleteMany
+   */
+  export type ReadReceiptDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ReadReceipts to delete
+     */
+    where?: ReadReceiptWhereInput
+    /**
+     * Limit how many ReadReceipts to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ReadReceipt without action
+   */
+  export type ReadReceiptDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReadReceipt
+     */
+    select?: ReadReceiptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReadReceipt
+     */
+    omit?: ReadReceiptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReadReceiptInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Model TodoItem
    */
 
@@ -32060,6 +34523,35 @@ export namespace Prisma {
   export type MigrationStatusScalarFieldEnum = (typeof MigrationStatusScalarFieldEnum)[keyof typeof MigrationStatusScalarFieldEnum]
 
 
+  export const SnoozedEmailScalarFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    homeAccountId: 'homeAccountId',
+    messageId: 'messageId',
+    snoozeUntil: 'snoozeUntil',
+    subject: 'subject',
+    senderName: 'senderName',
+    senderEmail: 'senderEmail',
+    isReturned: 'isReturned',
+    createdAt: 'createdAt'
+  };
+
+  export type SnoozedEmailScalarFieldEnum = (typeof SnoozedEmailScalarFieldEnum)[keyof typeof SnoozedEmailScalarFieldEnum]
+
+
+  export const ReadReceiptScalarFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    messageId: 'messageId',
+    recipientEmail: 'recipientEmail',
+    deliveredAt: 'deliveredAt',
+    readAt: 'readAt',
+    createdAt: 'createdAt'
+  };
+
+  export type ReadReceiptScalarFieldEnum = (typeof ReadReceiptScalarFieldEnum)[keyof typeof ReadReceiptScalarFieldEnum]
+
+
   export const TodoItemScalarFieldEnum: {
     id: 'id',
     userId: 'userId',
@@ -32420,6 +34912,8 @@ export namespace Prisma {
     notificationLogs?: NotificationLogListRelationFilter
     migrationStatuses?: MigrationStatusListRelationFilter
     todoItems?: TodoItemListRelationFilter
+    snoozedEmails?: SnoozedEmailListRelationFilter
+    readReceipts?: ReadReceiptListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -32463,6 +34957,8 @@ export namespace Prisma {
     notificationLogs?: NotificationLogOrderByRelationAggregateInput
     migrationStatuses?: MigrationStatusOrderByRelationAggregateInput
     todoItems?: TodoItemOrderByRelationAggregateInput
+    snoozedEmails?: SnoozedEmailOrderByRelationAggregateInput
+    readReceipts?: ReadReceiptOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -32509,6 +35005,8 @@ export namespace Prisma {
     notificationLogs?: NotificationLogListRelationFilter
     migrationStatuses?: MigrationStatusListRelationFilter
     todoItems?: TodoItemListRelationFilter
+    snoozedEmails?: SnoozedEmailListRelationFilter
+    readReceipts?: ReadReceiptListRelationFilter
   }, "id" | "email">
 
   export type UserOrderByWithAggregationInput = {
@@ -34270,6 +36768,152 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"MigrationStatus"> | Date | string
   }
 
+  export type SnoozedEmailWhereInput = {
+    AND?: SnoozedEmailWhereInput | SnoozedEmailWhereInput[]
+    OR?: SnoozedEmailWhereInput[]
+    NOT?: SnoozedEmailWhereInput | SnoozedEmailWhereInput[]
+    id?: StringFilter<"SnoozedEmail"> | string
+    userId?: StringFilter<"SnoozedEmail"> | string
+    homeAccountId?: StringFilter<"SnoozedEmail"> | string
+    messageId?: StringFilter<"SnoozedEmail"> | string
+    snoozeUntil?: DateTimeFilter<"SnoozedEmail"> | Date | string
+    subject?: StringFilter<"SnoozedEmail"> | string
+    senderName?: StringNullableFilter<"SnoozedEmail"> | string | null
+    senderEmail?: StringFilter<"SnoozedEmail"> | string
+    isReturned?: BoolFilter<"SnoozedEmail"> | boolean
+    createdAt?: DateTimeFilter<"SnoozedEmail"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type SnoozedEmailOrderByWithRelationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    homeAccountId?: SortOrder
+    messageId?: SortOrder
+    snoozeUntil?: SortOrder
+    subject?: SortOrder
+    senderName?: SortOrderInput | SortOrder
+    senderEmail?: SortOrder
+    isReturned?: SortOrder
+    createdAt?: SortOrder
+    user?: UserOrderByWithRelationInput
+  }
+
+  export type SnoozedEmailWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: SnoozedEmailWhereInput | SnoozedEmailWhereInput[]
+    OR?: SnoozedEmailWhereInput[]
+    NOT?: SnoozedEmailWhereInput | SnoozedEmailWhereInput[]
+    userId?: StringFilter<"SnoozedEmail"> | string
+    homeAccountId?: StringFilter<"SnoozedEmail"> | string
+    messageId?: StringFilter<"SnoozedEmail"> | string
+    snoozeUntil?: DateTimeFilter<"SnoozedEmail"> | Date | string
+    subject?: StringFilter<"SnoozedEmail"> | string
+    senderName?: StringNullableFilter<"SnoozedEmail"> | string | null
+    senderEmail?: StringFilter<"SnoozedEmail"> | string
+    isReturned?: BoolFilter<"SnoozedEmail"> | boolean
+    createdAt?: DateTimeFilter<"SnoozedEmail"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id">
+
+  export type SnoozedEmailOrderByWithAggregationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    homeAccountId?: SortOrder
+    messageId?: SortOrder
+    snoozeUntil?: SortOrder
+    subject?: SortOrder
+    senderName?: SortOrderInput | SortOrder
+    senderEmail?: SortOrder
+    isReturned?: SortOrder
+    createdAt?: SortOrder
+    _count?: SnoozedEmailCountOrderByAggregateInput
+    _max?: SnoozedEmailMaxOrderByAggregateInput
+    _min?: SnoozedEmailMinOrderByAggregateInput
+  }
+
+  export type SnoozedEmailScalarWhereWithAggregatesInput = {
+    AND?: SnoozedEmailScalarWhereWithAggregatesInput | SnoozedEmailScalarWhereWithAggregatesInput[]
+    OR?: SnoozedEmailScalarWhereWithAggregatesInput[]
+    NOT?: SnoozedEmailScalarWhereWithAggregatesInput | SnoozedEmailScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"SnoozedEmail"> | string
+    userId?: StringWithAggregatesFilter<"SnoozedEmail"> | string
+    homeAccountId?: StringWithAggregatesFilter<"SnoozedEmail"> | string
+    messageId?: StringWithAggregatesFilter<"SnoozedEmail"> | string
+    snoozeUntil?: DateTimeWithAggregatesFilter<"SnoozedEmail"> | Date | string
+    subject?: StringWithAggregatesFilter<"SnoozedEmail"> | string
+    senderName?: StringNullableWithAggregatesFilter<"SnoozedEmail"> | string | null
+    senderEmail?: StringWithAggregatesFilter<"SnoozedEmail"> | string
+    isReturned?: BoolWithAggregatesFilter<"SnoozedEmail"> | boolean
+    createdAt?: DateTimeWithAggregatesFilter<"SnoozedEmail"> | Date | string
+  }
+
+  export type ReadReceiptWhereInput = {
+    AND?: ReadReceiptWhereInput | ReadReceiptWhereInput[]
+    OR?: ReadReceiptWhereInput[]
+    NOT?: ReadReceiptWhereInput | ReadReceiptWhereInput[]
+    id?: StringFilter<"ReadReceipt"> | string
+    userId?: StringFilter<"ReadReceipt"> | string
+    messageId?: StringFilter<"ReadReceipt"> | string
+    recipientEmail?: StringFilter<"ReadReceipt"> | string
+    deliveredAt?: DateTimeNullableFilter<"ReadReceipt"> | Date | string | null
+    readAt?: DateTimeNullableFilter<"ReadReceipt"> | Date | string | null
+    createdAt?: DateTimeFilter<"ReadReceipt"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type ReadReceiptOrderByWithRelationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    messageId?: SortOrder
+    recipientEmail?: SortOrder
+    deliveredAt?: SortOrderInput | SortOrder
+    readAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    user?: UserOrderByWithRelationInput
+  }
+
+  export type ReadReceiptWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    messageId_recipientEmail?: ReadReceiptMessageIdRecipientEmailCompoundUniqueInput
+    AND?: ReadReceiptWhereInput | ReadReceiptWhereInput[]
+    OR?: ReadReceiptWhereInput[]
+    NOT?: ReadReceiptWhereInput | ReadReceiptWhereInput[]
+    userId?: StringFilter<"ReadReceipt"> | string
+    messageId?: StringFilter<"ReadReceipt"> | string
+    recipientEmail?: StringFilter<"ReadReceipt"> | string
+    deliveredAt?: DateTimeNullableFilter<"ReadReceipt"> | Date | string | null
+    readAt?: DateTimeNullableFilter<"ReadReceipt"> | Date | string | null
+    createdAt?: DateTimeFilter<"ReadReceipt"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id" | "messageId_recipientEmail">
+
+  export type ReadReceiptOrderByWithAggregationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    messageId?: SortOrder
+    recipientEmail?: SortOrder
+    deliveredAt?: SortOrderInput | SortOrder
+    readAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: ReadReceiptCountOrderByAggregateInput
+    _max?: ReadReceiptMaxOrderByAggregateInput
+    _min?: ReadReceiptMinOrderByAggregateInput
+  }
+
+  export type ReadReceiptScalarWhereWithAggregatesInput = {
+    AND?: ReadReceiptScalarWhereWithAggregatesInput | ReadReceiptScalarWhereWithAggregatesInput[]
+    OR?: ReadReceiptScalarWhereWithAggregatesInput[]
+    NOT?: ReadReceiptScalarWhereWithAggregatesInput | ReadReceiptScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"ReadReceipt"> | string
+    userId?: StringWithAggregatesFilter<"ReadReceipt"> | string
+    messageId?: StringWithAggregatesFilter<"ReadReceipt"> | string
+    recipientEmail?: StringWithAggregatesFilter<"ReadReceipt"> | string
+    deliveredAt?: DateTimeNullableWithAggregatesFilter<"ReadReceipt"> | Date | string | null
+    readAt?: DateTimeNullableWithAggregatesFilter<"ReadReceipt"> | Date | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"ReadReceipt"> | Date | string
+  }
+
   export type TodoItemWhereInput = {
     AND?: TodoItemWhereInput | TodoItemWhereInput[]
     OR?: TodoItemWhereInput[]
@@ -34744,6 +37388,8 @@ export namespace Prisma {
     notificationLogs?: NotificationLogCreateNestedManyWithoutUserInput
     migrationStatuses?: MigrationStatusCreateNestedManyWithoutUserInput
     todoItems?: TodoItemCreateNestedManyWithoutUserInput
+    snoozedEmails?: SnoozedEmailCreateNestedManyWithoutUserInput
+    readReceipts?: ReadReceiptCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -34786,6 +37432,8 @@ export namespace Prisma {
     notificationLogs?: NotificationLogUncheckedCreateNestedManyWithoutUserInput
     migrationStatuses?: MigrationStatusUncheckedCreateNestedManyWithoutUserInput
     todoItems?: TodoItemUncheckedCreateNestedManyWithoutUserInput
+    snoozedEmails?: SnoozedEmailUncheckedCreateNestedManyWithoutUserInput
+    readReceipts?: ReadReceiptUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserUpdateInput = {
@@ -34828,6 +37476,8 @@ export namespace Prisma {
     notificationLogs?: NotificationLogUpdateManyWithoutUserNestedInput
     migrationStatuses?: MigrationStatusUpdateManyWithoutUserNestedInput
     todoItems?: TodoItemUpdateManyWithoutUserNestedInput
+    snoozedEmails?: SnoozedEmailUpdateManyWithoutUserNestedInput
+    readReceipts?: ReadReceiptUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -34870,6 +37520,8 @@ export namespace Prisma {
     notificationLogs?: NotificationLogUncheckedUpdateManyWithoutUserNestedInput
     migrationStatuses?: MigrationStatusUncheckedUpdateManyWithoutUserNestedInput
     todoItems?: TodoItemUncheckedUpdateManyWithoutUserNestedInput
+    snoozedEmails?: SnoozedEmailUncheckedUpdateManyWithoutUserNestedInput
+    readReceipts?: ReadReceiptUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -36915,6 +39567,165 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type SnoozedEmailCreateInput = {
+    id?: string
+    homeAccountId: string
+    messageId: string
+    snoozeUntil: Date | string
+    subject: string
+    senderName?: string | null
+    senderEmail: string
+    isReturned?: boolean
+    createdAt?: Date | string
+    user: UserCreateNestedOneWithoutSnoozedEmailsInput
+  }
+
+  export type SnoozedEmailUncheckedCreateInput = {
+    id?: string
+    userId: string
+    homeAccountId: string
+    messageId: string
+    snoozeUntil: Date | string
+    subject: string
+    senderName?: string | null
+    senderEmail: string
+    isReturned?: boolean
+    createdAt?: Date | string
+  }
+
+  export type SnoozedEmailUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    homeAccountId?: StringFieldUpdateOperationsInput | string
+    messageId?: StringFieldUpdateOperationsInput | string
+    snoozeUntil?: DateTimeFieldUpdateOperationsInput | Date | string
+    subject?: StringFieldUpdateOperationsInput | string
+    senderName?: NullableStringFieldUpdateOperationsInput | string | null
+    senderEmail?: StringFieldUpdateOperationsInput | string
+    isReturned?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutSnoozedEmailsNestedInput
+  }
+
+  export type SnoozedEmailUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    homeAccountId?: StringFieldUpdateOperationsInput | string
+    messageId?: StringFieldUpdateOperationsInput | string
+    snoozeUntil?: DateTimeFieldUpdateOperationsInput | Date | string
+    subject?: StringFieldUpdateOperationsInput | string
+    senderName?: NullableStringFieldUpdateOperationsInput | string | null
+    senderEmail?: StringFieldUpdateOperationsInput | string
+    isReturned?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SnoozedEmailCreateManyInput = {
+    id?: string
+    userId: string
+    homeAccountId: string
+    messageId: string
+    snoozeUntil: Date | string
+    subject: string
+    senderName?: string | null
+    senderEmail: string
+    isReturned?: boolean
+    createdAt?: Date | string
+  }
+
+  export type SnoozedEmailUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    homeAccountId?: StringFieldUpdateOperationsInput | string
+    messageId?: StringFieldUpdateOperationsInput | string
+    snoozeUntil?: DateTimeFieldUpdateOperationsInput | Date | string
+    subject?: StringFieldUpdateOperationsInput | string
+    senderName?: NullableStringFieldUpdateOperationsInput | string | null
+    senderEmail?: StringFieldUpdateOperationsInput | string
+    isReturned?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SnoozedEmailUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    homeAccountId?: StringFieldUpdateOperationsInput | string
+    messageId?: StringFieldUpdateOperationsInput | string
+    snoozeUntil?: DateTimeFieldUpdateOperationsInput | Date | string
+    subject?: StringFieldUpdateOperationsInput | string
+    senderName?: NullableStringFieldUpdateOperationsInput | string | null
+    senderEmail?: StringFieldUpdateOperationsInput | string
+    isReturned?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ReadReceiptCreateInput = {
+    id?: string
+    messageId: string
+    recipientEmail: string
+    deliveredAt?: Date | string | null
+    readAt?: Date | string | null
+    createdAt?: Date | string
+    user: UserCreateNestedOneWithoutReadReceiptsInput
+  }
+
+  export type ReadReceiptUncheckedCreateInput = {
+    id?: string
+    userId: string
+    messageId: string
+    recipientEmail: string
+    deliveredAt?: Date | string | null
+    readAt?: Date | string | null
+    createdAt?: Date | string
+  }
+
+  export type ReadReceiptUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    messageId?: StringFieldUpdateOperationsInput | string
+    recipientEmail?: StringFieldUpdateOperationsInput | string
+    deliveredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutReadReceiptsNestedInput
+  }
+
+  export type ReadReceiptUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    messageId?: StringFieldUpdateOperationsInput | string
+    recipientEmail?: StringFieldUpdateOperationsInput | string
+    deliveredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ReadReceiptCreateManyInput = {
+    id?: string
+    userId: string
+    messageId: string
+    recipientEmail: string
+    deliveredAt?: Date | string | null
+    readAt?: Date | string | null
+    createdAt?: Date | string
+  }
+
+  export type ReadReceiptUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    messageId?: StringFieldUpdateOperationsInput | string
+    recipientEmail?: StringFieldUpdateOperationsInput | string
+    deliveredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ReadReceiptUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    messageId?: StringFieldUpdateOperationsInput | string
+    recipientEmail?: StringFieldUpdateOperationsInput | string
+    deliveredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type TodoItemCreateInput = {
     id?: string
     text: string
@@ -37577,6 +40388,18 @@ export namespace Prisma {
     none?: TodoItemWhereInput
   }
 
+  export type SnoozedEmailListRelationFilter = {
+    every?: SnoozedEmailWhereInput
+    some?: SnoozedEmailWhereInput
+    none?: SnoozedEmailWhereInput
+  }
+
+  export type ReadReceiptListRelationFilter = {
+    every?: ReadReceiptWhereInput
+    some?: ReadReceiptWhereInput
+    none?: ReadReceiptWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -37655,6 +40478,14 @@ export namespace Prisma {
   }
 
   export type TodoItemOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type SnoozedEmailOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ReadReceiptOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -38793,6 +41624,80 @@ export namespace Prisma {
     updatedAt?: SortOrder
   }
 
+  export type SnoozedEmailCountOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    homeAccountId?: SortOrder
+    messageId?: SortOrder
+    snoozeUntil?: SortOrder
+    subject?: SortOrder
+    senderName?: SortOrder
+    senderEmail?: SortOrder
+    isReturned?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type SnoozedEmailMaxOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    homeAccountId?: SortOrder
+    messageId?: SortOrder
+    snoozeUntil?: SortOrder
+    subject?: SortOrder
+    senderName?: SortOrder
+    senderEmail?: SortOrder
+    isReturned?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type SnoozedEmailMinOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    homeAccountId?: SortOrder
+    messageId?: SortOrder
+    snoozeUntil?: SortOrder
+    subject?: SortOrder
+    senderName?: SortOrder
+    senderEmail?: SortOrder
+    isReturned?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ReadReceiptMessageIdRecipientEmailCompoundUniqueInput = {
+    messageId: string
+    recipientEmail: string
+  }
+
+  export type ReadReceiptCountOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    messageId?: SortOrder
+    recipientEmail?: SortOrder
+    deliveredAt?: SortOrder
+    readAt?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ReadReceiptMaxOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    messageId?: SortOrder
+    recipientEmail?: SortOrder
+    deliveredAt?: SortOrder
+    readAt?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ReadReceiptMinOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    messageId?: SortOrder
+    recipientEmail?: SortOrder
+    deliveredAt?: SortOrder
+    readAt?: SortOrder
+    createdAt?: SortOrder
+  }
+
   export type TodoItemCountOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
@@ -39220,6 +42125,20 @@ export namespace Prisma {
     connect?: TodoItemWhereUniqueInput | TodoItemWhereUniqueInput[]
   }
 
+  export type SnoozedEmailCreateNestedManyWithoutUserInput = {
+    create?: XOR<SnoozedEmailCreateWithoutUserInput, SnoozedEmailUncheckedCreateWithoutUserInput> | SnoozedEmailCreateWithoutUserInput[] | SnoozedEmailUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: SnoozedEmailCreateOrConnectWithoutUserInput | SnoozedEmailCreateOrConnectWithoutUserInput[]
+    createMany?: SnoozedEmailCreateManyUserInputEnvelope
+    connect?: SnoozedEmailWhereUniqueInput | SnoozedEmailWhereUniqueInput[]
+  }
+
+  export type ReadReceiptCreateNestedManyWithoutUserInput = {
+    create?: XOR<ReadReceiptCreateWithoutUserInput, ReadReceiptUncheckedCreateWithoutUserInput> | ReadReceiptCreateWithoutUserInput[] | ReadReceiptUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ReadReceiptCreateOrConnectWithoutUserInput | ReadReceiptCreateOrConnectWithoutUserInput[]
+    createMany?: ReadReceiptCreateManyUserInputEnvelope
+    connect?: ReadReceiptWhereUniqueInput | ReadReceiptWhereUniqueInput[]
+  }
+
   export type MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<MsConnectedAccountCreateWithoutUserInput, MsConnectedAccountUncheckedCreateWithoutUserInput> | MsConnectedAccountCreateWithoutUserInput[] | MsConnectedAccountUncheckedCreateWithoutUserInput[]
     connectOrCreate?: MsConnectedAccountCreateOrConnectWithoutUserInput | MsConnectedAccountCreateOrConnectWithoutUserInput[]
@@ -39357,6 +42276,20 @@ export namespace Prisma {
     connectOrCreate?: TodoItemCreateOrConnectWithoutUserInput | TodoItemCreateOrConnectWithoutUserInput[]
     createMany?: TodoItemCreateManyUserInputEnvelope
     connect?: TodoItemWhereUniqueInput | TodoItemWhereUniqueInput[]
+  }
+
+  export type SnoozedEmailUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<SnoozedEmailCreateWithoutUserInput, SnoozedEmailUncheckedCreateWithoutUserInput> | SnoozedEmailCreateWithoutUserInput[] | SnoozedEmailUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: SnoozedEmailCreateOrConnectWithoutUserInput | SnoozedEmailCreateOrConnectWithoutUserInput[]
+    createMany?: SnoozedEmailCreateManyUserInputEnvelope
+    connect?: SnoozedEmailWhereUniqueInput | SnoozedEmailWhereUniqueInput[]
+  }
+
+  export type ReadReceiptUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<ReadReceiptCreateWithoutUserInput, ReadReceiptUncheckedCreateWithoutUserInput> | ReadReceiptCreateWithoutUserInput[] | ReadReceiptUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ReadReceiptCreateOrConnectWithoutUserInput | ReadReceiptCreateOrConnectWithoutUserInput[]
+    createMany?: ReadReceiptCreateManyUserInputEnvelope
+    connect?: ReadReceiptWhereUniqueInput | ReadReceiptWhereUniqueInput[]
   }
 
   export type NullableStringFieldUpdateOperationsInput = {
@@ -39655,6 +42588,34 @@ export namespace Prisma {
     deleteMany?: TodoItemScalarWhereInput | TodoItemScalarWhereInput[]
   }
 
+  export type SnoozedEmailUpdateManyWithoutUserNestedInput = {
+    create?: XOR<SnoozedEmailCreateWithoutUserInput, SnoozedEmailUncheckedCreateWithoutUserInput> | SnoozedEmailCreateWithoutUserInput[] | SnoozedEmailUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: SnoozedEmailCreateOrConnectWithoutUserInput | SnoozedEmailCreateOrConnectWithoutUserInput[]
+    upsert?: SnoozedEmailUpsertWithWhereUniqueWithoutUserInput | SnoozedEmailUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: SnoozedEmailCreateManyUserInputEnvelope
+    set?: SnoozedEmailWhereUniqueInput | SnoozedEmailWhereUniqueInput[]
+    disconnect?: SnoozedEmailWhereUniqueInput | SnoozedEmailWhereUniqueInput[]
+    delete?: SnoozedEmailWhereUniqueInput | SnoozedEmailWhereUniqueInput[]
+    connect?: SnoozedEmailWhereUniqueInput | SnoozedEmailWhereUniqueInput[]
+    update?: SnoozedEmailUpdateWithWhereUniqueWithoutUserInput | SnoozedEmailUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: SnoozedEmailUpdateManyWithWhereWithoutUserInput | SnoozedEmailUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: SnoozedEmailScalarWhereInput | SnoozedEmailScalarWhereInput[]
+  }
+
+  export type ReadReceiptUpdateManyWithoutUserNestedInput = {
+    create?: XOR<ReadReceiptCreateWithoutUserInput, ReadReceiptUncheckedCreateWithoutUserInput> | ReadReceiptCreateWithoutUserInput[] | ReadReceiptUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ReadReceiptCreateOrConnectWithoutUserInput | ReadReceiptCreateOrConnectWithoutUserInput[]
+    upsert?: ReadReceiptUpsertWithWhereUniqueWithoutUserInput | ReadReceiptUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: ReadReceiptCreateManyUserInputEnvelope
+    set?: ReadReceiptWhereUniqueInput | ReadReceiptWhereUniqueInput[]
+    disconnect?: ReadReceiptWhereUniqueInput | ReadReceiptWhereUniqueInput[]
+    delete?: ReadReceiptWhereUniqueInput | ReadReceiptWhereUniqueInput[]
+    connect?: ReadReceiptWhereUniqueInput | ReadReceiptWhereUniqueInput[]
+    update?: ReadReceiptUpdateWithWhereUniqueWithoutUserInput | ReadReceiptUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: ReadReceiptUpdateManyWithWhereWithoutUserInput | ReadReceiptUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: ReadReceiptScalarWhereInput | ReadReceiptScalarWhereInput[]
+  }
+
   export type MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput = {
     create?: XOR<MsConnectedAccountCreateWithoutUserInput, MsConnectedAccountUncheckedCreateWithoutUserInput> | MsConnectedAccountCreateWithoutUserInput[] | MsConnectedAccountUncheckedCreateWithoutUserInput[]
     connectOrCreate?: MsConnectedAccountCreateOrConnectWithoutUserInput | MsConnectedAccountCreateOrConnectWithoutUserInput[]
@@ -39931,6 +42892,34 @@ export namespace Prisma {
     deleteMany?: TodoItemScalarWhereInput | TodoItemScalarWhereInput[]
   }
 
+  export type SnoozedEmailUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<SnoozedEmailCreateWithoutUserInput, SnoozedEmailUncheckedCreateWithoutUserInput> | SnoozedEmailCreateWithoutUserInput[] | SnoozedEmailUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: SnoozedEmailCreateOrConnectWithoutUserInput | SnoozedEmailCreateOrConnectWithoutUserInput[]
+    upsert?: SnoozedEmailUpsertWithWhereUniqueWithoutUserInput | SnoozedEmailUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: SnoozedEmailCreateManyUserInputEnvelope
+    set?: SnoozedEmailWhereUniqueInput | SnoozedEmailWhereUniqueInput[]
+    disconnect?: SnoozedEmailWhereUniqueInput | SnoozedEmailWhereUniqueInput[]
+    delete?: SnoozedEmailWhereUniqueInput | SnoozedEmailWhereUniqueInput[]
+    connect?: SnoozedEmailWhereUniqueInput | SnoozedEmailWhereUniqueInput[]
+    update?: SnoozedEmailUpdateWithWhereUniqueWithoutUserInput | SnoozedEmailUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: SnoozedEmailUpdateManyWithWhereWithoutUserInput | SnoozedEmailUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: SnoozedEmailScalarWhereInput | SnoozedEmailScalarWhereInput[]
+  }
+
+  export type ReadReceiptUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<ReadReceiptCreateWithoutUserInput, ReadReceiptUncheckedCreateWithoutUserInput> | ReadReceiptCreateWithoutUserInput[] | ReadReceiptUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ReadReceiptCreateOrConnectWithoutUserInput | ReadReceiptCreateOrConnectWithoutUserInput[]
+    upsert?: ReadReceiptUpsertWithWhereUniqueWithoutUserInput | ReadReceiptUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: ReadReceiptCreateManyUserInputEnvelope
+    set?: ReadReceiptWhereUniqueInput | ReadReceiptWhereUniqueInput[]
+    disconnect?: ReadReceiptWhereUniqueInput | ReadReceiptWhereUniqueInput[]
+    delete?: ReadReceiptWhereUniqueInput | ReadReceiptWhereUniqueInput[]
+    connect?: ReadReceiptWhereUniqueInput | ReadReceiptWhereUniqueInput[]
+    update?: ReadReceiptUpdateWithWhereUniqueWithoutUserInput | ReadReceiptUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: ReadReceiptUpdateManyWithWhereWithoutUserInput | ReadReceiptUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: ReadReceiptScalarWhereInput | ReadReceiptScalarWhereInput[]
+  }
+
   export type UserCreateNestedOneWithoutMsAccountsInput = {
     create?: XOR<UserCreateWithoutMsAccountsInput, UserUncheckedCreateWithoutMsAccountsInput>
     connectOrCreate?: UserCreateOrConnectWithoutMsAccountsInput
@@ -40183,6 +43172,34 @@ export namespace Prisma {
     upsert?: UserUpsertWithoutMigrationStatusesInput
     connect?: UserWhereUniqueInput
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutMigrationStatusesInput, UserUpdateWithoutMigrationStatusesInput>, UserUncheckedUpdateWithoutMigrationStatusesInput>
+  }
+
+  export type UserCreateNestedOneWithoutSnoozedEmailsInput = {
+    create?: XOR<UserCreateWithoutSnoozedEmailsInput, UserUncheckedCreateWithoutSnoozedEmailsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutSnoozedEmailsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserUpdateOneRequiredWithoutSnoozedEmailsNestedInput = {
+    create?: XOR<UserCreateWithoutSnoozedEmailsInput, UserUncheckedCreateWithoutSnoozedEmailsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutSnoozedEmailsInput
+    upsert?: UserUpsertWithoutSnoozedEmailsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutSnoozedEmailsInput, UserUpdateWithoutSnoozedEmailsInput>, UserUncheckedUpdateWithoutSnoozedEmailsInput>
+  }
+
+  export type UserCreateNestedOneWithoutReadReceiptsInput = {
+    create?: XOR<UserCreateWithoutReadReceiptsInput, UserUncheckedCreateWithoutReadReceiptsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutReadReceiptsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserUpdateOneRequiredWithoutReadReceiptsNestedInput = {
+    create?: XOR<UserCreateWithoutReadReceiptsInput, UserUncheckedCreateWithoutReadReceiptsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutReadReceiptsInput
+    upsert?: UserUpsertWithoutReadReceiptsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutReadReceiptsInput, UserUpdateWithoutReadReceiptsInput>, UserUncheckedUpdateWithoutReadReceiptsInput>
   }
 
   export type UserCreateNestedOneWithoutTodoItemsInput = {
@@ -40513,6 +43530,8 @@ export namespace Prisma {
     notificationLogs?: NotificationLogCreateNestedManyWithoutUserInput
     migrationStatuses?: MigrationStatusCreateNestedManyWithoutUserInput
     todoItems?: TodoItemCreateNestedManyWithoutUserInput
+    snoozedEmails?: SnoozedEmailCreateNestedManyWithoutUserInput
+    readReceipts?: ReadReceiptCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutOrgInput = {
@@ -40554,6 +43573,8 @@ export namespace Prisma {
     notificationLogs?: NotificationLogUncheckedCreateNestedManyWithoutUserInput
     migrationStatuses?: MigrationStatusUncheckedCreateNestedManyWithoutUserInput
     todoItems?: TodoItemUncheckedCreateNestedManyWithoutUserInput
+    snoozedEmails?: SnoozedEmailUncheckedCreateNestedManyWithoutUserInput
+    readReceipts?: ReadReceiptUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutOrgInput = {
@@ -41546,6 +44567,68 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type SnoozedEmailCreateWithoutUserInput = {
+    id?: string
+    homeAccountId: string
+    messageId: string
+    snoozeUntil: Date | string
+    subject: string
+    senderName?: string | null
+    senderEmail: string
+    isReturned?: boolean
+    createdAt?: Date | string
+  }
+
+  export type SnoozedEmailUncheckedCreateWithoutUserInput = {
+    id?: string
+    homeAccountId: string
+    messageId: string
+    snoozeUntil: Date | string
+    subject: string
+    senderName?: string | null
+    senderEmail: string
+    isReturned?: boolean
+    createdAt?: Date | string
+  }
+
+  export type SnoozedEmailCreateOrConnectWithoutUserInput = {
+    where: SnoozedEmailWhereUniqueInput
+    create: XOR<SnoozedEmailCreateWithoutUserInput, SnoozedEmailUncheckedCreateWithoutUserInput>
+  }
+
+  export type SnoozedEmailCreateManyUserInputEnvelope = {
+    data: SnoozedEmailCreateManyUserInput | SnoozedEmailCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ReadReceiptCreateWithoutUserInput = {
+    id?: string
+    messageId: string
+    recipientEmail: string
+    deliveredAt?: Date | string | null
+    readAt?: Date | string | null
+    createdAt?: Date | string
+  }
+
+  export type ReadReceiptUncheckedCreateWithoutUserInput = {
+    id?: string
+    messageId: string
+    recipientEmail: string
+    deliveredAt?: Date | string | null
+    readAt?: Date | string | null
+    createdAt?: Date | string
+  }
+
+  export type ReadReceiptCreateOrConnectWithoutUserInput = {
+    where: ReadReceiptWhereUniqueInput
+    create: XOR<ReadReceiptCreateWithoutUserInput, ReadReceiptUncheckedCreateWithoutUserInput>
+  }
+
+  export type ReadReceiptCreateManyUserInputEnvelope = {
+    data: ReadReceiptCreateManyUserInput | ReadReceiptCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
   export type OrganizationUpsertWithoutUsersInput = {
     update: XOR<OrganizationUpdateWithoutUsersInput, OrganizationUncheckedUpdateWithoutUsersInput>
     create: XOR<OrganizationCreateWithoutUsersInput, OrganizationUncheckedCreateWithoutUsersInput>
@@ -42278,6 +45361,67 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"TodoItem"> | Date | string
   }
 
+  export type SnoozedEmailUpsertWithWhereUniqueWithoutUserInput = {
+    where: SnoozedEmailWhereUniqueInput
+    update: XOR<SnoozedEmailUpdateWithoutUserInput, SnoozedEmailUncheckedUpdateWithoutUserInput>
+    create: XOR<SnoozedEmailCreateWithoutUserInput, SnoozedEmailUncheckedCreateWithoutUserInput>
+  }
+
+  export type SnoozedEmailUpdateWithWhereUniqueWithoutUserInput = {
+    where: SnoozedEmailWhereUniqueInput
+    data: XOR<SnoozedEmailUpdateWithoutUserInput, SnoozedEmailUncheckedUpdateWithoutUserInput>
+  }
+
+  export type SnoozedEmailUpdateManyWithWhereWithoutUserInput = {
+    where: SnoozedEmailScalarWhereInput
+    data: XOR<SnoozedEmailUpdateManyMutationInput, SnoozedEmailUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type SnoozedEmailScalarWhereInput = {
+    AND?: SnoozedEmailScalarWhereInput | SnoozedEmailScalarWhereInput[]
+    OR?: SnoozedEmailScalarWhereInput[]
+    NOT?: SnoozedEmailScalarWhereInput | SnoozedEmailScalarWhereInput[]
+    id?: StringFilter<"SnoozedEmail"> | string
+    userId?: StringFilter<"SnoozedEmail"> | string
+    homeAccountId?: StringFilter<"SnoozedEmail"> | string
+    messageId?: StringFilter<"SnoozedEmail"> | string
+    snoozeUntil?: DateTimeFilter<"SnoozedEmail"> | Date | string
+    subject?: StringFilter<"SnoozedEmail"> | string
+    senderName?: StringNullableFilter<"SnoozedEmail"> | string | null
+    senderEmail?: StringFilter<"SnoozedEmail"> | string
+    isReturned?: BoolFilter<"SnoozedEmail"> | boolean
+    createdAt?: DateTimeFilter<"SnoozedEmail"> | Date | string
+  }
+
+  export type ReadReceiptUpsertWithWhereUniqueWithoutUserInput = {
+    where: ReadReceiptWhereUniqueInput
+    update: XOR<ReadReceiptUpdateWithoutUserInput, ReadReceiptUncheckedUpdateWithoutUserInput>
+    create: XOR<ReadReceiptCreateWithoutUserInput, ReadReceiptUncheckedCreateWithoutUserInput>
+  }
+
+  export type ReadReceiptUpdateWithWhereUniqueWithoutUserInput = {
+    where: ReadReceiptWhereUniqueInput
+    data: XOR<ReadReceiptUpdateWithoutUserInput, ReadReceiptUncheckedUpdateWithoutUserInput>
+  }
+
+  export type ReadReceiptUpdateManyWithWhereWithoutUserInput = {
+    where: ReadReceiptScalarWhereInput
+    data: XOR<ReadReceiptUpdateManyMutationInput, ReadReceiptUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type ReadReceiptScalarWhereInput = {
+    AND?: ReadReceiptScalarWhereInput | ReadReceiptScalarWhereInput[]
+    OR?: ReadReceiptScalarWhereInput[]
+    NOT?: ReadReceiptScalarWhereInput | ReadReceiptScalarWhereInput[]
+    id?: StringFilter<"ReadReceipt"> | string
+    userId?: StringFilter<"ReadReceipt"> | string
+    messageId?: StringFilter<"ReadReceipt"> | string
+    recipientEmail?: StringFilter<"ReadReceipt"> | string
+    deliveredAt?: DateTimeNullableFilter<"ReadReceipt"> | Date | string | null
+    readAt?: DateTimeNullableFilter<"ReadReceipt"> | Date | string | null
+    createdAt?: DateTimeFilter<"ReadReceipt"> | Date | string
+  }
+
   export type UserCreateWithoutMsAccountsInput = {
     id: string
     email: string
@@ -42317,6 +45461,8 @@ export namespace Prisma {
     notificationLogs?: NotificationLogCreateNestedManyWithoutUserInput
     migrationStatuses?: MigrationStatusCreateNestedManyWithoutUserInput
     todoItems?: TodoItemCreateNestedManyWithoutUserInput
+    snoozedEmails?: SnoozedEmailCreateNestedManyWithoutUserInput
+    readReceipts?: ReadReceiptCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutMsAccountsInput = {
@@ -42358,6 +45504,8 @@ export namespace Prisma {
     notificationLogs?: NotificationLogUncheckedCreateNestedManyWithoutUserInput
     migrationStatuses?: MigrationStatusUncheckedCreateNestedManyWithoutUserInput
     todoItems?: TodoItemUncheckedCreateNestedManyWithoutUserInput
+    snoozedEmails?: SnoozedEmailUncheckedCreateNestedManyWithoutUserInput
+    readReceipts?: ReadReceiptUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutMsAccountsInput = {
@@ -42415,6 +45563,8 @@ export namespace Prisma {
     notificationLogs?: NotificationLogUpdateManyWithoutUserNestedInput
     migrationStatuses?: MigrationStatusUpdateManyWithoutUserNestedInput
     todoItems?: TodoItemUpdateManyWithoutUserNestedInput
+    snoozedEmails?: SnoozedEmailUpdateManyWithoutUserNestedInput
+    readReceipts?: ReadReceiptUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutMsAccountsInput = {
@@ -42456,6 +45606,8 @@ export namespace Prisma {
     notificationLogs?: NotificationLogUncheckedUpdateManyWithoutUserNestedInput
     migrationStatuses?: MigrationStatusUncheckedUpdateManyWithoutUserNestedInput
     todoItems?: TodoItemUncheckedUpdateManyWithoutUserNestedInput
+    snoozedEmails?: SnoozedEmailUncheckedUpdateManyWithoutUserNestedInput
+    readReceipts?: ReadReceiptUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutMsalCacheInput = {
@@ -42497,6 +45649,8 @@ export namespace Prisma {
     notificationLogs?: NotificationLogCreateNestedManyWithoutUserInput
     migrationStatuses?: MigrationStatusCreateNestedManyWithoutUserInput
     todoItems?: TodoItemCreateNestedManyWithoutUserInput
+    snoozedEmails?: SnoozedEmailCreateNestedManyWithoutUserInput
+    readReceipts?: ReadReceiptCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutMsalCacheInput = {
@@ -42538,6 +45692,8 @@ export namespace Prisma {
     notificationLogs?: NotificationLogUncheckedCreateNestedManyWithoutUserInput
     migrationStatuses?: MigrationStatusUncheckedCreateNestedManyWithoutUserInput
     todoItems?: TodoItemUncheckedCreateNestedManyWithoutUserInput
+    snoozedEmails?: SnoozedEmailUncheckedCreateNestedManyWithoutUserInput
+    readReceipts?: ReadReceiptUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutMsalCacheInput = {
@@ -42595,6 +45751,8 @@ export namespace Prisma {
     notificationLogs?: NotificationLogUpdateManyWithoutUserNestedInput
     migrationStatuses?: MigrationStatusUpdateManyWithoutUserNestedInput
     todoItems?: TodoItemUpdateManyWithoutUserNestedInput
+    snoozedEmails?: SnoozedEmailUpdateManyWithoutUserNestedInput
+    readReceipts?: ReadReceiptUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutMsalCacheInput = {
@@ -42636,6 +45794,8 @@ export namespace Prisma {
     notificationLogs?: NotificationLogUncheckedUpdateManyWithoutUserNestedInput
     migrationStatuses?: MigrationStatusUncheckedUpdateManyWithoutUserNestedInput
     todoItems?: TodoItemUncheckedUpdateManyWithoutUserNestedInput
+    snoozedEmails?: SnoozedEmailUncheckedUpdateManyWithoutUserNestedInput
+    readReceipts?: ReadReceiptUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutDeltaLinksInput = {
@@ -42677,6 +45837,8 @@ export namespace Prisma {
     notificationLogs?: NotificationLogCreateNestedManyWithoutUserInput
     migrationStatuses?: MigrationStatusCreateNestedManyWithoutUserInput
     todoItems?: TodoItemCreateNestedManyWithoutUserInput
+    snoozedEmails?: SnoozedEmailCreateNestedManyWithoutUserInput
+    readReceipts?: ReadReceiptCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutDeltaLinksInput = {
@@ -42718,6 +45880,8 @@ export namespace Prisma {
     notificationLogs?: NotificationLogUncheckedCreateNestedManyWithoutUserInput
     migrationStatuses?: MigrationStatusUncheckedCreateNestedManyWithoutUserInput
     todoItems?: TodoItemUncheckedCreateNestedManyWithoutUserInput
+    snoozedEmails?: SnoozedEmailUncheckedCreateNestedManyWithoutUserInput
+    readReceipts?: ReadReceiptUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutDeltaLinksInput = {
@@ -42775,6 +45939,8 @@ export namespace Prisma {
     notificationLogs?: NotificationLogUpdateManyWithoutUserNestedInput
     migrationStatuses?: MigrationStatusUpdateManyWithoutUserNestedInput
     todoItems?: TodoItemUpdateManyWithoutUserNestedInput
+    snoozedEmails?: SnoozedEmailUpdateManyWithoutUserNestedInput
+    readReceipts?: ReadReceiptUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutDeltaLinksInput = {
@@ -42816,6 +45982,8 @@ export namespace Prisma {
     notificationLogs?: NotificationLogUncheckedUpdateManyWithoutUserNestedInput
     migrationStatuses?: MigrationStatusUncheckedUpdateManyWithoutUserNestedInput
     todoItems?: TodoItemUncheckedUpdateManyWithoutUserNestedInput
+    snoozedEmails?: SnoozedEmailUncheckedUpdateManyWithoutUserNestedInput
+    readReceipts?: ReadReceiptUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutWebhookSubsInput = {
@@ -42857,6 +46025,8 @@ export namespace Prisma {
     notificationLogs?: NotificationLogCreateNestedManyWithoutUserInput
     migrationStatuses?: MigrationStatusCreateNestedManyWithoutUserInput
     todoItems?: TodoItemCreateNestedManyWithoutUserInput
+    snoozedEmails?: SnoozedEmailCreateNestedManyWithoutUserInput
+    readReceipts?: ReadReceiptCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutWebhookSubsInput = {
@@ -42898,6 +46068,8 @@ export namespace Prisma {
     notificationLogs?: NotificationLogUncheckedCreateNestedManyWithoutUserInput
     migrationStatuses?: MigrationStatusUncheckedCreateNestedManyWithoutUserInput
     todoItems?: TodoItemUncheckedCreateNestedManyWithoutUserInput
+    snoozedEmails?: SnoozedEmailUncheckedCreateNestedManyWithoutUserInput
+    readReceipts?: ReadReceiptUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutWebhookSubsInput = {
@@ -42955,6 +46127,8 @@ export namespace Prisma {
     notificationLogs?: NotificationLogUpdateManyWithoutUserNestedInput
     migrationStatuses?: MigrationStatusUpdateManyWithoutUserNestedInput
     todoItems?: TodoItemUpdateManyWithoutUserNestedInput
+    snoozedEmails?: SnoozedEmailUpdateManyWithoutUserNestedInput
+    readReceipts?: ReadReceiptUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutWebhookSubsInput = {
@@ -42996,6 +46170,8 @@ export namespace Prisma {
     notificationLogs?: NotificationLogUncheckedUpdateManyWithoutUserNestedInput
     migrationStatuses?: MigrationStatusUncheckedUpdateManyWithoutUserNestedInput
     todoItems?: TodoItemUncheckedUpdateManyWithoutUserNestedInput
+    snoozedEmails?: SnoozedEmailUncheckedUpdateManyWithoutUserNestedInput
+    readReceipts?: ReadReceiptUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutDraftsInput = {
@@ -43037,6 +46213,8 @@ export namespace Prisma {
     notificationLogs?: NotificationLogCreateNestedManyWithoutUserInput
     migrationStatuses?: MigrationStatusCreateNestedManyWithoutUserInput
     todoItems?: TodoItemCreateNestedManyWithoutUserInput
+    snoozedEmails?: SnoozedEmailCreateNestedManyWithoutUserInput
+    readReceipts?: ReadReceiptCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutDraftsInput = {
@@ -43078,6 +46256,8 @@ export namespace Prisma {
     notificationLogs?: NotificationLogUncheckedCreateNestedManyWithoutUserInput
     migrationStatuses?: MigrationStatusUncheckedCreateNestedManyWithoutUserInput
     todoItems?: TodoItemUncheckedCreateNestedManyWithoutUserInput
+    snoozedEmails?: SnoozedEmailUncheckedCreateNestedManyWithoutUserInput
+    readReceipts?: ReadReceiptUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutDraftsInput = {
@@ -43135,6 +46315,8 @@ export namespace Prisma {
     notificationLogs?: NotificationLogUpdateManyWithoutUserNestedInput
     migrationStatuses?: MigrationStatusUpdateManyWithoutUserNestedInput
     todoItems?: TodoItemUpdateManyWithoutUserNestedInput
+    snoozedEmails?: SnoozedEmailUpdateManyWithoutUserNestedInput
+    readReceipts?: ReadReceiptUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutDraftsInput = {
@@ -43176,6 +46358,8 @@ export namespace Prisma {
     notificationLogs?: NotificationLogUncheckedUpdateManyWithoutUserNestedInput
     migrationStatuses?: MigrationStatusUncheckedUpdateManyWithoutUserNestedInput
     todoItems?: TodoItemUncheckedUpdateManyWithoutUserNestedInput
+    snoozedEmails?: SnoozedEmailUncheckedUpdateManyWithoutUserNestedInput
+    readReceipts?: ReadReceiptUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutSignaturesInput = {
@@ -43217,6 +46401,8 @@ export namespace Prisma {
     notificationLogs?: NotificationLogCreateNestedManyWithoutUserInput
     migrationStatuses?: MigrationStatusCreateNestedManyWithoutUserInput
     todoItems?: TodoItemCreateNestedManyWithoutUserInput
+    snoozedEmails?: SnoozedEmailCreateNestedManyWithoutUserInput
+    readReceipts?: ReadReceiptCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutSignaturesInput = {
@@ -43258,6 +46444,8 @@ export namespace Prisma {
     notificationLogs?: NotificationLogUncheckedCreateNestedManyWithoutUserInput
     migrationStatuses?: MigrationStatusUncheckedCreateNestedManyWithoutUserInput
     todoItems?: TodoItemUncheckedCreateNestedManyWithoutUserInput
+    snoozedEmails?: SnoozedEmailUncheckedCreateNestedManyWithoutUserInput
+    readReceipts?: ReadReceiptUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutSignaturesInput = {
@@ -43315,6 +46503,8 @@ export namespace Prisma {
     notificationLogs?: NotificationLogUpdateManyWithoutUserNestedInput
     migrationStatuses?: MigrationStatusUpdateManyWithoutUserNestedInput
     todoItems?: TodoItemUpdateManyWithoutUserNestedInput
+    snoozedEmails?: SnoozedEmailUpdateManyWithoutUserNestedInput
+    readReceipts?: ReadReceiptUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSignaturesInput = {
@@ -43356,6 +46546,8 @@ export namespace Prisma {
     notificationLogs?: NotificationLogUncheckedUpdateManyWithoutUserNestedInput
     migrationStatuses?: MigrationStatusUncheckedUpdateManyWithoutUserNestedInput
     todoItems?: TodoItemUncheckedUpdateManyWithoutUserNestedInput
+    snoozedEmails?: SnoozedEmailUncheckedUpdateManyWithoutUserNestedInput
+    readReceipts?: ReadReceiptUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutCachedFoldersInput = {
@@ -43397,6 +46589,8 @@ export namespace Prisma {
     notificationLogs?: NotificationLogCreateNestedManyWithoutUserInput
     migrationStatuses?: MigrationStatusCreateNestedManyWithoutUserInput
     todoItems?: TodoItemCreateNestedManyWithoutUserInput
+    snoozedEmails?: SnoozedEmailCreateNestedManyWithoutUserInput
+    readReceipts?: ReadReceiptCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCachedFoldersInput = {
@@ -43438,6 +46632,8 @@ export namespace Prisma {
     notificationLogs?: NotificationLogUncheckedCreateNestedManyWithoutUserInput
     migrationStatuses?: MigrationStatusUncheckedCreateNestedManyWithoutUserInput
     todoItems?: TodoItemUncheckedCreateNestedManyWithoutUserInput
+    snoozedEmails?: SnoozedEmailUncheckedCreateNestedManyWithoutUserInput
+    readReceipts?: ReadReceiptUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCachedFoldersInput = {
@@ -43495,6 +46691,8 @@ export namespace Prisma {
     notificationLogs?: NotificationLogUpdateManyWithoutUserNestedInput
     migrationStatuses?: MigrationStatusUpdateManyWithoutUserNestedInput
     todoItems?: TodoItemUpdateManyWithoutUserNestedInput
+    snoozedEmails?: SnoozedEmailUpdateManyWithoutUserNestedInput
+    readReceipts?: ReadReceiptUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCachedFoldersInput = {
@@ -43536,6 +46734,8 @@ export namespace Prisma {
     notificationLogs?: NotificationLogUncheckedUpdateManyWithoutUserNestedInput
     migrationStatuses?: MigrationStatusUncheckedUpdateManyWithoutUserNestedInput
     todoItems?: TodoItemUncheckedUpdateManyWithoutUserNestedInput
+    snoozedEmails?: SnoozedEmailUncheckedUpdateManyWithoutUserNestedInput
+    readReceipts?: ReadReceiptUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutCachedEmailsInput = {
@@ -43577,6 +46777,8 @@ export namespace Prisma {
     notificationLogs?: NotificationLogCreateNestedManyWithoutUserInput
     migrationStatuses?: MigrationStatusCreateNestedManyWithoutUserInput
     todoItems?: TodoItemCreateNestedManyWithoutUserInput
+    snoozedEmails?: SnoozedEmailCreateNestedManyWithoutUserInput
+    readReceipts?: ReadReceiptCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCachedEmailsInput = {
@@ -43618,6 +46820,8 @@ export namespace Prisma {
     notificationLogs?: NotificationLogUncheckedCreateNestedManyWithoutUserInput
     migrationStatuses?: MigrationStatusUncheckedCreateNestedManyWithoutUserInput
     todoItems?: TodoItemUncheckedCreateNestedManyWithoutUserInput
+    snoozedEmails?: SnoozedEmailUncheckedCreateNestedManyWithoutUserInput
+    readReceipts?: ReadReceiptUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCachedEmailsInput = {
@@ -43675,6 +46879,8 @@ export namespace Prisma {
     notificationLogs?: NotificationLogUpdateManyWithoutUserNestedInput
     migrationStatuses?: MigrationStatusUpdateManyWithoutUserNestedInput
     todoItems?: TodoItemUpdateManyWithoutUserNestedInput
+    snoozedEmails?: SnoozedEmailUpdateManyWithoutUserNestedInput
+    readReceipts?: ReadReceiptUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCachedEmailsInput = {
@@ -43716,6 +46922,8 @@ export namespace Prisma {
     notificationLogs?: NotificationLogUncheckedUpdateManyWithoutUserNestedInput
     migrationStatuses?: MigrationStatusUncheckedUpdateManyWithoutUserNestedInput
     todoItems?: TodoItemUncheckedUpdateManyWithoutUserNestedInput
+    snoozedEmails?: SnoozedEmailUncheckedUpdateManyWithoutUserNestedInput
+    readReceipts?: ReadReceiptUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutCachedCalEventsInput = {
@@ -43757,6 +46965,8 @@ export namespace Prisma {
     notificationLogs?: NotificationLogCreateNestedManyWithoutUserInput
     migrationStatuses?: MigrationStatusCreateNestedManyWithoutUserInput
     todoItems?: TodoItemCreateNestedManyWithoutUserInput
+    snoozedEmails?: SnoozedEmailCreateNestedManyWithoutUserInput
+    readReceipts?: ReadReceiptCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCachedCalEventsInput = {
@@ -43798,6 +47008,8 @@ export namespace Prisma {
     notificationLogs?: NotificationLogUncheckedCreateNestedManyWithoutUserInput
     migrationStatuses?: MigrationStatusUncheckedCreateNestedManyWithoutUserInput
     todoItems?: TodoItemUncheckedCreateNestedManyWithoutUserInput
+    snoozedEmails?: SnoozedEmailUncheckedCreateNestedManyWithoutUserInput
+    readReceipts?: ReadReceiptUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCachedCalEventsInput = {
@@ -43855,6 +47067,8 @@ export namespace Prisma {
     notificationLogs?: NotificationLogUpdateManyWithoutUserNestedInput
     migrationStatuses?: MigrationStatusUpdateManyWithoutUserNestedInput
     todoItems?: TodoItemUpdateManyWithoutUserNestedInput
+    snoozedEmails?: SnoozedEmailUpdateManyWithoutUserNestedInput
+    readReceipts?: ReadReceiptUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCachedCalEventsInput = {
@@ -43896,6 +47110,8 @@ export namespace Prisma {
     notificationLogs?: NotificationLogUncheckedUpdateManyWithoutUserNestedInput
     migrationStatuses?: MigrationStatusUncheckedUpdateManyWithoutUserNestedInput
     todoItems?: TodoItemUncheckedUpdateManyWithoutUserNestedInput
+    snoozedEmails?: SnoozedEmailUncheckedUpdateManyWithoutUserNestedInput
+    readReceipts?: ReadReceiptUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutCachedContactsInput = {
@@ -43937,6 +47153,8 @@ export namespace Prisma {
     notificationLogs?: NotificationLogCreateNestedManyWithoutUserInput
     migrationStatuses?: MigrationStatusCreateNestedManyWithoutUserInput
     todoItems?: TodoItemCreateNestedManyWithoutUserInput
+    snoozedEmails?: SnoozedEmailCreateNestedManyWithoutUserInput
+    readReceipts?: ReadReceiptCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCachedContactsInput = {
@@ -43978,6 +47196,8 @@ export namespace Prisma {
     notificationLogs?: NotificationLogUncheckedCreateNestedManyWithoutUserInput
     migrationStatuses?: MigrationStatusUncheckedCreateNestedManyWithoutUserInput
     todoItems?: TodoItemUncheckedCreateNestedManyWithoutUserInput
+    snoozedEmails?: SnoozedEmailUncheckedCreateNestedManyWithoutUserInput
+    readReceipts?: ReadReceiptUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCachedContactsInput = {
@@ -44035,6 +47255,8 @@ export namespace Prisma {
     notificationLogs?: NotificationLogUpdateManyWithoutUserNestedInput
     migrationStatuses?: MigrationStatusUpdateManyWithoutUserNestedInput
     todoItems?: TodoItemUpdateManyWithoutUserNestedInput
+    snoozedEmails?: SnoozedEmailUpdateManyWithoutUserNestedInput
+    readReceipts?: ReadReceiptUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCachedContactsInput = {
@@ -44076,6 +47298,8 @@ export namespace Prisma {
     notificationLogs?: NotificationLogUncheckedUpdateManyWithoutUserNestedInput
     migrationStatuses?: MigrationStatusUncheckedUpdateManyWithoutUserNestedInput
     todoItems?: TodoItemUncheckedUpdateManyWithoutUserNestedInput
+    snoozedEmails?: SnoozedEmailUncheckedUpdateManyWithoutUserNestedInput
+    readReceipts?: ReadReceiptUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutEmailRulesInput = {
@@ -44117,6 +47341,8 @@ export namespace Prisma {
     notificationLogs?: NotificationLogCreateNestedManyWithoutUserInput
     migrationStatuses?: MigrationStatusCreateNestedManyWithoutUserInput
     todoItems?: TodoItemCreateNestedManyWithoutUserInput
+    snoozedEmails?: SnoozedEmailCreateNestedManyWithoutUserInput
+    readReceipts?: ReadReceiptCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutEmailRulesInput = {
@@ -44158,6 +47384,8 @@ export namespace Prisma {
     notificationLogs?: NotificationLogUncheckedCreateNestedManyWithoutUserInput
     migrationStatuses?: MigrationStatusUncheckedCreateNestedManyWithoutUserInput
     todoItems?: TodoItemUncheckedCreateNestedManyWithoutUserInput
+    snoozedEmails?: SnoozedEmailUncheckedCreateNestedManyWithoutUserInput
+    readReceipts?: ReadReceiptUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutEmailRulesInput = {
@@ -44215,6 +47443,8 @@ export namespace Prisma {
     notificationLogs?: NotificationLogUpdateManyWithoutUserNestedInput
     migrationStatuses?: MigrationStatusUpdateManyWithoutUserNestedInput
     todoItems?: TodoItemUpdateManyWithoutUserNestedInput
+    snoozedEmails?: SnoozedEmailUpdateManyWithoutUserNestedInput
+    readReceipts?: ReadReceiptUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutEmailRulesInput = {
@@ -44256,6 +47486,8 @@ export namespace Prisma {
     notificationLogs?: NotificationLogUncheckedUpdateManyWithoutUserNestedInput
     migrationStatuses?: MigrationStatusUncheckedUpdateManyWithoutUserNestedInput
     todoItems?: TodoItemUncheckedUpdateManyWithoutUserNestedInput
+    snoozedEmails?: SnoozedEmailUncheckedUpdateManyWithoutUserNestedInput
+    readReceipts?: ReadReceiptUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutEmailAttachmentsInput = {
@@ -44297,6 +47529,8 @@ export namespace Prisma {
     notificationLogs?: NotificationLogCreateNestedManyWithoutUserInput
     migrationStatuses?: MigrationStatusCreateNestedManyWithoutUserInput
     todoItems?: TodoItemCreateNestedManyWithoutUserInput
+    snoozedEmails?: SnoozedEmailCreateNestedManyWithoutUserInput
+    readReceipts?: ReadReceiptCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutEmailAttachmentsInput = {
@@ -44338,6 +47572,8 @@ export namespace Prisma {
     notificationLogs?: NotificationLogUncheckedCreateNestedManyWithoutUserInput
     migrationStatuses?: MigrationStatusUncheckedCreateNestedManyWithoutUserInput
     todoItems?: TodoItemUncheckedCreateNestedManyWithoutUserInput
+    snoozedEmails?: SnoozedEmailUncheckedCreateNestedManyWithoutUserInput
+    readReceipts?: ReadReceiptUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutEmailAttachmentsInput = {
@@ -44395,6 +47631,8 @@ export namespace Prisma {
     notificationLogs?: NotificationLogUpdateManyWithoutUserNestedInput
     migrationStatuses?: MigrationStatusUpdateManyWithoutUserNestedInput
     todoItems?: TodoItemUpdateManyWithoutUserNestedInput
+    snoozedEmails?: SnoozedEmailUpdateManyWithoutUserNestedInput
+    readReceipts?: ReadReceiptUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutEmailAttachmentsInput = {
@@ -44436,6 +47674,8 @@ export namespace Prisma {
     notificationLogs?: NotificationLogUncheckedUpdateManyWithoutUserNestedInput
     migrationStatuses?: MigrationStatusUncheckedUpdateManyWithoutUserNestedInput
     todoItems?: TodoItemUncheckedUpdateManyWithoutUserNestedInput
+    snoozedEmails?: SnoozedEmailUncheckedUpdateManyWithoutUserNestedInput
+    readReceipts?: ReadReceiptUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutAiGeneratedRepliesInput = {
@@ -44477,6 +47717,8 @@ export namespace Prisma {
     notificationLogs?: NotificationLogCreateNestedManyWithoutUserInput
     migrationStatuses?: MigrationStatusCreateNestedManyWithoutUserInput
     todoItems?: TodoItemCreateNestedManyWithoutUserInput
+    snoozedEmails?: SnoozedEmailCreateNestedManyWithoutUserInput
+    readReceipts?: ReadReceiptCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutAiGeneratedRepliesInput = {
@@ -44518,6 +47760,8 @@ export namespace Prisma {
     notificationLogs?: NotificationLogUncheckedCreateNestedManyWithoutUserInput
     migrationStatuses?: MigrationStatusUncheckedCreateNestedManyWithoutUserInput
     todoItems?: TodoItemUncheckedCreateNestedManyWithoutUserInput
+    snoozedEmails?: SnoozedEmailUncheckedCreateNestedManyWithoutUserInput
+    readReceipts?: ReadReceiptUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutAiGeneratedRepliesInput = {
@@ -44575,6 +47819,8 @@ export namespace Prisma {
     notificationLogs?: NotificationLogUpdateManyWithoutUserNestedInput
     migrationStatuses?: MigrationStatusUpdateManyWithoutUserNestedInput
     todoItems?: TodoItemUpdateManyWithoutUserNestedInput
+    snoozedEmails?: SnoozedEmailUpdateManyWithoutUserNestedInput
+    readReceipts?: ReadReceiptUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAiGeneratedRepliesInput = {
@@ -44616,6 +47862,8 @@ export namespace Prisma {
     notificationLogs?: NotificationLogUncheckedUpdateManyWithoutUserNestedInput
     migrationStatuses?: MigrationStatusUncheckedUpdateManyWithoutUserNestedInput
     todoItems?: TodoItemUncheckedUpdateManyWithoutUserNestedInput
+    snoozedEmails?: SnoozedEmailUncheckedUpdateManyWithoutUserNestedInput
+    readReceipts?: ReadReceiptUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutCachedSearchResultsInput = {
@@ -44657,6 +47905,8 @@ export namespace Prisma {
     notificationLogs?: NotificationLogCreateNestedManyWithoutUserInput
     migrationStatuses?: MigrationStatusCreateNestedManyWithoutUserInput
     todoItems?: TodoItemCreateNestedManyWithoutUserInput
+    snoozedEmails?: SnoozedEmailCreateNestedManyWithoutUserInput
+    readReceipts?: ReadReceiptCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCachedSearchResultsInput = {
@@ -44698,6 +47948,8 @@ export namespace Prisma {
     notificationLogs?: NotificationLogUncheckedCreateNestedManyWithoutUserInput
     migrationStatuses?: MigrationStatusUncheckedCreateNestedManyWithoutUserInput
     todoItems?: TodoItemUncheckedCreateNestedManyWithoutUserInput
+    snoozedEmails?: SnoozedEmailUncheckedCreateNestedManyWithoutUserInput
+    readReceipts?: ReadReceiptUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCachedSearchResultsInput = {
@@ -44755,6 +48007,8 @@ export namespace Prisma {
     notificationLogs?: NotificationLogUpdateManyWithoutUserNestedInput
     migrationStatuses?: MigrationStatusUpdateManyWithoutUserNestedInput
     todoItems?: TodoItemUpdateManyWithoutUserNestedInput
+    snoozedEmails?: SnoozedEmailUpdateManyWithoutUserNestedInput
+    readReceipts?: ReadReceiptUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCachedSearchResultsInput = {
@@ -44796,6 +48050,8 @@ export namespace Prisma {
     notificationLogs?: NotificationLogUncheckedUpdateManyWithoutUserNestedInput
     migrationStatuses?: MigrationStatusUncheckedUpdateManyWithoutUserNestedInput
     todoItems?: TodoItemUncheckedUpdateManyWithoutUserNestedInput
+    snoozedEmails?: SnoozedEmailUncheckedUpdateManyWithoutUserNestedInput
+    readReceipts?: ReadReceiptUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutSyncStatusesInput = {
@@ -44837,6 +48093,8 @@ export namespace Prisma {
     notificationLogs?: NotificationLogCreateNestedManyWithoutUserInput
     migrationStatuses?: MigrationStatusCreateNestedManyWithoutUserInput
     todoItems?: TodoItemCreateNestedManyWithoutUserInput
+    snoozedEmails?: SnoozedEmailCreateNestedManyWithoutUserInput
+    readReceipts?: ReadReceiptCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutSyncStatusesInput = {
@@ -44878,6 +48136,8 @@ export namespace Prisma {
     notificationLogs?: NotificationLogUncheckedCreateNestedManyWithoutUserInput
     migrationStatuses?: MigrationStatusUncheckedCreateNestedManyWithoutUserInput
     todoItems?: TodoItemUncheckedCreateNestedManyWithoutUserInput
+    snoozedEmails?: SnoozedEmailUncheckedCreateNestedManyWithoutUserInput
+    readReceipts?: ReadReceiptUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutSyncStatusesInput = {
@@ -44935,6 +48195,8 @@ export namespace Prisma {
     notificationLogs?: NotificationLogUpdateManyWithoutUserNestedInput
     migrationStatuses?: MigrationStatusUpdateManyWithoutUserNestedInput
     todoItems?: TodoItemUpdateManyWithoutUserNestedInput
+    snoozedEmails?: SnoozedEmailUpdateManyWithoutUserNestedInput
+    readReceipts?: ReadReceiptUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSyncStatusesInput = {
@@ -44976,6 +48238,8 @@ export namespace Prisma {
     notificationLogs?: NotificationLogUncheckedUpdateManyWithoutUserNestedInput
     migrationStatuses?: MigrationStatusUncheckedUpdateManyWithoutUserNestedInput
     todoItems?: TodoItemUncheckedUpdateManyWithoutUserNestedInput
+    snoozedEmails?: SnoozedEmailUncheckedUpdateManyWithoutUserNestedInput
+    readReceipts?: ReadReceiptUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutNotificationLogsInput = {
@@ -45017,6 +48281,8 @@ export namespace Prisma {
     syncStatuses?: SyncStatusCreateNestedManyWithoutUserInput
     migrationStatuses?: MigrationStatusCreateNestedManyWithoutUserInput
     todoItems?: TodoItemCreateNestedManyWithoutUserInput
+    snoozedEmails?: SnoozedEmailCreateNestedManyWithoutUserInput
+    readReceipts?: ReadReceiptCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutNotificationLogsInput = {
@@ -45058,6 +48324,8 @@ export namespace Prisma {
     syncStatuses?: SyncStatusUncheckedCreateNestedManyWithoutUserInput
     migrationStatuses?: MigrationStatusUncheckedCreateNestedManyWithoutUserInput
     todoItems?: TodoItemUncheckedCreateNestedManyWithoutUserInput
+    snoozedEmails?: SnoozedEmailUncheckedCreateNestedManyWithoutUserInput
+    readReceipts?: ReadReceiptUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutNotificationLogsInput = {
@@ -45115,6 +48383,8 @@ export namespace Prisma {
     syncStatuses?: SyncStatusUpdateManyWithoutUserNestedInput
     migrationStatuses?: MigrationStatusUpdateManyWithoutUserNestedInput
     todoItems?: TodoItemUpdateManyWithoutUserNestedInput
+    snoozedEmails?: SnoozedEmailUpdateManyWithoutUserNestedInput
+    readReceipts?: ReadReceiptUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutNotificationLogsInput = {
@@ -45156,6 +48426,8 @@ export namespace Prisma {
     syncStatuses?: SyncStatusUncheckedUpdateManyWithoutUserNestedInput
     migrationStatuses?: MigrationStatusUncheckedUpdateManyWithoutUserNestedInput
     todoItems?: TodoItemUncheckedUpdateManyWithoutUserNestedInput
+    snoozedEmails?: SnoozedEmailUncheckedUpdateManyWithoutUserNestedInput
+    readReceipts?: ReadReceiptUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutMigrationStatusesInput = {
@@ -45197,6 +48469,8 @@ export namespace Prisma {
     syncStatuses?: SyncStatusCreateNestedManyWithoutUserInput
     notificationLogs?: NotificationLogCreateNestedManyWithoutUserInput
     todoItems?: TodoItemCreateNestedManyWithoutUserInput
+    snoozedEmails?: SnoozedEmailCreateNestedManyWithoutUserInput
+    readReceipts?: ReadReceiptCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutMigrationStatusesInput = {
@@ -45238,6 +48512,8 @@ export namespace Prisma {
     syncStatuses?: SyncStatusUncheckedCreateNestedManyWithoutUserInput
     notificationLogs?: NotificationLogUncheckedCreateNestedManyWithoutUserInput
     todoItems?: TodoItemUncheckedCreateNestedManyWithoutUserInput
+    snoozedEmails?: SnoozedEmailUncheckedCreateNestedManyWithoutUserInput
+    readReceipts?: ReadReceiptUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutMigrationStatusesInput = {
@@ -45295,6 +48571,8 @@ export namespace Prisma {
     syncStatuses?: SyncStatusUpdateManyWithoutUserNestedInput
     notificationLogs?: NotificationLogUpdateManyWithoutUserNestedInput
     todoItems?: TodoItemUpdateManyWithoutUserNestedInput
+    snoozedEmails?: SnoozedEmailUpdateManyWithoutUserNestedInput
+    readReceipts?: ReadReceiptUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutMigrationStatusesInput = {
@@ -45336,6 +48614,384 @@ export namespace Prisma {
     syncStatuses?: SyncStatusUncheckedUpdateManyWithoutUserNestedInput
     notificationLogs?: NotificationLogUncheckedUpdateManyWithoutUserNestedInput
     todoItems?: TodoItemUncheckedUpdateManyWithoutUserNestedInput
+    snoozedEmails?: SnoozedEmailUncheckedUpdateManyWithoutUserNestedInput
+    readReceipts?: ReadReceiptUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserCreateWithoutSnoozedEmailsInput = {
+    id: string
+    email: string
+    name?: string | null
+    avatarUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    notificationNewEmail?: boolean
+    notificationDailyDigest?: boolean
+    notificationAiReplies?: boolean
+    notificationCalendarReminders?: boolean
+    notificationWeeklyReport?: boolean
+    appTheme?: string
+    fontSize?: string
+    emailDensity?: string
+    preferredTimeZone?: string
+    lastActiveAccountId?: string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: Date | string | null
+    org: OrganizationCreateNestedOneWithoutUsersInput
+    msAccounts?: MsConnectedAccountCreateNestedManyWithoutUserInput
+    imapAccounts?: ImapConnectedAccountCreateNestedManyWithoutUserInput
+    jmapAccounts?: JmapConnectedAccountCreateNestedManyWithoutUserInput
+    msalCache?: MsalTokenCacheCreateNestedOneWithoutUserInput
+    deltaLinks?: EmailDeltaLinkCreateNestedManyWithoutUserInput
+    webhookSubs?: WebhookSubscriptionCreateNestedManyWithoutUserInput
+    drafts?: DraftCreateNestedManyWithoutUserInput
+    emailRules?: EmailRuleCreateNestedManyWithoutUserInput
+    signatures?: SignatureCreateNestedManyWithoutUserInput
+    cachedFolders?: CachedFolderCreateNestedManyWithoutUserInput
+    cachedEmails?: CachedEmailCreateNestedManyWithoutUserInput
+    cachedCalEvents?: CachedCalendarEventCreateNestedManyWithoutUserInput
+    cachedContacts?: CachedContactCreateNestedManyWithoutUserInput
+    emailAttachments?: EmailAttachmentCreateNestedManyWithoutUserInput
+    aiGeneratedReplies?: AiGeneratedReplyCreateNestedManyWithoutUserInput
+    cachedSearchResults?: CachedSearchResultCreateNestedManyWithoutUserInput
+    syncStatuses?: SyncStatusCreateNestedManyWithoutUserInput
+    notificationLogs?: NotificationLogCreateNestedManyWithoutUserInput
+    migrationStatuses?: MigrationStatusCreateNestedManyWithoutUserInput
+    todoItems?: TodoItemCreateNestedManyWithoutUserInput
+    readReceipts?: ReadReceiptCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutSnoozedEmailsInput = {
+    id: string
+    email: string
+    name?: string | null
+    avatarUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    orgId: string
+    notificationNewEmail?: boolean
+    notificationDailyDigest?: boolean
+    notificationAiReplies?: boolean
+    notificationCalendarReminders?: boolean
+    notificationWeeklyReport?: boolean
+    appTheme?: string
+    fontSize?: string
+    emailDensity?: string
+    preferredTimeZone?: string
+    lastActiveAccountId?: string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: Date | string | null
+    msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
+    imapAccounts?: ImapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
+    jmapAccounts?: JmapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
+    msalCache?: MsalTokenCacheUncheckedCreateNestedOneWithoutUserInput
+    deltaLinks?: EmailDeltaLinkUncheckedCreateNestedManyWithoutUserInput
+    webhookSubs?: WebhookSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    drafts?: DraftUncheckedCreateNestedManyWithoutUserInput
+    emailRules?: EmailRuleUncheckedCreateNestedManyWithoutUserInput
+    signatures?: SignatureUncheckedCreateNestedManyWithoutUserInput
+    cachedFolders?: CachedFolderUncheckedCreateNestedManyWithoutUserInput
+    cachedEmails?: CachedEmailUncheckedCreateNestedManyWithoutUserInput
+    cachedCalEvents?: CachedCalendarEventUncheckedCreateNestedManyWithoutUserInput
+    cachedContacts?: CachedContactUncheckedCreateNestedManyWithoutUserInput
+    emailAttachments?: EmailAttachmentUncheckedCreateNestedManyWithoutUserInput
+    aiGeneratedReplies?: AiGeneratedReplyUncheckedCreateNestedManyWithoutUserInput
+    cachedSearchResults?: CachedSearchResultUncheckedCreateNestedManyWithoutUserInput
+    syncStatuses?: SyncStatusUncheckedCreateNestedManyWithoutUserInput
+    notificationLogs?: NotificationLogUncheckedCreateNestedManyWithoutUserInput
+    migrationStatuses?: MigrationStatusUncheckedCreateNestedManyWithoutUserInput
+    todoItems?: TodoItemUncheckedCreateNestedManyWithoutUserInput
+    readReceipts?: ReadReceiptUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutSnoozedEmailsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutSnoozedEmailsInput, UserUncheckedCreateWithoutSnoozedEmailsInput>
+  }
+
+  export type UserUpsertWithoutSnoozedEmailsInput = {
+    update: XOR<UserUpdateWithoutSnoozedEmailsInput, UserUncheckedUpdateWithoutSnoozedEmailsInput>
+    create: XOR<UserCreateWithoutSnoozedEmailsInput, UserUncheckedCreateWithoutSnoozedEmailsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutSnoozedEmailsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutSnoozedEmailsInput, UserUncheckedUpdateWithoutSnoozedEmailsInput>
+  }
+
+  export type UserUpdateWithoutSnoozedEmailsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
+    notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
+    notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
+    notificationCalendarReminders?: BoolFieldUpdateOperationsInput | boolean
+    notificationWeeklyReport?: BoolFieldUpdateOperationsInput | boolean
+    appTheme?: StringFieldUpdateOperationsInput | string
+    fontSize?: StringFieldUpdateOperationsInput | string
+    emailDensity?: StringFieldUpdateOperationsInput | string
+    preferredTimeZone?: StringFieldUpdateOperationsInput | string
+    lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
+    msAccounts?: MsConnectedAccountUpdateManyWithoutUserNestedInput
+    imapAccounts?: ImapConnectedAccountUpdateManyWithoutUserNestedInput
+    jmapAccounts?: JmapConnectedAccountUpdateManyWithoutUserNestedInput
+    msalCache?: MsalTokenCacheUpdateOneWithoutUserNestedInput
+    deltaLinks?: EmailDeltaLinkUpdateManyWithoutUserNestedInput
+    webhookSubs?: WebhookSubscriptionUpdateManyWithoutUserNestedInput
+    drafts?: DraftUpdateManyWithoutUserNestedInput
+    emailRules?: EmailRuleUpdateManyWithoutUserNestedInput
+    signatures?: SignatureUpdateManyWithoutUserNestedInput
+    cachedFolders?: CachedFolderUpdateManyWithoutUserNestedInput
+    cachedEmails?: CachedEmailUpdateManyWithoutUserNestedInput
+    cachedCalEvents?: CachedCalendarEventUpdateManyWithoutUserNestedInput
+    cachedContacts?: CachedContactUpdateManyWithoutUserNestedInput
+    emailAttachments?: EmailAttachmentUpdateManyWithoutUserNestedInput
+    aiGeneratedReplies?: AiGeneratedReplyUpdateManyWithoutUserNestedInput
+    cachedSearchResults?: CachedSearchResultUpdateManyWithoutUserNestedInput
+    syncStatuses?: SyncStatusUpdateManyWithoutUserNestedInput
+    notificationLogs?: NotificationLogUpdateManyWithoutUserNestedInput
+    migrationStatuses?: MigrationStatusUpdateManyWithoutUserNestedInput
+    todoItems?: TodoItemUpdateManyWithoutUserNestedInput
+    readReceipts?: ReadReceiptUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutSnoozedEmailsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    orgId?: StringFieldUpdateOperationsInput | string
+    notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
+    notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
+    notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
+    notificationCalendarReminders?: BoolFieldUpdateOperationsInput | boolean
+    notificationWeeklyReport?: BoolFieldUpdateOperationsInput | boolean
+    appTheme?: StringFieldUpdateOperationsInput | string
+    fontSize?: StringFieldUpdateOperationsInput | string
+    emailDensity?: StringFieldUpdateOperationsInput | string
+    preferredTimeZone?: StringFieldUpdateOperationsInput | string
+    lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
+    imapAccounts?: ImapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
+    jmapAccounts?: JmapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
+    msalCache?: MsalTokenCacheUncheckedUpdateOneWithoutUserNestedInput
+    deltaLinks?: EmailDeltaLinkUncheckedUpdateManyWithoutUserNestedInput
+    webhookSubs?: WebhookSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    drafts?: DraftUncheckedUpdateManyWithoutUserNestedInput
+    emailRules?: EmailRuleUncheckedUpdateManyWithoutUserNestedInput
+    signatures?: SignatureUncheckedUpdateManyWithoutUserNestedInput
+    cachedFolders?: CachedFolderUncheckedUpdateManyWithoutUserNestedInput
+    cachedEmails?: CachedEmailUncheckedUpdateManyWithoutUserNestedInput
+    cachedCalEvents?: CachedCalendarEventUncheckedUpdateManyWithoutUserNestedInput
+    cachedContacts?: CachedContactUncheckedUpdateManyWithoutUserNestedInput
+    emailAttachments?: EmailAttachmentUncheckedUpdateManyWithoutUserNestedInput
+    aiGeneratedReplies?: AiGeneratedReplyUncheckedUpdateManyWithoutUserNestedInput
+    cachedSearchResults?: CachedSearchResultUncheckedUpdateManyWithoutUserNestedInput
+    syncStatuses?: SyncStatusUncheckedUpdateManyWithoutUserNestedInput
+    notificationLogs?: NotificationLogUncheckedUpdateManyWithoutUserNestedInput
+    migrationStatuses?: MigrationStatusUncheckedUpdateManyWithoutUserNestedInput
+    todoItems?: TodoItemUncheckedUpdateManyWithoutUserNestedInput
+    readReceipts?: ReadReceiptUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserCreateWithoutReadReceiptsInput = {
+    id: string
+    email: string
+    name?: string | null
+    avatarUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    notificationNewEmail?: boolean
+    notificationDailyDigest?: boolean
+    notificationAiReplies?: boolean
+    notificationCalendarReminders?: boolean
+    notificationWeeklyReport?: boolean
+    appTheme?: string
+    fontSize?: string
+    emailDensity?: string
+    preferredTimeZone?: string
+    lastActiveAccountId?: string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: Date | string | null
+    org: OrganizationCreateNestedOneWithoutUsersInput
+    msAccounts?: MsConnectedAccountCreateNestedManyWithoutUserInput
+    imapAccounts?: ImapConnectedAccountCreateNestedManyWithoutUserInput
+    jmapAccounts?: JmapConnectedAccountCreateNestedManyWithoutUserInput
+    msalCache?: MsalTokenCacheCreateNestedOneWithoutUserInput
+    deltaLinks?: EmailDeltaLinkCreateNestedManyWithoutUserInput
+    webhookSubs?: WebhookSubscriptionCreateNestedManyWithoutUserInput
+    drafts?: DraftCreateNestedManyWithoutUserInput
+    emailRules?: EmailRuleCreateNestedManyWithoutUserInput
+    signatures?: SignatureCreateNestedManyWithoutUserInput
+    cachedFolders?: CachedFolderCreateNestedManyWithoutUserInput
+    cachedEmails?: CachedEmailCreateNestedManyWithoutUserInput
+    cachedCalEvents?: CachedCalendarEventCreateNestedManyWithoutUserInput
+    cachedContacts?: CachedContactCreateNestedManyWithoutUserInput
+    emailAttachments?: EmailAttachmentCreateNestedManyWithoutUserInput
+    aiGeneratedReplies?: AiGeneratedReplyCreateNestedManyWithoutUserInput
+    cachedSearchResults?: CachedSearchResultCreateNestedManyWithoutUserInput
+    syncStatuses?: SyncStatusCreateNestedManyWithoutUserInput
+    notificationLogs?: NotificationLogCreateNestedManyWithoutUserInput
+    migrationStatuses?: MigrationStatusCreateNestedManyWithoutUserInput
+    todoItems?: TodoItemCreateNestedManyWithoutUserInput
+    snoozedEmails?: SnoozedEmailCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutReadReceiptsInput = {
+    id: string
+    email: string
+    name?: string | null
+    avatarUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    orgId: string
+    notificationNewEmail?: boolean
+    notificationDailyDigest?: boolean
+    notificationAiReplies?: boolean
+    notificationCalendarReminders?: boolean
+    notificationWeeklyReport?: boolean
+    appTheme?: string
+    fontSize?: string
+    emailDensity?: string
+    preferredTimeZone?: string
+    lastActiveAccountId?: string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: Date | string | null
+    msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
+    imapAccounts?: ImapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
+    jmapAccounts?: JmapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
+    msalCache?: MsalTokenCacheUncheckedCreateNestedOneWithoutUserInput
+    deltaLinks?: EmailDeltaLinkUncheckedCreateNestedManyWithoutUserInput
+    webhookSubs?: WebhookSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    drafts?: DraftUncheckedCreateNestedManyWithoutUserInput
+    emailRules?: EmailRuleUncheckedCreateNestedManyWithoutUserInput
+    signatures?: SignatureUncheckedCreateNestedManyWithoutUserInput
+    cachedFolders?: CachedFolderUncheckedCreateNestedManyWithoutUserInput
+    cachedEmails?: CachedEmailUncheckedCreateNestedManyWithoutUserInput
+    cachedCalEvents?: CachedCalendarEventUncheckedCreateNestedManyWithoutUserInput
+    cachedContacts?: CachedContactUncheckedCreateNestedManyWithoutUserInput
+    emailAttachments?: EmailAttachmentUncheckedCreateNestedManyWithoutUserInput
+    aiGeneratedReplies?: AiGeneratedReplyUncheckedCreateNestedManyWithoutUserInput
+    cachedSearchResults?: CachedSearchResultUncheckedCreateNestedManyWithoutUserInput
+    syncStatuses?: SyncStatusUncheckedCreateNestedManyWithoutUserInput
+    notificationLogs?: NotificationLogUncheckedCreateNestedManyWithoutUserInput
+    migrationStatuses?: MigrationStatusUncheckedCreateNestedManyWithoutUserInput
+    todoItems?: TodoItemUncheckedCreateNestedManyWithoutUserInput
+    snoozedEmails?: SnoozedEmailUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutReadReceiptsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutReadReceiptsInput, UserUncheckedCreateWithoutReadReceiptsInput>
+  }
+
+  export type UserUpsertWithoutReadReceiptsInput = {
+    update: XOR<UserUpdateWithoutReadReceiptsInput, UserUncheckedUpdateWithoutReadReceiptsInput>
+    create: XOR<UserCreateWithoutReadReceiptsInput, UserUncheckedCreateWithoutReadReceiptsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutReadReceiptsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutReadReceiptsInput, UserUncheckedUpdateWithoutReadReceiptsInput>
+  }
+
+  export type UserUpdateWithoutReadReceiptsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
+    notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
+    notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
+    notificationCalendarReminders?: BoolFieldUpdateOperationsInput | boolean
+    notificationWeeklyReport?: BoolFieldUpdateOperationsInput | boolean
+    appTheme?: StringFieldUpdateOperationsInput | string
+    fontSize?: StringFieldUpdateOperationsInput | string
+    emailDensity?: StringFieldUpdateOperationsInput | string
+    preferredTimeZone?: StringFieldUpdateOperationsInput | string
+    lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
+    msAccounts?: MsConnectedAccountUpdateManyWithoutUserNestedInput
+    imapAccounts?: ImapConnectedAccountUpdateManyWithoutUserNestedInput
+    jmapAccounts?: JmapConnectedAccountUpdateManyWithoutUserNestedInput
+    msalCache?: MsalTokenCacheUpdateOneWithoutUserNestedInput
+    deltaLinks?: EmailDeltaLinkUpdateManyWithoutUserNestedInput
+    webhookSubs?: WebhookSubscriptionUpdateManyWithoutUserNestedInput
+    drafts?: DraftUpdateManyWithoutUserNestedInput
+    emailRules?: EmailRuleUpdateManyWithoutUserNestedInput
+    signatures?: SignatureUpdateManyWithoutUserNestedInput
+    cachedFolders?: CachedFolderUpdateManyWithoutUserNestedInput
+    cachedEmails?: CachedEmailUpdateManyWithoutUserNestedInput
+    cachedCalEvents?: CachedCalendarEventUpdateManyWithoutUserNestedInput
+    cachedContacts?: CachedContactUpdateManyWithoutUserNestedInput
+    emailAttachments?: EmailAttachmentUpdateManyWithoutUserNestedInput
+    aiGeneratedReplies?: AiGeneratedReplyUpdateManyWithoutUserNestedInput
+    cachedSearchResults?: CachedSearchResultUpdateManyWithoutUserNestedInput
+    syncStatuses?: SyncStatusUpdateManyWithoutUserNestedInput
+    notificationLogs?: NotificationLogUpdateManyWithoutUserNestedInput
+    migrationStatuses?: MigrationStatusUpdateManyWithoutUserNestedInput
+    todoItems?: TodoItemUpdateManyWithoutUserNestedInput
+    snoozedEmails?: SnoozedEmailUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutReadReceiptsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    orgId?: StringFieldUpdateOperationsInput | string
+    notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
+    notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
+    notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
+    notificationCalendarReminders?: BoolFieldUpdateOperationsInput | boolean
+    notificationWeeklyReport?: BoolFieldUpdateOperationsInput | boolean
+    appTheme?: StringFieldUpdateOperationsInput | string
+    fontSize?: StringFieldUpdateOperationsInput | string
+    emailDensity?: StringFieldUpdateOperationsInput | string
+    preferredTimeZone?: StringFieldUpdateOperationsInput | string
+    lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
+    imapAccounts?: ImapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
+    jmapAccounts?: JmapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
+    msalCache?: MsalTokenCacheUncheckedUpdateOneWithoutUserNestedInput
+    deltaLinks?: EmailDeltaLinkUncheckedUpdateManyWithoutUserNestedInput
+    webhookSubs?: WebhookSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    drafts?: DraftUncheckedUpdateManyWithoutUserNestedInput
+    emailRules?: EmailRuleUncheckedUpdateManyWithoutUserNestedInput
+    signatures?: SignatureUncheckedUpdateManyWithoutUserNestedInput
+    cachedFolders?: CachedFolderUncheckedUpdateManyWithoutUserNestedInput
+    cachedEmails?: CachedEmailUncheckedUpdateManyWithoutUserNestedInput
+    cachedCalEvents?: CachedCalendarEventUncheckedUpdateManyWithoutUserNestedInput
+    cachedContacts?: CachedContactUncheckedUpdateManyWithoutUserNestedInput
+    emailAttachments?: EmailAttachmentUncheckedUpdateManyWithoutUserNestedInput
+    aiGeneratedReplies?: AiGeneratedReplyUncheckedUpdateManyWithoutUserNestedInput
+    cachedSearchResults?: CachedSearchResultUncheckedUpdateManyWithoutUserNestedInput
+    syncStatuses?: SyncStatusUncheckedUpdateManyWithoutUserNestedInput
+    notificationLogs?: NotificationLogUncheckedUpdateManyWithoutUserNestedInput
+    migrationStatuses?: MigrationStatusUncheckedUpdateManyWithoutUserNestedInput
+    todoItems?: TodoItemUncheckedUpdateManyWithoutUserNestedInput
+    snoozedEmails?: SnoozedEmailUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutTodoItemsInput = {
@@ -45377,6 +49033,8 @@ export namespace Prisma {
     syncStatuses?: SyncStatusCreateNestedManyWithoutUserInput
     notificationLogs?: NotificationLogCreateNestedManyWithoutUserInput
     migrationStatuses?: MigrationStatusCreateNestedManyWithoutUserInput
+    snoozedEmails?: SnoozedEmailCreateNestedManyWithoutUserInput
+    readReceipts?: ReadReceiptCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutTodoItemsInput = {
@@ -45418,6 +49076,8 @@ export namespace Prisma {
     syncStatuses?: SyncStatusUncheckedCreateNestedManyWithoutUserInput
     notificationLogs?: NotificationLogUncheckedCreateNestedManyWithoutUserInput
     migrationStatuses?: MigrationStatusUncheckedCreateNestedManyWithoutUserInput
+    snoozedEmails?: SnoozedEmailUncheckedCreateNestedManyWithoutUserInput
+    readReceipts?: ReadReceiptUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutTodoItemsInput = {
@@ -45475,6 +49135,8 @@ export namespace Prisma {
     syncStatuses?: SyncStatusUpdateManyWithoutUserNestedInput
     notificationLogs?: NotificationLogUpdateManyWithoutUserNestedInput
     migrationStatuses?: MigrationStatusUpdateManyWithoutUserNestedInput
+    snoozedEmails?: SnoozedEmailUpdateManyWithoutUserNestedInput
+    readReceipts?: ReadReceiptUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutTodoItemsInput = {
@@ -45516,6 +49178,8 @@ export namespace Prisma {
     syncStatuses?: SyncStatusUncheckedUpdateManyWithoutUserNestedInput
     notificationLogs?: NotificationLogUncheckedUpdateManyWithoutUserNestedInput
     migrationStatuses?: MigrationStatusUncheckedUpdateManyWithoutUserNestedInput
+    snoozedEmails?: SnoozedEmailUncheckedUpdateManyWithoutUserNestedInput
+    readReceipts?: ReadReceiptUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutImapAccountsInput = {
@@ -45557,6 +49221,8 @@ export namespace Prisma {
     notificationLogs?: NotificationLogCreateNestedManyWithoutUserInput
     migrationStatuses?: MigrationStatusCreateNestedManyWithoutUserInput
     todoItems?: TodoItemCreateNestedManyWithoutUserInput
+    snoozedEmails?: SnoozedEmailCreateNestedManyWithoutUserInput
+    readReceipts?: ReadReceiptCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutImapAccountsInput = {
@@ -45598,6 +49264,8 @@ export namespace Prisma {
     notificationLogs?: NotificationLogUncheckedCreateNestedManyWithoutUserInput
     migrationStatuses?: MigrationStatusUncheckedCreateNestedManyWithoutUserInput
     todoItems?: TodoItemUncheckedCreateNestedManyWithoutUserInput
+    snoozedEmails?: SnoozedEmailUncheckedCreateNestedManyWithoutUserInput
+    readReceipts?: ReadReceiptUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutImapAccountsInput = {
@@ -45655,6 +49323,8 @@ export namespace Prisma {
     notificationLogs?: NotificationLogUpdateManyWithoutUserNestedInput
     migrationStatuses?: MigrationStatusUpdateManyWithoutUserNestedInput
     todoItems?: TodoItemUpdateManyWithoutUserNestedInput
+    snoozedEmails?: SnoozedEmailUpdateManyWithoutUserNestedInput
+    readReceipts?: ReadReceiptUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutImapAccountsInput = {
@@ -45696,6 +49366,8 @@ export namespace Prisma {
     notificationLogs?: NotificationLogUncheckedUpdateManyWithoutUserNestedInput
     migrationStatuses?: MigrationStatusUncheckedUpdateManyWithoutUserNestedInput
     todoItems?: TodoItemUncheckedUpdateManyWithoutUserNestedInput
+    snoozedEmails?: SnoozedEmailUncheckedUpdateManyWithoutUserNestedInput
+    readReceipts?: ReadReceiptUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutJmapAccountsInput = {
@@ -45737,6 +49409,8 @@ export namespace Prisma {
     notificationLogs?: NotificationLogCreateNestedManyWithoutUserInput
     migrationStatuses?: MigrationStatusCreateNestedManyWithoutUserInput
     todoItems?: TodoItemCreateNestedManyWithoutUserInput
+    snoozedEmails?: SnoozedEmailCreateNestedManyWithoutUserInput
+    readReceipts?: ReadReceiptCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutJmapAccountsInput = {
@@ -45778,6 +49452,8 @@ export namespace Prisma {
     notificationLogs?: NotificationLogUncheckedCreateNestedManyWithoutUserInput
     migrationStatuses?: MigrationStatusUncheckedCreateNestedManyWithoutUserInput
     todoItems?: TodoItemUncheckedCreateNestedManyWithoutUserInput
+    snoozedEmails?: SnoozedEmailUncheckedCreateNestedManyWithoutUserInput
+    readReceipts?: ReadReceiptUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutJmapAccountsInput = {
@@ -45835,6 +49511,8 @@ export namespace Prisma {
     notificationLogs?: NotificationLogUpdateManyWithoutUserNestedInput
     migrationStatuses?: MigrationStatusUpdateManyWithoutUserNestedInput
     todoItems?: TodoItemUpdateManyWithoutUserNestedInput
+    snoozedEmails?: SnoozedEmailUpdateManyWithoutUserNestedInput
+    readReceipts?: ReadReceiptUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutJmapAccountsInput = {
@@ -45876,6 +49554,8 @@ export namespace Prisma {
     notificationLogs?: NotificationLogUncheckedUpdateManyWithoutUserNestedInput
     migrationStatuses?: MigrationStatusUncheckedUpdateManyWithoutUserNestedInput
     todoItems?: TodoItemUncheckedUpdateManyWithoutUserNestedInput
+    snoozedEmails?: SnoozedEmailUncheckedUpdateManyWithoutUserNestedInput
+    readReceipts?: ReadReceiptUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateManyOrgInput = {
@@ -45947,6 +49627,8 @@ export namespace Prisma {
     notificationLogs?: NotificationLogUpdateManyWithoutUserNestedInput
     migrationStatuses?: MigrationStatusUpdateManyWithoutUserNestedInput
     todoItems?: TodoItemUpdateManyWithoutUserNestedInput
+    snoozedEmails?: SnoozedEmailUpdateManyWithoutUserNestedInput
+    readReceipts?: ReadReceiptUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutOrgInput = {
@@ -45988,6 +49670,8 @@ export namespace Prisma {
     notificationLogs?: NotificationLogUncheckedUpdateManyWithoutUserNestedInput
     migrationStatuses?: MigrationStatusUncheckedUpdateManyWithoutUserNestedInput
     todoItems?: TodoItemUncheckedUpdateManyWithoutUserNestedInput
+    snoozedEmails?: SnoozedEmailUncheckedUpdateManyWithoutUserNestedInput
+    readReceipts?: ReadReceiptUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutOrgInput = {
@@ -46336,6 +50020,27 @@ export namespace Prisma {
     priority?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+  }
+
+  export type SnoozedEmailCreateManyUserInput = {
+    id?: string
+    homeAccountId: string
+    messageId: string
+    snoozeUntil: Date | string
+    subject: string
+    senderName?: string | null
+    senderEmail: string
+    isReturned?: boolean
+    createdAt?: Date | string
+  }
+
+  export type ReadReceiptCreateManyUserInput = {
+    id?: string
+    messageId: string
+    recipientEmail: string
+    deliveredAt?: Date | string | null
+    readAt?: Date | string | null
+    createdAt?: Date | string
   }
 
   export type MsConnectedAccountUpdateWithoutUserInput = {
@@ -47236,6 +50941,69 @@ export namespace Prisma {
     priority?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SnoozedEmailUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    homeAccountId?: StringFieldUpdateOperationsInput | string
+    messageId?: StringFieldUpdateOperationsInput | string
+    snoozeUntil?: DateTimeFieldUpdateOperationsInput | Date | string
+    subject?: StringFieldUpdateOperationsInput | string
+    senderName?: NullableStringFieldUpdateOperationsInput | string | null
+    senderEmail?: StringFieldUpdateOperationsInput | string
+    isReturned?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SnoozedEmailUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    homeAccountId?: StringFieldUpdateOperationsInput | string
+    messageId?: StringFieldUpdateOperationsInput | string
+    snoozeUntil?: DateTimeFieldUpdateOperationsInput | Date | string
+    subject?: StringFieldUpdateOperationsInput | string
+    senderName?: NullableStringFieldUpdateOperationsInput | string | null
+    senderEmail?: StringFieldUpdateOperationsInput | string
+    isReturned?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SnoozedEmailUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    homeAccountId?: StringFieldUpdateOperationsInput | string
+    messageId?: StringFieldUpdateOperationsInput | string
+    snoozeUntil?: DateTimeFieldUpdateOperationsInput | Date | string
+    subject?: StringFieldUpdateOperationsInput | string
+    senderName?: NullableStringFieldUpdateOperationsInput | string | null
+    senderEmail?: StringFieldUpdateOperationsInput | string
+    isReturned?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ReadReceiptUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    messageId?: StringFieldUpdateOperationsInput | string
+    recipientEmail?: StringFieldUpdateOperationsInput | string
+    deliveredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ReadReceiptUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    messageId?: StringFieldUpdateOperationsInput | string
+    recipientEmail?: StringFieldUpdateOperationsInput | string
+    deliveredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ReadReceiptUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    messageId?: StringFieldUpdateOperationsInput | string
+    recipientEmail?: StringFieldUpdateOperationsInput | string
+    deliveredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
 

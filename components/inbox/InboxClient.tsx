@@ -11,6 +11,9 @@ import type { SideEffect } from "@/lib/utils/rule-engine";
 import type { Rule } from "@/lib/types/rules";
 import AiReplyModal from "@/components/inbox/AiReplyModal";
 import EventFormModal from "@/components/calendar/EventFormModal";
+import KeyboardShortcutsModal from "@/components/KeyboardShortcutsModal";
+import SnoozePicker from "@/components/SnoozePicker";
+import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
 
 // Re-export so existing imports from this file still work
 export type { EmailMessage };
@@ -24,20 +27,33 @@ function EmailRow({
   onClick,
   onAiReply,
   onStar,
+  onSnooze,
+  onArchive,
+  onDelete,
+  onMarkUnread,
   bulkMode = false,
   isSelected = false,
   isActive = false,
+  isKeyboardSelected = false,
   onToggleSelect,
+  priority = null,
 }: {
   email: EmailMessage;
   onClick: () => void;
   onAiReply: (e: React.MouseEvent) => void;
   onStar: (e: React.MouseEvent) => void;
+  onSnooze?: (e: React.MouseEvent) => void;
+  onArchive?: (e: React.MouseEvent) => void;
+  onDelete?: (e: React.MouseEvent) => void;
+  onMarkUnread?: (e: React.MouseEvent) => void;
   bulkMode?: boolean;
   isSelected?: boolean;
   isActive?: boolean;
+  isKeyboardSelected?: boolean;
   onToggleSelect?: (e: React.MouseEvent) => void;
+  priority?: { priority: "urgent" | "normal" | "low"; reason: string } | null;
 }) {
+  const [hovered, setHovered] = React.useState(false);
   const color = getAvatarColor(email.from.name);
   const isStarred = email.flag?.flagStatus === "flagged";
   const threadCount = (email as EmailMessage & { __threadCount?: number }).__threadCount;
@@ -45,10 +61,13 @@ function EmailRow({
   return (
     <div
       onClick={onClick}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
       className="relative flex items-start gap-3 px-4 py-3.5 cursor-pointer transition-colors hover:bg-neutral-50"
       style={{
-        borderLeft: isActive ? "3px solid rgb(138 9 9)" : "3px solid transparent",
-        backgroundColor: isActive ? "rgb(254 242 242)" : undefined,
+        borderLeft: isActive ? "3px solid rgb(138 9 9)" : isKeyboardSelected ? "3px solid rgb(59 130 246)" : priority?.priority === "urgent" ? "2px solid rgb(239 68 68)" : "3px solid transparent",
+        backgroundColor: isActive ? "rgb(254 242 242)" : isKeyboardSelected ? "rgb(239 246 255)" : undefined,
+        opacity: priority?.priority === "low" ? 0.65 : 1,
       }}
     >
       {/* Bulk mode checkbox */}
@@ -62,6 +81,20 @@ function EmailRow({
           }}
           className="w-4 h-4 rounded border-neutral-300 flex-shrink-0 mt-2.5 cursor-pointer"
           style={{ accentColor: "rgb(138 9 9)" }}
+        />
+      )}
+
+      {/* AI Priority dot */}
+      {priority && (
+        <div
+          className="w-2 h-2 rounded-full flex-shrink-0 mt-3 -mr-1"
+          title={priority.reason}
+          style={{
+            backgroundColor:
+              priority.priority === "urgent" ? "rgb(239 68 68)" :
+              priority.priority === "low" ? "rgb(212 212 212)" :
+              "rgb(156 163 175)",
+          }}
         />
       )}
 
@@ -115,27 +148,82 @@ function EmailRow({
         </p>
       </div>
 
-      {/* Right side: Star + unread dot */}
-      <div className="flex flex-col items-center gap-1.5 flex-shrink-0 mt-0.5">
-        <button
-          onClick={onStar}
-          className="p-1 rounded hover:bg-neutral-100 transition-colors"
-          title={isStarred ? "Unstar" : "Star"}
-        >
-          {isStarred ? (
-            <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" style={{ color: "rgb(234 179 8)" }} viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-            </svg>
-          ) : (
-            <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" style={{ color: "rgb(155 155 155)" }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-            </svg>
+      {/* Right side: Star + unread dot (hidden when hover actions visible) */}
+      {!hovered && (
+        <div className="flex flex-col items-center gap-1.5 flex-shrink-0 mt-0.5">
+          <button
+            onClick={onStar}
+            className="p-1 rounded hover:bg-neutral-100 transition-colors"
+            title={isStarred ? "Unstar" : "Star"}
+          >
+            {isStarred ? (
+              <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" style={{ color: "rgb(234 179 8)" }} viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+              </svg>
+            ) : (
+              <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" style={{ color: "rgb(155 155 155)" }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+              </svg>
+            )}
+          </button>
+          {!email.isRead && (
+            <span className="w-2 h-2 rounded-full" style={{ backgroundColor: "rgb(138 9 9)" }} />
           )}
-        </button>
-        {!email.isRead && (
-          <span className="w-2 h-2 rounded-full" style={{ backgroundColor: "rgb(138 9 9)" }} />
-        )}
-      </div>
+        </div>
+      )}
+
+      {/* Hover action bar — Feature 10 */}
+      {hovered && (
+        <div
+          className="flex items-center gap-1 flex-shrink-0 mt-0.5"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <button
+            onClick={onStar}
+            title={isStarred ? "Unstar" : "Star"}
+            className="w-7 h-7 flex items-center justify-center rounded-[8px] border border-neutral-200 bg-white hover:border-neutral-400 transition-colors"
+            style={{ color: isStarred ? "rgb(234 179 8)" : "rgb(115 115 115)" }}
+          >
+            {isStarred ? (
+              <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" /></svg>
+            ) : (
+              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" /></svg>
+            )}
+          </button>
+          <button
+            onClick={onArchive}
+            title="Archive"
+            className="w-7 h-7 flex items-center justify-center rounded-[8px] border border-neutral-200 bg-white hover:border-neutral-400 transition-colors"
+            style={{ color: "rgb(115 115 115)" }}
+          >
+            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" /></svg>
+          </button>
+          <button
+            onClick={onSnooze}
+            title="Snooze"
+            className="w-7 h-7 flex items-center justify-center rounded-[8px] border border-neutral-200 bg-white hover:border-neutral-400 transition-colors"
+            style={{ color: "rgb(115 115 115)" }}
+          >
+            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+          </button>
+          <button
+            onClick={onDelete}
+            title="Delete"
+            className="w-7 h-7 flex items-center justify-center rounded-[8px] border border-neutral-200 bg-white hover:border-red-300 transition-colors"
+            style={{ color: "rgb(115 115 115)" }}
+          >
+            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+          </button>
+          <button
+            onClick={onMarkUnread}
+            title="Mark unread"
+            className="w-7 h-7 flex items-center justify-center rounded-[8px] border border-neutral-200 bg-white hover:border-neutral-400 transition-colors"
+            style={{ color: "rgb(115 115 115)" }}
+          >
+            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+          </button>
+        </div>
+      )}
     </div>
   );
 }
@@ -215,6 +303,38 @@ export default function InboxClient({
     timestamp: number;
   }>>([]);
 
+  // ── Keyboard shortcuts ──
+  const [showShortcutsHelp, setShowShortcutsHelp] = useState(false);
+
+  // ── Snooze ──
+  const [snoozeEmail, setSnoozeEmail] = useState<EmailMessage | null>(null);
+  const [snoozeError, setSnoozeError] = useState<string | null>(null);
+
+  // ── Split pane ──
+  const [readingPane, setReadingPane] = useState<"list" | "split">(() => {
+    if (typeof window !== "undefined") {
+      return (localStorage.getItem("easemail:readingPane") as "list" | "split") ?? "list";
+    }
+    return "list";
+  });
+  const [splitPaneEmailId, setSplitPaneEmailId] = useState<string | null>(null);
+  const [splitPaneBody, setSplitPaneBody] = useState<{ content: string; contentType: "html" | "text" } | null>(null);
+  const [splitPaneLoading, setSplitPaneLoading] = useState(false);
+  const [splitPaneDetails, setSplitPaneDetails] = useState<{
+    to: { name: string; address: string }[];
+    cc: { name: string; address: string }[];
+    attachments: { id: string; name: string; size: number; contentType: string }[];
+  } | null>(null);
+
+  // ── AI Priority ──
+  const [emailPriorities, setEmailPriorities] = useState<Record<string, { priority: "urgent" | "normal" | "low"; reason: string }>>({});
+  const [aiPriorityEnabled, setAiPriorityEnabled] = useState(() => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("easemail:aiPriority") === "true";
+    }
+    return false;
+  });
+
   // ── Advanced search filters ──
   const [showFilters, setShowFilters] = useState(false);
   const [filters, setFilters] = useState({
@@ -228,6 +348,9 @@ export default function InboxClient({
   const accounts = useAccountStore((s) => s.accounts);
   const setInboxUnread = useAccountStore((s) => s.setInboxUnread);
   const activeLabel = useAccountStore((s) => s.activeLabel);
+  const selectedEmailIndex = useDataCacheStore((s) => s.selectedEmailIndex);
+  const setSelectedEmailIndex = useDataCacheStore((s) => s.setSelectedEmailIndex);
+  const searchInputRef = useRef<HTMLInputElement>(null);
   const firstRender = useRef(true);
   const sentinelRef = useRef<HTMLDivElement>(null);
   const rulesRef = useRef<Rule[]>([]);
@@ -324,6 +447,48 @@ export default function InboxClient({
             : e
         )
       );
+    });
+  }, [activeAccount]);
+
+  // ── Single email quick actions (for hover + keyboard shortcuts) ──
+
+  const handleArchiveEmail = useCallback((email: EmailMessage) => {
+    if (!activeAccount) return;
+    const ts = Date.now();
+    setUndoStack((prev) => [...prev, { action: "archive", emails: [email], timestamp: ts }]);
+    setEmails((prev) => prev.filter((e) => e.id !== email.id));
+    scheduleAction(ts, () => {
+      void fetch("/api/mail/batch", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "archive", messageIds: [email.id], homeAccountId: activeAccount.homeAccountId }),
+      });
+    });
+  }, [activeAccount, scheduleAction]);
+
+  const handleDeleteEmail = useCallback((email: EmailMessage) => {
+    if (!activeAccount) return;
+    const ts = Date.now();
+    setUndoStack((prev) => [...prev, { action: "delete", emails: [email], timestamp: ts }]);
+    setEmails((prev) => prev.filter((e) => e.id !== email.id));
+    scheduleAction(ts, () => {
+      void fetch("/api/mail/batch", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "delete", messageIds: [email.id], homeAccountId: activeAccount.homeAccountId }),
+      });
+    });
+  }, [activeAccount, scheduleAction]);
+
+  const handleMarkUnread = useCallback((email: EmailMessage) => {
+    if (!activeAccount) return;
+    setEmails((prev) => prev.map((e) => e.id === email.id ? { ...e, isRead: false } : e));
+    void fetch("/api/mail/read", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ messageId: email.id, homeAccountId: activeAccount.homeAccountId, isRead: false }),
+    }).catch(() => {
+      setEmails((prev) => prev.map((e) => e.id === email.id ? { ...e, isRead: true } : e));
     });
   }, [activeAccount]);
 
@@ -595,6 +760,35 @@ export default function InboxClient({
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeAccount?.homeAccountId]);
 
+  // AI Priority — score first 20 emails after load
+  useEffect(() => {
+    if (!aiPriorityEnabled || emails.length === 0 || !activeAccount) return;
+    const unscored = emails.slice(0, 20).filter((e) => !emailPriorities[e.id]);
+    if (unscored.length === 0) return;
+    const payload = unscored.map((e) => ({
+      id: e.id,
+      subject: e.subject,
+      from: e.from.address,
+      bodyPreview: e.bodyPreview,
+    }));
+    void fetch("/api/mail/ai-priority", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ emails: payload }),
+    })
+      .then((r) => r.ok ? r.json() as Promise<{ scores: { id: string; priority: "urgent" | "normal" | "low"; reason: string }[] }> : null)
+      .then((data) => {
+        if (!data?.scores) return;
+        setEmailPriorities((prev) => {
+          const next = { ...prev };
+          data.scores.forEach((s) => { next[s.id] = { priority: s.priority, reason: s.reason }; });
+          return next;
+        });
+      })
+      .catch(() => {});
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [aiPriorityEnabled, emails.length, activeAccount?.homeAccountId]);
+
   function showNewEmails() {
     pendingNewEmails.forEach((e) => knownIdsRef.current.add(e.id));
     setEmails((prev) => {
@@ -747,6 +941,49 @@ export default function InboxClient({
 
   const unreadCount = effectiveUnread;
 
+  // Wire keyboard shortcuts
+  useKeyboardShortcuts(
+    displayEmails,
+    {
+      onOpen: (email) => {
+        setExpandedEmailId(email.id);
+        setExpandedBody(null);
+        setExpandedDetails(null);
+        if (activeAccount) {
+          setExpandedLoading(true);
+          fetch(`/api/mail/message/${encodeURIComponent(email.id)}?homeAccountId=${encodeURIComponent(activeAccount.homeAccountId)}`)
+            .then((r) => r.ok ? r.json() : null)
+            .then((data: Record<string, unknown> | null) => {
+              if (data) {
+                const body = data.body as { content?: string; contentType?: string } | undefined;
+                const toRaw = data.toRecipients as { emailAddress?: { name?: string; address?: string }; name?: string; address?: string }[] | undefined;
+                const ccRaw = data.ccRecipients as { emailAddress?: { name?: string; address?: string }; name?: string; address?: string }[] | undefined;
+                const mapR = (arr?: typeof toRaw) => (arr ?? []).map((r) => ({ name: r.emailAddress?.name ?? r.name ?? "", address: r.emailAddress?.address ?? r.address ?? "" }));
+                setExpandedBody({ content: body?.content ?? email.bodyPreview, contentType: (body?.contentType as "html" | "text") ?? "text" });
+                setExpandedDetails({ to: mapR(toRaw), cc: mapR(ccRaw), attachments: (data.attachments as { id: string; name: string; size: number; contentType: string }[]) ?? [] });
+              } else {
+                setExpandedBody({ content: email.bodyPreview, contentType: "text" });
+              }
+            })
+            .catch(() => setExpandedBody({ content: email.bodyPreview, contentType: "text" }))
+            .finally(() => setExpandedLoading(false));
+        }
+      },
+      onArchive: handleArchiveEmail,
+      onDelete: handleDeleteEmail,
+      onReply: (email) => navigateTo(`/compose?mode=reply&messageId=${encodeURIComponent(email.id)}&homeAccountId=${encodeURIComponent(activeAccount?.homeAccountId ?? "")}`),
+      onReplyAll: (email) => navigateTo(`/compose?mode=replyAll&messageId=${encodeURIComponent(email.id)}&homeAccountId=${encodeURIComponent(activeAccount?.homeAccountId ?? "")}`),
+      onForward: (email) => navigateTo(`/compose?mode=forward&messageId=${encodeURIComponent(email.id)}&homeAccountId=${encodeURIComponent(activeAccount?.homeAccountId ?? "")}`),
+      onMarkUnread: handleMarkUnread,
+      onStar: handleStarToggle,
+      onCompose: () => navigateTo("/compose"),
+      onFocusSearch: () => searchInputRef.current?.focus(),
+      onEscape: () => { setExpandedEmailId(null); setExpandedBody(null); setExpandedDetails(null); setShowShortcutsHelp(false); },
+      onShowHelp: () => setShowShortcutsHelp(true),
+    },
+    !showShortcutsHelp,
+  );
+
   const tabs: { key: FilterTab; label: string }[] = [
     { key: "all", label: "All" },
     { key: "unread", label: "Unread" },
@@ -795,6 +1032,52 @@ export default function InboxClient({
                   <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                 </svg>
               </button>
+              <button
+                onClick={() => {
+                  const next = readingPane === "list" ? "split" : "list";
+                  setReadingPane(next);
+                  localStorage.setItem("easemail:readingPane", next);
+                  if (next === "list") { setSplitPaneEmailId(null); setSplitPaneBody(null); setSplitPaneDetails(null); }
+                }}
+                className="p-1.5 rounded-[10px] transition-colors"
+                style={{ color: readingPane === "split" ? "rgb(138 9 9)" : "rgb(155 155 155)", backgroundColor: readingPane === "split" ? "rgb(254 242 242)" : "transparent" }}
+                title={readingPane === "split" ? "List view" : "Split pane view"}
+                onMouseEnter={(e) => { if (readingPane === "list") { e.currentTarget.style.color = "rgb(58 58 58)"; e.currentTarget.style.backgroundColor = "rgb(245 245 245)"; } }}
+                onMouseLeave={(e) => { if (readingPane === "list") { e.currentTarget.style.color = "rgb(155 155 155)"; e.currentTarget.style.backgroundColor = "transparent"; } }}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 3H5a2 2 0 00-2 2v14a2 2 0 002 2h4M9 3h10a2 2 0 012 2v14a2 2 0 01-2 2H9M9 3v18" />
+                </svg>
+              </button>
+              <button
+                onClick={() => {
+                  const next = !aiPriorityEnabled;
+                  setAiPriorityEnabled(next);
+                  localStorage.setItem("easemail:aiPriority", String(next));
+                  if (!next) setEmailPriorities({});
+                }}
+                className="p-1.5 rounded-[10px] transition-colors"
+                style={{ color: aiPriorityEnabled ? "rgb(138 9 9)" : "rgb(155 155 155)", backgroundColor: aiPriorityEnabled ? "rgb(254 242 242)" : "transparent" }}
+                title={aiPriorityEnabled ? "Disable AI priority" : "Enable AI priority inbox"}
+                onMouseEnter={(e) => { if (!aiPriorityEnabled) { e.currentTarget.style.color = "rgb(58 58 58)"; e.currentTarget.style.backgroundColor = "rgb(245 245 245)"; } }}
+                onMouseLeave={(e) => { if (!aiPriorityEnabled) { e.currentTarget.style.color = "rgb(155 155 155)"; e.currentTarget.style.backgroundColor = "transparent"; } }}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                </svg>
+              </button>
+              <button
+                onClick={() => setShowShortcutsHelp(true)}
+                className="p-1.5 rounded-[10px] transition-colors"
+                style={{ color: "rgb(155 155 155)" }}
+                title="Keyboard shortcuts (?)"
+                onMouseEnter={(e) => { e.currentTarget.style.color = "rgb(58 58 58)"; e.currentTarget.style.backgroundColor = "rgb(245 245 245)"; }}
+                onMouseLeave={(e) => { e.currentTarget.style.color = "rgb(155 155 155)"; e.currentTarget.style.backgroundColor = "transparent"; }}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </button>
             </div>
           </div>
 
@@ -812,6 +1095,7 @@ export default function InboxClient({
                   </svg>
                 )}
                 <input
+                  ref={searchInputRef}
                   type="text"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
@@ -1074,6 +1358,8 @@ export default function InboxClient({
                 email={email}
                 onClick={() => {
                   if (bulkMode) return;
+                  const idx = displayEmails.findIndex((e) => e.id === email.id);
+                  setSelectedEmailIndex(idx);
                   if (!email.isRead) {
                     setEmails((prev) =>
                       prev.map((e) => (e.id === email.id ? { ...e, isRead: true } : e))
@@ -1125,9 +1411,15 @@ export default function InboxClient({
                 }}
                 onAiReply={(e) => { e.stopPropagation(); setAiReplyEmail(email); }}
                 onStar={(e) => { e.stopPropagation(); handleStarToggle(email); }}
+                onArchive={(e) => { e.stopPropagation(); handleArchiveEmail(email); }}
+                onDelete={(e) => { e.stopPropagation(); handleDeleteEmail(email); }}
+                onMarkUnread={(e) => { e.stopPropagation(); handleMarkUnread(email); }}
+                onSnooze={(e) => { e.stopPropagation(); setSnoozeEmail(email); }}
                 bulkMode={bulkMode}
                 isSelected={selectedIds.has(email.id)}
                 isActive={expandedEmailId === email.id}
+                isKeyboardSelected={selectedEmailIndex === displayEmails.findIndex((e) => e.id === email.id)}
+                priority={aiPriorityEnabled ? (emailPriorities[email.id] ?? null) : null}
                 onToggleSelect={(e) => { e.stopPropagation(); toggleSelect(email.id); }}
               />
             </React.Fragment>
@@ -1356,6 +1648,24 @@ export default function InboxClient({
       <EventFormModal
         onClose={() => setShowEventForm(false)}
         onSaved={() => setShowEventForm(false)}
+      />
+    )}
+
+    {showShortcutsHelp && (
+      <KeyboardShortcutsModal onClose={() => setShowShortcutsHelp(false)} />
+    )}
+
+    {snoozeEmail && activeAccount && (
+      <SnoozePicker
+        email={snoozeEmail}
+        homeAccountId={activeAccount.homeAccountId}
+        onSnoozed={() => {
+          setEmails((prev) => prev.filter((e) => e.id !== snoozeEmail.id));
+          setSnoozeEmail(null);
+        }}
+        onClose={() => setSnoozeEmail(null)}
+        error={snoozeError}
+        onError={setSnoozeError}
       />
     )}
     </>

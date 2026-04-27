@@ -20,7 +20,8 @@ export type AppView =
   | "email-rules"
   | "teams"
   | "folder"
-  | "email-read";
+  | "email-read"
+  | "snoozed";
 
 // ─── Store ───────────────────────────────────────────────────────────────────
 
@@ -47,6 +48,8 @@ interface DataCacheStore {
   loadedViews: Set<AppView>;
   /** Loading state per view */
   loadingView: AppView | null;
+  /** Keyboard-navigated selected email index (-1 = none) */
+  selectedEmailIndex: number;
 
   setActiveView: (view: AppView) => void;
   setActiveFolderId: (id: string | null) => void;
@@ -55,6 +58,7 @@ interface DataCacheStore {
   setComposeParams: (params: DataCacheStore["composeParams"]) => void;
   markViewLoaded: (view: AppView) => void;
   setLoadingView: (view: AppView | null) => void;
+  setSelectedEmailIndex: (i: number) => void;
 }
 
 /** Map view names to URL paths */
@@ -90,6 +94,7 @@ export function viewToPath(view: AppView, extra?: { folderId?: string; emailId?:
     case "teams": return "/teams";
     case "folder": return extra?.folderId ? `/folder/${extra.folderId}` : "/dashboard";
     case "email-read": return extra?.emailId ? `/inbox/${extra.emailId}` : "/dashboard";
+    case "snoozed": return "/snoozed";
     default: return "/dashboard";
   }
 }
@@ -121,6 +126,7 @@ export function pathToView(pathname: string): { view: AppView; folderId?: string
     case "/signatures": return { view: "signatures" };
     case "/email-rules": return { view: "email-rules" };
     case "/teams": return { view: "teams" };
+    case "/snoozed": return { view: "snoozed" };
     default: return { view: "dashboard" };
   }
 }
@@ -135,6 +141,7 @@ export const useDataCacheStore = create<DataCacheStore>((set) => ({
   composeParams: null,
   loadedViews: new Set<AppView>(),
   loadingView: null,
+  selectedEmailIndex: -1,
 
   setActiveView: (view) => set({ activeView: view, loadingView: null }),
   setActiveFolderId: (id) => set({ activeFolderId: id }),
@@ -153,4 +160,5 @@ export const useDataCacheStore = create<DataCacheStore>((set) => ({
       return { loadedViews: next };
     }),
   setLoadingView: (view) => set({ loadingView: view }),
+  setSelectedEmailIndex: (i) => set({ selectedEmailIndex: i }),
 }));

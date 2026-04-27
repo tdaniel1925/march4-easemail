@@ -98,6 +98,8 @@ model User {
   notificationLogs    NotificationLog[]
   migrationStatuses   MigrationStatus[]
   todoItems           TodoItem[]
+  snoozedEmails       SnoozedEmail[]
+  readReceipts        ReadReceipt[]
 
   @@map("users")
 }
@@ -516,6 +518,42 @@ model MigrationStatus {
 
   @@unique([userId, migrationType])
   @@map("migration_status")
+}
+
+// ─── Snoozed Emails ──────────────────────────────────────────────────────────
+
+model SnoozedEmail {
+  id            String   @id @default(cuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  homeAccountId String
+  messageId     String
+  snoozeUntil   DateTime
+  subject       String
+  senderName    String?
+  senderEmail   String
+  isReturned    Boolean  @default(false)
+  createdAt     DateTime @default(now())
+
+  @@index([userId, snoozeUntil, isReturned])
+  @@map("snoozed_emails")
+}
+
+// ─── Read Receipts ────────────────────────────────────────────────────────────
+
+model ReadReceipt {
+  id             String    @id @default(cuid())
+  userId         String
+  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  messageId      String
+  recipientEmail String
+  deliveredAt    DateTime?
+  readAt         DateTime?
+  createdAt      DateTime  @default(now())
+
+  @@unique([messageId, recipientEmail])
+  @@index([userId, messageId])
+  @@map("read_receipts")
 }
 
 // ─── Todo Items ───────────────────────────────────────────────────────────────
