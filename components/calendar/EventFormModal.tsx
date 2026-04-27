@@ -7,7 +7,8 @@ import type { SpeechRecognitionInstance, SpeechRecognitionConstructor } from "@/
 
 const BRAND = "rgb(138, 9, 9)";
 
-const LOCATION_SUGGESTIONS = ["Conference Room A", "Conference Room B", "Zoom", "Teams", "Remote"];
+const DEFAULT_LOCATION_PRESETS = ["Conference Room A", "Conference Room B", "Zoom", "Teams", "Remote"];
+const LOCATION_STORAGE_KEY = "easemail:locationPresets";
 
 const REMINDER_OPTIONS = [
   { label: "None", value: null },
@@ -134,6 +135,39 @@ export default function EventFormModal({ prefill, onClose, onSaved, editEvent, u
   const [teamsMeetingUrl, setTeamsMeetingUrl] = useState("");
   const [teamsLoading, setTeamsLoading] = useState(false);
   const [copied, setCopied] = useState(false);
+
+  // ── Location presets (persisted to localStorage) ─────────────────────────────
+  const [locationPresets, setLocationPresets] = useState<string[]>(DEFAULT_LOCATION_PRESETS);
+  const [showAddLocation, setShowAddLocation] = useState(false);
+  const [newLocationText, setNewLocationText] = useState("");
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem(LOCATION_STORAGE_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved) as string[];
+        if (Array.isArray(parsed) && parsed.length > 0) setLocationPresets(parsed);
+      }
+    } catch { /* use defaults */ }
+  }, []);
+
+  function savePresets(next: string[]) {
+    setLocationPresets(next);
+    localStorage.setItem(LOCATION_STORAGE_KEY, JSON.stringify(next));
+  }
+
+  function addLocationPreset() {
+    const trimmed = newLocationText.trim();
+    if (trimmed && !locationPresets.includes(trimmed)) {
+      savePresets([...locationPresets, trimmed]);
+    }
+    setNewLocationText("");
+    setShowAddLocation(false);
+  }
+
+  function removeLocationPreset(preset: string) {
+    savePresets(locationPresets.filter((p) => p !== preset));
+  }
 
   // ── NL / voice ────────────────────────────────────────────────────────────────
   const [nlText, setNlText] = useState("");
@@ -616,13 +650,45 @@ export default function EventFormModal({ prefill, onClose, onSaved, editEvent, u
                   className="w-full text-sm border border-neutral-200 rounded-lg px-3 py-2 pl-9 focus:outline-none focus:border-neutral-400"
                 />
               </div>
-              <div className="mt-2 flex flex-wrap gap-1.5">
-                {LOCATION_SUGGESTIONS.map((s) => (
-                  <button key={s} type="button" onClick={() => setLocation(s)}
-                    className="text-xs px-2 py-1 bg-neutral-100 border border-neutral-200 rounded-full text-neutral-500 hover:bg-neutral-200 transition-colors">
-                    {s}
-                  </button>
+              <div className="mt-2 flex flex-wrap gap-1.5 items-center">
+                {locationPresets.map((s) => (
+                  <span key={s} className="group relative inline-flex items-center">
+                    <button type="button" onClick={() => setLocation(s)}
+                      className="text-xs px-2 py-1 bg-neutral-100 border border-neutral-200 rounded-full text-neutral-500 hover:bg-neutral-200 transition-colors pr-5">
+                      {s}
+                    </button>
+                    <button type="button" onClick={() => removeLocationPreset(s)}
+                      className="absolute right-1 top-1/2 -translate-y-1/2 w-3.5 h-3.5 flex items-center justify-center rounded-full text-neutral-400 hover:text-red-500 hover:bg-red-50 opacity-0 group-hover:opacity-100 transition-opacity"
+                      title={`Remove ${s}`}>
+                      <svg className="w-2.5 h-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </span>
                 ))}
+                {showAddLocation ? (
+                  <span className="inline-flex items-center gap-1">
+                    <input
+                      type="text"
+                      value={newLocationText}
+                      onChange={(e) => setNewLocationText(e.target.value)}
+                      onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); addLocationPreset(); } if (e.key === "Escape") { setShowAddLocation(false); setNewLocationText(""); } }}
+                      autoFocus
+                      placeholder="Location name"
+                      className="text-xs px-2 py-1 border border-neutral-300 rounded-full w-32 focus:outline-none focus:border-neutral-400"
+                    />
+                    <button type="button" onClick={addLocationPreset}
+                      className="text-xs px-1.5 py-1 text-green-600 hover:text-green-700 font-medium">Save</button>
+                    <button type="button" onClick={() => { setShowAddLocation(false); setNewLocationText(""); }}
+                      className="text-xs px-1 py-1 text-neutral-400 hover:text-neutral-600">Cancel</button>
+                  </span>
+                ) : (
+                  <button type="button" onClick={() => setShowAddLocation(true)}
+                    className="text-xs w-6 h-6 flex items-center justify-center bg-neutral-100 border border-neutral-200 rounded-full text-neutral-400 hover:bg-neutral-200 hover:text-neutral-600 transition-colors"
+                    title="Add custom location">
+                    +
+                  </button>
+                )}
               </div>
             </div>
 

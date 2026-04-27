@@ -214,8 +214,14 @@ function EventCard({ positioned, onClick, tz }: { positioned: PositionedEvent; o
   const leftPct = (colIndex / colCount) * 100;
   return (
     <div
-      onClick={onClick}
-      className="absolute rounded-[6px] px-2 py-1 overflow-hidden cursor-pointer transition-all hover:brightness-95 hover:shadow-sm"
+      onClick={(e) => { e.stopPropagation(); onClick(); }}
+      draggable
+      onDragStart={(e) => {
+        e.stopPropagation();
+        e.dataTransfer.effectAllowed = "move";
+        e.dataTransfer.setData("application/calendar-event", JSON.stringify(event));
+      }}
+      className="absolute rounded-[6px] px-2 py-1 overflow-hidden cursor-grab active:cursor-grabbing transition-all hover:brightness-95 hover:shadow-sm"
       style={{ top, height, left: `calc(${leftPct}% + 2px)`, width: `calc(${widthPct}% - 4px)`, backgroundColor: palette.bg, borderLeft: `3px solid ${palette.border}`, color: palette.text }}
       title={event.subject}
     >
@@ -254,6 +260,8 @@ function TimeGrid({
   scrollRef,
   onEventClick,
   onAllDayClick,
+  onSlotClick,
+  onEventDrop,
   tz,
 }: {
   dayDateStrs: string[];
@@ -266,6 +274,8 @@ function TimeGrid({
   scrollRef: React.RefObject<HTMLDivElement | null>;
   onEventClick: (e: CalEvent) => void;
   onAllDayClick: (e: CalEvent) => void;
+  onSlotClick: (dateStr: string, hour: number, minutes: number) => void;
+  onEventDrop: (event: CalEvent, newDateStr: string, newHour: number, newMinutes: number) => void;
   tz: string;
 }) {
   const hasAllDay = dayDateStrs.some((d) => (allDayByDay[d]?.length ?? 0) > 0);
@@ -337,7 +347,36 @@ function TimeGrid({
             const positioned = computeEventPositions(timedByDay[dateStr] ?? [], tz);
             return (
               <div key={dateStr} className="flex-1 relative border-l border-neutral-100"
-                style={{ background: isWeekend ? "#fafafa" : isToday ? BRAND_LIGHT : "#fff", height: ROW_HEIGHT * HOURS.length }}>
+                style={{ background: isWeekend ? "#fafafa" : isToday ? BRAND_LIGHT : "#fff", height: ROW_HEIGHT * HOURS.length }}
+                onClick={(ev) => {
+                  // Click on empty area → create event at that time
+                  const rect = ev.currentTarget.getBoundingClientRect();
+                  const yOffset = ev.clientY - rect.top;
+                  const totalMinutes = (yOffset / ROW_HEIGHT) * 60 + HOUR_START * 60;
+                  const hour = Math.floor(totalMinutes / 60);
+                  // Snap to nearest 15 minutes
+                  const minutes = Math.round((totalMinutes % 60) / 15) * 15;
+                  onSlotClick(dateStr, Math.min(hour, 23), minutes >= 60 ? 0 : minutes);
+                }}
+                onDragOver={(ev) => {
+                  ev.preventDefault();
+                  ev.dataTransfer.dropEffect = "move";
+                }}
+                onDrop={(ev) => {
+                  ev.preventDefault();
+                  const eventData = ev.dataTransfer.getData("application/calendar-event");
+                  if (!eventData) return;
+                  try {
+                    const droppedEvent = JSON.parse(eventData) as CalEvent;
+                    const rect = ev.currentTarget.getBoundingClientRect();
+                    const yOffset = ev.clientY - rect.top;
+                    const totalMinutes = (yOffset / ROW_HEIGHT) * 60 + HOUR_START * 60;
+                    const hour = Math.floor(totalMinutes / 60);
+                    const minutes = Math.round((totalMinutes % 60) / 15) * 15;
+                    onEventDrop(droppedEvent, dateStr, Math.min(hour, 23), minutes >= 60 ? 0 : minutes);
+                  } catch { /* ignore bad data */ }
+                }}
+              >
                 {HOURS.map((h) => (
                   <div key={h} className="absolute left-0 right-0 border-t border-neutral-100" style={{ top: (h - HOUR_START) * ROW_HEIGHT }} />
                 ))}
@@ -399,6 +438,7 @@ export default function CalendarClient({ weekStart: initialWeekStart, events: in
   const [currentMonth, setCurrentMonth] = useState(initialWeekStart.substring(0, 7));
   const [rangeEvents, setRangeEvents] = useState<CalEvent[]>([]);
   const [rangeLoading, setRangeLoading] = useState(false);
+  const [slotPrefill, setSlotPrefill] = useState<{ start: string; end: string } | null>(null);
 
   const scrollRef = useRef<HTMLDivElement>(null);
   const isInitialMount = useRef(true);
@@ -617,6 +657,59 @@ export default function CalendarClient({ weekStart: initialWeekStart, events: in
     setCurrentMonth(todayStr.substring(0, 7));
   }
 
+  // ── Slot click / drag-drop handlers ─────────────────────────────────────────
+
+  function handleSlotClick(dateStr: string, hour: number, minutes: number) {
+    const pad2 = (n: number) => String(n).padStart(2, "0");
+    const startIso = `${dateStr}T${pad2(hour)}:${pad2(minutes)}:00`;
+    const endHour = hour + 1;
+    const endIso = `${dateStr}T${pad2(endHour > 23 ? 23 : endHour)}:${pad2(endHour > 23 ? 59 : minutes)}:00`;
+    setSlotPrefill({ start: startIso, end: endIso });
+    setEditingEvent(null);
+    setNlPrefill(null);
+    setShowForm(true);
+  }
+
+  function handleEventDrop(event: CalEvent, newDateStr: string, newHour: number, newMinutes: number) {
+    // Calculate duration of original event
+    const durationMs = new Date(event.endDateTime).getTime() - new Date(event.startDateTime).getTime();
+    const pad2 = (n: number) => String(n).padStart(2, "0");
+    const newStartIso = `${newDateStr}T${pad2(newHour)}:${pad2(newMinutes)}:00`;
+    const newEndDate = new Date(new Date(newStartIso).getTime() + durationMs);
+    const newEndIso = `${newEndDate.getFullYear()}-${pad2(newEndDate.getMonth() + 1)}-${pad2(newEndDate.getDate())}T${pad2(newEndDate.getHours())}:${pad2(newEndDate.getMinutes())}:00`;
+
+    // Optimistic update
+    const updatedEvent = { ...event, startDateTime: newStartIso, endDateTime: newEndIso };
+    setEvents((prev) => prev.map((e) => e.id === event.id ? updatedEvent : e));
+    setRangeEvents((prev) => prev.map((e) => e.id === event.id ? updatedEvent : e));
+
+    // Persist to server
+    void fetch("/api/calendar/event", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        eventId: event.id,
+        homeAccountId: event.accountHomeId,
+        subject: event.subject,
+        start: newStartIso,
+        end: newEndIso,
+        isAllDay: event.isAllDay,
+        location: event.location,
+        timeZone: userTimeZone,
+      }),
+    }).then((res) => {
+      if (!res.ok) {
+        // Revert on failure
+        setEvents((prev) => prev.map((e) => e.id === event.id ? event : e));
+        setRangeEvents((prev) => prev.map((e) => e.id === event.id ? event : e));
+      }
+    }).catch(() => {
+      // Revert on failure
+      setEvents((prev) => prev.map((e) => e.id === event.id ? event : e));
+      setRangeEvents((prev) => prev.map((e) => e.id === event.id ? event : e));
+    });
+  }
+
   // ── Derived values ────────────────────────────────────────────────────────────
 
   const weekDates = getWeekDates(weekStart);
@@ -668,6 +761,8 @@ export default function CalendarClient({ weekStart: initialWeekStart, events: in
         scrollRef={scrollRef}
         onEventClick={setSelectedEvent}
         onAllDayClick={setSelectedEvent}
+        onSlotClick={handleSlotClick}
+        onEventDrop={handleEventDrop}
         tz={userTimeZone}
       />
     );
@@ -690,6 +785,8 @@ export default function CalendarClient({ weekStart: initialWeekStart, events: in
         scrollRef={scrollRef}
         onEventClick={setSelectedEvent}
         onAllDayClick={setSelectedEvent}
+        onSlotClick={handleSlotClick}
+        onEventDrop={handleEventDrop}
         tz={userTimeZone}
       />
     );
@@ -1247,8 +1344,11 @@ export default function CalendarClient({ weekStart: initialWeekStart, events: in
             location: nlPrefill.location || undefined,
             attendees: nlPrefill.attendees.length ? nlPrefill.attendees : undefined,
             body: nlPrefill.body || undefined,
+          } : !editingEvent && slotPrefill ? {
+            start: slotPrefill.start,
+            end: slotPrefill.end,
           } : undefined}
-          onClose={() => { setShowForm(false); setEditingEvent(null); setNlPrefill(null); }}
+          onClose={() => { setShowForm(false); setEditingEvent(null); setNlPrefill(null); setSlotPrefill(null); }}
           onSaved={(savedEvent) => {
             setEvents((prev) => {
               const idx = prev.findIndex((e) => e.id === savedEvent.id);
@@ -1263,6 +1363,7 @@ export default function CalendarClient({ weekStart: initialWeekStart, events: in
             setShowForm(false);
             setEditingEvent(null);
             setNlPrefill(null);
+            setSlotPrefill(null);
             // Show confirmation banner, auto-dismiss after 4s
             setSavedConfirmation(savedEvent.subject);
             setTimeout(() => setSavedConfirmation(null), 4000);
