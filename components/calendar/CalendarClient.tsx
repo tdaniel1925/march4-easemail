@@ -463,6 +463,9 @@ export default function CalendarClient({ weekStart: initialWeekStart, events: in
   const { selectedEvent, setSelectedEvent, activeView, setActiveView, setCurrentWeekStart } = useCalendarStore();
   const accounts = useAccountStore((s) => s.accounts);
 
+  // "all" means show all accounts; otherwise filter to one homeAccountId
+  const [calendarAccountFilter, setCalendarAccountFilter] = useState<string>("all");
+
   // ── Effects ──────────────────────────────────────────────────────────────────
 
   useEffect(() => { setCurrentWeekStart(weekStart); }, [weekStart, setCurrentWeekStart]);
@@ -476,9 +479,9 @@ export default function CalendarClient({ weekStart: initialWeekStart, events: in
 
   useEffect(() => {
     if (scrollRef.current && (activeView === "day" || activeView === "week")) {
-      // Auto-scroll to current time with some buffer above
-      const scrollTarget = Math.max(0, timeLineTop - 150);
-      scrollRef.current.scrollTop = scrollTarget;
+      // Scroll to 7am by default — a natural business-hours starting point
+      const sevenAmTop = (7 - HOUR_START) * ROW_HEIGHT;
+      scrollRef.current.scrollTop = sevenAmTop;
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeView]);
@@ -735,11 +738,19 @@ export default function CalendarClient({ weekStart: initialWeekStart, events: in
   const showTimeLine = currentHour >= HOUR_START && currentHour < HOUR_END;
   const timeLineTop = (currentHour - HOUR_START) * ROW_HEIGHT + currentMins * (ROW_HEIGHT / 60);
 
+  // Filter events by selected account
+  const filteredEvents = calendarAccountFilter === "all"
+    ? events
+    : events.filter((e) => e.accountHomeId === calendarAccountFilter);
+  const filteredRangeEvents = calendarAccountFilter === "all"
+    ? rangeEvents
+    : rangeEvents.filter((e) => e.accountHomeId === calendarAccountFilter);
+
   // Bucket week events by day
   const timedByDay: Record<string, CalEvent[]> = {};
   const allDayByDay: Record<string, CalEvent[]> = {};
   for (const d of weekDates) { timedByDay[d] = []; allDayByDay[d] = []; }
-  for (const e of events) {
+  for (const e of filteredEvents) {
     const dateStr = getEventDateStr(e.startDateTime);
     if (!weekDates.includes(dateStr)) continue;
     if (e.isAllDay) allDayByDay[dateStr].push(e);
@@ -813,7 +824,7 @@ export default function CalendarClient({ weekStart: initialWeekStart, events: in
   function renderMonthView() {
     const grid = getMonthGrid(currentMonth);
     const eventsByDay: Record<string, CalEvent[]> = {};
-    for (const e of rangeEvents) {
+    for (const e of filteredRangeEvents) {
       const day = getEventDateStr(e.startDateTime);
       if (!eventsByDay[day]) eventsByDay[day] = [];
       eventsByDay[day].push(e);
@@ -870,7 +881,7 @@ export default function CalendarClient({ weekStart: initialWeekStart, events: in
 
   function renderAgendaView() {
     const grouped: Record<string, CalEvent[]> = {};
-    for (const e of rangeEvents) {
+    for (const e of filteredRangeEvents) {
       const day = getEventDateStr(e.startDateTime);
       if (!grouped[day]) grouped[day] = [];
       grouped[day].push(e);
@@ -955,7 +966,7 @@ export default function CalendarClient({ weekStart: initialWeekStart, events: in
 
   function renderYearView() {
     const year = parseInt(currentMonth.substring(0, 4));
-    const eventDays = new Set(rangeEvents.map((e) => getEventDateStr(e.startDateTime)));
+    const eventDays = new Set(filteredRangeEvents.map((e) => getEventDateStr(e.startDateTime)));
     return (
       <div className="flex-1 overflow-y-auto py-6 px-6 relative">
         {rangeLoading && <Spinner />}
@@ -1122,6 +1133,22 @@ export default function CalendarClient({ weekStart: initialWeekStart, events: in
           {fetchError && <span className="text-xs font-medium" style={{ color: BRAND }}>{fetchError}</span>}
 
           <div className="flex-1" />
+
+          {/* Account filter — only show if more than one account */}
+          {accounts.length > 1 && (
+            <select
+              value={calendarAccountFilter}
+              onChange={(e) => setCalendarAccountFilter(e.target.value)}
+              className="text-xs font-medium border border-neutral-200 rounded-[8px] px-2 py-1.5 bg-white text-neutral-700 focus:outline-none focus:border-neutral-400 cursor-pointer"
+            >
+              <option value="all">All accounts</option>
+              {accounts.map((a) => (
+                <option key={a.homeAccountId} value={a.homeAccountId}>
+                  {a.email ?? a.homeAccountId}
+                </option>
+              ))}
+            </select>
+          )}
 
           {/* View toggle */}
           <div className="flex rounded-[10px] overflow-hidden border border-neutral-200" style={{ boxShadow: "0px 2px 4px rgba(27,29,29,0.08)" }}>
