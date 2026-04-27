@@ -19,6 +19,11 @@ export type PrismaPromise<T> = $Public.PrismaPromise<T>
  */
 export type Organization = $Result.DefaultSelection<Prisma.$OrganizationPayload>
 /**
+ * Model OrgContact
+ * 
+ */
+export type OrgContact = $Result.DefaultSelection<Prisma.$OrgContactPayload>
+/**
  * Model User
  * 
  */
@@ -259,6 +264,16 @@ export class PrismaClient<
     * ```
     */
   get organization(): Prisma.OrganizationDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.orgContact`: Exposes CRUD operations for the **OrgContact** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more OrgContacts
+    * const orgContacts = await prisma.orgContact.findMany()
+    * ```
+    */
+  get orgContact(): Prisma.OrgContactDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.user`: Exposes CRUD operations for the **User** model.
@@ -914,6 +929,7 @@ export namespace Prisma {
 
   export const ModelName: {
     Organization: 'Organization',
+    OrgContact: 'OrgContact',
     User: 'User',
     MsConnectedAccount: 'MsConnectedAccount',
     MsalTokenCache: 'MsalTokenCache',
@@ -951,7 +967,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "organization" | "user" | "msConnectedAccount" | "msalTokenCache" | "emailDeltaLink" | "webhookSubscription" | "draft" | "signature" | "cachedFolder" | "cachedEmail" | "cachedCalendarEvent" | "cachedContact" | "deployLog" | "emailRule" | "emailAttachment" | "aiGeneratedReply" | "cachedSearchResult" | "syncStatus" | "notificationLog" | "migrationStatus" | "todoItem" | "imapConnectedAccount" | "jmapConnectedAccount"
+      modelProps: "organization" | "orgContact" | "user" | "msConnectedAccount" | "msalTokenCache" | "emailDeltaLink" | "webhookSubscription" | "draft" | "signature" | "cachedFolder" | "cachedEmail" | "cachedCalendarEvent" | "cachedContact" | "deployLog" | "emailRule" | "emailAttachment" | "aiGeneratedReply" | "cachedSearchResult" | "syncStatus" | "notificationLog" | "migrationStatus" | "todoItem" | "imapConnectedAccount" | "jmapConnectedAccount"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1026,6 +1042,80 @@ export namespace Prisma {
           count: {
             args: Prisma.OrganizationCountArgs<ExtArgs>
             result: $Utils.Optional<OrganizationCountAggregateOutputType> | number
+          }
+        }
+      }
+      OrgContact: {
+        payload: Prisma.$OrgContactPayload<ExtArgs>
+        fields: Prisma.OrgContactFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.OrgContactFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OrgContactPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.OrgContactFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OrgContactPayload>
+          }
+          findFirst: {
+            args: Prisma.OrgContactFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OrgContactPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.OrgContactFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OrgContactPayload>
+          }
+          findMany: {
+            args: Prisma.OrgContactFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OrgContactPayload>[]
+          }
+          create: {
+            args: Prisma.OrgContactCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OrgContactPayload>
+          }
+          createMany: {
+            args: Prisma.OrgContactCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.OrgContactCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OrgContactPayload>[]
+          }
+          delete: {
+            args: Prisma.OrgContactDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OrgContactPayload>
+          }
+          update: {
+            args: Prisma.OrgContactUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OrgContactPayload>
+          }
+          deleteMany: {
+            args: Prisma.OrgContactDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.OrgContactUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.OrgContactUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OrgContactPayload>[]
+          }
+          upsert: {
+            args: Prisma.OrgContactUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OrgContactPayload>
+          }
+          aggregate: {
+            args: Prisma.OrgContactAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateOrgContact>
+          }
+          groupBy: {
+            args: Prisma.OrgContactGroupByArgs<ExtArgs>
+            result: $Utils.Optional<OrgContactGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.OrgContactCountArgs<ExtArgs>
+            result: $Utils.Optional<OrgContactCountAggregateOutputType> | number
           }
         }
       }
@@ -2766,6 +2856,7 @@ export namespace Prisma {
   }
   export type GlobalOmitConfig = {
     organization?: OrganizationOmit
+    orgContact?: OrgContactOmit
     user?: UserOmit
     msConnectedAccount?: MsConnectedAccountOmit
     msalTokenCache?: MsalTokenCacheOmit
@@ -2869,10 +2960,12 @@ export namespace Prisma {
 
   export type OrganizationCountOutputType = {
     users: number
+    orgContacts: number
   }
 
   export type OrganizationCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     users?: boolean | OrganizationCountOutputTypeCountUsersArgs
+    orgContacts?: boolean | OrganizationCountOutputTypeCountOrgContactsArgs
   }
 
   // Custom InputTypes
@@ -2891,6 +2984,13 @@ export namespace Prisma {
    */
   export type OrganizationCountOutputTypeCountUsersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: UserWhereInput
+  }
+
+  /**
+   * OrganizationCountOutputType without action
+   */
+  export type OrganizationCountOutputTypeCountOrgContactsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: OrgContactWhereInput
   }
 
 
@@ -3256,6 +3356,7 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     users?: boolean | Organization$usersArgs<ExtArgs>
+    orgContacts?: boolean | Organization$orgContactsArgs<ExtArgs>
     _count?: boolean | OrganizationCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["organization"]>
 
@@ -3286,6 +3387,7 @@ export namespace Prisma {
   export type OrganizationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "slug" | "createdAt" | "updatedAt", ExtArgs["result"]["organization"]>
   export type OrganizationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     users?: boolean | Organization$usersArgs<ExtArgs>
+    orgContacts?: boolean | Organization$orgContactsArgs<ExtArgs>
     _count?: boolean | OrganizationCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type OrganizationIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -3295,6 +3397,7 @@ export namespace Prisma {
     name: "Organization"
     objects: {
       users: Prisma.$UserPayload<ExtArgs>[]
+      orgContacts: Prisma.$OrgContactPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -3697,6 +3800,7 @@ export namespace Prisma {
   export interface Prisma__OrganizationClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     users<T extends Organization$usersArgs<ExtArgs> = {}>(args?: Subset<T, Organization$usersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    orgContacts<T extends Organization$orgContactsArgs<ExtArgs> = {}>(args?: Subset<T, Organization$orgContactsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OrgContactPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -4143,6 +4247,30 @@ export namespace Prisma {
   }
 
   /**
+   * Organization.orgContacts
+   */
+  export type Organization$orgContactsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrgContact
+     */
+    select?: OrgContactSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OrgContact
+     */
+    omit?: OrgContactOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrgContactInclude<ExtArgs> | null
+    where?: OrgContactWhereInput
+    orderBy?: OrgContactOrderByWithRelationInput | OrgContactOrderByWithRelationInput[]
+    cursor?: OrgContactWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: OrgContactScalarFieldEnum | OrgContactScalarFieldEnum[]
+  }
+
+  /**
    * Organization without action
    */
   export type OrganizationDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -4158,6 +4286,1090 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: OrganizationInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model OrgContact
+   */
+
+  export type AggregateOrgContact = {
+    _count: OrgContactCountAggregateOutputType | null
+    _min: OrgContactMinAggregateOutputType | null
+    _max: OrgContactMaxAggregateOutputType | null
+  }
+
+  export type OrgContactMinAggregateOutputType = {
+    id: string | null
+    orgId: string | null
+    firstName: string | null
+    lastName: string | null
+    email: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type OrgContactMaxAggregateOutputType = {
+    id: string | null
+    orgId: string | null
+    firstName: string | null
+    lastName: string | null
+    email: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type OrgContactCountAggregateOutputType = {
+    id: number
+    orgId: number
+    firstName: number
+    lastName: number
+    email: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type OrgContactMinAggregateInputType = {
+    id?: true
+    orgId?: true
+    firstName?: true
+    lastName?: true
+    email?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type OrgContactMaxAggregateInputType = {
+    id?: true
+    orgId?: true
+    firstName?: true
+    lastName?: true
+    email?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type OrgContactCountAggregateInputType = {
+    id?: true
+    orgId?: true
+    firstName?: true
+    lastName?: true
+    email?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type OrgContactAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which OrgContact to aggregate.
+     */
+    where?: OrgContactWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of OrgContacts to fetch.
+     */
+    orderBy?: OrgContactOrderByWithRelationInput | OrgContactOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: OrgContactWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` OrgContacts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` OrgContacts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned OrgContacts
+    **/
+    _count?: true | OrgContactCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: OrgContactMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: OrgContactMaxAggregateInputType
+  }
+
+  export type GetOrgContactAggregateType<T extends OrgContactAggregateArgs> = {
+        [P in keyof T & keyof AggregateOrgContact]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateOrgContact[P]>
+      : GetScalarType<T[P], AggregateOrgContact[P]>
+  }
+
+
+
+
+  export type OrgContactGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: OrgContactWhereInput
+    orderBy?: OrgContactOrderByWithAggregationInput | OrgContactOrderByWithAggregationInput[]
+    by: OrgContactScalarFieldEnum[] | OrgContactScalarFieldEnum
+    having?: OrgContactScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: OrgContactCountAggregateInputType | true
+    _min?: OrgContactMinAggregateInputType
+    _max?: OrgContactMaxAggregateInputType
+  }
+
+  export type OrgContactGroupByOutputType = {
+    id: string
+    orgId: string
+    firstName: string
+    lastName: string
+    email: string
+    createdAt: Date
+    updatedAt: Date
+    _count: OrgContactCountAggregateOutputType | null
+    _min: OrgContactMinAggregateOutputType | null
+    _max: OrgContactMaxAggregateOutputType | null
+  }
+
+  type GetOrgContactGroupByPayload<T extends OrgContactGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<OrgContactGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof OrgContactGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], OrgContactGroupByOutputType[P]>
+            : GetScalarType<T[P], OrgContactGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type OrgContactSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    orgId?: boolean
+    firstName?: boolean
+    lastName?: boolean
+    email?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    org?: boolean | OrganizationDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["orgContact"]>
+
+  export type OrgContactSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    orgId?: boolean
+    firstName?: boolean
+    lastName?: boolean
+    email?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    org?: boolean | OrganizationDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["orgContact"]>
+
+  export type OrgContactSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    orgId?: boolean
+    firstName?: boolean
+    lastName?: boolean
+    email?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    org?: boolean | OrganizationDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["orgContact"]>
+
+  export type OrgContactSelectScalar = {
+    id?: boolean
+    orgId?: boolean
+    firstName?: boolean
+    lastName?: boolean
+    email?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type OrgContactOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "orgId" | "firstName" | "lastName" | "email" | "createdAt" | "updatedAt", ExtArgs["result"]["orgContact"]>
+  export type OrgContactInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    org?: boolean | OrganizationDefaultArgs<ExtArgs>
+  }
+  export type OrgContactIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    org?: boolean | OrganizationDefaultArgs<ExtArgs>
+  }
+  export type OrgContactIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    org?: boolean | OrganizationDefaultArgs<ExtArgs>
+  }
+
+  export type $OrgContactPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "OrgContact"
+    objects: {
+      org: Prisma.$OrganizationPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      orgId: string
+      firstName: string
+      lastName: string
+      email: string
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["orgContact"]>
+    composites: {}
+  }
+
+  type OrgContactGetPayload<S extends boolean | null | undefined | OrgContactDefaultArgs> = $Result.GetResult<Prisma.$OrgContactPayload, S>
+
+  type OrgContactCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<OrgContactFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: OrgContactCountAggregateInputType | true
+    }
+
+  export interface OrgContactDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['OrgContact'], meta: { name: 'OrgContact' } }
+    /**
+     * Find zero or one OrgContact that matches the filter.
+     * @param {OrgContactFindUniqueArgs} args - Arguments to find a OrgContact
+     * @example
+     * // Get one OrgContact
+     * const orgContact = await prisma.orgContact.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends OrgContactFindUniqueArgs>(args: SelectSubset<T, OrgContactFindUniqueArgs<ExtArgs>>): Prisma__OrgContactClient<$Result.GetResult<Prisma.$OrgContactPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one OrgContact that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {OrgContactFindUniqueOrThrowArgs} args - Arguments to find a OrgContact
+     * @example
+     * // Get one OrgContact
+     * const orgContact = await prisma.orgContact.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends OrgContactFindUniqueOrThrowArgs>(args: SelectSubset<T, OrgContactFindUniqueOrThrowArgs<ExtArgs>>): Prisma__OrgContactClient<$Result.GetResult<Prisma.$OrgContactPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first OrgContact that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OrgContactFindFirstArgs} args - Arguments to find a OrgContact
+     * @example
+     * // Get one OrgContact
+     * const orgContact = await prisma.orgContact.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends OrgContactFindFirstArgs>(args?: SelectSubset<T, OrgContactFindFirstArgs<ExtArgs>>): Prisma__OrgContactClient<$Result.GetResult<Prisma.$OrgContactPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first OrgContact that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OrgContactFindFirstOrThrowArgs} args - Arguments to find a OrgContact
+     * @example
+     * // Get one OrgContact
+     * const orgContact = await prisma.orgContact.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends OrgContactFindFirstOrThrowArgs>(args?: SelectSubset<T, OrgContactFindFirstOrThrowArgs<ExtArgs>>): Prisma__OrgContactClient<$Result.GetResult<Prisma.$OrgContactPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more OrgContacts that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OrgContactFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all OrgContacts
+     * const orgContacts = await prisma.orgContact.findMany()
+     * 
+     * // Get first 10 OrgContacts
+     * const orgContacts = await prisma.orgContact.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const orgContactWithIdOnly = await prisma.orgContact.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends OrgContactFindManyArgs>(args?: SelectSubset<T, OrgContactFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OrgContactPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a OrgContact.
+     * @param {OrgContactCreateArgs} args - Arguments to create a OrgContact.
+     * @example
+     * // Create one OrgContact
+     * const OrgContact = await prisma.orgContact.create({
+     *   data: {
+     *     // ... data to create a OrgContact
+     *   }
+     * })
+     * 
+     */
+    create<T extends OrgContactCreateArgs>(args: SelectSubset<T, OrgContactCreateArgs<ExtArgs>>): Prisma__OrgContactClient<$Result.GetResult<Prisma.$OrgContactPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many OrgContacts.
+     * @param {OrgContactCreateManyArgs} args - Arguments to create many OrgContacts.
+     * @example
+     * // Create many OrgContacts
+     * const orgContact = await prisma.orgContact.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends OrgContactCreateManyArgs>(args?: SelectSubset<T, OrgContactCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many OrgContacts and returns the data saved in the database.
+     * @param {OrgContactCreateManyAndReturnArgs} args - Arguments to create many OrgContacts.
+     * @example
+     * // Create many OrgContacts
+     * const orgContact = await prisma.orgContact.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many OrgContacts and only return the `id`
+     * const orgContactWithIdOnly = await prisma.orgContact.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends OrgContactCreateManyAndReturnArgs>(args?: SelectSubset<T, OrgContactCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OrgContactPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a OrgContact.
+     * @param {OrgContactDeleteArgs} args - Arguments to delete one OrgContact.
+     * @example
+     * // Delete one OrgContact
+     * const OrgContact = await prisma.orgContact.delete({
+     *   where: {
+     *     // ... filter to delete one OrgContact
+     *   }
+     * })
+     * 
+     */
+    delete<T extends OrgContactDeleteArgs>(args: SelectSubset<T, OrgContactDeleteArgs<ExtArgs>>): Prisma__OrgContactClient<$Result.GetResult<Prisma.$OrgContactPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one OrgContact.
+     * @param {OrgContactUpdateArgs} args - Arguments to update one OrgContact.
+     * @example
+     * // Update one OrgContact
+     * const orgContact = await prisma.orgContact.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends OrgContactUpdateArgs>(args: SelectSubset<T, OrgContactUpdateArgs<ExtArgs>>): Prisma__OrgContactClient<$Result.GetResult<Prisma.$OrgContactPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more OrgContacts.
+     * @param {OrgContactDeleteManyArgs} args - Arguments to filter OrgContacts to delete.
+     * @example
+     * // Delete a few OrgContacts
+     * const { count } = await prisma.orgContact.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends OrgContactDeleteManyArgs>(args?: SelectSubset<T, OrgContactDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more OrgContacts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OrgContactUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many OrgContacts
+     * const orgContact = await prisma.orgContact.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends OrgContactUpdateManyArgs>(args: SelectSubset<T, OrgContactUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more OrgContacts and returns the data updated in the database.
+     * @param {OrgContactUpdateManyAndReturnArgs} args - Arguments to update many OrgContacts.
+     * @example
+     * // Update many OrgContacts
+     * const orgContact = await prisma.orgContact.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more OrgContacts and only return the `id`
+     * const orgContactWithIdOnly = await prisma.orgContact.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends OrgContactUpdateManyAndReturnArgs>(args: SelectSubset<T, OrgContactUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OrgContactPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one OrgContact.
+     * @param {OrgContactUpsertArgs} args - Arguments to update or create a OrgContact.
+     * @example
+     * // Update or create a OrgContact
+     * const orgContact = await prisma.orgContact.upsert({
+     *   create: {
+     *     // ... data to create a OrgContact
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the OrgContact we want to update
+     *   }
+     * })
+     */
+    upsert<T extends OrgContactUpsertArgs>(args: SelectSubset<T, OrgContactUpsertArgs<ExtArgs>>): Prisma__OrgContactClient<$Result.GetResult<Prisma.$OrgContactPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of OrgContacts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OrgContactCountArgs} args - Arguments to filter OrgContacts to count.
+     * @example
+     * // Count the number of OrgContacts
+     * const count = await prisma.orgContact.count({
+     *   where: {
+     *     // ... the filter for the OrgContacts we want to count
+     *   }
+     * })
+    **/
+    count<T extends OrgContactCountArgs>(
+      args?: Subset<T, OrgContactCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], OrgContactCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a OrgContact.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OrgContactAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends OrgContactAggregateArgs>(args: Subset<T, OrgContactAggregateArgs>): Prisma.PrismaPromise<GetOrgContactAggregateType<T>>
+
+    /**
+     * Group by OrgContact.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OrgContactGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends OrgContactGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: OrgContactGroupByArgs['orderBy'] }
+        : { orderBy?: OrgContactGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, OrgContactGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetOrgContactGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the OrgContact model
+   */
+  readonly fields: OrgContactFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for OrgContact.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__OrgContactClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    org<T extends OrganizationDefaultArgs<ExtArgs> = {}>(args?: Subset<T, OrganizationDefaultArgs<ExtArgs>>): Prisma__OrganizationClient<$Result.GetResult<Prisma.$OrganizationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the OrgContact model
+   */
+  interface OrgContactFieldRefs {
+    readonly id: FieldRef<"OrgContact", 'String'>
+    readonly orgId: FieldRef<"OrgContact", 'String'>
+    readonly firstName: FieldRef<"OrgContact", 'String'>
+    readonly lastName: FieldRef<"OrgContact", 'String'>
+    readonly email: FieldRef<"OrgContact", 'String'>
+    readonly createdAt: FieldRef<"OrgContact", 'DateTime'>
+    readonly updatedAt: FieldRef<"OrgContact", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * OrgContact findUnique
+   */
+  export type OrgContactFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrgContact
+     */
+    select?: OrgContactSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OrgContact
+     */
+    omit?: OrgContactOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrgContactInclude<ExtArgs> | null
+    /**
+     * Filter, which OrgContact to fetch.
+     */
+    where: OrgContactWhereUniqueInput
+  }
+
+  /**
+   * OrgContact findUniqueOrThrow
+   */
+  export type OrgContactFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrgContact
+     */
+    select?: OrgContactSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OrgContact
+     */
+    omit?: OrgContactOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrgContactInclude<ExtArgs> | null
+    /**
+     * Filter, which OrgContact to fetch.
+     */
+    where: OrgContactWhereUniqueInput
+  }
+
+  /**
+   * OrgContact findFirst
+   */
+  export type OrgContactFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrgContact
+     */
+    select?: OrgContactSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OrgContact
+     */
+    omit?: OrgContactOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrgContactInclude<ExtArgs> | null
+    /**
+     * Filter, which OrgContact to fetch.
+     */
+    where?: OrgContactWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of OrgContacts to fetch.
+     */
+    orderBy?: OrgContactOrderByWithRelationInput | OrgContactOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for OrgContacts.
+     */
+    cursor?: OrgContactWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` OrgContacts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` OrgContacts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of OrgContacts.
+     */
+    distinct?: OrgContactScalarFieldEnum | OrgContactScalarFieldEnum[]
+  }
+
+  /**
+   * OrgContact findFirstOrThrow
+   */
+  export type OrgContactFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrgContact
+     */
+    select?: OrgContactSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OrgContact
+     */
+    omit?: OrgContactOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrgContactInclude<ExtArgs> | null
+    /**
+     * Filter, which OrgContact to fetch.
+     */
+    where?: OrgContactWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of OrgContacts to fetch.
+     */
+    orderBy?: OrgContactOrderByWithRelationInput | OrgContactOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for OrgContacts.
+     */
+    cursor?: OrgContactWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` OrgContacts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` OrgContacts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of OrgContacts.
+     */
+    distinct?: OrgContactScalarFieldEnum | OrgContactScalarFieldEnum[]
+  }
+
+  /**
+   * OrgContact findMany
+   */
+  export type OrgContactFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrgContact
+     */
+    select?: OrgContactSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OrgContact
+     */
+    omit?: OrgContactOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrgContactInclude<ExtArgs> | null
+    /**
+     * Filter, which OrgContacts to fetch.
+     */
+    where?: OrgContactWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of OrgContacts to fetch.
+     */
+    orderBy?: OrgContactOrderByWithRelationInput | OrgContactOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing OrgContacts.
+     */
+    cursor?: OrgContactWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` OrgContacts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` OrgContacts.
+     */
+    skip?: number
+    distinct?: OrgContactScalarFieldEnum | OrgContactScalarFieldEnum[]
+  }
+
+  /**
+   * OrgContact create
+   */
+  export type OrgContactCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrgContact
+     */
+    select?: OrgContactSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OrgContact
+     */
+    omit?: OrgContactOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrgContactInclude<ExtArgs> | null
+    /**
+     * The data needed to create a OrgContact.
+     */
+    data: XOR<OrgContactCreateInput, OrgContactUncheckedCreateInput>
+  }
+
+  /**
+   * OrgContact createMany
+   */
+  export type OrgContactCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many OrgContacts.
+     */
+    data: OrgContactCreateManyInput | OrgContactCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * OrgContact createManyAndReturn
+   */
+  export type OrgContactCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrgContact
+     */
+    select?: OrgContactSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the OrgContact
+     */
+    omit?: OrgContactOmit<ExtArgs> | null
+    /**
+     * The data used to create many OrgContacts.
+     */
+    data: OrgContactCreateManyInput | OrgContactCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrgContactIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * OrgContact update
+   */
+  export type OrgContactUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrgContact
+     */
+    select?: OrgContactSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OrgContact
+     */
+    omit?: OrgContactOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrgContactInclude<ExtArgs> | null
+    /**
+     * The data needed to update a OrgContact.
+     */
+    data: XOR<OrgContactUpdateInput, OrgContactUncheckedUpdateInput>
+    /**
+     * Choose, which OrgContact to update.
+     */
+    where: OrgContactWhereUniqueInput
+  }
+
+  /**
+   * OrgContact updateMany
+   */
+  export type OrgContactUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update OrgContacts.
+     */
+    data: XOR<OrgContactUpdateManyMutationInput, OrgContactUncheckedUpdateManyInput>
+    /**
+     * Filter which OrgContacts to update
+     */
+    where?: OrgContactWhereInput
+    /**
+     * Limit how many OrgContacts to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * OrgContact updateManyAndReturn
+   */
+  export type OrgContactUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrgContact
+     */
+    select?: OrgContactSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the OrgContact
+     */
+    omit?: OrgContactOmit<ExtArgs> | null
+    /**
+     * The data used to update OrgContacts.
+     */
+    data: XOR<OrgContactUpdateManyMutationInput, OrgContactUncheckedUpdateManyInput>
+    /**
+     * Filter which OrgContacts to update
+     */
+    where?: OrgContactWhereInput
+    /**
+     * Limit how many OrgContacts to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrgContactIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * OrgContact upsert
+   */
+  export type OrgContactUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrgContact
+     */
+    select?: OrgContactSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OrgContact
+     */
+    omit?: OrgContactOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrgContactInclude<ExtArgs> | null
+    /**
+     * The filter to search for the OrgContact to update in case it exists.
+     */
+    where: OrgContactWhereUniqueInput
+    /**
+     * In case the OrgContact found by the `where` argument doesn't exist, create a new OrgContact with this data.
+     */
+    create: XOR<OrgContactCreateInput, OrgContactUncheckedCreateInput>
+    /**
+     * In case the OrgContact was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<OrgContactUpdateInput, OrgContactUncheckedUpdateInput>
+  }
+
+  /**
+   * OrgContact delete
+   */
+  export type OrgContactDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrgContact
+     */
+    select?: OrgContactSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OrgContact
+     */
+    omit?: OrgContactOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrgContactInclude<ExtArgs> | null
+    /**
+     * Filter which OrgContact to delete.
+     */
+    where: OrgContactWhereUniqueInput
+  }
+
+  /**
+   * OrgContact deleteMany
+   */
+  export type OrgContactDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which OrgContacts to delete
+     */
+    where?: OrgContactWhereInput
+    /**
+     * Limit how many OrgContacts to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * OrgContact without action
+   */
+  export type OrgContactDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrgContact
+     */
+    select?: OrgContactSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OrgContact
+     */
+    omit?: OrgContactOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrgContactInclude<ExtArgs> | null
   }
 
 
@@ -30471,6 +31683,19 @@ export namespace Prisma {
   export type OrganizationScalarFieldEnum = (typeof OrganizationScalarFieldEnum)[keyof typeof OrganizationScalarFieldEnum]
 
 
+  export const OrgContactScalarFieldEnum: {
+    id: 'id',
+    orgId: 'orgId',
+    firstName: 'firstName',
+    lastName: 'lastName',
+    email: 'email',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type OrgContactScalarFieldEnum = (typeof OrgContactScalarFieldEnum)[keyof typeof OrgContactScalarFieldEnum]
+
+
   export const UserScalarFieldEnum: {
     id: 'id',
     email: 'email',
@@ -31037,6 +32262,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Organization"> | Date | string
     updatedAt?: DateTimeFilter<"Organization"> | Date | string
     users?: UserListRelationFilter
+    orgContacts?: OrgContactListRelationFilter
   }
 
   export type OrganizationOrderByWithRelationInput = {
@@ -31046,6 +32272,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     users?: UserOrderByRelationAggregateInput
+    orgContacts?: OrgContactOrderByRelationAggregateInput
   }
 
   export type OrganizationWhereUniqueInput = Prisma.AtLeast<{
@@ -31058,6 +32285,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Organization"> | Date | string
     updatedAt?: DateTimeFilter<"Organization"> | Date | string
     users?: UserListRelationFilter
+    orgContacts?: OrgContactListRelationFilter
   }, "id" | "slug">
 
   export type OrganizationOrderByWithAggregationInput = {
@@ -31080,6 +32308,72 @@ export namespace Prisma {
     slug?: StringWithAggregatesFilter<"Organization"> | string
     createdAt?: DateTimeWithAggregatesFilter<"Organization"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Organization"> | Date | string
+  }
+
+  export type OrgContactWhereInput = {
+    AND?: OrgContactWhereInput | OrgContactWhereInput[]
+    OR?: OrgContactWhereInput[]
+    NOT?: OrgContactWhereInput | OrgContactWhereInput[]
+    id?: StringFilter<"OrgContact"> | string
+    orgId?: StringFilter<"OrgContact"> | string
+    firstName?: StringFilter<"OrgContact"> | string
+    lastName?: StringFilter<"OrgContact"> | string
+    email?: StringFilter<"OrgContact"> | string
+    createdAt?: DateTimeFilter<"OrgContact"> | Date | string
+    updatedAt?: DateTimeFilter<"OrgContact"> | Date | string
+    org?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
+  }
+
+  export type OrgContactOrderByWithRelationInput = {
+    id?: SortOrder
+    orgId?: SortOrder
+    firstName?: SortOrder
+    lastName?: SortOrder
+    email?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    org?: OrganizationOrderByWithRelationInput
+  }
+
+  export type OrgContactWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    orgId_email?: OrgContactOrgIdEmailCompoundUniqueInput
+    AND?: OrgContactWhereInput | OrgContactWhereInput[]
+    OR?: OrgContactWhereInput[]
+    NOT?: OrgContactWhereInput | OrgContactWhereInput[]
+    orgId?: StringFilter<"OrgContact"> | string
+    firstName?: StringFilter<"OrgContact"> | string
+    lastName?: StringFilter<"OrgContact"> | string
+    email?: StringFilter<"OrgContact"> | string
+    createdAt?: DateTimeFilter<"OrgContact"> | Date | string
+    updatedAt?: DateTimeFilter<"OrgContact"> | Date | string
+    org?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
+  }, "id" | "orgId_email">
+
+  export type OrgContactOrderByWithAggregationInput = {
+    id?: SortOrder
+    orgId?: SortOrder
+    firstName?: SortOrder
+    lastName?: SortOrder
+    email?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: OrgContactCountOrderByAggregateInput
+    _max?: OrgContactMaxOrderByAggregateInput
+    _min?: OrgContactMinOrderByAggregateInput
+  }
+
+  export type OrgContactScalarWhereWithAggregatesInput = {
+    AND?: OrgContactScalarWhereWithAggregatesInput | OrgContactScalarWhereWithAggregatesInput[]
+    OR?: OrgContactScalarWhereWithAggregatesInput[]
+    NOT?: OrgContactScalarWhereWithAggregatesInput | OrgContactScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"OrgContact"> | string
+    orgId?: StringWithAggregatesFilter<"OrgContact"> | string
+    firstName?: StringWithAggregatesFilter<"OrgContact"> | string
+    lastName?: StringWithAggregatesFilter<"OrgContact"> | string
+    email?: StringWithAggregatesFilter<"OrgContact"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"OrgContact"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"OrgContact"> | Date | string
   }
 
   export type UserWhereInput = {
@@ -33284,6 +34578,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     users?: UserCreateNestedManyWithoutOrgInput
+    orgContacts?: OrgContactCreateNestedManyWithoutOrgInput
   }
 
   export type OrganizationUncheckedCreateInput = {
@@ -33293,6 +34588,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     users?: UserUncheckedCreateNestedManyWithoutOrgInput
+    orgContacts?: OrgContactUncheckedCreateNestedManyWithoutOrgInput
   }
 
   export type OrganizationUpdateInput = {
@@ -33302,6 +34598,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     users?: UserUpdateManyWithoutOrgNestedInput
+    orgContacts?: OrgContactUpdateManyWithoutOrgNestedInput
   }
 
   export type OrganizationUncheckedUpdateInput = {
@@ -33311,6 +34608,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     users?: UserUncheckedUpdateManyWithoutOrgNestedInput
+    orgContacts?: OrgContactUncheckedUpdateManyWithoutOrgNestedInput
   }
 
   export type OrganizationCreateManyInput = {
@@ -33333,6 +34631,75 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type OrgContactCreateInput = {
+    id?: string
+    firstName: string
+    lastName: string
+    email: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    org: OrganizationCreateNestedOneWithoutOrgContactsInput
+  }
+
+  export type OrgContactUncheckedCreateInput = {
+    id?: string
+    orgId: string
+    firstName: string
+    lastName: string
+    email: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type OrgContactUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    org?: OrganizationUpdateOneRequiredWithoutOrgContactsNestedInput
+  }
+
+  export type OrgContactUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    orgId?: StringFieldUpdateOperationsInput | string
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type OrgContactCreateManyInput = {
+    id?: string
+    orgId: string
+    firstName: string
+    lastName: string
+    email: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type OrgContactUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type OrgContactUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    orgId?: StringFieldUpdateOperationsInput | string
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -35927,7 +37294,17 @@ export namespace Prisma {
     none?: UserWhereInput
   }
 
+  export type OrgContactListRelationFilter = {
+    every?: OrgContactWhereInput
+    some?: OrgContactWhereInput
+    none?: OrgContactWhereInput
+  }
+
   export type UserOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type OrgContactOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -35987,6 +37364,46 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
+  export type OrganizationScalarRelationFilter = {
+    is?: OrganizationWhereInput
+    isNot?: OrganizationWhereInput
+  }
+
+  export type OrgContactOrgIdEmailCompoundUniqueInput = {
+    orgId: string
+    email: string
+  }
+
+  export type OrgContactCountOrderByAggregateInput = {
+    id?: SortOrder
+    orgId?: SortOrder
+    firstName?: SortOrder
+    lastName?: SortOrder
+    email?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type OrgContactMaxOrderByAggregateInput = {
+    id?: SortOrder
+    orgId?: SortOrder
+    firstName?: SortOrder
+    lastName?: SortOrder
+    email?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type OrgContactMinOrderByAggregateInput = {
+    id?: SortOrder
+    orgId?: SortOrder
+    firstName?: SortOrder
+    lastName?: SortOrder
+    email?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
   export type StringNullableFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | null
     in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
@@ -36039,11 +37456,6 @@ export namespace Prisma {
     gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
-  }
-
-  export type OrganizationScalarRelationFilter = {
-    is?: OrganizationWhereInput
-    isNot?: OrganizationWhereInput
   }
 
   export type MsConnectedAccountListRelationFilter = {
@@ -37564,11 +38976,25 @@ export namespace Prisma {
     connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
   }
 
+  export type OrgContactCreateNestedManyWithoutOrgInput = {
+    create?: XOR<OrgContactCreateWithoutOrgInput, OrgContactUncheckedCreateWithoutOrgInput> | OrgContactCreateWithoutOrgInput[] | OrgContactUncheckedCreateWithoutOrgInput[]
+    connectOrCreate?: OrgContactCreateOrConnectWithoutOrgInput | OrgContactCreateOrConnectWithoutOrgInput[]
+    createMany?: OrgContactCreateManyOrgInputEnvelope
+    connect?: OrgContactWhereUniqueInput | OrgContactWhereUniqueInput[]
+  }
+
   export type UserUncheckedCreateNestedManyWithoutOrgInput = {
     create?: XOR<UserCreateWithoutOrgInput, UserUncheckedCreateWithoutOrgInput> | UserCreateWithoutOrgInput[] | UserUncheckedCreateWithoutOrgInput[]
     connectOrCreate?: UserCreateOrConnectWithoutOrgInput | UserCreateOrConnectWithoutOrgInput[]
     createMany?: UserCreateManyOrgInputEnvelope
     connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+  }
+
+  export type OrgContactUncheckedCreateNestedManyWithoutOrgInput = {
+    create?: XOR<OrgContactCreateWithoutOrgInput, OrgContactUncheckedCreateWithoutOrgInput> | OrgContactCreateWithoutOrgInput[] | OrgContactUncheckedCreateWithoutOrgInput[]
+    connectOrCreate?: OrgContactCreateOrConnectWithoutOrgInput | OrgContactCreateOrConnectWithoutOrgInput[]
+    createMany?: OrgContactCreateManyOrgInputEnvelope
+    connect?: OrgContactWhereUniqueInput | OrgContactWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -37593,6 +39019,20 @@ export namespace Prisma {
     deleteMany?: UserScalarWhereInput | UserScalarWhereInput[]
   }
 
+  export type OrgContactUpdateManyWithoutOrgNestedInput = {
+    create?: XOR<OrgContactCreateWithoutOrgInput, OrgContactUncheckedCreateWithoutOrgInput> | OrgContactCreateWithoutOrgInput[] | OrgContactUncheckedCreateWithoutOrgInput[]
+    connectOrCreate?: OrgContactCreateOrConnectWithoutOrgInput | OrgContactCreateOrConnectWithoutOrgInput[]
+    upsert?: OrgContactUpsertWithWhereUniqueWithoutOrgInput | OrgContactUpsertWithWhereUniqueWithoutOrgInput[]
+    createMany?: OrgContactCreateManyOrgInputEnvelope
+    set?: OrgContactWhereUniqueInput | OrgContactWhereUniqueInput[]
+    disconnect?: OrgContactWhereUniqueInput | OrgContactWhereUniqueInput[]
+    delete?: OrgContactWhereUniqueInput | OrgContactWhereUniqueInput[]
+    connect?: OrgContactWhereUniqueInput | OrgContactWhereUniqueInput[]
+    update?: OrgContactUpdateWithWhereUniqueWithoutOrgInput | OrgContactUpdateWithWhereUniqueWithoutOrgInput[]
+    updateMany?: OrgContactUpdateManyWithWhereWithoutOrgInput | OrgContactUpdateManyWithWhereWithoutOrgInput[]
+    deleteMany?: OrgContactScalarWhereInput | OrgContactScalarWhereInput[]
+  }
+
   export type UserUncheckedUpdateManyWithoutOrgNestedInput = {
     create?: XOR<UserCreateWithoutOrgInput, UserUncheckedCreateWithoutOrgInput> | UserCreateWithoutOrgInput[] | UserUncheckedCreateWithoutOrgInput[]
     connectOrCreate?: UserCreateOrConnectWithoutOrgInput | UserCreateOrConnectWithoutOrgInput[]
@@ -37605,6 +39045,34 @@ export namespace Prisma {
     update?: UserUpdateWithWhereUniqueWithoutOrgInput | UserUpdateWithWhereUniqueWithoutOrgInput[]
     updateMany?: UserUpdateManyWithWhereWithoutOrgInput | UserUpdateManyWithWhereWithoutOrgInput[]
     deleteMany?: UserScalarWhereInput | UserScalarWhereInput[]
+  }
+
+  export type OrgContactUncheckedUpdateManyWithoutOrgNestedInput = {
+    create?: XOR<OrgContactCreateWithoutOrgInput, OrgContactUncheckedCreateWithoutOrgInput> | OrgContactCreateWithoutOrgInput[] | OrgContactUncheckedCreateWithoutOrgInput[]
+    connectOrCreate?: OrgContactCreateOrConnectWithoutOrgInput | OrgContactCreateOrConnectWithoutOrgInput[]
+    upsert?: OrgContactUpsertWithWhereUniqueWithoutOrgInput | OrgContactUpsertWithWhereUniqueWithoutOrgInput[]
+    createMany?: OrgContactCreateManyOrgInputEnvelope
+    set?: OrgContactWhereUniqueInput | OrgContactWhereUniqueInput[]
+    disconnect?: OrgContactWhereUniqueInput | OrgContactWhereUniqueInput[]
+    delete?: OrgContactWhereUniqueInput | OrgContactWhereUniqueInput[]
+    connect?: OrgContactWhereUniqueInput | OrgContactWhereUniqueInput[]
+    update?: OrgContactUpdateWithWhereUniqueWithoutOrgInput | OrgContactUpdateWithWhereUniqueWithoutOrgInput[]
+    updateMany?: OrgContactUpdateManyWithWhereWithoutOrgInput | OrgContactUpdateManyWithWhereWithoutOrgInput[]
+    deleteMany?: OrgContactScalarWhereInput | OrgContactScalarWhereInput[]
+  }
+
+  export type OrganizationCreateNestedOneWithoutOrgContactsInput = {
+    create?: XOR<OrganizationCreateWithoutOrgContactsInput, OrganizationUncheckedCreateWithoutOrgContactsInput>
+    connectOrCreate?: OrganizationCreateOrConnectWithoutOrgContactsInput
+    connect?: OrganizationWhereUniqueInput
+  }
+
+  export type OrganizationUpdateOneRequiredWithoutOrgContactsNestedInput = {
+    create?: XOR<OrganizationCreateWithoutOrgContactsInput, OrganizationUncheckedCreateWithoutOrgContactsInput>
+    connectOrCreate?: OrganizationCreateOrConnectWithoutOrgContactsInput
+    upsert?: OrganizationUpsertWithoutOrgContactsInput
+    connect?: OrganizationWhereUniqueInput
+    update?: XOR<XOR<OrganizationUpdateToOneWithWhereWithoutOrgContactsInput, OrganizationUpdateWithoutOrgContactsInput>, OrganizationUncheckedUpdateWithoutOrgContactsInput>
   }
 
   export type OrganizationCreateNestedOneWithoutUsersInput = {
@@ -39098,6 +40566,34 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type OrgContactCreateWithoutOrgInput = {
+    id?: string
+    firstName: string
+    lastName: string
+    email: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type OrgContactUncheckedCreateWithoutOrgInput = {
+    id?: string
+    firstName: string
+    lastName: string
+    email: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type OrgContactCreateOrConnectWithoutOrgInput = {
+    where: OrgContactWhereUniqueInput
+    create: XOR<OrgContactCreateWithoutOrgInput, OrgContactUncheckedCreateWithoutOrgInput>
+  }
+
+  export type OrgContactCreateManyOrgInputEnvelope = {
+    data: OrgContactCreateManyOrgInput | OrgContactCreateManyOrgInput[]
+    skipDuplicates?: boolean
+  }
+
   export type UserUpsertWithWhereUniqueWithoutOrgInput = {
     where: UserWhereUniqueInput
     update: XOR<UserUpdateWithoutOrgInput, UserUncheckedUpdateWithoutOrgInput>
@@ -39139,12 +40635,94 @@ export namespace Prisma {
     voiceProfileUpdatedAt?: DateTimeNullableFilter<"User"> | Date | string | null
   }
 
+  export type OrgContactUpsertWithWhereUniqueWithoutOrgInput = {
+    where: OrgContactWhereUniqueInput
+    update: XOR<OrgContactUpdateWithoutOrgInput, OrgContactUncheckedUpdateWithoutOrgInput>
+    create: XOR<OrgContactCreateWithoutOrgInput, OrgContactUncheckedCreateWithoutOrgInput>
+  }
+
+  export type OrgContactUpdateWithWhereUniqueWithoutOrgInput = {
+    where: OrgContactWhereUniqueInput
+    data: XOR<OrgContactUpdateWithoutOrgInput, OrgContactUncheckedUpdateWithoutOrgInput>
+  }
+
+  export type OrgContactUpdateManyWithWhereWithoutOrgInput = {
+    where: OrgContactScalarWhereInput
+    data: XOR<OrgContactUpdateManyMutationInput, OrgContactUncheckedUpdateManyWithoutOrgInput>
+  }
+
+  export type OrgContactScalarWhereInput = {
+    AND?: OrgContactScalarWhereInput | OrgContactScalarWhereInput[]
+    OR?: OrgContactScalarWhereInput[]
+    NOT?: OrgContactScalarWhereInput | OrgContactScalarWhereInput[]
+    id?: StringFilter<"OrgContact"> | string
+    orgId?: StringFilter<"OrgContact"> | string
+    firstName?: StringFilter<"OrgContact"> | string
+    lastName?: StringFilter<"OrgContact"> | string
+    email?: StringFilter<"OrgContact"> | string
+    createdAt?: DateTimeFilter<"OrgContact"> | Date | string
+    updatedAt?: DateTimeFilter<"OrgContact"> | Date | string
+  }
+
+  export type OrganizationCreateWithoutOrgContactsInput = {
+    id?: string
+    name: string
+    slug: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    users?: UserCreateNestedManyWithoutOrgInput
+  }
+
+  export type OrganizationUncheckedCreateWithoutOrgContactsInput = {
+    id?: string
+    name: string
+    slug: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    users?: UserUncheckedCreateNestedManyWithoutOrgInput
+  }
+
+  export type OrganizationCreateOrConnectWithoutOrgContactsInput = {
+    where: OrganizationWhereUniqueInput
+    create: XOR<OrganizationCreateWithoutOrgContactsInput, OrganizationUncheckedCreateWithoutOrgContactsInput>
+  }
+
+  export type OrganizationUpsertWithoutOrgContactsInput = {
+    update: XOR<OrganizationUpdateWithoutOrgContactsInput, OrganizationUncheckedUpdateWithoutOrgContactsInput>
+    create: XOR<OrganizationCreateWithoutOrgContactsInput, OrganizationUncheckedCreateWithoutOrgContactsInput>
+    where?: OrganizationWhereInput
+  }
+
+  export type OrganizationUpdateToOneWithWhereWithoutOrgContactsInput = {
+    where?: OrganizationWhereInput
+    data: XOR<OrganizationUpdateWithoutOrgContactsInput, OrganizationUncheckedUpdateWithoutOrgContactsInput>
+  }
+
+  export type OrganizationUpdateWithoutOrgContactsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    users?: UserUpdateManyWithoutOrgNestedInput
+  }
+
+  export type OrganizationUncheckedUpdateWithoutOrgContactsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    users?: UserUncheckedUpdateManyWithoutOrgNestedInput
+  }
+
   export type OrganizationCreateWithoutUsersInput = {
     id?: string
     name: string
     slug: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    orgContacts?: OrgContactCreateNestedManyWithoutOrgInput
   }
 
   export type OrganizationUncheckedCreateWithoutUsersInput = {
@@ -39153,6 +40731,7 @@ export namespace Prisma {
     slug: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    orgContacts?: OrgContactUncheckedCreateNestedManyWithoutOrgInput
   }
 
   export type OrganizationCreateOrConnectWithoutUsersInput = {
@@ -39984,6 +41563,7 @@ export namespace Prisma {
     slug?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    orgContacts?: OrgContactUpdateManyWithoutOrgNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutUsersInput = {
@@ -39992,6 +41572,7 @@ export namespace Prisma {
     slug?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    orgContacts?: OrgContactUncheckedUpdateManyWithoutOrgNestedInput
   }
 
   export type MsConnectedAccountUpsertWithWhereUniqueWithoutUserInput = {
@@ -44318,6 +45899,15 @@ export namespace Prisma {
     voiceProfileUpdatedAt?: Date | string | null
   }
 
+  export type OrgContactCreateManyOrgInput = {
+    id?: string
+    firstName: string
+    lastName: string
+    email: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
   export type UserUpdateWithoutOrgInput = {
     id?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
@@ -44419,6 +46009,33 @@ export namespace Prisma {
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type OrgContactUpdateWithoutOrgInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type OrgContactUncheckedUpdateWithoutOrgInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type OrgContactUncheckedUpdateManyWithoutOrgInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type MsConnectedAccountCreateManyUserInput = {

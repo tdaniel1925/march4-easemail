@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { prisma } from "@/lib/prisma";
 import { graphGet } from "@/lib/microsoft/graph";
 import { verifyAccountOwnership, detectProviderType } from "@/lib/providers/registry";
 
@@ -33,14 +34,44 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
   const account = await verifyAccountOwnership(user.id, homeAccountId);
   if (!account) return NextResponse.json({ error: "Account not found" }, { status: 404 });
 
+  // ── Fetch org directory contacts (first page only) ──────────────────────────
+  const cursor = req.nextUrl.searchParams.get("cursor");
+  let orgContacts: { id: string; displayName: string; email: string; phone: string; jobTitle: string; company: string; initials: string; isVIP: boolean; frequencyScore: number; isOrgContact?: boolean }[] = [];
+  if (!cursor) {
+    try {
+      const dbUser = await prisma.user.findUnique({ where: { id: user.id }, select: { orgId: true } });
+      if (dbUser?.orgId) {
+        const orgList = await prisma.orgContact.findMany({
+          where: { orgId: dbUser.orgId },
+          orderBy: { firstName: "asc" },
+        });
+        orgContacts = orgList.map((c) => {
+          const name = `${c.firstName} ${c.lastName}`.trim();
+          return {
+            id: `org:${c.id}`,
+            displayName: name || c.email,
+            email: c.email,
+            phone: "",
+            jobTitle: "",
+            company: "D. Miller Law Firm",
+            initials: (name || c.email).slice(0, 2).toUpperCase(),
+            isVIP: false,
+            frequencyScore: 0,
+            isOrgContact: true,
+          };
+        });
+      }
+    } catch {
+      // Org lookup failed — continue without org contacts
+    }
+  }
+
   const providerType = detectProviderType(homeAccountId);
   if (providerType !== "microsoft") {
-    return NextResponse.json({ contacts: [] });
+    return NextResponse.json({ contacts: orgContacts, nextLink: null });
   }
 
   try {
-    // Support cursor-based pagination: if "cursor" is provided, use it as the Graph nextLink
-    const cursor = req.nextUrl.searchParams.get("cursor");
     let graphPath: string;
     if (cursor) {
       // The cursor is the path portion after https://graph.microsoft.com/v1.0
@@ -72,8 +103,18 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
       };
     });
 
+    // Merge: org contacts first (on first page), then personal, deduplicated by email
+    const seen = new Set<string>();
+    const merged = [];
+    for (const c of [...orgContacts, ...contacts]) {
+      const key = c.email.toLowerCase();
+      if (!key || seen.has(key)) continue;
+      seen.add(key);
+      merged.push(c);
+    }
+
     return NextResponse.json({
-      contacts,
+      contacts: merged,
       nextLink: data["@odata.nextLink"] ?? null,
     });
   } catch (err) {

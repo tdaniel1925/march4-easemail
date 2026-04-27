@@ -8,4 +8,6 @@ export interface Contact {
   initials: string;
   isVIP: boolean;
   frequencyScore: number;
+  /** True if this contact comes from the org directory (shared, read-only) */
+  isOrgContact?: boolean;
 }

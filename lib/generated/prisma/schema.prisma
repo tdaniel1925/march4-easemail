@@ -17,9 +17,30 @@ model Organization {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  users User[]
+  users       User[]
+  orgContacts OrgContact[]
 
   @@map("organizations")
+}
+
+// ─── Organization Directory Contacts ─────────────────────────────────────────
+// Shared contact list visible to all users in the org.
+// Imported from CSV or managed by admins. Read-only for regular users.
+
+model OrgContact {
+  id    String       @id @default(cuid())
+  orgId String
+  org   Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+
+  firstName String
+  lastName  String
+  email     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([orgId, email])
+  @@index([orgId])
+  @@map("org_contacts")
 }
 
 // ─── User ────────────────────────────────────────────────────────────────────

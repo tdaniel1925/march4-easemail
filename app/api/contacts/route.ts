@@ -44,8 +44,35 @@ export async function GET(req: NextRequest) {
   // Limit search term length to prevent abuse
   if (q.length > 200) return NextResponse.json([]);
 
+  // ── Search org directory (shared across all users in the org) ──────────────
+  let orgResults: { name: string; email: string }[] = [];
   try {
-    // Try DB cache first — uses Prisma parameterized queries (safe by default)
+    const dbUser = await prisma.user.findUnique({ where: { id: user.id }, select: { orgId: true } });
+    if (dbUser?.orgId) {
+      const orgContacts = await prisma.orgContact.findMany({
+        where: {
+          orgId: dbUser.orgId,
+          OR: [
+            { firstName: { contains: q, mode: "insensitive" } },
+            { lastName: { contains: q, mode: "insensitive" } },
+            { email: { contains: q, mode: "insensitive" } },
+          ],
+        },
+        take: 8,
+      });
+      orgResults = orgContacts.map((c) => ({
+        name: `${c.firstName} ${c.lastName}`.trim() || c.email,
+        email: c.email,
+      }));
+    }
+  } catch {
+    // Org lookup failed — continue with personal contacts
+  }
+
+  // ── Search personal contacts (cached + Graph) ─────────────────────────────
+  let personalResults: { name: string; email: string }[] = [];
+
+  try {
     const cached = await prisma.cachedContact.findMany({
       where: {
         userId: user.id,
@@ -58,46 +85,53 @@ export async function GET(req: NextRequest) {
     });
 
     if (cached.length > 0) {
-      return NextResponse.json(
-        cached.map((c) => ({ name: c.displayName, email: c.emailAddress })).filter((c) => c.email)
-      );
+      personalResults = cached.map((c) => ({ name: c.displayName, email: c.emailAddress })).filter((c) => c.email);
     }
   } catch {
     // Cache query failed — fall through to Graph
   }
 
-  // Find a Microsoft account to query Graph — use explicit or default
-  const account = homeAccountId
-    ? await prisma.msConnectedAccount.findFirst({
-        where: { userId: user.id, homeAccountId },
-      })
-    : await prisma.msConnectedAccount.findFirst({
-        where: { userId: user.id, isDefault: true },
-      });
-  if (!account) return NextResponse.json([]);
+  // If no cached personal contacts, try Graph API
+  if (personalResults.length === 0) {
+    const account = homeAccountId
+      ? await prisma.msConnectedAccount.findFirst({
+          where: { userId: user.id, homeAccountId },
+        })
+      : await prisma.msConnectedAccount.findFirst({
+          where: { userId: user.id, isDefault: true },
+        });
 
-  try {
-    // q is encoded via encodeURIComponent — special characters are percent-encoded, not interpolated raw
-    const data = await graphGet<GraphResponse>(
-      user.id,
-      account.homeAccountId,
-      `/me/people?$search="${encodeURIComponent(q)}"&$top=8&$select=displayName,scoredEmailAddresses,emailAddresses`
-    );
-
-    const results = (data.value ?? [])
-      .map((p) => {
-        const emailAddr =
-          p.scoredEmailAddresses?.[0]?.address ??
-          p.emailAddresses?.[0]?.address ??
-          "";
-        return { name: p.displayName ?? "", email: emailAddr };
-      })
-      .filter((p) => p.email);
-
-    return NextResponse.json(results);
-  } catch {
-    return NextResponse.json([]);
+    if (account) {
+      try {
+        const data = await graphGet<GraphResponse>(
+          user.id,
+          account.homeAccountId,
+          `/me/people?$search="${encodeURIComponent(q)}"&$top=8&$select=displayName,scoredEmailAddresses,emailAddresses`
+        );
+        personalResults = (data.value ?? [])
+          .map((p) => ({
+            name: p.displayName ?? "",
+            email: p.scoredEmailAddresses?.[0]?.address ?? p.emailAddresses?.[0]?.address ?? "",
+          }))
+          .filter((p) => p.email);
+      } catch {
+        // Graph failed — use whatever we have
+      }
+    }
   }
+
+  // ── Merge and deduplicate (org contacts first, then personal) ─────────────
+  const seen = new Set<string>();
+  const merged: { name: string; email: string }[] = [];
+  for (const c of [...orgResults, ...personalResults]) {
+    const key = c.email.toLowerCase();
+    if (seen.has(key)) continue;
+    seen.add(key);
+    merged.push(c);
+    if (merged.length >= 10) break;
+  }
+
+  return NextResponse.json(merged);
 }
 
 // ─── POST /api/contacts — Create a new contact ────────────────────────────────
