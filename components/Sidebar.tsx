@@ -48,7 +48,7 @@ const contactsLink = {
 /** Sticky bottom menu items — always visible above user profile */
 const stickyBottomLinks = [
   { href: "/calendar", label: "Calendar", icon: <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /> },
-  { href: "/accounts", label: "Accounts", icon: <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /> },
+  { href: "/contacts", label: "Contacts", icon: <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" /> },
   { href: "/attachments", label: "Files", icon: <path strokeLinecap="round" strokeLinejoin="round" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" /> },
 ];
 
@@ -338,17 +338,6 @@ export default function Sidebar({ userName = "You", userEmail = "", isAdmin: isA
             </SidebarSection>
           )}
 
-          {/* Contacts */}
-          <div className="mt-2">
-            <NavLink
-              href={contactsLink.href}
-              label={contactsLink.label}
-              icon={contactsLink.icon}
-              active={isActive(contactsLink.href)}
-              onNavigate={navigateTo}
-            />
-          </div>
-
           {/* Support */}
           <SidebarSection title="Support" open={open.support} onToggle={() => toggle("support")} className="mt-2">
             <ul className="space-y-0.5">
@@ -503,9 +492,6 @@ export default function Sidebar({ userName = "You", userEmail = "", isAdmin: isA
                   ))}
                 </ul>
               </SidebarSection>
-              <div className="mt-2">
-                <NavLink href={contactsLink.href} label={contactsLink.label} icon={contactsLink.icon} active={isActive(contactsLink.href)} onNavigate={navigateTo} />
-              </div>
             </nav>
             {/* Sticky bottom — Calendar, Accounts, Files */}
             <div className="px-3 py-2 border-t border-neutral-200 flex-shrink-0 flex items-center justify-around">
