@@ -370,7 +370,7 @@ export default function DashboardClient({
 
           {/* ── Focus Card — next event or oldest unanswered ── */}
           {nextEvent ? (
-            <a href="/calendar" className="block mb-6 p-5 rounded-[14px] border transition-all hover:shadow-md" style={{ backgroundColor: "white", borderColor: "rgb(219 234 254)", textDecoration: "none" }}>
+            <button onClick={() => navigateTo("/calendar")} className="block w-full text-left mb-6 p-5 rounded-[14px] border transition-all hover:shadow-md cursor-pointer" style={{ backgroundColor: "white", borderColor: "rgb(219 234 254)" }}>
               <div className="flex items-center justify-between gap-4">
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1.5">
@@ -388,9 +388,9 @@ export default function DashboardClient({
                 </div>
                 <div className="text-3xl font-bold flex-shrink-0" style={{ color: "rgb(37 99 235)" }}>{timeUntilNext || "Now"}</div>
               </div>
-            </a>
+            </button>
           ) : hoursWaiting > 0 ? (
-            <a href="/inbox" className="block mb-6 p-5 rounded-[14px] border transition-all hover:shadow-md" style={{ backgroundColor: "white", borderColor: hoursWaiting > 24 ? "rgb(254 202 202)" : "rgb(254 215 170)", textDecoration: "none" }}>
+            <button onClick={() => navigateTo("/inbox")} className="block w-full text-left mb-6 p-5 rounded-[14px] border transition-all hover:shadow-md cursor-pointer" style={{ backgroundColor: "white", borderColor: hoursWaiting > 24 ? "rgb(254 202 202)" : "rgb(254 215 170)" }}>
               <div className="flex items-center justify-between gap-4">
                 <div>
                   <div className="flex items-center gap-2 mb-1.5">
@@ -402,19 +402,19 @@ export default function DashboardClient({
                 </div>
                 <div className="text-3xl font-bold flex-shrink-0" style={{ color: hoursWaiting > 24 ? "rgb(220 38 38)" : "rgb(234 88 12)" }}>{hoursWaiting}h</div>
               </div>
-            </a>
+            </button>
           ) : null}
 
           {/* ── Stats Row ── */}
           <div className="grid grid-cols-3 gap-3 mb-6">
-            <a href="/inbox" className="p-4 rounded-[12px] bg-white border border-neutral-200 hover:border-neutral-300 transition-colors text-center" style={{ textDecoration: "none" }}>
+            <button onClick={() => navigateTo("/inbox")} className="p-4 rounded-[12px] bg-white border border-neutral-200 hover:border-neutral-300 transition-colors text-center cursor-pointer">
               <p className="text-2xl font-bold" style={{ color: "rgb(27 29 29)" }}>{inboxUnread}</p>
               <p className="text-xs font-medium mt-0.5" style={{ color: "rgb(115 115 115)" }}>Unread{unreadTrend !== 0 && <span style={{ color: unreadTrend > 0 ? "rgb(220 38 38)" : "rgb(22 163 74)" }}> {unreadTrend > 0 ? "↑" : "↓"}{Math.abs(unreadTrend)}</span>}</p>
-            </a>
-            <a href="/calendar" className="p-4 rounded-[12px] bg-white border border-neutral-200 hover:border-neutral-300 transition-colors text-center" style={{ textDecoration: "none" }}>
+            </button>
+            <button onClick={() => navigateTo("/calendar")} className="p-4 rounded-[12px] bg-white border border-neutral-200 hover:border-neutral-300 transition-colors text-center cursor-pointer">
               <p className="text-2xl font-bold" style={{ color: "rgb(27 29 29)" }}>{eventsToday}</p>
               <p className="text-xs font-medium mt-0.5" style={{ color: "rgb(115 115 115)" }}>Events</p>
-            </a>
+            </button>
             <div className="p-4 rounded-[12px] bg-white border border-neutral-200 text-center">
               <p className="text-2xl font-bold" style={{ color: "rgb(27 29 29)" }}>{pendingTodos.length}</p>
               <p className="text-xs font-medium mt-0.5" style={{ color: "rgb(115 115 115)" }}>Tasks</p>
@@ -428,7 +428,7 @@ export default function DashboardClient({
             <section className="bg-white rounded-[12px] border border-neutral-200 p-5">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-sm font-semibold" style={{ color: "rgb(27 29 29)" }}>Today&apos;s Agenda</h2>
-                <a href="/calendar" className="text-xs font-medium" style={{ color: "rgb(138 9 9)" }}>View all →</a>
+                <button onClick={() => navigateTo("/calendar")} className="text-xs font-medium" style={{ color: "rgb(138 9 9)" }}>View all →</button>
               </div>
               {events.length === 0 ? (
                 <p className="text-sm py-6 text-center" style={{ color: "rgb(155 155 155)" }}>No events today</p>
@@ -457,7 +457,7 @@ export default function DashboardClient({
             <section className="bg-white rounded-[12px] border border-neutral-200 p-5">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-sm font-semibold" style={{ color: "rgb(27 29 29)" }}>Needs Attention</h2>
-                <a href="/inbox" className="text-xs font-medium" style={{ color: "rgb(138 9 9)" }}>View inbox →</a>
+                <button onClick={() => navigateTo("/inbox")} className="text-xs font-medium" style={{ color: "rgb(138 9 9)" }}>View inbox →</button>
               </div>
               {recentUnread.length === 0 ? (
                 <p className="text-sm py-6 text-center" style={{ color: "rgb(155 155 155)" }}>All caught up</p>
@@ -532,14 +532,18 @@ export default function DashboardClient({
                   <p className="text-lg font-bold" style={{ color: "rgb(220 38 38)" }}>{emailsData.reduce((a, b) => a + b, 0)}</p>
                   <p className="text-xs" style={{ color: "rgb(155 155 155)" }}>Received</p>
                 </div>
-                <div className="text-center">
+                <button onClick={() => navigateTo("/sent")} className="text-center cursor-pointer hover:opacity-80 transition-opacity">
                   <p className="text-lg font-bold" style={{ color: "rgb(37 99 235)" }}>{sentData.reduce((a, b) => a + b, 0)}</p>
                   <p className="text-xs" style={{ color: "rgb(155 155 155)" }}>Sent</p>
-                </div>
-                <div className="text-center">
+                </button>
+                <button onClick={() => navigateTo("/drafts")} className="text-center cursor-pointer hover:opacity-80 transition-opacity">
                   <p className="text-lg font-bold" style={{ color: "rgb(27 29 29)" }}>{draftsCount}</p>
                   <p className="text-xs" style={{ color: "rgb(155 155 155)" }}>Drafts</p>
-                </div>
+                </button>
+                <button onClick={() => navigateTo("/attachments")} className="text-center cursor-pointer hover:opacity-80 transition-opacity">
+                  <p className="text-lg font-bold" style={{ color: "rgb(27 29 29)" }}>{attachmentsToday}</p>
+                  <p className="text-xs" style={{ color: "rgb(155 155 155)" }}>Attachments</p>
+                </button>
               </div>
             </section>
           </div>
