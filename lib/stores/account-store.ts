@@ -17,6 +17,7 @@ interface AccountStore {
   activeAccount: ConnectedAccount | null;
   inboxUnread: number;
   draftCount: number;
+  scheduledCount: number;
   mailFolders: MailFolder[];
   activeLabel: string | null;
   setAccounts: (accounts: ConnectedAccount[]) => void;
@@ -24,6 +25,7 @@ interface AccountStore {
   removeAccount: (homeAccountId: string) => void;
   setInboxUnread: (count: number) => void;
   setDraftCount: (count: number) => void;
+  setScheduledCount: (count: number) => void;
   setMailFolders: (folders: MailFolder[]) => void;
   setActiveLabel: (label: string | null) => void;
 }
@@ -33,6 +35,7 @@ export const useAccountStore = create<AccountStore>((set) => ({
   activeAccount: null,
   inboxUnread: 0,
   draftCount: 0,
+  scheduledCount: 0,
   mailFolders: [],
   activeLabel: null,
   setAccounts: (accounts) => {
@@ -76,6 +79,7 @@ export const useAccountStore = create<AccountStore>((set) => ({
     }),
   setInboxUnread: (inboxUnread) => set({ inboxUnread }),
   setDraftCount: (draftCount) => set({ draftCount }),
+  setScheduledCount: (scheduledCount) => set({ scheduledCount }),
   setMailFolders: (mailFolders) => set({ mailFolders }),
   setActiveLabel: (activeLabel) => set({ activeLabel }),
 }));
