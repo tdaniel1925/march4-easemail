@@ -908,6 +908,8 @@ export default function CalendarClient({ weekStart: initialWeekStart, events: in
     );
   }
 
+  // ── Schedule view (replaces Agenda) ─────────────────────────────────────────
+  // Mini-calendar on left, scrollable event list on right — Fantastical-style
   function renderAgendaView() {
     const grouped: Record<string, CalEvent[]> = {};
     for (const e of filteredRangeEvents) {
@@ -915,103 +917,346 @@ export default function CalendarClient({ weekStart: initialWeekStart, events: in
       if (!grouped[day]) grouped[day] = [];
       grouped[day].push(e);
     }
+
+    // Mini-calendar state: show current month in mini-cal
+    const miniGrid = getMonthGrid(currentMonth);
+    const [y, mo] = currentMonth.split("-").map(Number);
+    const miniMonthLabel = new Date(y, mo - 1, 1).toLocaleString("default", { month: "long", year: "numeric" });
+
+    // Days with events (for dot indicator)
+    const daysWithEvents = new Set(Object.keys(grouped));
+
+    // All days in range with events, sorted
     const days = Object.keys(grouped).sort();
 
-    if (!rangeLoading && days.length === 0) {
-      return (
-        <div className="flex-1 flex flex-col items-center justify-center gap-2 text-neutral-400">
-          <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
-            <rect x="4" y="8" width="32" height="28" rx="4" stroke="#D1D5DB" strokeWidth="2" fill="none" />
-            <path d="M4 16H36" stroke="#D1D5DB" strokeWidth="2" />
-            <path d="M14 4V10M26 4V10" stroke="#D1D5DB" strokeWidth="2" strokeLinecap="round" />
-          </svg>
-          <p className="text-sm font-medium">No upcoming events in the next 60 days</p>
-        </div>
-      );
-    }
-
     return (
-      <div className="flex-1 overflow-y-auto relative">
-        {rangeLoading && <Spinner />}
-        <div className="max-w-2xl mx-auto py-4 px-6 space-y-6">
-          {days.map((dateStr) => {
-            const d = new Date(`${dateStr}T00:00:00`);
-            const isToday = dateStr === today;
-            const isTomorrow = dateStr === addDays(today, 1);
-            const label = isToday ? "Today" : isTomorrow ? "Tomorrow" :
-              d.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });
-            return (
-              <div key={dateStr}>
-                <div className="flex items-center gap-3 mb-2">
-                  <span className="text-xs font-bold uppercase tracking-wider flex-shrink-0"
-                    style={{ color: isToday ? BRAND : "#6b7280" }}>{label}</span>
-                  <div className="flex-1 h-px bg-neutral-100" />
-                  {isToday && (
-                    <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full text-white flex-shrink-0"
-                      style={{ background: BRAND }}>Today</span>
-                  )}
-                </div>
-                <div className="space-y-2">
-                  {grouped[dateStr].map((e) => {
-                    const palette = getAccountPalette(e.accountHomeId);
-                    return (
-                      <div key={e.id} onClick={() => setSelectedEvent(e)}
-                        className="flex items-start gap-3 p-3 rounded-[10px] cursor-pointer hover:shadow-sm transition-all bg-white border border-neutral-100"
-                        style={{ borderLeftWidth: 3, borderLeftColor: palette.border }}>
-                        <div className="flex-shrink-0 text-xs text-neutral-400 w-24 pt-0.5 font-medium">
-                          {e.isAllDay ? "All day" : formatTimeRange(e.startDateTime, e.endDateTime, userTimeZone)}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="text-sm font-semibold text-neutral-800 truncate">{e.subject}</p>
-                          {e.location && <p className="text-xs text-neutral-400 truncate mt-0.5">{e.location}</p>}
-                          {e.bodyPreview && <p className="text-xs text-neutral-400 truncate mt-0.5">{e.bodyPreview}</p>}
-                          {e.attendees.length > 0 && (
-                            <p className="text-xs text-neutral-400 truncate mt-0.5">
-                              {e.attendees.slice(0, 3).map((a) => a.name || a.address).join(", ")}
-                              {e.attendees.length > 3 ? ` +${e.attendees.length - 3}` : ""}
+      <div className="flex flex-1 overflow-hidden">
+        {/* ── Left: mini calendar ── */}
+        <div className="w-64 flex-shrink-0 border-r border-neutral-100 bg-white flex flex-col p-4 overflow-y-auto">
+          {/* Mini-cal header */}
+          <div className="flex items-center justify-between mb-3">
+            <button onClick={() => setCurrentMonth((m) => {
+              const [y2, mo2] = m.split("-").map(Number);
+              const prev = new Date(y2, mo2 - 2, 1);
+              return `${prev.getFullYear()}-${String(prev.getMonth() + 1).padStart(2, "0")}`;
+            })} className="w-6 h-6 flex items-center justify-center rounded-full hover:bg-neutral-100 transition-colors">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M8 10L4 6L8 2" stroke="#6b7280" strokeWidth="1.5" strokeLinecap="round"/></svg>
+            </button>
+            <span className="text-xs font-semibold text-neutral-700">{miniMonthLabel}</span>
+            <button onClick={() => setCurrentMonth((m) => {
+              const [y2, mo2] = m.split("-").map(Number);
+              const next = new Date(y2, mo2, 1);
+              return `${next.getFullYear()}-${String(next.getMonth() + 1).padStart(2, "0")}`;
+            })} className="w-6 h-6 flex items-center justify-center rounded-full hover:bg-neutral-100 transition-colors">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M4 2L8 6L4 10" stroke="#6b7280" strokeWidth="1.5" strokeLinecap="round"/></svg>
+            </button>
+          </div>
+          {/* Day labels */}
+          <div className="grid grid-cols-7 mb-1">
+            {["M","T","W","T","F","S","S"].map((d, i) => (
+              <div key={i} className="text-center text-[9px] text-neutral-400 font-medium py-0.5">{d}</div>
+            ))}
+          </div>
+          {/* Date grid */}
+          {miniGrid.map((week, wi) => (
+            <div key={wi} className="grid grid-cols-7">
+              {week.map((dateStr) => {
+                const isThisMonth = dateStr.substring(0, 7) === currentMonth;
+                const isToday = dateStr === today;
+                const isSelected = dateStr === selectedDay;
+                const hasEvent = daysWithEvents.has(dateStr) && isThisMonth;
+                const dateNum = new Date(`${dateStr}T00:00:00`).getDate();
+                return (
+                  <button key={dateStr}
+                    onClick={() => {
+                      setSelectedDay(dateStr);
+                      // Scroll event list to this date
+                      document.getElementById(`schedule-day-${dateStr}`)?.scrollIntoView({ behavior: "smooth", block: "start" });
+                    }}
+                    className="relative flex flex-col items-center justify-center w-full aspect-square text-[11px] rounded-full transition-colors hover:bg-neutral-100"
+                    style={isToday ? { background: BRAND, color: "#fff" } : isSelected ? { background: "#f3f4f6", color: "#111827" } : { color: isThisMonth ? "#374151" : "#d1d5db" }}>
+                    {dateNum}
+                    {hasEvent && !isToday && (
+                      <span className="absolute bottom-0.5 w-1 h-1 rounded-full" style={{ background: isSelected ? BRAND : "rgb(156 163 175)" }} />
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          ))}
+
+          {/* Quick "Today" jump */}
+          <button onClick={() => {
+            setCurrentMonth(today.substring(0, 7));
+            setSelectedDay(today);
+            document.getElementById(`schedule-day-${today}`)?.scrollIntoView({ behavior: "smooth", block: "start" });
+          }} className="mt-4 text-xs font-medium text-center py-1.5 rounded-[8px] border border-neutral-200 hover:bg-neutral-50 transition-colors" style={{ color: BRAND }}>
+            Jump to Today
+          </button>
+        </div>
+
+        {/* ── Right: event list ── */}
+        <div className="flex-1 overflow-y-auto relative bg-neutral-50">
+          {rangeLoading && <Spinner />}
+          {!rangeLoading && days.length === 0 && (
+            <div className="flex flex-col items-center justify-center h-full gap-3 text-neutral-400">
+              <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+                <rect x="4" y="8" width="32" height="28" rx="4" stroke="#D1D5DB" strokeWidth="2" fill="none" />
+                <path d="M4 16H36" stroke="#D1D5DB" strokeWidth="2" />
+                <path d="M14 4V10M26 4V10" stroke="#D1D5DB" strokeWidth="2" strokeLinecap="round" />
+              </svg>
+              <p className="text-sm font-medium">No upcoming events in the next 60 days</p>
+              <button onClick={() => handleSlotClick(today, 9, 0)}
+                className="text-xs font-semibold px-4 py-2 rounded-[8px] text-white transition-colors"
+                style={{ background: BRAND }}>Create Event</button>
+            </div>
+          )}
+          <div className="max-w-2xl mx-auto py-4 px-6 space-y-1">
+            {days.map((dateStr) => {
+              const d = new Date(`${dateStr}T00:00:00`);
+              const isToday = dateStr === today;
+              const isTomorrow = dateStr === addDays(today, 1);
+              const weekday = d.toLocaleDateString("en-US", { weekday: "short" });
+              const dateNum = d.getDate();
+              const monthLabel = d.toLocaleDateString("en-US", { month: "short" });
+              return (
+                <div key={dateStr} id={`schedule-day-${dateStr}`} className="flex gap-4 py-3">
+                  {/* Date pill */}
+                  <div className="flex-shrink-0 w-14 flex flex-col items-center pt-1">
+                    <span className="text-[10px] font-semibold uppercase tracking-wider"
+                      style={{ color: isToday ? BRAND : "#9ca3af" }}>{isToday ? "Today" : isTomorrow ? "Tmrw" : weekday}</span>
+                    <span className="text-xl font-bold leading-tight"
+                      style={{ color: isToday ? BRAND : "#111827" }}>{dateNum}</span>
+                    <span className="text-[10px] text-neutral-400">{monthLabel}</span>
+                  </div>
+                  {/* Events */}
+                  <div className="flex-1 space-y-2">
+                    {grouped[dateStr].map((e) => {
+                      const palette = getAccountPalette(e.accountHomeId);
+                      return (
+                        <div key={e.id} onClick={() => setSelectedEvent(e)}
+                          className="flex items-start gap-3 p-3 rounded-[12px] cursor-pointer hover:shadow-md transition-all bg-white border border-neutral-100"
+                          style={{ borderLeftWidth: 3, borderLeftColor: palette.border }}>
+                          <div className="flex-shrink-0 pt-0.5">
+                            <div className="w-2 h-2 rounded-full mt-1" style={{ background: palette.border }} />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-semibold text-neutral-800 truncate">{e.subject}</p>
+                            <p className="text-xs text-neutral-400 mt-0.5 font-medium">
+                              {e.isAllDay ? "All day" : formatTimeRange(e.startDateTime, e.endDateTime, userTimeZone)}
                             </p>
+                            {e.location && <p className="text-xs text-neutral-400 truncate mt-0.5">📍 {e.location}</p>}
+                            {e.attendees.length > 0 && (
+                              <p className="text-xs text-neutral-400 truncate mt-0.5">
+                                👥 {e.attendees.slice(0, 3).map((a) => a.name || a.address).join(", ")}
+                                {e.attendees.length > 3 ? ` +${e.attendees.length - 3}` : ""}
+                              </p>
+                            )}
+                          </div>
+                          {e.onlineMeetingUrl && (
+                            <a href={e.onlineMeetingUrl} target="_blank" rel="noopener noreferrer"
+                              onClick={(ev) => ev.stopPropagation()}
+                              className="flex-shrink-0 text-xs font-semibold px-2.5 py-1 rounded-[6px] text-white transition-colors hover:opacity-90 self-center"
+                              style={{ background: BRAND }}>Join</a>
                           )}
+                          {e.isRecurring && <span className="flex-shrink-0 text-[11px] text-neutral-300 pt-1">↻</span>}
                         </div>
-                        {e.onlineMeetingUrl && (
-                          <a href={e.onlineMeetingUrl} target="_blank" rel="noopener noreferrer"
-                            onClick={(ev) => ev.stopPropagation()}
-                            className="flex-shrink-0 text-xs font-semibold px-2.5 py-1 rounded-[6px] text-white transition-colors hover:opacity-90"
-                            style={{ background: BRAND }}>Join</a>
-                        )}
-                        {e.isRecurring && (
-                          <span className="flex-shrink-0 text-[11px] text-neutral-300 pt-0.5">↻</span>
-                        )}
-                      </div>
-                    );
-                  })}
+                      );
+                    })}
+                  </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
       </div>
     );
   }
 
+  // ── Heatmap view (replaces Year) ─────────────────────────────────────────────
+  // GitHub contribution-style year heatmap — color intensity = event count
   function renderYearView() {
     const year = parseInt(currentMonth.substring(0, 4));
-    const eventDays = new Set(filteredRangeEvents.map((e) => getEventDateStr(e.startDateTime)));
+
+    // Count events per day
+    const eventCountByDay: Record<string, number> = {};
+    for (const e of filteredRangeEvents) {
+      const day = getEventDateStr(e.startDateTime);
+      eventCountByDay[day] = (eventCountByDay[day] ?? 0) + 1;
+    }
+    const maxCount = Math.max(1, ...Object.values(eventCountByDay));
+
+    // Build 52-week grid starting from Jan 1
+    const jan1 = new Date(year, 0, 1);
+    const jan1Dow = jan1.getDay(); // 0=Sun
+    // Align to Monday
+    const startOffset = jan1Dow === 0 ? 6 : jan1Dow - 1;
+    const gridStart = new Date(year, 0, 1 - startOffset);
+
+    // 53 weeks × 7 days = 371 cells
+    const totalWeeks = 53;
+    const weeks: string[][] = [];
+    for (let w = 0; w < totalWeeks; w++) {
+      const week: string[] = [];
+      for (let d = 0; d < 7; d++) {
+        const date = new Date(gridStart.getFullYear(), gridStart.getMonth(), gridStart.getDate() + w * 7 + d);
+        week.push(`${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`);
+      }
+      weeks.push(week);
+    }
+
+    // Month labels: find which week each month starts in
+    const monthStartWeeks: { label: string; weekIdx: number }[] = [];
+    for (let m = 0; m < 12; m++) {
+      const firstOfMonth = new Date(year, m, 1);
+      const diffDays = Math.floor((firstOfMonth.getTime() - gridStart.getTime()) / 86400000);
+      const weekIdx = Math.floor(diffDays / 7);
+      monthStartWeeks.push({ label: firstOfMonth.toLocaleString("default", { month: "short" }), weekIdx });
+    }
+
+    function getHeatColor(count: number): string {
+      if (count === 0) return "#f3f4f6";
+      const intensity = count / maxCount;
+      if (intensity < 0.25) return "rgba(138,9,9,0.15)";
+      if (intensity < 0.5) return "rgba(138,9,9,0.35)";
+      if (intensity < 0.75) return "rgba(138,9,9,0.60)";
+      return "rgba(138,9,9,0.85)";
+    }
+
+    // Selected day events for detail panel
+    const selectedDayEvents = filteredRangeEvents.filter((e) => getEventDateStr(e.startDateTime) === selectedDay);
+
     return (
-      <div className="flex-1 overflow-y-auto py-6 px-6 relative">
+      <div className="flex-1 overflow-y-auto py-8 px-8 relative bg-neutral-50">
         {rangeLoading && <Spinner />}
-        <div className="grid grid-cols-3 gap-6 max-w-4xl mx-auto">
+
+        {/* Year nav */}
+        <div className="flex items-center gap-4 mb-6 max-w-5xl mx-auto">
+          <button onClick={() => setCurrentMonth((m) => `${parseInt(m.substring(0, 4)) - 1}${m.substring(4)}`)}
+            className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-neutral-200 transition-colors bg-white border border-neutral-200">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 11L5 7L9 3" stroke="#6b7280" strokeWidth="1.5" strokeLinecap="round"/></svg>
+          </button>
+          <h2 className="text-2xl font-bold text-neutral-800">{year}</h2>
+          <button onClick={() => setCurrentMonth((m) => `${parseInt(m.substring(0, 4)) + 1}${m.substring(4)}`)}
+            className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-neutral-200 transition-colors bg-white border border-neutral-200">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5 3L9 7L5 11" stroke="#6b7280" strokeWidth="1.5" strokeLinecap="round"/></svg>
+          </button>
+          <span className="text-sm text-neutral-400 ml-2">{filteredRangeEvents.length} events this year</span>
+        </div>
+
+        {/* Heatmap grid */}
+        <div className="max-w-5xl mx-auto bg-white rounded-[16px] border border-neutral-100 shadow-sm p-6 mb-6">
+          {/* Month labels */}
+          <div className="flex mb-1 ml-8">
+            {weeks.map((_, wi) => {
+              const monthEntry = monthStartWeeks.find((m) => m.weekIdx === wi);
+              return (
+                <div key={wi} className="flex-1 text-[10px] text-neutral-400 font-medium" style={{ minWidth: 14 }}>
+                  {monthEntry?.label ?? ""}
+                </div>
+              );
+            })}
+          </div>
+          <div className="flex gap-0.5">
+            {/* Day labels */}
+            <div className="flex flex-col gap-0.5 mr-1 pt-0.5">
+              {["M","","W","","F","","S"].map((d, i) => (
+                <div key={i} className="text-[9px] text-neutral-300 h-3.5 flex items-center">{d}</div>
+              ))}
+            </div>
+            {/* Weeks */}
+            {weeks.map((week, wi) => (
+              <div key={wi} className="flex flex-col gap-0.5">
+                {week.map((dateStr) => {
+                  const isThisYear = dateStr.startsWith(`${year}-`);
+                  const count = eventCountByDay[dateStr] ?? 0;
+                  const isToday = dateStr === today;
+                  const isSelected = dateStr === selectedDay;
+                  return (
+                    <button key={dateStr}
+                      onClick={() => { if (isThisYear) setSelectedDay(dateStr); }}
+                      title={isThisYear ? `${dateStr}: ${count} event${count !== 1 ? "s" : ""}` : ""}
+                      className="w-3.5 h-3.5 rounded-sm transition-all hover:ring-1 hover:ring-neutral-400"
+                      style={{
+                        background: !isThisYear ? "#fafafa" : isToday ? BRAND : getHeatColor(count),
+                        outline: isSelected && !isToday ? `2px solid ${BRAND}` : undefined,
+                        outlineOffset: isSelected ? "1px" : undefined,
+                      }}
+                    />
+                  );
+                })}
+              </div>
+            ))}
+          </div>
+          {/* Legend */}
+          <div className="flex items-center gap-2 mt-3 justify-end">
+            <span className="text-[10px] text-neutral-400">Less</span>
+            {["#f3f4f6","rgba(138,9,9,0.15)","rgba(138,9,9,0.35)","rgba(138,9,9,0.60)","rgba(138,9,9,0.85)"].map((c, i) => (
+              <div key={i} className="w-3.5 h-3.5 rounded-sm" style={{ background: c }} />
+            ))}
+            <span className="text-[10px] text-neutral-400">More</span>
+          </div>
+        </div>
+
+        {/* Selected day detail panel */}
+        {selectedDay.startsWith(`${year}-`) && (
+          <div className="max-w-5xl mx-auto bg-white rounded-[16px] border border-neutral-100 shadow-sm p-5">
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <h3 className="text-sm font-bold text-neutral-800">
+                  {new Date(`${selectedDay}T00:00:00`).toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" })}
+                </h3>
+                <p className="text-xs text-neutral-400 mt-0.5">{selectedDayEvents.length} event{selectedDayEvents.length !== 1 ? "s" : ""}</p>
+              </div>
+              <button onClick={() => handleSlotClick(selectedDay, 9, 0)}
+                className="text-xs font-semibold px-3 py-1.5 rounded-[8px] text-white transition-colors"
+                style={{ background: BRAND }}>+ Add Event</button>
+            </div>
+            {selectedDayEvents.length === 0 ? (
+              <p className="text-sm text-neutral-400 text-center py-4">No events — click a cell to select a day, then add one</p>
+            ) : (
+              <div className="space-y-2">
+                {selectedDayEvents.map((e) => {
+                  const palette = getAccountPalette(e.accountHomeId);
+                  return (
+                    <div key={e.id} onClick={() => setSelectedEvent(e)}
+                      className="flex items-center gap-3 p-3 rounded-[10px] cursor-pointer hover:shadow-sm transition-all border border-neutral-100"
+                      style={{ borderLeftWidth: 3, borderLeftColor: palette.border }}>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-semibold text-neutral-800 truncate">{e.subject}</p>
+                        <p className="text-xs text-neutral-400 mt-0.5">
+                          {e.isAllDay ? "All day" : formatTimeRange(e.startDateTime, e.endDateTime, userTimeZone)}
+                          {e.location ? ` · ${e.location}` : ""}
+                        </p>
+                      </div>
+                      {e.onlineMeetingUrl && (
+                        <a href={e.onlineMeetingUrl} target="_blank" rel="noopener noreferrer"
+                          onClick={(ev) => ev.stopPropagation()}
+                          className="text-xs font-semibold px-2.5 py-1 rounded-[6px] text-white"
+                          style={{ background: BRAND }}>Join</a>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Month grid for quick overview — below heatmap */}
+        <div className="max-w-5xl mx-auto mt-6 grid grid-cols-4 gap-4">
           {Array.from({ length: 12 }, (_, i) => {
             const monthStr = `${year}-${String(i + 1).padStart(2, "0")}`;
             const grid = getMonthGrid(monthStr);
             const monthLabel = new Date(year, i, 1).toLocaleString("default", { month: "long" });
             return (
-              <div key={monthStr} className="bg-white rounded-[12px] p-4 border border-neutral-100 shadow-sm">
+              <div key={monthStr} className="bg-white rounded-[12px] p-3 border border-neutral-100 shadow-sm">
                 <button onClick={() => { setCurrentMonth(monthStr); setActiveView("month"); }}
-                  className="text-sm font-bold mb-3 w-full text-left transition-colors hover:opacity-70"
+                  className="text-xs font-bold mb-2 w-full text-left transition-colors hover:opacity-70"
                   style={{ color: BRAND }}>{monthLabel}</button>
-                <div className="grid grid-cols-7 mb-1">
+                <div className="grid grid-cols-7 mb-0.5">
                   {["M","T","W","T","F","S","S"].map((d, idx) => (
-                    <div key={idx} className="text-center text-[9px] text-neutral-300 font-medium">{d}</div>
+                    <div key={idx} className="text-center text-[8px] text-neutral-300 font-medium">{d}</div>
                   ))}
                 </div>
                 {grid.map((week, wi) => (
@@ -1019,15 +1264,15 @@ export default function CalendarClient({ weekStart: initialWeekStart, events: in
                     {week.map((dateStr) => {
                       const isThisMonth = dateStr.substring(0, 7) === monthStr;
                       const isToday = dateStr === today;
-                      const hasEvent = isThisMonth && eventDays.has(dateStr);
+                      const count = eventCountByDay[dateStr] ?? 0;
                       const dateNum = new Date(`${dateStr}T00:00:00`).getDate();
                       return (
                         <button key={dateStr}
                           onClick={() => { setSelectedDay(dateStr); setActiveView("day"); }}
-                          className="relative flex items-center justify-center w-full aspect-square text-[10px] rounded-full transition-colors hover:bg-neutral-100"
+                          className="relative flex items-center justify-center w-full aspect-square text-[9px] rounded-full transition-colors hover:bg-neutral-100"
                           style={isToday ? { background: BRAND, color: "#fff" } : { color: isThisMonth ? "#374151" : "#e5e7eb" }}>
                           {dateNum}
-                          {hasEvent && !isToday && (
+                          {count > 0 && !isToday && isThisMonth && (
                             <span className="absolute bottom-0.5 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full" style={{ background: BRAND }} />
                           )}
                         </button>
