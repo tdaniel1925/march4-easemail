@@ -48,7 +48,9 @@ export interface FolderRef {
 
 const MAX_DEPTH = 10;
 
-/** Recursively fetch all child folders up to MAX_DEPTH levels deep */
+/** Recursively fetch all child folders up to MAX_DEPTH levels deep.
+ *  Each level is wrapped in try/catch so a failure on one branch does not
+ *  kill the entire sync — the successfully-fetched siblings are still saved. */
 async function fetchChildrenRecursive(
   userId: string,
   homeAccountId: string,
@@ -56,16 +58,26 @@ async function fetchChildrenRecursive(
   depth: number
 ): Promise<GraphFolder[]> {
   if (depth > MAX_DEPTH) return [];
-  const children = await fetchAllFolders(
-    userId,
-    homeAccountId,
-    `/me/mailFolders/${parentId}/childFolders?$select=${FOLDER_SELECT}&$top=100`
-  );
+  let children: GraphFolder[];
+  try {
+    children = await fetchAllFolders(
+      userId,
+      homeAccountId,
+      `/me/mailFolders/${parentId}/childFolders?$select=${FOLDER_SELECT}&$top=100`
+    );
+  } catch (err) {
+    console.warn(`[folder-sync] fetchChildrenRecursive depth=${depth} parentId=${parentId} failed:`, err);
+    return [];
+  }
   const deeper: GraphFolder[] = [];
   for (const child of children) {
     if (child.childFolderCount > 0) {
-      const grandchildren = await fetchChildrenRecursive(userId, homeAccountId, child.id, depth + 1);
-      deeper.push(...grandchildren);
+      try {
+        const grandchildren = await fetchChildrenRecursive(userId, homeAccountId, child.id, depth + 1);
+        deeper.push(...grandchildren);
+      } catch (err) {
+        console.warn(`[folder-sync] grandchildren fetch failed for ${child.id}:`, err);
+      }
     }
   }
   return [...children, ...deeper];
@@ -97,6 +109,9 @@ export async function syncFolders(
       prisma.cachedFolder.upsert({
         where: { id: f.id },
         update: {
+          // Re-assert ownership in the update to prevent cross-account contamination
+          userId,
+          homeAccountId,
           displayName: f.displayName,
           parentFolderId: f.parentFolderId ?? null,
           unreadCount: f.unreadItemCount ?? 0,

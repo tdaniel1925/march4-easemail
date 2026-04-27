@@ -26,6 +26,10 @@ const mailboxLinks = [
     icon: <path strokeLinecap="round" strokeLinejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />,
   },
   {
+    href: "/scheduled", label: "Scheduled", badgeKey: "scheduled" as const,
+    icon: <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />,
+  },
+  {
     href: "/drafts", label: "Drafts", badgeKey: "draft" as const,
     icon: <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />,
   },
@@ -127,6 +131,7 @@ export default function Sidebar({ userName = "You", userEmail = "", isAdmin: isA
   const activeFolderId = useDataCacheStore((s) => s.activeFolderId);
   const unreadCount = useAccountStore((s) => s.inboxUnread);
   const draftCount = useAccountStore((s) => s.draftCount);
+  const scheduledCount = useAccountStore((s) => s.scheduledCount);
   const mailFolders = useAccountStore((s) => s.mailFolders);
   const setMailFolders = useAccountStore((s) => s.setMailFolders);
   const activeAccount = useAccountStore((s) => s.activeAccount);
@@ -172,49 +177,87 @@ export default function Sidebar({ userName = "You", userEmail = "", isAdmin: isA
   const [mobileOpen, setMobileOpen] = useState(false);
   const [foldersError, setFoldersError] = useState(false);
   const [foldersErrorCode, setFoldersErrorCode] = useState<string | null>(null);
+  const [foldersLoading, setFoldersLoading] = useState(false);
 
   // Close mobile drawer on view change
   useEffect(() => { setMobileOpen(false); }, [activeView]);
 
-  /** Fetch folders with retry (Fix 13) — 3 attempts, 1s delay between */
-  const fetchFoldersWithRetry = useCallback(async (hid: string) => {
+  /**
+   * Fetch folders with retry — 3 attempts, 1s delay between.
+   * Accepts an AbortSignal so the caller can cancel the in-flight request
+   * when the active account changes (prevents stale-data race condition).
+   */
+  const fetchFoldersWithRetry = useCallback(async (hid: string, signal?: AbortSignal) => {
     setFoldersError(false);
     setFoldersErrorCode(null);
+    setFoldersLoading(true);
     let lastErr: unknown;
     let lastErrorCode: string | null = null;
-    for (let attempt = 0; attempt < 3; attempt++) {
-      try {
-        if (attempt > 0) await new Promise((res) => setTimeout(res, 1000));
-        const r = await fetch(`/api/mail/folders?homeAccountId=${encodeURIComponent(hid)}`);
-        const data = await r.json() as { folders?: MailFolder[]; error?: string; errorCode?: string };
-        if (!r.ok) {
-          lastErrorCode = data.errorCode ?? null;
-          // Don't retry reauth errors — they won't recover with retries
-          if (data.errorCode === "reauth_required") {
-            setFoldersError(true);
-            setFoldersErrorCode("reauth_required");
+    try {
+      for (let attempt = 0; attempt < 3; attempt++) {
+        // Abort check — the account has changed, discard this fetch entirely
+        if (signal?.aborted) return;
+        try {
+          if (attempt > 0) await new Promise((res) => setTimeout(res, 1000));
+          if (signal?.aborted) return;
+          const r = await fetch(`/api/mail/folders?homeAccountId=${encodeURIComponent(hid)}`, { signal });
+          const data = await r.json() as { folders?: MailFolder[]; error?: string; errorCode?: string };
+          if (!r.ok) {
+            lastErrorCode = data.errorCode ?? null;
+            // Don't retry reauth errors — they won't recover with retries
+            if (data.errorCode === "reauth_required") {
+              setFoldersError(true);
+              setFoldersErrorCode("reauth_required");
+              return;
+            }
+            throw new Error(data.error ?? `folders ${r.status}`);
+          }
+          if (data.folders) {
+            setMailFolders(data.folders);
             return;
           }
-          throw new Error(data.error ?? `folders ${r.status}`);
+        } catch (err) {
+          // AbortError means the account switched — silently discard, no error state
+          if (err instanceof DOMException && err.name === "AbortError") return;
+          lastErr = err;
         }
-        if (data.folders) {
-          setMailFolders(data.folders);
-          return;
-        }
-      } catch (err) {
-        lastErr = err;
       }
+      console.warn("[Sidebar] folders fetch failed after 3 attempts:", lastErr);
+      setFoldersError(true);
+      setFoldersErrorCode(lastErrorCode);
+    } finally {
+      // Only clear loading if this fetch was not aborted
+      if (!signal?.aborted) setFoldersLoading(false);
     }
-    console.warn("[Sidebar] folders fetch failed after 3 attempts:", lastErr);
-    setFoldersError(true);
-    setFoldersErrorCode(lastErrorCode);
   }, [setMailFolders]);
 
-  // Fetch custom folders whenever the active account changes (Fix 14: flush stale counts immediately)
+  /**
+   * Trigger a background deep-sync (recursive child folders) for the account.
+   * Fire-and-forget: errors are silently swallowed because the GET above already
+   * rendered whatever was in cache.  The next GET (after TTL expires) will pick
+   * up the full tree written by this sync.
+   */
+  const triggerBackgroundSync = useCallback((hid: string, signal?: AbortSignal) => {
+    fetch("/api/mail/folders/sync", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ homeAccountId: hid }),
+      signal,
+    }).catch(() => {}); // intentionally fire-and-forget
+  }, []);
+
+  // Fetch custom folders whenever the active account changes.
+  // AbortController cancels the previous in-flight request to prevent
+  // the old account's response from overwriting the new account's folders.
   useEffect(() => {
     if (!activeAccount) return;
-    void fetchFoldersWithRetry(activeAccount.homeAccountId);
-  }, [activeAccount?.homeAccountId, fetchFoldersWithRetry]);
+    const controller = new AbortController();
+    const hid = activeAccount.homeAccountId;
+    void fetchFoldersWithRetry(hid, controller.signal);
+    // Kick off a background recursive sync so child folders are populated
+    triggerBackgroundSync(hid, controller.signal);
+    return () => { controller.abort(); };
+  }, [activeAccount?.homeAccountId, fetchFoldersWithRetry, triggerBackgroundSync]);
 
   const initials = userName.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2);
 
@@ -270,7 +313,7 @@ export default function Sidebar({ userName = "You", userEmail = "", isAdmin: isA
             <ul className="space-y-0.5">
               {mailboxLinks.map((link) => {
                 const active = isActive(link.href);
-                const badge = "badgeKey" in link ? (link.badgeKey === "unread" ? unreadCount : link.badgeKey === "draft" ? draftCount : null) : null;
+                const badge = "badgeKey" in link ? (link.badgeKey === "unread" ? unreadCount : link.badgeKey === "draft" ? draftCount : link.badgeKey === "scheduled" ? (scheduledCount > 0 ? scheduledCount : null) : null) : null;
                 return (
                   <li key={link.href}>
                     <NavLink href={link.href} label={link.label} icon={link.icon} badge={badge} active={active} onNavigate={navigateTo} />
@@ -300,8 +343,14 @@ export default function Sidebar({ userName = "You", userEmail = "", isAdmin: isA
             </ul>
           </SidebarSection>
 
-          {/* Custom Folders — with hierarchy (Fix 9) and retry on error (Fix 13) */}
-          {foldersError ? (
+          {/* Custom Folders — with hierarchy, loading state, and retry on error */}
+          {foldersLoading && mailFolders.length === 0 ? (
+            <div className="mt-2 px-3 py-2 space-y-1.5">
+              {[...Array(4)].map((_, i) => (
+                <div key={i} className="h-3 rounded bg-neutral-100 animate-pulse" style={{ width: `${60 + i * 8}%` }} />
+              ))}
+            </div>
+          ) : foldersError ? (
             <div className="mt-2 px-3 py-2 space-y-1">
               <p className="text-xs" style={{ color: "rgb(155 155 155)" }}>
                 {foldersErrorCode === "reauth_required" ? "Account needs reconnection" : "Folders unavailable"}
@@ -312,7 +361,12 @@ export default function Sidebar({ userName = "You", userEmail = "", isAdmin: isA
                 </a>
               ) : (
                 <button
-                  onClick={() => activeAccount && void fetchFoldersWithRetry(activeAccount.homeAccountId)}
+                  onClick={() => {
+                    if (!activeAccount) return;
+                    const hid = activeAccount.homeAccountId;
+                    void fetchFoldersWithRetry(hid);
+                    triggerBackgroundSync(hid);
+                  }}
                   className="text-xs font-semibold underline"
                   style={{ color: "rgb(138 9 9)" }}
                 >
