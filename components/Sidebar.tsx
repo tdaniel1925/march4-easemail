@@ -40,37 +40,16 @@ const dashboardLink = {
   icon: <path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />,
 };
 
-const navLinks = [
-  { href: "/attachments", label: "Attachments", icon: <path strokeLinecap="round" strokeLinejoin="round" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" /> },
+const contactsLink = {
+  href: "/contacts", label: "Contacts",
+  icon: <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />,
+};
+
+/** Sticky bottom menu items — always visible above user profile */
+const stickyBottomLinks = [
   { href: "/calendar", label: "Calendar", icon: <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /> },
-];
-
-const manageLinks = [
-  { href: "/accounts", label: "Email Accounts", icon: <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /> },
-  { href: "/contacts", label: "Contacts", icon: <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" /> },
-];
-
-const aiToolLinks = [
-  { href: "/compose", label: "AI Composer", icon: <path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /> },
-  { href: "/compose?panel=remix", label: "AI Remix", icon: <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /> },
-  { href: "/compose?panel=dictate", label: "AI Dictate", icon: <path strokeLinecap="round" strokeLinejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" /> },
-];
-
-const DEFAULT_LABELS = [
-  { label: "Work", color: "rgb(138 9 9)" },
-  { label: "Personal", color: "rgb(16 185 129)" },
-  { label: "Newsletters", color: "rgb(82 82 82)" },
-];
-
-const LABEL_COLORS = [
-  "rgb(138 9 9)",
-  "rgb(16 185 129)",
-  "rgb(82 82 82)",
-  "rgb(59 130 246)",
-  "rgb(245 158 11)",
-  "rgb(139 92 246)",
-  "rgb(236 72 153)",
-  "rgb(14 165 233)",
+  { href: "/accounts", label: "Accounts", icon: <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /> },
+  { href: "/attachments", label: "Files", icon: <path strokeLinecap="round" strokeLinejoin="round" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" /> },
 ];
 
 function NavIcon({ children }: { children: React.ReactNode }) {
@@ -151,8 +130,6 @@ export default function Sidebar({ userName = "You", userEmail = "", isAdmin: isA
   const mailFolders = useAccountStore((s) => s.mailFolders);
   const setMailFolders = useAccountStore((s) => s.setMailFolders);
   const activeAccount = useAccountStore((s) => s.activeAccount);
-  const activeLabel = useAccountStore((s) => s.activeLabel);
-  const setActiveLabel = useAccountStore((s) => s.setActiveLabel);
 
   /** Client-side navigate: update store + push URL without server round-trip */
   function navigateTo(href: string) {
@@ -181,14 +158,10 @@ export default function Sidebar({ userName = "You", userEmail = "", isAdmin: isA
     return activeView === view;
   }
 
-  // Accordion open state — Mailboxes + Navigate open by default
+  // Accordion open state
   const [open, setOpen] = useState({
     mailboxes: true,
     folders: true,
-    navigate: true,
-    manage: true,
-    aiTools: false,
-    labels: false,
     support: false,
   });
 
@@ -197,30 +170,9 @@ export default function Sidebar({ userName = "You", userEmail = "", isAdmin: isA
   }
 
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [dynamicLabels, setDynamicLabels] = useState<{ label: string; color: string }[] | null>(null);
 
   // Close mobile drawer on view change
   useEffect(() => { setMobileOpen(false); }, [activeView]);
-
-  // Fetch dynamic labels from cached email categories
-  useEffect(() => {
-    if (!activeAccount) return;
-    fetch(`/api/mail/labels?homeAccountId=${encodeURIComponent(activeAccount.homeAccountId)}`)
-      .then((r) => r.ok ? r.json() as Promise<{ labels: string[] }> : null)
-      .then((data) => {
-        if (data && data.labels.length > 0) {
-          setDynamicLabels(
-            data.labels.map((lbl, i) => ({
-              label: lbl,
-              color: LABEL_COLORS[i % LABEL_COLORS.length],
-            }))
-          );
-        } else {
-          setDynamicLabels(null);
-        }
-      })
-      .catch(() => setDynamicLabels(null));
-  }, [activeAccount?.homeAccountId]);
 
   // Fetch custom folders whenever the active account changes
   useEffect(() => {
@@ -319,65 +271,16 @@ export default function Sidebar({ userName = "You", userEmail = "", isAdmin: isA
             </SidebarSection>
           )}
 
-          {/* Navigate */}
-          <SidebarSection title="Navigate" open={open.navigate} onToggle={() => toggle("navigate")} className="mt-2">
-            <ul className="space-y-0.5">
-              {navLinks.map((link) => (
-                <li key={link.href}>
-                  <NavLink href={link.href} label={link.label} icon={link.icon} active={isActive(link.href)} onNavigate={navigateTo} />
-                </li>
-              ))}
-            </ul>
-          </SidebarSection>
-
-          {/* Manage */}
-          <SidebarSection title="Manage" open={open.manage} onToggle={() => toggle("manage")} className="mt-2">
-            <ul className="space-y-0.5">
-              {manageLinks.map((link) => (
-                <li key={link.href}>
-                  <NavLink href={link.href} label={link.label} icon={link.icon} active={isActive(link.href)} onNavigate={navigateTo} />
-                </li>
-              ))}
-            </ul>
-          </SidebarSection>
-
-          {/* AI Tools */}
-          <SidebarSection title="AI Tools" open={open.aiTools} onToggle={() => toggle("aiTools")} className="mt-2">
-            <ul className="space-y-0.5">
-              {aiToolLinks.map((item) => (
-                <li key={item.label}>
-                  <NavLink href={item.href} label={item.label} icon={item.icon} active={isActive(item.href)} onNavigate={navigateTo} />
-                </li>
-              ))}
-            </ul>
-          </SidebarSection>
-
-          {/* Labels */}
-          <SidebarSection title="Labels" open={open.labels} onToggle={() => toggle("labels")} className="mt-2">
-            <ul className="space-y-0.5">
-              {(dynamicLabels ?? DEFAULT_LABELS).map((item) => {
-                const isLabelActive = activeLabel === item.label;
-                return (
-                  <li key={item.label}>
-                    <button
-                      onClick={() => {
-                        setActiveLabel(isLabelActive ? null : item.label);
-                        navigateTo("/inbox");
-                      }}
-                      className="w-full flex items-center gap-3 px-3 py-2 rounded-[10px] text-sm transition-colors text-left"
-                      style={{
-                        backgroundColor: isLabelActive ? "rgb(253 235 235)" : "transparent",
-                        color: isLabelActive ? "rgb(83 5 5)" : "rgb(82 82 82)",
-                      }}
-                    >
-                      <span className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: item.color }} />
-                      {item.label}
-                    </button>
-                  </li>
-                );
-              })}
-            </ul>
-          </SidebarSection>
+          {/* Contacts */}
+          <div className="mt-2">
+            <NavLink
+              href={contactsLink.href}
+              label={contactsLink.label}
+              icon={contactsLink.icon}
+              active={isActive(contactsLink.href)}
+              onNavigate={navigateTo}
+            />
+          </div>
 
           {/* Support */}
           <SidebarSection title="Support" open={open.support} onToggle={() => toggle("support")} className="mt-2">
@@ -395,6 +298,30 @@ export default function Sidebar({ userName = "You", userEmail = "", isAdmin: isA
           </SidebarSection>
 
         </nav>
+
+        {/* Sticky bottom menu — Calendar, Accounts, Files */}
+        <div className="px-3 py-2 border-t border-neutral-200 flex-shrink-0 flex items-center justify-around">
+          {stickyBottomLinks.map((link) => {
+            const active = isActive(link.href);
+            return (
+              <button
+                key={link.href}
+                onClick={() => navigateTo(link.href)}
+                className="flex flex-col items-center gap-1 px-2 py-1.5 rounded-[8px] transition-colors"
+                style={{
+                  backgroundColor: active ? "rgb(253 235 235)" : "transparent",
+                  color: active ? "rgb(138 9 9)" : "rgb(115 115 115)",
+                }}
+                title={link.label}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={active ? 2.5 : 2} style={{ width: 18, height: 18 }}>
+                  {link.icon}
+                </svg>
+                <span className="text-[10px] font-medium leading-none">{link.label}</span>
+              </button>
+            );
+          })}
+        </div>
 
         {/* User Footer */}
         <div className="px-4 py-4 border-t border-neutral-200 flex-shrink-0">
@@ -509,25 +436,26 @@ export default function Sidebar({ userName = "You", userEmail = "", isAdmin: isA
                   ))}
                 </ul>
               </SidebarSection>
-              <SidebarSection title="Navigate" open={open.navigate} onToggle={() => toggle("navigate")}>
-                <ul className="space-y-0.5">
-                  {navLinks.map((l) => (
-                    <li key={l.href}>
-                      <NavLink href={l.href} label={l.label} active={isActive(l.href)} icon={l.icon} onNavigate={navigateTo} />
-                    </li>
-                  ))}
-                </ul>
-              </SidebarSection>
-              <SidebarSection title="Manage" open={open.manage} onToggle={() => toggle("manage")}>
-                <ul className="space-y-0.5">
-                  {manageLinks.map((l) => (
-                    <li key={l.href}>
-                      <NavLink href={l.href} label={l.label} active={isActive(l.href)} icon={l.icon} onNavigate={navigateTo} />
-                    </li>
-                  ))}
-                </ul>
-              </SidebarSection>
+              <div className="mt-2">
+                <NavLink href={contactsLink.href} label={contactsLink.label} icon={contactsLink.icon} active={isActive(contactsLink.href)} onNavigate={navigateTo} />
+              </div>
             </nav>
+            {/* Sticky bottom — Calendar, Accounts, Files */}
+            <div className="px-3 py-2 border-t border-neutral-200 flex-shrink-0 flex items-center justify-around">
+              {stickyBottomLinks.map((link) => (
+                <button
+                  key={link.href}
+                  onClick={() => navigateTo(link.href)}
+                  className="flex flex-col items-center gap-1 px-2 py-1.5 rounded-[8px] transition-colors"
+                  style={{ color: isActive(link.href) ? "rgb(138 9 9)" : "rgb(115 115 115)" }}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    {link.icon}
+                  </svg>
+                  <span className="text-[10px] font-medium">{link.label}</span>
+                </button>
+              ))}
+            </div>
           </aside>
         </div>
       )}
