@@ -39,10 +39,22 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
   }
 
   try {
+    // Support cursor-based pagination: if "cursor" is provided, use it as the Graph nextLink
+    const cursor = req.nextUrl.searchParams.get("cursor");
+    let graphPath: string;
+    if (cursor) {
+      // The cursor is the path portion after https://graph.microsoft.com/v1.0
+      // Extract it from the full URL if needed
+      const full = cursor.startsWith("http") ? new URL(cursor).pathname + "?" + new URL(cursor).searchParams.toString() : cursor;
+      graphPath = full.replace("/v1.0", "");
+    } else {
+      graphPath = `/me/contacts?$top=100&$select=id,displayName,emailAddresses,mobilePhone,jobTitle,companyName&$orderby=displayName`;
+    }
+
     const data = await graphGet<GraphContactsResponse>(
       user.id,
       homeAccountId,
-      `/me/contacts?$top=250&$select=id,displayName,emailAddresses,mobilePhone,jobTitle,companyName&$orderby=displayName`
+      graphPath
     );
 
     const contacts = (data.value ?? []).map((c) => {
@@ -60,7 +72,10 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
       };
     });
 
-    return NextResponse.json({ contacts });
+    return NextResponse.json({
+      contacts,
+      nextLink: data["@odata.nextLink"] ?? null,
+    });
   } catch (err) {
     console.error("[contacts/list]", err);
     return NextResponse.json({ error: "Failed to fetch contacts" }, { status: 500 });
