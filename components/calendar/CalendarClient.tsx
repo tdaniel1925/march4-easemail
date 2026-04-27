@@ -845,11 +845,37 @@ export default function CalendarClient({ weekStart: initialWeekStart, events: in
               const dayEvents = eventsByDay[dateStr] ?? [];
               const dateNum = new Date(`${dateStr}T00:00:00`).getDate();
               return (
-                <div key={dateStr} className="flex-1 border-l border-neutral-100 p-1 min-w-0"
-                  style={{ background: isToday ? BRAND_LIGHT : !isThisMonth ? "#fafafa" : "#fff" }}>
-                  <div className="flex justify-start mb-1 pl-0.5">
+                <div key={dateStr} className="flex-1 border-l border-neutral-100 p-1 min-w-0 cursor-pointer"
+                  style={{ background: isToday ? BRAND_LIGHT : !isThisMonth ? "#fafafa" : "#fff" }}
+                  onClick={() => handleSlotClick(dateStr, 9, 0)}
+                  onDragOver={(ev) => { ev.preventDefault(); ev.dataTransfer.dropEffect = "move"; }}
+                  onDrop={(ev) => {
+                    ev.preventDefault();
+                    ev.stopPropagation();
+                    const eventData = ev.dataTransfer.getData("application/calendar-event");
+                    if (!eventData) return;
+                    try {
+                      const droppedEvent = JSON.parse(eventData) as CalEvent;
+                      // Preserve original time, just change the date
+                      const origStart = new Date(droppedEvent.startDateTime);
+                      const origEnd = new Date(droppedEvent.endDateTime);
+                      const durationMs = origEnd.getTime() - origStart.getTime();
+                      const pad2 = (n: number) => String(n).padStart(2, "0");
+                      const newStart = `${dateStr}T${pad2(origStart.getHours())}:${pad2(origStart.getMinutes())}:00`;
+                      const newEndDate = new Date(new Date(newStart).getTime() + durationMs);
+                      const newEnd = `${newEndDate.getFullYear()}-${pad2(newEndDate.getMonth()+1)}-${pad2(newEndDate.getDate())}T${pad2(newEndDate.getHours())}:${pad2(newEndDate.getMinutes())}:00`;
+                      handleEventDrop(droppedEvent, dateStr, origStart.getHours(), origStart.getMinutes());
+                      void fetch("/api/calendar/event", {
+                        method: "PATCH",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ eventId: droppedEvent.id, homeAccountId: droppedEvent.accountHomeId, subject: droppedEvent.subject, start: newStart, end: newEnd, isAllDay: droppedEvent.isAllDay, timeZone: userTimeZone }),
+                      });
+                    } catch { /* ignore */ }
+                  }}
+                >
+                  <div className="flex justify-start mb-1 pl-0.5" onClick={(ev) => ev.stopPropagation()}>
                     <button
-                      onClick={() => { setSelectedDay(dateStr); setActiveView("day"); }}
+                      onClick={(ev) => { ev.stopPropagation(); setSelectedDay(dateStr); setActiveView("day"); }}
                       className="w-6 h-6 flex items-center justify-center rounded-full text-xs font-semibold hover:bg-neutral-100 transition-colors"
                       style={isToday ? { background: BRAND, color: "#fff" } : { color: isThisMonth ? "#374151" : "#d1d5db" }}
                     >{dateNum}</button>
@@ -857,15 +883,18 @@ export default function CalendarClient({ weekStart: initialWeekStart, events: in
                   {dayEvents.slice(0, 3).map((e) => {
                     const palette = getAccountPalette(e.accountHomeId);
                     return (
-                      <div key={e.id} onClick={() => setSelectedEvent(e)}
-                        className="text-[11px] px-1.5 py-0.5 rounded mb-0.5 truncate cursor-pointer hover:brightness-95 transition-all"
+                      <div key={e.id}
+                        draggable
+                        onDragStart={(ev) => { ev.stopPropagation(); ev.dataTransfer.effectAllowed = "move"; ev.dataTransfer.setData("application/calendar-event", JSON.stringify(e)); }}
+                        onClick={(ev) => { ev.stopPropagation(); setSelectedEvent(e); }}
+                        className="text-[11px] px-1.5 py-0.5 rounded mb-0.5 truncate cursor-grab active:cursor-grabbing hover:brightness-95 transition-all"
                         style={{ backgroundColor: palette.bg, color: palette.text }}>
                         {!e.isAllDay && <span className="opacity-70">{formatTime(e.startDateTime, userTimeZone)} </span>}{e.subject}
                       </div>
                     );
                   })}
                   {dayEvents.length > 3 && (
-                    <button onClick={() => { setSelectedDay(dateStr); setActiveView("day"); }}
+                    <button onClick={(ev) => { ev.stopPropagation(); setSelectedDay(dateStr); setActiveView("day"); }}
                       className="text-[11px] text-neutral-400 pl-1 hover:underline">
                       +{dayEvents.length - 3} more
                     </button>
