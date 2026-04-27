@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useAccountStore } from "@/lib/stores/account-store";
 import { useDataCacheStore, pathToView } from "@/lib/stores/data-cache";
 import type { EmailMessage } from "@/lib/types/email";
+import type { DashboardStats } from "@/app/api/dashboard/stats/route";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -156,19 +157,41 @@ function WeeklyChart({ receivedData, sentData }: { receivedData: number[]; sentD
   );
 }
 
+// ─── Account Indicator ────────────────────────────────────────────────────────
+
+function AccountIndicator({ email, displayName }: { email: string; displayName: string | null }) {
+  const initial = (displayName ?? email).charAt(0).toUpperCase();
+  return (
+    <div
+      className="flex items-center gap-2.5 px-3.5 py-2 rounded-[10px] border border-neutral-200 bg-white mb-4"
+      style={{ display: "inline-flex" }}
+    >
+      <div
+        className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white flex-shrink-0"
+        style={{ backgroundColor: "rgb(138 9 9)" }}
+      >
+        {initial}
+      </div>
+      <span className="text-sm" style={{ color: "rgb(115 115 115)" }}>
+        Viewing: <span className="font-medium" style={{ color: "rgb(27 29 29)" }}>{email}</span>
+      </span>
+    </div>
+  );
+}
+
 // ─── Dashboard Client ─────────────────────────────────────────────────────────
 
 export default function DashboardClient({
   userName,
   events,
-  recentUnread,
+  recentUnread: initialRecentUnread,
   eventsToday,
-  emailsData,
-  sentData,
-  draftsCount,
-  hoursWaiting,
-  attachmentsToday,
-  unreadTrend,
+  emailsData: initialEmailsData,
+  sentData: initialSentData,
+  draftsCount: initialDraftsCount,
+  hoursWaiting: initialHoursWaiting,
+  attachmentsToday: initialAttachmentsToday,
+  unreadTrend: initialUnreadTrend,
 }: {
   userName: string;
   events: CalendarEvent[];
@@ -182,7 +205,54 @@ export default function DashboardClient({
   unreadTrend: number;
 }) {
   const router = useRouter();
+  const activeAccount = useAccountStore((s) => s.activeAccount);
+  const accounts = useAccountStore((s) => s.accounts);
   const inboxUnread = useAccountStore((s) => s.inboxUnread);
+
+  // ── Account-scoped stats (refreshed on account change) ────────────────────
+  const [statsLoading, setStatsLoading] = useState(false);
+  const [recentUnread, setRecentUnread] = useState<(EmailMessage & { accountName?: string })[]>(initialRecentUnread);
+  const [emailsData, setEmailsData] = useState<number[]>(initialEmailsData);
+  const [sentData, setSentData] = useState<number[]>(initialSentData);
+  const [draftsCount, setDraftsCount] = useState(initialDraftsCount);
+  const [hoursWaiting, setHoursWaiting] = useState(initialHoursWaiting);
+  const [attachmentsToday, setAttachmentsToday] = useState(initialAttachmentsToday);
+  const [unreadTrend, setUnreadTrend] = useState(initialUnreadTrend);
+
+  useEffect(() => {
+    if (!activeAccount) return;
+
+    // Clear stale data immediately so the old account's numbers vanish
+    setRecentUnread([]);
+    setEmailsData([0, 0, 0, 0, 0, 0, 0]);
+    setSentData([0, 0, 0, 0, 0, 0, 0]);
+    setDraftsCount(0);
+    setHoursWaiting(0);
+    setAttachmentsToday(0);
+    setUnreadTrend(0);
+    setStatsLoading(true);
+
+    const controller = new AbortController();
+
+    fetch(`/api/dashboard/stats?homeAccountId=${encodeURIComponent(activeAccount.homeAccountId)}`, {
+      signal: controller.signal,
+    })
+      .then(async (res) => {
+        if (!res.ok) return;
+        const data: DashboardStats = await res.json();
+        setRecentUnread(data.recentUnread);
+        setEmailsData(data.weeklyReceived);
+        setSentData(data.weeklySent);
+        setDraftsCount(data.draftCount);
+        setHoursWaiting(data.hoursWaiting);
+        setAttachmentsToday(data.attachmentsToday);
+        setUnreadTrend(data.unreadTrend);
+      })
+      .catch(() => { /* aborted or network error — keep zeroed state */ })
+      .finally(() => setStatsLoading(false));
+
+    return () => controller.abort();
+  }, [activeAccount?.homeAccountId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   /** SPA-aware navigation — updates store + pushState instead of server round-trip */
   function navigateTo(href: string) {
@@ -350,6 +420,14 @@ export default function DashboardClient({
       <main className="flex-1 overflow-y-auto" style={{ backgroundColor: "rgb(250 250 250)" }}>
         <div className="max-w-3xl mx-auto px-6 py-8">
 
+          {/* ── Account Indicator (multi-account only) ── */}
+          {accounts.length > 1 && activeAccount && (
+            <AccountIndicator
+              email={activeAccount.email}
+              displayName={activeAccount.displayName}
+            />
+          )}
+
           {/* ── Header ── */}
           <div className="mb-8">
             <div className="flex items-center justify-between mb-1">
@@ -406,7 +484,7 @@ export default function DashboardClient({
           ) : null}
 
           {/* ── Stats Row ── */}
-          <div className="grid grid-cols-3 gap-3 mb-6">
+          <div className={`grid grid-cols-3 gap-3 mb-6 transition-opacity duration-200${statsLoading ? " opacity-40 pointer-events-none" : ""}`}>
             <button onClick={() => navigateTo("/inbox")} className="p-4 rounded-[12px] bg-white border border-neutral-200 hover:border-neutral-300 transition-colors text-center cursor-pointer">
               <p className="text-2xl font-bold" style={{ color: "rgb(27 29 29)" }}>{inboxUnread}</p>
               <p className="text-xs font-medium mt-0.5" style={{ color: "rgb(115 115 115)" }}>Unread{unreadTrend !== 0 && <span style={{ color: unreadTrend > 0 ? "rgb(220 38 38)" : "rgb(22 163 74)" }}> {unreadTrend > 0 ? "↑" : "↓"}{Math.abs(unreadTrend)}</span>}</p>
