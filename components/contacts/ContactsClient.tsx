@@ -186,10 +186,11 @@ export default function ContactsClient({ contacts: initialContacts }: Props) {
     setSaving(true);
     setErrorMsg(null); // Clear previous errors
     try {
+      const hid = useAccountStore.getState().activeAccount?.homeAccountId;
       const res = await fetch("/api/contacts", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ displayName: data.displayName, email: data.email, phone: data.phone, company: data.company, title: data.title }),
+        body: JSON.stringify({ displayName: data.displayName, email: data.email, phone: data.phone, company: data.company, title: data.title, homeAccountId: hid }),
       });
 
       // FIX: Check response before updating UI
@@ -230,10 +231,11 @@ export default function ContactsClient({ contacts: initialContacts }: Props) {
     setErrorMsg(null); // Clear previous errors
     try {
       // FIX: Wait for response and validate before updating UI
+      const hid = useAccountStore.getState().activeAccount?.homeAccountId;
       const res = await fetch(`/api/contacts/${encodeURIComponent(editContact.id)}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ displayName: data.displayName, email: data.email, phone: data.phone, company: data.company, title: data.title }),
+        body: JSON.stringify({ displayName: data.displayName, email: data.email, phone: data.phone, company: data.company, title: data.title, homeAccountId: hid }),
       });
 
       // FIX: Check if save succeeded before updating UI
@@ -272,7 +274,8 @@ export default function ContactsClient({ contacts: initialContacts }: Props) {
     setErrorMsg(null); // Clear previous errors
     try {
       // FIX: Wait for response and validate before updating UI
-      const res = await fetch(`/api/contacts/${encodeURIComponent(deleteTarget.id)}`, { method: "DELETE" });
+      const hid = useAccountStore.getState().activeAccount?.homeAccountId;
+      const res = await fetch(`/api/contacts/${encodeURIComponent(deleteTarget.id)}?homeAccountId=${encodeURIComponent(hid ?? "")}`, { method: "DELETE" });
 
       // FIX: Check if delete succeeded before updating UI
       if (!res.ok) {
@@ -328,9 +331,14 @@ export default function ContactsClient({ contacts: initialContacts }: Props) {
           <div className="flex items-center justify-between mb-3">
             <h1 className="text-base font-semibold" style={{ color: "rgb(27 29 29)" }}>
               All Contacts
+              {contacts.length > 0 && (
+                <span className="ml-2 text-xs font-normal" style={{ color: "rgb(163 163 163)" }}>
+                  ({contacts.length})
+                </span>
+              )}
             </h1>
             <button
-              onClick={() => setShowNewModal(true)}
+              onClick={() => { setErrorMsg(null); setShowNewModal(true); }}
               className="flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-[10px] text-white transition-colors"
               style={{ backgroundColor: "rgb(138 9 9)" }}
               onMouseEnter={(e) => ((e.currentTarget as HTMLButtonElement).style.backgroundColor = "rgb(110 7 7)")}
@@ -435,7 +443,13 @@ export default function ContactsClient({ contacts: initialContacts }: Props) {
           ) : filtered.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full gap-2 px-6 text-center">
               <p className="text-sm" style={{ color: "rgb(163 163 163)" }}>
-                No results for &ldquo;{query}&rdquo;
+                {query.trim()
+                  ? <>No results for &ldquo;{query}&rdquo;</>
+                  : activeTab === "vip"
+                  ? "No VIP contacts"
+                  : activeTab === "frequent"
+                  ? "No frequent contacts"
+                  : "No contacts match your filter"}
               </p>
             </div>
           ) : (
@@ -483,6 +497,11 @@ export default function ContactsClient({ contacts: initialContacts }: Props) {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40" onClick={() => setDeleteTarget(null)}>
           <div className="bg-white rounded-[16px] w-full max-w-sm p-6 shadow-xl" onClick={(e) => e.stopPropagation()}>
             <h2 className="text-base font-semibold mb-2" style={{ color: "rgb(27 29 29)" }}>Delete Contact</h2>
+            {errorMsg && (
+              <div className="mb-3 p-3 rounded-[10px] bg-red-50 border border-red-200">
+                <p className="text-sm text-red-700">{errorMsg}</p>
+              </div>
+            )}
             <p className="text-sm mb-6" style={{ color: "rgb(82 82 82)" }}>
               Remove <strong>{deleteTarget.displayName}</strong> from your contacts? This cannot be undone.
             </p>
@@ -506,8 +525,8 @@ export default function ContactsClient({ contacts: initialContacts }: Props) {
         {selectedContact ? (
           <ContactDetail
             contact={selectedContact}
-            onEdit={() => setEditContact(selectedContact)}
-            onDelete={() => setDeleteTarget(selectedContact)}
+            onEdit={() => { setErrorMsg(null); setEditContact(selectedContact); }}
+            onDelete={() => { setErrorMsg(null); setDeleteTarget(selectedContact); }}
           />
         ) : (
           <div className="flex flex-col items-center justify-center h-full gap-3">
@@ -612,7 +631,7 @@ function ContactRow({ contact, color, isSelected, onSelect }: ContactRowProps) {
       {/* Compose button — visible on hover or selected */}
       {(hovered || isSelected) && contact.email && (
         <button
-          onClick={(e) => { e.stopPropagation(); navigateToCompose(contact.email!); }}
+          onClick={(e) => { e.stopPropagation(); navigateToCompose(contact.email); }}
           className="flex-shrink-0 w-7 h-7 rounded-[10px] flex items-center justify-center transition-colors"
           style={{ backgroundColor: "rgb(138 9 9)" }}
           title={`Email ${contact.displayName}`}
@@ -696,7 +715,7 @@ function ContactDetail({ contact, onEdit, onDelete }: { contact: Contact; onEdit
       {/* Compose button */}
       {contact.email && (
         <button
-          onClick={() => navigateToCompose(contact.email!)}
+          onClick={() => navigateToCompose(contact.email)}
           className="flex items-center gap-2 px-5 py-2.5 rounded-[10px] text-sm font-medium text-white transition-colors shadow-sm"
           style={{ backgroundColor: "rgb(138 9 9)" }}
           onMouseEnter={(e) =>
