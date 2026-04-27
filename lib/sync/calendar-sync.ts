@@ -1,5 +1,8 @@
 import { graphFetch } from "@/lib/microsoft/graph";
 import { prisma } from "@/lib/prisma";
+import { detectProviderType } from "@/lib/providers/registry";
+import { JmapProvider } from "@/lib/providers/jmap";
+import type { NormalizedCalendarEvent } from "@/lib/providers/types";
 
 const GRAPH_BASE = "https://graph.microsoft.com/v1.0";
 const CALENDAR_DELTA_KEY = "calendar";
@@ -38,6 +41,67 @@ export async function syncCalendar(
   userId: string,
   homeAccountId: string
 ): Promise<void> {
+  // Non-Microsoft accounts — route through their provider's fetchEvents()
+  if (detectProviderType(homeAccountId) !== "microsoft") {
+    const provider = homeAccountId.startsWith("jmap:") ? new JmapProvider() : null;
+    if (!provider) return; // imap has no calendar support yet
+
+    const oneYearAgo = new Date();
+    oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+    const twoYearsAhead = new Date();
+    twoYearsAhead.setFullYear(twoYearsAhead.getFullYear() + 2);
+
+    const events = await provider.fetchEvents(
+      userId,
+      homeAccountId,
+      oneYearAgo.toISOString(),
+      twoYearsAhead.toISOString()
+    );
+
+    await Promise.all(
+      events.map((e: NormalizedCalendarEvent) =>
+        prisma.cachedCalendarEvent.upsert({
+          where: { id: e.id },
+          update: {
+            subject: e.subject,
+            bodyPreview: e.bodyPreview ?? "",
+            startDateTime: new Date(e.startDateTime),
+            endDateTime: new Date(e.endDateTime),
+            isAllDay: e.isAllDay,
+            location: e.location ?? null,
+            organizerName: e.organizer?.name ?? null,
+            organizerEmail: e.organizer?.address ?? null,
+            responseStatus: e.responseStatus ?? "none",
+            onlineMeetingUrl: e.onlineMeetingUrl ?? null,
+            attendees: JSON.parse(JSON.stringify(e.attendees ?? [])),
+            isRecurring: e.isRecurring ?? false,
+            timeZone: e.timeZone ?? "UTC",
+            syncedAt: new Date(),
+          },
+          create: {
+            id: e.id,
+            userId,
+            homeAccountId,
+            subject: e.subject,
+            bodyPreview: e.bodyPreview ?? "",
+            startDateTime: new Date(e.startDateTime),
+            endDateTime: new Date(e.endDateTime),
+            isAllDay: e.isAllDay,
+            location: e.location ?? null,
+            organizerName: e.organizer?.name ?? null,
+            organizerEmail: e.organizer?.address ?? null,
+            responseStatus: e.responseStatus ?? "none",
+            onlineMeetingUrl: e.onlineMeetingUrl ?? null,
+            attendees: JSON.parse(JSON.stringify(e.attendees ?? [])),
+            isRecurring: e.isRecurring ?? false,
+            timeZone: e.timeZone ?? "UTC",
+          },
+        })
+      )
+    );
+    return;
+  }
+
   const deltaRecord = await prisma.emailDeltaLink.findUnique({
     where: {
       userId_homeAccountId_folderId: {
