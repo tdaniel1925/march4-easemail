@@ -946,6 +946,10 @@ export default function InboxClient({
     displayEmails,
     {
       onOpen: (email) => {
+        if (readingPane === "split") {
+          fetchSplitEmail(email);
+          return;
+        }
         setExpandedEmailId(email.id);
         setExpandedBody(null);
         setExpandedDetails(null);
@@ -992,11 +996,39 @@ export default function InboxClient({
     ...(activeLabel ? [{ key: "label" as FilterTab, label: activeLabel }] : []),
   ];
 
+  // ── Split pane fetch helper ──
+  const fetchSplitEmail = useCallback((email: EmailMessage) => {
+    setSplitPaneEmailId(email.id);
+    setSplitPaneBody(null);
+    setSplitPaneDetails(null);
+    if (!activeAccount) return;
+    setSplitPaneLoading(true);
+    fetch(`/api/mail/message/${encodeURIComponent(email.id)}?homeAccountId=${encodeURIComponent(activeAccount.homeAccountId)}`)
+      .then((r) => r.ok ? r.json() : null)
+      .then((data: Record<string, unknown> | null) => {
+        if (data) {
+          const body = data.body as { content?: string; contentType?: string } | undefined;
+          const toRaw = data.toRecipients as { emailAddress?: { name?: string; address?: string }; name?: string; address?: string }[] | undefined;
+          const ccRaw = data.ccRecipients as { emailAddress?: { name?: string; address?: string }; name?: string; address?: string }[] | undefined;
+          const mapR = (arr?: typeof toRaw) => (arr ?? []).map((r) => ({ name: r.emailAddress?.name ?? r.name ?? "", address: r.emailAddress?.address ?? r.address ?? "" }));
+          setSplitPaneBody({ content: body?.content ?? email.bodyPreview, contentType: (body?.contentType as "html" | "text") ?? "text" });
+          setSplitPaneDetails({ to: mapR(toRaw), cc: mapR(ccRaw), attachments: (data.attachments as { id: string; name: string; size: number; contentType: string }[]) ?? [] });
+        } else {
+          setSplitPaneBody({ content: email.bodyPreview, contentType: "text" });
+        }
+      })
+      .catch(() => setSplitPaneBody({ content: email.bodyPreview, contentType: "text" }))
+      .finally(() => setSplitPaneLoading(false));
+  }, [activeAccount]);
+
   return (
     <>
     <div className="flex flex-1" style={{ overflow: "hidden" }}>
       {/* Email List — left column */}
-      <div className="flex flex-col bg-white flex-shrink-0 border-r border-neutral-200" style={{ height: "100vh", overflow: "hidden", width: 380 }}>
+      <div
+        className="flex flex-col bg-white flex-shrink-0 border-r border-neutral-200"
+        style={{ height: "100vh", overflow: "hidden", width: readingPane === "split" ? 340 : 380 }}
+      >
         {/* Header */}
         <div className="px-4 pt-4 pb-3 border-b border-neutral-200 flex-shrink-0">
           <div className="flex items-center justify-between mb-3">
@@ -1373,6 +1405,10 @@ export default function InboxClient({
                       }).catch(() => {});
                     }
                   }
+                  if (readingPane === "split") {
+                    fetchSplitEmail(email);
+                    return;
+                  }
                   setExpandedEmailId(email.id);
                   setExpandedBody(null);
                   setExpandedDetails(null);
@@ -1417,7 +1453,7 @@ export default function InboxClient({
                 onSnooze={(e) => { e.stopPropagation(); setSnoozeEmail(email); }}
                 bulkMode={bulkMode}
                 isSelected={selectedIds.has(email.id)}
-                isActive={expandedEmailId === email.id}
+                isActive={readingPane === "split" ? splitPaneEmailId === email.id : expandedEmailId === email.id}
                 isKeyboardSelected={selectedEmailIndex === displayEmails.findIndex((e) => e.id === email.id)}
                 priority={aiPriorityEnabled ? (emailPriorities[email.id] ?? null) : null}
                 onToggleSelect={(e) => { e.stopPropagation(); toggleSelect(email.id); }}
@@ -1447,8 +1483,171 @@ export default function InboxClient({
         </div>
       </div>
 
-      {/* ── Reading Pane — right column ── */}
-      {!expandedEmailId && (
+      {/* ── Split Pane Reading View ── */}
+      {readingPane === "split" && (() => {
+        const splitSelected = splitPaneEmailId ? displayEmails.find((e) => e.id === splitPaneEmailId) : null;
+        if (!splitSelected) {
+          return (
+            <div className="flex flex-col flex-1 items-center justify-center bg-white border-l border-neutral-200" style={{ height: "100vh" }}>
+              <svg className="w-12 h-12 mb-3" style={{ color: "rgb(200 200 200)" }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
+              <p className="text-sm font-medium" style={{ color: "rgb(155 155 155)" }}>Select an email to read</p>
+            </div>
+          );
+        }
+        const acctId = activeAccount?.homeAccountId ?? "";
+        const senderColor = getAvatarColor(splitSelected.from.name);
+        const emailDate = new Date(splitSelected.receivedDateTime);
+        const dateFormatted = emailDate.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric", year: "numeric" });
+        const timeFormatted = emailDate.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
+        const fileIcon = (type: string) => {
+          if (type.startsWith("image/")) return "🖼";
+          if (type.includes("pdf")) return "📄";
+          if (type.includes("word") || type.includes("document")) return "📝";
+          if (type.includes("sheet") || type.includes("excel")) return "📊";
+          if (type.includes("zip") || type.includes("compressed")) return "📦";
+          return "📎";
+        };
+        const formatSize = (bytes: number) => bytes < 1024 ? `${bytes} B` : bytes < 1048576 ? `${(bytes / 1024).toFixed(1)} KB` : `${(bytes / 1048576).toFixed(1)} MB`;
+        const raw = splitPaneBody?.content ?? splitSelected.bodyPreview;
+        const isHtml = splitPaneBody?.contentType === "html" && /<[a-z][\s\S]*>/i.test(raw);
+        let bodyHtml: string;
+        if (isHtml) {
+          bodyHtml = raw;
+        } else {
+          const escaped = raw.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+          const withLinks = escaped.replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener" style="color:#8a0909">$1</a>');
+          const paragraphs = withLinks.split(/\n{2,}/).map(p => p.trim()).filter(Boolean);
+          bodyHtml = paragraphs.map(p => `<p style="margin:0 0 12px">${p.replace(/\n/g, "<br>")}</p>`).join("") || `<p>${withLinks.replace(/\n/g, "<br>")}</p>`;
+        }
+        return (
+          <div className="flex flex-col flex-1 bg-white border-l border-neutral-200" style={{ height: "100vh", overflow: "hidden" }}>
+            {/* Action toolbar */}
+            <div className="flex items-center gap-2 px-4 py-2.5 border-b border-neutral-200 flex-shrink-0" style={{ backgroundColor: "rgb(250 250 250)" }}>
+              <button
+                onClick={() => setAiReplyEmail(splitSelected)}
+                title="Reply (r)"
+                className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-[8px] text-white"
+                style={{ backgroundColor: "rgb(138 9 9)" }}
+              >
+                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" /></svg>
+                Reply
+              </button>
+              <button
+                onClick={() => navigateTo(`/compose?mode=replyAll&messageId=${encodeURIComponent(splitSelected.id)}&homeAccountId=${encodeURIComponent(acctId)}`)}
+                title="Reply All (a)"
+                className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-[8px] border border-neutral-200 bg-white hover:bg-neutral-50"
+                style={{ color: "rgb(82 82 82)" }}
+              >
+                Reply All
+              </button>
+              <button
+                onClick={() => handleArchiveEmail(splitSelected)}
+                title="Archive (e)"
+                className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-[8px] border border-neutral-200 bg-white hover:bg-neutral-50"
+                style={{ color: "rgb(82 82 82)" }}
+              >
+                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" /></svg>
+                Archive
+              </button>
+              <button
+                onClick={() => handleDeleteEmail(splitSelected)}
+                title="Delete (#)"
+                className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-[8px] border border-neutral-200 bg-white hover:bg-red-50"
+                style={{ color: "rgb(82 82 82)" }}
+              >
+                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                Delete
+              </button>
+              <div className="flex-1" />
+              <button
+                onClick={() => { setSplitPaneEmailId(null); setSplitPaneBody(null); setSplitPaneDetails(null); }}
+                className="p-1.5 rounded-[8px] hover:bg-neutral-100"
+                style={{ color: "rgb(155 155 155)" }}
+                title="Close"
+              >
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+              </button>
+            </div>
+
+            {/* Scrollable content */}
+            <div className="flex-1 overflow-y-auto">
+              {/* Subject + sender */}
+              <div className="px-5 py-4 border-b border-neutral-100">
+                <h2 className="text-base font-semibold mb-3" style={{ color: "rgb(27 29 29)" }}>{splitSelected.subject}</h2>
+                <div className="flex items-start gap-2.5">
+                  <div className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold" style={{ backgroundColor: senderColor.bg, color: senderColor.text }}>
+                    {getInitials(splitSelected.from.name)}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between gap-2">
+                      <div>
+                        <span className="text-sm font-semibold" style={{ color: "rgb(27 29 29)" }}>{splitSelected.from.name}</span>
+                        <span className="text-xs ml-1.5" style={{ color: "rgb(155 155 155)" }}>&lt;{splitSelected.from.address}&gt;</span>
+                      </div>
+                      <span className="text-xs flex-shrink-0" style={{ color: "rgb(155 155 155)" }}>{dateFormatted} at {timeFormatted}</span>
+                    </div>
+                    {splitPaneDetails?.to && splitPaneDetails.to.length > 0 && (
+                      <p className="text-xs mt-1" style={{ color: "rgb(155 155 155)" }}>
+                        <span className="font-medium" style={{ color: "rgb(115 115 115)" }}>To:</span>{" "}
+                        {splitPaneDetails.to.map((r) => r.name || r.address).join(", ")}
+                      </p>
+                    )}
+                    {splitPaneDetails?.cc && splitPaneDetails.cc.length > 0 && (
+                      <p className="text-xs mt-0.5" style={{ color: "rgb(155 155 155)" }}>
+                        <span className="font-medium" style={{ color: "rgb(115 115 115)" }}>CC:</span>{" "}
+                        {splitPaneDetails.cc.map((r) => r.name || r.address).join(", ")}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* Attachments */}
+              {splitPaneDetails?.attachments && splitPaneDetails.attachments.length > 0 && (
+                <div className="px-5 py-3 border-b border-neutral-100" style={{ backgroundColor: "rgb(252 252 252)" }}>
+                  <p className="text-xs font-semibold mb-2" style={{ color: "rgb(115 115 115)" }}>
+                    {splitPaneDetails.attachments.length} attachment{splitPaneDetails.attachments.length !== 1 ? "s" : ""}
+                  </p>
+                  <div className="flex gap-2 flex-wrap">
+                    {splitPaneDetails.attachments.map((att) => {
+                      const attUrl = `/api/mail/attachments/${encodeURIComponent(splitSelected.id)}/${encodeURIComponent(att.id)}?homeAccountId=${encodeURIComponent(acctId)}`;
+                      return (
+                        <a key={att.id} href={attUrl} className="flex items-center gap-2 px-3 py-2 rounded-[8px] border border-neutral-200 bg-white hover:border-neutral-300 text-xs" style={{ minWidth: 160 }}>
+                          <span className="text-base">{fileIcon(att.contentType)}</span>
+                          <div className="flex-1 min-w-0">
+                            <p className="font-medium truncate" style={{ color: "rgb(27 29 29)" }}>{att.name}</p>
+                            <p style={{ color: "rgb(155 155 155)" }}>{formatSize(att.size)}</p>
+                          </div>
+                        </a>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {/* Body */}
+              <div className="px-5 py-4">
+                {splitPaneLoading ? (
+                  <div className="flex flex-col items-center gap-3 py-16">
+                    <svg className="w-5 h-5 animate-spin" style={{ color: "rgb(138 9 9)" }} fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+                    </svg>
+                    <span className="text-xs font-medium" style={{ color: "rgb(155 155 155)" }}>Loading email...</span>
+                  </div>
+                ) : (
+                  <div className="email-body-render" dangerouslySetInnerHTML={{ __html: bodyHtml }} />
+                )}
+              </div>
+            </div>
+          </div>
+        );
+      })()}
+
+      {/* ── Reading Pane — right column (list mode only) ── */}
+      {readingPane === "list" && !expandedEmailId && (
         <div className="flex flex-col flex-1 items-center justify-center bg-white" style={{ height: "100vh" }}>
           <svg className="w-12 h-12 mb-3" style={{ color: "rgb(200 200 200)" }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
@@ -1456,7 +1655,7 @@ export default function InboxClient({
           <p className="text-sm font-medium" style={{ color: "rgb(155 155 155)" }}>Select an email to read</p>
         </div>
       )}
-      {expandedEmailId && (() => {
+      {readingPane === "list" && expandedEmailId && (() => {
         const selectedEmail = displayEmails.find((e) => e.id === expandedEmailId);
         if (!selectedEmail) return null;
         const senderColor = getAvatarColor(selectedEmail.from.name);
