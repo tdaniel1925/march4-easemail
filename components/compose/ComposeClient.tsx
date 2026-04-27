@@ -1901,7 +1901,7 @@ export default function ComposeClient({
               onPaste={handleBodyPaste}
               onDragOver={handleBodyDragOver}
               onDrop={handleBodyDrop}
-              className="text-sm text-neutral-700 leading-relaxed outline-none min-h-[200px]"
+              className="compose-editor text-sm text-neutral-700 leading-relaxed outline-none min-h-[200px]"
               data-placeholder="Write your email…"
               style={{ caretColor: "rgb(138 9 9)" }}
             />

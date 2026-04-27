@@ -75,7 +75,7 @@ function SafeHtml({ html }: { html: string }) {
       }
     });
   }, [html]);
-  return <div ref={ref} className="prose prose-sm max-w-none" />;
+  return <div ref={ref} className="email-body-render" />;
 }
 
 // ─── EmailReadClient ──────────────────────────────────────────────────────────

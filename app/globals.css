@@ -503,3 +503,18 @@ img {
 .email-body-render center { max-width: 100%; }
 /* Strip scripts that might have slipped through */
 .email-body-render script, .email-body-render style { display: none !important; }
+
+/* ── Compose editor — normalize div/p spacing in contenteditable ───────────── */
+.compose-editor div,
+.compose-editor p {
+  margin: 0;
+  margin-bottom: 0.5em;
+  line-height: 1.6;
+}
+.compose-editor div:last-child,
+.compose-editor p:last-child {
+  margin-bottom: 0;
+}
+.compose-editor br + br {
+  display: none; /* collapse double br from dictation */
+}
