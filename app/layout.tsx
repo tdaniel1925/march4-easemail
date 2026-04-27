@@ -4,6 +4,10 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "EaseMail",
   description: "Professional email client",
+  icons: {
+    icon: "/icon.svg",
+    apple: "/apple-icon.svg",
+  },
 };
 
 export default function RootLayout({
