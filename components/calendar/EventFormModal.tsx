@@ -141,6 +141,21 @@ export default function EventFormModal({ prefill, onClose, onSaved, editEvent, u
   const [isListening, setIsListening] = useState(false);
   const speechRef = useRef<SpeechRecognitionInstance | null>(null);
 
+  // ── Attendee autocomplete ──────────────────────────────────────────────────
+  const [attendeeSuggestions, setAttendeeSuggestions] = useState<{ name: string; email: string }[]>([]);
+  const suggestTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  function fetchAttendeeSuggestions(q: string) {
+    if (suggestTimer.current) clearTimeout(suggestTimer.current);
+    if (q.trim().length < 2) { setAttendeeSuggestions([]); return; }
+    suggestTimer.current = setTimeout(() => {
+      fetch(`/api/contacts?q=${encodeURIComponent(q)}`)
+        .then((r) => r.json() as Promise<{ name: string; email: string }[]>)
+        .then(setAttendeeSuggestions)
+        .catch(() => setAttendeeSuggestions([]));
+    }, 250);
+  }
+
   // ── UI ────────────────────────────────────────────────────────────────────────
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -169,10 +184,11 @@ export default function EventFormModal({ prefill, onClose, onSaved, editEvent, u
     setEndTime(toLocalTime(newEnd.toISOString()));
   }
 
-  function addAttendee() {
-    const trimmed = attendeeInput.trim().toLowerCase();
+  function addAttendee(email?: string) {
+    const trimmed = (email ?? attendeeInput).trim().toLowerCase();
     if (trimmed && !attendees.includes(trimmed)) setAttendees((p) => [...p, trimmed]);
     setAttendeeInput("");
+    setAttendeeSuggestions([]);
   }
   function removeAttendee(addr: string) {
     setAttendees((p) => p.filter((a) => a !== addr));
@@ -494,20 +510,41 @@ export default function EventFormModal({ prefill, onClose, onSaved, editEvent, u
             <label className="text-xs font-semibold text-neutral-500 uppercase tracking-wide block mb-2">Attendees & Guests</label>
             <div className="flex gap-2 mb-2">
               <div className="flex-1 relative">
-                <svg className="w-4 h-4 text-neutral-400 absolute left-3 top-1/2 -translate-y-1/2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <svg className="w-4 h-4 text-neutral-400 absolute left-3 top-1/2 -translate-y-1/2 z-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
                 <input
-                  type="email"
+                  type="text"
                   value={attendeeInput}
-                  onChange={(e) => setAttendeeInput(e.target.value)}
+                  onChange={(e) => { setAttendeeInput(e.target.value); fetchAttendeeSuggestions(e.target.value); }}
                   onKeyDown={(e) => { if (e.key === "Enter" || e.key === ",") { e.preventDefault(); addAttendee(); } }}
-                  onBlur={addAttendee}
+                  onBlur={() => { setTimeout(() => setAttendeeSuggestions([]), 200); }}
                   placeholder="Search people or add email…"
                   className="w-full text-sm border border-neutral-200 rounded-lg px-3 py-2 pl-9 focus:outline-none focus:border-neutral-400"
                 />
+                {attendeeSuggestions.length > 0 && (
+                  <div className="absolute left-0 right-0 top-full mt-1 bg-white border border-neutral-200 rounded-lg shadow-lg z-50 max-h-48 overflow-y-auto">
+                    {attendeeSuggestions.map((s) => (
+                      <button
+                        key={s.email}
+                        type="button"
+                        onMouseDown={(e) => e.preventDefault()}
+                        onClick={() => addAttendee(s.email)}
+                        className="w-full text-left px-3 py-2 hover:bg-neutral-50 transition-colors flex items-center gap-2"
+                      >
+                        <div className="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0" style={{ backgroundColor: BRAND }}>
+                          {(s.name || s.email)[0].toUpperCase()}
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <p className="text-sm font-medium text-neutral-800 truncate">{s.name}</p>
+                          <p className="text-xs text-neutral-500 truncate">{s.email}</p>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
-              <button type="button" onClick={addAttendee} className="px-3 py-2 bg-neutral-100 border border-neutral-200 rounded-lg text-xs font-semibold text-neutral-600 hover:bg-neutral-200 transition-colors flex-shrink-0">
+              <button type="button" onClick={() => addAttendee()} className="px-3 py-2 bg-neutral-100 border border-neutral-200 rounded-lg text-xs font-semibold text-neutral-600 hover:bg-neutral-200 transition-colors flex-shrink-0">
                 Add
               </button>
             </div>
