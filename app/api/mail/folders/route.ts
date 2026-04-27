@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { graphGet, graphFetch } from "@/lib/microsoft/graph";
 import { isReauthError } from "@/lib/microsoft/auth-errors";
+import { getProvider, detectProviderType } from "@/lib/providers/registry";
 import type { MailFolder } from "@/lib/types/email";
 
 interface GraphFolder {
@@ -24,9 +25,28 @@ export async function GET(req: NextRequest) {
   const homeAccountId = req.nextUrl.searchParams.get("homeAccountId");
   if (!homeAccountId) return NextResponse.json({ error: "homeAccountId required", errorCode: "server_error" }, { status: 400 });
 
-  // Non-Microsoft accounts (imap:, jmap: prefix) don't use Graph API for folders
+  // Non-Microsoft accounts — route through the provider's fetchFolders()
   if (homeAccountId.startsWith("imap:") || homeAccountId.startsWith("jmap:")) {
-    return NextResponse.json({ folders: [] });
+    try {
+      const provider = getProvider(homeAccountId);
+      const normalized = await provider.fetchFolders(user.id, homeAccountId);
+      const folders: MailFolder[] = normalized.map((f) => ({
+        id: f.id,
+        displayName: f.displayName,
+        unreadItemCount: f.unreadCount,
+        totalItemCount: f.totalCount,
+        wellKnownName: f.wellKnownName,
+        parentId: f.parentFolderId,
+      }));
+      return NextResponse.json({ folders });
+    } catch (err) {
+      const msg = String(err);
+      console.error("[folders] non-MS fetchFolders error:", msg);
+      if (isReauthError(err)) {
+        return NextResponse.json({ error: "account_requires_reauth", errorCode: "reauth_required" }, { status: 401 });
+      }
+      return NextResponse.json({ error: msg, errorCode: "server_error" }, { status: 500 });
+    }
   }
 
   const forceRefresh = req.nextUrl.searchParams.get("refresh") === "1";

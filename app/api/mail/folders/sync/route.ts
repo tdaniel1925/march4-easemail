@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { syncFolders } from "@/lib/sync/folder-sync";
 import { isReauthError } from "@/lib/microsoft/auth-errors";
+import { getProvider } from "@/lib/providers/registry";
 
 /**
  * POST /api/mail/folders/sync
@@ -29,8 +30,16 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const folderRefs = await syncFolders(user.id, homeAccountId);
-    return NextResponse.json({ ok: true, count: folderRefs.length });
+    let count: number;
+    if (homeAccountId.startsWith("imap:") || homeAccountId.startsWith("jmap:")) {
+      const provider = getProvider(homeAccountId);
+      const folders = await provider.syncFolders(user.id, homeAccountId);
+      count = folders.length;
+    } else {
+      const folderRefs = await syncFolders(user.id, homeAccountId);
+      count = folderRefs.length;
+    }
+    return NextResponse.json({ ok: true, count });
   } catch (err) {
     const msg = String(err);
     console.error("[folders/sync] syncFolders error:", msg);
