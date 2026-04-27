@@ -263,6 +263,7 @@ function TimeGrid({
   onSlotClick,
   onEventDrop,
   tz,
+  emptyLabel,
 }: {
   dayDateStrs: string[];
   timedByDay: Record<string, CalEvent[]>;
@@ -277,6 +278,7 @@ function TimeGrid({
   onSlotClick: (dateStr: string, hour: number, minutes: number) => void;
   onEventDrop: (event: CalEvent, newDateStr: string, newHour: number, newMinutes: number) => void;
   tz: string;
+  emptyLabel?: string;
 }) {
   const hasAllDay = dayDateStrs.some((d) => (allDayByDay[d]?.length ?? 0) > 0);
   const todayInView = dayDateStrs.includes(today);
@@ -328,6 +330,20 @@ function TimeGrid({
       {/* Scrollable time grid */}
       <div ref={scrollRef} className="flex flex-1 overflow-y-auto relative bg-white">
         {loading && <Spinner />}
+        {/* Empty state — rendered inside scroll area so it never blocks grid clicks */}
+        {!loading && emptyLabel && dayDateStrs.every((d) => (timedByDay[d]?.length ?? 0) === 0 && (allDayByDay[d]?.length ?? 0) === 0) && (
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none" style={{ paddingLeft: 64 }}>
+            <div className="flex flex-col items-center gap-2">
+              <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+                <rect x="4" y="8" width="32" height="28" rx="4" stroke="#D1D5DB" strokeWidth="2" fill="none" />
+                <path d="M4 16H36" stroke="#D1D5DB" strokeWidth="2" />
+                <path d="M14 4V10" stroke="#D1D5DB" strokeWidth="2" strokeLinecap="round" />
+                <path d="M26 4V10" stroke="#D1D5DB" strokeWidth="2" strokeLinecap="round" />
+              </svg>
+              <p className="text-sm text-neutral-400 font-medium">{emptyLabel}</p>
+            </div>
+          </div>
+        )}
         {/* Time labels */}
         <div className="w-16 shrink-0 relative flex-shrink-0" style={{ height: ROW_HEIGHT * HOURS.length }}>
           {HOURS.map((h) => (
@@ -764,6 +780,7 @@ export default function CalendarClient({ weekStart: initialWeekStart, events: in
         onSlotClick={handleSlotClick}
         onEventDrop={handleEventDrop}
         tz={userTimeZone}
+        emptyLabel="No events this week — click any time slot to create one"
       />
     );
   }
@@ -788,6 +805,7 @@ export default function CalendarClient({ weekStart: initialWeekStart, events: in
         onSlotClick={handleSlotClick}
         onEventDrop={handleEventDrop}
         tz={userTimeZone}
+        emptyLabel="No events today — click any time slot to create one"
       />
     );
   }
@@ -1199,20 +1217,6 @@ export default function CalendarClient({ weekStart: initialWeekStart, events: in
         {activeView === "agenda" && renderAgendaView()}
         {activeView === "year" && renderYearView()}
 
-        {/* Empty state — week/day only */}
-        {(activeView === "week" || activeView === "day") && !loading && events.length === 0 && !fetchError && (
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none" style={{ top: 120 }}>
-            <div className="flex flex-col items-center gap-2 mt-24">
-              <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
-                <rect x="4" y="8" width="32" height="28" rx="4" stroke="#D1D5DB" strokeWidth="2" fill="none" />
-                <path d="M4 16H36" stroke="#D1D5DB" strokeWidth="2" />
-                <path d="M14 4V10" stroke="#D1D5DB" strokeWidth="2" strokeLinecap="round" />
-                <path d="M26 4V10" stroke="#D1D5DB" strokeWidth="2" strokeLinecap="round" />
-              </svg>
-              <p className="text-sm text-neutral-400 font-medium">No events {activeView === "day" ? "today" : "this week"}</p>
-            </div>
-          </div>
-        )}
       </div>
 
       {/* ── Event Detail Modal ── */}
