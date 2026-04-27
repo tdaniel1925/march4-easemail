@@ -24,6 +24,11 @@ export async function GET(req: NextRequest) {
   const homeAccountId = req.nextUrl.searchParams.get("homeAccountId");
   if (!homeAccountId) return NextResponse.json({ error: "homeAccountId required", errorCode: "server_error" }, { status: 400 });
 
+  // Non-Microsoft accounts (imap:, jmap: prefix) don't use Graph API for folders
+  if (homeAccountId.startsWith("imap:") || homeAccountId.startsWith("jmap:")) {
+    return NextResponse.json({ folders: [] });
+  }
+
   const forceRefresh = req.nextUrl.searchParams.get("refresh") === "1";
 
   try {

@@ -67,18 +67,30 @@ export async function graphFetch(
   });
 }
 
+// Transient Graph errors worth retrying (Microsoft-side issues, rate limits)
+const RETRYABLE_STATUSES = new Set([429, 500, 503, 504]);
+const MAX_RETRIES = 2;
+
 export async function graphGet<T>(
   userId: string,
   homeAccountId: string,
   path: string,
   scopes: string[] = GRAPH_SCOPES
 ): Promise<T> {
-  const res = await graphFetch(userId, homeAccountId, path, {}, scopes);
-  if (!res.ok) {
+  let lastErr: Error | null = null;
+  for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
+    if (attempt > 0) {
+      // Exponential backoff: 1s, 2s
+      await new Promise((r) => setTimeout(r, attempt * 1000));
+    }
+    const res = await graphFetch(userId, homeAccountId, path, {}, scopes);
+    if (res.ok) return res.json() as Promise<T>;
     const err = await res.text();
-    throw new Error(`Graph GET ${path} failed ${res.status}: ${err}`);
+    lastErr = new Error(`Graph GET ${path} failed ${res.status}: ${err}`);
+    // Only retry transient errors — auth errors should fail immediately
+    if (!RETRYABLE_STATUSES.has(res.status)) throw lastErr;
   }
-  return res.json() as Promise<T>;
+  throw lastErr!;
 }
 
 export async function graphPost<T>(

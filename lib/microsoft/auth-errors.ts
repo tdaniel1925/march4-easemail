@@ -10,10 +10,10 @@ export function isReauthError(err: unknown): boolean {
     msg.includes("interaction_required") ||
     // Graph API returns 401 when the access token is invalid/expired and
     // silent refresh failed. Catch both "failed 401" (from graphGet) and
-    // the raw Graph error code.
+    // the raw Graph error code. Use "failed 401" (not bare "401") to avoid
+    // false-positives on error bodies that contain "401" as part of other text.
     msg.includes("failed 401") ||
-    msg.includes("InvalidAuthenticationToken") ||
-    msg.includes("401")
+    msg.includes("InvalidAuthenticationToken")
   );
 }
 
