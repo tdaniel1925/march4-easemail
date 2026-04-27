@@ -59,6 +59,7 @@ interface FileAttachment {
 interface ContactSuggestion {
   name: string;
   email: string;
+  company?: string;
 }
 
 interface Account {
@@ -343,6 +344,32 @@ export default function ComposeClient({
   const toSuggestTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const ccSuggestTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const bccSuggestTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // ── Recipient hover card ─────────────────────────────────────────────────────
+  const [hoveredChip, setHoveredChip] = useState<{
+    email: string;
+    contact: ContactSuggestion | null;
+    anchorRect: DOMRect;
+  } | null>(null);
+  const chipHoverTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const chipHideTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  function onChipMouseEnter(e: React.MouseEvent<HTMLSpanElement>, addr: string) {
+    if (chipHideTimer.current) { clearTimeout(chipHideTimer.current); chipHideTimer.current = null; }
+    const rect = (e.currentTarget as HTMLSpanElement).getBoundingClientRect();
+    if (chipHoverTimer.current) clearTimeout(chipHoverTimer.current);
+    chipHoverTimer.current = setTimeout(() => {
+      // Try to find a matching contact suggestion from previous autocomplete results
+      const allSuggestions = [...toSuggestions, ...ccSuggestions, ...bccSuggestions];
+      const matched = allSuggestions.find((s) => s.email.toLowerCase() === addr.toLowerCase()) ?? null;
+      setHoveredChip({ email: addr, contact: matched, anchorRect: rect });
+    }, 400);
+  }
+
+  function onChipMouseLeave() {
+    if (chipHoverTimer.current) { clearTimeout(chipHoverTimer.current); chipHoverTimer.current = null; }
+    chipHideTimer.current = setTimeout(() => setHoveredChip(null), 200);
+  }
 
   // ── For real diff in AI Remix ────────────────────────────────────────────────
   const originalBodyRef = useRef<string>("");
@@ -1386,7 +1413,12 @@ export default function ComposeClient({
             <span className="text-xs font-semibold text-neutral-400 w-14 flex-shrink-0">To</span>
             <div className="flex flex-wrap items-center gap-1.5 flex-1">
               {to.map((addr) => (
-                <span key={addr} className="recipient-chip">
+                <span
+                  key={addr}
+                  className="recipient-chip"
+                  onMouseEnter={(e) => onChipMouseEnter(e, addr)}
+                  onMouseLeave={onChipMouseLeave}
+                >
                   {addr}
                   <button onClick={() => setTo((p) => p.filter((a) => a !== addr))}>
                     <svg xmlns="http://www.w3.org/2000/svg" className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
@@ -2998,6 +3030,52 @@ export default function ComposeClient({
                 </button>
               </div>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── Recipient hover card ──────────────────────────────────────────────── */}
+      {hoveredChip && (
+        <div
+          className="fixed z-[200] pointer-events-none"
+          style={{
+            top: hoveredChip.anchorRect.bottom + 8 + window.scrollY,
+            left: hoveredChip.anchorRect.left + window.scrollX,
+          }}
+        >
+          <div
+            className="bg-white border border-neutral-200 rounded-[12px] shadow-xl p-3 pointer-events-auto"
+            style={{ width: 220 }}
+            onMouseEnter={() => { if (chipHideTimer.current) { clearTimeout(chipHideTimer.current); chipHideTimer.current = null; } }}
+            onMouseLeave={() => { chipHideTimer.current = setTimeout(() => setHoveredChip(null), 150); }}
+          >
+            <div className="flex items-center gap-2.5 mb-2">
+              {/* Mini avatar */}
+              <div
+                className="w-9 h-9 rounded-[8px] flex items-center justify-center text-sm font-bold flex-shrink-0"
+                style={{
+                  backgroundColor: "rgb(253 235 235)",
+                  color: "rgb(138 9 9)",
+                }}
+              >
+                {hoveredChip.contact?.name
+                  ? hoveredChip.contact.name.slice(0, 2).toUpperCase()
+                  : hoveredChip.email.slice(0, 2).toUpperCase()}
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-semibold truncate" style={{ color: "rgb(27 29 29)" }}>
+                  {hoveredChip.contact?.name ?? hoveredChip.email.split("@")[0]}
+                </p>
+                <p className="text-xs truncate" style={{ color: "rgb(115 115 115)" }}>
+                  {hoveredChip.email}
+                </p>
+              </div>
+            </div>
+            {hoveredChip.contact?.company && (
+              <p className="text-xs" style={{ color: "rgb(163 163 163)" }}>
+                {hoveredChip.contact.company}
+              </p>
+            )}
           </div>
         </div>
       )}
