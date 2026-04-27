@@ -12,11 +12,12 @@ const GRAPH_BASE = "https://graph.microsoft.com/v1.0";
 const SELECT_RECEIVED = "id,subject,bodyPreview,receivedDateTime,isRead,hasAttachments,flag,from,toRecipients,body";
 const SELECT_SENT     = "id,subject,bodyPreview,receivedDateTime,sentDateTime,isRead,hasAttachments,flag,from,toRecipients,body";
 
+// Fix 15: increase $top from 50 to 100
 const FOLDER_PATHS: Record<string, string> = {
-  sent:    `/me/mailFolders/sentItems/messages?$select=${SELECT_SENT}&$top=50&$orderby=sentDateTime desc`,
-  drafts:  `/me/mailFolders/drafts/messages?$select=${SELECT_SENT}&$top=50&$orderby=lastModifiedDateTime desc`,
-  trash:   `/me/mailFolders/deletedItems/messages?$select=${SELECT_RECEIVED}&$top=50&$orderby=receivedDateTime desc`,
-  starred: `/me/messages?$filter=flag/flagStatus eq 'flagged'&$select=${SELECT_RECEIVED}&$top=50`,
+  sent:    `/me/mailFolders/sentItems/messages?$select=${SELECT_SENT}&$top=100&$orderby=sentDateTime desc`,
+  drafts:  `/me/mailFolders/drafts/messages?$select=${SELECT_SENT}&$top=100&$orderby=lastModifiedDateTime desc`,
+  trash:   `/me/mailFolders/deletedItems/messages?$select=${SELECT_RECEIVED}&$top=100&$orderby=receivedDateTime desc`,
+  starred: `/me/messages?$filter=flag/flagStatus eq 'flagged'&$select=${SELECT_RECEIVED}&$top=100`,
 };
 
 /** Well-known folder aliases — validated server-side, never passed raw to Graph */
@@ -98,18 +99,18 @@ function resolveWellKnownFolder(
 export async function GET(req: NextRequest) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!user) return NextResponse.json({ error: "Unauthorized", errorCode: "reauth_required" }, { status: 401 });
 
   const homeAccountId = req.nextUrl.searchParams.get("homeAccountId");
   const folder = req.nextUrl.searchParams.get("folder") ?? "";
   const nextLinkParam = req.nextUrl.searchParams.get("nextLink");
 
-  if (!homeAccountId) return NextResponse.json({ error: "homeAccountId required" }, { status: 400 });
-  if (!folder && !nextLinkParam) return NextResponse.json({ error: "folder required" }, { status: 400 });
+  if (!homeAccountId) return NextResponse.json({ error: "homeAccountId required", errorCode: "server_error" }, { status: 400 });
+  if (!folder && !nextLinkParam) return NextResponse.json({ error: "folder required", errorCode: "server_error" }, { status: 400 });
 
   // Verify the homeAccountId belongs to this authenticated user (prevents IDOR)
   const account = await verifyAccountOwnership(user.id, homeAccountId);
-  if (!account) return NextResponse.json({ error: "Account not found" }, { status: 404 });
+  if (!account) return NextResponse.json({ error: "Account not found", errorCode: "not_found" }, { status: 404 });
 
   const providerType = detectProviderType(homeAccountId);
 
@@ -144,11 +145,11 @@ export async function GET(req: NextRequest) {
       }
 
       if (!folderId) {
-        return NextResponse.json({ error: "Folder not found" }, { status: 404 });
+        return NextResponse.json({ error: "Folder not found", errorCode: "not_found" }, { status: 404 });
       }
 
       const result = await provider.fetchEmails(user.id, homeAccountId, folderId, {
-        top: 50,
+        top: 100, // Fix 15
         cursor: nextLinkParam ?? undefined,
       });
       return NextResponse.json({
@@ -157,23 +158,24 @@ export async function GET(req: NextRequest) {
       });
     } catch (err) {
       console.error("folder route error (provider):", String(err));
-      return NextResponse.json({ error: String(err) }, { status: 500 });
+      return NextResponse.json({ error: String(err), errorCode: "server_error" }, { status: 500 });
     }
   }
 
   // ── Microsoft path (existing logic with caching) ───────────────────────────
 
-  // Legacy Graph URL pagination — pass through directly
+  // Fix 10: Pass full nextLink URL directly to Graph (no reconstruction)
   if (nextLinkParam && nextLinkParam.startsWith("http")) {
     const path = nextLinkParam.startsWith(GRAPH_BASE)
       ? nextLinkParam.slice(GRAPH_BASE.length)
       : nextLinkParam;
     try {
       const data = await graphGet<GraphResponse>(user.id, homeAccountId, path);
+      // Fix 15: return full nextLink URL as cursor so client can pass it back directly
       return NextResponse.json({ emails: data.value.map(mapGraphMessage), nextLink: data["@odata.nextLink"] ?? null });
     } catch (err) {
-      if (isReauthError(err)) return NextResponse.json({ error: "account_requires_reauth" }, { status: 401 });
-      return NextResponse.json({ error: String(err) }, { status: 500 });
+      if (isReauthError(err)) return NextResponse.json({ error: "account_requires_reauth", errorCode: "reauth_required" }, { status: 401 });
+      return NextResponse.json({ error: String(err), errorCode: "server_error" }, { status: 500 });
     }
   }
 
@@ -188,20 +190,20 @@ export async function GET(req: NextRequest) {
         ? await prisma.cachedEmail.findMany({
             where: { userId: user.id, homeAccountId, flagStatus: "flagged" },
             orderBy: { receivedDateTime: "desc" },
-            take: 50,
+            take: 100, // Fix 15
             cursor: { id: nextLinkParam },
             skip: 1,
           })
         : await prisma.cachedEmail.findMany({
             where: { userId: user.id, homeAccountId, flagStatus: "flagged" },
             orderBy: { receivedDateTime: "desc" },
-            take: 50,
+            take: 100, // Fix 15
           });
       if (cached.length > 0) {
         cacheHit = true;
         return NextResponse.json({
           emails: cached.map(mapCachedEmail),
-          nextLink: cached.length === 50 ? cached[cached.length - 1].id : null,
+          nextLink: cached.length === 100 ? cached[cached.length - 1].id : null,
         });
       }
     } else if (WELL_KNOWN[folder]) {
@@ -217,20 +219,20 @@ export async function GET(req: NextRequest) {
           ? await prisma.cachedEmail.findMany({
               where: { userId: user.id, homeAccountId, folderId: cachedFolder.id },
               orderBy,
-              take: 50,
+              take: 100, // Fix 15
               cursor: { id: nextLinkParam },
               skip: 1,
             })
           : await prisma.cachedEmail.findMany({
               where: { userId: user.id, homeAccountId, folderId: cachedFolder.id },
               orderBy,
-              take: 50,
+              take: 100, // Fix 15
             });
         if (cached.length > 0) {
           cacheHit = true;
           return NextResponse.json({
             emails: cached.map(mapCachedEmail),
-            nextLink: cached.length === 50 ? cached[cached.length - 1].id : null,
+            nextLink: cached.length === 100 ? cached[cached.length - 1].id : null,
           });
         }
       }
@@ -242,27 +244,27 @@ export async function GET(req: NextRequest) {
         select: { id: true },
       });
       if (!owned) {
-        return NextResponse.json({ error: "Folder not found" }, { status: 404 });
+        return NextResponse.json({ error: "Folder not found", errorCode: "not_found" }, { status: 404 });
       }
 
       const cached = nextLinkParam
         ? await prisma.cachedEmail.findMany({
             where: { userId: user.id, homeAccountId, folderId: folder },
             orderBy: { receivedDateTime: "desc" },
-            take: 50,
+            take: 100, // Fix 15
             cursor: { id: nextLinkParam },
             skip: 1,
           })
         : await prisma.cachedEmail.findMany({
             where: { userId: user.id, homeAccountId, folderId: folder },
             orderBy: { receivedDateTime: "desc" },
-            take: 50,
+            take: 100, // Fix 15
           });
       if (cached.length > 0) {
         cacheHit = true;
         return NextResponse.json({
           emails: cached.map(mapCachedEmail),
-          nextLink: cached.length === 50 ? cached[cached.length - 1].id : null,
+          nextLink: cached.length === 100 ? cached[cached.length - 1].id : null,
         });
       }
     }
@@ -272,16 +274,17 @@ export async function GET(req: NextRequest) {
     // ── Fallback to Graph ───────────────────────────────────────────────────
     // For custom folder IDs: we already verified ownership above via cachedFolder check.
     // For named/well-known folders: they come from FOLDER_PATHS constant, not user input.
+    // Fix 15: use $top=100; Fix 10: return full @odata.nextLink as cursor
     const path = FOLDER_PATHS[folder]
-      ?? `/me/mailFolders/${encodeURIComponent(folder)}/messages?$select=${SELECT_RECEIVED}&$top=50&$orderby=receivedDateTime desc`;
+      ?? `/me/mailFolders/${encodeURIComponent(folder)}/messages?$select=${SELECT_RECEIVED}&$top=100&$orderby=receivedDateTime desc`;
     const data = await graphGet<GraphResponse>(user.id, homeAccountId, path);
     return NextResponse.json({ emails: data.value.map(mapGraphMessage), nextLink: data["@odata.nextLink"] ?? null });
   } catch (err) {
     const msg = String(err);
     console.error("folder route error:", msg);
     if (isReauthError(err)) {
-      return NextResponse.json({ error: "account_requires_reauth" }, { status: 401 });
+      return NextResponse.json({ error: "account_requires_reauth", errorCode: "reauth_required" }, { status: 401 });
     }
-    return NextResponse.json({ error: msg }, { status: 500 });
+    return NextResponse.json({ error: msg, errorCode: "server_error" }, { status: 500 });
   }
 }

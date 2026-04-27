@@ -6,6 +6,18 @@ import { useDataCacheStore, pathToView } from "@/lib/stores/data-cache";
 import type { EmailMessage } from "@/lib/types/email";
 import { formatDate, getInitials, getAvatarColor } from "@/lib/utils/email-helpers";
 
+/** Shared utility — refresh folder counts in the sidebar after mutations */
+export async function refreshFolderCounts(homeAccountId: string, setMailFolders: (folders: import("@/lib/types/email").MailFolder[]) => void): Promise<void> {
+  try {
+    const r = await fetch(`/api/mail/folders?homeAccountId=${encodeURIComponent(homeAccountId)}&refresh=1`);
+    if (!r.ok) return;
+    const data = await r.json() as { folders?: import("@/lib/types/email").MailFolder[] };
+    if (data.folders) setMailFolders(data.folders);
+  } catch {
+    // non-critical — sidebar counts will refresh on next mount
+  }
+}
+
 // ─── EmailRow ─────────────────────────────────────────────────────────────────
 
 function EmailRow({
@@ -101,14 +113,18 @@ export default function FolderClient({
 
   const [emails, setEmails] = useState<EmailMessage[]>(initialEmails);
   const [search, setSearch] = useState("");
-  const [loadingEmails, setLoadingEmails] = useState(initialEmails.length === 0);
+  const [loadingEmails, setLoadingEmails] = useState(true);
   const [nextLink, setNextLink] = useState<string | null>(initialNextLink);
   const [loadingMore, setLoadingMore] = useState(false);
   const [searchResults, setSearchResults] = useState<EmailMessage[] | null>(null);
   const [searching, setSearching] = useState(false);
+  const [searchError, setSearchError] = useState<string | null>(null);
   const [requiresReauth, setRequiresReauth] = useState(false);
 
   const activeAccount = useAccountStore((s) => s.activeAccount);
+  const setMailFolders = useAccountStore((s) => s.setMailFolders);
+  const setLoadingFolderId = useDataCacheStore((s) => s.setLoadingFolderId);
+  const loadingFolderId = useDataCacheStore((s) => s.loadingFolderId);
   const firstRender = useRef(true);
   const sentinelRef = useRef<HTMLDivElement>(null);
 
@@ -116,19 +132,22 @@ export default function FolderClient({
   const SYSTEM_FOLDERS = new Set(["sent", "drafts", "trash", "starred"]);
   const isCustomFolder = !SYSTEM_FOLDERS.has(folder);
 
-  // Fetch on mount when initialEmails is empty (SPA mode)
-  useEffect(() => {
-    if (initialEmails.length > 0) { setLoadingEmails(false); return; }
-    const hid = activeAccount?.homeAccountId;
-    if (!hid) { setLoadingEmails(false); return; }
+  // Fetch emails for a given folder + account — always runs on mount and folder change (Fix 1)
+  const doFetch = useCallback((hid: string, reset: boolean) => {
     setLoadingEmails(true);
+    setLoadingFolderId(folder);
+    if (reset) { setNextLink(null); setEmails([]); }
     setRequiresReauth(false);
     fetch(`/api/mail/folder?folder=${encodeURIComponent(folder)}&homeAccountId=${encodeURIComponent(hid)}`)
       .then(async (r) => {
         if (r.status === 401) {
-          const body = await r.json().catch(() => ({} as { error?: string })) as { error?: string };
-          if (body.error === "Unauthorized") { window.location.href = "/login"; return null; }
+          const body = await r.json().catch(() => ({} as { error?: string; errorCode?: string })) as { error?: string; errorCode?: string };
+          if (body.error === "Unauthorized" || body.errorCode === "reauth_required") { window.location.href = "/login"; return null; }
           setRequiresReauth(true); return null;
+        }
+        if (!r.ok) {
+          const errBody = await r.json().catch(() => ({} as { error?: string })) as { error?: string };
+          throw new Error(errBody.error ?? `folder ${r.status}`);
         }
         return r.json() as Promise<{ emails?: EmailMessage[]; nextLink?: string | null }>;
       })
@@ -138,44 +157,48 @@ export default function FolderClient({
         setNextLink(data.nextLink ?? null);
       })
       .catch(console.error)
-      .finally(() => setLoadingEmails(false));
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+      .finally(() => { setLoadingEmails(false); setLoadingFolderId(null); });
+  }, [folder, setLoadingFolderId]);
 
-  // Account switch: reload system folders, redirect away from custom folders
+  // Always fetch on mount and when folder ID changes (Fix 1 — remove initialEmails.length guard)
   useEffect(() => {
-    if (firstRender.current) { firstRender.current = false; return; }
+    const hid = activeAccount?.homeAccountId;
+    if (!hid) { setLoadingEmails(false); return; }
+    // Use initialEmails if provided on first render to avoid double-fetch on SSR
+    if (firstRender.current && initialEmails.length > 0) {
+      setLoadingEmails(false);
+      firstRender.current = false;
+      return;
+    }
+    firstRender.current = false;
+    doFetch(hid, false);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [folder]);
+
+  // Account switch: reload system folders, redirect away from custom folders (Fix 4)
+  useEffect(() => {
     if (!activeAccount) return;
-    if (isCustomFolder) { navigateTo("/inbox"); return; }
-    setLoadingEmails(true);
-    setNextLink(null);
-    setRequiresReauth(false);
-    fetch(`/api/mail/folder?folder=${encodeURIComponent(folder)}&homeAccountId=${encodeURIComponent(activeAccount.homeAccountId)}`)
-      .then(async (r) => {
-        if (r.status === 401) {
-          const body = await r.json().catch(() => ({} as { error?: string })) as { error?: string };
-          if (body.error === "Unauthorized") { window.location.href = "/login"; return null; }
-          setRequiresReauth(true); return null;
-        }
-        return r.json() as Promise<{ emails?: EmailMessage[]; nextLink?: string | null }>;
-      })
-      .then((data) => {
-        if (!data) return;
-        setEmails(data.emails ?? []);
-        setNextLink(data.nextLink ?? null);
-      })
-      .catch(console.error)
-      .finally(() => setLoadingEmails(false));
+    if (isCustomFolder) {
+      // Fix 4: clear activeFolderId before navigating away
+      useDataCacheStore.getState().setActiveFolderId(null);
+      navigateTo("/inbox");
+      return;
+    }
+    doFetch(activeAccount.homeAccountId, true);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeAccount?.homeAccountId]);
 
-  // Infinite scroll
+  // Infinite scroll — pass full nextLink URL directly (Fix 10, 15)
   const loadMore = useCallback(async () => {
     if (!nextLink || loadingMore || !activeAccount) return;
     setLoadingMore(true);
     try {
-      const res = await fetch(
-        `/api/mail/folder?folder=${folder}&homeAccountId=${encodeURIComponent(activeAccount.homeAccountId)}&nextLink=${encodeURIComponent(nextLink)}`
-      );
+      // nextLink may be a full Graph URL (http...) or a cursor string
+      const isFullUrl = nextLink.startsWith("http");
+      const url = isFullUrl
+        ? `/api/mail/folder?homeAccountId=${encodeURIComponent(activeAccount.homeAccountId)}&nextLink=${encodeURIComponent(nextLink)}`
+        : `/api/mail/folder?folder=${encodeURIComponent(folder)}&homeAccountId=${encodeURIComponent(activeAccount.homeAccountId)}&nextLink=${encodeURIComponent(nextLink)}`;
+      const res = await fetch(url);
       const data: { emails: EmailMessage[]; nextLink: string | null } = await res.json();
       setEmails((prev) => [...prev, ...data.emails]);
       setNextLink(data.nextLink ?? null);
@@ -197,13 +220,20 @@ export default function FolderClient({
     return () => observer.disconnect();
   }, [loadMore]);
 
-  // Debounced search
+  // Debounced search — with inline error state (Fix 6)
+  const retrySearch = useCallback(() => {
+    setSearchError(null);
+    // Re-trigger by bumping the search (touch the value)
+    setSearch((prev) => prev);
+  }, []);
+
   useEffect(() => {
     const q = search.trim();
-    if (!q) { setSearchResults(null); return; }
+    if (!q) { setSearchResults(null); setSearchError(null); return; }
     if (!activeAccount) return;
     const timer = setTimeout(() => {
       setSearching(true);
+      setSearchError(null);
       fetch(`/api/mail/search?homeAccountId=${encodeURIComponent(activeAccount.homeAccountId)}&q=${encodeURIComponent(q)}&folder=${encodeURIComponent(folder)}`)
         .then(async (r) => {
           if (r.status === 401) {
@@ -211,14 +241,15 @@ export default function FolderClient({
             if (body.error === "Unauthorized") { window.location.href = "/login"; return null; }
             setRequiresReauth(true); return null;
           }
+          if (!r.ok) throw new Error(`search ${r.status}`);
           return r.json() as Promise<{ emails: EmailMessage[] }>;
         })
         .then((data) => { if (data) setSearchResults(data.emails); })
-        .catch(console.error)
+        .catch(() => { setSearchError("Search failed — try again"); setSearchResults(null); })
         .finally(() => setSearching(false));
     }, 400);
     return () => clearTimeout(timer);
-  }, [search, activeAccount?.homeAccountId]);
+  }, [search, activeAccount?.homeAccountId, folder]);
 
   const displayEmails = searchResults ?? emails;
 
@@ -277,11 +308,25 @@ export default function FolderClient({
               {searchResults.length} result{searchResults.length !== 1 ? "s" : ""} for &ldquo;{search}&rdquo;
             </p>
           )}
+          {/* Search error — Fix 6 */}
+          {searchError && (
+            <div className="mt-2 flex items-center gap-2">
+              <p className="text-xs" style={{ color: "rgb(138 9 9)" }}>{searchError}</p>
+              <button
+                onClick={retrySearch}
+                className="text-xs font-semibold underline"
+                style={{ color: "rgb(138 9 9)" }}
+              >
+                Retry
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Email rows */}
         <div className="flex-1 overflow-y-auto divide-y divide-neutral-100 relative">
-          {loadingEmails && (
+          {/* Fix 16: per-folder loading spinner — only show when this folder is loading */}
+          {(loadingEmails && loadingFolderId === folder) && (
             <div className="absolute inset-0 flex items-center justify-center z-10" style={{ backgroundColor: "rgba(255,255,255,0.80)" }}>
               <p className="text-xs font-medium" style={{ color: "rgb(138 9 9)" }}>Loading…</p>
             </div>
@@ -310,7 +355,19 @@ export default function FolderClient({
               />
             ))
           )}
+          {/* Infinite scroll sentinel + Load More button (Fix 15) */}
           {!search && <div ref={sentinelRef} className="h-1" />}
+          {nextLink && !loadingMore && (
+            <div className="flex justify-center py-3">
+              <button
+                onClick={() => { void loadMore(); }}
+                className="text-xs font-semibold px-4 py-1.5 rounded-[8px] border"
+                style={{ color: "rgb(138 9 9)", borderColor: "rgb(220 180 180)" }}
+              >
+                Load more
+              </button>
+            </div>
+          )}
           {loadingMore && (
             <div className="flex justify-center py-3">
               <p className="text-xs font-medium" style={{ color: "rgb(138 9 9)" }}>Loading more…</p>

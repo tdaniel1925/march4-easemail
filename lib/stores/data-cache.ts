@@ -28,6 +28,8 @@ interface DataCacheStore {
   activeView: AppView;
   /** For dynamic folder view — the folderId */
   activeFolderId: string | null;
+  /** Per-folder loading state — tracks which folder is currently fetching */
+  loadingFolderId: string | null;
   /** For email read view — the message ID + return path */
   activeEmailId: string | null;
   activeEmailAccountId: string | null;
@@ -48,6 +50,7 @@ interface DataCacheStore {
 
   setActiveView: (view: AppView) => void;
   setActiveFolderId: (id: string | null) => void;
+  setLoadingFolderId: (id: string | null) => void;
   setActiveEmail: (id: string | null, accountId?: string | null, returnTo?: string | null) => void;
   setComposeParams: (params: DataCacheStore["composeParams"]) => void;
   markViewLoaded: (view: AppView) => void;
@@ -125,6 +128,7 @@ export function pathToView(pathname: string): { view: AppView; folderId?: string
 export const useDataCacheStore = create<DataCacheStore>((set) => ({
   activeView: "dashboard",
   activeFolderId: null,
+  loadingFolderId: null,
   activeEmailId: null,
   activeEmailAccountId: null,
   activeEmailReturnTo: null,
@@ -134,6 +138,7 @@ export const useDataCacheStore = create<DataCacheStore>((set) => ({
 
   setActiveView: (view) => set({ activeView: view, loadingView: null }),
   setActiveFolderId: (id) => set({ activeFolderId: id }),
+  setLoadingFolderId: (id) => set({ loadingFolderId: id }),
   setActiveEmail: (id, accountId, returnTo) =>
     set({
       activeEmailId: id,

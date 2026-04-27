@@ -14,44 +14,70 @@ interface GraphFolder {
   parentFolderId?: string;
 }
 
+const FOLDER_CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes (Fix 5)
+
 export async function GET(req: NextRequest) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!user) return NextResponse.json({ error: "Unauthorized", errorCode: "reauth_required" }, { status: 401 });
 
   const homeAccountId = req.nextUrl.searchParams.get("homeAccountId");
-  if (!homeAccountId) return NextResponse.json({ error: "homeAccountId required" }, { status: 400 });
+  if (!homeAccountId) return NextResponse.json({ error: "homeAccountId required", errorCode: "server_error" }, { status: 400 });
+
+  const forceRefresh = req.nextUrl.searchParams.get("refresh") === "1";
 
   try {
-    // Try cache first — custom folders only (wellKnownName is null)
-    const cached = await prisma.cachedFolder.findMany({
-      where: { userId: user.id, homeAccountId, wellKnownName: null },
-      orderBy: { displayName: "asc" },
-    });
+    // Try cache first — custom folders + archive (Fix 5: check TTL)
+    if (!forceRefresh) {
+      const cached = await prisma.cachedFolder.findMany({
+        where: {
+          userId: user.id, homeAccountId,
+          // Include custom folders (wellKnownName null) AND archive folder (Fix 3)
+          OR: [{ wellKnownName: null }, { wellKnownName: "archive" }],
+        },
+        orderBy: { displayName: "asc" },
+      });
 
-    if (cached.length > 0) {
-      const folders: MailFolder[] = cached.map((f) => ({
-        id: f.id,
-        displayName: f.displayName,
-        unreadItemCount: f.unreadCount,
-        totalItemCount: f.totalCount,
-      }));
-      return NextResponse.json({ folders });
+      if (cached.length > 0) {
+        // Check TTL — use the oldest syncedAt as the cache timestamp (Fix 5)
+        const oldest = cached.reduce((min, f) => {
+          const t = f.syncedAt ? f.syncedAt.getTime() : 0;
+          return t < min ? t : min;
+        }, Date.now());
+        const isStale = Date.now() - oldest > FOLDER_CACHE_TTL_MS;
+
+        if (!isStale) {
+          // Fix 9: include parentId and wellKnownName in response
+          const folders: MailFolder[] = cached.map((f) => ({
+            id: f.id,
+            displayName: f.displayName,
+            unreadItemCount: f.unreadCount,
+            totalItemCount: f.totalCount,
+            wellKnownName: f.wellKnownName ?? null,
+            parentId: f.parentFolderId ?? null,
+          }));
+          return NextResponse.json({ folders });
+        }
+        // Cache is stale — fall through to Graph fetch
+      }
     }
 
-    // Fallback to Graph
+    // Fallback to Graph (Fix 9: include parentFolderId)
     const data = await graphGet<{ value: GraphFolder[] }>(
       user.id, homeAccountId,
-      "/me/mailFolders?$select=id,displayName,unreadItemCount,totalItemCount,wellKnownName&$top=100"
+      "/me/mailFolders?$select=id,displayName,unreadItemCount,totalItemCount,wellKnownName,parentFolderId&$top=100"
     );
 
+    // Include custom folders (no wellKnownName) + archive folder (Fix 3)
     const folders: MailFolder[] = data.value
-      .filter((f) => !f.wellKnownName)
+      .filter((f) => !f.wellKnownName || f.wellKnownName === "archive")
       .map((f) => ({
         id: f.id,
         displayName: f.displayName,
         unreadItemCount: f.unreadItemCount ?? 0,
         totalItemCount: f.totalItemCount ?? 0,
+        wellKnownName: f.wellKnownName ?? null,
+        parentId: f.parentFolderId ?? null,
       }));
 
     return NextResponse.json({ folders });
@@ -59,9 +85,9 @@ export async function GET(req: NextRequest) {
     const msg = String(err);
     console.error("folders list error:", msg);
     if (isReauthError(err)) {
-      return NextResponse.json({ error: "account_requires_reauth" }, { status: 401 });
+      return NextResponse.json({ error: "account_requires_reauth", errorCode: "reauth_required" }, { status: 401 });
     }
-    return NextResponse.json({ error: msg }, { status: 500 });
+    return NextResponse.json({ error: msg, errorCode: "server_error" }, { status: 500 });
   }
 }
 

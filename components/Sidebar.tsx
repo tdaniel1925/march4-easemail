@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import AccountSwitcher from "@/components/AccountSwitcher";
 import { useAccountStore } from "@/lib/stores/account-store";
 import { useDataCacheStore, pathToView, viewToPath, type AppView } from "@/lib/stores/data-cache";
@@ -170,18 +170,35 @@ export default function Sidebar({ userName = "You", userEmail = "", isAdmin: isA
   }
 
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [foldersError, setFoldersError] = useState(false);
 
   // Close mobile drawer on view change
   useEffect(() => { setMobileOpen(false); }, [activeView]);
 
-  // Fetch custom folders whenever the active account changes
+  /** Fetch folders with retry (Fix 13) — 3 attempts, 1s delay between */
+  const fetchFoldersWithRetry = useCallback(async (hid: string) => {
+    setFoldersError(false);
+    let lastErr: unknown;
+    for (let attempt = 0; attempt < 3; attempt++) {
+      try {
+        if (attempt > 0) await new Promise((res) => setTimeout(res, 1000));
+        const r = await fetch(`/api/mail/folders?homeAccountId=${encodeURIComponent(hid)}`);
+        const data = await r.json() as { folders?: MailFolder[]; error?: string };
+        if (!r.ok) throw new Error(data.error ?? `folders ${r.status}`);
+        if (data.folders) { setMailFolders(data.folders); return; }
+      } catch (err) {
+        lastErr = err;
+      }
+    }
+    console.warn("[Sidebar] folders fetch failed after 3 attempts:", lastErr);
+    setFoldersError(true);
+  }, [setMailFolders]);
+
+  // Fetch custom folders whenever the active account changes (Fix 14: flush stale counts immediately)
   useEffect(() => {
     if (!activeAccount) return;
-    fetch(`/api/mail/folders?homeAccountId=${encodeURIComponent(activeAccount.homeAccountId)}`)
-      .then((r) => r.ok ? r.json() : r.json().then((e: { error?: string }) => { throw new Error(e.error ?? `folders ${r.status}`); }))
-      .then((data: { folders?: MailFolder[] }) => { if (data.folders) setMailFolders(data.folders); })
-      .catch((err: unknown) => console.warn("[Sidebar] folders fetch failed:", err));
-  }, [activeAccount?.homeAccountId, setMailFolders]);
+    void fetchFoldersWithRetry(activeAccount.homeAccountId);
+  }, [activeAccount?.homeAccountId, fetchFoldersWithRetry]);
 
   const initials = userName.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2);
 
@@ -237,36 +254,86 @@ export default function Sidebar({ userName = "You", userEmail = "", isAdmin: isA
             <ul className="space-y-0.5">
               {mailboxLinks.map((link) => {
                 const active = isActive(link.href);
-                const badge = link.badgeKey === "unread" ? unreadCount : link.badgeKey === "draft" ? draftCount : null;
+                const badge = "badgeKey" in link ? (link.badgeKey === "unread" ? unreadCount : link.badgeKey === "draft" ? draftCount : null) : null;
                 return (
                   <li key={link.href}>
                     <NavLink href={link.href} label={link.label} icon={link.icon} badge={badge} active={active} onNavigate={navigateTo} />
                   </li>
                 );
               })}
+              {/* Fix 3: Archive — wired to the archive folder from the fetched folder list */}
+              {(() => {
+                // Find archive folder by wellKnownName from the fetched custom folders
+                // The /api/mail/folders endpoint now returns wellKnownName on all folders
+                const archiveFolder = mailFolders.find((f) => f.wellKnownName === "archive");
+                const archiveHref = archiveFolder ? `/folder/${archiveFolder.id}` : null;
+                if (!archiveHref) return null;
+                return (
+                  <li key="archive">
+                    <NavLink
+                      href={archiveHref}
+                      label="Archive"
+                      badge={archiveFolder?.unreadItemCount}
+                      active={isActive(archiveHref)}
+                      onNavigate={navigateTo}
+                      icon={<path strokeLinecap="round" strokeLinejoin="round" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />}
+                    />
+                  </li>
+                );
+              })()}
             </ul>
           </SidebarSection>
 
-          {/* Custom Folders */}
-          {mailFolders.length > 0 && (
+          {/* Custom Folders — with hierarchy (Fix 9) and retry on error (Fix 13) */}
+          {foldersError ? (
+            <div className="mt-2 px-3 py-2 flex items-center gap-2">
+              <p className="text-xs" style={{ color: "rgb(155 155 155)" }}>Folders unavailable</p>
+              <button
+                onClick={() => activeAccount && void fetchFoldersWithRetry(activeAccount.homeAccountId)}
+                className="text-xs font-semibold underline"
+                style={{ color: "rgb(138 9 9)" }}
+              >
+                Retry
+              </button>
+            </div>
+          ) : mailFolders.length > 0 && (
             <SidebarSection title="Folders" open={open.folders} onToggle={() => toggle("folders")} className="mt-2">
               <ul className="space-y-0.5">
-                {mailFolders.map((folder) => {
-                  const href = `/folder/${folder.id}`;
-                  const active = isActive(href);
-                  return (
-                    <li key={folder.id}>
-                      <NavLink
-                        href={href}
-                        label={folder.displayName}
-                        badge={folder.unreadItemCount}
-                        active={active}
-                        onNavigate={navigateTo}
-                        icon={<path strokeLinecap="round" strokeLinejoin="round" d="M3 7a2 2 0 012-2h3.586a1 1 0 01.707.293L10.707 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V7z" />}
-                      />
-                    </li>
-                  );
-                })}
+                {mailFolders
+                  .filter((f) => !f.parentId && f.wellKnownName !== "archive") // top-level, exclude archive (shown separately)
+                  .map((folder) => {
+                    const href = `/folder/${folder.id}`;
+                    const active = isActive(href);
+                    const children = mailFolders.filter((c) => c.parentId === folder.id);
+                    return (
+                      <li key={folder.id}>
+                        <NavLink
+                          href={href}
+                          label={folder.displayName}
+                          badge={folder.unreadItemCount}
+                          active={active}
+                          onNavigate={navigateTo}
+                          icon={<path strokeLinecap="round" strokeLinejoin="round" d="M3 7a2 2 0 012-2h3.586a1 1 0 01.707.293L10.707 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V7z" />}
+                        />
+                        {/* Child folders indented (Fix 9) */}
+                        {children.map((child) => {
+                          const childHref = `/folder/${child.id}`;
+                          return (
+                            <div key={child.id} className="pl-4">
+                              <NavLink
+                                href={childHref}
+                                label={child.displayName}
+                                badge={child.unreadItemCount}
+                                active={isActive(childHref)}
+                                onNavigate={navigateTo}
+                                icon={<path strokeLinecap="round" strokeLinejoin="round" d="M3 7a2 2 0 012-2h3.586a1 1 0 01.707.293L10.707 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V7z" />}
+                              />
+                            </div>
+                          );
+                        })}
+                      </li>
+                    );
+                  })}
               </ul>
             </SidebarSection>
           )}

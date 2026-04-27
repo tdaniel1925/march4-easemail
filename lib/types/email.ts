@@ -3,6 +3,8 @@ export interface MailFolder {
   displayName: string;
   unreadItemCount: number;
   totalItemCount: number;
+  wellKnownName?: string | null;
+  parentId?: string | null;
 }
 
 export interface EmailMessage {
