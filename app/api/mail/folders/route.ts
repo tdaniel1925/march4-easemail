@@ -39,12 +39,12 @@ export async function GET(req: NextRequest) {
       });
 
       if (cached.length > 0) {
-        // Check TTL — use the oldest syncedAt as the cache timestamp (Fix 5)
-        const oldest = cached.reduce((min, f) => {
+        // Check TTL — use the most recently synced entry; if it's older than TTL, refresh
+        const newest = cached.reduce((max, f) => {
           const t = f.syncedAt ? f.syncedAt.getTime() : 0;
-          return t < min ? t : min;
-        }, Date.now());
-        const isStale = Date.now() - oldest > FOLDER_CACHE_TTL_MS;
+          return t > max ? t : max;
+        }, 0);
+        const isStale = newest === 0 || Date.now() - newest > FOLDER_CACHE_TTL_MS;
 
         if (!isStale) {
           // Fix 9: include parentId and wellKnownName in response

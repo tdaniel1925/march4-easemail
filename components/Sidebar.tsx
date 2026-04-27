@@ -171,6 +171,7 @@ export default function Sidebar({ userName = "You", userEmail = "", isAdmin: isA
 
   const [mobileOpen, setMobileOpen] = useState(false);
   const [foldersError, setFoldersError] = useState(false);
+  const [foldersErrorCode, setFoldersErrorCode] = useState<string | null>(null);
 
   // Close mobile drawer on view change
   useEffect(() => { setMobileOpen(false); }, [activeView]);
@@ -178,20 +179,35 @@ export default function Sidebar({ userName = "You", userEmail = "", isAdmin: isA
   /** Fetch folders with retry (Fix 13) — 3 attempts, 1s delay between */
   const fetchFoldersWithRetry = useCallback(async (hid: string) => {
     setFoldersError(false);
+    setFoldersErrorCode(null);
     let lastErr: unknown;
+    let lastErrorCode: string | null = null;
     for (let attempt = 0; attempt < 3; attempt++) {
       try {
         if (attempt > 0) await new Promise((res) => setTimeout(res, 1000));
         const r = await fetch(`/api/mail/folders?homeAccountId=${encodeURIComponent(hid)}`);
-        const data = await r.json() as { folders?: MailFolder[]; error?: string };
-        if (!r.ok) throw new Error(data.error ?? `folders ${r.status}`);
-        if (data.folders) { setMailFolders(data.folders); return; }
+        const data = await r.json() as { folders?: MailFolder[]; error?: string; errorCode?: string };
+        if (!r.ok) {
+          lastErrorCode = data.errorCode ?? null;
+          // Don't retry reauth errors — they won't recover with retries
+          if (data.errorCode === "reauth_required") {
+            setFoldersError(true);
+            setFoldersErrorCode("reauth_required");
+            return;
+          }
+          throw new Error(data.error ?? `folders ${r.status}`);
+        }
+        if (data.folders) {
+          setMailFolders(data.folders);
+          return;
+        }
       } catch (err) {
         lastErr = err;
       }
     }
     console.warn("[Sidebar] folders fetch failed after 3 attempts:", lastErr);
     setFoldersError(true);
+    setFoldersErrorCode(lastErrorCode);
   }, [setMailFolders]);
 
   // Fetch custom folders whenever the active account changes (Fix 14: flush stale counts immediately)
@@ -286,15 +302,23 @@ export default function Sidebar({ userName = "You", userEmail = "", isAdmin: isA
 
           {/* Custom Folders — with hierarchy (Fix 9) and retry on error (Fix 13) */}
           {foldersError ? (
-            <div className="mt-2 px-3 py-2 flex items-center gap-2">
-              <p className="text-xs" style={{ color: "rgb(155 155 155)" }}>Folders unavailable</p>
-              <button
-                onClick={() => activeAccount && void fetchFoldersWithRetry(activeAccount.homeAccountId)}
-                className="text-xs font-semibold underline"
-                style={{ color: "rgb(138 9 9)" }}
-              >
-                Retry
-              </button>
+            <div className="mt-2 px-3 py-2 space-y-1">
+              <p className="text-xs" style={{ color: "rgb(155 155 155)" }}>
+                {foldersErrorCode === "reauth_required" ? "Account needs reconnection" : "Folders unavailable"}
+              </p>
+              {foldersErrorCode === "reauth_required" ? (
+                <a href="/api/auth/microsoft" className="text-xs font-semibold underline" style={{ color: "rgb(138 9 9)" }}>
+                  Reconnect account
+                </a>
+              ) : (
+                <button
+                  onClick={() => activeAccount && void fetchFoldersWithRetry(activeAccount.homeAccountId)}
+                  className="text-xs font-semibold underline"
+                  style={{ color: "rgb(138 9 9)" }}
+                >
+                  Retry
+                </button>
+              )}
             </div>
           ) : mailFolders.length > 0 && (
             <SidebarSection title="Folders" open={open.folders} onToggle={() => toggle("folders")} className="mt-2">
