@@ -70,7 +70,8 @@ export async function GET(req: NextRequest) {
 
       const result = await provider.fetchEmails(user.id, homeAccountId, "inbox", options);
       const emails = result.emails.map(mapNormalizedToEmailMessage);
-      return NextResponse.json({ emails, nextLink: result.nextCursor ?? null });
+      const unreadCount = emails.filter((e) => !e.isRead).length;
+      return NextResponse.json({ emails, nextLink: result.nextCursor ?? null, unreadCount });
     } catch (err) {
       const msg = String(err);
       console.error("[inbox] provider error:", msg);
@@ -87,7 +88,8 @@ export async function GET(req: NextRequest) {
       : nextLinkParam;
     try {
       const data = await graphGet<GraphMessagesResponse>(user.id, homeAccountId, path);
-      return NextResponse.json({ emails: data.value.map(mapGraphMessage), nextLink: data["@odata.nextLink"] ?? null });
+      const msgs = data.value.map(mapGraphMessage);
+      return NextResponse.json({ emails: msgs, nextLink: data["@odata.nextLink"] ?? null, unreadCount: msgs.filter((e) => !e.isRead).length });
     } catch (err) {
       if (isReauthError(err)) return NextResponse.json({ error: "account_requires_reauth" }, { status: 401 });
       return NextResponse.json({ error: String(err) }, { status: 500 });
@@ -144,7 +146,8 @@ export async function GET(req: NextRequest) {
       if (cached.length > 0) {
         const emails = cached.map(mapCachedEmail);
         const nextLink = cached.length === 50 ? cached[cached.length - 1].id : null;
-        return NextResponse.json({ emails, nextLink });
+        const unreadCount = inboxFolder?.unreadCount ?? emails.filter((e) => !e.isRead).length;
+        return NextResponse.json({ emails, nextLink, unreadCount });
       }
     }
 
@@ -160,7 +163,9 @@ export async function GET(req: NextRequest) {
 
     const path = tabPath ?? DEFAULT_PATH;
     const data = await graphGet<GraphMessagesResponse>(user.id, homeAccountId, path);
-    return NextResponse.json({ emails: data.value.map(mapGraphMessage), nextLink: data["@odata.nextLink"] ?? null });
+    const msgs = data.value.map(mapGraphMessage);
+    const unreadCount = inboxFolder?.unreadCount ?? msgs.filter((e) => !e.isRead).length;
+    return NextResponse.json({ emails: msgs, nextLink: data["@odata.nextLink"] ?? null, unreadCount });
   } catch (err) {
     const msg = String(err);
     console.error("[inbox] error:", msg);
