@@ -264,13 +264,23 @@ export default function InboxClient({
 
   const [emails, setEmails] = useState<EmailMessage[]>(initialEmails);
 
-  // Sync when AppShell prepends new emails via polling
+  // Sync when AppShell prepends new emails via polling.
+  // Only prepend emails whose IDs don't exist in current list.
+  // Use a ref to track the last seen initialEmails reference so we
+  // don't re-run on account switch (which replaces the whole list).
+  const lastInitialRef = useRef(initialEmails);
   useEffect(() => {
+    // Skip on first render — emails already initialised via useState above
+    if (initialEmails === lastInitialRef.current) return;
+    lastInitialRef.current = initialEmails;
     if (initialEmails.length === 0) return;
     setEmails((prev) => {
       const existingIds = new Set(prev.map((e) => e.id));
       const fresh = initialEmails.filter((e) => !existingIds.has(e.id));
-      return fresh.length > 0 ? [...fresh, ...prev] : prev;
+      // Only prepend — never replace. If fresh === all of initialEmails it's
+      // an account-switch full-replace, not a polling prepend — skip it.
+      if (fresh.length === 0 || fresh.length === initialEmails.length) return prev;
+      return [...fresh, ...prev];
     });
   }, [initialEmails]);
 
