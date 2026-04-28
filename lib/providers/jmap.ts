@@ -710,6 +710,7 @@ export class JmapProvider implements EmailProvider, CalendarProvider, ContactsPr
     const mailboxes = (folderResult.list as JmapMailbox[]) ?? [];
     const draftsBox = mailboxes.find((mb) => mb.role === "drafts");
     if (!draftsBox) throw new Error("No drafts mailbox found for JMAP account");
+    const sentBox = mailboxes.find((mb) => mb.role === "sent");
 
     // Create draft email then submit
     const emailCreate: Record<string, unknown> = {
@@ -769,7 +770,18 @@ export class JmapProvider implements EmailProvider, CalendarProvider, ContactsPr
               identityId: primaryIdentity.id,
             },
           },
-          onSuccessDestroyEmail: ["#submission"],
+          // Destroy the draft after successful submission
+          onSuccessDestroyEmail: ["#draft"],
+          // Move the sent email into the Sent mailbox
+          ...(sentBox ? {
+            onSuccessUpdateEmail: {
+              "#draft": {
+                [`mailboxIds/${draftsBox.id}`]: null,
+                [`mailboxIds/${sentBox.id}`]: true,
+                "keywords/$draft": null,
+              },
+            },
+          } : {}),
         },
         "1",
       ],
