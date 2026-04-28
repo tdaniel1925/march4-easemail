@@ -4,15 +4,41 @@ import { prisma } from "@/lib/prisma";
 import { graphFetch } from "@/lib/microsoft/graph";
 
 // ─── GET /api/drafts ─────────────────────────────────────────────────────────
-// Returns all local drafts for the authenticated user.
+// Returns local drafts for the authenticated user.
+// ?scheduled=1 → only pending scheduled drafts (scheduledAt set, not yet sent)
+// Default → non-scheduled drafts (scheduledAt is null)
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
+  const { searchParams } = new URL(req.url);
+  const scheduledOnly = searchParams.get("scheduled") === "1";
+  const homeAccountId = searchParams.get("homeAccountId");
+
+  if (scheduledOnly) {
+    const drafts = await prisma.draft.findMany({
+      where: {
+        userId: user.id,
+        ...(homeAccountId ? { homeAccountId } : {}),
+        scheduledAt: { not: null },
+        scheduledSent: false,
+      },
+      orderBy: { scheduledAt: "asc" },
+      select: {
+        id: true,
+        subject: true,
+        toRecipients: true,
+        scheduledAt: true,
+        createdAt: true,
+      },
+    });
+    return NextResponse.json({ drafts });
+  }
+
   const drafts = await prisma.draft.findMany({
-    where: { userId: user.id, scheduledSent: false },
+    where: { userId: user.id, scheduledSent: false, scheduledAt: null, ...(homeAccountId ? { homeAccountId } : {}) },
     orderBy: { updatedAt: "desc" },
   });
 

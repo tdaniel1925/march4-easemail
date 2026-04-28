@@ -114,6 +114,7 @@ export default function AppShell(props: AppShellProps) {
   const activeEmailReturnTo = useDataCacheStore((s) => s.activeEmailReturnTo);
   const composeParams = useDataCacheStore((s) => s.composeParams);
   const activeAccount = useAccountStore((s) => s.activeAccount);
+  const inboxUnread = useAccountStore((s) => s.inboxUnread);
   const prevAccountRef = useRef(activeAccount?.homeAccountId);
 
   // ── Account-specific data (starts with SSR props, refetched on account switch)
@@ -124,9 +125,11 @@ export default function AppShell(props: AppShellProps) {
   const [dashData, setDashData] = useState(props.dashboardData);
   const [accountSwitching, setAccountSwitching] = useState(false);
 
-  // ── Load draft count on mount (no SSR equivalent) ─────────────────────────
+  // ── Load draft count on mount and on account switch ───────────────────────
   useEffect(() => {
-    fetch("/api/drafts")
+    if (!activeAccount) return;
+    const hid = encodeURIComponent(activeAccount.homeAccountId);
+    fetch(`/api/drafts?homeAccountId=${hid}`)
       .then((r) => r.ok ? r.json() : null)
       .then((data) => {
         if (data?.drafts != null) {
@@ -136,7 +139,7 @@ export default function AppShell(props: AppShellProps) {
         }
       })
       .catch(() => {});
-  }, []);
+  }, [activeAccount?.homeAccountId]);
 
   // ── Initialize view from URL on mount ──────────────────────────────────────
   useEffect(() => {
@@ -219,7 +222,7 @@ export default function AppShell(props: AppShellProps) {
       fetch(`/api/calendar/week?start=${weekStartStr}&homeAccountId=${hid}`)
         .then((r) => r.ok ? r.json() : null)
         .catch(() => null),
-      fetch("/api/drafts")
+      fetch(`/api/drafts?homeAccountId=${hid}`)
         .then((r) => r.ok ? r.json() : null)
         .catch(() => null),
     ]).then(([inboxData, calData, draftsData]) => {
@@ -273,7 +276,7 @@ export default function AppShell(props: AppShellProps) {
           <InboxClient
             initialEmails={inboxEmails}
             initialNextLink={inboxNextLink}
-            totalUnread={props.totalUnread}
+            totalUnread={inboxUnread}
           />
         );
 
@@ -403,7 +406,7 @@ export default function AppShell(props: AppShellProps) {
           <InboxClient
             initialEmails={inboxEmails}
             initialNextLink={inboxNextLink}
-            totalUnread={props.totalUnread}
+            totalUnread={inboxUnread}
           />
         );
     }
