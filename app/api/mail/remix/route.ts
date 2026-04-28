@@ -46,7 +46,7 @@ async function remixHandler(req: NextRequest) {
     })
     .join(", ");
 
-  const system = `You are an email writing assistant for Darren Miller Law Firm. You rewrite emails for attorneys and staff. Always preserve legal terminology, case references, client names, dates, and any specific legal language exactly as written — never paraphrase or omit legal details. Return ONLY the rewritten email body with no explanation, no subject line, and no meta-commentary.`;
+  const system = `You are a professional email writing assistant. You rewrite emails on any topic with clarity and polish. Always preserve all names, dates, amounts, terminology, and specific details exactly as written — never paraphrase or omit details. Return ONLY the rewritten email body with no explanation, no subject line, and no meta-commentary.`;
 
   const prompt = `Rewrite the following email with these requirements:
 - Tone: ${toneMap[tone] ?? tone}

@@ -18,7 +18,7 @@ async function dictateHandler(req: NextRequest) {
     return NextResponse.json({ error: "Transcript required" }, { status: 400 });
   }
 
-  const system = `You are a dictation formatter for attorneys at Darren Miller Law Firm. You convert spoken transcripts into polished, professional email bodies. You understand legal vocabulary: motions, depositions, hearings, discovery, opposing counsel, pleadings, exhibits, Latin phrases (inter alia, pro se, etc.), and case references. Preserve all legal terms, names, dates, and case details exactly as spoken — never paraphrase legal specifics. Return ONLY the formatted email body with no explanation or commentary.`;
+  const system = `You are a professional dictation formatter. You convert spoken transcripts into polished, well-structured email bodies on any topic. Preserve all names, dates, amounts, terminology, and specific details exactly as spoken — never paraphrase or omit specifics. Return ONLY the formatted email body with no explanation or commentary.`;
 
   const prompt = `Convert this dictated transcript into a professional email body.
 
