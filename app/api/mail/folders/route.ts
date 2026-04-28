@@ -25,8 +25,37 @@ export async function GET(req: NextRequest) {
   const homeAccountId = req.nextUrl.searchParams.get("homeAccountId");
   if (!homeAccountId) return NextResponse.json({ error: "homeAccountId required", errorCode: "server_error" }, { status: 400 });
 
-  // Non-Microsoft accounts — route through the provider's fetchFolders()
+  // Non-Microsoft accounts — cache-first, fall back to live provider
   if (homeAccountId.startsWith("imap:") || homeAccountId.startsWith("jmap:")) {
+    const forceRefreshNonMs = req.nextUrl.searchParams.get("refresh") === "1";
+
+    // Try cache first (same TTL as MS path)
+    if (!forceRefreshNonMs) {
+      const cached = await prisma.cachedFolder.findMany({
+        where: { userId: user.id, homeAccountId },
+        orderBy: { displayName: "asc" },
+      });
+      if (cached.length > 0) {
+        const newest = cached.reduce((max, f) => {
+          const t = f.syncedAt ? f.syncedAt.getTime() : 0;
+          return t > max ? t : max;
+        }, 0);
+        const isStale = newest === 0 || Date.now() - newest > FOLDER_CACHE_TTL_MS;
+        if (!isStale) {
+          const folders: MailFolder[] = cached.map((f) => ({
+            id: f.id,
+            displayName: f.displayName,
+            unreadItemCount: f.unreadCount,
+            totalItemCount: f.totalCount,
+            wellKnownName: f.wellKnownName ?? null,
+            parentId: f.parentFolderId ?? null,
+          }));
+          return NextResponse.json({ folders });
+        }
+      }
+    }
+
+    // Cache miss or stale — hit the live provider
     try {
       const provider = getProvider(homeAccountId);
       const normalized = await provider.fetchFolders(user.id, homeAccountId);

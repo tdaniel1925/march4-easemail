@@ -929,6 +929,56 @@ export class JmapProvider implements EmailProvider, CalendarProvider, ContactsPr
       accountId
     );
 
+    // Find the Trash mailbox and move there instead of hard-deleting
+    const mbResponse = await jmapCall(session.apiUrl, token, jmapAccountId, [
+      [
+        "Mailbox/get",
+        { accountId: jmapAccountId, properties: ["id", "role"] },
+        "0",
+      ],
+    ]);
+    const [, mbResult] = mbResponse.methodResponses[0];
+    const mailboxes = (mbResult.list as { id: string; role: string | null }[]) ?? [];
+    const trashBox = mailboxes.find((mb) => mb.role === "trash");
+
+    if (trashBox) {
+      // Get current mailboxIds
+      const getResponse = await jmapCall(session.apiUrl, token, jmapAccountId, [
+        [
+          "Email/get",
+          { accountId: jmapAccountId, ids: [jmapEmailId], properties: ["mailboxIds"] },
+          "0",
+        ],
+      ]);
+      const [, getResult] = getResponse.methodResponses[0];
+      const emails = (getResult.list as JmapEmail[]) ?? [];
+
+      if (emails.length > 0) {
+        // Move to trash by replacing mailboxIds
+        await jmapCall(session.apiUrl, token, jmapAccountId, [
+          [
+            "Email/set",
+            {
+              accountId: jmapAccountId,
+              update: {
+                [jmapEmailId]: { mailboxIds: { [trashBox.id]: true } },
+              },
+            },
+            "0",
+          ],
+        ]);
+
+        // Update cache folderId to the trash folder
+        const trashFolderId = `${accountId}:${trashBox.id}`;
+        await prisma.cachedEmail.updateMany({
+          where: { id: messageId, userId },
+          data: { folderId: trashFolderId },
+        });
+        return;
+      }
+    }
+
+    // No trash mailbox or email not found — fall back to permanent destroy
     await jmapCall(session.apiUrl, token, jmapAccountId, [
       [
         "Email/set",

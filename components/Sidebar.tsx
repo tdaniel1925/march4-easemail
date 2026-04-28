@@ -386,7 +386,7 @@ export default function Sidebar({ userName = "You", userEmail = "", isAdmin: isA
                 {/* Recursive folder tree — up to 10 levels deep */}
                 {(function renderFolderTree(parentId: string | null, depth: number): React.ReactNode {
                   return mailFolders
-                    .filter((f) => (f.parentId ?? null) === parentId && f.wellKnownName !== "archive")
+                    .filter((f) => (f.parentId ?? null) === parentId && !f.wellKnownName)
                     .map((folder) => {
                       const href = `/folder/${folder.id}`;
                       return (

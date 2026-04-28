@@ -413,10 +413,53 @@ export class ImapProvider implements EmailProvider {
       }));
     }
 
+    // Build raw RFC 2822 message using streamTransport so we can IMAP-append to Sent
+    let rawMessage: Buffer | undefined;
+    try {
+      const streamTransport = nodemailer.createTransport({ streamTransport: true, newline: "unix" });
+      const buildInfo = await streamTransport.sendMail(mailOptions);
+      // nodemailer streamTransport sets info.message to a Readable stream
+      const stream = buildInfo.message as unknown as NodeJS.ReadableStream;
+      if (stream && typeof stream.pipe === "function") {
+        const chunks: Buffer[] = [];
+        await new Promise<void>((resolve, reject) => {
+          stream.on("data", (chunk: Buffer) => chunks.push(chunk));
+          stream.on("end", () => { rawMessage = Buffer.concat(chunks); resolve(); });
+          stream.on("error", reject);
+        });
+      }
+    } catch {
+      // Non-fatal: rawMessage stays undefined, Sent append will be skipped
+    }
+
     try {
       await transport.sendMail(mailOptions);
     } finally {
       transport.close();
+    }
+
+    // Append to Sent folder via IMAP so the sent message appears in Sent
+    if (rawMessage) {
+      try {
+        const { client } = await createImapClient(userId, accountId);
+        try {
+          const mailboxList = await client.list();
+          const sentFolder =
+            mailboxList.find((mb) => mb.specialUse === "\\Sent") ??
+            mailboxList.find((mb) => {
+              const p = mb.path.toLowerCase();
+              return p === "sent" || p.includes("sent mail") || p.includes("sent items") || p.includes("[gmail]/sent");
+            });
+
+          if (sentFolder) {
+            await client.append(sentFolder.path, rawMessage, ["\\Seen"]);
+          }
+        } finally {
+          await client.logout();
+        }
+      } catch {
+        // Non-fatal: SMTP send succeeded, IMAP append to Sent is best-effort
+      }
     }
   }
 
@@ -523,10 +566,25 @@ export class ImapProvider implements EmailProvider {
 
     const { client } = await createImapClient(userId, accountId);
     try {
+      // Find Trash folder — move to trash rather than hard-delete
+      const mailboxList = await client.list();
+      const trashFolder =
+        mailboxList.find((mb) => mb.specialUse === "\\Trash") ??
+        mailboxList.find((mb) => {
+          const p = mb.path.toLowerCase();
+          return p.includes("trash") || p.includes("deleted");
+        });
+
       const lock = await client.getMailboxLock(folderPath);
       try {
-        await client.messageFlagsAdd({ uid }, ["\\Deleted"], { uid: true });
-        await client.messageDelete({ uid }, { uid: true });
+        if (trashFolder && trashFolder.path !== folderPath) {
+          // Move to trash
+          await client.messageMove({ uid }, trashFolder.path, { uid: true });
+        } else {
+          // Already in trash or no trash folder — hard delete
+          await client.messageFlagsAdd({ uid }, ["\\Deleted"], { uid: true });
+          await client.messageDelete({ uid }, { uid: true });
+        }
       } finally {
         lock.release();
       }
