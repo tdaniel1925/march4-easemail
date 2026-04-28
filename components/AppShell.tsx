@@ -254,8 +254,17 @@ export default function AppShell(props: AppShellProps) {
       fetch(`/api/mail/inbox?homeAccountId=${encodeURIComponent(hid)}&$top=5`)
         .then((r) => r.ok ? r.json() : null)
         .then((data) => {
-          if (data?.unreadCount != null) {
+          if (!data) return;
+          if (data.unreadCount != null) {
             useAccountStore.getState().setInboxUnread(data.unreadCount);
+          }
+          // Prepend any emails not already in the list
+          if (Array.isArray(data.emails) && data.emails.length > 0) {
+            setInboxEmails((prev) => {
+              const existingIds = new Set(prev.map((e: { id: string }) => e.id));
+              const fresh = data.emails.filter((e: { id: string }) => !existingIds.has(e.id));
+              return fresh.length > 0 ? [...fresh, ...prev] : prev;
+            });
           }
         })
         .catch(() => {});

@@ -892,8 +892,8 @@ export default function ComposeClient({
     // First apply professional email spacing
     const formatted = formatEmailSpacing(text);
     const escaped = formatted.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-    // Join sections with <div><br></div> so blank lines are visible in contenteditable
-    return escaped.split(/\n\n+/).map((p) => `<div>${p.replace(/\n/g, "<br>")}</div>`).join("<div><br></div>") || "<div><br></div>";
+    // Join paragraphs with a single <br> — no blank-line gaps between them
+    return escaped.split(/\n\n+/).map((p) => `<div>${p.replace(/\n/g, "<br>")}</div>`).join("<br>") || "<div><br></div>";
   }
 
   function acceptRemix() {

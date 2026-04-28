@@ -263,6 +263,17 @@ export default function InboxClient({
   }
 
   const [emails, setEmails] = useState<EmailMessage[]>(initialEmails);
+
+  // Sync when AppShell prepends new emails via polling
+  useEffect(() => {
+    if (initialEmails.length === 0) return;
+    setEmails((prev) => {
+      const existingIds = new Set(prev.map((e) => e.id));
+      const fresh = initialEmails.filter((e) => !existingIds.has(e.id));
+      return fresh.length > 0 ? [...fresh, ...prev] : prev;
+    });
+  }, [initialEmails]);
+
   const [aiReplyEmail, setAiReplyEmail] = useState<EmailMessage | null>(null);
   const [showEventForm, setShowEventForm] = useState(false);
   const [activeTab, setActiveTab] = useState<FilterTab>("all");

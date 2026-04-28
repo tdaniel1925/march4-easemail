@@ -508,12 +508,8 @@ img {
 .compose-editor div,
 .compose-editor p {
   margin: 0;
-  margin-bottom: 0.5em;
-  line-height: 1.6;
-}
-.compose-editor div:last-child,
-.compose-editor p:last-child {
   margin-bottom: 0;
+  line-height: 1.6;
 }
 .compose-editor br + br {
   display: none; /* collapse double br from dictation */
