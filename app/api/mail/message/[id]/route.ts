@@ -108,11 +108,32 @@ export async function GET(req: NextRequest, { params }: Params) {
   }
 
   // ── Microsoft Graph ──────────────────────────────────────────────────────
-  const msg = await graphGet<GraphMessage>(
-    user.id,
-    accountId,
-    `/me/messages/${id}?$select=id,subject,from,toRecipients,ccRecipients,body,receivedDateTime&$expand=attachments($select=id,name,size,contentType,contentId,isInline)`
-  );
+  // Try generic /me/messages/{id} first (works for inbox and most folders).
+  // If it 404s (can happen for sent/other folder-scoped IDs), fall back to
+  // searching well-known folders explicitly.
+  const msgPath = `?$select=id,subject,from,toRecipients,ccRecipients,body,receivedDateTime&$expand=attachments($select=id,name,size,contentType,contentId,isInline)`;
+  let msg: GraphMessage | null = null;
+  try {
+    msg = await graphGet<GraphMessage>(user.id, accountId, `/me/messages/${id}${msgPath}`);
+  } catch (primaryErr) {
+    // Fall back: search sent items and drafts folders for the message
+    const FALLBACK_FOLDERS = ["sentItems", "drafts", "deleteditems", "archive"];
+    for (const folder of FALLBACK_FOLDERS) {
+      try {
+        msg = await graphGet<GraphMessage>(user.id, accountId, `/me/mailFolders/${folder}/messages/${id}${msgPath}`);
+        break;
+      } catch {
+        // try next folder
+      }
+    }
+    if (!msg) {
+      const errMsg = primaryErr instanceof Error ? primaryErr.message : String(primaryErr);
+      return NextResponse.json({ error: `Could not find message: ${errMsg}` }, { status: 404 });
+    }
+  }
+  if (!msg) {
+    return NextResponse.json({ error: "Message not found" }, { status: 404 });
+  }
 
   // Rewrite cid: references to our attachment API so inline images render
   let bodyContent = msg.body?.content ?? "";
