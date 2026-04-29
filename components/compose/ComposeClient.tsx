@@ -1213,25 +1213,40 @@ export default function ComposeClient({
   }, []);
 
   // ── Load draft data if draftId provided ──────────────────────────────────────
+  // Support both: draftData passed as prop (legacy) OR self-fetch when only draftId is given
   useEffect(() => {
-    if (!draftData) return;
-
-    draftIdRef.current = draftData.id;
-    setTo((draftData.toRecipients as { emailAddress: { address: string } }[])?.map(r => r.emailAddress?.address).filter(Boolean) ?? []);
-    setCc((draftData.ccRecipients as { emailAddress: { address: string } }[])?.map(r => r.emailAddress?.address).filter(Boolean) ?? []);
-    setBcc((draftData.bccRecipients as { emailAddress: { address: string } }[])?.map(r => r.emailAddress?.address).filter(Boolean) ?? []);
-    setSubject(draftData.subject ?? "");
-
-    if (bodyRef.current) {
-      bodyRef.current.innerHTML = draftData.bodyHtml ?? "";
+    async function loadDraft(data: any) {
+      draftIdRef.current = data.id;
+      setTo((data.toRecipients as { emailAddress: { address: string } }[])?.map((r: { emailAddress: { address: string } }) => r.emailAddress?.address).filter(Boolean) ?? []);
+      setCc((data.ccRecipients as { emailAddress: { address: string } }[])?.map((r: { emailAddress: { address: string } }) => r.emailAddress?.address).filter(Boolean) ?? []);
+      setBcc((data.bccRecipients as { emailAddress: { address: string } }[])?.map((r: { emailAddress: { address: string } }) => r.emailAddress?.address).filter(Boolean) ?? []);
+      setSubject(data.subject ?? "");
+      if (bodyRef.current) {
+        bodyRef.current.innerHTML = data.bodyHtml ?? "";
+      }
+      setAttachments((data.attachments as FileAttachment[]) ?? []);
+      if (data.scheduledAt) setScheduledAt(new Date(data.scheduledAt));
+      setImportance(data.importance as "normal" | "high");
+      setRequestReadReceipt(data.requestReadReceipt ?? false);
+      setDraftSaved(true);
     }
 
-    setAttachments((draftData.attachments as FileAttachment[]) ?? []);
-    if (draftData.scheduledAt) setScheduledAt(new Date(draftData.scheduledAt));
-    setImportance(draftData.importance as "normal" | "high");
-    setRequestReadReceipt(draftData.requestReadReceipt ?? false);
-    setDraftSaved(true);
-  }, [draftData]);
+    if (draftData) {
+      void loadDraft(draftData);
+      return;
+    }
+
+    // No draftData prop — self-fetch from API if draftId is present
+    if (!draftId) return;
+    fetch(`/api/drafts/${encodeURIComponent(draftId)}`)
+      .then(async (r) => {
+        if (!r.ok) return;
+        const data = await r.json();
+        await loadDraft(data);
+      })
+      .catch(() => {});
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [draftId, draftData]);
 
   // ── Pre-fill To from initialTo (e.g. from contacts) ──────────────────────────
   useEffect(() => {

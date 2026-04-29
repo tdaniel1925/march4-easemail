@@ -219,6 +219,10 @@ export default function DashboardClient({
   const [attachmentsToday, setAttachmentsToday] = useState(initialAttachmentsToday);
   const [unreadTrend, setUnreadTrend] = useState(initialUnreadTrend);
 
+  // ── Today's calendar events (client-side fetch) ───────────────────────────
+  const [todayEvents, setTodayEvents] = useState<CalendarEvent[]>(events);
+  const [todayEventCount, setTodayEventCount] = useState(eventsToday);
+
   useEffect(() => {
     if (!activeAccount) return;
 
@@ -250,6 +254,26 @@ export default function DashboardClient({
       })
       .catch(() => { /* aborted or network error — keep zeroed state */ })
       .finally(() => setStatsLoading(false));
+
+    // Fetch today's calendar events using local date (avoids timezone mismatch)
+    const todayLocal = new Date();
+    const startParam = `${todayLocal.getFullYear()}-${String(todayLocal.getMonth() + 1).padStart(2, "0")}-${String(todayLocal.getDate()).padStart(2, "0")}`;
+    fetch(`/api/calendar/week?start=${startParam}`, { signal: controller.signal })
+      .then(async (res) => {
+        if (!res.ok) return;
+        const data = await res.json() as { events?: CalendarEvent[] };
+        if (!data.events) return;
+        // Filter to today only using local date comparison
+        const todayStr = startParam;
+        const todayEvts = data.events.filter((e) => {
+          // Convert UTC ISO string to local date string for comparison
+          const localDate = new Date(e.startDateTime).toLocaleDateString("en-CA"); // YYYY-MM-DD in local TZ
+          return localDate === todayStr;
+        });
+        setTodayEvents(todayEvts);
+        setTodayEventCount(todayEvts.length);
+      })
+      .catch(() => {});
 
     return () => controller.abort();
   }, [activeAccount?.homeAccountId]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -332,7 +356,7 @@ export default function DashboardClient({
 
   // Next event countdown
   useEffect(() => {
-    const nextEvent = events.find((e) => new Date(e.startDateTime) > new Date());
+    const nextEvent = todayEvents.find((e) => new Date(e.startDateTime) > new Date());
     if (!nextEvent) { setTimeUntilNext(""); return; }
 
     function updateCountdown() {
@@ -349,7 +373,7 @@ export default function DashboardClient({
     updateCountdown();
     const timer = setInterval(updateCountdown, 60000);
     return () => clearInterval(timer);
-  }, [events]);
+  }, [todayEvents]);
 
   async function toggleTodo(id: string) {
     const todo = todos.find((t) => t.id === id);
@@ -412,7 +436,7 @@ export default function DashboardClient({
     if (hour24 >= 12 && hour24 < 17) return "Good afternoon";
     return "Good evening";
   })();
-  const nextEvent = events.find((e) => new Date(e.startDateTime) > new Date());
+  const nextEvent = todayEvents.find((e) => new Date(e.startDateTime) > new Date());
   const pendingTodos = todos.filter((t) => !t.done);
 
   return (
@@ -442,7 +466,7 @@ export default function DashboardClient({
             </h1>
             <p className="text-sm mt-1" style={{ color: "rgb(115 115 115)" }}>
               {inboxUnread > 0 ? `You have ${inboxUnread} unread email${inboxUnread !== 1 ? "s" : ""}` : "You're all caught up"}
-              {eventsToday > 0 ? ` and ${eventsToday} event${eventsToday !== 1 ? "s" : ""} today` : ""}.
+              {todayEventCount > 0 ? ` and ${todayEventCount} event${todayEventCount !== 1 ? "s" : ""} today` : ""}.
             </p>
           </div>
 
@@ -490,7 +514,7 @@ export default function DashboardClient({
               <p className="text-xs font-medium mt-0.5" style={{ color: "rgb(115 115 115)" }}>Unread{unreadTrend !== 0 && <span style={{ color: unreadTrend > 0 ? "rgb(220 38 38)" : "rgb(22 163 74)" }}> {unreadTrend > 0 ? "↑" : "↓"}{Math.abs(unreadTrend)}</span>}</p>
             </button>
             <button onClick={() => navigateTo("/calendar")} className="p-4 rounded-[12px] bg-white border border-neutral-200 hover:border-neutral-300 transition-colors text-center cursor-pointer">
-              <p className="text-2xl font-bold" style={{ color: "rgb(27 29 29)" }}>{eventsToday}</p>
+              <p className="text-2xl font-bold" style={{ color: "rgb(27 29 29)" }}>{todayEventCount}</p>
               <p className="text-xs font-medium mt-0.5" style={{ color: "rgb(115 115 115)" }}>Events</p>
             </button>
             <div className="p-4 rounded-[12px] bg-white border border-neutral-200 text-center">
@@ -508,11 +532,11 @@ export default function DashboardClient({
                 <h2 className="text-sm font-semibold" style={{ color: "rgb(27 29 29)" }}>Today&apos;s Agenda</h2>
                 <button onClick={() => navigateTo("/calendar")} className="text-xs font-medium" style={{ color: "rgb(138 9 9)" }}>View all →</button>
               </div>
-              {events.length === 0 ? (
+              {todayEvents.length === 0 ? (
                 <p className="text-sm py-6 text-center" style={{ color: "rgb(155 155 155)" }}>No events today</p>
               ) : (
                 <div className="flex flex-col gap-2">
-                  {events.map((event, idx) => {
+                  {todayEvents.map((event, idx) => {
                     const color = EVENT_COLORS[idx % EVENT_COLORS.length];
                     const isPast = new Date(event.endDateTime) < new Date();
                     const isNow = new Date(event.startDateTime) <= new Date() && new Date(event.endDateTime) >= new Date();

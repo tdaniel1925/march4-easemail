@@ -325,8 +325,7 @@ export default function EventFormModal({ prefill, onClose, onSaved, editEvent, u
         setTeamsEnabled(true);
         if (!location) setLocation(data.joinWebUrl);
       } else if (data.error === "teams_consent_required") {
-        setError("Teams access not granted. Redirecting to grant permissions...");
-        setTimeout(() => { window.location.href = "/api/auth/microsoft/teams-consent"; }, 1500);
+        setError("Teams meeting requires additional permissions. Please go to Settings → Connected Accounts and reconnect your Microsoft account to grant Teams access.");
       } else if (data.error === "account_requires_reauth") {
         setError("Your Microsoft session has expired. Please reconnect your account in Settings.");
       } else {
@@ -334,8 +333,9 @@ export default function EventFormModal({ prefill, onClose, onSaved, editEvent, u
       }
     } catch {
       setError("Failed to create Teams meeting. Check your connection and try again.");
+    } finally {
+      setTeamsLoading(false);
     }
-    setTeamsLoading(false);
   }
 
   async function copyTeamsUrl() {

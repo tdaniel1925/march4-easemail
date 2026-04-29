@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { prisma } from "@/lib/prisma";
 import { verifyAccountOwnership, getProvider } from "@/lib/providers/registry";
 
 /**
@@ -40,6 +41,8 @@ export async function POST(req: NextRequest) {
 
     if (permanent) {
       await provider.deleteMessage(user.id, accountId, messageId);
+      // Remove from cache so it doesn't reappear on refresh
+      await prisma.cachedEmail.delete({ where: { id: messageId } }).catch(() => {});
       return NextResponse.json({ ok: true, deleted: true });
     } else {
       // Move to Deleted Items folder
@@ -51,6 +54,11 @@ export async function POST(req: NextRequest) {
       }
 
       await provider.moveMessage(user.id, accountId, messageId, deletedFolder.id);
+      // Update cached email's folderId so it no longer appears in inbox on refresh
+      await prisma.cachedEmail.update({
+        where: { id: messageId },
+        data: { folderId: deletedFolder.id },
+      }).catch(() => {});
       return NextResponse.json({ ok: true, folderId: deletedFolder.id });
     }
   } catch (error) {
