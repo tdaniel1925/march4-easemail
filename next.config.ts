@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { withSentryConfig } from "@sentry/nextjs";
 
 const nextConfig: NextConfig = {
   images: {
@@ -26,7 +27,7 @@ const nextConfig: NextConfig = {
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://rsms.me",
               "img-src 'self' data: blob: https://graph.microsoft.com https://*.sharepoint.com",
               "font-src 'self' data: https://fonts.gstatic.com https://rsms.me",
-              "connect-src 'self' https://graph.microsoft.com https://login.microsoftonline.com https://*.supabase.co",
+              "connect-src 'self' https://graph.microsoft.com https://login.microsoftonline.com https://*.supabase.co https://*.sentry.io https://*.ingest.sentry.io",
               "frame-ancestors 'self'",
               "base-uri 'self'",
               "form-action 'self'",
@@ -58,4 +59,11 @@ const nextConfig: NextConfig = {
   },
 };
 
-module.exports = nextConfig;
+module.exports = withSentryConfig(nextConfig, {
+  // Suppresses source map upload logs during build
+  silent: true,
+  // Skip source map upload when no auth token is set (local dev)
+  sourcemaps: {
+    disable: !process.env.SENTRY_AUTH_TOKEN,
+  },
+});
