@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
-import { verifyAccountOwnership, detectProviderType, getProvider } from "@/lib/providers/registry";
+import { verifyAccountOwnership } from "@/lib/providers/registry";
 import { mapCachedEmail } from "@/lib/utils/email-helpers";
 import type { EmailMessage } from "@/lib/types/email";
 
@@ -48,48 +48,8 @@ export async function GET(req: NextRequest) {
   const account = await verifyAccountOwnership(user.id, homeAccountId);
   if (!account) return NextResponse.json({ error: "Account not found" }, { status: 404 });
 
-  const providerType = detectProviderType(homeAccountId);
-
-  // ── IMAP / JMAP provider path ──────────────────────────────────────────────
-  if (providerType !== "microsoft") {
-    try {
-      const provider = getProvider(homeAccountId);
-      const result = await provider.fetchEmails(user.id, homeAccountId, "inbox", {
-        top: 10,
-        filter: "unread",
-      });
-
-      const recentUnread: EmailMessage[] = result.emails.slice(0, 5).map((e) => ({
-        id: e.id,
-        subject: e.subject,
-        bodyPreview: e.bodyPreview,
-        receivedDateTime: e.receivedDateTime,
-        isRead: e.isRead,
-        from: e.from,
-        hasAttachments: e.hasAttachments,
-      }));
-
-      const stats: DashboardStats = {
-        unreadCount: recentUnread.length,
-        draftCount: 0,
-        totalInboxCount: 0,
-        sentCount: 0,
-        attachmentsToday: 0,
-        hoursWaiting: 0,
-        recentUnread,
-        weeklyReceived: [0, 0, 0, 0, 0, 0, 0],
-        weeklySent: [0, 0, 0, 0, 0, 0, 0],
-        unreadTrend: 0,
-      };
-
-      return NextResponse.json(stats);
-    } catch (err) {
-      console.error("[dashboard/stats] provider error:", err);
-      return NextResponse.json({ error: String(err) }, { status: 500 });
-    }
-  }
-
-  // ── Microsoft / cache-first path ───────────────────────────────────────────
+  // ── All providers use the same Prisma cache path ─────────────────────────
+  // CachedEmail / CachedFolder tables are populated by all providers (MS, IMAP, JMAP).
   try {
     const monStart = weekStart();
     const todayUTC = todayStart();
@@ -149,12 +109,17 @@ export async function GET(req: NextRequest) {
           })
         : Promise.resolve(0),
 
-      // recent unread (up to 5)
+      // recent unread or flagged (up to 10 — "needs attention" items)
       inboxFolder
         ? prisma.cachedEmail.findMany({
-            where: { userId: user.id, homeAccountId, folderId: inboxFolder.id, isRead: false },
+            where: {
+              userId: user.id,
+              homeAccountId,
+              folderId: inboxFolder.id,
+              OR: [{ isRead: false }, { flagStatus: "flagged" }],
+            },
             orderBy: { receivedDateTime: "desc" },
-            take: 5,
+            take: 10,
           })
         : Promise.resolve([]),
 

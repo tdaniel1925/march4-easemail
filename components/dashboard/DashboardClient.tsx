@@ -263,12 +263,14 @@ export default function DashboardClient({
         if (!res.ok) return;
         const data = await res.json() as { events?: CalendarEvent[] };
         if (!data.events) return;
-        // Filter to today only using local date comparison
-        const todayStr = startParam;
+        // Filter to events that overlap with today (handles midnight-spanning events)
+        const now = new Date();
+        const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        const todayEnd = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
         const todayEvts = data.events.filter((e) => {
-          // Convert UTC ISO string to local date string for comparison
-          const localDate = new Date(e.startDateTime).toLocaleDateString("en-CA"); // YYYY-MM-DD in local TZ
-          return localDate === todayStr;
+          const start = new Date(e.startDateTime);
+          const end = new Date(e.endDateTime);
+          return start < todayEnd && end > todayStart;
         });
         setTodayEvents(todayEvts);
         setTodayEventCount(todayEvts.length);
@@ -350,8 +352,13 @@ export default function DashboardClient({
       if (hour >= 8 && hour < 18) return 5 * 60 * 1000;
       return 30 * 60 * 1000;
     }
-    const interval = setInterval(() => router.refresh(), getRefreshInterval());
-    return () => clearInterval(interval);
+    let timer: ReturnType<typeof setTimeout>;
+    function tick() {
+      router.refresh();
+      timer = setTimeout(tick, getRefreshInterval());
+    }
+    timer = setTimeout(tick, getRefreshInterval());
+    return () => clearTimeout(timer);
   }, [router]);
 
   // Next event countdown
@@ -395,13 +402,13 @@ export default function DashboardClient({
 
   async function deleteTodo(id: string) {
     setDeletingTodoId(id);
+    const prev = [...todos];
+    setTodos((t) => t.filter((x) => x.id !== id));
     try {
       const res = await fetch(`/api/todos/${id}`, { method: "DELETE" });
-      if (res.ok) {
-        setTodos((prev) => prev.filter((t) => t.id !== id));
-      }
-    } catch (error) {
-      console.error("Failed to delete todo:", error);
+      if (!res.ok) throw new Error();
+    } catch {
+      setTodos(prev); // revert on failure
     } finally {
       setDeletingTodoId(null);
     }
@@ -429,11 +436,9 @@ export default function DashboardClient({
   }
 
   const greeting = (() => {
-    const h = parseInt(timeStr.split(":")[0]) || 0;
-    const isPM = timeStr.includes("PM");
-    const hour24 = isPM && h !== 12 ? h + 12 : (!isPM && h === 12 ? 0 : h);
-    if (hour24 >= 5 && hour24 < 12) return "Good morning";
-    if (hour24 >= 12 && hour24 < 17) return "Good afternoon";
+    const h = new Date().getHours();
+    if (h >= 5 && h < 12) return "Good morning";
+    if (h >= 12 && h < 17) return "Good afternoon";
     return "Good evening";
   })();
   const nextEvent = todayEvents.find((e) => new Date(e.startDateTime) > new Date());
