@@ -577,7 +577,8 @@ export default function AttachmentsClient({
                           const url = `/api/mail/attachments/${encodeURIComponent(item.messageId)}/${encodeURIComponent(item.id)}?homeAccountId=${encodeURIComponent(item.homeAccountId)}`;
                           const res = await fetch(url);
                           if (!res.ok) throw new Error(`Download failed: ${res.status}`);
-                          const blob = await res.blob();
+                          const rawBlob = await res.blob();
+                          const blob = new Blob([rawBlob], { type: item.contentType || rawBlob.type });
                           const a = document.createElement("a");
                           a.href = URL.createObjectURL(blob);
                           a.download = item.name;
@@ -831,7 +832,8 @@ export default function AttachmentsClient({
                     const url = `/api/mail/attachments/${encodeURIComponent(previewItem.messageId)}/${encodeURIComponent(previewItem.id)}?homeAccountId=${encodeURIComponent(previewItem.homeAccountId)}`;
                     const res = await fetch(url);
                     if (!res.ok) throw new Error(`Download failed: ${res.status}`);
-                    const blob = await res.blob();
+                    const rawBlob = await res.blob();
+                    const blob = new Blob([rawBlob], { type: previewItem.contentType || rawBlob.type });
                     const a = document.createElement("a");
                     a.href = URL.createObjectURL(blob);
                     a.download = previewItem.name;
@@ -887,7 +889,10 @@ function AttachmentRow({
       const url = `/api/mail/attachments/${encodeURIComponent(item.messageId)}/${encodeURIComponent(item.id)}?homeAccountId=${encodeURIComponent(item.homeAccountId)}`;
       const res = await fetch(url);
       if (!res.ok) throw new Error(`Download failed: ${res.status}`);
-      const blob = await res.blob();
+      const rawBlob = await res.blob();
+      // Force correct MIME type from the attachment metadata — the server
+      // may return application/octet-stream for PDFs and other file types
+      const blob = new Blob([rawBlob], { type: item.contentType || rawBlob.type });
       const a = document.createElement("a");
       a.href = URL.createObjectURL(blob);
       a.download = item.name;
