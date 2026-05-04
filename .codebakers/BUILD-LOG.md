@@ -460,3 +460,75 @@ npm run test:unit:coverage     # Run with coverage report
 - Calendar display: Timezone formatting (backend complete, display functions pending)
 - Attachments: Backend filtering API (pagination complete, filtering pending)
 - Notifications stat: Product decision required (see IMPLEMENTATION_PROMPTS.md)
+
+---
+
+## 2026-05-03 — Complete App Review + E2E Test Suite (Session 2026-05-03)
+
+### Full App Logic Review ✅
+- [Review] Identified 12 logic gaps across the application
+- [Critical] IDOR vulnerability in `/api/mail/delete` — no ownership verification
+- [Critical] IDOR in `/api/calendar/event` POST — no account ownership gate
+- [Critical] Email sync partial failure causes data loss (deleteMany succeeds, upserts fail)
+- [Critical] Reply route missing try-catch on Graph API call
+- [High] Calendar sync ignores timezone field in Date construction
+- [High] Draft race condition on concurrent saves (graphDraftId)
+- [High] MAX_PAGES=100 silently truncates large mailboxes
+- [High] Failed draft deletion enables duplicate sends
+- [Medium] Rule engine crashes on null `from` field
+- [Medium] Middleware token refresh race condition
+- [Medium] MSAL cache corruption has no fallback
+- [Medium] Account store holds stale deleted account reference
+- [Doc] Created `REVIEW-AND-TEST-PLAN.md` with full findings and fix priorities
+
+### E2E Test Suite — 13 New Test Files ✅
+- [Tests] `auth.spec.ts` — 7 tests (login, redirects, session persistence)
+- [Tests] `inbox.spec.ts` — 13 tests (list, tabs, search, scroll, refresh)
+- [Tests] `email-detail.spec.ts` — 15 tests (reading, actions, navigation)
+- [Tests] `drafts.spec.ts` — 10 tests (lifecycle, auto-save)
+- [Tests] `contacts.spec.ts` — 15 tests (CRUD, search, detail panel)
+- [Tests] `search.spec.ts` — 10 tests (behavior, debounce, empty states)
+- [Tests] `folders.spec.ts` — 11 tests (sent/trash/starred/custom folders)
+- [Tests] `email-rules.spec.ts` — 14 tests (rule CRUD, validation, toggles)
+- [Tests] `dashboard.spec.ts` — 11 tests (widgets, todos, chart)
+- [Tests] `attachments.spec.ts` — 11 tests (tabs, filters, preview, pagination)
+- [Tests] `signatures.spec.ts` — 13 tests (CRUD, default management)
+- [Tests] `settings.spec.ts` — 8 tests (all settings sections)
+- [Tests] `accounts.spec.ts` — 8 tests (connect/disconnect flow)
+- [Doc] Created `tests/E2E-TEST-DOCUMENTATION.md` — full docs, CI config, troubleshooting
+
+### Infrastructure ✅
+- [DepMap] Regenerated DEPENDENCY-MAP.md (2026-05-04, git: 7159bd6)
+- [Coverage] Total test suite: 15 files, ~175 tests covering all app features
+- [TypeScript] All test files compile without errors
+
+### Test Fix Pass ✅
+- [Fix] auth.spec.ts — Fixed login button selector (a not button), unauth tests use fresh context
+- [Fix] calendar.spec.ts — Fixed modal title, input placeholder, all-day toggle, month label selector
+- [Fix] search.spec.ts — Fixed email item selectors (.cursor-pointer), handle error states
+- [Fix] inbox.spec.ts — Fixed sidebar active link detection (inline style check)
+- [Fix] folders.spec.ts — Fixed sidebar link selector (includes unread count), route to /inbox not /
+- [Fix] dashboard.spec.ts — Fixed todo Add button strict mode, chart canvas selector
+- [Fix] contacts.spec.ts — Fixed validation (button disabled, not error text)
+- [Fix] settings.spec.ts — Fixed appearance section nav, toggle selector
+- [Fix] signatures.spec.ts — Fixed create flow (modal with "Create Signature" button)
+- [Fix] email-rules.spec.ts — Fixed rule form selectors, toggle/edit/delete elements
+
+### Final Test Results ✅
+- **Passed:** 162
+- **Skipped:** 26 (data-dependent — need emails/drafts/contacts in test mailbox)
+- **Failed:** 0
+- **Duration:** 12.5 minutes
+- **All 15 test files green**
+
+### Infrastructure Updates ✅
+- [Hook] Created `.git/hooks/pre-commit` — auto-regenerates dep map, runs tsc, stages .codebakers/
+- [Env] Pulled production env vars from Vercel CLI
+- [Playwright] Browsers installed, global-setup working with magic link auth
+- [DepMap] Regenerated DEPENDENCY-MAP.md
+
+### Summary
+- **New test files:** 13
+- **Total tests:** 188 (162 passing, 26 skipped)
+- **Logic gaps documented:** 12 (4 critical, 4 high, 4 medium)
+- **Documentation files:** 2 new (REVIEW-AND-TEST-PLAN.md, E2E-TEST-DOCUMENTATION.md)

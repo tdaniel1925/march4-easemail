@@ -1,6 +1,6 @@
 # CodeBakers Dependency Map
 # GENERATED — never edit by hand. Run `pnpm dep:map` to regenerate.
-# Last generated: 2026-03-26 | git: bc68aab
+# Last generated: 2026-05-04 | git: 7159bd6
 # Debug: pnpm dep:map --debug
 
 ---
@@ -24,6 +24,8 @@
 | CalendarStore | useCalendarStore | CalendarClient, EventDetailModal | — | — | — (set manually) |
 | CalEvent | useCalendarClient | — | — | — | — (set manually) |
 | Color | useAccountsClient, useAccountSwitcher, useAdminClient, useAttachmentsClient, useCalendarClient, useEventDetailModal, useEventFormModal, useComposeClient, useContactsClient, useDashboardClient, useEmailRulesClient, useFolderClient, useHelpClient, useAiReplyModal, useEmailReadClient, useInboxClient, useSettingsClient, useReadingPane, useSidebar, useSignaturesClient, useTeamsClient | — | — | activeColor | — (set manually) |
+| ColumnConfig | useAttachmentsClient | — | — | — | — (set manually) |
+| ColumnKey | useAttachmentsClient | — | — | — | — (set manually) |
 | ComponentFile | useGenerateDepMap | — | — | — | — (set manually) |
 | ComposeMode | useComposeClient, useReadingPane | — | — | — | — (set manually) |
 | Condition | useEmailRulesClient | — | — | — | — (set manually) |
@@ -32,9 +34,10 @@
 | ContactFormData | useContactsClient | — | — | — | — (set manually) |
 | ContactRowProps | useContactsClient | — | — | — | — (set manually) |
 | ContactSuggestion | useComposeClient | — | — | — | — (set manually) |
+| DirectionTab | useAttachmentsClient | — | — | — | — (set manually) |
 | EmailDensity | useSettingsClient | — | — | — | — (set manually) |
 | EmailDetail | useEmailReadClient | — | — | — | — (set manually) |
-| EmailMessage | useDashboardClient, useFolderClient, useInboxClient | — | — | — | — (set manually) |
+| EmailMessage | useFolderClient, useInboxClient | — | — | — | — (set manually) |
 | EntityMap | useGenerateDepMap | — | — | — | — (set manually) |
 | FaqItem | useHelpClient | — | — | — | — (set manually) |
 | FileAttachment | useComposeClient | — | — | — | — (set manually) |
@@ -64,6 +67,8 @@
 | SidebarProps | useSidebar | — | — | — | — (set manually) |
 | SideEffect | useInboxClient | — | — | — | — (set manually) |
 | Signature | useSignaturesClient | — | — | — | — (set manually) |
+| SortDirection | useAttachmentsClient | — | — | — | — (set manually) |
+| SortField | useAttachmentsClient | — | — | — | — (set manually) |
 | SpeechRecognitionConstructor | useCalendarClient | — | — | — | — (set manually) |
 | StoreFile | useGenerateDepMap | — | — | — | — (set manually) |
 | StylePreset | useComposeClient | — | — | — | — (set manually) |
@@ -107,7 +112,7 @@ Entities: Target, Color
 
 ### useAttachmentsClient
 File: `components\attachments\AttachmentsClient.tsx`
-Entities: FileType, FilterTab, AttachmentItem, Color, Target
+Entities: FileType, FilterTab, DirectionTab, SortField, SortDirection, ColumnKey, ColumnConfig, AttachmentItem, Color, Target
 
 ### useCalendarClient
 File: `components\calendar\CalendarClient.tsx`
@@ -127,7 +132,7 @@ Entities: PresenceAvailability, Props, ContactFormData, ContactRowProps, Contact
 
 ### useDashboardClient
 File: `components\dashboard\DashboardClient.tsx`
-Entities: CalendarEvent, TodoItem, EmailMessage, Color, Target
+Entities: CalendarEvent, TodoItem, Color, Target
 
 ### useEmailReadClient
 File: `components\inbox\EmailReadClient.tsx`
