@@ -21,6 +21,7 @@ export async function GET() {
       appTheme: true,
       fontSize: true,
       emailDensity: true,
+      undoSendDelay: true,
     },
   });
 
@@ -48,6 +49,7 @@ export async function PUT(req: NextRequest) {
     appTheme?: string;
     fontSize?: string;
     emailDensity?: string;
+    undoSendDelay?: number;
   };
 
   // Validate enum values
@@ -63,6 +65,10 @@ export async function PUT(req: NextRequest) {
     return NextResponse.json({ error: "Invalid emailDensity value" }, { status: 400 });
   }
 
+  if (body.undoSendDelay !== undefined && ![5, 10, 20, 30].includes(body.undoSendDelay)) {
+    return NextResponse.json({ error: "Invalid undoSendDelay value. Must be 5, 10, 20, or 30." }, { status: 400 });
+  }
+
   const updated = await prisma.user.update({
     where: { id: user.id },
     data: {
@@ -74,6 +80,7 @@ export async function PUT(req: NextRequest) {
       ...(body.appTheme !== undefined && { appTheme: body.appTheme }),
       ...(body.fontSize !== undefined && { fontSize: body.fontSize }),
       ...(body.emailDensity !== undefined && { emailDensity: body.emailDensity }),
+      ...(body.undoSendDelay !== undefined && { undoSendDelay: body.undoSendDelay }),
     },
     select: {
       notificationNewEmail: true,
@@ -84,6 +91,7 @@ export async function PUT(req: NextRequest) {
       appTheme: true,
       fontSize: true,
       emailDensity: true,
+      undoSendDelay: true,
     },
   });
 

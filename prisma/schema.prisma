@@ -74,6 +74,9 @@ model User {
   // Multi-account preference
   lastActiveAccountId String?
 
+  // Undo Send preference (delay in seconds before email actually sends)
+  undoSendDelay Int @default(10) // 5 | 10 | 20 | 30
+
   // AI voice profile — cached analysis of user's writing style
   voiceProfile          Json?
   voiceProfileUpdatedAt DateTime?
@@ -87,6 +90,7 @@ model User {
   drafts           Draft[]
   emailRules       EmailRule[]
   signatures       Signature[]
+  emailTemplates   EmailTemplate[]
   cachedFolders       CachedFolder[]
   cachedEmails        CachedEmail[]
   cachedCalEvents     CachedCalendarEvent[]
@@ -100,6 +104,8 @@ model User {
   todoItems           TodoItem[]
   snoozedEmails       SnoozedEmail[]
   readReceipts        ReadReceipt[]
+  pendingEmails       PendingEmail[]
+  followUpReminders   FollowUpReminder[]
 
   @@map("users")
 }
@@ -275,12 +281,19 @@ model CachedEmail {
   syncStatus              String    @default("synced")
   lastModifiedDateTime    DateTime?
 
+  // Sensitivity / Privilege label
+  sensitivityLabel        String?   // "attorney-client-privilege" | "confidential" | "work-product" | null
+
+  // Pinned emails
+  isPinned                Boolean   @default(false)
+
   syncedAt                DateTime  @default(now())
   updatedAt               DateTime  @updatedAt
 
   @@index([userId, homeAccountId, folderId, receivedDateTime(sort: Desc)])
   @@index([userId, homeAccountId, isRead])
   @@index([userId, homeAccountId, flagStatus])
+  @@index([userId, homeAccountId, isPinned])
   @@map("cached_emails")
 }
 
@@ -572,6 +585,44 @@ model TodoItem {
   @@map("todo_items")
 }
 
+// ─── Email Templates ──────────────────────────────────────────────────────────
+
+model EmailTemplate {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name      String
+  subject   String?
+  body      String   @db.Text
+  variables Json     @default("[]") // array of variable names e.g. ["clientName", "matterNumber"]
+  category  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId, category])
+  @@map("email_templates")
+}
+
+// ─── Follow-Up Reminders ─────────────────────────────────────────────────────
+
+model FollowUpReminder {
+  id             String   @id @default(cuid())
+  userId         String
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  messageId      String
+  conversationId String?
+  homeAccountId  String?
+  subject        String
+  recipient      String
+  remindAt       DateTime
+  status         String   @default("pending") // pending | triggered | replied | dismissed
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([userId, status, remindAt])
+  @@map("follow_up_reminders")
+}
+
 // ─── IMAP Connected Accounts ─────────────────────────────────────────────────
 
 model ImapConnectedAccount {
@@ -640,4 +691,19 @@ model JmapConnectedAccount {
   @@unique([userId, accountId])
   @@unique([userId, email])
   @@map("jmap_connected_accounts")
+}
+
+// ─── Pending Emails (Undo Send) ──────────────────────────────────────────────
+
+model PendingEmail {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  payload   Json     // Full send payload (to, cc, bcc, subject, body, attachments, etc.)
+  sendAt    DateTime // When the email should actually be sent
+  cancelled Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([userId, sendAt, cancelled])
+  @@map("pending_emails")
 }

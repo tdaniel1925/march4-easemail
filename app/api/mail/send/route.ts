@@ -173,6 +173,64 @@ async function sendEmailHandler(req: NextRequest) {
     }
   }
 
+  // ── Cache sent email locally for immediate Sent folder visibility ─────────
+  try {
+    // Find the Sent folder in cache
+    const sentFolder = await prisma.cachedFolder.findFirst({
+      where: { userId: user.id, homeAccountId: accountId!, wellKnownName: "sentitems" },
+    });
+
+    if (sentFolder) {
+      // Fetch the most recent message from Graph's Sent folder to get the real ID
+      const sentRes = await graphFetch(
+        user.id,
+        accountId!,
+        "/me/mailFolders/sentitems/messages?$top=1&$orderby=sentDateTime desc&$select=id,subject,bodyPreview,from,toRecipients,sentDateTime,receivedDateTime,isRead,hasAttachments,importance,conversationId,flag,categories",
+        { method: "GET" }
+      );
+
+      if (sentRes.ok) {
+        const sentData = await sentRes.json();
+        const msg = sentData?.value?.[0];
+        if (msg) {
+          // Check if already cached (by Graph message ID used as our primary key)
+          const existing = await prisma.cachedEmail.findUnique({ where: { id: msg.id } });
+          if (!existing) {
+            await prisma.cachedEmail.create({
+              data: {
+                id: msg.id,
+                userId: user.id,
+                homeAccountId: accountId!,
+                folderId: sentFolder.id,
+                subject: msg.subject ?? "",
+                bodyPreview: msg.bodyPreview ?? "",
+                fromName: msg.from?.emailAddress?.name ?? "",
+                fromAddress: msg.from?.emailAddress?.address ?? "",
+                toRecipients: JSON.parse(JSON.stringify(
+                  (msg.toRecipients ?? []).map((r: { emailAddress: { name?: string; address: string } }) => ({
+                    name: r.emailAddress?.name ?? "",
+                    address: r.emailAddress?.address ?? "",
+                  }))
+                )),
+                receivedDateTime: msg.receivedDateTime ? new Date(msg.receivedDateTime) : new Date(),
+                sentDateTime: msg.sentDateTime ? new Date(msg.sentDateTime) : new Date(),
+                isRead: true,
+                hasAttachments: msg.hasAttachments ?? false,
+                importance: msg.importance ?? "normal",
+                conversationId: msg.conversationId ?? null,
+                flagStatus: msg.flag?.flagStatus ?? "notFlagged",
+                categories: JSON.parse(JSON.stringify(msg.categories ?? [])),
+              },
+            });
+          }
+        }
+      }
+    }
+  } catch (cacheErr) {
+    // Non-blocking — email was sent successfully, cache is best-effort
+    console.warn("[send] Failed to cache sent email:", String(cacheErr));
+  }
+
   return NextResponse.json({ ok: true });
 }
 

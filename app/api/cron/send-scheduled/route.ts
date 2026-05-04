@@ -116,11 +116,123 @@ export async function GET(req: NextRequest) {
   const failures = results.filter((r): r is PromiseRejectedResult => r.status === "rejected");
   failures.forEach((f, i) => console.error(`[cron] draft send failure #${i + 1}:`, f.reason));
 
+  // ── Also process PendingEmail records (Undo Send feature) ───────────────────
+  const duePending = await prisma.pendingEmail.findMany({
+    where: {
+      sendAt: { lte: now },
+      cancelled: false,
+    },
+  });
+
+  const pendingResults = await Promise.allSettled(
+    duePending.map(async (pending) => {
+      const payload = pending.payload as {
+        to: { emailAddress: { address: string } }[];
+        cc?: { emailAddress: { address: string } }[];
+        bcc?: { emailAddress: { address: string } }[];
+        subject: string;
+        body: { contentType: string; content: string };
+        attachments?: { name: string; contentType: string; data: string }[];
+        fromHomeAccountId?: string;
+        draftId?: string;
+        importance?: "normal" | "high";
+        isReadReceiptRequested?: boolean;
+      };
+
+      // Determine account
+      let accountId: string | null = payload.fromHomeAccountId ?? null;
+      const providerType = accountId ? detectProviderType(accountId) : "microsoft";
+
+      if (providerType !== "microsoft" && accountId) {
+        // ── IMAP / JMAP provider path ───────────────────────────────────────
+        const account = await verifyAccountOwnership(pending.userId, accountId);
+        if (!account) throw new Error(`No account for pending ${pending.id}`);
+
+        const provider = getProvider(accountId);
+        const params: SendEmailParams = {
+          to: (payload.to ?? []).map((r) => ({ address: r.emailAddress.address })),
+          cc: payload.cc?.length ? payload.cc.map((r) => ({ address: r.emailAddress.address })) : undefined,
+          bcc: payload.bcc?.length ? payload.bcc.map((r) => ({ address: r.emailAddress.address })) : undefined,
+          subject: payload.subject ?? "(No subject)",
+          bodyHtml: payload.body?.content ?? "",
+          attachments: payload.attachments?.map((att) => ({
+            name: att.name,
+            contentType: att.contentType || "application/octet-stream",
+            data: att.data,
+          })),
+          importance: payload.importance ?? "normal",
+        };
+
+        await provider.sendEmail(pending.userId, accountId, params);
+      } else {
+        // ── Microsoft Graph path ────────────────────────────────────────────
+        const msAccount = accountId
+          ? await prisma.msConnectedAccount.findFirst({
+              where: { userId: pending.userId, homeAccountId: accountId },
+            })
+          : await prisma.msConnectedAccount.findFirst({
+              where: { userId: pending.userId, isDefault: true },
+            });
+
+        if (!msAccount) throw new Error(`No account for pending ${pending.id}`);
+
+        const graphAttachments = (payload.attachments ?? []).map((att) => ({
+          "@odata.type": "#microsoft.graph.fileAttachment",
+          name: att.name,
+          contentType: att.contentType || "application/octet-stream",
+          contentBytes: att.data,
+        }));
+
+        const graphPayload = {
+          message: {
+            subject: payload.subject ?? "(No subject)",
+            body: payload.body ?? { contentType: "HTML", content: "" },
+            toRecipients: payload.to,
+            ...(payload.cc?.length ? { ccRecipients: payload.cc } : {}),
+            ...(payload.bcc?.length ? { bccRecipients: payload.bcc } : {}),
+            ...(graphAttachments.length ? { attachments: graphAttachments } : {}),
+            ...(payload.importance === "high" ? { importance: "high" } : {}),
+            ...(payload.isReadReceiptRequested ? { isReadReceiptRequested: true } : {}),
+          },
+          saveToSentItems: true,
+        };
+
+        const res = await graphFetch(pending.userId, msAccount.homeAccountId, "/me/sendMail", {
+          method: "POST",
+          body: JSON.stringify(graphPayload),
+        });
+
+        if (!res.ok) {
+          const err = await res.text();
+          throw new Error(`Graph send failed for pending ${pending.id}: ${err}`);
+        }
+      }
+
+      // Delete local draft if referenced
+      if (payload.draftId) {
+        const draft = await prisma.draft.findFirst({ where: { id: payload.draftId, userId: pending.userId } });
+        if (draft) {
+          await prisma.draft.delete({ where: { id: payload.draftId } });
+        }
+      }
+
+      // Delete the pending record after successful send
+      await prisma.pendingEmail.delete({ where: { id: pending.id } });
+    })
+  );
+
+  const pendingSent = pendingResults.filter((r) => r.status === "fulfilled").length;
+  const pendingFailures = pendingResults.filter((r): r is PromiseRejectedResult => r.status === "rejected");
+  pendingFailures.forEach((f, i) => console.error(`[cron] pending send failure #${i + 1}:`, f.reason));
+
   return NextResponse.json({
     ok: true,
     sent,
     failed: failures.length,
     total: dueDrafts.length,
+    pendingSent,
+    pendingFailed: pendingFailures.length,
+    pendingTotal: duePending.length,
     timestamp: now.toISOString(),
   });
 }

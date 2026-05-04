@@ -167,6 +167,7 @@ export default function Sidebar({ userName = "You", userEmail = "", isAdmin: isA
   const [open, setOpen] = useState({
     mailboxes: true,
     folders: true,
+    tools: true,
     support: false,
   });
 
@@ -175,6 +176,7 @@ export default function Sidebar({ userName = "You", userEmail = "", isAdmin: isA
   }
 
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [remindersCount, setRemindersCount] = useState(0);
   const [foldersError, setFoldersError] = useState(false);
   const [foldersErrorCode, setFoldersErrorCode] = useState<string | null>(null);
   const [foldersLoading, setFoldersLoading] = useState(false);
@@ -264,6 +266,30 @@ export default function Sidebar({ userName = "You", userEmail = "", isAdmin: isA
     triggerBackgroundSync(hid, controller.signal);
     return () => { controller.abort(); };
   }, [activeAccount?.homeAccountId, fetchFoldersWithRetry, triggerBackgroundSync, setMailFolders]);
+
+  // Fetch triggered reminders count
+  useEffect(() => {
+    fetch("/api/reminders?status=triggered")
+      .then(async (res) => {
+        if (res.ok) {
+          const data = await res.json();
+          setRemindersCount(Array.isArray(data) ? data.length : 0);
+        }
+      })
+      .catch(() => {});
+    // Refresh every 5 minutes
+    const timer = setInterval(() => {
+      fetch("/api/reminders?status=triggered")
+        .then(async (res) => {
+          if (res.ok) {
+            const data = await res.json();
+            setRemindersCount(Array.isArray(data) ? data.length : 0);
+          }
+        })
+        .catch(() => {});
+    }, 5 * 60 * 1000);
+    return () => clearInterval(timer);
+  }, []);
 
   const initials = userName.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2);
 
@@ -411,6 +437,49 @@ export default function Sidebar({ userName = "You", userEmail = "", isAdmin: isA
               </ul>
             </SidebarSection>
           )}
+
+          {/* Tools */}
+          <SidebarSection title="Tools" open={open.tools} onToggle={() => toggle("tools")} className="mt-2">
+            <ul className="space-y-0.5">
+              <li>
+                <NavLink
+                  href="/dashboard"
+                  label="Reminders"
+                  badge={remindersCount > 0 ? remindersCount : null}
+                  active={false}
+                  onNavigate={navigateTo}
+                  icon={<path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />}
+                />
+              </li>
+              <li>
+                <NavLink
+                  href="/templates"
+                  label="Templates"
+                  active={isActive("/templates")}
+                  onNavigate={navigateTo}
+                  icon={<path strokeLinecap="round" strokeLinejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />}
+                />
+              </li>
+              <li>
+                <NavLink
+                  href="/email-rules"
+                  label="Email Rules"
+                  active={isActive("/email-rules")}
+                  onNavigate={navigateTo}
+                  icon={<path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />}
+                />
+              </li>
+              <li>
+                <NavLink
+                  href="/signatures"
+                  label="Signatures"
+                  active={isActive("/signatures")}
+                  onNavigate={navigateTo}
+                  icon={<path strokeLinecap="round" strokeLinejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />}
+                />
+              </li>
+            </ul>
+          </SidebarSection>
 
           {/* Support */}
           <SidebarSection title="Support" open={open.support} onToggle={() => toggle("support")} className="mt-2">

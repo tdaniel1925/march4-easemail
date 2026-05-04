@@ -21,7 +21,8 @@ export type AppView =
   | "teams"
   | "folder"
   | "email-read"
-  | "snoozed";
+  | "snoozed"
+  | "templates";
 
 // ─── Store ───────────────────────────────────────────────────────────────────
 
@@ -95,6 +96,7 @@ export function viewToPath(view: AppView, extra?: { folderId?: string; emailId?:
     case "folder": return extra?.folderId ? `/folder/${extra.folderId}` : "/dashboard";
     case "email-read": return extra?.emailId ? `/inbox/${extra.emailId}` : "/dashboard";
     case "snoozed": return "/snoozed";
+    case "templates": return "/templates";
     default: return "/dashboard";
   }
 }
@@ -127,6 +129,7 @@ export function pathToView(pathname: string): { view: AppView; folderId?: string
     case "/email-rules": return { view: "email-rules" };
     case "/teams": return { view: "teams" };
     case "/snoozed": return { view: "snoozed" };
+    case "/templates": return { view: "templates" };
     default: return { view: "dashboard" };
   }
 }

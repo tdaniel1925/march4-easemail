@@ -6,6 +6,7 @@ import { useAccountStore } from "@/lib/stores/account-store";
 import { useDataCacheStore, pathToView } from "@/lib/stores/data-cache";
 import type { EmailMessage } from "@/lib/types/email";
 import type { DashboardStats } from "@/app/api/dashboard/stats/route";
+import RemindersPanel from "@/components/reminders/RemindersPanel";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -588,6 +589,13 @@ export default function DashboardClient({
                 </div>
               )}
             </section>
+
+            {/* Follow-up Reminders */}
+            <RemindersPanel
+              onFollowUp={(reminder) => {
+                navigateTo(`/compose?mode=reply&messageId=${encodeURIComponent(reminder.messageId)}${reminder.homeAccountId ? `&homeAccountId=${encodeURIComponent(reminder.homeAccountId)}` : ""}`);
+              }}
+            />
 
             {/* Tasks */}
             <section className="bg-white rounded-[12px] border border-neutral-200 p-5">

@@ -16,6 +16,8 @@ export function mapCachedEmail(row: {
   hasAttachments: boolean;
   flagStatus: string;
   conversationId?: string | null;
+  sensitivityLabel?: string | null;
+  isPinned?: boolean;
 }): EmailMessage {
   return {
     id: row.id,
@@ -30,6 +32,8 @@ export function mapCachedEmail(row: {
     toRecipients: (row.toRecipients as { name: string; address: string }[]) ?? [],
     body: { content: row.bodyPreview, contentType: "text" },
     conversationId: row.conversationId ?? undefined,
+    sensitivityLabel: row.sensitivityLabel ?? null,
+    isPinned: row.isPinned ?? false,
   };
 }
 

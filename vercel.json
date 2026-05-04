@@ -15,6 +15,10 @@
     {
       "path": "/api/cron/cleanup-ai-replies",
       "schedule": "0 3 * * *"
+    },
+    {
+      "path": "/api/cron/check-reminders",
+      "schedule": "*/5 * * * *"
     }
   ]
 }

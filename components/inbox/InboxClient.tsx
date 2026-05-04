@@ -18,15 +18,43 @@ import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
 // Re-export so existing imports from this file still work
 export type { EmailMessage };
 
-type FilterTab = "all" | "unread" | "starred" | "attachments" | "label";
+type FilterTab = "all" | "unread" | "starred" | "attachments" | "label" | "labeled";
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
+
+function SensitivityBadge({ label }: { label: string | null | undefined }) {
+  if (!label) return null;
+  const config: Record<string, { text: string; bg: string; color: string }> = {
+    "attorney-client-privilege": { text: "A-C Privilege", bg: "rgb(254 226 226)", color: "rgb(153 27 27)" },
+    "confidential": { text: "Confidential", bg: "rgb(255 237 213)", color: "rgb(154 52 18)" },
+    "work-product": { text: "Work Product", bg: "rgb(219 234 254)", color: "rgb(30 64 175)" },
+  };
+  const c = config[label];
+  if (!c) return null;
+  return (
+    <span
+      className="text-[10px] font-semibold px-1.5 py-0.5 rounded-sm flex-shrink-0"
+      style={{ backgroundColor: c.bg, color: c.color }}
+    >
+      {c.text}
+    </span>
+  );
+}
+
+function PinIcon({ className = "w-3.5 h-3.5" }: { className?: string }) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" className={className} fill="currentColor" viewBox="0 0 24 24">
+      <path d="M16 3a1 1 0 0 1 .707.293l4 4a1 1 0 0 1-.464 1.68l-2.243.45-3.5 3.5.5 3.5a1 1 0 0 1-1.707.707L10 13.836l-5.293 5.293a1 1 0 0 1-1.414-1.414L8.586 12.4l-3.293-3.293A1 1 0 0 1 6 7.4l3.5.5 3.5-3.5.449-2.243A1 1 0 0 1 14.68 1.7L16 3z" />
+    </svg>
+  );
+}
 
 function EmailRow({
   email,
   onClick,
   onAiReply,
   onStar,
+  onPin,
   onSnooze,
   onArchive,
   onDelete,
@@ -42,6 +70,7 @@ function EmailRow({
   onClick: () => void;
   onAiReply: (e: React.MouseEvent) => void;
   onStar: (e: React.MouseEvent) => void;
+  onPin?: (e: React.MouseEvent) => void;
   onSnooze?: (e: React.MouseEvent) => void;
   onArchive?: (e: React.MouseEvent) => void;
   onDelete?: (e: React.MouseEvent) => void;
@@ -136,12 +165,18 @@ function EmailRow({
             color: email.isRead ? "rgb(115 115 115)" : "rgb(38 38 38)",
           }}
         >
+          {email.isPinned && (
+            <span className="flex-shrink-0" style={{ color: "rgb(138 9 9)" }}>
+              <PinIcon className="w-3 h-3" />
+            </span>
+          )}
           {email.subject}
           {threadCount && threadCount > 1 && (
             <span className="text-xs px-1.5 py-0.5 rounded" style={{ backgroundColor: "rgb(254 242 242)", color: "rgb(138 9 9)" }}>
               {threadCount}
             </span>
           )}
+          <SensitivityBadge label={email.sensitivityLabel} />
         </p>
         <p className="text-xs mt-0.5 line-clamp-2" style={{ color: email.isRead ? "rgb(155 155 155)" : "rgb(115 115 115)" }}>
           {email.bodyPreview}
@@ -189,6 +224,14 @@ function EmailRow({
             ) : (
               <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" /></svg>
             )}
+          </button>
+          <button
+            onClick={onPin}
+            title={email.isPinned ? "Unpin" : "Pin"}
+            className="w-7 h-7 flex items-center justify-center rounded-[8px] border border-neutral-200 bg-white hover:border-neutral-400 transition-colors"
+            style={{ color: email.isPinned ? "rgb(138 9 9)" : "rgb(115 115 115)" }}
+          >
+            <PinIcon className="w-3.5 h-3.5" />
           </button>
           <button
             onClick={onArchive}
@@ -471,6 +514,37 @@ export default function InboxClient({
     });
   }, [activeAccount]);
 
+  // ── Pin toggle handler ──
+
+  const handlePinToggle = useCallback((email: EmailMessage) => {
+    if (!activeAccount) return;
+    const newPinned = !email.isPinned;
+
+    // Optimistically update UI
+    setEmails((prev) =>
+      prev.map((e) =>
+        e.id === email.id ? { ...e, isPinned: newPinned } : e
+      )
+    );
+
+    void fetch("/api/mail/pin", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        messageId: email.id,
+        homeAccountId: activeAccount.homeAccountId,
+        pinned: newPinned,
+      }),
+    }).catch(() => {
+      // Revert on error
+      setEmails((prev) =>
+        prev.map((e) =>
+          e.id === email.id ? { ...e, isPinned: email.isPinned } : e
+        )
+      );
+    });
+  }, [activeAccount]);
+
   // ── Single email quick actions (for hover + keyboard shortcuts) ──
 
   const handleArchiveEmail = useCallback((email: EmailMessage) => {
@@ -729,7 +803,7 @@ export default function InboxClient({
 
   // Tab switch: fetch from Graph for filtered tabs, use local list for "all"
   useEffect(() => {
-    if (activeTab === "all") { setTabEmails(null); return; }
+    if (activeTab === "all" || activeTab === "labeled") { setTabEmails(null); return; }
     if (!activeAccount) return;
     setLoadingTab(true);
     setTabEmails(null);
@@ -890,6 +964,11 @@ export default function InboxClient({
     baseEmails = emails.filter((e) => e.flag?.flagStatus === "flagged");
   }
 
+  // Client-side filter for labeled tab
+  if (activeTab === "labeled") {
+    baseEmails = emails.filter((e) => !!e.sensitivityLabel);
+  }
+
   // Search overrides everything
   let displayEmails = searchResults ?? baseEmails;
 
@@ -957,6 +1036,13 @@ export default function InboxClient({
     });
   }
 
+  // ── Sort pinned emails to the top ──
+  displayEmails = [...displayEmails].sort((a, b) => {
+    if (a.isPinned && !b.isPinned) return -1;
+    if (!a.isPinned && b.isPinned) return 1;
+    return 0; // preserve existing order within pinned/unpinned groups
+  });
+
   // ── Toggle select all (defined here after displayEmails is computed) ──
   const toggleSelectAll = useCallback(() => {
     if (selectedIds.size === displayEmails.length) {
@@ -1020,6 +1106,7 @@ export default function InboxClient({
     { key: "unread", label: "Unread" },
     { key: "starred", label: "Starred" },
     { key: "attachments", label: "Attachments" },
+    { key: "labeled", label: "Labeled" },
     ...(activeLabel ? [{ key: "label" as FilterTab, label: activeLabel }] : []),
   ];
 
@@ -1474,6 +1561,7 @@ export default function InboxClient({
                 }}
                 onAiReply={(e) => { e.stopPropagation(); setAiReplyEmail(email); }}
                 onStar={(e) => { e.stopPropagation(); handleStarToggle(email); }}
+                onPin={(e) => { e.stopPropagation(); handlePinToggle(email); }}
                 onArchive={(e) => { e.stopPropagation(); handleArchiveEmail(email); }}
                 onDelete={(e) => { e.stopPropagation(); handleDeleteEmail(email); }}
                 onMarkUnread={(e) => { e.stopPropagation(); handleMarkUnread(email); }}

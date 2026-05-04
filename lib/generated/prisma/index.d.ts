@@ -134,6 +134,16 @@ export type ReadReceipt = $Result.DefaultSelection<Prisma.$ReadReceiptPayload>
  */
 export type TodoItem = $Result.DefaultSelection<Prisma.$TodoItemPayload>
 /**
+ * Model EmailTemplate
+ * 
+ */
+export type EmailTemplate = $Result.DefaultSelection<Prisma.$EmailTemplatePayload>
+/**
+ * Model FollowUpReminder
+ * 
+ */
+export type FollowUpReminder = $Result.DefaultSelection<Prisma.$FollowUpReminderPayload>
+/**
  * Model ImapConnectedAccount
  * 
  */
@@ -143,6 +153,11 @@ export type ImapConnectedAccount = $Result.DefaultSelection<Prisma.$ImapConnecte
  * 
  */
 export type JmapConnectedAccount = $Result.DefaultSelection<Prisma.$JmapConnectedAccountPayload>
+/**
+ * Model PendingEmail
+ * 
+ */
+export type PendingEmail = $Result.DefaultSelection<Prisma.$PendingEmailPayload>
 
 /**
  * ##  Prisma Client ʲˢ
@@ -506,6 +521,26 @@ export class PrismaClient<
   get todoItem(): Prisma.TodoItemDelegate<ExtArgs, ClientOptions>;
 
   /**
+   * `prisma.emailTemplate`: Exposes CRUD operations for the **EmailTemplate** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more EmailTemplates
+    * const emailTemplates = await prisma.emailTemplate.findMany()
+    * ```
+    */
+  get emailTemplate(): Prisma.EmailTemplateDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.followUpReminder`: Exposes CRUD operations for the **FollowUpReminder** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more FollowUpReminders
+    * const followUpReminders = await prisma.followUpReminder.findMany()
+    * ```
+    */
+  get followUpReminder(): Prisma.FollowUpReminderDelegate<ExtArgs, ClientOptions>;
+
+  /**
    * `prisma.imapConnectedAccount`: Exposes CRUD operations for the **ImapConnectedAccount** model.
     * Example usage:
     * ```ts
@@ -524,6 +559,16 @@ export class PrismaClient<
     * ```
     */
   get jmapConnectedAccount(): Prisma.JmapConnectedAccountDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.pendingEmail`: Exposes CRUD operations for the **PendingEmail** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more PendingEmails
+    * const pendingEmails = await prisma.pendingEmail.findMany()
+    * ```
+    */
+  get pendingEmail(): Prisma.PendingEmailDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -982,8 +1027,11 @@ export namespace Prisma {
     SnoozedEmail: 'SnoozedEmail',
     ReadReceipt: 'ReadReceipt',
     TodoItem: 'TodoItem',
+    EmailTemplate: 'EmailTemplate',
+    FollowUpReminder: 'FollowUpReminder',
     ImapConnectedAccount: 'ImapConnectedAccount',
-    JmapConnectedAccount: 'JmapConnectedAccount'
+    JmapConnectedAccount: 'JmapConnectedAccount',
+    PendingEmail: 'PendingEmail'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -999,7 +1047,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "organization" | "orgContact" | "user" | "msConnectedAccount" | "msalTokenCache" | "emailDeltaLink" | "webhookSubscription" | "draft" | "signature" | "cachedFolder" | "cachedEmail" | "cachedCalendarEvent" | "cachedContact" | "deployLog" | "emailRule" | "emailAttachment" | "aiGeneratedReply" | "cachedSearchResult" | "syncStatus" | "notificationLog" | "migrationStatus" | "snoozedEmail" | "readReceipt" | "todoItem" | "imapConnectedAccount" | "jmapConnectedAccount"
+      modelProps: "organization" | "orgContact" | "user" | "msConnectedAccount" | "msalTokenCache" | "emailDeltaLink" | "webhookSubscription" | "draft" | "signature" | "cachedFolder" | "cachedEmail" | "cachedCalendarEvent" | "cachedContact" | "deployLog" | "emailRule" | "emailAttachment" | "aiGeneratedReply" | "cachedSearchResult" | "syncStatus" | "notificationLog" | "migrationStatus" | "snoozedEmail" | "readReceipt" | "todoItem" | "emailTemplate" | "followUpReminder" | "imapConnectedAccount" | "jmapConnectedAccount" | "pendingEmail"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -2779,6 +2827,154 @@ export namespace Prisma {
           }
         }
       }
+      EmailTemplate: {
+        payload: Prisma.$EmailTemplatePayload<ExtArgs>
+        fields: Prisma.EmailTemplateFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.EmailTemplateFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmailTemplatePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.EmailTemplateFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmailTemplatePayload>
+          }
+          findFirst: {
+            args: Prisma.EmailTemplateFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmailTemplatePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.EmailTemplateFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmailTemplatePayload>
+          }
+          findMany: {
+            args: Prisma.EmailTemplateFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmailTemplatePayload>[]
+          }
+          create: {
+            args: Prisma.EmailTemplateCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmailTemplatePayload>
+          }
+          createMany: {
+            args: Prisma.EmailTemplateCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.EmailTemplateCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmailTemplatePayload>[]
+          }
+          delete: {
+            args: Prisma.EmailTemplateDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmailTemplatePayload>
+          }
+          update: {
+            args: Prisma.EmailTemplateUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmailTemplatePayload>
+          }
+          deleteMany: {
+            args: Prisma.EmailTemplateDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.EmailTemplateUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.EmailTemplateUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmailTemplatePayload>[]
+          }
+          upsert: {
+            args: Prisma.EmailTemplateUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmailTemplatePayload>
+          }
+          aggregate: {
+            args: Prisma.EmailTemplateAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateEmailTemplate>
+          }
+          groupBy: {
+            args: Prisma.EmailTemplateGroupByArgs<ExtArgs>
+            result: $Utils.Optional<EmailTemplateGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.EmailTemplateCountArgs<ExtArgs>
+            result: $Utils.Optional<EmailTemplateCountAggregateOutputType> | number
+          }
+        }
+      }
+      FollowUpReminder: {
+        payload: Prisma.$FollowUpReminderPayload<ExtArgs>
+        fields: Prisma.FollowUpReminderFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.FollowUpReminderFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FollowUpReminderPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.FollowUpReminderFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FollowUpReminderPayload>
+          }
+          findFirst: {
+            args: Prisma.FollowUpReminderFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FollowUpReminderPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.FollowUpReminderFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FollowUpReminderPayload>
+          }
+          findMany: {
+            args: Prisma.FollowUpReminderFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FollowUpReminderPayload>[]
+          }
+          create: {
+            args: Prisma.FollowUpReminderCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FollowUpReminderPayload>
+          }
+          createMany: {
+            args: Prisma.FollowUpReminderCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.FollowUpReminderCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FollowUpReminderPayload>[]
+          }
+          delete: {
+            args: Prisma.FollowUpReminderDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FollowUpReminderPayload>
+          }
+          update: {
+            args: Prisma.FollowUpReminderUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FollowUpReminderPayload>
+          }
+          deleteMany: {
+            args: Prisma.FollowUpReminderDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.FollowUpReminderUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.FollowUpReminderUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FollowUpReminderPayload>[]
+          }
+          upsert: {
+            args: Prisma.FollowUpReminderUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FollowUpReminderPayload>
+          }
+          aggregate: {
+            args: Prisma.FollowUpReminderAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateFollowUpReminder>
+          }
+          groupBy: {
+            args: Prisma.FollowUpReminderGroupByArgs<ExtArgs>
+            result: $Utils.Optional<FollowUpReminderGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.FollowUpReminderCountArgs<ExtArgs>
+            result: $Utils.Optional<FollowUpReminderCountAggregateOutputType> | number
+          }
+        }
+      }
       ImapConnectedAccount: {
         payload: Prisma.$ImapConnectedAccountPayload<ExtArgs>
         fields: Prisma.ImapConnectedAccountFieldRefs
@@ -2927,6 +3123,80 @@ export namespace Prisma {
           }
         }
       }
+      PendingEmail: {
+        payload: Prisma.$PendingEmailPayload<ExtArgs>
+        fields: Prisma.PendingEmailFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.PendingEmailFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PendingEmailPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.PendingEmailFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PendingEmailPayload>
+          }
+          findFirst: {
+            args: Prisma.PendingEmailFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PendingEmailPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.PendingEmailFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PendingEmailPayload>
+          }
+          findMany: {
+            args: Prisma.PendingEmailFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PendingEmailPayload>[]
+          }
+          create: {
+            args: Prisma.PendingEmailCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PendingEmailPayload>
+          }
+          createMany: {
+            args: Prisma.PendingEmailCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.PendingEmailCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PendingEmailPayload>[]
+          }
+          delete: {
+            args: Prisma.PendingEmailDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PendingEmailPayload>
+          }
+          update: {
+            args: Prisma.PendingEmailUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PendingEmailPayload>
+          }
+          deleteMany: {
+            args: Prisma.PendingEmailDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.PendingEmailUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.PendingEmailUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PendingEmailPayload>[]
+          }
+          upsert: {
+            args: Prisma.PendingEmailUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PendingEmailPayload>
+          }
+          aggregate: {
+            args: Prisma.PendingEmailAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregatePendingEmail>
+          }
+          groupBy: {
+            args: Prisma.PendingEmailGroupByArgs<ExtArgs>
+            result: $Utils.Optional<PendingEmailGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.PendingEmailCountArgs<ExtArgs>
+            result: $Utils.Optional<PendingEmailCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -3059,8 +3329,11 @@ export namespace Prisma {
     snoozedEmail?: SnoozedEmailOmit
     readReceipt?: ReadReceiptOmit
     todoItem?: TodoItemOmit
+    emailTemplate?: EmailTemplateOmit
+    followUpReminder?: FollowUpReminderOmit
     imapConnectedAccount?: ImapConnectedAccountOmit
     jmapConnectedAccount?: JmapConnectedAccountOmit
+    pendingEmail?: PendingEmailOmit
   }
 
   /* Types for Logging */
@@ -3189,6 +3462,7 @@ export namespace Prisma {
     drafts: number
     emailRules: number
     signatures: number
+    emailTemplates: number
     cachedFolders: number
     cachedEmails: number
     cachedCalEvents: number
@@ -3202,6 +3476,8 @@ export namespace Prisma {
     todoItems: number
     snoozedEmails: number
     readReceipts: number
+    pendingEmails: number
+    followUpReminders: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -3213,6 +3489,7 @@ export namespace Prisma {
     drafts?: boolean | UserCountOutputTypeCountDraftsArgs
     emailRules?: boolean | UserCountOutputTypeCountEmailRulesArgs
     signatures?: boolean | UserCountOutputTypeCountSignaturesArgs
+    emailTemplates?: boolean | UserCountOutputTypeCountEmailTemplatesArgs
     cachedFolders?: boolean | UserCountOutputTypeCountCachedFoldersArgs
     cachedEmails?: boolean | UserCountOutputTypeCountCachedEmailsArgs
     cachedCalEvents?: boolean | UserCountOutputTypeCountCachedCalEventsArgs
@@ -3226,6 +3503,8 @@ export namespace Prisma {
     todoItems?: boolean | UserCountOutputTypeCountTodoItemsArgs
     snoozedEmails?: boolean | UserCountOutputTypeCountSnoozedEmailsArgs
     readReceipts?: boolean | UserCountOutputTypeCountReadReceiptsArgs
+    pendingEmails?: boolean | UserCountOutputTypeCountPendingEmailsArgs
+    followUpReminders?: boolean | UserCountOutputTypeCountFollowUpRemindersArgs
   }
 
   // Custom InputTypes
@@ -3293,6 +3572,13 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountSignaturesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: SignatureWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountEmailTemplatesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: EmailTemplateWhereInput
   }
 
   /**
@@ -3384,6 +3670,20 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountReadReceiptsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: ReadReceiptWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountPendingEmailsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PendingEmailWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountFollowUpRemindersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FollowUpReminderWhereInput
   }
 
 
@@ -5579,8 +5879,18 @@ export namespace Prisma {
 
   export type AggregateUser = {
     _count: UserCountAggregateOutputType | null
+    _avg: UserAvgAggregateOutputType | null
+    _sum: UserSumAggregateOutputType | null
     _min: UserMinAggregateOutputType | null
     _max: UserMaxAggregateOutputType | null
+  }
+
+  export type UserAvgAggregateOutputType = {
+    undoSendDelay: number | null
+  }
+
+  export type UserSumAggregateOutputType = {
+    undoSendDelay: number | null
   }
 
   export type UserMinAggregateOutputType = {
@@ -5601,6 +5911,7 @@ export namespace Prisma {
     emailDensity: string | null
     preferredTimeZone: string | null
     lastActiveAccountId: string | null
+    undoSendDelay: number | null
     voiceProfileUpdatedAt: Date | null
   }
 
@@ -5622,6 +5933,7 @@ export namespace Prisma {
     emailDensity: string | null
     preferredTimeZone: string | null
     lastActiveAccountId: string | null
+    undoSendDelay: number | null
     voiceProfileUpdatedAt: Date | null
   }
 
@@ -5643,11 +5955,20 @@ export namespace Prisma {
     emailDensity: number
     preferredTimeZone: number
     lastActiveAccountId: number
+    undoSendDelay: number
     voiceProfile: number
     voiceProfileUpdatedAt: number
     _all: number
   }
 
+
+  export type UserAvgAggregateInputType = {
+    undoSendDelay?: true
+  }
+
+  export type UserSumAggregateInputType = {
+    undoSendDelay?: true
+  }
 
   export type UserMinAggregateInputType = {
     id?: true
@@ -5667,6 +5988,7 @@ export namespace Prisma {
     emailDensity?: true
     preferredTimeZone?: true
     lastActiveAccountId?: true
+    undoSendDelay?: true
     voiceProfileUpdatedAt?: true
   }
 
@@ -5688,6 +6010,7 @@ export namespace Prisma {
     emailDensity?: true
     preferredTimeZone?: true
     lastActiveAccountId?: true
+    undoSendDelay?: true
     voiceProfileUpdatedAt?: true
   }
 
@@ -5709,6 +6032,7 @@ export namespace Prisma {
     emailDensity?: true
     preferredTimeZone?: true
     lastActiveAccountId?: true
+    undoSendDelay?: true
     voiceProfile?: true
     voiceProfileUpdatedAt?: true
     _all?: true
@@ -5752,6 +6076,18 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
+     * Select which fields to average
+    **/
+    _avg?: UserAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: UserSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
      * Select which fields to find the minimum value
     **/
     _min?: UserMinAggregateInputType
@@ -5782,6 +6118,8 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: UserCountAggregateInputType | true
+    _avg?: UserAvgAggregateInputType
+    _sum?: UserSumAggregateInputType
     _min?: UserMinAggregateInputType
     _max?: UserMaxAggregateInputType
   }
@@ -5804,9 +6142,12 @@ export namespace Prisma {
     emailDensity: string
     preferredTimeZone: string
     lastActiveAccountId: string | null
+    undoSendDelay: number
     voiceProfile: JsonValue | null
     voiceProfileUpdatedAt: Date | null
     _count: UserCountAggregateOutputType | null
+    _avg: UserAvgAggregateOutputType | null
+    _sum: UserSumAggregateOutputType | null
     _min: UserMinAggregateOutputType | null
     _max: UserMaxAggregateOutputType | null
   }
@@ -5843,6 +6184,7 @@ export namespace Prisma {
     emailDensity?: boolean
     preferredTimeZone?: boolean
     lastActiveAccountId?: boolean
+    undoSendDelay?: boolean
     voiceProfile?: boolean
     voiceProfileUpdatedAt?: boolean
     org?: boolean | OrganizationDefaultArgs<ExtArgs>
@@ -5855,6 +6197,7 @@ export namespace Prisma {
     drafts?: boolean | User$draftsArgs<ExtArgs>
     emailRules?: boolean | User$emailRulesArgs<ExtArgs>
     signatures?: boolean | User$signaturesArgs<ExtArgs>
+    emailTemplates?: boolean | User$emailTemplatesArgs<ExtArgs>
     cachedFolders?: boolean | User$cachedFoldersArgs<ExtArgs>
     cachedEmails?: boolean | User$cachedEmailsArgs<ExtArgs>
     cachedCalEvents?: boolean | User$cachedCalEventsArgs<ExtArgs>
@@ -5868,6 +6211,8 @@ export namespace Prisma {
     todoItems?: boolean | User$todoItemsArgs<ExtArgs>
     snoozedEmails?: boolean | User$snoozedEmailsArgs<ExtArgs>
     readReceipts?: boolean | User$readReceiptsArgs<ExtArgs>
+    pendingEmails?: boolean | User$pendingEmailsArgs<ExtArgs>
+    followUpReminders?: boolean | User$followUpRemindersArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -5889,6 +6234,7 @@ export namespace Prisma {
     emailDensity?: boolean
     preferredTimeZone?: boolean
     lastActiveAccountId?: boolean
+    undoSendDelay?: boolean
     voiceProfile?: boolean
     voiceProfileUpdatedAt?: boolean
     org?: boolean | OrganizationDefaultArgs<ExtArgs>
@@ -5912,6 +6258,7 @@ export namespace Prisma {
     emailDensity?: boolean
     preferredTimeZone?: boolean
     lastActiveAccountId?: boolean
+    undoSendDelay?: boolean
     voiceProfile?: boolean
     voiceProfileUpdatedAt?: boolean
     org?: boolean | OrganizationDefaultArgs<ExtArgs>
@@ -5935,11 +6282,12 @@ export namespace Prisma {
     emailDensity?: boolean
     preferredTimeZone?: boolean
     lastActiveAccountId?: boolean
+    undoSendDelay?: boolean
     voiceProfile?: boolean
     voiceProfileUpdatedAt?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "name" | "avatarUrl" | "createdAt" | "updatedAt" | "orgId" | "notificationNewEmail" | "notificationDailyDigest" | "notificationAiReplies" | "notificationCalendarReminders" | "notificationWeeklyReport" | "appTheme" | "fontSize" | "emailDensity" | "preferredTimeZone" | "lastActiveAccountId" | "voiceProfile" | "voiceProfileUpdatedAt", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "name" | "avatarUrl" | "createdAt" | "updatedAt" | "orgId" | "notificationNewEmail" | "notificationDailyDigest" | "notificationAiReplies" | "notificationCalendarReminders" | "notificationWeeklyReport" | "appTheme" | "fontSize" | "emailDensity" | "preferredTimeZone" | "lastActiveAccountId" | "undoSendDelay" | "voiceProfile" | "voiceProfileUpdatedAt", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     org?: boolean | OrganizationDefaultArgs<ExtArgs>
     msAccounts?: boolean | User$msAccountsArgs<ExtArgs>
@@ -5951,6 +6299,7 @@ export namespace Prisma {
     drafts?: boolean | User$draftsArgs<ExtArgs>
     emailRules?: boolean | User$emailRulesArgs<ExtArgs>
     signatures?: boolean | User$signaturesArgs<ExtArgs>
+    emailTemplates?: boolean | User$emailTemplatesArgs<ExtArgs>
     cachedFolders?: boolean | User$cachedFoldersArgs<ExtArgs>
     cachedEmails?: boolean | User$cachedEmailsArgs<ExtArgs>
     cachedCalEvents?: boolean | User$cachedCalEventsArgs<ExtArgs>
@@ -5964,6 +6313,8 @@ export namespace Prisma {
     todoItems?: boolean | User$todoItemsArgs<ExtArgs>
     snoozedEmails?: boolean | User$snoozedEmailsArgs<ExtArgs>
     readReceipts?: boolean | User$readReceiptsArgs<ExtArgs>
+    pendingEmails?: boolean | User$pendingEmailsArgs<ExtArgs>
+    followUpReminders?: boolean | User$followUpRemindersArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -5986,6 +6337,7 @@ export namespace Prisma {
       drafts: Prisma.$DraftPayload<ExtArgs>[]
       emailRules: Prisma.$EmailRulePayload<ExtArgs>[]
       signatures: Prisma.$SignaturePayload<ExtArgs>[]
+      emailTemplates: Prisma.$EmailTemplatePayload<ExtArgs>[]
       cachedFolders: Prisma.$CachedFolderPayload<ExtArgs>[]
       cachedEmails: Prisma.$CachedEmailPayload<ExtArgs>[]
       cachedCalEvents: Prisma.$CachedCalendarEventPayload<ExtArgs>[]
@@ -5999,6 +6351,8 @@ export namespace Prisma {
       todoItems: Prisma.$TodoItemPayload<ExtArgs>[]
       snoozedEmails: Prisma.$SnoozedEmailPayload<ExtArgs>[]
       readReceipts: Prisma.$ReadReceiptPayload<ExtArgs>[]
+      pendingEmails: Prisma.$PendingEmailPayload<ExtArgs>[]
+      followUpReminders: Prisma.$FollowUpReminderPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -6018,6 +6372,7 @@ export namespace Prisma {
       emailDensity: string
       preferredTimeZone: string
       lastActiveAccountId: string | null
+      undoSendDelay: number
       voiceProfile: Prisma.JsonValue | null
       voiceProfileUpdatedAt: Date | null
     }, ExtArgs["result"]["user"]>
@@ -6424,6 +6779,7 @@ export namespace Prisma {
     drafts<T extends User$draftsArgs<ExtArgs> = {}>(args?: Subset<T, User$draftsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DraftPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     emailRules<T extends User$emailRulesArgs<ExtArgs> = {}>(args?: Subset<T, User$emailRulesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EmailRulePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     signatures<T extends User$signaturesArgs<ExtArgs> = {}>(args?: Subset<T, User$signaturesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SignaturePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    emailTemplates<T extends User$emailTemplatesArgs<ExtArgs> = {}>(args?: Subset<T, User$emailTemplatesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EmailTemplatePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     cachedFolders<T extends User$cachedFoldersArgs<ExtArgs> = {}>(args?: Subset<T, User$cachedFoldersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CachedFolderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     cachedEmails<T extends User$cachedEmailsArgs<ExtArgs> = {}>(args?: Subset<T, User$cachedEmailsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CachedEmailPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     cachedCalEvents<T extends User$cachedCalEventsArgs<ExtArgs> = {}>(args?: Subset<T, User$cachedCalEventsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CachedCalendarEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -6437,6 +6793,8 @@ export namespace Prisma {
     todoItems<T extends User$todoItemsArgs<ExtArgs> = {}>(args?: Subset<T, User$todoItemsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TodoItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     snoozedEmails<T extends User$snoozedEmailsArgs<ExtArgs> = {}>(args?: Subset<T, User$snoozedEmailsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SnoozedEmailPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     readReceipts<T extends User$readReceiptsArgs<ExtArgs> = {}>(args?: Subset<T, User$readReceiptsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReadReceiptPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    pendingEmails<T extends User$pendingEmailsArgs<ExtArgs> = {}>(args?: Subset<T, User$pendingEmailsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PendingEmailPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    followUpReminders<T extends User$followUpRemindersArgs<ExtArgs> = {}>(args?: Subset<T, User$followUpRemindersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FollowUpReminderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -6483,6 +6841,7 @@ export namespace Prisma {
     readonly emailDensity: FieldRef<"User", 'String'>
     readonly preferredTimeZone: FieldRef<"User", 'String'>
     readonly lastActiveAccountId: FieldRef<"User", 'String'>
+    readonly undoSendDelay: FieldRef<"User", 'Int'>
     readonly voiceProfile: FieldRef<"User", 'Json'>
     readonly voiceProfileUpdatedAt: FieldRef<"User", 'DateTime'>
   }
@@ -7092,6 +7451,30 @@ export namespace Prisma {
   }
 
   /**
+   * User.emailTemplates
+   */
+  export type User$emailTemplatesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmailTemplate
+     */
+    select?: EmailTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmailTemplate
+     */
+    omit?: EmailTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmailTemplateInclude<ExtArgs> | null
+    where?: EmailTemplateWhereInput
+    orderBy?: EmailTemplateOrderByWithRelationInput | EmailTemplateOrderByWithRelationInput[]
+    cursor?: EmailTemplateWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: EmailTemplateScalarFieldEnum | EmailTemplateScalarFieldEnum[]
+  }
+
+  /**
    * User.cachedFolders
    */
   export type User$cachedFoldersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -7401,6 +7784,54 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: ReadReceiptScalarFieldEnum | ReadReceiptScalarFieldEnum[]
+  }
+
+  /**
+   * User.pendingEmails
+   */
+  export type User$pendingEmailsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PendingEmail
+     */
+    select?: PendingEmailSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PendingEmail
+     */
+    omit?: PendingEmailOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PendingEmailInclude<ExtArgs> | null
+    where?: PendingEmailWhereInput
+    orderBy?: PendingEmailOrderByWithRelationInput | PendingEmailOrderByWithRelationInput[]
+    cursor?: PendingEmailWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: PendingEmailScalarFieldEnum | PendingEmailScalarFieldEnum[]
+  }
+
+  /**
+   * User.followUpReminders
+   */
+  export type User$followUpRemindersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FollowUpReminder
+     */
+    select?: FollowUpReminderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FollowUpReminder
+     */
+    omit?: FollowUpReminderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FollowUpReminderInclude<ExtArgs> | null
+    where?: FollowUpReminderWhereInput
+    orderBy?: FollowUpReminderOrderByWithRelationInput | FollowUpReminderOrderByWithRelationInput[]
+    cursor?: FollowUpReminderWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: FollowUpReminderScalarFieldEnum | FollowUpReminderScalarFieldEnum[]
   }
 
   /**
@@ -15457,6 +15888,8 @@ export namespace Prisma {
     isDraft: boolean | null
     syncStatus: string | null
     lastModifiedDateTime: Date | null
+    sensitivityLabel: string | null
+    isPinned: boolean | null
     syncedAt: Date | null
     updatedAt: Date | null
   }
@@ -15482,6 +15915,8 @@ export namespace Prisma {
     isDraft: boolean | null
     syncStatus: string | null
     lastModifiedDateTime: Date | null
+    sensitivityLabel: string | null
+    isPinned: boolean | null
     syncedAt: Date | null
     updatedAt: Date | null
   }
@@ -15509,6 +15944,8 @@ export namespace Prisma {
     isDraft: number
     syncStatus: number
     lastModifiedDateTime: number
+    sensitivityLabel: number
+    isPinned: number
     syncedAt: number
     updatedAt: number
     _all: number
@@ -15536,6 +15973,8 @@ export namespace Prisma {
     isDraft?: true
     syncStatus?: true
     lastModifiedDateTime?: true
+    sensitivityLabel?: true
+    isPinned?: true
     syncedAt?: true
     updatedAt?: true
   }
@@ -15561,6 +16000,8 @@ export namespace Prisma {
     isDraft?: true
     syncStatus?: true
     lastModifiedDateTime?: true
+    sensitivityLabel?: true
+    isPinned?: true
     syncedAt?: true
     updatedAt?: true
   }
@@ -15588,6 +16029,8 @@ export namespace Prisma {
     isDraft?: true
     syncStatus?: true
     lastModifiedDateTime?: true
+    sensitivityLabel?: true
+    isPinned?: true
     syncedAt?: true
     updatedAt?: true
     _all?: true
@@ -15688,6 +16131,8 @@ export namespace Prisma {
     isDraft: boolean
     syncStatus: string
     lastModifiedDateTime: Date | null
+    sensitivityLabel: string | null
+    isPinned: boolean
     syncedAt: Date
     updatedAt: Date
     _count: CachedEmailCountAggregateOutputType | null
@@ -15732,6 +16177,8 @@ export namespace Prisma {
     isDraft?: boolean
     syncStatus?: boolean
     lastModifiedDateTime?: boolean
+    sensitivityLabel?: boolean
+    isPinned?: boolean
     syncedAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -15760,6 +16207,8 @@ export namespace Prisma {
     isDraft?: boolean
     syncStatus?: boolean
     lastModifiedDateTime?: boolean
+    sensitivityLabel?: boolean
+    isPinned?: boolean
     syncedAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -15788,6 +16237,8 @@ export namespace Prisma {
     isDraft?: boolean
     syncStatus?: boolean
     lastModifiedDateTime?: boolean
+    sensitivityLabel?: boolean
+    isPinned?: boolean
     syncedAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -15816,11 +16267,13 @@ export namespace Prisma {
     isDraft?: boolean
     syncStatus?: boolean
     lastModifiedDateTime?: boolean
+    sensitivityLabel?: boolean
+    isPinned?: boolean
     syncedAt?: boolean
     updatedAt?: boolean
   }
 
-  export type CachedEmailOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "homeAccountId" | "folderId" | "subject" | "bodyPreview" | "fromName" | "fromAddress" | "toRecipients" | "receivedDateTime" | "sentDateTime" | "isRead" | "hasAttachments" | "flagStatus" | "categories" | "importance" | "sensitivity" | "inferenceClassification" | "conversationId" | "isDraft" | "syncStatus" | "lastModifiedDateTime" | "syncedAt" | "updatedAt", ExtArgs["result"]["cachedEmail"]>
+  export type CachedEmailOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "homeAccountId" | "folderId" | "subject" | "bodyPreview" | "fromName" | "fromAddress" | "toRecipients" | "receivedDateTime" | "sentDateTime" | "isRead" | "hasAttachments" | "flagStatus" | "categories" | "importance" | "sensitivity" | "inferenceClassification" | "conversationId" | "isDraft" | "syncStatus" | "lastModifiedDateTime" | "sensitivityLabel" | "isPinned" | "syncedAt" | "updatedAt", ExtArgs["result"]["cachedEmail"]>
   export type CachedEmailInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
   }
@@ -15859,6 +16312,8 @@ export namespace Prisma {
       isDraft: boolean
       syncStatus: string
       lastModifiedDateTime: Date | null
+      sensitivityLabel: string | null
+      isPinned: boolean
       syncedAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["cachedEmail"]>
@@ -16307,6 +16762,8 @@ export namespace Prisma {
     readonly isDraft: FieldRef<"CachedEmail", 'Boolean'>
     readonly syncStatus: FieldRef<"CachedEmail", 'String'>
     readonly lastModifiedDateTime: FieldRef<"CachedEmail", 'DateTime'>
+    readonly sensitivityLabel: FieldRef<"CachedEmail", 'String'>
+    readonly isPinned: FieldRef<"CachedEmail", 'Boolean'>
     readonly syncedAt: FieldRef<"CachedEmail", 'DateTime'>
     readonly updatedAt: FieldRef<"CachedEmail", 'DateTime'>
   }
@@ -31664,6 +32121,2248 @@ export namespace Prisma {
 
 
   /**
+   * Model EmailTemplate
+   */
+
+  export type AggregateEmailTemplate = {
+    _count: EmailTemplateCountAggregateOutputType | null
+    _min: EmailTemplateMinAggregateOutputType | null
+    _max: EmailTemplateMaxAggregateOutputType | null
+  }
+
+  export type EmailTemplateMinAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    name: string | null
+    subject: string | null
+    body: string | null
+    category: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type EmailTemplateMaxAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    name: string | null
+    subject: string | null
+    body: string | null
+    category: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type EmailTemplateCountAggregateOutputType = {
+    id: number
+    userId: number
+    name: number
+    subject: number
+    body: number
+    variables: number
+    category: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type EmailTemplateMinAggregateInputType = {
+    id?: true
+    userId?: true
+    name?: true
+    subject?: true
+    body?: true
+    category?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type EmailTemplateMaxAggregateInputType = {
+    id?: true
+    userId?: true
+    name?: true
+    subject?: true
+    body?: true
+    category?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type EmailTemplateCountAggregateInputType = {
+    id?: true
+    userId?: true
+    name?: true
+    subject?: true
+    body?: true
+    variables?: true
+    category?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type EmailTemplateAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which EmailTemplate to aggregate.
+     */
+    where?: EmailTemplateWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EmailTemplates to fetch.
+     */
+    orderBy?: EmailTemplateOrderByWithRelationInput | EmailTemplateOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: EmailTemplateWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EmailTemplates from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EmailTemplates.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned EmailTemplates
+    **/
+    _count?: true | EmailTemplateCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: EmailTemplateMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: EmailTemplateMaxAggregateInputType
+  }
+
+  export type GetEmailTemplateAggregateType<T extends EmailTemplateAggregateArgs> = {
+        [P in keyof T & keyof AggregateEmailTemplate]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateEmailTemplate[P]>
+      : GetScalarType<T[P], AggregateEmailTemplate[P]>
+  }
+
+
+
+
+  export type EmailTemplateGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: EmailTemplateWhereInput
+    orderBy?: EmailTemplateOrderByWithAggregationInput | EmailTemplateOrderByWithAggregationInput[]
+    by: EmailTemplateScalarFieldEnum[] | EmailTemplateScalarFieldEnum
+    having?: EmailTemplateScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: EmailTemplateCountAggregateInputType | true
+    _min?: EmailTemplateMinAggregateInputType
+    _max?: EmailTemplateMaxAggregateInputType
+  }
+
+  export type EmailTemplateGroupByOutputType = {
+    id: string
+    userId: string
+    name: string
+    subject: string | null
+    body: string
+    variables: JsonValue
+    category: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: EmailTemplateCountAggregateOutputType | null
+    _min: EmailTemplateMinAggregateOutputType | null
+    _max: EmailTemplateMaxAggregateOutputType | null
+  }
+
+  type GetEmailTemplateGroupByPayload<T extends EmailTemplateGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<EmailTemplateGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof EmailTemplateGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], EmailTemplateGroupByOutputType[P]>
+            : GetScalarType<T[P], EmailTemplateGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type EmailTemplateSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    name?: boolean
+    subject?: boolean
+    body?: boolean
+    variables?: boolean
+    category?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["emailTemplate"]>
+
+  export type EmailTemplateSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    name?: boolean
+    subject?: boolean
+    body?: boolean
+    variables?: boolean
+    category?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["emailTemplate"]>
+
+  export type EmailTemplateSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    name?: boolean
+    subject?: boolean
+    body?: boolean
+    variables?: boolean
+    category?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["emailTemplate"]>
+
+  export type EmailTemplateSelectScalar = {
+    id?: boolean
+    userId?: boolean
+    name?: boolean
+    subject?: boolean
+    body?: boolean
+    variables?: boolean
+    category?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type EmailTemplateOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "name" | "subject" | "body" | "variables" | "category" | "createdAt" | "updatedAt", ExtArgs["result"]["emailTemplate"]>
+  export type EmailTemplateInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type EmailTemplateIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type EmailTemplateIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $EmailTemplatePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "EmailTemplate"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      userId: string
+      name: string
+      subject: string | null
+      body: string
+      variables: Prisma.JsonValue
+      category: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["emailTemplate"]>
+    composites: {}
+  }
+
+  type EmailTemplateGetPayload<S extends boolean | null | undefined | EmailTemplateDefaultArgs> = $Result.GetResult<Prisma.$EmailTemplatePayload, S>
+
+  type EmailTemplateCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<EmailTemplateFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: EmailTemplateCountAggregateInputType | true
+    }
+
+  export interface EmailTemplateDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['EmailTemplate'], meta: { name: 'EmailTemplate' } }
+    /**
+     * Find zero or one EmailTemplate that matches the filter.
+     * @param {EmailTemplateFindUniqueArgs} args - Arguments to find a EmailTemplate
+     * @example
+     * // Get one EmailTemplate
+     * const emailTemplate = await prisma.emailTemplate.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends EmailTemplateFindUniqueArgs>(args: SelectSubset<T, EmailTemplateFindUniqueArgs<ExtArgs>>): Prisma__EmailTemplateClient<$Result.GetResult<Prisma.$EmailTemplatePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one EmailTemplate that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {EmailTemplateFindUniqueOrThrowArgs} args - Arguments to find a EmailTemplate
+     * @example
+     * // Get one EmailTemplate
+     * const emailTemplate = await prisma.emailTemplate.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends EmailTemplateFindUniqueOrThrowArgs>(args: SelectSubset<T, EmailTemplateFindUniqueOrThrowArgs<ExtArgs>>): Prisma__EmailTemplateClient<$Result.GetResult<Prisma.$EmailTemplatePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first EmailTemplate that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmailTemplateFindFirstArgs} args - Arguments to find a EmailTemplate
+     * @example
+     * // Get one EmailTemplate
+     * const emailTemplate = await prisma.emailTemplate.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends EmailTemplateFindFirstArgs>(args?: SelectSubset<T, EmailTemplateFindFirstArgs<ExtArgs>>): Prisma__EmailTemplateClient<$Result.GetResult<Prisma.$EmailTemplatePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first EmailTemplate that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmailTemplateFindFirstOrThrowArgs} args - Arguments to find a EmailTemplate
+     * @example
+     * // Get one EmailTemplate
+     * const emailTemplate = await prisma.emailTemplate.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends EmailTemplateFindFirstOrThrowArgs>(args?: SelectSubset<T, EmailTemplateFindFirstOrThrowArgs<ExtArgs>>): Prisma__EmailTemplateClient<$Result.GetResult<Prisma.$EmailTemplatePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more EmailTemplates that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmailTemplateFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all EmailTemplates
+     * const emailTemplates = await prisma.emailTemplate.findMany()
+     * 
+     * // Get first 10 EmailTemplates
+     * const emailTemplates = await prisma.emailTemplate.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const emailTemplateWithIdOnly = await prisma.emailTemplate.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends EmailTemplateFindManyArgs>(args?: SelectSubset<T, EmailTemplateFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EmailTemplatePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a EmailTemplate.
+     * @param {EmailTemplateCreateArgs} args - Arguments to create a EmailTemplate.
+     * @example
+     * // Create one EmailTemplate
+     * const EmailTemplate = await prisma.emailTemplate.create({
+     *   data: {
+     *     // ... data to create a EmailTemplate
+     *   }
+     * })
+     * 
+     */
+    create<T extends EmailTemplateCreateArgs>(args: SelectSubset<T, EmailTemplateCreateArgs<ExtArgs>>): Prisma__EmailTemplateClient<$Result.GetResult<Prisma.$EmailTemplatePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many EmailTemplates.
+     * @param {EmailTemplateCreateManyArgs} args - Arguments to create many EmailTemplates.
+     * @example
+     * // Create many EmailTemplates
+     * const emailTemplate = await prisma.emailTemplate.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends EmailTemplateCreateManyArgs>(args?: SelectSubset<T, EmailTemplateCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many EmailTemplates and returns the data saved in the database.
+     * @param {EmailTemplateCreateManyAndReturnArgs} args - Arguments to create many EmailTemplates.
+     * @example
+     * // Create many EmailTemplates
+     * const emailTemplate = await prisma.emailTemplate.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many EmailTemplates and only return the `id`
+     * const emailTemplateWithIdOnly = await prisma.emailTemplate.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends EmailTemplateCreateManyAndReturnArgs>(args?: SelectSubset<T, EmailTemplateCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EmailTemplatePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a EmailTemplate.
+     * @param {EmailTemplateDeleteArgs} args - Arguments to delete one EmailTemplate.
+     * @example
+     * // Delete one EmailTemplate
+     * const EmailTemplate = await prisma.emailTemplate.delete({
+     *   where: {
+     *     // ... filter to delete one EmailTemplate
+     *   }
+     * })
+     * 
+     */
+    delete<T extends EmailTemplateDeleteArgs>(args: SelectSubset<T, EmailTemplateDeleteArgs<ExtArgs>>): Prisma__EmailTemplateClient<$Result.GetResult<Prisma.$EmailTemplatePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one EmailTemplate.
+     * @param {EmailTemplateUpdateArgs} args - Arguments to update one EmailTemplate.
+     * @example
+     * // Update one EmailTemplate
+     * const emailTemplate = await prisma.emailTemplate.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends EmailTemplateUpdateArgs>(args: SelectSubset<T, EmailTemplateUpdateArgs<ExtArgs>>): Prisma__EmailTemplateClient<$Result.GetResult<Prisma.$EmailTemplatePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more EmailTemplates.
+     * @param {EmailTemplateDeleteManyArgs} args - Arguments to filter EmailTemplates to delete.
+     * @example
+     * // Delete a few EmailTemplates
+     * const { count } = await prisma.emailTemplate.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends EmailTemplateDeleteManyArgs>(args?: SelectSubset<T, EmailTemplateDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more EmailTemplates.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmailTemplateUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many EmailTemplates
+     * const emailTemplate = await prisma.emailTemplate.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends EmailTemplateUpdateManyArgs>(args: SelectSubset<T, EmailTemplateUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more EmailTemplates and returns the data updated in the database.
+     * @param {EmailTemplateUpdateManyAndReturnArgs} args - Arguments to update many EmailTemplates.
+     * @example
+     * // Update many EmailTemplates
+     * const emailTemplate = await prisma.emailTemplate.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more EmailTemplates and only return the `id`
+     * const emailTemplateWithIdOnly = await prisma.emailTemplate.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends EmailTemplateUpdateManyAndReturnArgs>(args: SelectSubset<T, EmailTemplateUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EmailTemplatePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one EmailTemplate.
+     * @param {EmailTemplateUpsertArgs} args - Arguments to update or create a EmailTemplate.
+     * @example
+     * // Update or create a EmailTemplate
+     * const emailTemplate = await prisma.emailTemplate.upsert({
+     *   create: {
+     *     // ... data to create a EmailTemplate
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the EmailTemplate we want to update
+     *   }
+     * })
+     */
+    upsert<T extends EmailTemplateUpsertArgs>(args: SelectSubset<T, EmailTemplateUpsertArgs<ExtArgs>>): Prisma__EmailTemplateClient<$Result.GetResult<Prisma.$EmailTemplatePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of EmailTemplates.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmailTemplateCountArgs} args - Arguments to filter EmailTemplates to count.
+     * @example
+     * // Count the number of EmailTemplates
+     * const count = await prisma.emailTemplate.count({
+     *   where: {
+     *     // ... the filter for the EmailTemplates we want to count
+     *   }
+     * })
+    **/
+    count<T extends EmailTemplateCountArgs>(
+      args?: Subset<T, EmailTemplateCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], EmailTemplateCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a EmailTemplate.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmailTemplateAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends EmailTemplateAggregateArgs>(args: Subset<T, EmailTemplateAggregateArgs>): Prisma.PrismaPromise<GetEmailTemplateAggregateType<T>>
+
+    /**
+     * Group by EmailTemplate.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmailTemplateGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends EmailTemplateGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: EmailTemplateGroupByArgs['orderBy'] }
+        : { orderBy?: EmailTemplateGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, EmailTemplateGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetEmailTemplateGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the EmailTemplate model
+   */
+  readonly fields: EmailTemplateFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for EmailTemplate.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__EmailTemplateClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the EmailTemplate model
+   */
+  interface EmailTemplateFieldRefs {
+    readonly id: FieldRef<"EmailTemplate", 'String'>
+    readonly userId: FieldRef<"EmailTemplate", 'String'>
+    readonly name: FieldRef<"EmailTemplate", 'String'>
+    readonly subject: FieldRef<"EmailTemplate", 'String'>
+    readonly body: FieldRef<"EmailTemplate", 'String'>
+    readonly variables: FieldRef<"EmailTemplate", 'Json'>
+    readonly category: FieldRef<"EmailTemplate", 'String'>
+    readonly createdAt: FieldRef<"EmailTemplate", 'DateTime'>
+    readonly updatedAt: FieldRef<"EmailTemplate", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * EmailTemplate findUnique
+   */
+  export type EmailTemplateFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmailTemplate
+     */
+    select?: EmailTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmailTemplate
+     */
+    omit?: EmailTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmailTemplateInclude<ExtArgs> | null
+    /**
+     * Filter, which EmailTemplate to fetch.
+     */
+    where: EmailTemplateWhereUniqueInput
+  }
+
+  /**
+   * EmailTemplate findUniqueOrThrow
+   */
+  export type EmailTemplateFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmailTemplate
+     */
+    select?: EmailTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmailTemplate
+     */
+    omit?: EmailTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmailTemplateInclude<ExtArgs> | null
+    /**
+     * Filter, which EmailTemplate to fetch.
+     */
+    where: EmailTemplateWhereUniqueInput
+  }
+
+  /**
+   * EmailTemplate findFirst
+   */
+  export type EmailTemplateFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmailTemplate
+     */
+    select?: EmailTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmailTemplate
+     */
+    omit?: EmailTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmailTemplateInclude<ExtArgs> | null
+    /**
+     * Filter, which EmailTemplate to fetch.
+     */
+    where?: EmailTemplateWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EmailTemplates to fetch.
+     */
+    orderBy?: EmailTemplateOrderByWithRelationInput | EmailTemplateOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for EmailTemplates.
+     */
+    cursor?: EmailTemplateWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EmailTemplates from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EmailTemplates.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of EmailTemplates.
+     */
+    distinct?: EmailTemplateScalarFieldEnum | EmailTemplateScalarFieldEnum[]
+  }
+
+  /**
+   * EmailTemplate findFirstOrThrow
+   */
+  export type EmailTemplateFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmailTemplate
+     */
+    select?: EmailTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmailTemplate
+     */
+    omit?: EmailTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmailTemplateInclude<ExtArgs> | null
+    /**
+     * Filter, which EmailTemplate to fetch.
+     */
+    where?: EmailTemplateWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EmailTemplates to fetch.
+     */
+    orderBy?: EmailTemplateOrderByWithRelationInput | EmailTemplateOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for EmailTemplates.
+     */
+    cursor?: EmailTemplateWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EmailTemplates from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EmailTemplates.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of EmailTemplates.
+     */
+    distinct?: EmailTemplateScalarFieldEnum | EmailTemplateScalarFieldEnum[]
+  }
+
+  /**
+   * EmailTemplate findMany
+   */
+  export type EmailTemplateFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmailTemplate
+     */
+    select?: EmailTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmailTemplate
+     */
+    omit?: EmailTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmailTemplateInclude<ExtArgs> | null
+    /**
+     * Filter, which EmailTemplates to fetch.
+     */
+    where?: EmailTemplateWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EmailTemplates to fetch.
+     */
+    orderBy?: EmailTemplateOrderByWithRelationInput | EmailTemplateOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing EmailTemplates.
+     */
+    cursor?: EmailTemplateWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EmailTemplates from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EmailTemplates.
+     */
+    skip?: number
+    distinct?: EmailTemplateScalarFieldEnum | EmailTemplateScalarFieldEnum[]
+  }
+
+  /**
+   * EmailTemplate create
+   */
+  export type EmailTemplateCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmailTemplate
+     */
+    select?: EmailTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmailTemplate
+     */
+    omit?: EmailTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmailTemplateInclude<ExtArgs> | null
+    /**
+     * The data needed to create a EmailTemplate.
+     */
+    data: XOR<EmailTemplateCreateInput, EmailTemplateUncheckedCreateInput>
+  }
+
+  /**
+   * EmailTemplate createMany
+   */
+  export type EmailTemplateCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many EmailTemplates.
+     */
+    data: EmailTemplateCreateManyInput | EmailTemplateCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * EmailTemplate createManyAndReturn
+   */
+  export type EmailTemplateCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmailTemplate
+     */
+    select?: EmailTemplateSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmailTemplate
+     */
+    omit?: EmailTemplateOmit<ExtArgs> | null
+    /**
+     * The data used to create many EmailTemplates.
+     */
+    data: EmailTemplateCreateManyInput | EmailTemplateCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmailTemplateIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * EmailTemplate update
+   */
+  export type EmailTemplateUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmailTemplate
+     */
+    select?: EmailTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmailTemplate
+     */
+    omit?: EmailTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmailTemplateInclude<ExtArgs> | null
+    /**
+     * The data needed to update a EmailTemplate.
+     */
+    data: XOR<EmailTemplateUpdateInput, EmailTemplateUncheckedUpdateInput>
+    /**
+     * Choose, which EmailTemplate to update.
+     */
+    where: EmailTemplateWhereUniqueInput
+  }
+
+  /**
+   * EmailTemplate updateMany
+   */
+  export type EmailTemplateUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update EmailTemplates.
+     */
+    data: XOR<EmailTemplateUpdateManyMutationInput, EmailTemplateUncheckedUpdateManyInput>
+    /**
+     * Filter which EmailTemplates to update
+     */
+    where?: EmailTemplateWhereInput
+    /**
+     * Limit how many EmailTemplates to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * EmailTemplate updateManyAndReturn
+   */
+  export type EmailTemplateUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmailTemplate
+     */
+    select?: EmailTemplateSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmailTemplate
+     */
+    omit?: EmailTemplateOmit<ExtArgs> | null
+    /**
+     * The data used to update EmailTemplates.
+     */
+    data: XOR<EmailTemplateUpdateManyMutationInput, EmailTemplateUncheckedUpdateManyInput>
+    /**
+     * Filter which EmailTemplates to update
+     */
+    where?: EmailTemplateWhereInput
+    /**
+     * Limit how many EmailTemplates to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmailTemplateIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * EmailTemplate upsert
+   */
+  export type EmailTemplateUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmailTemplate
+     */
+    select?: EmailTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmailTemplate
+     */
+    omit?: EmailTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmailTemplateInclude<ExtArgs> | null
+    /**
+     * The filter to search for the EmailTemplate to update in case it exists.
+     */
+    where: EmailTemplateWhereUniqueInput
+    /**
+     * In case the EmailTemplate found by the `where` argument doesn't exist, create a new EmailTemplate with this data.
+     */
+    create: XOR<EmailTemplateCreateInput, EmailTemplateUncheckedCreateInput>
+    /**
+     * In case the EmailTemplate was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<EmailTemplateUpdateInput, EmailTemplateUncheckedUpdateInput>
+  }
+
+  /**
+   * EmailTemplate delete
+   */
+  export type EmailTemplateDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmailTemplate
+     */
+    select?: EmailTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmailTemplate
+     */
+    omit?: EmailTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmailTemplateInclude<ExtArgs> | null
+    /**
+     * Filter which EmailTemplate to delete.
+     */
+    where: EmailTemplateWhereUniqueInput
+  }
+
+  /**
+   * EmailTemplate deleteMany
+   */
+  export type EmailTemplateDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which EmailTemplates to delete
+     */
+    where?: EmailTemplateWhereInput
+    /**
+     * Limit how many EmailTemplates to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * EmailTemplate without action
+   */
+  export type EmailTemplateDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmailTemplate
+     */
+    select?: EmailTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmailTemplate
+     */
+    omit?: EmailTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmailTemplateInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model FollowUpReminder
+   */
+
+  export type AggregateFollowUpReminder = {
+    _count: FollowUpReminderCountAggregateOutputType | null
+    _min: FollowUpReminderMinAggregateOutputType | null
+    _max: FollowUpReminderMaxAggregateOutputType | null
+  }
+
+  export type FollowUpReminderMinAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    messageId: string | null
+    conversationId: string | null
+    homeAccountId: string | null
+    subject: string | null
+    recipient: string | null
+    remindAt: Date | null
+    status: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type FollowUpReminderMaxAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    messageId: string | null
+    conversationId: string | null
+    homeAccountId: string | null
+    subject: string | null
+    recipient: string | null
+    remindAt: Date | null
+    status: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type FollowUpReminderCountAggregateOutputType = {
+    id: number
+    userId: number
+    messageId: number
+    conversationId: number
+    homeAccountId: number
+    subject: number
+    recipient: number
+    remindAt: number
+    status: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type FollowUpReminderMinAggregateInputType = {
+    id?: true
+    userId?: true
+    messageId?: true
+    conversationId?: true
+    homeAccountId?: true
+    subject?: true
+    recipient?: true
+    remindAt?: true
+    status?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type FollowUpReminderMaxAggregateInputType = {
+    id?: true
+    userId?: true
+    messageId?: true
+    conversationId?: true
+    homeAccountId?: true
+    subject?: true
+    recipient?: true
+    remindAt?: true
+    status?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type FollowUpReminderCountAggregateInputType = {
+    id?: true
+    userId?: true
+    messageId?: true
+    conversationId?: true
+    homeAccountId?: true
+    subject?: true
+    recipient?: true
+    remindAt?: true
+    status?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type FollowUpReminderAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which FollowUpReminder to aggregate.
+     */
+    where?: FollowUpReminderWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FollowUpReminders to fetch.
+     */
+    orderBy?: FollowUpReminderOrderByWithRelationInput | FollowUpReminderOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: FollowUpReminderWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FollowUpReminders from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FollowUpReminders.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned FollowUpReminders
+    **/
+    _count?: true | FollowUpReminderCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: FollowUpReminderMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: FollowUpReminderMaxAggregateInputType
+  }
+
+  export type GetFollowUpReminderAggregateType<T extends FollowUpReminderAggregateArgs> = {
+        [P in keyof T & keyof AggregateFollowUpReminder]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateFollowUpReminder[P]>
+      : GetScalarType<T[P], AggregateFollowUpReminder[P]>
+  }
+
+
+
+
+  export type FollowUpReminderGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FollowUpReminderWhereInput
+    orderBy?: FollowUpReminderOrderByWithAggregationInput | FollowUpReminderOrderByWithAggregationInput[]
+    by: FollowUpReminderScalarFieldEnum[] | FollowUpReminderScalarFieldEnum
+    having?: FollowUpReminderScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: FollowUpReminderCountAggregateInputType | true
+    _min?: FollowUpReminderMinAggregateInputType
+    _max?: FollowUpReminderMaxAggregateInputType
+  }
+
+  export type FollowUpReminderGroupByOutputType = {
+    id: string
+    userId: string
+    messageId: string
+    conversationId: string | null
+    homeAccountId: string | null
+    subject: string
+    recipient: string
+    remindAt: Date
+    status: string
+    createdAt: Date
+    updatedAt: Date
+    _count: FollowUpReminderCountAggregateOutputType | null
+    _min: FollowUpReminderMinAggregateOutputType | null
+    _max: FollowUpReminderMaxAggregateOutputType | null
+  }
+
+  type GetFollowUpReminderGroupByPayload<T extends FollowUpReminderGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<FollowUpReminderGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof FollowUpReminderGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], FollowUpReminderGroupByOutputType[P]>
+            : GetScalarType<T[P], FollowUpReminderGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type FollowUpReminderSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    messageId?: boolean
+    conversationId?: boolean
+    homeAccountId?: boolean
+    subject?: boolean
+    recipient?: boolean
+    remindAt?: boolean
+    status?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["followUpReminder"]>
+
+  export type FollowUpReminderSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    messageId?: boolean
+    conversationId?: boolean
+    homeAccountId?: boolean
+    subject?: boolean
+    recipient?: boolean
+    remindAt?: boolean
+    status?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["followUpReminder"]>
+
+  export type FollowUpReminderSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    messageId?: boolean
+    conversationId?: boolean
+    homeAccountId?: boolean
+    subject?: boolean
+    recipient?: boolean
+    remindAt?: boolean
+    status?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["followUpReminder"]>
+
+  export type FollowUpReminderSelectScalar = {
+    id?: boolean
+    userId?: boolean
+    messageId?: boolean
+    conversationId?: boolean
+    homeAccountId?: boolean
+    subject?: boolean
+    recipient?: boolean
+    remindAt?: boolean
+    status?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type FollowUpReminderOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "messageId" | "conversationId" | "homeAccountId" | "subject" | "recipient" | "remindAt" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["followUpReminder"]>
+  export type FollowUpReminderInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type FollowUpReminderIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type FollowUpReminderIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $FollowUpReminderPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "FollowUpReminder"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      userId: string
+      messageId: string
+      conversationId: string | null
+      homeAccountId: string | null
+      subject: string
+      recipient: string
+      remindAt: Date
+      status: string
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["followUpReminder"]>
+    composites: {}
+  }
+
+  type FollowUpReminderGetPayload<S extends boolean | null | undefined | FollowUpReminderDefaultArgs> = $Result.GetResult<Prisma.$FollowUpReminderPayload, S>
+
+  type FollowUpReminderCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<FollowUpReminderFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: FollowUpReminderCountAggregateInputType | true
+    }
+
+  export interface FollowUpReminderDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['FollowUpReminder'], meta: { name: 'FollowUpReminder' } }
+    /**
+     * Find zero or one FollowUpReminder that matches the filter.
+     * @param {FollowUpReminderFindUniqueArgs} args - Arguments to find a FollowUpReminder
+     * @example
+     * // Get one FollowUpReminder
+     * const followUpReminder = await prisma.followUpReminder.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends FollowUpReminderFindUniqueArgs>(args: SelectSubset<T, FollowUpReminderFindUniqueArgs<ExtArgs>>): Prisma__FollowUpReminderClient<$Result.GetResult<Prisma.$FollowUpReminderPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one FollowUpReminder that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {FollowUpReminderFindUniqueOrThrowArgs} args - Arguments to find a FollowUpReminder
+     * @example
+     * // Get one FollowUpReminder
+     * const followUpReminder = await prisma.followUpReminder.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends FollowUpReminderFindUniqueOrThrowArgs>(args: SelectSubset<T, FollowUpReminderFindUniqueOrThrowArgs<ExtArgs>>): Prisma__FollowUpReminderClient<$Result.GetResult<Prisma.$FollowUpReminderPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first FollowUpReminder that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FollowUpReminderFindFirstArgs} args - Arguments to find a FollowUpReminder
+     * @example
+     * // Get one FollowUpReminder
+     * const followUpReminder = await prisma.followUpReminder.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends FollowUpReminderFindFirstArgs>(args?: SelectSubset<T, FollowUpReminderFindFirstArgs<ExtArgs>>): Prisma__FollowUpReminderClient<$Result.GetResult<Prisma.$FollowUpReminderPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first FollowUpReminder that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FollowUpReminderFindFirstOrThrowArgs} args - Arguments to find a FollowUpReminder
+     * @example
+     * // Get one FollowUpReminder
+     * const followUpReminder = await prisma.followUpReminder.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends FollowUpReminderFindFirstOrThrowArgs>(args?: SelectSubset<T, FollowUpReminderFindFirstOrThrowArgs<ExtArgs>>): Prisma__FollowUpReminderClient<$Result.GetResult<Prisma.$FollowUpReminderPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more FollowUpReminders that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FollowUpReminderFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all FollowUpReminders
+     * const followUpReminders = await prisma.followUpReminder.findMany()
+     * 
+     * // Get first 10 FollowUpReminders
+     * const followUpReminders = await prisma.followUpReminder.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const followUpReminderWithIdOnly = await prisma.followUpReminder.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends FollowUpReminderFindManyArgs>(args?: SelectSubset<T, FollowUpReminderFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FollowUpReminderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a FollowUpReminder.
+     * @param {FollowUpReminderCreateArgs} args - Arguments to create a FollowUpReminder.
+     * @example
+     * // Create one FollowUpReminder
+     * const FollowUpReminder = await prisma.followUpReminder.create({
+     *   data: {
+     *     // ... data to create a FollowUpReminder
+     *   }
+     * })
+     * 
+     */
+    create<T extends FollowUpReminderCreateArgs>(args: SelectSubset<T, FollowUpReminderCreateArgs<ExtArgs>>): Prisma__FollowUpReminderClient<$Result.GetResult<Prisma.$FollowUpReminderPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many FollowUpReminders.
+     * @param {FollowUpReminderCreateManyArgs} args - Arguments to create many FollowUpReminders.
+     * @example
+     * // Create many FollowUpReminders
+     * const followUpReminder = await prisma.followUpReminder.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends FollowUpReminderCreateManyArgs>(args?: SelectSubset<T, FollowUpReminderCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many FollowUpReminders and returns the data saved in the database.
+     * @param {FollowUpReminderCreateManyAndReturnArgs} args - Arguments to create many FollowUpReminders.
+     * @example
+     * // Create many FollowUpReminders
+     * const followUpReminder = await prisma.followUpReminder.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many FollowUpReminders and only return the `id`
+     * const followUpReminderWithIdOnly = await prisma.followUpReminder.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends FollowUpReminderCreateManyAndReturnArgs>(args?: SelectSubset<T, FollowUpReminderCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FollowUpReminderPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a FollowUpReminder.
+     * @param {FollowUpReminderDeleteArgs} args - Arguments to delete one FollowUpReminder.
+     * @example
+     * // Delete one FollowUpReminder
+     * const FollowUpReminder = await prisma.followUpReminder.delete({
+     *   where: {
+     *     // ... filter to delete one FollowUpReminder
+     *   }
+     * })
+     * 
+     */
+    delete<T extends FollowUpReminderDeleteArgs>(args: SelectSubset<T, FollowUpReminderDeleteArgs<ExtArgs>>): Prisma__FollowUpReminderClient<$Result.GetResult<Prisma.$FollowUpReminderPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one FollowUpReminder.
+     * @param {FollowUpReminderUpdateArgs} args - Arguments to update one FollowUpReminder.
+     * @example
+     * // Update one FollowUpReminder
+     * const followUpReminder = await prisma.followUpReminder.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends FollowUpReminderUpdateArgs>(args: SelectSubset<T, FollowUpReminderUpdateArgs<ExtArgs>>): Prisma__FollowUpReminderClient<$Result.GetResult<Prisma.$FollowUpReminderPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more FollowUpReminders.
+     * @param {FollowUpReminderDeleteManyArgs} args - Arguments to filter FollowUpReminders to delete.
+     * @example
+     * // Delete a few FollowUpReminders
+     * const { count } = await prisma.followUpReminder.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends FollowUpReminderDeleteManyArgs>(args?: SelectSubset<T, FollowUpReminderDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more FollowUpReminders.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FollowUpReminderUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many FollowUpReminders
+     * const followUpReminder = await prisma.followUpReminder.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends FollowUpReminderUpdateManyArgs>(args: SelectSubset<T, FollowUpReminderUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more FollowUpReminders and returns the data updated in the database.
+     * @param {FollowUpReminderUpdateManyAndReturnArgs} args - Arguments to update many FollowUpReminders.
+     * @example
+     * // Update many FollowUpReminders
+     * const followUpReminder = await prisma.followUpReminder.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more FollowUpReminders and only return the `id`
+     * const followUpReminderWithIdOnly = await prisma.followUpReminder.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends FollowUpReminderUpdateManyAndReturnArgs>(args: SelectSubset<T, FollowUpReminderUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FollowUpReminderPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one FollowUpReminder.
+     * @param {FollowUpReminderUpsertArgs} args - Arguments to update or create a FollowUpReminder.
+     * @example
+     * // Update or create a FollowUpReminder
+     * const followUpReminder = await prisma.followUpReminder.upsert({
+     *   create: {
+     *     // ... data to create a FollowUpReminder
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the FollowUpReminder we want to update
+     *   }
+     * })
+     */
+    upsert<T extends FollowUpReminderUpsertArgs>(args: SelectSubset<T, FollowUpReminderUpsertArgs<ExtArgs>>): Prisma__FollowUpReminderClient<$Result.GetResult<Prisma.$FollowUpReminderPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of FollowUpReminders.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FollowUpReminderCountArgs} args - Arguments to filter FollowUpReminders to count.
+     * @example
+     * // Count the number of FollowUpReminders
+     * const count = await prisma.followUpReminder.count({
+     *   where: {
+     *     // ... the filter for the FollowUpReminders we want to count
+     *   }
+     * })
+    **/
+    count<T extends FollowUpReminderCountArgs>(
+      args?: Subset<T, FollowUpReminderCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], FollowUpReminderCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a FollowUpReminder.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FollowUpReminderAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends FollowUpReminderAggregateArgs>(args: Subset<T, FollowUpReminderAggregateArgs>): Prisma.PrismaPromise<GetFollowUpReminderAggregateType<T>>
+
+    /**
+     * Group by FollowUpReminder.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FollowUpReminderGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends FollowUpReminderGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: FollowUpReminderGroupByArgs['orderBy'] }
+        : { orderBy?: FollowUpReminderGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, FollowUpReminderGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetFollowUpReminderGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the FollowUpReminder model
+   */
+  readonly fields: FollowUpReminderFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for FollowUpReminder.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__FollowUpReminderClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the FollowUpReminder model
+   */
+  interface FollowUpReminderFieldRefs {
+    readonly id: FieldRef<"FollowUpReminder", 'String'>
+    readonly userId: FieldRef<"FollowUpReminder", 'String'>
+    readonly messageId: FieldRef<"FollowUpReminder", 'String'>
+    readonly conversationId: FieldRef<"FollowUpReminder", 'String'>
+    readonly homeAccountId: FieldRef<"FollowUpReminder", 'String'>
+    readonly subject: FieldRef<"FollowUpReminder", 'String'>
+    readonly recipient: FieldRef<"FollowUpReminder", 'String'>
+    readonly remindAt: FieldRef<"FollowUpReminder", 'DateTime'>
+    readonly status: FieldRef<"FollowUpReminder", 'String'>
+    readonly createdAt: FieldRef<"FollowUpReminder", 'DateTime'>
+    readonly updatedAt: FieldRef<"FollowUpReminder", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * FollowUpReminder findUnique
+   */
+  export type FollowUpReminderFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FollowUpReminder
+     */
+    select?: FollowUpReminderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FollowUpReminder
+     */
+    omit?: FollowUpReminderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FollowUpReminderInclude<ExtArgs> | null
+    /**
+     * Filter, which FollowUpReminder to fetch.
+     */
+    where: FollowUpReminderWhereUniqueInput
+  }
+
+  /**
+   * FollowUpReminder findUniqueOrThrow
+   */
+  export type FollowUpReminderFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FollowUpReminder
+     */
+    select?: FollowUpReminderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FollowUpReminder
+     */
+    omit?: FollowUpReminderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FollowUpReminderInclude<ExtArgs> | null
+    /**
+     * Filter, which FollowUpReminder to fetch.
+     */
+    where: FollowUpReminderWhereUniqueInput
+  }
+
+  /**
+   * FollowUpReminder findFirst
+   */
+  export type FollowUpReminderFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FollowUpReminder
+     */
+    select?: FollowUpReminderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FollowUpReminder
+     */
+    omit?: FollowUpReminderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FollowUpReminderInclude<ExtArgs> | null
+    /**
+     * Filter, which FollowUpReminder to fetch.
+     */
+    where?: FollowUpReminderWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FollowUpReminders to fetch.
+     */
+    orderBy?: FollowUpReminderOrderByWithRelationInput | FollowUpReminderOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for FollowUpReminders.
+     */
+    cursor?: FollowUpReminderWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FollowUpReminders from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FollowUpReminders.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of FollowUpReminders.
+     */
+    distinct?: FollowUpReminderScalarFieldEnum | FollowUpReminderScalarFieldEnum[]
+  }
+
+  /**
+   * FollowUpReminder findFirstOrThrow
+   */
+  export type FollowUpReminderFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FollowUpReminder
+     */
+    select?: FollowUpReminderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FollowUpReminder
+     */
+    omit?: FollowUpReminderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FollowUpReminderInclude<ExtArgs> | null
+    /**
+     * Filter, which FollowUpReminder to fetch.
+     */
+    where?: FollowUpReminderWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FollowUpReminders to fetch.
+     */
+    orderBy?: FollowUpReminderOrderByWithRelationInput | FollowUpReminderOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for FollowUpReminders.
+     */
+    cursor?: FollowUpReminderWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FollowUpReminders from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FollowUpReminders.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of FollowUpReminders.
+     */
+    distinct?: FollowUpReminderScalarFieldEnum | FollowUpReminderScalarFieldEnum[]
+  }
+
+  /**
+   * FollowUpReminder findMany
+   */
+  export type FollowUpReminderFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FollowUpReminder
+     */
+    select?: FollowUpReminderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FollowUpReminder
+     */
+    omit?: FollowUpReminderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FollowUpReminderInclude<ExtArgs> | null
+    /**
+     * Filter, which FollowUpReminders to fetch.
+     */
+    where?: FollowUpReminderWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FollowUpReminders to fetch.
+     */
+    orderBy?: FollowUpReminderOrderByWithRelationInput | FollowUpReminderOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing FollowUpReminders.
+     */
+    cursor?: FollowUpReminderWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FollowUpReminders from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FollowUpReminders.
+     */
+    skip?: number
+    distinct?: FollowUpReminderScalarFieldEnum | FollowUpReminderScalarFieldEnum[]
+  }
+
+  /**
+   * FollowUpReminder create
+   */
+  export type FollowUpReminderCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FollowUpReminder
+     */
+    select?: FollowUpReminderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FollowUpReminder
+     */
+    omit?: FollowUpReminderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FollowUpReminderInclude<ExtArgs> | null
+    /**
+     * The data needed to create a FollowUpReminder.
+     */
+    data: XOR<FollowUpReminderCreateInput, FollowUpReminderUncheckedCreateInput>
+  }
+
+  /**
+   * FollowUpReminder createMany
+   */
+  export type FollowUpReminderCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many FollowUpReminders.
+     */
+    data: FollowUpReminderCreateManyInput | FollowUpReminderCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * FollowUpReminder createManyAndReturn
+   */
+  export type FollowUpReminderCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FollowUpReminder
+     */
+    select?: FollowUpReminderSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the FollowUpReminder
+     */
+    omit?: FollowUpReminderOmit<ExtArgs> | null
+    /**
+     * The data used to create many FollowUpReminders.
+     */
+    data: FollowUpReminderCreateManyInput | FollowUpReminderCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FollowUpReminderIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * FollowUpReminder update
+   */
+  export type FollowUpReminderUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FollowUpReminder
+     */
+    select?: FollowUpReminderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FollowUpReminder
+     */
+    omit?: FollowUpReminderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FollowUpReminderInclude<ExtArgs> | null
+    /**
+     * The data needed to update a FollowUpReminder.
+     */
+    data: XOR<FollowUpReminderUpdateInput, FollowUpReminderUncheckedUpdateInput>
+    /**
+     * Choose, which FollowUpReminder to update.
+     */
+    where: FollowUpReminderWhereUniqueInput
+  }
+
+  /**
+   * FollowUpReminder updateMany
+   */
+  export type FollowUpReminderUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update FollowUpReminders.
+     */
+    data: XOR<FollowUpReminderUpdateManyMutationInput, FollowUpReminderUncheckedUpdateManyInput>
+    /**
+     * Filter which FollowUpReminders to update
+     */
+    where?: FollowUpReminderWhereInput
+    /**
+     * Limit how many FollowUpReminders to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * FollowUpReminder updateManyAndReturn
+   */
+  export type FollowUpReminderUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FollowUpReminder
+     */
+    select?: FollowUpReminderSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the FollowUpReminder
+     */
+    omit?: FollowUpReminderOmit<ExtArgs> | null
+    /**
+     * The data used to update FollowUpReminders.
+     */
+    data: XOR<FollowUpReminderUpdateManyMutationInput, FollowUpReminderUncheckedUpdateManyInput>
+    /**
+     * Filter which FollowUpReminders to update
+     */
+    where?: FollowUpReminderWhereInput
+    /**
+     * Limit how many FollowUpReminders to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FollowUpReminderIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * FollowUpReminder upsert
+   */
+  export type FollowUpReminderUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FollowUpReminder
+     */
+    select?: FollowUpReminderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FollowUpReminder
+     */
+    omit?: FollowUpReminderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FollowUpReminderInclude<ExtArgs> | null
+    /**
+     * The filter to search for the FollowUpReminder to update in case it exists.
+     */
+    where: FollowUpReminderWhereUniqueInput
+    /**
+     * In case the FollowUpReminder found by the `where` argument doesn't exist, create a new FollowUpReminder with this data.
+     */
+    create: XOR<FollowUpReminderCreateInput, FollowUpReminderUncheckedCreateInput>
+    /**
+     * In case the FollowUpReminder was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<FollowUpReminderUpdateInput, FollowUpReminderUncheckedUpdateInput>
+  }
+
+  /**
+   * FollowUpReminder delete
+   */
+  export type FollowUpReminderDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FollowUpReminder
+     */
+    select?: FollowUpReminderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FollowUpReminder
+     */
+    omit?: FollowUpReminderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FollowUpReminderInclude<ExtArgs> | null
+    /**
+     * Filter which FollowUpReminder to delete.
+     */
+    where: FollowUpReminderWhereUniqueInput
+  }
+
+  /**
+   * FollowUpReminder deleteMany
+   */
+  export type FollowUpReminderDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which FollowUpReminders to delete
+     */
+    where?: FollowUpReminderWhereInput
+    /**
+     * Limit how many FollowUpReminders to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * FollowUpReminder without action
+   */
+  export type FollowUpReminderDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FollowUpReminder
+     */
+    select?: FollowUpReminderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FollowUpReminder
+     */
+    omit?: FollowUpReminderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FollowUpReminderInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Model ImapConnectedAccount
    */
 
@@ -34122,6 +36821,1073 @@ export namespace Prisma {
 
 
   /**
+   * Model PendingEmail
+   */
+
+  export type AggregatePendingEmail = {
+    _count: PendingEmailCountAggregateOutputType | null
+    _min: PendingEmailMinAggregateOutputType | null
+    _max: PendingEmailMaxAggregateOutputType | null
+  }
+
+  export type PendingEmailMinAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    sendAt: Date | null
+    cancelled: boolean | null
+    createdAt: Date | null
+  }
+
+  export type PendingEmailMaxAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    sendAt: Date | null
+    cancelled: boolean | null
+    createdAt: Date | null
+  }
+
+  export type PendingEmailCountAggregateOutputType = {
+    id: number
+    userId: number
+    payload: number
+    sendAt: number
+    cancelled: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type PendingEmailMinAggregateInputType = {
+    id?: true
+    userId?: true
+    sendAt?: true
+    cancelled?: true
+    createdAt?: true
+  }
+
+  export type PendingEmailMaxAggregateInputType = {
+    id?: true
+    userId?: true
+    sendAt?: true
+    cancelled?: true
+    createdAt?: true
+  }
+
+  export type PendingEmailCountAggregateInputType = {
+    id?: true
+    userId?: true
+    payload?: true
+    sendAt?: true
+    cancelled?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type PendingEmailAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which PendingEmail to aggregate.
+     */
+    where?: PendingEmailWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PendingEmails to fetch.
+     */
+    orderBy?: PendingEmailOrderByWithRelationInput | PendingEmailOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: PendingEmailWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PendingEmails from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PendingEmails.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned PendingEmails
+    **/
+    _count?: true | PendingEmailCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: PendingEmailMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: PendingEmailMaxAggregateInputType
+  }
+
+  export type GetPendingEmailAggregateType<T extends PendingEmailAggregateArgs> = {
+        [P in keyof T & keyof AggregatePendingEmail]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregatePendingEmail[P]>
+      : GetScalarType<T[P], AggregatePendingEmail[P]>
+  }
+
+
+
+
+  export type PendingEmailGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PendingEmailWhereInput
+    orderBy?: PendingEmailOrderByWithAggregationInput | PendingEmailOrderByWithAggregationInput[]
+    by: PendingEmailScalarFieldEnum[] | PendingEmailScalarFieldEnum
+    having?: PendingEmailScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: PendingEmailCountAggregateInputType | true
+    _min?: PendingEmailMinAggregateInputType
+    _max?: PendingEmailMaxAggregateInputType
+  }
+
+  export type PendingEmailGroupByOutputType = {
+    id: string
+    userId: string
+    payload: JsonValue
+    sendAt: Date
+    cancelled: boolean
+    createdAt: Date
+    _count: PendingEmailCountAggregateOutputType | null
+    _min: PendingEmailMinAggregateOutputType | null
+    _max: PendingEmailMaxAggregateOutputType | null
+  }
+
+  type GetPendingEmailGroupByPayload<T extends PendingEmailGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<PendingEmailGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof PendingEmailGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], PendingEmailGroupByOutputType[P]>
+            : GetScalarType<T[P], PendingEmailGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type PendingEmailSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    payload?: boolean
+    sendAt?: boolean
+    cancelled?: boolean
+    createdAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["pendingEmail"]>
+
+  export type PendingEmailSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    payload?: boolean
+    sendAt?: boolean
+    cancelled?: boolean
+    createdAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["pendingEmail"]>
+
+  export type PendingEmailSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    payload?: boolean
+    sendAt?: boolean
+    cancelled?: boolean
+    createdAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["pendingEmail"]>
+
+  export type PendingEmailSelectScalar = {
+    id?: boolean
+    userId?: boolean
+    payload?: boolean
+    sendAt?: boolean
+    cancelled?: boolean
+    createdAt?: boolean
+  }
+
+  export type PendingEmailOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "payload" | "sendAt" | "cancelled" | "createdAt", ExtArgs["result"]["pendingEmail"]>
+  export type PendingEmailInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type PendingEmailIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type PendingEmailIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $PendingEmailPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "PendingEmail"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      userId: string
+      payload: Prisma.JsonValue
+      sendAt: Date
+      cancelled: boolean
+      createdAt: Date
+    }, ExtArgs["result"]["pendingEmail"]>
+    composites: {}
+  }
+
+  type PendingEmailGetPayload<S extends boolean | null | undefined | PendingEmailDefaultArgs> = $Result.GetResult<Prisma.$PendingEmailPayload, S>
+
+  type PendingEmailCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<PendingEmailFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: PendingEmailCountAggregateInputType | true
+    }
+
+  export interface PendingEmailDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['PendingEmail'], meta: { name: 'PendingEmail' } }
+    /**
+     * Find zero or one PendingEmail that matches the filter.
+     * @param {PendingEmailFindUniqueArgs} args - Arguments to find a PendingEmail
+     * @example
+     * // Get one PendingEmail
+     * const pendingEmail = await prisma.pendingEmail.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends PendingEmailFindUniqueArgs>(args: SelectSubset<T, PendingEmailFindUniqueArgs<ExtArgs>>): Prisma__PendingEmailClient<$Result.GetResult<Prisma.$PendingEmailPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one PendingEmail that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {PendingEmailFindUniqueOrThrowArgs} args - Arguments to find a PendingEmail
+     * @example
+     * // Get one PendingEmail
+     * const pendingEmail = await prisma.pendingEmail.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends PendingEmailFindUniqueOrThrowArgs>(args: SelectSubset<T, PendingEmailFindUniqueOrThrowArgs<ExtArgs>>): Prisma__PendingEmailClient<$Result.GetResult<Prisma.$PendingEmailPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first PendingEmail that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PendingEmailFindFirstArgs} args - Arguments to find a PendingEmail
+     * @example
+     * // Get one PendingEmail
+     * const pendingEmail = await prisma.pendingEmail.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends PendingEmailFindFirstArgs>(args?: SelectSubset<T, PendingEmailFindFirstArgs<ExtArgs>>): Prisma__PendingEmailClient<$Result.GetResult<Prisma.$PendingEmailPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first PendingEmail that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PendingEmailFindFirstOrThrowArgs} args - Arguments to find a PendingEmail
+     * @example
+     * // Get one PendingEmail
+     * const pendingEmail = await prisma.pendingEmail.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends PendingEmailFindFirstOrThrowArgs>(args?: SelectSubset<T, PendingEmailFindFirstOrThrowArgs<ExtArgs>>): Prisma__PendingEmailClient<$Result.GetResult<Prisma.$PendingEmailPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more PendingEmails that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PendingEmailFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all PendingEmails
+     * const pendingEmails = await prisma.pendingEmail.findMany()
+     * 
+     * // Get first 10 PendingEmails
+     * const pendingEmails = await prisma.pendingEmail.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const pendingEmailWithIdOnly = await prisma.pendingEmail.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends PendingEmailFindManyArgs>(args?: SelectSubset<T, PendingEmailFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PendingEmailPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a PendingEmail.
+     * @param {PendingEmailCreateArgs} args - Arguments to create a PendingEmail.
+     * @example
+     * // Create one PendingEmail
+     * const PendingEmail = await prisma.pendingEmail.create({
+     *   data: {
+     *     // ... data to create a PendingEmail
+     *   }
+     * })
+     * 
+     */
+    create<T extends PendingEmailCreateArgs>(args: SelectSubset<T, PendingEmailCreateArgs<ExtArgs>>): Prisma__PendingEmailClient<$Result.GetResult<Prisma.$PendingEmailPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many PendingEmails.
+     * @param {PendingEmailCreateManyArgs} args - Arguments to create many PendingEmails.
+     * @example
+     * // Create many PendingEmails
+     * const pendingEmail = await prisma.pendingEmail.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends PendingEmailCreateManyArgs>(args?: SelectSubset<T, PendingEmailCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many PendingEmails and returns the data saved in the database.
+     * @param {PendingEmailCreateManyAndReturnArgs} args - Arguments to create many PendingEmails.
+     * @example
+     * // Create many PendingEmails
+     * const pendingEmail = await prisma.pendingEmail.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many PendingEmails and only return the `id`
+     * const pendingEmailWithIdOnly = await prisma.pendingEmail.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends PendingEmailCreateManyAndReturnArgs>(args?: SelectSubset<T, PendingEmailCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PendingEmailPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a PendingEmail.
+     * @param {PendingEmailDeleteArgs} args - Arguments to delete one PendingEmail.
+     * @example
+     * // Delete one PendingEmail
+     * const PendingEmail = await prisma.pendingEmail.delete({
+     *   where: {
+     *     // ... filter to delete one PendingEmail
+     *   }
+     * })
+     * 
+     */
+    delete<T extends PendingEmailDeleteArgs>(args: SelectSubset<T, PendingEmailDeleteArgs<ExtArgs>>): Prisma__PendingEmailClient<$Result.GetResult<Prisma.$PendingEmailPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one PendingEmail.
+     * @param {PendingEmailUpdateArgs} args - Arguments to update one PendingEmail.
+     * @example
+     * // Update one PendingEmail
+     * const pendingEmail = await prisma.pendingEmail.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends PendingEmailUpdateArgs>(args: SelectSubset<T, PendingEmailUpdateArgs<ExtArgs>>): Prisma__PendingEmailClient<$Result.GetResult<Prisma.$PendingEmailPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more PendingEmails.
+     * @param {PendingEmailDeleteManyArgs} args - Arguments to filter PendingEmails to delete.
+     * @example
+     * // Delete a few PendingEmails
+     * const { count } = await prisma.pendingEmail.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends PendingEmailDeleteManyArgs>(args?: SelectSubset<T, PendingEmailDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more PendingEmails.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PendingEmailUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many PendingEmails
+     * const pendingEmail = await prisma.pendingEmail.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends PendingEmailUpdateManyArgs>(args: SelectSubset<T, PendingEmailUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more PendingEmails and returns the data updated in the database.
+     * @param {PendingEmailUpdateManyAndReturnArgs} args - Arguments to update many PendingEmails.
+     * @example
+     * // Update many PendingEmails
+     * const pendingEmail = await prisma.pendingEmail.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more PendingEmails and only return the `id`
+     * const pendingEmailWithIdOnly = await prisma.pendingEmail.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends PendingEmailUpdateManyAndReturnArgs>(args: SelectSubset<T, PendingEmailUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PendingEmailPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one PendingEmail.
+     * @param {PendingEmailUpsertArgs} args - Arguments to update or create a PendingEmail.
+     * @example
+     * // Update or create a PendingEmail
+     * const pendingEmail = await prisma.pendingEmail.upsert({
+     *   create: {
+     *     // ... data to create a PendingEmail
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the PendingEmail we want to update
+     *   }
+     * })
+     */
+    upsert<T extends PendingEmailUpsertArgs>(args: SelectSubset<T, PendingEmailUpsertArgs<ExtArgs>>): Prisma__PendingEmailClient<$Result.GetResult<Prisma.$PendingEmailPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of PendingEmails.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PendingEmailCountArgs} args - Arguments to filter PendingEmails to count.
+     * @example
+     * // Count the number of PendingEmails
+     * const count = await prisma.pendingEmail.count({
+     *   where: {
+     *     // ... the filter for the PendingEmails we want to count
+     *   }
+     * })
+    **/
+    count<T extends PendingEmailCountArgs>(
+      args?: Subset<T, PendingEmailCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], PendingEmailCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a PendingEmail.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PendingEmailAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends PendingEmailAggregateArgs>(args: Subset<T, PendingEmailAggregateArgs>): Prisma.PrismaPromise<GetPendingEmailAggregateType<T>>
+
+    /**
+     * Group by PendingEmail.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PendingEmailGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends PendingEmailGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: PendingEmailGroupByArgs['orderBy'] }
+        : { orderBy?: PendingEmailGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, PendingEmailGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetPendingEmailGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the PendingEmail model
+   */
+  readonly fields: PendingEmailFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for PendingEmail.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__PendingEmailClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the PendingEmail model
+   */
+  interface PendingEmailFieldRefs {
+    readonly id: FieldRef<"PendingEmail", 'String'>
+    readonly userId: FieldRef<"PendingEmail", 'String'>
+    readonly payload: FieldRef<"PendingEmail", 'Json'>
+    readonly sendAt: FieldRef<"PendingEmail", 'DateTime'>
+    readonly cancelled: FieldRef<"PendingEmail", 'Boolean'>
+    readonly createdAt: FieldRef<"PendingEmail", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * PendingEmail findUnique
+   */
+  export type PendingEmailFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PendingEmail
+     */
+    select?: PendingEmailSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PendingEmail
+     */
+    omit?: PendingEmailOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PendingEmailInclude<ExtArgs> | null
+    /**
+     * Filter, which PendingEmail to fetch.
+     */
+    where: PendingEmailWhereUniqueInput
+  }
+
+  /**
+   * PendingEmail findUniqueOrThrow
+   */
+  export type PendingEmailFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PendingEmail
+     */
+    select?: PendingEmailSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PendingEmail
+     */
+    omit?: PendingEmailOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PendingEmailInclude<ExtArgs> | null
+    /**
+     * Filter, which PendingEmail to fetch.
+     */
+    where: PendingEmailWhereUniqueInput
+  }
+
+  /**
+   * PendingEmail findFirst
+   */
+  export type PendingEmailFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PendingEmail
+     */
+    select?: PendingEmailSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PendingEmail
+     */
+    omit?: PendingEmailOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PendingEmailInclude<ExtArgs> | null
+    /**
+     * Filter, which PendingEmail to fetch.
+     */
+    where?: PendingEmailWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PendingEmails to fetch.
+     */
+    orderBy?: PendingEmailOrderByWithRelationInput | PendingEmailOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for PendingEmails.
+     */
+    cursor?: PendingEmailWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PendingEmails from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PendingEmails.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PendingEmails.
+     */
+    distinct?: PendingEmailScalarFieldEnum | PendingEmailScalarFieldEnum[]
+  }
+
+  /**
+   * PendingEmail findFirstOrThrow
+   */
+  export type PendingEmailFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PendingEmail
+     */
+    select?: PendingEmailSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PendingEmail
+     */
+    omit?: PendingEmailOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PendingEmailInclude<ExtArgs> | null
+    /**
+     * Filter, which PendingEmail to fetch.
+     */
+    where?: PendingEmailWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PendingEmails to fetch.
+     */
+    orderBy?: PendingEmailOrderByWithRelationInput | PendingEmailOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for PendingEmails.
+     */
+    cursor?: PendingEmailWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PendingEmails from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PendingEmails.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PendingEmails.
+     */
+    distinct?: PendingEmailScalarFieldEnum | PendingEmailScalarFieldEnum[]
+  }
+
+  /**
+   * PendingEmail findMany
+   */
+  export type PendingEmailFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PendingEmail
+     */
+    select?: PendingEmailSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PendingEmail
+     */
+    omit?: PendingEmailOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PendingEmailInclude<ExtArgs> | null
+    /**
+     * Filter, which PendingEmails to fetch.
+     */
+    where?: PendingEmailWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PendingEmails to fetch.
+     */
+    orderBy?: PendingEmailOrderByWithRelationInput | PendingEmailOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing PendingEmails.
+     */
+    cursor?: PendingEmailWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PendingEmails from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PendingEmails.
+     */
+    skip?: number
+    distinct?: PendingEmailScalarFieldEnum | PendingEmailScalarFieldEnum[]
+  }
+
+  /**
+   * PendingEmail create
+   */
+  export type PendingEmailCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PendingEmail
+     */
+    select?: PendingEmailSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PendingEmail
+     */
+    omit?: PendingEmailOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PendingEmailInclude<ExtArgs> | null
+    /**
+     * The data needed to create a PendingEmail.
+     */
+    data: XOR<PendingEmailCreateInput, PendingEmailUncheckedCreateInput>
+  }
+
+  /**
+   * PendingEmail createMany
+   */
+  export type PendingEmailCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many PendingEmails.
+     */
+    data: PendingEmailCreateManyInput | PendingEmailCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * PendingEmail createManyAndReturn
+   */
+  export type PendingEmailCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PendingEmail
+     */
+    select?: PendingEmailSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the PendingEmail
+     */
+    omit?: PendingEmailOmit<ExtArgs> | null
+    /**
+     * The data used to create many PendingEmails.
+     */
+    data: PendingEmailCreateManyInput | PendingEmailCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PendingEmailIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * PendingEmail update
+   */
+  export type PendingEmailUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PendingEmail
+     */
+    select?: PendingEmailSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PendingEmail
+     */
+    omit?: PendingEmailOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PendingEmailInclude<ExtArgs> | null
+    /**
+     * The data needed to update a PendingEmail.
+     */
+    data: XOR<PendingEmailUpdateInput, PendingEmailUncheckedUpdateInput>
+    /**
+     * Choose, which PendingEmail to update.
+     */
+    where: PendingEmailWhereUniqueInput
+  }
+
+  /**
+   * PendingEmail updateMany
+   */
+  export type PendingEmailUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update PendingEmails.
+     */
+    data: XOR<PendingEmailUpdateManyMutationInput, PendingEmailUncheckedUpdateManyInput>
+    /**
+     * Filter which PendingEmails to update
+     */
+    where?: PendingEmailWhereInput
+    /**
+     * Limit how many PendingEmails to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * PendingEmail updateManyAndReturn
+   */
+  export type PendingEmailUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PendingEmail
+     */
+    select?: PendingEmailSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the PendingEmail
+     */
+    omit?: PendingEmailOmit<ExtArgs> | null
+    /**
+     * The data used to update PendingEmails.
+     */
+    data: XOR<PendingEmailUpdateManyMutationInput, PendingEmailUncheckedUpdateManyInput>
+    /**
+     * Filter which PendingEmails to update
+     */
+    where?: PendingEmailWhereInput
+    /**
+     * Limit how many PendingEmails to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PendingEmailIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * PendingEmail upsert
+   */
+  export type PendingEmailUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PendingEmail
+     */
+    select?: PendingEmailSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PendingEmail
+     */
+    omit?: PendingEmailOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PendingEmailInclude<ExtArgs> | null
+    /**
+     * The filter to search for the PendingEmail to update in case it exists.
+     */
+    where: PendingEmailWhereUniqueInput
+    /**
+     * In case the PendingEmail found by the `where` argument doesn't exist, create a new PendingEmail with this data.
+     */
+    create: XOR<PendingEmailCreateInput, PendingEmailUncheckedCreateInput>
+    /**
+     * In case the PendingEmail was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<PendingEmailUpdateInput, PendingEmailUncheckedUpdateInput>
+  }
+
+  /**
+   * PendingEmail delete
+   */
+  export type PendingEmailDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PendingEmail
+     */
+    select?: PendingEmailSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PendingEmail
+     */
+    omit?: PendingEmailOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PendingEmailInclude<ExtArgs> | null
+    /**
+     * Filter which PendingEmail to delete.
+     */
+    where: PendingEmailWhereUniqueInput
+  }
+
+  /**
+   * PendingEmail deleteMany
+   */
+  export type PendingEmailDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which PendingEmails to delete
+     */
+    where?: PendingEmailWhereInput
+    /**
+     * Limit how many PendingEmails to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * PendingEmail without action
+   */
+  export type PendingEmailDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PendingEmail
+     */
+    select?: PendingEmailSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PendingEmail
+     */
+    omit?: PendingEmailOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PendingEmailInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -34177,6 +37943,7 @@ export namespace Prisma {
     emailDensity: 'emailDensity',
     preferredTimeZone: 'preferredTimeZone',
     lastActiveAccountId: 'lastActiveAccountId',
+    undoSendDelay: 'undoSendDelay',
     voiceProfile: 'voiceProfile',
     voiceProfileUpdatedAt: 'voiceProfileUpdatedAt'
   };
@@ -34326,6 +38093,8 @@ export namespace Prisma {
     isDraft: 'isDraft',
     syncStatus: 'syncStatus',
     lastModifiedDateTime: 'lastModifiedDateTime',
+    sensitivityLabel: 'sensitivityLabel',
+    isPinned: 'isPinned',
     syncedAt: 'syncedAt',
     updatedAt: 'updatedAt'
   };
@@ -34565,6 +38334,38 @@ export namespace Prisma {
   export type TodoItemScalarFieldEnum = (typeof TodoItemScalarFieldEnum)[keyof typeof TodoItemScalarFieldEnum]
 
 
+  export const EmailTemplateScalarFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    name: 'name',
+    subject: 'subject',
+    body: 'body',
+    variables: 'variables',
+    category: 'category',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type EmailTemplateScalarFieldEnum = (typeof EmailTemplateScalarFieldEnum)[keyof typeof EmailTemplateScalarFieldEnum]
+
+
+  export const FollowUpReminderScalarFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    messageId: 'messageId',
+    conversationId: 'conversationId',
+    homeAccountId: 'homeAccountId',
+    subject: 'subject',
+    recipient: 'recipient',
+    remindAt: 'remindAt',
+    status: 'status',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type FollowUpReminderScalarFieldEnum = (typeof FollowUpReminderScalarFieldEnum)[keyof typeof FollowUpReminderScalarFieldEnum]
+
+
   export const ImapConnectedAccountScalarFieldEnum: {
     id: 'id',
     userId: 'userId',
@@ -34609,6 +38410,18 @@ export namespace Prisma {
   };
 
   export type JmapConnectedAccountScalarFieldEnum = (typeof JmapConnectedAccountScalarFieldEnum)[keyof typeof JmapConnectedAccountScalarFieldEnum]
+
+
+  export const PendingEmailScalarFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    payload: 'payload',
+    sendAt: 'sendAt',
+    cancelled: 'cancelled',
+    createdAt: 'createdAt'
+  };
+
+  export type PendingEmailScalarFieldEnum = (typeof PendingEmailScalarFieldEnum)[keyof typeof PendingEmailScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -34700,20 +38513,6 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'Json'
-   */
-  export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
-    
-
-
-  /**
-   * Reference to a field of type 'QueryMode'
-   */
-  export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
-    
-
-
-  /**
    * Reference to a field of type 'Int'
    */
   export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
@@ -34724,6 +38523,20 @@ export namespace Prisma {
    * Reference to a field of type 'Int[]'
    */
   export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Json'
+   */
+  export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
+    
+
+
+  /**
+   * Reference to a field of type 'QueryMode'
+   */
+  export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
     
 
 
@@ -34889,6 +38702,7 @@ export namespace Prisma {
     emailDensity?: StringFilter<"User"> | string
     preferredTimeZone?: StringFilter<"User"> | string
     lastActiveAccountId?: StringNullableFilter<"User"> | string | null
+    undoSendDelay?: IntFilter<"User"> | number
     voiceProfile?: JsonNullableFilter<"User">
     voiceProfileUpdatedAt?: DateTimeNullableFilter<"User"> | Date | string | null
     org?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
@@ -34901,6 +38715,7 @@ export namespace Prisma {
     drafts?: DraftListRelationFilter
     emailRules?: EmailRuleListRelationFilter
     signatures?: SignatureListRelationFilter
+    emailTemplates?: EmailTemplateListRelationFilter
     cachedFolders?: CachedFolderListRelationFilter
     cachedEmails?: CachedEmailListRelationFilter
     cachedCalEvents?: CachedCalendarEventListRelationFilter
@@ -34914,6 +38729,8 @@ export namespace Prisma {
     todoItems?: TodoItemListRelationFilter
     snoozedEmails?: SnoozedEmailListRelationFilter
     readReceipts?: ReadReceiptListRelationFilter
+    pendingEmails?: PendingEmailListRelationFilter
+    followUpReminders?: FollowUpReminderListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -34934,6 +38751,7 @@ export namespace Prisma {
     emailDensity?: SortOrder
     preferredTimeZone?: SortOrder
     lastActiveAccountId?: SortOrderInput | SortOrder
+    undoSendDelay?: SortOrder
     voiceProfile?: SortOrderInput | SortOrder
     voiceProfileUpdatedAt?: SortOrderInput | SortOrder
     org?: OrganizationOrderByWithRelationInput
@@ -34946,6 +38764,7 @@ export namespace Prisma {
     drafts?: DraftOrderByRelationAggregateInput
     emailRules?: EmailRuleOrderByRelationAggregateInput
     signatures?: SignatureOrderByRelationAggregateInput
+    emailTemplates?: EmailTemplateOrderByRelationAggregateInput
     cachedFolders?: CachedFolderOrderByRelationAggregateInput
     cachedEmails?: CachedEmailOrderByRelationAggregateInput
     cachedCalEvents?: CachedCalendarEventOrderByRelationAggregateInput
@@ -34959,6 +38778,8 @@ export namespace Prisma {
     todoItems?: TodoItemOrderByRelationAggregateInput
     snoozedEmails?: SnoozedEmailOrderByRelationAggregateInput
     readReceipts?: ReadReceiptOrderByRelationAggregateInput
+    pendingEmails?: PendingEmailOrderByRelationAggregateInput
+    followUpReminders?: FollowUpReminderOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -34982,6 +38803,7 @@ export namespace Prisma {
     emailDensity?: StringFilter<"User"> | string
     preferredTimeZone?: StringFilter<"User"> | string
     lastActiveAccountId?: StringNullableFilter<"User"> | string | null
+    undoSendDelay?: IntFilter<"User"> | number
     voiceProfile?: JsonNullableFilter<"User">
     voiceProfileUpdatedAt?: DateTimeNullableFilter<"User"> | Date | string | null
     org?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
@@ -34994,6 +38816,7 @@ export namespace Prisma {
     drafts?: DraftListRelationFilter
     emailRules?: EmailRuleListRelationFilter
     signatures?: SignatureListRelationFilter
+    emailTemplates?: EmailTemplateListRelationFilter
     cachedFolders?: CachedFolderListRelationFilter
     cachedEmails?: CachedEmailListRelationFilter
     cachedCalEvents?: CachedCalendarEventListRelationFilter
@@ -35007,6 +38830,8 @@ export namespace Prisma {
     todoItems?: TodoItemListRelationFilter
     snoozedEmails?: SnoozedEmailListRelationFilter
     readReceipts?: ReadReceiptListRelationFilter
+    pendingEmails?: PendingEmailListRelationFilter
+    followUpReminders?: FollowUpReminderListRelationFilter
   }, "id" | "email">
 
   export type UserOrderByWithAggregationInput = {
@@ -35027,11 +38852,14 @@ export namespace Prisma {
     emailDensity?: SortOrder
     preferredTimeZone?: SortOrder
     lastActiveAccountId?: SortOrderInput | SortOrder
+    undoSendDelay?: SortOrder
     voiceProfile?: SortOrderInput | SortOrder
     voiceProfileUpdatedAt?: SortOrderInput | SortOrder
     _count?: UserCountOrderByAggregateInput
+    _avg?: UserAvgOrderByAggregateInput
     _max?: UserMaxOrderByAggregateInput
     _min?: UserMinOrderByAggregateInput
+    _sum?: UserSumOrderByAggregateInput
   }
 
   export type UserScalarWhereWithAggregatesInput = {
@@ -35055,6 +38883,7 @@ export namespace Prisma {
     emailDensity?: StringWithAggregatesFilter<"User"> | string
     preferredTimeZone?: StringWithAggregatesFilter<"User"> | string
     lastActiveAccountId?: StringNullableWithAggregatesFilter<"User"> | string | null
+    undoSendDelay?: IntWithAggregatesFilter<"User"> | number
     voiceProfile?: JsonNullableWithAggregatesFilter<"User">
     voiceProfileUpdatedAt?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
   }
@@ -35686,6 +39515,8 @@ export namespace Prisma {
     isDraft?: BoolFilter<"CachedEmail"> | boolean
     syncStatus?: StringFilter<"CachedEmail"> | string
     lastModifiedDateTime?: DateTimeNullableFilter<"CachedEmail"> | Date | string | null
+    sensitivityLabel?: StringNullableFilter<"CachedEmail"> | string | null
+    isPinned?: BoolFilter<"CachedEmail"> | boolean
     syncedAt?: DateTimeFilter<"CachedEmail"> | Date | string
     updatedAt?: DateTimeFilter<"CachedEmail"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -35714,6 +39545,8 @@ export namespace Prisma {
     isDraft?: SortOrder
     syncStatus?: SortOrder
     lastModifiedDateTime?: SortOrderInput | SortOrder
+    sensitivityLabel?: SortOrderInput | SortOrder
+    isPinned?: SortOrder
     syncedAt?: SortOrder
     updatedAt?: SortOrder
     user?: UserOrderByWithRelationInput
@@ -35745,6 +39578,8 @@ export namespace Prisma {
     isDraft?: BoolFilter<"CachedEmail"> | boolean
     syncStatus?: StringFilter<"CachedEmail"> | string
     lastModifiedDateTime?: DateTimeNullableFilter<"CachedEmail"> | Date | string | null
+    sensitivityLabel?: StringNullableFilter<"CachedEmail"> | string | null
+    isPinned?: BoolFilter<"CachedEmail"> | boolean
     syncedAt?: DateTimeFilter<"CachedEmail"> | Date | string
     updatedAt?: DateTimeFilter<"CachedEmail"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -35773,6 +39608,8 @@ export namespace Prisma {
     isDraft?: SortOrder
     syncStatus?: SortOrder
     lastModifiedDateTime?: SortOrderInput | SortOrder
+    sensitivityLabel?: SortOrderInput | SortOrder
+    isPinned?: SortOrder
     syncedAt?: SortOrder
     updatedAt?: SortOrder
     _count?: CachedEmailCountOrderByAggregateInput
@@ -35806,6 +39643,8 @@ export namespace Prisma {
     isDraft?: BoolWithAggregatesFilter<"CachedEmail"> | boolean
     syncStatus?: StringWithAggregatesFilter<"CachedEmail"> | string
     lastModifiedDateTime?: DateTimeNullableWithAggregatesFilter<"CachedEmail"> | Date | string | null
+    sensitivityLabel?: StringNullableWithAggregatesFilter<"CachedEmail"> | string | null
+    isPinned?: BoolWithAggregatesFilter<"CachedEmail"> | boolean
     syncedAt?: DateTimeWithAggregatesFilter<"CachedEmail"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"CachedEmail"> | Date | string
   }
@@ -36979,6 +40818,166 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"TodoItem"> | Date | string
   }
 
+  export type EmailTemplateWhereInput = {
+    AND?: EmailTemplateWhereInput | EmailTemplateWhereInput[]
+    OR?: EmailTemplateWhereInput[]
+    NOT?: EmailTemplateWhereInput | EmailTemplateWhereInput[]
+    id?: StringFilter<"EmailTemplate"> | string
+    userId?: StringFilter<"EmailTemplate"> | string
+    name?: StringFilter<"EmailTemplate"> | string
+    subject?: StringNullableFilter<"EmailTemplate"> | string | null
+    body?: StringFilter<"EmailTemplate"> | string
+    variables?: JsonFilter<"EmailTemplate">
+    category?: StringNullableFilter<"EmailTemplate"> | string | null
+    createdAt?: DateTimeFilter<"EmailTemplate"> | Date | string
+    updatedAt?: DateTimeFilter<"EmailTemplate"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type EmailTemplateOrderByWithRelationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    name?: SortOrder
+    subject?: SortOrderInput | SortOrder
+    body?: SortOrder
+    variables?: SortOrder
+    category?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    user?: UserOrderByWithRelationInput
+  }
+
+  export type EmailTemplateWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: EmailTemplateWhereInput | EmailTemplateWhereInput[]
+    OR?: EmailTemplateWhereInput[]
+    NOT?: EmailTemplateWhereInput | EmailTemplateWhereInput[]
+    userId?: StringFilter<"EmailTemplate"> | string
+    name?: StringFilter<"EmailTemplate"> | string
+    subject?: StringNullableFilter<"EmailTemplate"> | string | null
+    body?: StringFilter<"EmailTemplate"> | string
+    variables?: JsonFilter<"EmailTemplate">
+    category?: StringNullableFilter<"EmailTemplate"> | string | null
+    createdAt?: DateTimeFilter<"EmailTemplate"> | Date | string
+    updatedAt?: DateTimeFilter<"EmailTemplate"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id">
+
+  export type EmailTemplateOrderByWithAggregationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    name?: SortOrder
+    subject?: SortOrderInput | SortOrder
+    body?: SortOrder
+    variables?: SortOrder
+    category?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: EmailTemplateCountOrderByAggregateInput
+    _max?: EmailTemplateMaxOrderByAggregateInput
+    _min?: EmailTemplateMinOrderByAggregateInput
+  }
+
+  export type EmailTemplateScalarWhereWithAggregatesInput = {
+    AND?: EmailTemplateScalarWhereWithAggregatesInput | EmailTemplateScalarWhereWithAggregatesInput[]
+    OR?: EmailTemplateScalarWhereWithAggregatesInput[]
+    NOT?: EmailTemplateScalarWhereWithAggregatesInput | EmailTemplateScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"EmailTemplate"> | string
+    userId?: StringWithAggregatesFilter<"EmailTemplate"> | string
+    name?: StringWithAggregatesFilter<"EmailTemplate"> | string
+    subject?: StringNullableWithAggregatesFilter<"EmailTemplate"> | string | null
+    body?: StringWithAggregatesFilter<"EmailTemplate"> | string
+    variables?: JsonWithAggregatesFilter<"EmailTemplate">
+    category?: StringNullableWithAggregatesFilter<"EmailTemplate"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"EmailTemplate"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"EmailTemplate"> | Date | string
+  }
+
+  export type FollowUpReminderWhereInput = {
+    AND?: FollowUpReminderWhereInput | FollowUpReminderWhereInput[]
+    OR?: FollowUpReminderWhereInput[]
+    NOT?: FollowUpReminderWhereInput | FollowUpReminderWhereInput[]
+    id?: StringFilter<"FollowUpReminder"> | string
+    userId?: StringFilter<"FollowUpReminder"> | string
+    messageId?: StringFilter<"FollowUpReminder"> | string
+    conversationId?: StringNullableFilter<"FollowUpReminder"> | string | null
+    homeAccountId?: StringNullableFilter<"FollowUpReminder"> | string | null
+    subject?: StringFilter<"FollowUpReminder"> | string
+    recipient?: StringFilter<"FollowUpReminder"> | string
+    remindAt?: DateTimeFilter<"FollowUpReminder"> | Date | string
+    status?: StringFilter<"FollowUpReminder"> | string
+    createdAt?: DateTimeFilter<"FollowUpReminder"> | Date | string
+    updatedAt?: DateTimeFilter<"FollowUpReminder"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type FollowUpReminderOrderByWithRelationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    messageId?: SortOrder
+    conversationId?: SortOrderInput | SortOrder
+    homeAccountId?: SortOrderInput | SortOrder
+    subject?: SortOrder
+    recipient?: SortOrder
+    remindAt?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    user?: UserOrderByWithRelationInput
+  }
+
+  export type FollowUpReminderWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: FollowUpReminderWhereInput | FollowUpReminderWhereInput[]
+    OR?: FollowUpReminderWhereInput[]
+    NOT?: FollowUpReminderWhereInput | FollowUpReminderWhereInput[]
+    userId?: StringFilter<"FollowUpReminder"> | string
+    messageId?: StringFilter<"FollowUpReminder"> | string
+    conversationId?: StringNullableFilter<"FollowUpReminder"> | string | null
+    homeAccountId?: StringNullableFilter<"FollowUpReminder"> | string | null
+    subject?: StringFilter<"FollowUpReminder"> | string
+    recipient?: StringFilter<"FollowUpReminder"> | string
+    remindAt?: DateTimeFilter<"FollowUpReminder"> | Date | string
+    status?: StringFilter<"FollowUpReminder"> | string
+    createdAt?: DateTimeFilter<"FollowUpReminder"> | Date | string
+    updatedAt?: DateTimeFilter<"FollowUpReminder"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id">
+
+  export type FollowUpReminderOrderByWithAggregationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    messageId?: SortOrder
+    conversationId?: SortOrderInput | SortOrder
+    homeAccountId?: SortOrderInput | SortOrder
+    subject?: SortOrder
+    recipient?: SortOrder
+    remindAt?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: FollowUpReminderCountOrderByAggregateInput
+    _max?: FollowUpReminderMaxOrderByAggregateInput
+    _min?: FollowUpReminderMinOrderByAggregateInput
+  }
+
+  export type FollowUpReminderScalarWhereWithAggregatesInput = {
+    AND?: FollowUpReminderScalarWhereWithAggregatesInput | FollowUpReminderScalarWhereWithAggregatesInput[]
+    OR?: FollowUpReminderScalarWhereWithAggregatesInput[]
+    NOT?: FollowUpReminderScalarWhereWithAggregatesInput | FollowUpReminderScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"FollowUpReminder"> | string
+    userId?: StringWithAggregatesFilter<"FollowUpReminder"> | string
+    messageId?: StringWithAggregatesFilter<"FollowUpReminder"> | string
+    conversationId?: StringNullableWithAggregatesFilter<"FollowUpReminder"> | string | null
+    homeAccountId?: StringNullableWithAggregatesFilter<"FollowUpReminder"> | string | null
+    subject?: StringWithAggregatesFilter<"FollowUpReminder"> | string
+    recipient?: StringWithAggregatesFilter<"FollowUpReminder"> | string
+    remindAt?: DateTimeWithAggregatesFilter<"FollowUpReminder"> | Date | string
+    status?: StringWithAggregatesFilter<"FollowUpReminder"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"FollowUpReminder"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"FollowUpReminder"> | Date | string
+  }
+
   export type ImapConnectedAccountWhereInput = {
     AND?: ImapConnectedAccountWhereInput | ImapConnectedAccountWhereInput[]
     OR?: ImapConnectedAccountWhereInput[]
@@ -37215,6 +41214,66 @@ export namespace Prisma {
     mailboxState?: StringNullableWithAggregatesFilter<"JmapConnectedAccount"> | string | null
   }
 
+  export type PendingEmailWhereInput = {
+    AND?: PendingEmailWhereInput | PendingEmailWhereInput[]
+    OR?: PendingEmailWhereInput[]
+    NOT?: PendingEmailWhereInput | PendingEmailWhereInput[]
+    id?: StringFilter<"PendingEmail"> | string
+    userId?: StringFilter<"PendingEmail"> | string
+    payload?: JsonFilter<"PendingEmail">
+    sendAt?: DateTimeFilter<"PendingEmail"> | Date | string
+    cancelled?: BoolFilter<"PendingEmail"> | boolean
+    createdAt?: DateTimeFilter<"PendingEmail"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type PendingEmailOrderByWithRelationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    payload?: SortOrder
+    sendAt?: SortOrder
+    cancelled?: SortOrder
+    createdAt?: SortOrder
+    user?: UserOrderByWithRelationInput
+  }
+
+  export type PendingEmailWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: PendingEmailWhereInput | PendingEmailWhereInput[]
+    OR?: PendingEmailWhereInput[]
+    NOT?: PendingEmailWhereInput | PendingEmailWhereInput[]
+    userId?: StringFilter<"PendingEmail"> | string
+    payload?: JsonFilter<"PendingEmail">
+    sendAt?: DateTimeFilter<"PendingEmail"> | Date | string
+    cancelled?: BoolFilter<"PendingEmail"> | boolean
+    createdAt?: DateTimeFilter<"PendingEmail"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id">
+
+  export type PendingEmailOrderByWithAggregationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    payload?: SortOrder
+    sendAt?: SortOrder
+    cancelled?: SortOrder
+    createdAt?: SortOrder
+    _count?: PendingEmailCountOrderByAggregateInput
+    _max?: PendingEmailMaxOrderByAggregateInput
+    _min?: PendingEmailMinOrderByAggregateInput
+  }
+
+  export type PendingEmailScalarWhereWithAggregatesInput = {
+    AND?: PendingEmailScalarWhereWithAggregatesInput | PendingEmailScalarWhereWithAggregatesInput[]
+    OR?: PendingEmailScalarWhereWithAggregatesInput[]
+    NOT?: PendingEmailScalarWhereWithAggregatesInput | PendingEmailScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"PendingEmail"> | string
+    userId?: StringWithAggregatesFilter<"PendingEmail"> | string
+    payload?: JsonWithAggregatesFilter<"PendingEmail">
+    sendAt?: DateTimeWithAggregatesFilter<"PendingEmail"> | Date | string
+    cancelled?: BoolWithAggregatesFilter<"PendingEmail"> | boolean
+    createdAt?: DateTimeWithAggregatesFilter<"PendingEmail"> | Date | string
+  }
+
   export type OrganizationCreateInput = {
     id?: string
     name: string
@@ -37365,6 +41424,7 @@ export namespace Prisma {
     emailDensity?: string
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
+    undoSendDelay?: number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
@@ -37377,6 +41437,7 @@ export namespace Prisma {
     drafts?: DraftCreateNestedManyWithoutUserInput
     emailRules?: EmailRuleCreateNestedManyWithoutUserInput
     signatures?: SignatureCreateNestedManyWithoutUserInput
+    emailTemplates?: EmailTemplateCreateNestedManyWithoutUserInput
     cachedFolders?: CachedFolderCreateNestedManyWithoutUserInput
     cachedEmails?: CachedEmailCreateNestedManyWithoutUserInput
     cachedCalEvents?: CachedCalendarEventCreateNestedManyWithoutUserInput
@@ -37390,6 +41451,8 @@ export namespace Prisma {
     todoItems?: TodoItemCreateNestedManyWithoutUserInput
     snoozedEmails?: SnoozedEmailCreateNestedManyWithoutUserInput
     readReceipts?: ReadReceiptCreateNestedManyWithoutUserInput
+    pendingEmails?: PendingEmailCreateNestedManyWithoutUserInput
+    followUpReminders?: FollowUpReminderCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -37410,6 +41473,7 @@ export namespace Prisma {
     emailDensity?: string
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
+    undoSendDelay?: number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
@@ -37421,6 +41485,7 @@ export namespace Prisma {
     drafts?: DraftUncheckedCreateNestedManyWithoutUserInput
     emailRules?: EmailRuleUncheckedCreateNestedManyWithoutUserInput
     signatures?: SignatureUncheckedCreateNestedManyWithoutUserInput
+    emailTemplates?: EmailTemplateUncheckedCreateNestedManyWithoutUserInput
     cachedFolders?: CachedFolderUncheckedCreateNestedManyWithoutUserInput
     cachedEmails?: CachedEmailUncheckedCreateNestedManyWithoutUserInput
     cachedCalEvents?: CachedCalendarEventUncheckedCreateNestedManyWithoutUserInput
@@ -37434,6 +41499,8 @@ export namespace Prisma {
     todoItems?: TodoItemUncheckedCreateNestedManyWithoutUserInput
     snoozedEmails?: SnoozedEmailUncheckedCreateNestedManyWithoutUserInput
     readReceipts?: ReadReceiptUncheckedCreateNestedManyWithoutUserInput
+    pendingEmails?: PendingEmailUncheckedCreateNestedManyWithoutUserInput
+    followUpReminders?: FollowUpReminderUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserUpdateInput = {
@@ -37453,6 +41520,7 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    undoSendDelay?: IntFieldUpdateOperationsInput | number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
@@ -37465,6 +41533,7 @@ export namespace Prisma {
     drafts?: DraftUpdateManyWithoutUserNestedInput
     emailRules?: EmailRuleUpdateManyWithoutUserNestedInput
     signatures?: SignatureUpdateManyWithoutUserNestedInput
+    emailTemplates?: EmailTemplateUpdateManyWithoutUserNestedInput
     cachedFolders?: CachedFolderUpdateManyWithoutUserNestedInput
     cachedEmails?: CachedEmailUpdateManyWithoutUserNestedInput
     cachedCalEvents?: CachedCalendarEventUpdateManyWithoutUserNestedInput
@@ -37478,6 +41547,8 @@ export namespace Prisma {
     todoItems?: TodoItemUpdateManyWithoutUserNestedInput
     snoozedEmails?: SnoozedEmailUpdateManyWithoutUserNestedInput
     readReceipts?: ReadReceiptUpdateManyWithoutUserNestedInput
+    pendingEmails?: PendingEmailUpdateManyWithoutUserNestedInput
+    followUpReminders?: FollowUpReminderUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -37498,6 +41569,7 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    undoSendDelay?: IntFieldUpdateOperationsInput | number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
@@ -37509,6 +41581,7 @@ export namespace Prisma {
     drafts?: DraftUncheckedUpdateManyWithoutUserNestedInput
     emailRules?: EmailRuleUncheckedUpdateManyWithoutUserNestedInput
     signatures?: SignatureUncheckedUpdateManyWithoutUserNestedInput
+    emailTemplates?: EmailTemplateUncheckedUpdateManyWithoutUserNestedInput
     cachedFolders?: CachedFolderUncheckedUpdateManyWithoutUserNestedInput
     cachedEmails?: CachedEmailUncheckedUpdateManyWithoutUserNestedInput
     cachedCalEvents?: CachedCalendarEventUncheckedUpdateManyWithoutUserNestedInput
@@ -37522,6 +41595,8 @@ export namespace Prisma {
     todoItems?: TodoItemUncheckedUpdateManyWithoutUserNestedInput
     snoozedEmails?: SnoozedEmailUncheckedUpdateManyWithoutUserNestedInput
     readReceipts?: ReadReceiptUncheckedUpdateManyWithoutUserNestedInput
+    pendingEmails?: PendingEmailUncheckedUpdateManyWithoutUserNestedInput
+    followUpReminders?: FollowUpReminderUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -37542,6 +41617,7 @@ export namespace Prisma {
     emailDensity?: string
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
+    undoSendDelay?: number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
   }
@@ -37563,6 +41639,7 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    undoSendDelay?: IntFieldUpdateOperationsInput | number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
@@ -37585,6 +41662,7 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    undoSendDelay?: IntFieldUpdateOperationsInput | number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
@@ -38290,6 +42368,8 @@ export namespace Prisma {
     isDraft?: boolean
     syncStatus?: string
     lastModifiedDateTime?: Date | string | null
+    sensitivityLabel?: string | null
+    isPinned?: boolean
     syncedAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutCachedEmailsInput
@@ -38318,6 +42398,8 @@ export namespace Prisma {
     isDraft?: boolean
     syncStatus?: string
     lastModifiedDateTime?: Date | string | null
+    sensitivityLabel?: string | null
+    isPinned?: boolean
     syncedAt?: Date | string
     updatedAt?: Date | string
   }
@@ -38344,6 +42426,8 @@ export namespace Prisma {
     isDraft?: BoolFieldUpdateOperationsInput | boolean
     syncStatus?: StringFieldUpdateOperationsInput | string
     lastModifiedDateTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sensitivityLabel?: NullableStringFieldUpdateOperationsInput | string | null
+    isPinned?: BoolFieldUpdateOperationsInput | boolean
     syncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutCachedEmailsNestedInput
@@ -38372,6 +42456,8 @@ export namespace Prisma {
     isDraft?: BoolFieldUpdateOperationsInput | boolean
     syncStatus?: StringFieldUpdateOperationsInput | string
     lastModifiedDateTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sensitivityLabel?: NullableStringFieldUpdateOperationsInput | string | null
+    isPinned?: BoolFieldUpdateOperationsInput | boolean
     syncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -38399,6 +42485,8 @@ export namespace Prisma {
     isDraft?: boolean
     syncStatus?: string
     lastModifiedDateTime?: Date | string | null
+    sensitivityLabel?: string | null
+    isPinned?: boolean
     syncedAt?: Date | string
     updatedAt?: Date | string
   }
@@ -38425,6 +42513,8 @@ export namespace Prisma {
     isDraft?: BoolFieldUpdateOperationsInput | boolean
     syncStatus?: StringFieldUpdateOperationsInput | string
     lastModifiedDateTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sensitivityLabel?: NullableStringFieldUpdateOperationsInput | string | null
+    isPinned?: BoolFieldUpdateOperationsInput | boolean
     syncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -38452,6 +42542,8 @@ export namespace Prisma {
     isDraft?: BoolFieldUpdateOperationsInput | boolean
     syncStatus?: StringFieldUpdateOperationsInput | string
     lastModifiedDateTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sensitivityLabel?: NullableStringFieldUpdateOperationsInput | string | null
+    isPinned?: BoolFieldUpdateOperationsInput | boolean
     syncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -39795,6 +43887,186 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type EmailTemplateCreateInput = {
+    id?: string
+    name: string
+    subject?: string | null
+    body: string
+    variables?: JsonNullValueInput | InputJsonValue
+    category?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutEmailTemplatesInput
+  }
+
+  export type EmailTemplateUncheckedCreateInput = {
+    id?: string
+    userId: string
+    name: string
+    subject?: string | null
+    body: string
+    variables?: JsonNullValueInput | InputJsonValue
+    category?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type EmailTemplateUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    subject?: NullableStringFieldUpdateOperationsInput | string | null
+    body?: StringFieldUpdateOperationsInput | string
+    variables?: JsonNullValueInput | InputJsonValue
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutEmailTemplatesNestedInput
+  }
+
+  export type EmailTemplateUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    subject?: NullableStringFieldUpdateOperationsInput | string | null
+    body?: StringFieldUpdateOperationsInput | string
+    variables?: JsonNullValueInput | InputJsonValue
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EmailTemplateCreateManyInput = {
+    id?: string
+    userId: string
+    name: string
+    subject?: string | null
+    body: string
+    variables?: JsonNullValueInput | InputJsonValue
+    category?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type EmailTemplateUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    subject?: NullableStringFieldUpdateOperationsInput | string | null
+    body?: StringFieldUpdateOperationsInput | string
+    variables?: JsonNullValueInput | InputJsonValue
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EmailTemplateUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    subject?: NullableStringFieldUpdateOperationsInput | string | null
+    body?: StringFieldUpdateOperationsInput | string
+    variables?: JsonNullValueInput | InputJsonValue
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FollowUpReminderCreateInput = {
+    id?: string
+    messageId: string
+    conversationId?: string | null
+    homeAccountId?: string | null
+    subject: string
+    recipient: string
+    remindAt: Date | string
+    status?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutFollowUpRemindersInput
+  }
+
+  export type FollowUpReminderUncheckedCreateInput = {
+    id?: string
+    userId: string
+    messageId: string
+    conversationId?: string | null
+    homeAccountId?: string | null
+    subject: string
+    recipient: string
+    remindAt: Date | string
+    status?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type FollowUpReminderUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    messageId?: StringFieldUpdateOperationsInput | string
+    conversationId?: NullableStringFieldUpdateOperationsInput | string | null
+    homeAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    subject?: StringFieldUpdateOperationsInput | string
+    recipient?: StringFieldUpdateOperationsInput | string
+    remindAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutFollowUpRemindersNestedInput
+  }
+
+  export type FollowUpReminderUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    messageId?: StringFieldUpdateOperationsInput | string
+    conversationId?: NullableStringFieldUpdateOperationsInput | string | null
+    homeAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    subject?: StringFieldUpdateOperationsInput | string
+    recipient?: StringFieldUpdateOperationsInput | string
+    remindAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FollowUpReminderCreateManyInput = {
+    id?: string
+    userId: string
+    messageId: string
+    conversationId?: string | null
+    homeAccountId?: string | null
+    subject: string
+    recipient: string
+    remindAt: Date | string
+    status?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type FollowUpReminderUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    messageId?: StringFieldUpdateOperationsInput | string
+    conversationId?: NullableStringFieldUpdateOperationsInput | string | null
+    homeAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    subject?: StringFieldUpdateOperationsInput | string
+    recipient?: StringFieldUpdateOperationsInput | string
+    remindAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FollowUpReminderUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    messageId?: StringFieldUpdateOperationsInput | string
+    conversationId?: NullableStringFieldUpdateOperationsInput | string | null
+    homeAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    subject?: StringFieldUpdateOperationsInput | string
+    recipient?: StringFieldUpdateOperationsInput | string
+    remindAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type ImapConnectedAccountCreateInput = {
     id?: string
     accountId: string
@@ -40073,6 +44345,68 @@ export namespace Prisma {
     mailboxState?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
+  export type PendingEmailCreateInput = {
+    id?: string
+    payload: JsonNullValueInput | InputJsonValue
+    sendAt: Date | string
+    cancelled?: boolean
+    createdAt?: Date | string
+    user: UserCreateNestedOneWithoutPendingEmailsInput
+  }
+
+  export type PendingEmailUncheckedCreateInput = {
+    id?: string
+    userId: string
+    payload: JsonNullValueInput | InputJsonValue
+    sendAt: Date | string
+    cancelled?: boolean
+    createdAt?: Date | string
+  }
+
+  export type PendingEmailUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    payload?: JsonNullValueInput | InputJsonValue
+    sendAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    cancelled?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutPendingEmailsNestedInput
+  }
+
+  export type PendingEmailUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    payload?: JsonNullValueInput | InputJsonValue
+    sendAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    cancelled?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PendingEmailCreateManyInput = {
+    id?: string
+    userId: string
+    payload: JsonNullValueInput | InputJsonValue
+    sendAt: Date | string
+    cancelled?: boolean
+    createdAt?: Date | string
+  }
+
+  export type PendingEmailUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    payload?: JsonNullValueInput | InputJsonValue
+    sendAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    cancelled?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PendingEmailUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    payload?: JsonNullValueInput | InputJsonValue
+    sendAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    cancelled?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -40234,6 +44568,17 @@ export namespace Prisma {
     equals?: boolean | BooleanFieldRefInput<$PrismaModel>
     not?: NestedBoolFilter<$PrismaModel> | boolean
   }
+
+  export type IntFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntFilter<$PrismaModel> | number
+  }
   export type JsonNullableFilter<$PrismaModel = never> =
     | PatchUndefined<
         Either<Required<JsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>,
@@ -40322,6 +44667,12 @@ export namespace Prisma {
     none?: SignatureWhereInput
   }
 
+  export type EmailTemplateListRelationFilter = {
+    every?: EmailTemplateWhereInput
+    some?: EmailTemplateWhereInput
+    none?: EmailTemplateWhereInput
+  }
+
   export type CachedFolderListRelationFilter = {
     every?: CachedFolderWhereInput
     some?: CachedFolderWhereInput
@@ -40400,6 +44751,18 @@ export namespace Prisma {
     none?: ReadReceiptWhereInput
   }
 
+  export type PendingEmailListRelationFilter = {
+    every?: PendingEmailWhereInput
+    some?: PendingEmailWhereInput
+    none?: PendingEmailWhereInput
+  }
+
+  export type FollowUpReminderListRelationFilter = {
+    every?: FollowUpReminderWhereInput
+    some?: FollowUpReminderWhereInput
+    none?: FollowUpReminderWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -40434,6 +44797,10 @@ export namespace Prisma {
   }
 
   export type SignatureOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type EmailTemplateOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -40489,6 +44856,14 @@ export namespace Prisma {
     _count?: SortOrder
   }
 
+  export type PendingEmailOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type FollowUpReminderOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
   export type UserCountOrderByAggregateInput = {
     id?: SortOrder
     email?: SortOrder
@@ -40507,8 +44882,13 @@ export namespace Prisma {
     emailDensity?: SortOrder
     preferredTimeZone?: SortOrder
     lastActiveAccountId?: SortOrder
+    undoSendDelay?: SortOrder
     voiceProfile?: SortOrder
     voiceProfileUpdatedAt?: SortOrder
+  }
+
+  export type UserAvgOrderByAggregateInput = {
+    undoSendDelay?: SortOrder
   }
 
   export type UserMaxOrderByAggregateInput = {
@@ -40529,6 +44909,7 @@ export namespace Prisma {
     emailDensity?: SortOrder
     preferredTimeZone?: SortOrder
     lastActiveAccountId?: SortOrder
+    undoSendDelay?: SortOrder
     voiceProfileUpdatedAt?: SortOrder
   }
 
@@ -40550,7 +44931,12 @@ export namespace Prisma {
     emailDensity?: SortOrder
     preferredTimeZone?: SortOrder
     lastActiveAccountId?: SortOrder
+    undoSendDelay?: SortOrder
     voiceProfileUpdatedAt?: SortOrder
+  }
+
+  export type UserSumOrderByAggregateInput = {
+    undoSendDelay?: SortOrder
   }
 
   export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -40577,6 +44963,22 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedBoolFilter<$PrismaModel>
     _max?: NestedBoolFilter<$PrismaModel>
+  }
+
+  export type IntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
   }
   export type JsonNullableWithAggregatesFilter<$PrismaModel = never> =
     | PatchUndefined<
@@ -40778,17 +45180,6 @@ export namespace Prisma {
     not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
 
-  export type IntFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntFilter<$PrismaModel> | number
-  }
-
   export type DraftCountOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
@@ -40898,22 +45289,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedJsonFilter<$PrismaModel>
     _max?: NestedJsonFilter<$PrismaModel>
-  }
-
-  export type IntWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
-    _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedFloatFilter<$PrismaModel>
-    _sum?: NestedIntFilter<$PrismaModel>
-    _min?: NestedIntFilter<$PrismaModel>
-    _max?: NestedIntFilter<$PrismaModel>
   }
 
   export type SignatureCountOrderByAggregateInput = {
@@ -41036,6 +45411,8 @@ export namespace Prisma {
     isDraft?: SortOrder
     syncStatus?: SortOrder
     lastModifiedDateTime?: SortOrder
+    sensitivityLabel?: SortOrder
+    isPinned?: SortOrder
     syncedAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -41061,6 +45438,8 @@ export namespace Prisma {
     isDraft?: SortOrder
     syncStatus?: SortOrder
     lastModifiedDateTime?: SortOrder
+    sensitivityLabel?: SortOrder
+    isPinned?: SortOrder
     syncedAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -41086,6 +45465,8 @@ export namespace Prisma {
     isDraft?: SortOrder
     syncStatus?: SortOrder
     lastModifiedDateTime?: SortOrder
+    sensitivityLabel?: SortOrder
+    isPinned?: SortOrder
     syncedAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -41728,6 +46109,82 @@ export namespace Prisma {
     updatedAt?: SortOrder
   }
 
+  export type EmailTemplateCountOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    name?: SortOrder
+    subject?: SortOrder
+    body?: SortOrder
+    variables?: SortOrder
+    category?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EmailTemplateMaxOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    name?: SortOrder
+    subject?: SortOrder
+    body?: SortOrder
+    category?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EmailTemplateMinOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    name?: SortOrder
+    subject?: SortOrder
+    body?: SortOrder
+    category?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type FollowUpReminderCountOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    messageId?: SortOrder
+    conversationId?: SortOrder
+    homeAccountId?: SortOrder
+    subject?: SortOrder
+    recipient?: SortOrder
+    remindAt?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type FollowUpReminderMaxOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    messageId?: SortOrder
+    conversationId?: SortOrder
+    homeAccountId?: SortOrder
+    subject?: SortOrder
+    recipient?: SortOrder
+    remindAt?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type FollowUpReminderMinOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    messageId?: SortOrder
+    conversationId?: SortOrder
+    homeAccountId?: SortOrder
+    subject?: SortOrder
+    recipient?: SortOrder
+    remindAt?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
   export type ImapConnectedAccountUserIdAccountIdCompoundUniqueInput = {
     userId: string
     accountId: string
@@ -41872,6 +46329,31 @@ export namespace Prisma {
     encryptionTag?: SortOrder
     emailState?: SortOrder
     mailboxState?: SortOrder
+  }
+
+  export type PendingEmailCountOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    payload?: SortOrder
+    sendAt?: SortOrder
+    cancelled?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type PendingEmailMaxOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    sendAt?: SortOrder
+    cancelled?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type PendingEmailMinOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    sendAt?: SortOrder
+    cancelled?: SortOrder
+    createdAt?: SortOrder
   }
 
   export type UserCreateNestedManyWithoutOrgInput = {
@@ -42048,6 +46530,13 @@ export namespace Prisma {
     connect?: SignatureWhereUniqueInput | SignatureWhereUniqueInput[]
   }
 
+  export type EmailTemplateCreateNestedManyWithoutUserInput = {
+    create?: XOR<EmailTemplateCreateWithoutUserInput, EmailTemplateUncheckedCreateWithoutUserInput> | EmailTemplateCreateWithoutUserInput[] | EmailTemplateUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: EmailTemplateCreateOrConnectWithoutUserInput | EmailTemplateCreateOrConnectWithoutUserInput[]
+    createMany?: EmailTemplateCreateManyUserInputEnvelope
+    connect?: EmailTemplateWhereUniqueInput | EmailTemplateWhereUniqueInput[]
+  }
+
   export type CachedFolderCreateNestedManyWithoutUserInput = {
     create?: XOR<CachedFolderCreateWithoutUserInput, CachedFolderUncheckedCreateWithoutUserInput> | CachedFolderCreateWithoutUserInput[] | CachedFolderUncheckedCreateWithoutUserInput[]
     connectOrCreate?: CachedFolderCreateOrConnectWithoutUserInput | CachedFolderCreateOrConnectWithoutUserInput[]
@@ -42139,6 +46628,20 @@ export namespace Prisma {
     connect?: ReadReceiptWhereUniqueInput | ReadReceiptWhereUniqueInput[]
   }
 
+  export type PendingEmailCreateNestedManyWithoutUserInput = {
+    create?: XOR<PendingEmailCreateWithoutUserInput, PendingEmailUncheckedCreateWithoutUserInput> | PendingEmailCreateWithoutUserInput[] | PendingEmailUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: PendingEmailCreateOrConnectWithoutUserInput | PendingEmailCreateOrConnectWithoutUserInput[]
+    createMany?: PendingEmailCreateManyUserInputEnvelope
+    connect?: PendingEmailWhereUniqueInput | PendingEmailWhereUniqueInput[]
+  }
+
+  export type FollowUpReminderCreateNestedManyWithoutUserInput = {
+    create?: XOR<FollowUpReminderCreateWithoutUserInput, FollowUpReminderUncheckedCreateWithoutUserInput> | FollowUpReminderCreateWithoutUserInput[] | FollowUpReminderUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: FollowUpReminderCreateOrConnectWithoutUserInput | FollowUpReminderCreateOrConnectWithoutUserInput[]
+    createMany?: FollowUpReminderCreateManyUserInputEnvelope
+    connect?: FollowUpReminderWhereUniqueInput | FollowUpReminderWhereUniqueInput[]
+  }
+
   export type MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<MsConnectedAccountCreateWithoutUserInput, MsConnectedAccountUncheckedCreateWithoutUserInput> | MsConnectedAccountCreateWithoutUserInput[] | MsConnectedAccountUncheckedCreateWithoutUserInput[]
     connectOrCreate?: MsConnectedAccountCreateOrConnectWithoutUserInput | MsConnectedAccountCreateOrConnectWithoutUserInput[]
@@ -42199,6 +46702,13 @@ export namespace Prisma {
     connectOrCreate?: SignatureCreateOrConnectWithoutUserInput | SignatureCreateOrConnectWithoutUserInput[]
     createMany?: SignatureCreateManyUserInputEnvelope
     connect?: SignatureWhereUniqueInput | SignatureWhereUniqueInput[]
+  }
+
+  export type EmailTemplateUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<EmailTemplateCreateWithoutUserInput, EmailTemplateUncheckedCreateWithoutUserInput> | EmailTemplateCreateWithoutUserInput[] | EmailTemplateUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: EmailTemplateCreateOrConnectWithoutUserInput | EmailTemplateCreateOrConnectWithoutUserInput[]
+    createMany?: EmailTemplateCreateManyUserInputEnvelope
+    connect?: EmailTemplateWhereUniqueInput | EmailTemplateWhereUniqueInput[]
   }
 
   export type CachedFolderUncheckedCreateNestedManyWithoutUserInput = {
@@ -42292,12 +46802,34 @@ export namespace Prisma {
     connect?: ReadReceiptWhereUniqueInput | ReadReceiptWhereUniqueInput[]
   }
 
+  export type PendingEmailUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<PendingEmailCreateWithoutUserInput, PendingEmailUncheckedCreateWithoutUserInput> | PendingEmailCreateWithoutUserInput[] | PendingEmailUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: PendingEmailCreateOrConnectWithoutUserInput | PendingEmailCreateOrConnectWithoutUserInput[]
+    createMany?: PendingEmailCreateManyUserInputEnvelope
+    connect?: PendingEmailWhereUniqueInput | PendingEmailWhereUniqueInput[]
+  }
+
+  export type FollowUpReminderUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<FollowUpReminderCreateWithoutUserInput, FollowUpReminderUncheckedCreateWithoutUserInput> | FollowUpReminderCreateWithoutUserInput[] | FollowUpReminderUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: FollowUpReminderCreateOrConnectWithoutUserInput | FollowUpReminderCreateOrConnectWithoutUserInput[]
+    createMany?: FollowUpReminderCreateManyUserInputEnvelope
+    connect?: FollowUpReminderWhereUniqueInput | FollowUpReminderWhereUniqueInput[]
+  }
+
   export type NullableStringFieldUpdateOperationsInput = {
     set?: string | null
   }
 
   export type BoolFieldUpdateOperationsInput = {
     set?: boolean
+  }
+
+  export type IntFieldUpdateOperationsInput = {
+    set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
   }
 
   export type NullableDateTimeFieldUpdateOperationsInput = {
@@ -42432,6 +46964,20 @@ export namespace Prisma {
     update?: SignatureUpdateWithWhereUniqueWithoutUserInput | SignatureUpdateWithWhereUniqueWithoutUserInput[]
     updateMany?: SignatureUpdateManyWithWhereWithoutUserInput | SignatureUpdateManyWithWhereWithoutUserInput[]
     deleteMany?: SignatureScalarWhereInput | SignatureScalarWhereInput[]
+  }
+
+  export type EmailTemplateUpdateManyWithoutUserNestedInput = {
+    create?: XOR<EmailTemplateCreateWithoutUserInput, EmailTemplateUncheckedCreateWithoutUserInput> | EmailTemplateCreateWithoutUserInput[] | EmailTemplateUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: EmailTemplateCreateOrConnectWithoutUserInput | EmailTemplateCreateOrConnectWithoutUserInput[]
+    upsert?: EmailTemplateUpsertWithWhereUniqueWithoutUserInput | EmailTemplateUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: EmailTemplateCreateManyUserInputEnvelope
+    set?: EmailTemplateWhereUniqueInput | EmailTemplateWhereUniqueInput[]
+    disconnect?: EmailTemplateWhereUniqueInput | EmailTemplateWhereUniqueInput[]
+    delete?: EmailTemplateWhereUniqueInput | EmailTemplateWhereUniqueInput[]
+    connect?: EmailTemplateWhereUniqueInput | EmailTemplateWhereUniqueInput[]
+    update?: EmailTemplateUpdateWithWhereUniqueWithoutUserInput | EmailTemplateUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: EmailTemplateUpdateManyWithWhereWithoutUserInput | EmailTemplateUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: EmailTemplateScalarWhereInput | EmailTemplateScalarWhereInput[]
   }
 
   export type CachedFolderUpdateManyWithoutUserNestedInput = {
@@ -42616,6 +47162,34 @@ export namespace Prisma {
     deleteMany?: ReadReceiptScalarWhereInput | ReadReceiptScalarWhereInput[]
   }
 
+  export type PendingEmailUpdateManyWithoutUserNestedInput = {
+    create?: XOR<PendingEmailCreateWithoutUserInput, PendingEmailUncheckedCreateWithoutUserInput> | PendingEmailCreateWithoutUserInput[] | PendingEmailUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: PendingEmailCreateOrConnectWithoutUserInput | PendingEmailCreateOrConnectWithoutUserInput[]
+    upsert?: PendingEmailUpsertWithWhereUniqueWithoutUserInput | PendingEmailUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: PendingEmailCreateManyUserInputEnvelope
+    set?: PendingEmailWhereUniqueInput | PendingEmailWhereUniqueInput[]
+    disconnect?: PendingEmailWhereUniqueInput | PendingEmailWhereUniqueInput[]
+    delete?: PendingEmailWhereUniqueInput | PendingEmailWhereUniqueInput[]
+    connect?: PendingEmailWhereUniqueInput | PendingEmailWhereUniqueInput[]
+    update?: PendingEmailUpdateWithWhereUniqueWithoutUserInput | PendingEmailUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: PendingEmailUpdateManyWithWhereWithoutUserInput | PendingEmailUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: PendingEmailScalarWhereInput | PendingEmailScalarWhereInput[]
+  }
+
+  export type FollowUpReminderUpdateManyWithoutUserNestedInput = {
+    create?: XOR<FollowUpReminderCreateWithoutUserInput, FollowUpReminderUncheckedCreateWithoutUserInput> | FollowUpReminderCreateWithoutUserInput[] | FollowUpReminderUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: FollowUpReminderCreateOrConnectWithoutUserInput | FollowUpReminderCreateOrConnectWithoutUserInput[]
+    upsert?: FollowUpReminderUpsertWithWhereUniqueWithoutUserInput | FollowUpReminderUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: FollowUpReminderCreateManyUserInputEnvelope
+    set?: FollowUpReminderWhereUniqueInput | FollowUpReminderWhereUniqueInput[]
+    disconnect?: FollowUpReminderWhereUniqueInput | FollowUpReminderWhereUniqueInput[]
+    delete?: FollowUpReminderWhereUniqueInput | FollowUpReminderWhereUniqueInput[]
+    connect?: FollowUpReminderWhereUniqueInput | FollowUpReminderWhereUniqueInput[]
+    update?: FollowUpReminderUpdateWithWhereUniqueWithoutUserInput | FollowUpReminderUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: FollowUpReminderUpdateManyWithWhereWithoutUserInput | FollowUpReminderUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: FollowUpReminderScalarWhereInput | FollowUpReminderScalarWhereInput[]
+  }
+
   export type MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput = {
     create?: XOR<MsConnectedAccountCreateWithoutUserInput, MsConnectedAccountUncheckedCreateWithoutUserInput> | MsConnectedAccountCreateWithoutUserInput[] | MsConnectedAccountUncheckedCreateWithoutUserInput[]
     connectOrCreate?: MsConnectedAccountCreateOrConnectWithoutUserInput | MsConnectedAccountCreateOrConnectWithoutUserInput[]
@@ -42736,6 +47310,20 @@ export namespace Prisma {
     update?: SignatureUpdateWithWhereUniqueWithoutUserInput | SignatureUpdateWithWhereUniqueWithoutUserInput[]
     updateMany?: SignatureUpdateManyWithWhereWithoutUserInput | SignatureUpdateManyWithWhereWithoutUserInput[]
     deleteMany?: SignatureScalarWhereInput | SignatureScalarWhereInput[]
+  }
+
+  export type EmailTemplateUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<EmailTemplateCreateWithoutUserInput, EmailTemplateUncheckedCreateWithoutUserInput> | EmailTemplateCreateWithoutUserInput[] | EmailTemplateUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: EmailTemplateCreateOrConnectWithoutUserInput | EmailTemplateCreateOrConnectWithoutUserInput[]
+    upsert?: EmailTemplateUpsertWithWhereUniqueWithoutUserInput | EmailTemplateUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: EmailTemplateCreateManyUserInputEnvelope
+    set?: EmailTemplateWhereUniqueInput | EmailTemplateWhereUniqueInput[]
+    disconnect?: EmailTemplateWhereUniqueInput | EmailTemplateWhereUniqueInput[]
+    delete?: EmailTemplateWhereUniqueInput | EmailTemplateWhereUniqueInput[]
+    connect?: EmailTemplateWhereUniqueInput | EmailTemplateWhereUniqueInput[]
+    update?: EmailTemplateUpdateWithWhereUniqueWithoutUserInput | EmailTemplateUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: EmailTemplateUpdateManyWithWhereWithoutUserInput | EmailTemplateUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: EmailTemplateScalarWhereInput | EmailTemplateScalarWhereInput[]
   }
 
   export type CachedFolderUncheckedUpdateManyWithoutUserNestedInput = {
@@ -42920,6 +47508,34 @@ export namespace Prisma {
     deleteMany?: ReadReceiptScalarWhereInput | ReadReceiptScalarWhereInput[]
   }
 
+  export type PendingEmailUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<PendingEmailCreateWithoutUserInput, PendingEmailUncheckedCreateWithoutUserInput> | PendingEmailCreateWithoutUserInput[] | PendingEmailUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: PendingEmailCreateOrConnectWithoutUserInput | PendingEmailCreateOrConnectWithoutUserInput[]
+    upsert?: PendingEmailUpsertWithWhereUniqueWithoutUserInput | PendingEmailUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: PendingEmailCreateManyUserInputEnvelope
+    set?: PendingEmailWhereUniqueInput | PendingEmailWhereUniqueInput[]
+    disconnect?: PendingEmailWhereUniqueInput | PendingEmailWhereUniqueInput[]
+    delete?: PendingEmailWhereUniqueInput | PendingEmailWhereUniqueInput[]
+    connect?: PendingEmailWhereUniqueInput | PendingEmailWhereUniqueInput[]
+    update?: PendingEmailUpdateWithWhereUniqueWithoutUserInput | PendingEmailUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: PendingEmailUpdateManyWithWhereWithoutUserInput | PendingEmailUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: PendingEmailScalarWhereInput | PendingEmailScalarWhereInput[]
+  }
+
+  export type FollowUpReminderUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<FollowUpReminderCreateWithoutUserInput, FollowUpReminderUncheckedCreateWithoutUserInput> | FollowUpReminderCreateWithoutUserInput[] | FollowUpReminderUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: FollowUpReminderCreateOrConnectWithoutUserInput | FollowUpReminderCreateOrConnectWithoutUserInput[]
+    upsert?: FollowUpReminderUpsertWithWhereUniqueWithoutUserInput | FollowUpReminderUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: FollowUpReminderCreateManyUserInputEnvelope
+    set?: FollowUpReminderWhereUniqueInput | FollowUpReminderWhereUniqueInput[]
+    disconnect?: FollowUpReminderWhereUniqueInput | FollowUpReminderWhereUniqueInput[]
+    delete?: FollowUpReminderWhereUniqueInput | FollowUpReminderWhereUniqueInput[]
+    connect?: FollowUpReminderWhereUniqueInput | FollowUpReminderWhereUniqueInput[]
+    update?: FollowUpReminderUpdateWithWhereUniqueWithoutUserInput | FollowUpReminderUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: FollowUpReminderUpdateManyWithWhereWithoutUserInput | FollowUpReminderUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: FollowUpReminderScalarWhereInput | FollowUpReminderScalarWhereInput[]
+  }
+
   export type UserCreateNestedOneWithoutMsAccountsInput = {
     create?: XOR<UserCreateWithoutMsAccountsInput, UserUncheckedCreateWithoutMsAccountsInput>
     connectOrCreate?: UserCreateOrConnectWithoutMsAccountsInput
@@ -42980,14 +47596,6 @@ export namespace Prisma {
     create?: XOR<UserCreateWithoutDraftsInput, UserUncheckedCreateWithoutDraftsInput>
     connectOrCreate?: UserCreateOrConnectWithoutDraftsInput
     connect?: UserWhereUniqueInput
-  }
-
-  export type IntFieldUpdateOperationsInput = {
-    set?: number
-    increment?: number
-    decrement?: number
-    multiply?: number
-    divide?: number
   }
 
   export type UserUpdateOneRequiredWithoutDraftsNestedInput = {
@@ -43216,6 +47824,34 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutTodoItemsInput, UserUpdateWithoutTodoItemsInput>, UserUncheckedUpdateWithoutTodoItemsInput>
   }
 
+  export type UserCreateNestedOneWithoutEmailTemplatesInput = {
+    create?: XOR<UserCreateWithoutEmailTemplatesInput, UserUncheckedCreateWithoutEmailTemplatesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutEmailTemplatesInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserUpdateOneRequiredWithoutEmailTemplatesNestedInput = {
+    create?: XOR<UserCreateWithoutEmailTemplatesInput, UserUncheckedCreateWithoutEmailTemplatesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutEmailTemplatesInput
+    upsert?: UserUpsertWithoutEmailTemplatesInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutEmailTemplatesInput, UserUpdateWithoutEmailTemplatesInput>, UserUncheckedUpdateWithoutEmailTemplatesInput>
+  }
+
+  export type UserCreateNestedOneWithoutFollowUpRemindersInput = {
+    create?: XOR<UserCreateWithoutFollowUpRemindersInput, UserUncheckedCreateWithoutFollowUpRemindersInput>
+    connectOrCreate?: UserCreateOrConnectWithoutFollowUpRemindersInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserUpdateOneRequiredWithoutFollowUpRemindersNestedInput = {
+    create?: XOR<UserCreateWithoutFollowUpRemindersInput, UserUncheckedCreateWithoutFollowUpRemindersInput>
+    connectOrCreate?: UserCreateOrConnectWithoutFollowUpRemindersInput
+    upsert?: UserUpsertWithoutFollowUpRemindersInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutFollowUpRemindersInput, UserUpdateWithoutFollowUpRemindersInput>, UserUncheckedUpdateWithoutFollowUpRemindersInput>
+  }
+
   export type UserCreateNestedOneWithoutImapAccountsInput = {
     create?: XOR<UserCreateWithoutImapAccountsInput, UserUncheckedCreateWithoutImapAccountsInput>
     connectOrCreate?: UserCreateOrConnectWithoutImapAccountsInput
@@ -43242,6 +47878,20 @@ export namespace Prisma {
     upsert?: UserUpsertWithoutJmapAccountsInput
     connect?: UserWhereUniqueInput
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutJmapAccountsInput, UserUpdateWithoutJmapAccountsInput>, UserUncheckedUpdateWithoutJmapAccountsInput>
+  }
+
+  export type UserCreateNestedOneWithoutPendingEmailsInput = {
+    create?: XOR<UserCreateWithoutPendingEmailsInput, UserUncheckedCreateWithoutPendingEmailsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutPendingEmailsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserUpdateOneRequiredWithoutPendingEmailsNestedInput = {
+    create?: XOR<UserCreateWithoutPendingEmailsInput, UserUncheckedCreateWithoutPendingEmailsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutPendingEmailsInput
+    upsert?: UserUpsertWithoutPendingEmailsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutPendingEmailsInput, UserUpdateWithoutPendingEmailsInput>, UserUncheckedUpdateWithoutPendingEmailsInput>
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -43376,6 +48026,33 @@ export namespace Prisma {
     _min?: NestedBoolFilter<$PrismaModel>
     _max?: NestedBoolFilter<$PrismaModel>
   }
+
+  export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
+  }
+
+  export type NestedFloatFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatFilter<$PrismaModel> | number
+  }
   export type NestedJsonNullableFilter<$PrismaModel = never> =
     | PatchUndefined<
         Either<Required<NestedJsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>,
@@ -43437,33 +48114,6 @@ export namespace Prisma {
     not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
 
-  export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
-    _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedFloatFilter<$PrismaModel>
-    _sum?: NestedIntFilter<$PrismaModel>
-    _min?: NestedIntFilter<$PrismaModel>
-    _max?: NestedIntFilter<$PrismaModel>
-  }
-
-  export type NestedFloatFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel>
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatFilter<$PrismaModel> | number
-  }
-
   export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel> | null
     in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
@@ -43508,6 +48158,7 @@ export namespace Prisma {
     emailDensity?: string
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
+    undoSendDelay?: number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     msAccounts?: MsConnectedAccountCreateNestedManyWithoutUserInput
@@ -43519,6 +48170,7 @@ export namespace Prisma {
     drafts?: DraftCreateNestedManyWithoutUserInput
     emailRules?: EmailRuleCreateNestedManyWithoutUserInput
     signatures?: SignatureCreateNestedManyWithoutUserInput
+    emailTemplates?: EmailTemplateCreateNestedManyWithoutUserInput
     cachedFolders?: CachedFolderCreateNestedManyWithoutUserInput
     cachedEmails?: CachedEmailCreateNestedManyWithoutUserInput
     cachedCalEvents?: CachedCalendarEventCreateNestedManyWithoutUserInput
@@ -43532,6 +48184,8 @@ export namespace Prisma {
     todoItems?: TodoItemCreateNestedManyWithoutUserInput
     snoozedEmails?: SnoozedEmailCreateNestedManyWithoutUserInput
     readReceipts?: ReadReceiptCreateNestedManyWithoutUserInput
+    pendingEmails?: PendingEmailCreateNestedManyWithoutUserInput
+    followUpReminders?: FollowUpReminderCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutOrgInput = {
@@ -43551,6 +48205,7 @@ export namespace Prisma {
     emailDensity?: string
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
+    undoSendDelay?: number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
@@ -43562,6 +48217,7 @@ export namespace Prisma {
     drafts?: DraftUncheckedCreateNestedManyWithoutUserInput
     emailRules?: EmailRuleUncheckedCreateNestedManyWithoutUserInput
     signatures?: SignatureUncheckedCreateNestedManyWithoutUserInput
+    emailTemplates?: EmailTemplateUncheckedCreateNestedManyWithoutUserInput
     cachedFolders?: CachedFolderUncheckedCreateNestedManyWithoutUserInput
     cachedEmails?: CachedEmailUncheckedCreateNestedManyWithoutUserInput
     cachedCalEvents?: CachedCalendarEventUncheckedCreateNestedManyWithoutUserInput
@@ -43575,6 +48231,8 @@ export namespace Prisma {
     todoItems?: TodoItemUncheckedCreateNestedManyWithoutUserInput
     snoozedEmails?: SnoozedEmailUncheckedCreateNestedManyWithoutUserInput
     readReceipts?: ReadReceiptUncheckedCreateNestedManyWithoutUserInput
+    pendingEmails?: PendingEmailUncheckedCreateNestedManyWithoutUserInput
+    followUpReminders?: FollowUpReminderUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutOrgInput = {
@@ -43652,6 +48310,7 @@ export namespace Prisma {
     emailDensity?: StringFilter<"User"> | string
     preferredTimeZone?: StringFilter<"User"> | string
     lastActiveAccountId?: StringNullableFilter<"User"> | string | null
+    undoSendDelay?: IntFilter<"User"> | number
     voiceProfile?: JsonNullableFilter<"User">
     voiceProfileUpdatedAt?: DateTimeNullableFilter<"User"> | Date | string | null
   }
@@ -44113,6 +48772,38 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type EmailTemplateCreateWithoutUserInput = {
+    id?: string
+    name: string
+    subject?: string | null
+    body: string
+    variables?: JsonNullValueInput | InputJsonValue
+    category?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type EmailTemplateUncheckedCreateWithoutUserInput = {
+    id?: string
+    name: string
+    subject?: string | null
+    body: string
+    variables?: JsonNullValueInput | InputJsonValue
+    category?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type EmailTemplateCreateOrConnectWithoutUserInput = {
+    where: EmailTemplateWhereUniqueInput
+    create: XOR<EmailTemplateCreateWithoutUserInput, EmailTemplateUncheckedCreateWithoutUserInput>
+  }
+
+  export type EmailTemplateCreateManyUserInputEnvelope = {
+    data: EmailTemplateCreateManyUserInput | EmailTemplateCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
   export type CachedFolderCreateWithoutUserInput = {
     id: string
     homeAccountId: string
@@ -44169,6 +48860,8 @@ export namespace Prisma {
     isDraft?: boolean
     syncStatus?: string
     lastModifiedDateTime?: Date | string | null
+    sensitivityLabel?: string | null
+    isPinned?: boolean
     syncedAt?: Date | string
     updatedAt?: Date | string
   }
@@ -44195,6 +48888,8 @@ export namespace Prisma {
     isDraft?: boolean
     syncStatus?: string
     lastModifiedDateTime?: Date | string | null
+    sensitivityLabel?: string | null
+    isPinned?: boolean
     syncedAt?: Date | string
     updatedAt?: Date | string
   }
@@ -44629,6 +49324,68 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type PendingEmailCreateWithoutUserInput = {
+    id?: string
+    payload: JsonNullValueInput | InputJsonValue
+    sendAt: Date | string
+    cancelled?: boolean
+    createdAt?: Date | string
+  }
+
+  export type PendingEmailUncheckedCreateWithoutUserInput = {
+    id?: string
+    payload: JsonNullValueInput | InputJsonValue
+    sendAt: Date | string
+    cancelled?: boolean
+    createdAt?: Date | string
+  }
+
+  export type PendingEmailCreateOrConnectWithoutUserInput = {
+    where: PendingEmailWhereUniqueInput
+    create: XOR<PendingEmailCreateWithoutUserInput, PendingEmailUncheckedCreateWithoutUserInput>
+  }
+
+  export type PendingEmailCreateManyUserInputEnvelope = {
+    data: PendingEmailCreateManyUserInput | PendingEmailCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type FollowUpReminderCreateWithoutUserInput = {
+    id?: string
+    messageId: string
+    conversationId?: string | null
+    homeAccountId?: string | null
+    subject: string
+    recipient: string
+    remindAt: Date | string
+    status?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type FollowUpReminderUncheckedCreateWithoutUserInput = {
+    id?: string
+    messageId: string
+    conversationId?: string | null
+    homeAccountId?: string | null
+    subject: string
+    recipient: string
+    remindAt: Date | string
+    status?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type FollowUpReminderCreateOrConnectWithoutUserInput = {
+    where: FollowUpReminderWhereUniqueInput
+    create: XOR<FollowUpReminderCreateWithoutUserInput, FollowUpReminderUncheckedCreateWithoutUserInput>
+  }
+
+  export type FollowUpReminderCreateManyUserInputEnvelope = {
+    data: FollowUpReminderCreateManyUserInput | FollowUpReminderCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
   export type OrganizationUpsertWithoutUsersInput = {
     update: XOR<OrganizationUpdateWithoutUsersInput, OrganizationUncheckedUpdateWithoutUsersInput>
     create: XOR<OrganizationCreateWithoutUsersInput, OrganizationUncheckedCreateWithoutUsersInput>
@@ -44969,6 +49726,37 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Signature"> | Date | string
   }
 
+  export type EmailTemplateUpsertWithWhereUniqueWithoutUserInput = {
+    where: EmailTemplateWhereUniqueInput
+    update: XOR<EmailTemplateUpdateWithoutUserInput, EmailTemplateUncheckedUpdateWithoutUserInput>
+    create: XOR<EmailTemplateCreateWithoutUserInput, EmailTemplateUncheckedCreateWithoutUserInput>
+  }
+
+  export type EmailTemplateUpdateWithWhereUniqueWithoutUserInput = {
+    where: EmailTemplateWhereUniqueInput
+    data: XOR<EmailTemplateUpdateWithoutUserInput, EmailTemplateUncheckedUpdateWithoutUserInput>
+  }
+
+  export type EmailTemplateUpdateManyWithWhereWithoutUserInput = {
+    where: EmailTemplateScalarWhereInput
+    data: XOR<EmailTemplateUpdateManyMutationInput, EmailTemplateUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type EmailTemplateScalarWhereInput = {
+    AND?: EmailTemplateScalarWhereInput | EmailTemplateScalarWhereInput[]
+    OR?: EmailTemplateScalarWhereInput[]
+    NOT?: EmailTemplateScalarWhereInput | EmailTemplateScalarWhereInput[]
+    id?: StringFilter<"EmailTemplate"> | string
+    userId?: StringFilter<"EmailTemplate"> | string
+    name?: StringFilter<"EmailTemplate"> | string
+    subject?: StringNullableFilter<"EmailTemplate"> | string | null
+    body?: StringFilter<"EmailTemplate"> | string
+    variables?: JsonFilter<"EmailTemplate">
+    category?: StringNullableFilter<"EmailTemplate"> | string | null
+    createdAt?: DateTimeFilter<"EmailTemplate"> | Date | string
+    updatedAt?: DateTimeFilter<"EmailTemplate"> | Date | string
+  }
+
   export type CachedFolderUpsertWithWhereUniqueWithoutUserInput = {
     where: CachedFolderWhereUniqueInput
     update: XOR<CachedFolderUpdateWithoutUserInput, CachedFolderUncheckedUpdateWithoutUserInput>
@@ -45043,6 +49831,8 @@ export namespace Prisma {
     isDraft?: BoolFilter<"CachedEmail"> | boolean
     syncStatus?: StringFilter<"CachedEmail"> | string
     lastModifiedDateTime?: DateTimeNullableFilter<"CachedEmail"> | Date | string | null
+    sensitivityLabel?: StringNullableFilter<"CachedEmail"> | string | null
+    isPinned?: BoolFilter<"CachedEmail"> | boolean
     syncedAt?: DateTimeFilter<"CachedEmail"> | Date | string
     updatedAt?: DateTimeFilter<"CachedEmail"> | Date | string
   }
@@ -45422,6 +50212,67 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"ReadReceipt"> | Date | string
   }
 
+  export type PendingEmailUpsertWithWhereUniqueWithoutUserInput = {
+    where: PendingEmailWhereUniqueInput
+    update: XOR<PendingEmailUpdateWithoutUserInput, PendingEmailUncheckedUpdateWithoutUserInput>
+    create: XOR<PendingEmailCreateWithoutUserInput, PendingEmailUncheckedCreateWithoutUserInput>
+  }
+
+  export type PendingEmailUpdateWithWhereUniqueWithoutUserInput = {
+    where: PendingEmailWhereUniqueInput
+    data: XOR<PendingEmailUpdateWithoutUserInput, PendingEmailUncheckedUpdateWithoutUserInput>
+  }
+
+  export type PendingEmailUpdateManyWithWhereWithoutUserInput = {
+    where: PendingEmailScalarWhereInput
+    data: XOR<PendingEmailUpdateManyMutationInput, PendingEmailUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type PendingEmailScalarWhereInput = {
+    AND?: PendingEmailScalarWhereInput | PendingEmailScalarWhereInput[]
+    OR?: PendingEmailScalarWhereInput[]
+    NOT?: PendingEmailScalarWhereInput | PendingEmailScalarWhereInput[]
+    id?: StringFilter<"PendingEmail"> | string
+    userId?: StringFilter<"PendingEmail"> | string
+    payload?: JsonFilter<"PendingEmail">
+    sendAt?: DateTimeFilter<"PendingEmail"> | Date | string
+    cancelled?: BoolFilter<"PendingEmail"> | boolean
+    createdAt?: DateTimeFilter<"PendingEmail"> | Date | string
+  }
+
+  export type FollowUpReminderUpsertWithWhereUniqueWithoutUserInput = {
+    where: FollowUpReminderWhereUniqueInput
+    update: XOR<FollowUpReminderUpdateWithoutUserInput, FollowUpReminderUncheckedUpdateWithoutUserInput>
+    create: XOR<FollowUpReminderCreateWithoutUserInput, FollowUpReminderUncheckedCreateWithoutUserInput>
+  }
+
+  export type FollowUpReminderUpdateWithWhereUniqueWithoutUserInput = {
+    where: FollowUpReminderWhereUniqueInput
+    data: XOR<FollowUpReminderUpdateWithoutUserInput, FollowUpReminderUncheckedUpdateWithoutUserInput>
+  }
+
+  export type FollowUpReminderUpdateManyWithWhereWithoutUserInput = {
+    where: FollowUpReminderScalarWhereInput
+    data: XOR<FollowUpReminderUpdateManyMutationInput, FollowUpReminderUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type FollowUpReminderScalarWhereInput = {
+    AND?: FollowUpReminderScalarWhereInput | FollowUpReminderScalarWhereInput[]
+    OR?: FollowUpReminderScalarWhereInput[]
+    NOT?: FollowUpReminderScalarWhereInput | FollowUpReminderScalarWhereInput[]
+    id?: StringFilter<"FollowUpReminder"> | string
+    userId?: StringFilter<"FollowUpReminder"> | string
+    messageId?: StringFilter<"FollowUpReminder"> | string
+    conversationId?: StringNullableFilter<"FollowUpReminder"> | string | null
+    homeAccountId?: StringNullableFilter<"FollowUpReminder"> | string | null
+    subject?: StringFilter<"FollowUpReminder"> | string
+    recipient?: StringFilter<"FollowUpReminder"> | string
+    remindAt?: DateTimeFilter<"FollowUpReminder"> | Date | string
+    status?: StringFilter<"FollowUpReminder"> | string
+    createdAt?: DateTimeFilter<"FollowUpReminder"> | Date | string
+    updatedAt?: DateTimeFilter<"FollowUpReminder"> | Date | string
+  }
+
   export type UserCreateWithoutMsAccountsInput = {
     id: string
     email: string
@@ -45439,6 +50290,7 @@ export namespace Prisma {
     emailDensity?: string
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
+    undoSendDelay?: number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
@@ -45450,6 +50302,7 @@ export namespace Prisma {
     drafts?: DraftCreateNestedManyWithoutUserInput
     emailRules?: EmailRuleCreateNestedManyWithoutUserInput
     signatures?: SignatureCreateNestedManyWithoutUserInput
+    emailTemplates?: EmailTemplateCreateNestedManyWithoutUserInput
     cachedFolders?: CachedFolderCreateNestedManyWithoutUserInput
     cachedEmails?: CachedEmailCreateNestedManyWithoutUserInput
     cachedCalEvents?: CachedCalendarEventCreateNestedManyWithoutUserInput
@@ -45463,6 +50316,8 @@ export namespace Prisma {
     todoItems?: TodoItemCreateNestedManyWithoutUserInput
     snoozedEmails?: SnoozedEmailCreateNestedManyWithoutUserInput
     readReceipts?: ReadReceiptCreateNestedManyWithoutUserInput
+    pendingEmails?: PendingEmailCreateNestedManyWithoutUserInput
+    followUpReminders?: FollowUpReminderCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutMsAccountsInput = {
@@ -45483,6 +50338,7 @@ export namespace Prisma {
     emailDensity?: string
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
+    undoSendDelay?: number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     imapAccounts?: ImapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
@@ -45493,6 +50349,7 @@ export namespace Prisma {
     drafts?: DraftUncheckedCreateNestedManyWithoutUserInput
     emailRules?: EmailRuleUncheckedCreateNestedManyWithoutUserInput
     signatures?: SignatureUncheckedCreateNestedManyWithoutUserInput
+    emailTemplates?: EmailTemplateUncheckedCreateNestedManyWithoutUserInput
     cachedFolders?: CachedFolderUncheckedCreateNestedManyWithoutUserInput
     cachedEmails?: CachedEmailUncheckedCreateNestedManyWithoutUserInput
     cachedCalEvents?: CachedCalendarEventUncheckedCreateNestedManyWithoutUserInput
@@ -45506,6 +50363,8 @@ export namespace Prisma {
     todoItems?: TodoItemUncheckedCreateNestedManyWithoutUserInput
     snoozedEmails?: SnoozedEmailUncheckedCreateNestedManyWithoutUserInput
     readReceipts?: ReadReceiptUncheckedCreateNestedManyWithoutUserInput
+    pendingEmails?: PendingEmailUncheckedCreateNestedManyWithoutUserInput
+    followUpReminders?: FollowUpReminderUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutMsAccountsInput = {
@@ -45541,6 +50400,7 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    undoSendDelay?: IntFieldUpdateOperationsInput | number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
@@ -45552,6 +50412,7 @@ export namespace Prisma {
     drafts?: DraftUpdateManyWithoutUserNestedInput
     emailRules?: EmailRuleUpdateManyWithoutUserNestedInput
     signatures?: SignatureUpdateManyWithoutUserNestedInput
+    emailTemplates?: EmailTemplateUpdateManyWithoutUserNestedInput
     cachedFolders?: CachedFolderUpdateManyWithoutUserNestedInput
     cachedEmails?: CachedEmailUpdateManyWithoutUserNestedInput
     cachedCalEvents?: CachedCalendarEventUpdateManyWithoutUserNestedInput
@@ -45565,6 +50426,8 @@ export namespace Prisma {
     todoItems?: TodoItemUpdateManyWithoutUserNestedInput
     snoozedEmails?: SnoozedEmailUpdateManyWithoutUserNestedInput
     readReceipts?: ReadReceiptUpdateManyWithoutUserNestedInput
+    pendingEmails?: PendingEmailUpdateManyWithoutUserNestedInput
+    followUpReminders?: FollowUpReminderUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutMsAccountsInput = {
@@ -45585,6 +50448,7 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    undoSendDelay?: IntFieldUpdateOperationsInput | number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     imapAccounts?: ImapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
@@ -45595,6 +50459,7 @@ export namespace Prisma {
     drafts?: DraftUncheckedUpdateManyWithoutUserNestedInput
     emailRules?: EmailRuleUncheckedUpdateManyWithoutUserNestedInput
     signatures?: SignatureUncheckedUpdateManyWithoutUserNestedInput
+    emailTemplates?: EmailTemplateUncheckedUpdateManyWithoutUserNestedInput
     cachedFolders?: CachedFolderUncheckedUpdateManyWithoutUserNestedInput
     cachedEmails?: CachedEmailUncheckedUpdateManyWithoutUserNestedInput
     cachedCalEvents?: CachedCalendarEventUncheckedUpdateManyWithoutUserNestedInput
@@ -45608,6 +50473,8 @@ export namespace Prisma {
     todoItems?: TodoItemUncheckedUpdateManyWithoutUserNestedInput
     snoozedEmails?: SnoozedEmailUncheckedUpdateManyWithoutUserNestedInput
     readReceipts?: ReadReceiptUncheckedUpdateManyWithoutUserNestedInput
+    pendingEmails?: PendingEmailUncheckedUpdateManyWithoutUserNestedInput
+    followUpReminders?: FollowUpReminderUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutMsalCacheInput = {
@@ -45627,6 +50494,7 @@ export namespace Prisma {
     emailDensity?: string
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
+    undoSendDelay?: number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
@@ -45638,6 +50506,7 @@ export namespace Prisma {
     drafts?: DraftCreateNestedManyWithoutUserInput
     emailRules?: EmailRuleCreateNestedManyWithoutUserInput
     signatures?: SignatureCreateNestedManyWithoutUserInput
+    emailTemplates?: EmailTemplateCreateNestedManyWithoutUserInput
     cachedFolders?: CachedFolderCreateNestedManyWithoutUserInput
     cachedEmails?: CachedEmailCreateNestedManyWithoutUserInput
     cachedCalEvents?: CachedCalendarEventCreateNestedManyWithoutUserInput
@@ -45651,6 +50520,8 @@ export namespace Prisma {
     todoItems?: TodoItemCreateNestedManyWithoutUserInput
     snoozedEmails?: SnoozedEmailCreateNestedManyWithoutUserInput
     readReceipts?: ReadReceiptCreateNestedManyWithoutUserInput
+    pendingEmails?: PendingEmailCreateNestedManyWithoutUserInput
+    followUpReminders?: FollowUpReminderCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutMsalCacheInput = {
@@ -45671,6 +50542,7 @@ export namespace Prisma {
     emailDensity?: string
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
+    undoSendDelay?: number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
@@ -45681,6 +50553,7 @@ export namespace Prisma {
     drafts?: DraftUncheckedCreateNestedManyWithoutUserInput
     emailRules?: EmailRuleUncheckedCreateNestedManyWithoutUserInput
     signatures?: SignatureUncheckedCreateNestedManyWithoutUserInput
+    emailTemplates?: EmailTemplateUncheckedCreateNestedManyWithoutUserInput
     cachedFolders?: CachedFolderUncheckedCreateNestedManyWithoutUserInput
     cachedEmails?: CachedEmailUncheckedCreateNestedManyWithoutUserInput
     cachedCalEvents?: CachedCalendarEventUncheckedCreateNestedManyWithoutUserInput
@@ -45694,6 +50567,8 @@ export namespace Prisma {
     todoItems?: TodoItemUncheckedCreateNestedManyWithoutUserInput
     snoozedEmails?: SnoozedEmailUncheckedCreateNestedManyWithoutUserInput
     readReceipts?: ReadReceiptUncheckedCreateNestedManyWithoutUserInput
+    pendingEmails?: PendingEmailUncheckedCreateNestedManyWithoutUserInput
+    followUpReminders?: FollowUpReminderUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutMsalCacheInput = {
@@ -45729,6 +50604,7 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    undoSendDelay?: IntFieldUpdateOperationsInput | number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
@@ -45740,6 +50616,7 @@ export namespace Prisma {
     drafts?: DraftUpdateManyWithoutUserNestedInput
     emailRules?: EmailRuleUpdateManyWithoutUserNestedInput
     signatures?: SignatureUpdateManyWithoutUserNestedInput
+    emailTemplates?: EmailTemplateUpdateManyWithoutUserNestedInput
     cachedFolders?: CachedFolderUpdateManyWithoutUserNestedInput
     cachedEmails?: CachedEmailUpdateManyWithoutUserNestedInput
     cachedCalEvents?: CachedCalendarEventUpdateManyWithoutUserNestedInput
@@ -45753,6 +50630,8 @@ export namespace Prisma {
     todoItems?: TodoItemUpdateManyWithoutUserNestedInput
     snoozedEmails?: SnoozedEmailUpdateManyWithoutUserNestedInput
     readReceipts?: ReadReceiptUpdateManyWithoutUserNestedInput
+    pendingEmails?: PendingEmailUpdateManyWithoutUserNestedInput
+    followUpReminders?: FollowUpReminderUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutMsalCacheInput = {
@@ -45773,6 +50652,7 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    undoSendDelay?: IntFieldUpdateOperationsInput | number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
@@ -45783,6 +50663,7 @@ export namespace Prisma {
     drafts?: DraftUncheckedUpdateManyWithoutUserNestedInput
     emailRules?: EmailRuleUncheckedUpdateManyWithoutUserNestedInput
     signatures?: SignatureUncheckedUpdateManyWithoutUserNestedInput
+    emailTemplates?: EmailTemplateUncheckedUpdateManyWithoutUserNestedInput
     cachedFolders?: CachedFolderUncheckedUpdateManyWithoutUserNestedInput
     cachedEmails?: CachedEmailUncheckedUpdateManyWithoutUserNestedInput
     cachedCalEvents?: CachedCalendarEventUncheckedUpdateManyWithoutUserNestedInput
@@ -45796,6 +50677,8 @@ export namespace Prisma {
     todoItems?: TodoItemUncheckedUpdateManyWithoutUserNestedInput
     snoozedEmails?: SnoozedEmailUncheckedUpdateManyWithoutUserNestedInput
     readReceipts?: ReadReceiptUncheckedUpdateManyWithoutUserNestedInput
+    pendingEmails?: PendingEmailUncheckedUpdateManyWithoutUserNestedInput
+    followUpReminders?: FollowUpReminderUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutDeltaLinksInput = {
@@ -45815,6 +50698,7 @@ export namespace Prisma {
     emailDensity?: string
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
+    undoSendDelay?: number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
@@ -45826,6 +50710,7 @@ export namespace Prisma {
     drafts?: DraftCreateNestedManyWithoutUserInput
     emailRules?: EmailRuleCreateNestedManyWithoutUserInput
     signatures?: SignatureCreateNestedManyWithoutUserInput
+    emailTemplates?: EmailTemplateCreateNestedManyWithoutUserInput
     cachedFolders?: CachedFolderCreateNestedManyWithoutUserInput
     cachedEmails?: CachedEmailCreateNestedManyWithoutUserInput
     cachedCalEvents?: CachedCalendarEventCreateNestedManyWithoutUserInput
@@ -45839,6 +50724,8 @@ export namespace Prisma {
     todoItems?: TodoItemCreateNestedManyWithoutUserInput
     snoozedEmails?: SnoozedEmailCreateNestedManyWithoutUserInput
     readReceipts?: ReadReceiptCreateNestedManyWithoutUserInput
+    pendingEmails?: PendingEmailCreateNestedManyWithoutUserInput
+    followUpReminders?: FollowUpReminderCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutDeltaLinksInput = {
@@ -45859,6 +50746,7 @@ export namespace Prisma {
     emailDensity?: string
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
+    undoSendDelay?: number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
@@ -45869,6 +50757,7 @@ export namespace Prisma {
     drafts?: DraftUncheckedCreateNestedManyWithoutUserInput
     emailRules?: EmailRuleUncheckedCreateNestedManyWithoutUserInput
     signatures?: SignatureUncheckedCreateNestedManyWithoutUserInput
+    emailTemplates?: EmailTemplateUncheckedCreateNestedManyWithoutUserInput
     cachedFolders?: CachedFolderUncheckedCreateNestedManyWithoutUserInput
     cachedEmails?: CachedEmailUncheckedCreateNestedManyWithoutUserInput
     cachedCalEvents?: CachedCalendarEventUncheckedCreateNestedManyWithoutUserInput
@@ -45882,6 +50771,8 @@ export namespace Prisma {
     todoItems?: TodoItemUncheckedCreateNestedManyWithoutUserInput
     snoozedEmails?: SnoozedEmailUncheckedCreateNestedManyWithoutUserInput
     readReceipts?: ReadReceiptUncheckedCreateNestedManyWithoutUserInput
+    pendingEmails?: PendingEmailUncheckedCreateNestedManyWithoutUserInput
+    followUpReminders?: FollowUpReminderUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutDeltaLinksInput = {
@@ -45917,6 +50808,7 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    undoSendDelay?: IntFieldUpdateOperationsInput | number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
@@ -45928,6 +50820,7 @@ export namespace Prisma {
     drafts?: DraftUpdateManyWithoutUserNestedInput
     emailRules?: EmailRuleUpdateManyWithoutUserNestedInput
     signatures?: SignatureUpdateManyWithoutUserNestedInput
+    emailTemplates?: EmailTemplateUpdateManyWithoutUserNestedInput
     cachedFolders?: CachedFolderUpdateManyWithoutUserNestedInput
     cachedEmails?: CachedEmailUpdateManyWithoutUserNestedInput
     cachedCalEvents?: CachedCalendarEventUpdateManyWithoutUserNestedInput
@@ -45941,6 +50834,8 @@ export namespace Prisma {
     todoItems?: TodoItemUpdateManyWithoutUserNestedInput
     snoozedEmails?: SnoozedEmailUpdateManyWithoutUserNestedInput
     readReceipts?: ReadReceiptUpdateManyWithoutUserNestedInput
+    pendingEmails?: PendingEmailUpdateManyWithoutUserNestedInput
+    followUpReminders?: FollowUpReminderUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutDeltaLinksInput = {
@@ -45961,6 +50856,7 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    undoSendDelay?: IntFieldUpdateOperationsInput | number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
@@ -45971,6 +50867,7 @@ export namespace Prisma {
     drafts?: DraftUncheckedUpdateManyWithoutUserNestedInput
     emailRules?: EmailRuleUncheckedUpdateManyWithoutUserNestedInput
     signatures?: SignatureUncheckedUpdateManyWithoutUserNestedInput
+    emailTemplates?: EmailTemplateUncheckedUpdateManyWithoutUserNestedInput
     cachedFolders?: CachedFolderUncheckedUpdateManyWithoutUserNestedInput
     cachedEmails?: CachedEmailUncheckedUpdateManyWithoutUserNestedInput
     cachedCalEvents?: CachedCalendarEventUncheckedUpdateManyWithoutUserNestedInput
@@ -45984,6 +50881,8 @@ export namespace Prisma {
     todoItems?: TodoItemUncheckedUpdateManyWithoutUserNestedInput
     snoozedEmails?: SnoozedEmailUncheckedUpdateManyWithoutUserNestedInput
     readReceipts?: ReadReceiptUncheckedUpdateManyWithoutUserNestedInput
+    pendingEmails?: PendingEmailUncheckedUpdateManyWithoutUserNestedInput
+    followUpReminders?: FollowUpReminderUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutWebhookSubsInput = {
@@ -46003,6 +50902,7 @@ export namespace Prisma {
     emailDensity?: string
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
+    undoSendDelay?: number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
@@ -46014,6 +50914,7 @@ export namespace Prisma {
     drafts?: DraftCreateNestedManyWithoutUserInput
     emailRules?: EmailRuleCreateNestedManyWithoutUserInput
     signatures?: SignatureCreateNestedManyWithoutUserInput
+    emailTemplates?: EmailTemplateCreateNestedManyWithoutUserInput
     cachedFolders?: CachedFolderCreateNestedManyWithoutUserInput
     cachedEmails?: CachedEmailCreateNestedManyWithoutUserInput
     cachedCalEvents?: CachedCalendarEventCreateNestedManyWithoutUserInput
@@ -46027,6 +50928,8 @@ export namespace Prisma {
     todoItems?: TodoItemCreateNestedManyWithoutUserInput
     snoozedEmails?: SnoozedEmailCreateNestedManyWithoutUserInput
     readReceipts?: ReadReceiptCreateNestedManyWithoutUserInput
+    pendingEmails?: PendingEmailCreateNestedManyWithoutUserInput
+    followUpReminders?: FollowUpReminderCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutWebhookSubsInput = {
@@ -46047,6 +50950,7 @@ export namespace Prisma {
     emailDensity?: string
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
+    undoSendDelay?: number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
@@ -46057,6 +50961,7 @@ export namespace Prisma {
     drafts?: DraftUncheckedCreateNestedManyWithoutUserInput
     emailRules?: EmailRuleUncheckedCreateNestedManyWithoutUserInput
     signatures?: SignatureUncheckedCreateNestedManyWithoutUserInput
+    emailTemplates?: EmailTemplateUncheckedCreateNestedManyWithoutUserInput
     cachedFolders?: CachedFolderUncheckedCreateNestedManyWithoutUserInput
     cachedEmails?: CachedEmailUncheckedCreateNestedManyWithoutUserInput
     cachedCalEvents?: CachedCalendarEventUncheckedCreateNestedManyWithoutUserInput
@@ -46070,6 +50975,8 @@ export namespace Prisma {
     todoItems?: TodoItemUncheckedCreateNestedManyWithoutUserInput
     snoozedEmails?: SnoozedEmailUncheckedCreateNestedManyWithoutUserInput
     readReceipts?: ReadReceiptUncheckedCreateNestedManyWithoutUserInput
+    pendingEmails?: PendingEmailUncheckedCreateNestedManyWithoutUserInput
+    followUpReminders?: FollowUpReminderUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutWebhookSubsInput = {
@@ -46105,6 +51012,7 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    undoSendDelay?: IntFieldUpdateOperationsInput | number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
@@ -46116,6 +51024,7 @@ export namespace Prisma {
     drafts?: DraftUpdateManyWithoutUserNestedInput
     emailRules?: EmailRuleUpdateManyWithoutUserNestedInput
     signatures?: SignatureUpdateManyWithoutUserNestedInput
+    emailTemplates?: EmailTemplateUpdateManyWithoutUserNestedInput
     cachedFolders?: CachedFolderUpdateManyWithoutUserNestedInput
     cachedEmails?: CachedEmailUpdateManyWithoutUserNestedInput
     cachedCalEvents?: CachedCalendarEventUpdateManyWithoutUserNestedInput
@@ -46129,6 +51038,8 @@ export namespace Prisma {
     todoItems?: TodoItemUpdateManyWithoutUserNestedInput
     snoozedEmails?: SnoozedEmailUpdateManyWithoutUserNestedInput
     readReceipts?: ReadReceiptUpdateManyWithoutUserNestedInput
+    pendingEmails?: PendingEmailUpdateManyWithoutUserNestedInput
+    followUpReminders?: FollowUpReminderUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutWebhookSubsInput = {
@@ -46149,6 +51060,7 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    undoSendDelay?: IntFieldUpdateOperationsInput | number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
@@ -46159,6 +51071,7 @@ export namespace Prisma {
     drafts?: DraftUncheckedUpdateManyWithoutUserNestedInput
     emailRules?: EmailRuleUncheckedUpdateManyWithoutUserNestedInput
     signatures?: SignatureUncheckedUpdateManyWithoutUserNestedInput
+    emailTemplates?: EmailTemplateUncheckedUpdateManyWithoutUserNestedInput
     cachedFolders?: CachedFolderUncheckedUpdateManyWithoutUserNestedInput
     cachedEmails?: CachedEmailUncheckedUpdateManyWithoutUserNestedInput
     cachedCalEvents?: CachedCalendarEventUncheckedUpdateManyWithoutUserNestedInput
@@ -46172,6 +51085,8 @@ export namespace Prisma {
     todoItems?: TodoItemUncheckedUpdateManyWithoutUserNestedInput
     snoozedEmails?: SnoozedEmailUncheckedUpdateManyWithoutUserNestedInput
     readReceipts?: ReadReceiptUncheckedUpdateManyWithoutUserNestedInput
+    pendingEmails?: PendingEmailUncheckedUpdateManyWithoutUserNestedInput
+    followUpReminders?: FollowUpReminderUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutDraftsInput = {
@@ -46191,6 +51106,7 @@ export namespace Prisma {
     emailDensity?: string
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
+    undoSendDelay?: number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
@@ -46202,6 +51118,7 @@ export namespace Prisma {
     webhookSubs?: WebhookSubscriptionCreateNestedManyWithoutUserInput
     emailRules?: EmailRuleCreateNestedManyWithoutUserInput
     signatures?: SignatureCreateNestedManyWithoutUserInput
+    emailTemplates?: EmailTemplateCreateNestedManyWithoutUserInput
     cachedFolders?: CachedFolderCreateNestedManyWithoutUserInput
     cachedEmails?: CachedEmailCreateNestedManyWithoutUserInput
     cachedCalEvents?: CachedCalendarEventCreateNestedManyWithoutUserInput
@@ -46215,6 +51132,8 @@ export namespace Prisma {
     todoItems?: TodoItemCreateNestedManyWithoutUserInput
     snoozedEmails?: SnoozedEmailCreateNestedManyWithoutUserInput
     readReceipts?: ReadReceiptCreateNestedManyWithoutUserInput
+    pendingEmails?: PendingEmailCreateNestedManyWithoutUserInput
+    followUpReminders?: FollowUpReminderCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutDraftsInput = {
@@ -46235,6 +51154,7 @@ export namespace Prisma {
     emailDensity?: string
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
+    undoSendDelay?: number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
@@ -46245,6 +51165,7 @@ export namespace Prisma {
     webhookSubs?: WebhookSubscriptionUncheckedCreateNestedManyWithoutUserInput
     emailRules?: EmailRuleUncheckedCreateNestedManyWithoutUserInput
     signatures?: SignatureUncheckedCreateNestedManyWithoutUserInput
+    emailTemplates?: EmailTemplateUncheckedCreateNestedManyWithoutUserInput
     cachedFolders?: CachedFolderUncheckedCreateNestedManyWithoutUserInput
     cachedEmails?: CachedEmailUncheckedCreateNestedManyWithoutUserInput
     cachedCalEvents?: CachedCalendarEventUncheckedCreateNestedManyWithoutUserInput
@@ -46258,6 +51179,8 @@ export namespace Prisma {
     todoItems?: TodoItemUncheckedCreateNestedManyWithoutUserInput
     snoozedEmails?: SnoozedEmailUncheckedCreateNestedManyWithoutUserInput
     readReceipts?: ReadReceiptUncheckedCreateNestedManyWithoutUserInput
+    pendingEmails?: PendingEmailUncheckedCreateNestedManyWithoutUserInput
+    followUpReminders?: FollowUpReminderUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutDraftsInput = {
@@ -46293,6 +51216,7 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    undoSendDelay?: IntFieldUpdateOperationsInput | number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
@@ -46304,6 +51228,7 @@ export namespace Prisma {
     webhookSubs?: WebhookSubscriptionUpdateManyWithoutUserNestedInput
     emailRules?: EmailRuleUpdateManyWithoutUserNestedInput
     signatures?: SignatureUpdateManyWithoutUserNestedInput
+    emailTemplates?: EmailTemplateUpdateManyWithoutUserNestedInput
     cachedFolders?: CachedFolderUpdateManyWithoutUserNestedInput
     cachedEmails?: CachedEmailUpdateManyWithoutUserNestedInput
     cachedCalEvents?: CachedCalendarEventUpdateManyWithoutUserNestedInput
@@ -46317,6 +51242,8 @@ export namespace Prisma {
     todoItems?: TodoItemUpdateManyWithoutUserNestedInput
     snoozedEmails?: SnoozedEmailUpdateManyWithoutUserNestedInput
     readReceipts?: ReadReceiptUpdateManyWithoutUserNestedInput
+    pendingEmails?: PendingEmailUpdateManyWithoutUserNestedInput
+    followUpReminders?: FollowUpReminderUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutDraftsInput = {
@@ -46337,6 +51264,7 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    undoSendDelay?: IntFieldUpdateOperationsInput | number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
@@ -46347,6 +51275,7 @@ export namespace Prisma {
     webhookSubs?: WebhookSubscriptionUncheckedUpdateManyWithoutUserNestedInput
     emailRules?: EmailRuleUncheckedUpdateManyWithoutUserNestedInput
     signatures?: SignatureUncheckedUpdateManyWithoutUserNestedInput
+    emailTemplates?: EmailTemplateUncheckedUpdateManyWithoutUserNestedInput
     cachedFolders?: CachedFolderUncheckedUpdateManyWithoutUserNestedInput
     cachedEmails?: CachedEmailUncheckedUpdateManyWithoutUserNestedInput
     cachedCalEvents?: CachedCalendarEventUncheckedUpdateManyWithoutUserNestedInput
@@ -46360,6 +51289,8 @@ export namespace Prisma {
     todoItems?: TodoItemUncheckedUpdateManyWithoutUserNestedInput
     snoozedEmails?: SnoozedEmailUncheckedUpdateManyWithoutUserNestedInput
     readReceipts?: ReadReceiptUncheckedUpdateManyWithoutUserNestedInput
+    pendingEmails?: PendingEmailUncheckedUpdateManyWithoutUserNestedInput
+    followUpReminders?: FollowUpReminderUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutSignaturesInput = {
@@ -46379,6 +51310,7 @@ export namespace Prisma {
     emailDensity?: string
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
+    undoSendDelay?: number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
@@ -46390,6 +51322,7 @@ export namespace Prisma {
     webhookSubs?: WebhookSubscriptionCreateNestedManyWithoutUserInput
     drafts?: DraftCreateNestedManyWithoutUserInput
     emailRules?: EmailRuleCreateNestedManyWithoutUserInput
+    emailTemplates?: EmailTemplateCreateNestedManyWithoutUserInput
     cachedFolders?: CachedFolderCreateNestedManyWithoutUserInput
     cachedEmails?: CachedEmailCreateNestedManyWithoutUserInput
     cachedCalEvents?: CachedCalendarEventCreateNestedManyWithoutUserInput
@@ -46403,6 +51336,8 @@ export namespace Prisma {
     todoItems?: TodoItemCreateNestedManyWithoutUserInput
     snoozedEmails?: SnoozedEmailCreateNestedManyWithoutUserInput
     readReceipts?: ReadReceiptCreateNestedManyWithoutUserInput
+    pendingEmails?: PendingEmailCreateNestedManyWithoutUserInput
+    followUpReminders?: FollowUpReminderCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutSignaturesInput = {
@@ -46423,6 +51358,7 @@ export namespace Prisma {
     emailDensity?: string
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
+    undoSendDelay?: number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
@@ -46433,6 +51369,7 @@ export namespace Prisma {
     webhookSubs?: WebhookSubscriptionUncheckedCreateNestedManyWithoutUserInput
     drafts?: DraftUncheckedCreateNestedManyWithoutUserInput
     emailRules?: EmailRuleUncheckedCreateNestedManyWithoutUserInput
+    emailTemplates?: EmailTemplateUncheckedCreateNestedManyWithoutUserInput
     cachedFolders?: CachedFolderUncheckedCreateNestedManyWithoutUserInput
     cachedEmails?: CachedEmailUncheckedCreateNestedManyWithoutUserInput
     cachedCalEvents?: CachedCalendarEventUncheckedCreateNestedManyWithoutUserInput
@@ -46446,6 +51383,8 @@ export namespace Prisma {
     todoItems?: TodoItemUncheckedCreateNestedManyWithoutUserInput
     snoozedEmails?: SnoozedEmailUncheckedCreateNestedManyWithoutUserInput
     readReceipts?: ReadReceiptUncheckedCreateNestedManyWithoutUserInput
+    pendingEmails?: PendingEmailUncheckedCreateNestedManyWithoutUserInput
+    followUpReminders?: FollowUpReminderUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutSignaturesInput = {
@@ -46481,6 +51420,7 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    undoSendDelay?: IntFieldUpdateOperationsInput | number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
@@ -46492,6 +51432,7 @@ export namespace Prisma {
     webhookSubs?: WebhookSubscriptionUpdateManyWithoutUserNestedInput
     drafts?: DraftUpdateManyWithoutUserNestedInput
     emailRules?: EmailRuleUpdateManyWithoutUserNestedInput
+    emailTemplates?: EmailTemplateUpdateManyWithoutUserNestedInput
     cachedFolders?: CachedFolderUpdateManyWithoutUserNestedInput
     cachedEmails?: CachedEmailUpdateManyWithoutUserNestedInput
     cachedCalEvents?: CachedCalendarEventUpdateManyWithoutUserNestedInput
@@ -46505,6 +51446,8 @@ export namespace Prisma {
     todoItems?: TodoItemUpdateManyWithoutUserNestedInput
     snoozedEmails?: SnoozedEmailUpdateManyWithoutUserNestedInput
     readReceipts?: ReadReceiptUpdateManyWithoutUserNestedInput
+    pendingEmails?: PendingEmailUpdateManyWithoutUserNestedInput
+    followUpReminders?: FollowUpReminderUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSignaturesInput = {
@@ -46525,6 +51468,7 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    undoSendDelay?: IntFieldUpdateOperationsInput | number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
@@ -46535,6 +51479,7 @@ export namespace Prisma {
     webhookSubs?: WebhookSubscriptionUncheckedUpdateManyWithoutUserNestedInput
     drafts?: DraftUncheckedUpdateManyWithoutUserNestedInput
     emailRules?: EmailRuleUncheckedUpdateManyWithoutUserNestedInput
+    emailTemplates?: EmailTemplateUncheckedUpdateManyWithoutUserNestedInput
     cachedFolders?: CachedFolderUncheckedUpdateManyWithoutUserNestedInput
     cachedEmails?: CachedEmailUncheckedUpdateManyWithoutUserNestedInput
     cachedCalEvents?: CachedCalendarEventUncheckedUpdateManyWithoutUserNestedInput
@@ -46548,6 +51493,8 @@ export namespace Prisma {
     todoItems?: TodoItemUncheckedUpdateManyWithoutUserNestedInput
     snoozedEmails?: SnoozedEmailUncheckedUpdateManyWithoutUserNestedInput
     readReceipts?: ReadReceiptUncheckedUpdateManyWithoutUserNestedInput
+    pendingEmails?: PendingEmailUncheckedUpdateManyWithoutUserNestedInput
+    followUpReminders?: FollowUpReminderUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutCachedFoldersInput = {
@@ -46567,6 +51514,7 @@ export namespace Prisma {
     emailDensity?: string
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
+    undoSendDelay?: number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
@@ -46579,6 +51527,7 @@ export namespace Prisma {
     drafts?: DraftCreateNestedManyWithoutUserInput
     emailRules?: EmailRuleCreateNestedManyWithoutUserInput
     signatures?: SignatureCreateNestedManyWithoutUserInput
+    emailTemplates?: EmailTemplateCreateNestedManyWithoutUserInput
     cachedEmails?: CachedEmailCreateNestedManyWithoutUserInput
     cachedCalEvents?: CachedCalendarEventCreateNestedManyWithoutUserInput
     cachedContacts?: CachedContactCreateNestedManyWithoutUserInput
@@ -46591,6 +51540,8 @@ export namespace Prisma {
     todoItems?: TodoItemCreateNestedManyWithoutUserInput
     snoozedEmails?: SnoozedEmailCreateNestedManyWithoutUserInput
     readReceipts?: ReadReceiptCreateNestedManyWithoutUserInput
+    pendingEmails?: PendingEmailCreateNestedManyWithoutUserInput
+    followUpReminders?: FollowUpReminderCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCachedFoldersInput = {
@@ -46611,6 +51562,7 @@ export namespace Prisma {
     emailDensity?: string
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
+    undoSendDelay?: number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
@@ -46622,6 +51574,7 @@ export namespace Prisma {
     drafts?: DraftUncheckedCreateNestedManyWithoutUserInput
     emailRules?: EmailRuleUncheckedCreateNestedManyWithoutUserInput
     signatures?: SignatureUncheckedCreateNestedManyWithoutUserInput
+    emailTemplates?: EmailTemplateUncheckedCreateNestedManyWithoutUserInput
     cachedEmails?: CachedEmailUncheckedCreateNestedManyWithoutUserInput
     cachedCalEvents?: CachedCalendarEventUncheckedCreateNestedManyWithoutUserInput
     cachedContacts?: CachedContactUncheckedCreateNestedManyWithoutUserInput
@@ -46634,6 +51587,8 @@ export namespace Prisma {
     todoItems?: TodoItemUncheckedCreateNestedManyWithoutUserInput
     snoozedEmails?: SnoozedEmailUncheckedCreateNestedManyWithoutUserInput
     readReceipts?: ReadReceiptUncheckedCreateNestedManyWithoutUserInput
+    pendingEmails?: PendingEmailUncheckedCreateNestedManyWithoutUserInput
+    followUpReminders?: FollowUpReminderUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCachedFoldersInput = {
@@ -46669,6 +51624,7 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    undoSendDelay?: IntFieldUpdateOperationsInput | number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
@@ -46681,6 +51637,7 @@ export namespace Prisma {
     drafts?: DraftUpdateManyWithoutUserNestedInput
     emailRules?: EmailRuleUpdateManyWithoutUserNestedInput
     signatures?: SignatureUpdateManyWithoutUserNestedInput
+    emailTemplates?: EmailTemplateUpdateManyWithoutUserNestedInput
     cachedEmails?: CachedEmailUpdateManyWithoutUserNestedInput
     cachedCalEvents?: CachedCalendarEventUpdateManyWithoutUserNestedInput
     cachedContacts?: CachedContactUpdateManyWithoutUserNestedInput
@@ -46693,6 +51650,8 @@ export namespace Prisma {
     todoItems?: TodoItemUpdateManyWithoutUserNestedInput
     snoozedEmails?: SnoozedEmailUpdateManyWithoutUserNestedInput
     readReceipts?: ReadReceiptUpdateManyWithoutUserNestedInput
+    pendingEmails?: PendingEmailUpdateManyWithoutUserNestedInput
+    followUpReminders?: FollowUpReminderUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCachedFoldersInput = {
@@ -46713,6 +51672,7 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    undoSendDelay?: IntFieldUpdateOperationsInput | number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
@@ -46724,6 +51684,7 @@ export namespace Prisma {
     drafts?: DraftUncheckedUpdateManyWithoutUserNestedInput
     emailRules?: EmailRuleUncheckedUpdateManyWithoutUserNestedInput
     signatures?: SignatureUncheckedUpdateManyWithoutUserNestedInput
+    emailTemplates?: EmailTemplateUncheckedUpdateManyWithoutUserNestedInput
     cachedEmails?: CachedEmailUncheckedUpdateManyWithoutUserNestedInput
     cachedCalEvents?: CachedCalendarEventUncheckedUpdateManyWithoutUserNestedInput
     cachedContacts?: CachedContactUncheckedUpdateManyWithoutUserNestedInput
@@ -46736,6 +51697,8 @@ export namespace Prisma {
     todoItems?: TodoItemUncheckedUpdateManyWithoutUserNestedInput
     snoozedEmails?: SnoozedEmailUncheckedUpdateManyWithoutUserNestedInput
     readReceipts?: ReadReceiptUncheckedUpdateManyWithoutUserNestedInput
+    pendingEmails?: PendingEmailUncheckedUpdateManyWithoutUserNestedInput
+    followUpReminders?: FollowUpReminderUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutCachedEmailsInput = {
@@ -46755,6 +51718,7 @@ export namespace Prisma {
     emailDensity?: string
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
+    undoSendDelay?: number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
@@ -46767,6 +51731,7 @@ export namespace Prisma {
     drafts?: DraftCreateNestedManyWithoutUserInput
     emailRules?: EmailRuleCreateNestedManyWithoutUserInput
     signatures?: SignatureCreateNestedManyWithoutUserInput
+    emailTemplates?: EmailTemplateCreateNestedManyWithoutUserInput
     cachedFolders?: CachedFolderCreateNestedManyWithoutUserInput
     cachedCalEvents?: CachedCalendarEventCreateNestedManyWithoutUserInput
     cachedContacts?: CachedContactCreateNestedManyWithoutUserInput
@@ -46779,6 +51744,8 @@ export namespace Prisma {
     todoItems?: TodoItemCreateNestedManyWithoutUserInput
     snoozedEmails?: SnoozedEmailCreateNestedManyWithoutUserInput
     readReceipts?: ReadReceiptCreateNestedManyWithoutUserInput
+    pendingEmails?: PendingEmailCreateNestedManyWithoutUserInput
+    followUpReminders?: FollowUpReminderCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCachedEmailsInput = {
@@ -46799,6 +51766,7 @@ export namespace Prisma {
     emailDensity?: string
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
+    undoSendDelay?: number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
@@ -46810,6 +51778,7 @@ export namespace Prisma {
     drafts?: DraftUncheckedCreateNestedManyWithoutUserInput
     emailRules?: EmailRuleUncheckedCreateNestedManyWithoutUserInput
     signatures?: SignatureUncheckedCreateNestedManyWithoutUserInput
+    emailTemplates?: EmailTemplateUncheckedCreateNestedManyWithoutUserInput
     cachedFolders?: CachedFolderUncheckedCreateNestedManyWithoutUserInput
     cachedCalEvents?: CachedCalendarEventUncheckedCreateNestedManyWithoutUserInput
     cachedContacts?: CachedContactUncheckedCreateNestedManyWithoutUserInput
@@ -46822,6 +51791,8 @@ export namespace Prisma {
     todoItems?: TodoItemUncheckedCreateNestedManyWithoutUserInput
     snoozedEmails?: SnoozedEmailUncheckedCreateNestedManyWithoutUserInput
     readReceipts?: ReadReceiptUncheckedCreateNestedManyWithoutUserInput
+    pendingEmails?: PendingEmailUncheckedCreateNestedManyWithoutUserInput
+    followUpReminders?: FollowUpReminderUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCachedEmailsInput = {
@@ -46857,6 +51828,7 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    undoSendDelay?: IntFieldUpdateOperationsInput | number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
@@ -46869,6 +51841,7 @@ export namespace Prisma {
     drafts?: DraftUpdateManyWithoutUserNestedInput
     emailRules?: EmailRuleUpdateManyWithoutUserNestedInput
     signatures?: SignatureUpdateManyWithoutUserNestedInput
+    emailTemplates?: EmailTemplateUpdateManyWithoutUserNestedInput
     cachedFolders?: CachedFolderUpdateManyWithoutUserNestedInput
     cachedCalEvents?: CachedCalendarEventUpdateManyWithoutUserNestedInput
     cachedContacts?: CachedContactUpdateManyWithoutUserNestedInput
@@ -46881,6 +51854,8 @@ export namespace Prisma {
     todoItems?: TodoItemUpdateManyWithoutUserNestedInput
     snoozedEmails?: SnoozedEmailUpdateManyWithoutUserNestedInput
     readReceipts?: ReadReceiptUpdateManyWithoutUserNestedInput
+    pendingEmails?: PendingEmailUpdateManyWithoutUserNestedInput
+    followUpReminders?: FollowUpReminderUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCachedEmailsInput = {
@@ -46901,6 +51876,7 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    undoSendDelay?: IntFieldUpdateOperationsInput | number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
@@ -46912,6 +51888,7 @@ export namespace Prisma {
     drafts?: DraftUncheckedUpdateManyWithoutUserNestedInput
     emailRules?: EmailRuleUncheckedUpdateManyWithoutUserNestedInput
     signatures?: SignatureUncheckedUpdateManyWithoutUserNestedInput
+    emailTemplates?: EmailTemplateUncheckedUpdateManyWithoutUserNestedInput
     cachedFolders?: CachedFolderUncheckedUpdateManyWithoutUserNestedInput
     cachedCalEvents?: CachedCalendarEventUncheckedUpdateManyWithoutUserNestedInput
     cachedContacts?: CachedContactUncheckedUpdateManyWithoutUserNestedInput
@@ -46924,6 +51901,8 @@ export namespace Prisma {
     todoItems?: TodoItemUncheckedUpdateManyWithoutUserNestedInput
     snoozedEmails?: SnoozedEmailUncheckedUpdateManyWithoutUserNestedInput
     readReceipts?: ReadReceiptUncheckedUpdateManyWithoutUserNestedInput
+    pendingEmails?: PendingEmailUncheckedUpdateManyWithoutUserNestedInput
+    followUpReminders?: FollowUpReminderUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutCachedCalEventsInput = {
@@ -46943,6 +51922,7 @@ export namespace Prisma {
     emailDensity?: string
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
+    undoSendDelay?: number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
@@ -46955,6 +51935,7 @@ export namespace Prisma {
     drafts?: DraftCreateNestedManyWithoutUserInput
     emailRules?: EmailRuleCreateNestedManyWithoutUserInput
     signatures?: SignatureCreateNestedManyWithoutUserInput
+    emailTemplates?: EmailTemplateCreateNestedManyWithoutUserInput
     cachedFolders?: CachedFolderCreateNestedManyWithoutUserInput
     cachedEmails?: CachedEmailCreateNestedManyWithoutUserInput
     cachedContacts?: CachedContactCreateNestedManyWithoutUserInput
@@ -46967,6 +51948,8 @@ export namespace Prisma {
     todoItems?: TodoItemCreateNestedManyWithoutUserInput
     snoozedEmails?: SnoozedEmailCreateNestedManyWithoutUserInput
     readReceipts?: ReadReceiptCreateNestedManyWithoutUserInput
+    pendingEmails?: PendingEmailCreateNestedManyWithoutUserInput
+    followUpReminders?: FollowUpReminderCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCachedCalEventsInput = {
@@ -46987,6 +51970,7 @@ export namespace Prisma {
     emailDensity?: string
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
+    undoSendDelay?: number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
@@ -46998,6 +51982,7 @@ export namespace Prisma {
     drafts?: DraftUncheckedCreateNestedManyWithoutUserInput
     emailRules?: EmailRuleUncheckedCreateNestedManyWithoutUserInput
     signatures?: SignatureUncheckedCreateNestedManyWithoutUserInput
+    emailTemplates?: EmailTemplateUncheckedCreateNestedManyWithoutUserInput
     cachedFolders?: CachedFolderUncheckedCreateNestedManyWithoutUserInput
     cachedEmails?: CachedEmailUncheckedCreateNestedManyWithoutUserInput
     cachedContacts?: CachedContactUncheckedCreateNestedManyWithoutUserInput
@@ -47010,6 +51995,8 @@ export namespace Prisma {
     todoItems?: TodoItemUncheckedCreateNestedManyWithoutUserInput
     snoozedEmails?: SnoozedEmailUncheckedCreateNestedManyWithoutUserInput
     readReceipts?: ReadReceiptUncheckedCreateNestedManyWithoutUserInput
+    pendingEmails?: PendingEmailUncheckedCreateNestedManyWithoutUserInput
+    followUpReminders?: FollowUpReminderUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCachedCalEventsInput = {
@@ -47045,6 +52032,7 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    undoSendDelay?: IntFieldUpdateOperationsInput | number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
@@ -47057,6 +52045,7 @@ export namespace Prisma {
     drafts?: DraftUpdateManyWithoutUserNestedInput
     emailRules?: EmailRuleUpdateManyWithoutUserNestedInput
     signatures?: SignatureUpdateManyWithoutUserNestedInput
+    emailTemplates?: EmailTemplateUpdateManyWithoutUserNestedInput
     cachedFolders?: CachedFolderUpdateManyWithoutUserNestedInput
     cachedEmails?: CachedEmailUpdateManyWithoutUserNestedInput
     cachedContacts?: CachedContactUpdateManyWithoutUserNestedInput
@@ -47069,6 +52058,8 @@ export namespace Prisma {
     todoItems?: TodoItemUpdateManyWithoutUserNestedInput
     snoozedEmails?: SnoozedEmailUpdateManyWithoutUserNestedInput
     readReceipts?: ReadReceiptUpdateManyWithoutUserNestedInput
+    pendingEmails?: PendingEmailUpdateManyWithoutUserNestedInput
+    followUpReminders?: FollowUpReminderUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCachedCalEventsInput = {
@@ -47089,6 +52080,7 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    undoSendDelay?: IntFieldUpdateOperationsInput | number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
@@ -47100,6 +52092,7 @@ export namespace Prisma {
     drafts?: DraftUncheckedUpdateManyWithoutUserNestedInput
     emailRules?: EmailRuleUncheckedUpdateManyWithoutUserNestedInput
     signatures?: SignatureUncheckedUpdateManyWithoutUserNestedInput
+    emailTemplates?: EmailTemplateUncheckedUpdateManyWithoutUserNestedInput
     cachedFolders?: CachedFolderUncheckedUpdateManyWithoutUserNestedInput
     cachedEmails?: CachedEmailUncheckedUpdateManyWithoutUserNestedInput
     cachedContacts?: CachedContactUncheckedUpdateManyWithoutUserNestedInput
@@ -47112,6 +52105,8 @@ export namespace Prisma {
     todoItems?: TodoItemUncheckedUpdateManyWithoutUserNestedInput
     snoozedEmails?: SnoozedEmailUncheckedUpdateManyWithoutUserNestedInput
     readReceipts?: ReadReceiptUncheckedUpdateManyWithoutUserNestedInput
+    pendingEmails?: PendingEmailUncheckedUpdateManyWithoutUserNestedInput
+    followUpReminders?: FollowUpReminderUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutCachedContactsInput = {
@@ -47131,6 +52126,7 @@ export namespace Prisma {
     emailDensity?: string
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
+    undoSendDelay?: number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
@@ -47143,6 +52139,7 @@ export namespace Prisma {
     drafts?: DraftCreateNestedManyWithoutUserInput
     emailRules?: EmailRuleCreateNestedManyWithoutUserInput
     signatures?: SignatureCreateNestedManyWithoutUserInput
+    emailTemplates?: EmailTemplateCreateNestedManyWithoutUserInput
     cachedFolders?: CachedFolderCreateNestedManyWithoutUserInput
     cachedEmails?: CachedEmailCreateNestedManyWithoutUserInput
     cachedCalEvents?: CachedCalendarEventCreateNestedManyWithoutUserInput
@@ -47155,6 +52152,8 @@ export namespace Prisma {
     todoItems?: TodoItemCreateNestedManyWithoutUserInput
     snoozedEmails?: SnoozedEmailCreateNestedManyWithoutUserInput
     readReceipts?: ReadReceiptCreateNestedManyWithoutUserInput
+    pendingEmails?: PendingEmailCreateNestedManyWithoutUserInput
+    followUpReminders?: FollowUpReminderCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCachedContactsInput = {
@@ -47175,6 +52174,7 @@ export namespace Prisma {
     emailDensity?: string
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
+    undoSendDelay?: number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
@@ -47186,6 +52186,7 @@ export namespace Prisma {
     drafts?: DraftUncheckedCreateNestedManyWithoutUserInput
     emailRules?: EmailRuleUncheckedCreateNestedManyWithoutUserInput
     signatures?: SignatureUncheckedCreateNestedManyWithoutUserInput
+    emailTemplates?: EmailTemplateUncheckedCreateNestedManyWithoutUserInput
     cachedFolders?: CachedFolderUncheckedCreateNestedManyWithoutUserInput
     cachedEmails?: CachedEmailUncheckedCreateNestedManyWithoutUserInput
     cachedCalEvents?: CachedCalendarEventUncheckedCreateNestedManyWithoutUserInput
@@ -47198,6 +52199,8 @@ export namespace Prisma {
     todoItems?: TodoItemUncheckedCreateNestedManyWithoutUserInput
     snoozedEmails?: SnoozedEmailUncheckedCreateNestedManyWithoutUserInput
     readReceipts?: ReadReceiptUncheckedCreateNestedManyWithoutUserInput
+    pendingEmails?: PendingEmailUncheckedCreateNestedManyWithoutUserInput
+    followUpReminders?: FollowUpReminderUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCachedContactsInput = {
@@ -47233,6 +52236,7 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    undoSendDelay?: IntFieldUpdateOperationsInput | number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
@@ -47245,6 +52249,7 @@ export namespace Prisma {
     drafts?: DraftUpdateManyWithoutUserNestedInput
     emailRules?: EmailRuleUpdateManyWithoutUserNestedInput
     signatures?: SignatureUpdateManyWithoutUserNestedInput
+    emailTemplates?: EmailTemplateUpdateManyWithoutUserNestedInput
     cachedFolders?: CachedFolderUpdateManyWithoutUserNestedInput
     cachedEmails?: CachedEmailUpdateManyWithoutUserNestedInput
     cachedCalEvents?: CachedCalendarEventUpdateManyWithoutUserNestedInput
@@ -47257,6 +52262,8 @@ export namespace Prisma {
     todoItems?: TodoItemUpdateManyWithoutUserNestedInput
     snoozedEmails?: SnoozedEmailUpdateManyWithoutUserNestedInput
     readReceipts?: ReadReceiptUpdateManyWithoutUserNestedInput
+    pendingEmails?: PendingEmailUpdateManyWithoutUserNestedInput
+    followUpReminders?: FollowUpReminderUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCachedContactsInput = {
@@ -47277,6 +52284,7 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    undoSendDelay?: IntFieldUpdateOperationsInput | number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
@@ -47288,6 +52296,7 @@ export namespace Prisma {
     drafts?: DraftUncheckedUpdateManyWithoutUserNestedInput
     emailRules?: EmailRuleUncheckedUpdateManyWithoutUserNestedInput
     signatures?: SignatureUncheckedUpdateManyWithoutUserNestedInput
+    emailTemplates?: EmailTemplateUncheckedUpdateManyWithoutUserNestedInput
     cachedFolders?: CachedFolderUncheckedUpdateManyWithoutUserNestedInput
     cachedEmails?: CachedEmailUncheckedUpdateManyWithoutUserNestedInput
     cachedCalEvents?: CachedCalendarEventUncheckedUpdateManyWithoutUserNestedInput
@@ -47300,6 +52309,8 @@ export namespace Prisma {
     todoItems?: TodoItemUncheckedUpdateManyWithoutUserNestedInput
     snoozedEmails?: SnoozedEmailUncheckedUpdateManyWithoutUserNestedInput
     readReceipts?: ReadReceiptUncheckedUpdateManyWithoutUserNestedInput
+    pendingEmails?: PendingEmailUncheckedUpdateManyWithoutUserNestedInput
+    followUpReminders?: FollowUpReminderUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutEmailRulesInput = {
@@ -47319,6 +52330,7 @@ export namespace Prisma {
     emailDensity?: string
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
+    undoSendDelay?: number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
@@ -47330,6 +52342,7 @@ export namespace Prisma {
     webhookSubs?: WebhookSubscriptionCreateNestedManyWithoutUserInput
     drafts?: DraftCreateNestedManyWithoutUserInput
     signatures?: SignatureCreateNestedManyWithoutUserInput
+    emailTemplates?: EmailTemplateCreateNestedManyWithoutUserInput
     cachedFolders?: CachedFolderCreateNestedManyWithoutUserInput
     cachedEmails?: CachedEmailCreateNestedManyWithoutUserInput
     cachedCalEvents?: CachedCalendarEventCreateNestedManyWithoutUserInput
@@ -47343,6 +52356,8 @@ export namespace Prisma {
     todoItems?: TodoItemCreateNestedManyWithoutUserInput
     snoozedEmails?: SnoozedEmailCreateNestedManyWithoutUserInput
     readReceipts?: ReadReceiptCreateNestedManyWithoutUserInput
+    pendingEmails?: PendingEmailCreateNestedManyWithoutUserInput
+    followUpReminders?: FollowUpReminderCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutEmailRulesInput = {
@@ -47363,6 +52378,7 @@ export namespace Prisma {
     emailDensity?: string
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
+    undoSendDelay?: number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
@@ -47373,6 +52389,7 @@ export namespace Prisma {
     webhookSubs?: WebhookSubscriptionUncheckedCreateNestedManyWithoutUserInput
     drafts?: DraftUncheckedCreateNestedManyWithoutUserInput
     signatures?: SignatureUncheckedCreateNestedManyWithoutUserInput
+    emailTemplates?: EmailTemplateUncheckedCreateNestedManyWithoutUserInput
     cachedFolders?: CachedFolderUncheckedCreateNestedManyWithoutUserInput
     cachedEmails?: CachedEmailUncheckedCreateNestedManyWithoutUserInput
     cachedCalEvents?: CachedCalendarEventUncheckedCreateNestedManyWithoutUserInput
@@ -47386,6 +52403,8 @@ export namespace Prisma {
     todoItems?: TodoItemUncheckedCreateNestedManyWithoutUserInput
     snoozedEmails?: SnoozedEmailUncheckedCreateNestedManyWithoutUserInput
     readReceipts?: ReadReceiptUncheckedCreateNestedManyWithoutUserInput
+    pendingEmails?: PendingEmailUncheckedCreateNestedManyWithoutUserInput
+    followUpReminders?: FollowUpReminderUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutEmailRulesInput = {
@@ -47421,6 +52440,7 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    undoSendDelay?: IntFieldUpdateOperationsInput | number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
@@ -47432,6 +52452,7 @@ export namespace Prisma {
     webhookSubs?: WebhookSubscriptionUpdateManyWithoutUserNestedInput
     drafts?: DraftUpdateManyWithoutUserNestedInput
     signatures?: SignatureUpdateManyWithoutUserNestedInput
+    emailTemplates?: EmailTemplateUpdateManyWithoutUserNestedInput
     cachedFolders?: CachedFolderUpdateManyWithoutUserNestedInput
     cachedEmails?: CachedEmailUpdateManyWithoutUserNestedInput
     cachedCalEvents?: CachedCalendarEventUpdateManyWithoutUserNestedInput
@@ -47445,6 +52466,8 @@ export namespace Prisma {
     todoItems?: TodoItemUpdateManyWithoutUserNestedInput
     snoozedEmails?: SnoozedEmailUpdateManyWithoutUserNestedInput
     readReceipts?: ReadReceiptUpdateManyWithoutUserNestedInput
+    pendingEmails?: PendingEmailUpdateManyWithoutUserNestedInput
+    followUpReminders?: FollowUpReminderUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutEmailRulesInput = {
@@ -47465,6 +52488,7 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    undoSendDelay?: IntFieldUpdateOperationsInput | number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
@@ -47475,6 +52499,7 @@ export namespace Prisma {
     webhookSubs?: WebhookSubscriptionUncheckedUpdateManyWithoutUserNestedInput
     drafts?: DraftUncheckedUpdateManyWithoutUserNestedInput
     signatures?: SignatureUncheckedUpdateManyWithoutUserNestedInput
+    emailTemplates?: EmailTemplateUncheckedUpdateManyWithoutUserNestedInput
     cachedFolders?: CachedFolderUncheckedUpdateManyWithoutUserNestedInput
     cachedEmails?: CachedEmailUncheckedUpdateManyWithoutUserNestedInput
     cachedCalEvents?: CachedCalendarEventUncheckedUpdateManyWithoutUserNestedInput
@@ -47488,6 +52513,8 @@ export namespace Prisma {
     todoItems?: TodoItemUncheckedUpdateManyWithoutUserNestedInput
     snoozedEmails?: SnoozedEmailUncheckedUpdateManyWithoutUserNestedInput
     readReceipts?: ReadReceiptUncheckedUpdateManyWithoutUserNestedInput
+    pendingEmails?: PendingEmailUncheckedUpdateManyWithoutUserNestedInput
+    followUpReminders?: FollowUpReminderUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutEmailAttachmentsInput = {
@@ -47507,6 +52534,7 @@ export namespace Prisma {
     emailDensity?: string
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
+    undoSendDelay?: number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
@@ -47519,6 +52547,7 @@ export namespace Prisma {
     drafts?: DraftCreateNestedManyWithoutUserInput
     emailRules?: EmailRuleCreateNestedManyWithoutUserInput
     signatures?: SignatureCreateNestedManyWithoutUserInput
+    emailTemplates?: EmailTemplateCreateNestedManyWithoutUserInput
     cachedFolders?: CachedFolderCreateNestedManyWithoutUserInput
     cachedEmails?: CachedEmailCreateNestedManyWithoutUserInput
     cachedCalEvents?: CachedCalendarEventCreateNestedManyWithoutUserInput
@@ -47531,6 +52560,8 @@ export namespace Prisma {
     todoItems?: TodoItemCreateNestedManyWithoutUserInput
     snoozedEmails?: SnoozedEmailCreateNestedManyWithoutUserInput
     readReceipts?: ReadReceiptCreateNestedManyWithoutUserInput
+    pendingEmails?: PendingEmailCreateNestedManyWithoutUserInput
+    followUpReminders?: FollowUpReminderCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutEmailAttachmentsInput = {
@@ -47551,6 +52582,7 @@ export namespace Prisma {
     emailDensity?: string
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
+    undoSendDelay?: number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
@@ -47562,6 +52594,7 @@ export namespace Prisma {
     drafts?: DraftUncheckedCreateNestedManyWithoutUserInput
     emailRules?: EmailRuleUncheckedCreateNestedManyWithoutUserInput
     signatures?: SignatureUncheckedCreateNestedManyWithoutUserInput
+    emailTemplates?: EmailTemplateUncheckedCreateNestedManyWithoutUserInput
     cachedFolders?: CachedFolderUncheckedCreateNestedManyWithoutUserInput
     cachedEmails?: CachedEmailUncheckedCreateNestedManyWithoutUserInput
     cachedCalEvents?: CachedCalendarEventUncheckedCreateNestedManyWithoutUserInput
@@ -47574,6 +52607,8 @@ export namespace Prisma {
     todoItems?: TodoItemUncheckedCreateNestedManyWithoutUserInput
     snoozedEmails?: SnoozedEmailUncheckedCreateNestedManyWithoutUserInput
     readReceipts?: ReadReceiptUncheckedCreateNestedManyWithoutUserInput
+    pendingEmails?: PendingEmailUncheckedCreateNestedManyWithoutUserInput
+    followUpReminders?: FollowUpReminderUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutEmailAttachmentsInput = {
@@ -47609,6 +52644,7 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    undoSendDelay?: IntFieldUpdateOperationsInput | number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
@@ -47621,6 +52657,7 @@ export namespace Prisma {
     drafts?: DraftUpdateManyWithoutUserNestedInput
     emailRules?: EmailRuleUpdateManyWithoutUserNestedInput
     signatures?: SignatureUpdateManyWithoutUserNestedInput
+    emailTemplates?: EmailTemplateUpdateManyWithoutUserNestedInput
     cachedFolders?: CachedFolderUpdateManyWithoutUserNestedInput
     cachedEmails?: CachedEmailUpdateManyWithoutUserNestedInput
     cachedCalEvents?: CachedCalendarEventUpdateManyWithoutUserNestedInput
@@ -47633,6 +52670,8 @@ export namespace Prisma {
     todoItems?: TodoItemUpdateManyWithoutUserNestedInput
     snoozedEmails?: SnoozedEmailUpdateManyWithoutUserNestedInput
     readReceipts?: ReadReceiptUpdateManyWithoutUserNestedInput
+    pendingEmails?: PendingEmailUpdateManyWithoutUserNestedInput
+    followUpReminders?: FollowUpReminderUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutEmailAttachmentsInput = {
@@ -47653,6 +52692,7 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    undoSendDelay?: IntFieldUpdateOperationsInput | number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
@@ -47664,6 +52704,7 @@ export namespace Prisma {
     drafts?: DraftUncheckedUpdateManyWithoutUserNestedInput
     emailRules?: EmailRuleUncheckedUpdateManyWithoutUserNestedInput
     signatures?: SignatureUncheckedUpdateManyWithoutUserNestedInput
+    emailTemplates?: EmailTemplateUncheckedUpdateManyWithoutUserNestedInput
     cachedFolders?: CachedFolderUncheckedUpdateManyWithoutUserNestedInput
     cachedEmails?: CachedEmailUncheckedUpdateManyWithoutUserNestedInput
     cachedCalEvents?: CachedCalendarEventUncheckedUpdateManyWithoutUserNestedInput
@@ -47676,6 +52717,8 @@ export namespace Prisma {
     todoItems?: TodoItemUncheckedUpdateManyWithoutUserNestedInput
     snoozedEmails?: SnoozedEmailUncheckedUpdateManyWithoutUserNestedInput
     readReceipts?: ReadReceiptUncheckedUpdateManyWithoutUserNestedInput
+    pendingEmails?: PendingEmailUncheckedUpdateManyWithoutUserNestedInput
+    followUpReminders?: FollowUpReminderUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutAiGeneratedRepliesInput = {
@@ -47695,6 +52738,7 @@ export namespace Prisma {
     emailDensity?: string
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
+    undoSendDelay?: number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
@@ -47707,6 +52751,7 @@ export namespace Prisma {
     drafts?: DraftCreateNestedManyWithoutUserInput
     emailRules?: EmailRuleCreateNestedManyWithoutUserInput
     signatures?: SignatureCreateNestedManyWithoutUserInput
+    emailTemplates?: EmailTemplateCreateNestedManyWithoutUserInput
     cachedFolders?: CachedFolderCreateNestedManyWithoutUserInput
     cachedEmails?: CachedEmailCreateNestedManyWithoutUserInput
     cachedCalEvents?: CachedCalendarEventCreateNestedManyWithoutUserInput
@@ -47719,6 +52764,8 @@ export namespace Prisma {
     todoItems?: TodoItemCreateNestedManyWithoutUserInput
     snoozedEmails?: SnoozedEmailCreateNestedManyWithoutUserInput
     readReceipts?: ReadReceiptCreateNestedManyWithoutUserInput
+    pendingEmails?: PendingEmailCreateNestedManyWithoutUserInput
+    followUpReminders?: FollowUpReminderCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutAiGeneratedRepliesInput = {
@@ -47739,6 +52786,7 @@ export namespace Prisma {
     emailDensity?: string
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
+    undoSendDelay?: number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
@@ -47750,6 +52798,7 @@ export namespace Prisma {
     drafts?: DraftUncheckedCreateNestedManyWithoutUserInput
     emailRules?: EmailRuleUncheckedCreateNestedManyWithoutUserInput
     signatures?: SignatureUncheckedCreateNestedManyWithoutUserInput
+    emailTemplates?: EmailTemplateUncheckedCreateNestedManyWithoutUserInput
     cachedFolders?: CachedFolderUncheckedCreateNestedManyWithoutUserInput
     cachedEmails?: CachedEmailUncheckedCreateNestedManyWithoutUserInput
     cachedCalEvents?: CachedCalendarEventUncheckedCreateNestedManyWithoutUserInput
@@ -47762,6 +52811,8 @@ export namespace Prisma {
     todoItems?: TodoItemUncheckedCreateNestedManyWithoutUserInput
     snoozedEmails?: SnoozedEmailUncheckedCreateNestedManyWithoutUserInput
     readReceipts?: ReadReceiptUncheckedCreateNestedManyWithoutUserInput
+    pendingEmails?: PendingEmailUncheckedCreateNestedManyWithoutUserInput
+    followUpReminders?: FollowUpReminderUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutAiGeneratedRepliesInput = {
@@ -47797,6 +52848,7 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    undoSendDelay?: IntFieldUpdateOperationsInput | number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
@@ -47809,6 +52861,7 @@ export namespace Prisma {
     drafts?: DraftUpdateManyWithoutUserNestedInput
     emailRules?: EmailRuleUpdateManyWithoutUserNestedInput
     signatures?: SignatureUpdateManyWithoutUserNestedInput
+    emailTemplates?: EmailTemplateUpdateManyWithoutUserNestedInput
     cachedFolders?: CachedFolderUpdateManyWithoutUserNestedInput
     cachedEmails?: CachedEmailUpdateManyWithoutUserNestedInput
     cachedCalEvents?: CachedCalendarEventUpdateManyWithoutUserNestedInput
@@ -47821,6 +52874,8 @@ export namespace Prisma {
     todoItems?: TodoItemUpdateManyWithoutUserNestedInput
     snoozedEmails?: SnoozedEmailUpdateManyWithoutUserNestedInput
     readReceipts?: ReadReceiptUpdateManyWithoutUserNestedInput
+    pendingEmails?: PendingEmailUpdateManyWithoutUserNestedInput
+    followUpReminders?: FollowUpReminderUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAiGeneratedRepliesInput = {
@@ -47841,6 +52896,7 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    undoSendDelay?: IntFieldUpdateOperationsInput | number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
@@ -47852,6 +52908,7 @@ export namespace Prisma {
     drafts?: DraftUncheckedUpdateManyWithoutUserNestedInput
     emailRules?: EmailRuleUncheckedUpdateManyWithoutUserNestedInput
     signatures?: SignatureUncheckedUpdateManyWithoutUserNestedInput
+    emailTemplates?: EmailTemplateUncheckedUpdateManyWithoutUserNestedInput
     cachedFolders?: CachedFolderUncheckedUpdateManyWithoutUserNestedInput
     cachedEmails?: CachedEmailUncheckedUpdateManyWithoutUserNestedInput
     cachedCalEvents?: CachedCalendarEventUncheckedUpdateManyWithoutUserNestedInput
@@ -47864,6 +52921,8 @@ export namespace Prisma {
     todoItems?: TodoItemUncheckedUpdateManyWithoutUserNestedInput
     snoozedEmails?: SnoozedEmailUncheckedUpdateManyWithoutUserNestedInput
     readReceipts?: ReadReceiptUncheckedUpdateManyWithoutUserNestedInput
+    pendingEmails?: PendingEmailUncheckedUpdateManyWithoutUserNestedInput
+    followUpReminders?: FollowUpReminderUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutCachedSearchResultsInput = {
@@ -47883,6 +52942,7 @@ export namespace Prisma {
     emailDensity?: string
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
+    undoSendDelay?: number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
@@ -47895,6 +52955,7 @@ export namespace Prisma {
     drafts?: DraftCreateNestedManyWithoutUserInput
     emailRules?: EmailRuleCreateNestedManyWithoutUserInput
     signatures?: SignatureCreateNestedManyWithoutUserInput
+    emailTemplates?: EmailTemplateCreateNestedManyWithoutUserInput
     cachedFolders?: CachedFolderCreateNestedManyWithoutUserInput
     cachedEmails?: CachedEmailCreateNestedManyWithoutUserInput
     cachedCalEvents?: CachedCalendarEventCreateNestedManyWithoutUserInput
@@ -47907,6 +52968,8 @@ export namespace Prisma {
     todoItems?: TodoItemCreateNestedManyWithoutUserInput
     snoozedEmails?: SnoozedEmailCreateNestedManyWithoutUserInput
     readReceipts?: ReadReceiptCreateNestedManyWithoutUserInput
+    pendingEmails?: PendingEmailCreateNestedManyWithoutUserInput
+    followUpReminders?: FollowUpReminderCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCachedSearchResultsInput = {
@@ -47927,6 +52990,7 @@ export namespace Prisma {
     emailDensity?: string
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
+    undoSendDelay?: number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
@@ -47938,6 +53002,7 @@ export namespace Prisma {
     drafts?: DraftUncheckedCreateNestedManyWithoutUserInput
     emailRules?: EmailRuleUncheckedCreateNestedManyWithoutUserInput
     signatures?: SignatureUncheckedCreateNestedManyWithoutUserInput
+    emailTemplates?: EmailTemplateUncheckedCreateNestedManyWithoutUserInput
     cachedFolders?: CachedFolderUncheckedCreateNestedManyWithoutUserInput
     cachedEmails?: CachedEmailUncheckedCreateNestedManyWithoutUserInput
     cachedCalEvents?: CachedCalendarEventUncheckedCreateNestedManyWithoutUserInput
@@ -47950,6 +53015,8 @@ export namespace Prisma {
     todoItems?: TodoItemUncheckedCreateNestedManyWithoutUserInput
     snoozedEmails?: SnoozedEmailUncheckedCreateNestedManyWithoutUserInput
     readReceipts?: ReadReceiptUncheckedCreateNestedManyWithoutUserInput
+    pendingEmails?: PendingEmailUncheckedCreateNestedManyWithoutUserInput
+    followUpReminders?: FollowUpReminderUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCachedSearchResultsInput = {
@@ -47985,6 +53052,7 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    undoSendDelay?: IntFieldUpdateOperationsInput | number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
@@ -47997,6 +53065,7 @@ export namespace Prisma {
     drafts?: DraftUpdateManyWithoutUserNestedInput
     emailRules?: EmailRuleUpdateManyWithoutUserNestedInput
     signatures?: SignatureUpdateManyWithoutUserNestedInput
+    emailTemplates?: EmailTemplateUpdateManyWithoutUserNestedInput
     cachedFolders?: CachedFolderUpdateManyWithoutUserNestedInput
     cachedEmails?: CachedEmailUpdateManyWithoutUserNestedInput
     cachedCalEvents?: CachedCalendarEventUpdateManyWithoutUserNestedInput
@@ -48009,6 +53078,8 @@ export namespace Prisma {
     todoItems?: TodoItemUpdateManyWithoutUserNestedInput
     snoozedEmails?: SnoozedEmailUpdateManyWithoutUserNestedInput
     readReceipts?: ReadReceiptUpdateManyWithoutUserNestedInput
+    pendingEmails?: PendingEmailUpdateManyWithoutUserNestedInput
+    followUpReminders?: FollowUpReminderUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCachedSearchResultsInput = {
@@ -48029,6 +53100,7 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    undoSendDelay?: IntFieldUpdateOperationsInput | number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
@@ -48040,6 +53112,7 @@ export namespace Prisma {
     drafts?: DraftUncheckedUpdateManyWithoutUserNestedInput
     emailRules?: EmailRuleUncheckedUpdateManyWithoutUserNestedInput
     signatures?: SignatureUncheckedUpdateManyWithoutUserNestedInput
+    emailTemplates?: EmailTemplateUncheckedUpdateManyWithoutUserNestedInput
     cachedFolders?: CachedFolderUncheckedUpdateManyWithoutUserNestedInput
     cachedEmails?: CachedEmailUncheckedUpdateManyWithoutUserNestedInput
     cachedCalEvents?: CachedCalendarEventUncheckedUpdateManyWithoutUserNestedInput
@@ -48052,6 +53125,8 @@ export namespace Prisma {
     todoItems?: TodoItemUncheckedUpdateManyWithoutUserNestedInput
     snoozedEmails?: SnoozedEmailUncheckedUpdateManyWithoutUserNestedInput
     readReceipts?: ReadReceiptUncheckedUpdateManyWithoutUserNestedInput
+    pendingEmails?: PendingEmailUncheckedUpdateManyWithoutUserNestedInput
+    followUpReminders?: FollowUpReminderUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutSyncStatusesInput = {
@@ -48071,6 +53146,7 @@ export namespace Prisma {
     emailDensity?: string
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
+    undoSendDelay?: number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
@@ -48083,6 +53159,7 @@ export namespace Prisma {
     drafts?: DraftCreateNestedManyWithoutUserInput
     emailRules?: EmailRuleCreateNestedManyWithoutUserInput
     signatures?: SignatureCreateNestedManyWithoutUserInput
+    emailTemplates?: EmailTemplateCreateNestedManyWithoutUserInput
     cachedFolders?: CachedFolderCreateNestedManyWithoutUserInput
     cachedEmails?: CachedEmailCreateNestedManyWithoutUserInput
     cachedCalEvents?: CachedCalendarEventCreateNestedManyWithoutUserInput
@@ -48095,6 +53172,8 @@ export namespace Prisma {
     todoItems?: TodoItemCreateNestedManyWithoutUserInput
     snoozedEmails?: SnoozedEmailCreateNestedManyWithoutUserInput
     readReceipts?: ReadReceiptCreateNestedManyWithoutUserInput
+    pendingEmails?: PendingEmailCreateNestedManyWithoutUserInput
+    followUpReminders?: FollowUpReminderCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutSyncStatusesInput = {
@@ -48115,6 +53194,7 @@ export namespace Prisma {
     emailDensity?: string
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
+    undoSendDelay?: number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
@@ -48126,6 +53206,7 @@ export namespace Prisma {
     drafts?: DraftUncheckedCreateNestedManyWithoutUserInput
     emailRules?: EmailRuleUncheckedCreateNestedManyWithoutUserInput
     signatures?: SignatureUncheckedCreateNestedManyWithoutUserInput
+    emailTemplates?: EmailTemplateUncheckedCreateNestedManyWithoutUserInput
     cachedFolders?: CachedFolderUncheckedCreateNestedManyWithoutUserInput
     cachedEmails?: CachedEmailUncheckedCreateNestedManyWithoutUserInput
     cachedCalEvents?: CachedCalendarEventUncheckedCreateNestedManyWithoutUserInput
@@ -48138,6 +53219,8 @@ export namespace Prisma {
     todoItems?: TodoItemUncheckedCreateNestedManyWithoutUserInput
     snoozedEmails?: SnoozedEmailUncheckedCreateNestedManyWithoutUserInput
     readReceipts?: ReadReceiptUncheckedCreateNestedManyWithoutUserInput
+    pendingEmails?: PendingEmailUncheckedCreateNestedManyWithoutUserInput
+    followUpReminders?: FollowUpReminderUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutSyncStatusesInput = {
@@ -48173,6 +53256,7 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    undoSendDelay?: IntFieldUpdateOperationsInput | number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
@@ -48185,6 +53269,7 @@ export namespace Prisma {
     drafts?: DraftUpdateManyWithoutUserNestedInput
     emailRules?: EmailRuleUpdateManyWithoutUserNestedInput
     signatures?: SignatureUpdateManyWithoutUserNestedInput
+    emailTemplates?: EmailTemplateUpdateManyWithoutUserNestedInput
     cachedFolders?: CachedFolderUpdateManyWithoutUserNestedInput
     cachedEmails?: CachedEmailUpdateManyWithoutUserNestedInput
     cachedCalEvents?: CachedCalendarEventUpdateManyWithoutUserNestedInput
@@ -48197,6 +53282,8 @@ export namespace Prisma {
     todoItems?: TodoItemUpdateManyWithoutUserNestedInput
     snoozedEmails?: SnoozedEmailUpdateManyWithoutUserNestedInput
     readReceipts?: ReadReceiptUpdateManyWithoutUserNestedInput
+    pendingEmails?: PendingEmailUpdateManyWithoutUserNestedInput
+    followUpReminders?: FollowUpReminderUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSyncStatusesInput = {
@@ -48217,6 +53304,7 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    undoSendDelay?: IntFieldUpdateOperationsInput | number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
@@ -48228,6 +53316,7 @@ export namespace Prisma {
     drafts?: DraftUncheckedUpdateManyWithoutUserNestedInput
     emailRules?: EmailRuleUncheckedUpdateManyWithoutUserNestedInput
     signatures?: SignatureUncheckedUpdateManyWithoutUserNestedInput
+    emailTemplates?: EmailTemplateUncheckedUpdateManyWithoutUserNestedInput
     cachedFolders?: CachedFolderUncheckedUpdateManyWithoutUserNestedInput
     cachedEmails?: CachedEmailUncheckedUpdateManyWithoutUserNestedInput
     cachedCalEvents?: CachedCalendarEventUncheckedUpdateManyWithoutUserNestedInput
@@ -48240,6 +53329,8 @@ export namespace Prisma {
     todoItems?: TodoItemUncheckedUpdateManyWithoutUserNestedInput
     snoozedEmails?: SnoozedEmailUncheckedUpdateManyWithoutUserNestedInput
     readReceipts?: ReadReceiptUncheckedUpdateManyWithoutUserNestedInput
+    pendingEmails?: PendingEmailUncheckedUpdateManyWithoutUserNestedInput
+    followUpReminders?: FollowUpReminderUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutNotificationLogsInput = {
@@ -48259,6 +53350,7 @@ export namespace Prisma {
     emailDensity?: string
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
+    undoSendDelay?: number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
@@ -48271,6 +53363,7 @@ export namespace Prisma {
     drafts?: DraftCreateNestedManyWithoutUserInput
     emailRules?: EmailRuleCreateNestedManyWithoutUserInput
     signatures?: SignatureCreateNestedManyWithoutUserInput
+    emailTemplates?: EmailTemplateCreateNestedManyWithoutUserInput
     cachedFolders?: CachedFolderCreateNestedManyWithoutUserInput
     cachedEmails?: CachedEmailCreateNestedManyWithoutUserInput
     cachedCalEvents?: CachedCalendarEventCreateNestedManyWithoutUserInput
@@ -48283,6 +53376,8 @@ export namespace Prisma {
     todoItems?: TodoItemCreateNestedManyWithoutUserInput
     snoozedEmails?: SnoozedEmailCreateNestedManyWithoutUserInput
     readReceipts?: ReadReceiptCreateNestedManyWithoutUserInput
+    pendingEmails?: PendingEmailCreateNestedManyWithoutUserInput
+    followUpReminders?: FollowUpReminderCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutNotificationLogsInput = {
@@ -48303,6 +53398,7 @@ export namespace Prisma {
     emailDensity?: string
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
+    undoSendDelay?: number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
@@ -48314,6 +53410,7 @@ export namespace Prisma {
     drafts?: DraftUncheckedCreateNestedManyWithoutUserInput
     emailRules?: EmailRuleUncheckedCreateNestedManyWithoutUserInput
     signatures?: SignatureUncheckedCreateNestedManyWithoutUserInput
+    emailTemplates?: EmailTemplateUncheckedCreateNestedManyWithoutUserInput
     cachedFolders?: CachedFolderUncheckedCreateNestedManyWithoutUserInput
     cachedEmails?: CachedEmailUncheckedCreateNestedManyWithoutUserInput
     cachedCalEvents?: CachedCalendarEventUncheckedCreateNestedManyWithoutUserInput
@@ -48326,6 +53423,8 @@ export namespace Prisma {
     todoItems?: TodoItemUncheckedCreateNestedManyWithoutUserInput
     snoozedEmails?: SnoozedEmailUncheckedCreateNestedManyWithoutUserInput
     readReceipts?: ReadReceiptUncheckedCreateNestedManyWithoutUserInput
+    pendingEmails?: PendingEmailUncheckedCreateNestedManyWithoutUserInput
+    followUpReminders?: FollowUpReminderUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutNotificationLogsInput = {
@@ -48361,6 +53460,7 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    undoSendDelay?: IntFieldUpdateOperationsInput | number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
@@ -48373,6 +53473,7 @@ export namespace Prisma {
     drafts?: DraftUpdateManyWithoutUserNestedInput
     emailRules?: EmailRuleUpdateManyWithoutUserNestedInput
     signatures?: SignatureUpdateManyWithoutUserNestedInput
+    emailTemplates?: EmailTemplateUpdateManyWithoutUserNestedInput
     cachedFolders?: CachedFolderUpdateManyWithoutUserNestedInput
     cachedEmails?: CachedEmailUpdateManyWithoutUserNestedInput
     cachedCalEvents?: CachedCalendarEventUpdateManyWithoutUserNestedInput
@@ -48385,6 +53486,8 @@ export namespace Prisma {
     todoItems?: TodoItemUpdateManyWithoutUserNestedInput
     snoozedEmails?: SnoozedEmailUpdateManyWithoutUserNestedInput
     readReceipts?: ReadReceiptUpdateManyWithoutUserNestedInput
+    pendingEmails?: PendingEmailUpdateManyWithoutUserNestedInput
+    followUpReminders?: FollowUpReminderUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutNotificationLogsInput = {
@@ -48405,6 +53508,7 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    undoSendDelay?: IntFieldUpdateOperationsInput | number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
@@ -48416,6 +53520,7 @@ export namespace Prisma {
     drafts?: DraftUncheckedUpdateManyWithoutUserNestedInput
     emailRules?: EmailRuleUncheckedUpdateManyWithoutUserNestedInput
     signatures?: SignatureUncheckedUpdateManyWithoutUserNestedInput
+    emailTemplates?: EmailTemplateUncheckedUpdateManyWithoutUserNestedInput
     cachedFolders?: CachedFolderUncheckedUpdateManyWithoutUserNestedInput
     cachedEmails?: CachedEmailUncheckedUpdateManyWithoutUserNestedInput
     cachedCalEvents?: CachedCalendarEventUncheckedUpdateManyWithoutUserNestedInput
@@ -48428,6 +53533,8 @@ export namespace Prisma {
     todoItems?: TodoItemUncheckedUpdateManyWithoutUserNestedInput
     snoozedEmails?: SnoozedEmailUncheckedUpdateManyWithoutUserNestedInput
     readReceipts?: ReadReceiptUncheckedUpdateManyWithoutUserNestedInput
+    pendingEmails?: PendingEmailUncheckedUpdateManyWithoutUserNestedInput
+    followUpReminders?: FollowUpReminderUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutMigrationStatusesInput = {
@@ -48447,6 +53554,7 @@ export namespace Prisma {
     emailDensity?: string
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
+    undoSendDelay?: number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
@@ -48459,6 +53567,7 @@ export namespace Prisma {
     drafts?: DraftCreateNestedManyWithoutUserInput
     emailRules?: EmailRuleCreateNestedManyWithoutUserInput
     signatures?: SignatureCreateNestedManyWithoutUserInput
+    emailTemplates?: EmailTemplateCreateNestedManyWithoutUserInput
     cachedFolders?: CachedFolderCreateNestedManyWithoutUserInput
     cachedEmails?: CachedEmailCreateNestedManyWithoutUserInput
     cachedCalEvents?: CachedCalendarEventCreateNestedManyWithoutUserInput
@@ -48471,6 +53580,8 @@ export namespace Prisma {
     todoItems?: TodoItemCreateNestedManyWithoutUserInput
     snoozedEmails?: SnoozedEmailCreateNestedManyWithoutUserInput
     readReceipts?: ReadReceiptCreateNestedManyWithoutUserInput
+    pendingEmails?: PendingEmailCreateNestedManyWithoutUserInput
+    followUpReminders?: FollowUpReminderCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutMigrationStatusesInput = {
@@ -48491,6 +53602,7 @@ export namespace Prisma {
     emailDensity?: string
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
+    undoSendDelay?: number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
@@ -48502,6 +53614,7 @@ export namespace Prisma {
     drafts?: DraftUncheckedCreateNestedManyWithoutUserInput
     emailRules?: EmailRuleUncheckedCreateNestedManyWithoutUserInput
     signatures?: SignatureUncheckedCreateNestedManyWithoutUserInput
+    emailTemplates?: EmailTemplateUncheckedCreateNestedManyWithoutUserInput
     cachedFolders?: CachedFolderUncheckedCreateNestedManyWithoutUserInput
     cachedEmails?: CachedEmailUncheckedCreateNestedManyWithoutUserInput
     cachedCalEvents?: CachedCalendarEventUncheckedCreateNestedManyWithoutUserInput
@@ -48514,6 +53627,8 @@ export namespace Prisma {
     todoItems?: TodoItemUncheckedCreateNestedManyWithoutUserInput
     snoozedEmails?: SnoozedEmailUncheckedCreateNestedManyWithoutUserInput
     readReceipts?: ReadReceiptUncheckedCreateNestedManyWithoutUserInput
+    pendingEmails?: PendingEmailUncheckedCreateNestedManyWithoutUserInput
+    followUpReminders?: FollowUpReminderUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutMigrationStatusesInput = {
@@ -48549,6 +53664,7 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    undoSendDelay?: IntFieldUpdateOperationsInput | number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
@@ -48561,6 +53677,7 @@ export namespace Prisma {
     drafts?: DraftUpdateManyWithoutUserNestedInput
     emailRules?: EmailRuleUpdateManyWithoutUserNestedInput
     signatures?: SignatureUpdateManyWithoutUserNestedInput
+    emailTemplates?: EmailTemplateUpdateManyWithoutUserNestedInput
     cachedFolders?: CachedFolderUpdateManyWithoutUserNestedInput
     cachedEmails?: CachedEmailUpdateManyWithoutUserNestedInput
     cachedCalEvents?: CachedCalendarEventUpdateManyWithoutUserNestedInput
@@ -48573,6 +53690,8 @@ export namespace Prisma {
     todoItems?: TodoItemUpdateManyWithoutUserNestedInput
     snoozedEmails?: SnoozedEmailUpdateManyWithoutUserNestedInput
     readReceipts?: ReadReceiptUpdateManyWithoutUserNestedInput
+    pendingEmails?: PendingEmailUpdateManyWithoutUserNestedInput
+    followUpReminders?: FollowUpReminderUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutMigrationStatusesInput = {
@@ -48593,6 +53712,7 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    undoSendDelay?: IntFieldUpdateOperationsInput | number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
@@ -48604,6 +53724,7 @@ export namespace Prisma {
     drafts?: DraftUncheckedUpdateManyWithoutUserNestedInput
     emailRules?: EmailRuleUncheckedUpdateManyWithoutUserNestedInput
     signatures?: SignatureUncheckedUpdateManyWithoutUserNestedInput
+    emailTemplates?: EmailTemplateUncheckedUpdateManyWithoutUserNestedInput
     cachedFolders?: CachedFolderUncheckedUpdateManyWithoutUserNestedInput
     cachedEmails?: CachedEmailUncheckedUpdateManyWithoutUserNestedInput
     cachedCalEvents?: CachedCalendarEventUncheckedUpdateManyWithoutUserNestedInput
@@ -48616,6 +53737,8 @@ export namespace Prisma {
     todoItems?: TodoItemUncheckedUpdateManyWithoutUserNestedInput
     snoozedEmails?: SnoozedEmailUncheckedUpdateManyWithoutUserNestedInput
     readReceipts?: ReadReceiptUncheckedUpdateManyWithoutUserNestedInput
+    pendingEmails?: PendingEmailUncheckedUpdateManyWithoutUserNestedInput
+    followUpReminders?: FollowUpReminderUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutSnoozedEmailsInput = {
@@ -48635,6 +53758,7 @@ export namespace Prisma {
     emailDensity?: string
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
+    undoSendDelay?: number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
@@ -48647,6 +53771,7 @@ export namespace Prisma {
     drafts?: DraftCreateNestedManyWithoutUserInput
     emailRules?: EmailRuleCreateNestedManyWithoutUserInput
     signatures?: SignatureCreateNestedManyWithoutUserInput
+    emailTemplates?: EmailTemplateCreateNestedManyWithoutUserInput
     cachedFolders?: CachedFolderCreateNestedManyWithoutUserInput
     cachedEmails?: CachedEmailCreateNestedManyWithoutUserInput
     cachedCalEvents?: CachedCalendarEventCreateNestedManyWithoutUserInput
@@ -48659,6 +53784,8 @@ export namespace Prisma {
     migrationStatuses?: MigrationStatusCreateNestedManyWithoutUserInput
     todoItems?: TodoItemCreateNestedManyWithoutUserInput
     readReceipts?: ReadReceiptCreateNestedManyWithoutUserInput
+    pendingEmails?: PendingEmailCreateNestedManyWithoutUserInput
+    followUpReminders?: FollowUpReminderCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutSnoozedEmailsInput = {
@@ -48679,6 +53806,7 @@ export namespace Prisma {
     emailDensity?: string
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
+    undoSendDelay?: number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
@@ -48690,6 +53818,7 @@ export namespace Prisma {
     drafts?: DraftUncheckedCreateNestedManyWithoutUserInput
     emailRules?: EmailRuleUncheckedCreateNestedManyWithoutUserInput
     signatures?: SignatureUncheckedCreateNestedManyWithoutUserInput
+    emailTemplates?: EmailTemplateUncheckedCreateNestedManyWithoutUserInput
     cachedFolders?: CachedFolderUncheckedCreateNestedManyWithoutUserInput
     cachedEmails?: CachedEmailUncheckedCreateNestedManyWithoutUserInput
     cachedCalEvents?: CachedCalendarEventUncheckedCreateNestedManyWithoutUserInput
@@ -48702,6 +53831,8 @@ export namespace Prisma {
     migrationStatuses?: MigrationStatusUncheckedCreateNestedManyWithoutUserInput
     todoItems?: TodoItemUncheckedCreateNestedManyWithoutUserInput
     readReceipts?: ReadReceiptUncheckedCreateNestedManyWithoutUserInput
+    pendingEmails?: PendingEmailUncheckedCreateNestedManyWithoutUserInput
+    followUpReminders?: FollowUpReminderUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutSnoozedEmailsInput = {
@@ -48737,6 +53868,7 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    undoSendDelay?: IntFieldUpdateOperationsInput | number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
@@ -48749,6 +53881,7 @@ export namespace Prisma {
     drafts?: DraftUpdateManyWithoutUserNestedInput
     emailRules?: EmailRuleUpdateManyWithoutUserNestedInput
     signatures?: SignatureUpdateManyWithoutUserNestedInput
+    emailTemplates?: EmailTemplateUpdateManyWithoutUserNestedInput
     cachedFolders?: CachedFolderUpdateManyWithoutUserNestedInput
     cachedEmails?: CachedEmailUpdateManyWithoutUserNestedInput
     cachedCalEvents?: CachedCalendarEventUpdateManyWithoutUserNestedInput
@@ -48761,6 +53894,8 @@ export namespace Prisma {
     migrationStatuses?: MigrationStatusUpdateManyWithoutUserNestedInput
     todoItems?: TodoItemUpdateManyWithoutUserNestedInput
     readReceipts?: ReadReceiptUpdateManyWithoutUserNestedInput
+    pendingEmails?: PendingEmailUpdateManyWithoutUserNestedInput
+    followUpReminders?: FollowUpReminderUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSnoozedEmailsInput = {
@@ -48781,6 +53916,7 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    undoSendDelay?: IntFieldUpdateOperationsInput | number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
@@ -48792,6 +53928,7 @@ export namespace Prisma {
     drafts?: DraftUncheckedUpdateManyWithoutUserNestedInput
     emailRules?: EmailRuleUncheckedUpdateManyWithoutUserNestedInput
     signatures?: SignatureUncheckedUpdateManyWithoutUserNestedInput
+    emailTemplates?: EmailTemplateUncheckedUpdateManyWithoutUserNestedInput
     cachedFolders?: CachedFolderUncheckedUpdateManyWithoutUserNestedInput
     cachedEmails?: CachedEmailUncheckedUpdateManyWithoutUserNestedInput
     cachedCalEvents?: CachedCalendarEventUncheckedUpdateManyWithoutUserNestedInput
@@ -48804,6 +53941,8 @@ export namespace Prisma {
     migrationStatuses?: MigrationStatusUncheckedUpdateManyWithoutUserNestedInput
     todoItems?: TodoItemUncheckedUpdateManyWithoutUserNestedInput
     readReceipts?: ReadReceiptUncheckedUpdateManyWithoutUserNestedInput
+    pendingEmails?: PendingEmailUncheckedUpdateManyWithoutUserNestedInput
+    followUpReminders?: FollowUpReminderUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutReadReceiptsInput = {
@@ -48823,6 +53962,7 @@ export namespace Prisma {
     emailDensity?: string
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
+    undoSendDelay?: number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
@@ -48835,6 +53975,7 @@ export namespace Prisma {
     drafts?: DraftCreateNestedManyWithoutUserInput
     emailRules?: EmailRuleCreateNestedManyWithoutUserInput
     signatures?: SignatureCreateNestedManyWithoutUserInput
+    emailTemplates?: EmailTemplateCreateNestedManyWithoutUserInput
     cachedFolders?: CachedFolderCreateNestedManyWithoutUserInput
     cachedEmails?: CachedEmailCreateNestedManyWithoutUserInput
     cachedCalEvents?: CachedCalendarEventCreateNestedManyWithoutUserInput
@@ -48847,6 +53988,8 @@ export namespace Prisma {
     migrationStatuses?: MigrationStatusCreateNestedManyWithoutUserInput
     todoItems?: TodoItemCreateNestedManyWithoutUserInput
     snoozedEmails?: SnoozedEmailCreateNestedManyWithoutUserInput
+    pendingEmails?: PendingEmailCreateNestedManyWithoutUserInput
+    followUpReminders?: FollowUpReminderCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutReadReceiptsInput = {
@@ -48867,6 +54010,7 @@ export namespace Prisma {
     emailDensity?: string
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
+    undoSendDelay?: number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
@@ -48878,6 +54022,7 @@ export namespace Prisma {
     drafts?: DraftUncheckedCreateNestedManyWithoutUserInput
     emailRules?: EmailRuleUncheckedCreateNestedManyWithoutUserInput
     signatures?: SignatureUncheckedCreateNestedManyWithoutUserInput
+    emailTemplates?: EmailTemplateUncheckedCreateNestedManyWithoutUserInput
     cachedFolders?: CachedFolderUncheckedCreateNestedManyWithoutUserInput
     cachedEmails?: CachedEmailUncheckedCreateNestedManyWithoutUserInput
     cachedCalEvents?: CachedCalendarEventUncheckedCreateNestedManyWithoutUserInput
@@ -48890,6 +54035,8 @@ export namespace Prisma {
     migrationStatuses?: MigrationStatusUncheckedCreateNestedManyWithoutUserInput
     todoItems?: TodoItemUncheckedCreateNestedManyWithoutUserInput
     snoozedEmails?: SnoozedEmailUncheckedCreateNestedManyWithoutUserInput
+    pendingEmails?: PendingEmailUncheckedCreateNestedManyWithoutUserInput
+    followUpReminders?: FollowUpReminderUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutReadReceiptsInput = {
@@ -48925,6 +54072,7 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    undoSendDelay?: IntFieldUpdateOperationsInput | number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
@@ -48937,6 +54085,7 @@ export namespace Prisma {
     drafts?: DraftUpdateManyWithoutUserNestedInput
     emailRules?: EmailRuleUpdateManyWithoutUserNestedInput
     signatures?: SignatureUpdateManyWithoutUserNestedInput
+    emailTemplates?: EmailTemplateUpdateManyWithoutUserNestedInput
     cachedFolders?: CachedFolderUpdateManyWithoutUserNestedInput
     cachedEmails?: CachedEmailUpdateManyWithoutUserNestedInput
     cachedCalEvents?: CachedCalendarEventUpdateManyWithoutUserNestedInput
@@ -48949,6 +54098,8 @@ export namespace Prisma {
     migrationStatuses?: MigrationStatusUpdateManyWithoutUserNestedInput
     todoItems?: TodoItemUpdateManyWithoutUserNestedInput
     snoozedEmails?: SnoozedEmailUpdateManyWithoutUserNestedInput
+    pendingEmails?: PendingEmailUpdateManyWithoutUserNestedInput
+    followUpReminders?: FollowUpReminderUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutReadReceiptsInput = {
@@ -48969,6 +54120,7 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    undoSendDelay?: IntFieldUpdateOperationsInput | number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
@@ -48980,6 +54132,7 @@ export namespace Prisma {
     drafts?: DraftUncheckedUpdateManyWithoutUserNestedInput
     emailRules?: EmailRuleUncheckedUpdateManyWithoutUserNestedInput
     signatures?: SignatureUncheckedUpdateManyWithoutUserNestedInput
+    emailTemplates?: EmailTemplateUncheckedUpdateManyWithoutUserNestedInput
     cachedFolders?: CachedFolderUncheckedUpdateManyWithoutUserNestedInput
     cachedEmails?: CachedEmailUncheckedUpdateManyWithoutUserNestedInput
     cachedCalEvents?: CachedCalendarEventUncheckedUpdateManyWithoutUserNestedInput
@@ -48992,6 +54145,8 @@ export namespace Prisma {
     migrationStatuses?: MigrationStatusUncheckedUpdateManyWithoutUserNestedInput
     todoItems?: TodoItemUncheckedUpdateManyWithoutUserNestedInput
     snoozedEmails?: SnoozedEmailUncheckedUpdateManyWithoutUserNestedInput
+    pendingEmails?: PendingEmailUncheckedUpdateManyWithoutUserNestedInput
+    followUpReminders?: FollowUpReminderUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutTodoItemsInput = {
@@ -49011,6 +54166,7 @@ export namespace Prisma {
     emailDensity?: string
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
+    undoSendDelay?: number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
@@ -49023,6 +54179,7 @@ export namespace Prisma {
     drafts?: DraftCreateNestedManyWithoutUserInput
     emailRules?: EmailRuleCreateNestedManyWithoutUserInput
     signatures?: SignatureCreateNestedManyWithoutUserInput
+    emailTemplates?: EmailTemplateCreateNestedManyWithoutUserInput
     cachedFolders?: CachedFolderCreateNestedManyWithoutUserInput
     cachedEmails?: CachedEmailCreateNestedManyWithoutUserInput
     cachedCalEvents?: CachedCalendarEventCreateNestedManyWithoutUserInput
@@ -49035,6 +54192,8 @@ export namespace Prisma {
     migrationStatuses?: MigrationStatusCreateNestedManyWithoutUserInput
     snoozedEmails?: SnoozedEmailCreateNestedManyWithoutUserInput
     readReceipts?: ReadReceiptCreateNestedManyWithoutUserInput
+    pendingEmails?: PendingEmailCreateNestedManyWithoutUserInput
+    followUpReminders?: FollowUpReminderCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutTodoItemsInput = {
@@ -49055,6 +54214,7 @@ export namespace Prisma {
     emailDensity?: string
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
+    undoSendDelay?: number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
@@ -49066,6 +54226,7 @@ export namespace Prisma {
     drafts?: DraftUncheckedCreateNestedManyWithoutUserInput
     emailRules?: EmailRuleUncheckedCreateNestedManyWithoutUserInput
     signatures?: SignatureUncheckedCreateNestedManyWithoutUserInput
+    emailTemplates?: EmailTemplateUncheckedCreateNestedManyWithoutUserInput
     cachedFolders?: CachedFolderUncheckedCreateNestedManyWithoutUserInput
     cachedEmails?: CachedEmailUncheckedCreateNestedManyWithoutUserInput
     cachedCalEvents?: CachedCalendarEventUncheckedCreateNestedManyWithoutUserInput
@@ -49078,6 +54239,8 @@ export namespace Prisma {
     migrationStatuses?: MigrationStatusUncheckedCreateNestedManyWithoutUserInput
     snoozedEmails?: SnoozedEmailUncheckedCreateNestedManyWithoutUserInput
     readReceipts?: ReadReceiptUncheckedCreateNestedManyWithoutUserInput
+    pendingEmails?: PendingEmailUncheckedCreateNestedManyWithoutUserInput
+    followUpReminders?: FollowUpReminderUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutTodoItemsInput = {
@@ -49113,6 +54276,211 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    undoSendDelay?: IntFieldUpdateOperationsInput | number
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
+    msAccounts?: MsConnectedAccountUpdateManyWithoutUserNestedInput
+    imapAccounts?: ImapConnectedAccountUpdateManyWithoutUserNestedInput
+    jmapAccounts?: JmapConnectedAccountUpdateManyWithoutUserNestedInput
+    msalCache?: MsalTokenCacheUpdateOneWithoutUserNestedInput
+    deltaLinks?: EmailDeltaLinkUpdateManyWithoutUserNestedInput
+    webhookSubs?: WebhookSubscriptionUpdateManyWithoutUserNestedInput
+    drafts?: DraftUpdateManyWithoutUserNestedInput
+    emailRules?: EmailRuleUpdateManyWithoutUserNestedInput
+    signatures?: SignatureUpdateManyWithoutUserNestedInput
+    emailTemplates?: EmailTemplateUpdateManyWithoutUserNestedInput
+    cachedFolders?: CachedFolderUpdateManyWithoutUserNestedInput
+    cachedEmails?: CachedEmailUpdateManyWithoutUserNestedInput
+    cachedCalEvents?: CachedCalendarEventUpdateManyWithoutUserNestedInput
+    cachedContacts?: CachedContactUpdateManyWithoutUserNestedInput
+    emailAttachments?: EmailAttachmentUpdateManyWithoutUserNestedInput
+    aiGeneratedReplies?: AiGeneratedReplyUpdateManyWithoutUserNestedInput
+    cachedSearchResults?: CachedSearchResultUpdateManyWithoutUserNestedInput
+    syncStatuses?: SyncStatusUpdateManyWithoutUserNestedInput
+    notificationLogs?: NotificationLogUpdateManyWithoutUserNestedInput
+    migrationStatuses?: MigrationStatusUpdateManyWithoutUserNestedInput
+    snoozedEmails?: SnoozedEmailUpdateManyWithoutUserNestedInput
+    readReceipts?: ReadReceiptUpdateManyWithoutUserNestedInput
+    pendingEmails?: PendingEmailUpdateManyWithoutUserNestedInput
+    followUpReminders?: FollowUpReminderUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutTodoItemsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    orgId?: StringFieldUpdateOperationsInput | string
+    notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
+    notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
+    notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
+    notificationCalendarReminders?: BoolFieldUpdateOperationsInput | boolean
+    notificationWeeklyReport?: BoolFieldUpdateOperationsInput | boolean
+    appTheme?: StringFieldUpdateOperationsInput | string
+    fontSize?: StringFieldUpdateOperationsInput | string
+    emailDensity?: StringFieldUpdateOperationsInput | string
+    preferredTimeZone?: StringFieldUpdateOperationsInput | string
+    lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    undoSendDelay?: IntFieldUpdateOperationsInput | number
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
+    imapAccounts?: ImapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
+    jmapAccounts?: JmapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
+    msalCache?: MsalTokenCacheUncheckedUpdateOneWithoutUserNestedInput
+    deltaLinks?: EmailDeltaLinkUncheckedUpdateManyWithoutUserNestedInput
+    webhookSubs?: WebhookSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    drafts?: DraftUncheckedUpdateManyWithoutUserNestedInput
+    emailRules?: EmailRuleUncheckedUpdateManyWithoutUserNestedInput
+    signatures?: SignatureUncheckedUpdateManyWithoutUserNestedInput
+    emailTemplates?: EmailTemplateUncheckedUpdateManyWithoutUserNestedInput
+    cachedFolders?: CachedFolderUncheckedUpdateManyWithoutUserNestedInput
+    cachedEmails?: CachedEmailUncheckedUpdateManyWithoutUserNestedInput
+    cachedCalEvents?: CachedCalendarEventUncheckedUpdateManyWithoutUserNestedInput
+    cachedContacts?: CachedContactUncheckedUpdateManyWithoutUserNestedInput
+    emailAttachments?: EmailAttachmentUncheckedUpdateManyWithoutUserNestedInput
+    aiGeneratedReplies?: AiGeneratedReplyUncheckedUpdateManyWithoutUserNestedInput
+    cachedSearchResults?: CachedSearchResultUncheckedUpdateManyWithoutUserNestedInput
+    syncStatuses?: SyncStatusUncheckedUpdateManyWithoutUserNestedInput
+    notificationLogs?: NotificationLogUncheckedUpdateManyWithoutUserNestedInput
+    migrationStatuses?: MigrationStatusUncheckedUpdateManyWithoutUserNestedInput
+    snoozedEmails?: SnoozedEmailUncheckedUpdateManyWithoutUserNestedInput
+    readReceipts?: ReadReceiptUncheckedUpdateManyWithoutUserNestedInput
+    pendingEmails?: PendingEmailUncheckedUpdateManyWithoutUserNestedInput
+    followUpReminders?: FollowUpReminderUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserCreateWithoutEmailTemplatesInput = {
+    id: string
+    email: string
+    name?: string | null
+    avatarUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    notificationNewEmail?: boolean
+    notificationDailyDigest?: boolean
+    notificationAiReplies?: boolean
+    notificationCalendarReminders?: boolean
+    notificationWeeklyReport?: boolean
+    appTheme?: string
+    fontSize?: string
+    emailDensity?: string
+    preferredTimeZone?: string
+    lastActiveAccountId?: string | null
+    undoSendDelay?: number
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: Date | string | null
+    org: OrganizationCreateNestedOneWithoutUsersInput
+    msAccounts?: MsConnectedAccountCreateNestedManyWithoutUserInput
+    imapAccounts?: ImapConnectedAccountCreateNestedManyWithoutUserInput
+    jmapAccounts?: JmapConnectedAccountCreateNestedManyWithoutUserInput
+    msalCache?: MsalTokenCacheCreateNestedOneWithoutUserInput
+    deltaLinks?: EmailDeltaLinkCreateNestedManyWithoutUserInput
+    webhookSubs?: WebhookSubscriptionCreateNestedManyWithoutUserInput
+    drafts?: DraftCreateNestedManyWithoutUserInput
+    emailRules?: EmailRuleCreateNestedManyWithoutUserInput
+    signatures?: SignatureCreateNestedManyWithoutUserInput
+    cachedFolders?: CachedFolderCreateNestedManyWithoutUserInput
+    cachedEmails?: CachedEmailCreateNestedManyWithoutUserInput
+    cachedCalEvents?: CachedCalendarEventCreateNestedManyWithoutUserInput
+    cachedContacts?: CachedContactCreateNestedManyWithoutUserInput
+    emailAttachments?: EmailAttachmentCreateNestedManyWithoutUserInput
+    aiGeneratedReplies?: AiGeneratedReplyCreateNestedManyWithoutUserInput
+    cachedSearchResults?: CachedSearchResultCreateNestedManyWithoutUserInput
+    syncStatuses?: SyncStatusCreateNestedManyWithoutUserInput
+    notificationLogs?: NotificationLogCreateNestedManyWithoutUserInput
+    migrationStatuses?: MigrationStatusCreateNestedManyWithoutUserInput
+    todoItems?: TodoItemCreateNestedManyWithoutUserInput
+    snoozedEmails?: SnoozedEmailCreateNestedManyWithoutUserInput
+    readReceipts?: ReadReceiptCreateNestedManyWithoutUserInput
+    pendingEmails?: PendingEmailCreateNestedManyWithoutUserInput
+    followUpReminders?: FollowUpReminderCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutEmailTemplatesInput = {
+    id: string
+    email: string
+    name?: string | null
+    avatarUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    orgId: string
+    notificationNewEmail?: boolean
+    notificationDailyDigest?: boolean
+    notificationAiReplies?: boolean
+    notificationCalendarReminders?: boolean
+    notificationWeeklyReport?: boolean
+    appTheme?: string
+    fontSize?: string
+    emailDensity?: string
+    preferredTimeZone?: string
+    lastActiveAccountId?: string | null
+    undoSendDelay?: number
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: Date | string | null
+    msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
+    imapAccounts?: ImapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
+    jmapAccounts?: JmapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
+    msalCache?: MsalTokenCacheUncheckedCreateNestedOneWithoutUserInput
+    deltaLinks?: EmailDeltaLinkUncheckedCreateNestedManyWithoutUserInput
+    webhookSubs?: WebhookSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    drafts?: DraftUncheckedCreateNestedManyWithoutUserInput
+    emailRules?: EmailRuleUncheckedCreateNestedManyWithoutUserInput
+    signatures?: SignatureUncheckedCreateNestedManyWithoutUserInput
+    cachedFolders?: CachedFolderUncheckedCreateNestedManyWithoutUserInput
+    cachedEmails?: CachedEmailUncheckedCreateNestedManyWithoutUserInput
+    cachedCalEvents?: CachedCalendarEventUncheckedCreateNestedManyWithoutUserInput
+    cachedContacts?: CachedContactUncheckedCreateNestedManyWithoutUserInput
+    emailAttachments?: EmailAttachmentUncheckedCreateNestedManyWithoutUserInput
+    aiGeneratedReplies?: AiGeneratedReplyUncheckedCreateNestedManyWithoutUserInput
+    cachedSearchResults?: CachedSearchResultUncheckedCreateNestedManyWithoutUserInput
+    syncStatuses?: SyncStatusUncheckedCreateNestedManyWithoutUserInput
+    notificationLogs?: NotificationLogUncheckedCreateNestedManyWithoutUserInput
+    migrationStatuses?: MigrationStatusUncheckedCreateNestedManyWithoutUserInput
+    todoItems?: TodoItemUncheckedCreateNestedManyWithoutUserInput
+    snoozedEmails?: SnoozedEmailUncheckedCreateNestedManyWithoutUserInput
+    readReceipts?: ReadReceiptUncheckedCreateNestedManyWithoutUserInput
+    pendingEmails?: PendingEmailUncheckedCreateNestedManyWithoutUserInput
+    followUpReminders?: FollowUpReminderUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutEmailTemplatesInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutEmailTemplatesInput, UserUncheckedCreateWithoutEmailTemplatesInput>
+  }
+
+  export type UserUpsertWithoutEmailTemplatesInput = {
+    update: XOR<UserUpdateWithoutEmailTemplatesInput, UserUncheckedUpdateWithoutEmailTemplatesInput>
+    create: XOR<UserCreateWithoutEmailTemplatesInput, UserUncheckedCreateWithoutEmailTemplatesInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutEmailTemplatesInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutEmailTemplatesInput, UserUncheckedUpdateWithoutEmailTemplatesInput>
+  }
+
+  export type UserUpdateWithoutEmailTemplatesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
+    notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
+    notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
+    notificationCalendarReminders?: BoolFieldUpdateOperationsInput | boolean
+    notificationWeeklyReport?: BoolFieldUpdateOperationsInput | boolean
+    appTheme?: StringFieldUpdateOperationsInput | string
+    fontSize?: StringFieldUpdateOperationsInput | string
+    emailDensity?: StringFieldUpdateOperationsInput | string
+    preferredTimeZone?: StringFieldUpdateOperationsInput | string
+    lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    undoSendDelay?: IntFieldUpdateOperationsInput | number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
@@ -49135,11 +54503,14 @@ export namespace Prisma {
     syncStatuses?: SyncStatusUpdateManyWithoutUserNestedInput
     notificationLogs?: NotificationLogUpdateManyWithoutUserNestedInput
     migrationStatuses?: MigrationStatusUpdateManyWithoutUserNestedInput
+    todoItems?: TodoItemUpdateManyWithoutUserNestedInput
     snoozedEmails?: SnoozedEmailUpdateManyWithoutUserNestedInput
     readReceipts?: ReadReceiptUpdateManyWithoutUserNestedInput
+    pendingEmails?: PendingEmailUpdateManyWithoutUserNestedInput
+    followUpReminders?: FollowUpReminderUpdateManyWithoutUserNestedInput
   }
 
-  export type UserUncheckedUpdateWithoutTodoItemsInput = {
+  export type UserUncheckedUpdateWithoutEmailTemplatesInput = {
     id?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     name?: NullableStringFieldUpdateOperationsInput | string | null
@@ -49157,6 +54528,7 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    undoSendDelay?: IntFieldUpdateOperationsInput | number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
@@ -49178,8 +54550,215 @@ export namespace Prisma {
     syncStatuses?: SyncStatusUncheckedUpdateManyWithoutUserNestedInput
     notificationLogs?: NotificationLogUncheckedUpdateManyWithoutUserNestedInput
     migrationStatuses?: MigrationStatusUncheckedUpdateManyWithoutUserNestedInput
+    todoItems?: TodoItemUncheckedUpdateManyWithoutUserNestedInput
     snoozedEmails?: SnoozedEmailUncheckedUpdateManyWithoutUserNestedInput
     readReceipts?: ReadReceiptUncheckedUpdateManyWithoutUserNestedInput
+    pendingEmails?: PendingEmailUncheckedUpdateManyWithoutUserNestedInput
+    followUpReminders?: FollowUpReminderUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserCreateWithoutFollowUpRemindersInput = {
+    id: string
+    email: string
+    name?: string | null
+    avatarUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    notificationNewEmail?: boolean
+    notificationDailyDigest?: boolean
+    notificationAiReplies?: boolean
+    notificationCalendarReminders?: boolean
+    notificationWeeklyReport?: boolean
+    appTheme?: string
+    fontSize?: string
+    emailDensity?: string
+    preferredTimeZone?: string
+    lastActiveAccountId?: string | null
+    undoSendDelay?: number
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: Date | string | null
+    org: OrganizationCreateNestedOneWithoutUsersInput
+    msAccounts?: MsConnectedAccountCreateNestedManyWithoutUserInput
+    imapAccounts?: ImapConnectedAccountCreateNestedManyWithoutUserInput
+    jmapAccounts?: JmapConnectedAccountCreateNestedManyWithoutUserInput
+    msalCache?: MsalTokenCacheCreateNestedOneWithoutUserInput
+    deltaLinks?: EmailDeltaLinkCreateNestedManyWithoutUserInput
+    webhookSubs?: WebhookSubscriptionCreateNestedManyWithoutUserInput
+    drafts?: DraftCreateNestedManyWithoutUserInput
+    emailRules?: EmailRuleCreateNestedManyWithoutUserInput
+    signatures?: SignatureCreateNestedManyWithoutUserInput
+    emailTemplates?: EmailTemplateCreateNestedManyWithoutUserInput
+    cachedFolders?: CachedFolderCreateNestedManyWithoutUserInput
+    cachedEmails?: CachedEmailCreateNestedManyWithoutUserInput
+    cachedCalEvents?: CachedCalendarEventCreateNestedManyWithoutUserInput
+    cachedContacts?: CachedContactCreateNestedManyWithoutUserInput
+    emailAttachments?: EmailAttachmentCreateNestedManyWithoutUserInput
+    aiGeneratedReplies?: AiGeneratedReplyCreateNestedManyWithoutUserInput
+    cachedSearchResults?: CachedSearchResultCreateNestedManyWithoutUserInput
+    syncStatuses?: SyncStatusCreateNestedManyWithoutUserInput
+    notificationLogs?: NotificationLogCreateNestedManyWithoutUserInput
+    migrationStatuses?: MigrationStatusCreateNestedManyWithoutUserInput
+    todoItems?: TodoItemCreateNestedManyWithoutUserInput
+    snoozedEmails?: SnoozedEmailCreateNestedManyWithoutUserInput
+    readReceipts?: ReadReceiptCreateNestedManyWithoutUserInput
+    pendingEmails?: PendingEmailCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutFollowUpRemindersInput = {
+    id: string
+    email: string
+    name?: string | null
+    avatarUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    orgId: string
+    notificationNewEmail?: boolean
+    notificationDailyDigest?: boolean
+    notificationAiReplies?: boolean
+    notificationCalendarReminders?: boolean
+    notificationWeeklyReport?: boolean
+    appTheme?: string
+    fontSize?: string
+    emailDensity?: string
+    preferredTimeZone?: string
+    lastActiveAccountId?: string | null
+    undoSendDelay?: number
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: Date | string | null
+    msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
+    imapAccounts?: ImapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
+    jmapAccounts?: JmapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
+    msalCache?: MsalTokenCacheUncheckedCreateNestedOneWithoutUserInput
+    deltaLinks?: EmailDeltaLinkUncheckedCreateNestedManyWithoutUserInput
+    webhookSubs?: WebhookSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    drafts?: DraftUncheckedCreateNestedManyWithoutUserInput
+    emailRules?: EmailRuleUncheckedCreateNestedManyWithoutUserInput
+    signatures?: SignatureUncheckedCreateNestedManyWithoutUserInput
+    emailTemplates?: EmailTemplateUncheckedCreateNestedManyWithoutUserInput
+    cachedFolders?: CachedFolderUncheckedCreateNestedManyWithoutUserInput
+    cachedEmails?: CachedEmailUncheckedCreateNestedManyWithoutUserInput
+    cachedCalEvents?: CachedCalendarEventUncheckedCreateNestedManyWithoutUserInput
+    cachedContacts?: CachedContactUncheckedCreateNestedManyWithoutUserInput
+    emailAttachments?: EmailAttachmentUncheckedCreateNestedManyWithoutUserInput
+    aiGeneratedReplies?: AiGeneratedReplyUncheckedCreateNestedManyWithoutUserInput
+    cachedSearchResults?: CachedSearchResultUncheckedCreateNestedManyWithoutUserInput
+    syncStatuses?: SyncStatusUncheckedCreateNestedManyWithoutUserInput
+    notificationLogs?: NotificationLogUncheckedCreateNestedManyWithoutUserInput
+    migrationStatuses?: MigrationStatusUncheckedCreateNestedManyWithoutUserInput
+    todoItems?: TodoItemUncheckedCreateNestedManyWithoutUserInput
+    snoozedEmails?: SnoozedEmailUncheckedCreateNestedManyWithoutUserInput
+    readReceipts?: ReadReceiptUncheckedCreateNestedManyWithoutUserInput
+    pendingEmails?: PendingEmailUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutFollowUpRemindersInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutFollowUpRemindersInput, UserUncheckedCreateWithoutFollowUpRemindersInput>
+  }
+
+  export type UserUpsertWithoutFollowUpRemindersInput = {
+    update: XOR<UserUpdateWithoutFollowUpRemindersInput, UserUncheckedUpdateWithoutFollowUpRemindersInput>
+    create: XOR<UserCreateWithoutFollowUpRemindersInput, UserUncheckedCreateWithoutFollowUpRemindersInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutFollowUpRemindersInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutFollowUpRemindersInput, UserUncheckedUpdateWithoutFollowUpRemindersInput>
+  }
+
+  export type UserUpdateWithoutFollowUpRemindersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
+    notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
+    notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
+    notificationCalendarReminders?: BoolFieldUpdateOperationsInput | boolean
+    notificationWeeklyReport?: BoolFieldUpdateOperationsInput | boolean
+    appTheme?: StringFieldUpdateOperationsInput | string
+    fontSize?: StringFieldUpdateOperationsInput | string
+    emailDensity?: StringFieldUpdateOperationsInput | string
+    preferredTimeZone?: StringFieldUpdateOperationsInput | string
+    lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    undoSendDelay?: IntFieldUpdateOperationsInput | number
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
+    msAccounts?: MsConnectedAccountUpdateManyWithoutUserNestedInput
+    imapAccounts?: ImapConnectedAccountUpdateManyWithoutUserNestedInput
+    jmapAccounts?: JmapConnectedAccountUpdateManyWithoutUserNestedInput
+    msalCache?: MsalTokenCacheUpdateOneWithoutUserNestedInput
+    deltaLinks?: EmailDeltaLinkUpdateManyWithoutUserNestedInput
+    webhookSubs?: WebhookSubscriptionUpdateManyWithoutUserNestedInput
+    drafts?: DraftUpdateManyWithoutUserNestedInput
+    emailRules?: EmailRuleUpdateManyWithoutUserNestedInput
+    signatures?: SignatureUpdateManyWithoutUserNestedInput
+    emailTemplates?: EmailTemplateUpdateManyWithoutUserNestedInput
+    cachedFolders?: CachedFolderUpdateManyWithoutUserNestedInput
+    cachedEmails?: CachedEmailUpdateManyWithoutUserNestedInput
+    cachedCalEvents?: CachedCalendarEventUpdateManyWithoutUserNestedInput
+    cachedContacts?: CachedContactUpdateManyWithoutUserNestedInput
+    emailAttachments?: EmailAttachmentUpdateManyWithoutUserNestedInput
+    aiGeneratedReplies?: AiGeneratedReplyUpdateManyWithoutUserNestedInput
+    cachedSearchResults?: CachedSearchResultUpdateManyWithoutUserNestedInput
+    syncStatuses?: SyncStatusUpdateManyWithoutUserNestedInput
+    notificationLogs?: NotificationLogUpdateManyWithoutUserNestedInput
+    migrationStatuses?: MigrationStatusUpdateManyWithoutUserNestedInput
+    todoItems?: TodoItemUpdateManyWithoutUserNestedInput
+    snoozedEmails?: SnoozedEmailUpdateManyWithoutUserNestedInput
+    readReceipts?: ReadReceiptUpdateManyWithoutUserNestedInput
+    pendingEmails?: PendingEmailUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutFollowUpRemindersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    orgId?: StringFieldUpdateOperationsInput | string
+    notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
+    notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
+    notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
+    notificationCalendarReminders?: BoolFieldUpdateOperationsInput | boolean
+    notificationWeeklyReport?: BoolFieldUpdateOperationsInput | boolean
+    appTheme?: StringFieldUpdateOperationsInput | string
+    fontSize?: StringFieldUpdateOperationsInput | string
+    emailDensity?: StringFieldUpdateOperationsInput | string
+    preferredTimeZone?: StringFieldUpdateOperationsInput | string
+    lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    undoSendDelay?: IntFieldUpdateOperationsInput | number
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
+    imapAccounts?: ImapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
+    jmapAccounts?: JmapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
+    msalCache?: MsalTokenCacheUncheckedUpdateOneWithoutUserNestedInput
+    deltaLinks?: EmailDeltaLinkUncheckedUpdateManyWithoutUserNestedInput
+    webhookSubs?: WebhookSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    drafts?: DraftUncheckedUpdateManyWithoutUserNestedInput
+    emailRules?: EmailRuleUncheckedUpdateManyWithoutUserNestedInput
+    signatures?: SignatureUncheckedUpdateManyWithoutUserNestedInput
+    emailTemplates?: EmailTemplateUncheckedUpdateManyWithoutUserNestedInput
+    cachedFolders?: CachedFolderUncheckedUpdateManyWithoutUserNestedInput
+    cachedEmails?: CachedEmailUncheckedUpdateManyWithoutUserNestedInput
+    cachedCalEvents?: CachedCalendarEventUncheckedUpdateManyWithoutUserNestedInput
+    cachedContacts?: CachedContactUncheckedUpdateManyWithoutUserNestedInput
+    emailAttachments?: EmailAttachmentUncheckedUpdateManyWithoutUserNestedInput
+    aiGeneratedReplies?: AiGeneratedReplyUncheckedUpdateManyWithoutUserNestedInput
+    cachedSearchResults?: CachedSearchResultUncheckedUpdateManyWithoutUserNestedInput
+    syncStatuses?: SyncStatusUncheckedUpdateManyWithoutUserNestedInput
+    notificationLogs?: NotificationLogUncheckedUpdateManyWithoutUserNestedInput
+    migrationStatuses?: MigrationStatusUncheckedUpdateManyWithoutUserNestedInput
+    todoItems?: TodoItemUncheckedUpdateManyWithoutUserNestedInput
+    snoozedEmails?: SnoozedEmailUncheckedUpdateManyWithoutUserNestedInput
+    readReceipts?: ReadReceiptUncheckedUpdateManyWithoutUserNestedInput
+    pendingEmails?: PendingEmailUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutImapAccountsInput = {
@@ -49199,6 +54778,7 @@ export namespace Prisma {
     emailDensity?: string
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
+    undoSendDelay?: number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
@@ -49210,6 +54790,7 @@ export namespace Prisma {
     drafts?: DraftCreateNestedManyWithoutUserInput
     emailRules?: EmailRuleCreateNestedManyWithoutUserInput
     signatures?: SignatureCreateNestedManyWithoutUserInput
+    emailTemplates?: EmailTemplateCreateNestedManyWithoutUserInput
     cachedFolders?: CachedFolderCreateNestedManyWithoutUserInput
     cachedEmails?: CachedEmailCreateNestedManyWithoutUserInput
     cachedCalEvents?: CachedCalendarEventCreateNestedManyWithoutUserInput
@@ -49223,6 +54804,8 @@ export namespace Prisma {
     todoItems?: TodoItemCreateNestedManyWithoutUserInput
     snoozedEmails?: SnoozedEmailCreateNestedManyWithoutUserInput
     readReceipts?: ReadReceiptCreateNestedManyWithoutUserInput
+    pendingEmails?: PendingEmailCreateNestedManyWithoutUserInput
+    followUpReminders?: FollowUpReminderCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutImapAccountsInput = {
@@ -49243,6 +54826,7 @@ export namespace Prisma {
     emailDensity?: string
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
+    undoSendDelay?: number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
@@ -49253,6 +54837,7 @@ export namespace Prisma {
     drafts?: DraftUncheckedCreateNestedManyWithoutUserInput
     emailRules?: EmailRuleUncheckedCreateNestedManyWithoutUserInput
     signatures?: SignatureUncheckedCreateNestedManyWithoutUserInput
+    emailTemplates?: EmailTemplateUncheckedCreateNestedManyWithoutUserInput
     cachedFolders?: CachedFolderUncheckedCreateNestedManyWithoutUserInput
     cachedEmails?: CachedEmailUncheckedCreateNestedManyWithoutUserInput
     cachedCalEvents?: CachedCalendarEventUncheckedCreateNestedManyWithoutUserInput
@@ -49266,6 +54851,8 @@ export namespace Prisma {
     todoItems?: TodoItemUncheckedCreateNestedManyWithoutUserInput
     snoozedEmails?: SnoozedEmailUncheckedCreateNestedManyWithoutUserInput
     readReceipts?: ReadReceiptUncheckedCreateNestedManyWithoutUserInput
+    pendingEmails?: PendingEmailUncheckedCreateNestedManyWithoutUserInput
+    followUpReminders?: FollowUpReminderUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutImapAccountsInput = {
@@ -49301,6 +54888,7 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    undoSendDelay?: IntFieldUpdateOperationsInput | number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
@@ -49312,6 +54900,7 @@ export namespace Prisma {
     drafts?: DraftUpdateManyWithoutUserNestedInput
     emailRules?: EmailRuleUpdateManyWithoutUserNestedInput
     signatures?: SignatureUpdateManyWithoutUserNestedInput
+    emailTemplates?: EmailTemplateUpdateManyWithoutUserNestedInput
     cachedFolders?: CachedFolderUpdateManyWithoutUserNestedInput
     cachedEmails?: CachedEmailUpdateManyWithoutUserNestedInput
     cachedCalEvents?: CachedCalendarEventUpdateManyWithoutUserNestedInput
@@ -49325,6 +54914,8 @@ export namespace Prisma {
     todoItems?: TodoItemUpdateManyWithoutUserNestedInput
     snoozedEmails?: SnoozedEmailUpdateManyWithoutUserNestedInput
     readReceipts?: ReadReceiptUpdateManyWithoutUserNestedInput
+    pendingEmails?: PendingEmailUpdateManyWithoutUserNestedInput
+    followUpReminders?: FollowUpReminderUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutImapAccountsInput = {
@@ -49345,6 +54936,7 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    undoSendDelay?: IntFieldUpdateOperationsInput | number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
@@ -49355,6 +54947,7 @@ export namespace Prisma {
     drafts?: DraftUncheckedUpdateManyWithoutUserNestedInput
     emailRules?: EmailRuleUncheckedUpdateManyWithoutUserNestedInput
     signatures?: SignatureUncheckedUpdateManyWithoutUserNestedInput
+    emailTemplates?: EmailTemplateUncheckedUpdateManyWithoutUserNestedInput
     cachedFolders?: CachedFolderUncheckedUpdateManyWithoutUserNestedInput
     cachedEmails?: CachedEmailUncheckedUpdateManyWithoutUserNestedInput
     cachedCalEvents?: CachedCalendarEventUncheckedUpdateManyWithoutUserNestedInput
@@ -49368,6 +54961,8 @@ export namespace Prisma {
     todoItems?: TodoItemUncheckedUpdateManyWithoutUserNestedInput
     snoozedEmails?: SnoozedEmailUncheckedUpdateManyWithoutUserNestedInput
     readReceipts?: ReadReceiptUncheckedUpdateManyWithoutUserNestedInput
+    pendingEmails?: PendingEmailUncheckedUpdateManyWithoutUserNestedInput
+    followUpReminders?: FollowUpReminderUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutJmapAccountsInput = {
@@ -49387,6 +54982,7 @@ export namespace Prisma {
     emailDensity?: string
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
+    undoSendDelay?: number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
@@ -49398,6 +54994,7 @@ export namespace Prisma {
     drafts?: DraftCreateNestedManyWithoutUserInput
     emailRules?: EmailRuleCreateNestedManyWithoutUserInput
     signatures?: SignatureCreateNestedManyWithoutUserInput
+    emailTemplates?: EmailTemplateCreateNestedManyWithoutUserInput
     cachedFolders?: CachedFolderCreateNestedManyWithoutUserInput
     cachedEmails?: CachedEmailCreateNestedManyWithoutUserInput
     cachedCalEvents?: CachedCalendarEventCreateNestedManyWithoutUserInput
@@ -49411,6 +55008,8 @@ export namespace Prisma {
     todoItems?: TodoItemCreateNestedManyWithoutUserInput
     snoozedEmails?: SnoozedEmailCreateNestedManyWithoutUserInput
     readReceipts?: ReadReceiptCreateNestedManyWithoutUserInput
+    pendingEmails?: PendingEmailCreateNestedManyWithoutUserInput
+    followUpReminders?: FollowUpReminderCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutJmapAccountsInput = {
@@ -49431,6 +55030,7 @@ export namespace Prisma {
     emailDensity?: string
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
+    undoSendDelay?: number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
@@ -49441,6 +55041,7 @@ export namespace Prisma {
     drafts?: DraftUncheckedCreateNestedManyWithoutUserInput
     emailRules?: EmailRuleUncheckedCreateNestedManyWithoutUserInput
     signatures?: SignatureUncheckedCreateNestedManyWithoutUserInput
+    emailTemplates?: EmailTemplateUncheckedCreateNestedManyWithoutUserInput
     cachedFolders?: CachedFolderUncheckedCreateNestedManyWithoutUserInput
     cachedEmails?: CachedEmailUncheckedCreateNestedManyWithoutUserInput
     cachedCalEvents?: CachedCalendarEventUncheckedCreateNestedManyWithoutUserInput
@@ -49454,6 +55055,8 @@ export namespace Prisma {
     todoItems?: TodoItemUncheckedCreateNestedManyWithoutUserInput
     snoozedEmails?: SnoozedEmailUncheckedCreateNestedManyWithoutUserInput
     readReceipts?: ReadReceiptUncheckedCreateNestedManyWithoutUserInput
+    pendingEmails?: PendingEmailUncheckedCreateNestedManyWithoutUserInput
+    followUpReminders?: FollowUpReminderUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutJmapAccountsInput = {
@@ -49489,6 +55092,7 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    undoSendDelay?: IntFieldUpdateOperationsInput | number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
@@ -49500,6 +55104,7 @@ export namespace Prisma {
     drafts?: DraftUpdateManyWithoutUserNestedInput
     emailRules?: EmailRuleUpdateManyWithoutUserNestedInput
     signatures?: SignatureUpdateManyWithoutUserNestedInput
+    emailTemplates?: EmailTemplateUpdateManyWithoutUserNestedInput
     cachedFolders?: CachedFolderUpdateManyWithoutUserNestedInput
     cachedEmails?: CachedEmailUpdateManyWithoutUserNestedInput
     cachedCalEvents?: CachedCalendarEventUpdateManyWithoutUserNestedInput
@@ -49513,6 +55118,8 @@ export namespace Prisma {
     todoItems?: TodoItemUpdateManyWithoutUserNestedInput
     snoozedEmails?: SnoozedEmailUpdateManyWithoutUserNestedInput
     readReceipts?: ReadReceiptUpdateManyWithoutUserNestedInput
+    pendingEmails?: PendingEmailUpdateManyWithoutUserNestedInput
+    followUpReminders?: FollowUpReminderUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutJmapAccountsInput = {
@@ -49533,6 +55140,7 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    undoSendDelay?: IntFieldUpdateOperationsInput | number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
@@ -49543,6 +55151,7 @@ export namespace Prisma {
     drafts?: DraftUncheckedUpdateManyWithoutUserNestedInput
     emailRules?: EmailRuleUncheckedUpdateManyWithoutUserNestedInput
     signatures?: SignatureUncheckedUpdateManyWithoutUserNestedInput
+    emailTemplates?: EmailTemplateUncheckedUpdateManyWithoutUserNestedInput
     cachedFolders?: CachedFolderUncheckedUpdateManyWithoutUserNestedInput
     cachedEmails?: CachedEmailUncheckedUpdateManyWithoutUserNestedInput
     cachedCalEvents?: CachedCalendarEventUncheckedUpdateManyWithoutUserNestedInput
@@ -49556,6 +55165,212 @@ export namespace Prisma {
     todoItems?: TodoItemUncheckedUpdateManyWithoutUserNestedInput
     snoozedEmails?: SnoozedEmailUncheckedUpdateManyWithoutUserNestedInput
     readReceipts?: ReadReceiptUncheckedUpdateManyWithoutUserNestedInput
+    pendingEmails?: PendingEmailUncheckedUpdateManyWithoutUserNestedInput
+    followUpReminders?: FollowUpReminderUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserCreateWithoutPendingEmailsInput = {
+    id: string
+    email: string
+    name?: string | null
+    avatarUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    notificationNewEmail?: boolean
+    notificationDailyDigest?: boolean
+    notificationAiReplies?: boolean
+    notificationCalendarReminders?: boolean
+    notificationWeeklyReport?: boolean
+    appTheme?: string
+    fontSize?: string
+    emailDensity?: string
+    preferredTimeZone?: string
+    lastActiveAccountId?: string | null
+    undoSendDelay?: number
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: Date | string | null
+    org: OrganizationCreateNestedOneWithoutUsersInput
+    msAccounts?: MsConnectedAccountCreateNestedManyWithoutUserInput
+    imapAccounts?: ImapConnectedAccountCreateNestedManyWithoutUserInput
+    jmapAccounts?: JmapConnectedAccountCreateNestedManyWithoutUserInput
+    msalCache?: MsalTokenCacheCreateNestedOneWithoutUserInput
+    deltaLinks?: EmailDeltaLinkCreateNestedManyWithoutUserInput
+    webhookSubs?: WebhookSubscriptionCreateNestedManyWithoutUserInput
+    drafts?: DraftCreateNestedManyWithoutUserInput
+    emailRules?: EmailRuleCreateNestedManyWithoutUserInput
+    signatures?: SignatureCreateNestedManyWithoutUserInput
+    emailTemplates?: EmailTemplateCreateNestedManyWithoutUserInput
+    cachedFolders?: CachedFolderCreateNestedManyWithoutUserInput
+    cachedEmails?: CachedEmailCreateNestedManyWithoutUserInput
+    cachedCalEvents?: CachedCalendarEventCreateNestedManyWithoutUserInput
+    cachedContacts?: CachedContactCreateNestedManyWithoutUserInput
+    emailAttachments?: EmailAttachmentCreateNestedManyWithoutUserInput
+    aiGeneratedReplies?: AiGeneratedReplyCreateNestedManyWithoutUserInput
+    cachedSearchResults?: CachedSearchResultCreateNestedManyWithoutUserInput
+    syncStatuses?: SyncStatusCreateNestedManyWithoutUserInput
+    notificationLogs?: NotificationLogCreateNestedManyWithoutUserInput
+    migrationStatuses?: MigrationStatusCreateNestedManyWithoutUserInput
+    todoItems?: TodoItemCreateNestedManyWithoutUserInput
+    snoozedEmails?: SnoozedEmailCreateNestedManyWithoutUserInput
+    readReceipts?: ReadReceiptCreateNestedManyWithoutUserInput
+    followUpReminders?: FollowUpReminderCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutPendingEmailsInput = {
+    id: string
+    email: string
+    name?: string | null
+    avatarUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    orgId: string
+    notificationNewEmail?: boolean
+    notificationDailyDigest?: boolean
+    notificationAiReplies?: boolean
+    notificationCalendarReminders?: boolean
+    notificationWeeklyReport?: boolean
+    appTheme?: string
+    fontSize?: string
+    emailDensity?: string
+    preferredTimeZone?: string
+    lastActiveAccountId?: string | null
+    undoSendDelay?: number
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: Date | string | null
+    msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
+    imapAccounts?: ImapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
+    jmapAccounts?: JmapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
+    msalCache?: MsalTokenCacheUncheckedCreateNestedOneWithoutUserInput
+    deltaLinks?: EmailDeltaLinkUncheckedCreateNestedManyWithoutUserInput
+    webhookSubs?: WebhookSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    drafts?: DraftUncheckedCreateNestedManyWithoutUserInput
+    emailRules?: EmailRuleUncheckedCreateNestedManyWithoutUserInput
+    signatures?: SignatureUncheckedCreateNestedManyWithoutUserInput
+    emailTemplates?: EmailTemplateUncheckedCreateNestedManyWithoutUserInput
+    cachedFolders?: CachedFolderUncheckedCreateNestedManyWithoutUserInput
+    cachedEmails?: CachedEmailUncheckedCreateNestedManyWithoutUserInput
+    cachedCalEvents?: CachedCalendarEventUncheckedCreateNestedManyWithoutUserInput
+    cachedContacts?: CachedContactUncheckedCreateNestedManyWithoutUserInput
+    emailAttachments?: EmailAttachmentUncheckedCreateNestedManyWithoutUserInput
+    aiGeneratedReplies?: AiGeneratedReplyUncheckedCreateNestedManyWithoutUserInput
+    cachedSearchResults?: CachedSearchResultUncheckedCreateNestedManyWithoutUserInput
+    syncStatuses?: SyncStatusUncheckedCreateNestedManyWithoutUserInput
+    notificationLogs?: NotificationLogUncheckedCreateNestedManyWithoutUserInput
+    migrationStatuses?: MigrationStatusUncheckedCreateNestedManyWithoutUserInput
+    todoItems?: TodoItemUncheckedCreateNestedManyWithoutUserInput
+    snoozedEmails?: SnoozedEmailUncheckedCreateNestedManyWithoutUserInput
+    readReceipts?: ReadReceiptUncheckedCreateNestedManyWithoutUserInput
+    followUpReminders?: FollowUpReminderUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutPendingEmailsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutPendingEmailsInput, UserUncheckedCreateWithoutPendingEmailsInput>
+  }
+
+  export type UserUpsertWithoutPendingEmailsInput = {
+    update: XOR<UserUpdateWithoutPendingEmailsInput, UserUncheckedUpdateWithoutPendingEmailsInput>
+    create: XOR<UserCreateWithoutPendingEmailsInput, UserUncheckedCreateWithoutPendingEmailsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutPendingEmailsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutPendingEmailsInput, UserUncheckedUpdateWithoutPendingEmailsInput>
+  }
+
+  export type UserUpdateWithoutPendingEmailsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
+    notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
+    notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
+    notificationCalendarReminders?: BoolFieldUpdateOperationsInput | boolean
+    notificationWeeklyReport?: BoolFieldUpdateOperationsInput | boolean
+    appTheme?: StringFieldUpdateOperationsInput | string
+    fontSize?: StringFieldUpdateOperationsInput | string
+    emailDensity?: StringFieldUpdateOperationsInput | string
+    preferredTimeZone?: StringFieldUpdateOperationsInput | string
+    lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    undoSendDelay?: IntFieldUpdateOperationsInput | number
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
+    msAccounts?: MsConnectedAccountUpdateManyWithoutUserNestedInput
+    imapAccounts?: ImapConnectedAccountUpdateManyWithoutUserNestedInput
+    jmapAccounts?: JmapConnectedAccountUpdateManyWithoutUserNestedInput
+    msalCache?: MsalTokenCacheUpdateOneWithoutUserNestedInput
+    deltaLinks?: EmailDeltaLinkUpdateManyWithoutUserNestedInput
+    webhookSubs?: WebhookSubscriptionUpdateManyWithoutUserNestedInput
+    drafts?: DraftUpdateManyWithoutUserNestedInput
+    emailRules?: EmailRuleUpdateManyWithoutUserNestedInput
+    signatures?: SignatureUpdateManyWithoutUserNestedInput
+    emailTemplates?: EmailTemplateUpdateManyWithoutUserNestedInput
+    cachedFolders?: CachedFolderUpdateManyWithoutUserNestedInput
+    cachedEmails?: CachedEmailUpdateManyWithoutUserNestedInput
+    cachedCalEvents?: CachedCalendarEventUpdateManyWithoutUserNestedInput
+    cachedContacts?: CachedContactUpdateManyWithoutUserNestedInput
+    emailAttachments?: EmailAttachmentUpdateManyWithoutUserNestedInput
+    aiGeneratedReplies?: AiGeneratedReplyUpdateManyWithoutUserNestedInput
+    cachedSearchResults?: CachedSearchResultUpdateManyWithoutUserNestedInput
+    syncStatuses?: SyncStatusUpdateManyWithoutUserNestedInput
+    notificationLogs?: NotificationLogUpdateManyWithoutUserNestedInput
+    migrationStatuses?: MigrationStatusUpdateManyWithoutUserNestedInput
+    todoItems?: TodoItemUpdateManyWithoutUserNestedInput
+    snoozedEmails?: SnoozedEmailUpdateManyWithoutUserNestedInput
+    readReceipts?: ReadReceiptUpdateManyWithoutUserNestedInput
+    followUpReminders?: FollowUpReminderUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutPendingEmailsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    orgId?: StringFieldUpdateOperationsInput | string
+    notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
+    notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
+    notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
+    notificationCalendarReminders?: BoolFieldUpdateOperationsInput | boolean
+    notificationWeeklyReport?: BoolFieldUpdateOperationsInput | boolean
+    appTheme?: StringFieldUpdateOperationsInput | string
+    fontSize?: StringFieldUpdateOperationsInput | string
+    emailDensity?: StringFieldUpdateOperationsInput | string
+    preferredTimeZone?: StringFieldUpdateOperationsInput | string
+    lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    undoSendDelay?: IntFieldUpdateOperationsInput | number
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
+    imapAccounts?: ImapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
+    jmapAccounts?: JmapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
+    msalCache?: MsalTokenCacheUncheckedUpdateOneWithoutUserNestedInput
+    deltaLinks?: EmailDeltaLinkUncheckedUpdateManyWithoutUserNestedInput
+    webhookSubs?: WebhookSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    drafts?: DraftUncheckedUpdateManyWithoutUserNestedInput
+    emailRules?: EmailRuleUncheckedUpdateManyWithoutUserNestedInput
+    signatures?: SignatureUncheckedUpdateManyWithoutUserNestedInput
+    emailTemplates?: EmailTemplateUncheckedUpdateManyWithoutUserNestedInput
+    cachedFolders?: CachedFolderUncheckedUpdateManyWithoutUserNestedInput
+    cachedEmails?: CachedEmailUncheckedUpdateManyWithoutUserNestedInput
+    cachedCalEvents?: CachedCalendarEventUncheckedUpdateManyWithoutUserNestedInput
+    cachedContacts?: CachedContactUncheckedUpdateManyWithoutUserNestedInput
+    emailAttachments?: EmailAttachmentUncheckedUpdateManyWithoutUserNestedInput
+    aiGeneratedReplies?: AiGeneratedReplyUncheckedUpdateManyWithoutUserNestedInput
+    cachedSearchResults?: CachedSearchResultUncheckedUpdateManyWithoutUserNestedInput
+    syncStatuses?: SyncStatusUncheckedUpdateManyWithoutUserNestedInput
+    notificationLogs?: NotificationLogUncheckedUpdateManyWithoutUserNestedInput
+    migrationStatuses?: MigrationStatusUncheckedUpdateManyWithoutUserNestedInput
+    todoItems?: TodoItemUncheckedUpdateManyWithoutUserNestedInput
+    snoozedEmails?: SnoozedEmailUncheckedUpdateManyWithoutUserNestedInput
+    readReceipts?: ReadReceiptUncheckedUpdateManyWithoutUserNestedInput
+    followUpReminders?: FollowUpReminderUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateManyOrgInput = {
@@ -49575,6 +55390,7 @@ export namespace Prisma {
     emailDensity?: string
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
+    undoSendDelay?: number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
   }
@@ -49605,6 +55421,7 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    undoSendDelay?: IntFieldUpdateOperationsInput | number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     msAccounts?: MsConnectedAccountUpdateManyWithoutUserNestedInput
@@ -49616,6 +55433,7 @@ export namespace Prisma {
     drafts?: DraftUpdateManyWithoutUserNestedInput
     emailRules?: EmailRuleUpdateManyWithoutUserNestedInput
     signatures?: SignatureUpdateManyWithoutUserNestedInput
+    emailTemplates?: EmailTemplateUpdateManyWithoutUserNestedInput
     cachedFolders?: CachedFolderUpdateManyWithoutUserNestedInput
     cachedEmails?: CachedEmailUpdateManyWithoutUserNestedInput
     cachedCalEvents?: CachedCalendarEventUpdateManyWithoutUserNestedInput
@@ -49629,6 +55447,8 @@ export namespace Prisma {
     todoItems?: TodoItemUpdateManyWithoutUserNestedInput
     snoozedEmails?: SnoozedEmailUpdateManyWithoutUserNestedInput
     readReceipts?: ReadReceiptUpdateManyWithoutUserNestedInput
+    pendingEmails?: PendingEmailUpdateManyWithoutUserNestedInput
+    followUpReminders?: FollowUpReminderUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutOrgInput = {
@@ -49648,6 +55468,7 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    undoSendDelay?: IntFieldUpdateOperationsInput | number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
@@ -49659,6 +55480,7 @@ export namespace Prisma {
     drafts?: DraftUncheckedUpdateManyWithoutUserNestedInput
     emailRules?: EmailRuleUncheckedUpdateManyWithoutUserNestedInput
     signatures?: SignatureUncheckedUpdateManyWithoutUserNestedInput
+    emailTemplates?: EmailTemplateUncheckedUpdateManyWithoutUserNestedInput
     cachedFolders?: CachedFolderUncheckedUpdateManyWithoutUserNestedInput
     cachedEmails?: CachedEmailUncheckedUpdateManyWithoutUserNestedInput
     cachedCalEvents?: CachedCalendarEventUncheckedUpdateManyWithoutUserNestedInput
@@ -49672,6 +55494,8 @@ export namespace Prisma {
     todoItems?: TodoItemUncheckedUpdateManyWithoutUserNestedInput
     snoozedEmails?: SnoozedEmailUncheckedUpdateManyWithoutUserNestedInput
     readReceipts?: ReadReceiptUncheckedUpdateManyWithoutUserNestedInput
+    pendingEmails?: PendingEmailUncheckedUpdateManyWithoutUserNestedInput
+    followUpReminders?: FollowUpReminderUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutOrgInput = {
@@ -49691,6 +55515,7 @@ export namespace Prisma {
     emailDensity?: StringFieldUpdateOperationsInput | string
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    undoSendDelay?: IntFieldUpdateOperationsInput | number
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
@@ -49850,6 +55675,17 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
+  export type EmailTemplateCreateManyUserInput = {
+    id?: string
+    name: string
+    subject?: string | null
+    body: string
+    variables?: JsonNullValueInput | InputJsonValue
+    category?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
   export type CachedFolderCreateManyUserInput = {
     id: string
     homeAccountId: string
@@ -49884,6 +55720,8 @@ export namespace Prisma {
     isDraft?: boolean
     syncStatus?: string
     lastModifiedDateTime?: Date | string | null
+    sensitivityLabel?: string | null
+    isPinned?: boolean
     syncedAt?: Date | string
     updatedAt?: Date | string
   }
@@ -50041,6 +55879,27 @@ export namespace Prisma {
     deliveredAt?: Date | string | null
     readAt?: Date | string | null
     createdAt?: Date | string
+  }
+
+  export type PendingEmailCreateManyUserInput = {
+    id?: string
+    payload: JsonNullValueInput | InputJsonValue
+    sendAt: Date | string
+    cancelled?: boolean
+    createdAt?: Date | string
+  }
+
+  export type FollowUpReminderCreateManyUserInput = {
+    id?: string
+    messageId: string
+    conversationId?: string | null
+    homeAccountId?: string | null
+    subject: string
+    recipient: string
+    remindAt: Date | string
+    status?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type MsConnectedAccountUpdateWithoutUserInput = {
@@ -50427,6 +56286,39 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type EmailTemplateUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    subject?: NullableStringFieldUpdateOperationsInput | string | null
+    body?: StringFieldUpdateOperationsInput | string
+    variables?: JsonNullValueInput | InputJsonValue
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EmailTemplateUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    subject?: NullableStringFieldUpdateOperationsInput | string | null
+    body?: StringFieldUpdateOperationsInput | string
+    variables?: JsonNullValueInput | InputJsonValue
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EmailTemplateUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    subject?: NullableStringFieldUpdateOperationsInput | string | null
+    body?: StringFieldUpdateOperationsInput | string
+    variables?: JsonNullValueInput | InputJsonValue
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type CachedFolderUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     homeAccountId?: StringFieldUpdateOperationsInput | string
@@ -50485,6 +56377,8 @@ export namespace Prisma {
     isDraft?: BoolFieldUpdateOperationsInput | boolean
     syncStatus?: StringFieldUpdateOperationsInput | string
     lastModifiedDateTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sensitivityLabel?: NullableStringFieldUpdateOperationsInput | string | null
+    isPinned?: BoolFieldUpdateOperationsInput | boolean
     syncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -50511,6 +56405,8 @@ export namespace Prisma {
     isDraft?: BoolFieldUpdateOperationsInput | boolean
     syncStatus?: StringFieldUpdateOperationsInput | string
     lastModifiedDateTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sensitivityLabel?: NullableStringFieldUpdateOperationsInput | string | null
+    isPinned?: BoolFieldUpdateOperationsInput | boolean
     syncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -50537,6 +56433,8 @@ export namespace Prisma {
     isDraft?: BoolFieldUpdateOperationsInput | boolean
     syncStatus?: StringFieldUpdateOperationsInput | string
     lastModifiedDateTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sensitivityLabel?: NullableStringFieldUpdateOperationsInput | string | null
+    isPinned?: BoolFieldUpdateOperationsInput | boolean
     syncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -51004,6 +56902,69 @@ export namespace Prisma {
     deliveredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PendingEmailUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    payload?: JsonNullValueInput | InputJsonValue
+    sendAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    cancelled?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PendingEmailUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    payload?: JsonNullValueInput | InputJsonValue
+    sendAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    cancelled?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PendingEmailUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    payload?: JsonNullValueInput | InputJsonValue
+    sendAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    cancelled?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FollowUpReminderUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    messageId?: StringFieldUpdateOperationsInput | string
+    conversationId?: NullableStringFieldUpdateOperationsInput | string | null
+    homeAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    subject?: StringFieldUpdateOperationsInput | string
+    recipient?: StringFieldUpdateOperationsInput | string
+    remindAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FollowUpReminderUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    messageId?: StringFieldUpdateOperationsInput | string
+    conversationId?: NullableStringFieldUpdateOperationsInput | string | null
+    homeAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    subject?: StringFieldUpdateOperationsInput | string
+    recipient?: StringFieldUpdateOperationsInput | string
+    remindAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FollowUpReminderUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    messageId?: StringFieldUpdateOperationsInput | string
+    conversationId?: NullableStringFieldUpdateOperationsInput | string | null
+    homeAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    subject?: StringFieldUpdateOperationsInput | string
+    recipient?: StringFieldUpdateOperationsInput | string
+    remindAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
 

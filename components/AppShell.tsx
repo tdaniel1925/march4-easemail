@@ -22,6 +22,7 @@ const HelpClient = lazy(() => import("@/components/help/HelpClient"));
 const AccountsClient = lazy(() => import("@/components/accounts/AccountsClient"));
 const SignaturesClient = lazy(() => import("@/components/signatures/SignaturesClient"));
 const EmailRulesClient = lazy(() => import("@/components/email-rules/EmailRulesClient"));
+const TemplatesClient = lazy(() => import("@/components/templates/TemplatesClient"));
 const TeamsClient = lazy(() => import("@/components/teams/TeamsClient"));
 const EmailReadClient = lazy(() => import("@/components/inbox/EmailReadClient"));
 
@@ -367,6 +368,9 @@ export default function AppShell(props: AppShellProps) {
 
       case "email-rules":
         return <EmailRulesClient />;
+
+      case "templates":
+        return <TemplatesClient />;
 
       case "teams":
         return (

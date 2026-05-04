@@ -8,6 +8,7 @@ import Link from "next/link";
 type SettingsSection =
   | "profile"
   | "notifications"
+  | "composing"
   | "appearance"
   | "privacy"
   | "signout";
@@ -27,6 +28,8 @@ interface NotificationSettings {
 
 type FontSize = "default" | "compact" | "comfortable";
 type EmailDensity = "comfortable" | "compact";
+type UndoSendDelay = "5" | "10" | "20" | "30";
+type SensitivityLabel = "none" | "attorney-client" | "confidential" | "work-product";
 
 // ─── Toggle ───────────────────────────────────────────────────────────────────
 
@@ -578,6 +581,184 @@ function AppearanceSection() {
   );
 }
 
+// ─── Composing section ───────────────────────────────────────────────────────
+
+function ComposingSection() {
+  const [undoSendDelay, setUndoSendDelay] = useState<UndoSendDelay>("10");
+  const [defaultSensitivity, setDefaultSensitivity] = useState<SensitivityLabel>("none");
+  const [loading, setLoading] = useState(true);
+
+  // Load preferences from API on mount
+  useEffect(() => {
+    fetch("/api/user/preferences")
+      .then((res) => res.json())
+      .then((data) => {
+        if (!data.error) {
+          if (data.undoSendDelay) setUndoSendDelay(data.undoSendDelay as UndoSendDelay);
+          if (data.defaultSensitivityLabel) setDefaultSensitivity(data.defaultSensitivityLabel as SensitivityLabel);
+        }
+      })
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  }, []);
+
+  // Save undo send delay to API
+  const saveUndoSendDelay = async (newDelay: UndoSendDelay) => {
+    setUndoSendDelay(newDelay);
+    try {
+      await fetch("/api/user/preferences", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ undoSendDelay: newDelay }),
+      });
+    } catch (err) {
+      console.error("Failed to save undoSendDelay:", err);
+    }
+  };
+
+  // Save default sensitivity label to API
+  const saveDefaultSensitivity = async (newLabel: SensitivityLabel) => {
+    setDefaultSensitivity(newLabel);
+    try {
+      await fetch("/api/user/preferences", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ defaultSensitivityLabel: newLabel }),
+      });
+    } catch (err) {
+      console.error("Failed to save defaultSensitivityLabel:", err);
+    }
+  };
+
+  const delayOptions: { value: UndoSendDelay; label: string }[] = [
+    { value: "5", label: "5 seconds" },
+    { value: "10", label: "10 seconds" },
+    { value: "20", label: "20 seconds" },
+    { value: "30", label: "30 seconds" },
+  ];
+
+  const sensitivityOptions: { value: SensitivityLabel; label: string; color?: string }[] = [
+    { value: "none", label: "None" },
+    { value: "attorney-client", label: "Attorney-Client Privilege", color: "rgb(185 28 28)" },
+    { value: "confidential", label: "Confidential", color: "rgb(234 88 12)" },
+    { value: "work-product", label: "Work Product", color: "rgb(37 99 235)" },
+  ];
+
+  return (
+    <div className="space-y-6">
+      <div>
+        <h2
+          className="text-lg font-semibold mb-1"
+          style={{ color: "rgb(27 29 29)" }}
+        >
+          Composing
+        </h2>
+        <p className="text-sm" style={{ color: "rgb(115 115 115)" }}>
+          Configure email composition behaviour including undo send and sensitivity labels.
+        </p>
+      </div>
+
+      {/* Undo Send Delay */}
+      <div className="rounded-[14px] border border-neutral-200 bg-white p-5">
+        <h3
+          className="text-sm font-semibold mb-1"
+          style={{ color: "rgb(27 29 29)" }}
+        >
+          Undo Send Delay
+        </h3>
+        <p className="text-xs mb-3" style={{ color: "rgb(115 115 115)" }}>
+          After sending, you have this many seconds to cancel the send.
+        </p>
+        <div className="flex gap-2">
+          {delayOptions.map((opt) => (
+            <button
+              key={opt.value}
+              onClick={() => saveUndoSendDelay(opt.value)}
+              className="flex items-center gap-2 px-4 py-2 rounded-[10px] text-sm font-medium transition-colors border"
+              style={{
+                borderColor:
+                  undoSendDelay === opt.value ? "rgb(138 9 9)" : "rgb(212 212 212)",
+                backgroundColor:
+                  undoSendDelay === opt.value ? "rgb(253 235 235)" : "white",
+                color:
+                  undoSendDelay === opt.value ? "rgb(83 5 5)" : "rgb(82 82 82)",
+              }}
+            >
+              <div
+                className="w-4 h-4 rounded-full border-2 flex items-center justify-center flex-shrink-0"
+                style={{
+                  borderColor:
+                    undoSendDelay === opt.value ? "rgb(138 9 9)" : "rgb(212 212 212)",
+                }}
+              >
+                {undoSendDelay === opt.value && (
+                  <div
+                    className="w-2 h-2 rounded-full"
+                    style={{ backgroundColor: "rgb(138 9 9)" }}
+                  />
+                )}
+              </div>
+              {opt.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Default Sensitivity Label */}
+      <div className="rounded-[14px] border border-neutral-200 bg-white p-5">
+        <h3
+          className="text-sm font-semibold mb-1"
+          style={{ color: "rgb(27 29 29)" }}
+        >
+          Default Sensitivity Label
+        </h3>
+        <p className="text-xs mb-3" style={{ color: "rgb(115 115 115)" }}>
+          New emails will start with this sensitivity classification. You can change it per-email in the composer.
+        </p>
+        <div className="flex flex-wrap gap-2">
+          {sensitivityOptions.map((opt) => (
+            <button
+              key={opt.value}
+              onClick={() => saveDefaultSensitivity(opt.value)}
+              className="flex items-center gap-2 px-4 py-2 rounded-[10px] text-sm font-medium transition-colors border"
+              style={{
+                borderColor:
+                  defaultSensitivity === opt.value ? "rgb(138 9 9)" : "rgb(212 212 212)",
+                backgroundColor:
+                  defaultSensitivity === opt.value ? "rgb(253 235 235)" : "white",
+                color:
+                  defaultSensitivity === opt.value ? "rgb(83 5 5)" : "rgb(82 82 82)",
+              }}
+            >
+              <div
+                className="w-4 h-4 rounded-full border-2 flex items-center justify-center flex-shrink-0"
+                style={{
+                  borderColor:
+                    defaultSensitivity === opt.value ? "rgb(138 9 9)" : "rgb(212 212 212)",
+                }}
+              >
+                {defaultSensitivity === opt.value && (
+                  <div
+                    className="w-2 h-2 rounded-full"
+                    style={{ backgroundColor: "rgb(138 9 9)" }}
+                  />
+                )}
+              </div>
+              {opt.color && (
+                <span
+                  className="w-2.5 h-2.5 rounded-full flex-shrink-0"
+                  style={{ backgroundColor: opt.color }}
+                />
+              )}
+              {opt.label}
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ─── Privacy section ──────────────────────────────────────────────────────────
 
 function PrivacySection() {
@@ -681,6 +862,7 @@ export default function SettingsClient({ profile }: { profile: Profile }) {
     [
       { id: "profile", label: "Profile" },
       { id: "notifications", label: "Notifications" },
+      { id: "composing", label: "Composing" },
       { id: "appearance", label: "Appearance" },
       { id: "privacy", label: "Privacy" },
       { id: "signout", label: "Sign Out", isDestructive: true },
@@ -752,6 +934,7 @@ export default function SettingsClient({ profile }: { profile: Profile }) {
               <ProfileSection profile={profile} />
             )}
             {activeSection === "notifications" && <NotificationsSection />}
+            {activeSection === "composing" && <ComposingSection />}
             {activeSection === "appearance" && <AppearanceSection />}
             {activeSection === "privacy" && <PrivacySection />}
           </div>

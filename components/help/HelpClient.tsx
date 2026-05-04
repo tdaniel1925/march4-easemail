@@ -44,6 +44,11 @@ const ARTICLES: Article[] = [
   { title: "Calendar Integration", tab: "features-tools" },
   { title: "Contacts Management", tab: "features-tools" },
   { title: "Search & Filters", tab: "features-tools" },
+  { title: "Email Templates", tab: "features-tools" },
+  { title: "Undo Send", tab: "features-tools" },
+  { title: "Follow-up Reminders", tab: "features-tools" },
+  { title: "Sensitivity Labels", tab: "features-tools" },
+  { title: "Pinned Emails", tab: "features-tools" },
   { title: "Connect Microsoft 365", tab: "integrations" },
   { title: "Outlook Integration", tab: "integrations" },
   { title: "Exchange Server Setup", tab: "integrations" },
@@ -475,6 +480,31 @@ function FeaturesToolsPanel() {
       answer:
         "AI Remix rewrites an existing email draft in a different tone or format. For example, you can take a casually-worded internal note and remix it into formal client correspondence, or condense a lengthy email into a concise summary. Open Compose, write or paste your draft, then click 'AI Remix' and select the desired tone. This is particularly useful for junior associates who need to adjust the register of their drafts before sending.",
     },
+    {
+      question: "How do Email Templates work and can I use variables?",
+      answer:
+        "Email Templates let you save reusable text blocks for common correspondence such as engagement letters, follow-up messages, or scheduling confirmations. Navigate to /templates to create and manage templates. Each template supports {{variable}} placeholders (e.g. {{clientName}}, {{matterRef}}) that are filled in when you insert the template. To use a template, click the Templates button in the composer toolbar, select a template, fill in any variables, and the text is inserted into your email body.",
+    },
+    {
+      question: "How does Undo Send work and how do I configure the delay?",
+      answer:
+        "After sending an email, a countdown banner appears at the top of the screen. Clicking 'Undo' within the countdown window cancels the send and returns you to the compose view with your draft intact. The delay duration is configurable in Settings > Composing — choose between 5, 10, 20, or 30 seconds. During the countdown, the email is held locally and only delivered to Microsoft 365 once the timer expires. This is especially useful for catching errors in recipient addresses or attachments.",
+    },
+    {
+      question: "How do Follow-up Reminders work?",
+      answer:
+        "On any email, you can set a follow-up reminder by choosing 'If no reply in 1 day', '3 days', or '7 days'. If the recipient has not replied within that period, a reminder appears in your Dashboard under triggered reminders. From there you can dismiss the reminder, snooze it for a further period, or click 'Follow up' to open a new compose window pre-addressed to the original recipient with the thread context included.",
+    },
+    {
+      question: "What are Sensitivity Labels and how are they displayed?",
+      answer:
+        "Sensitivity Labels allow you to classify emails by privilege level. The available labels are: Attorney-Client Privilege (red badge), Confidential (orange badge), and Work Product (blue badge). When applied, a color-coded badge appears next to the email subject in your inbox. You can set a default sensitivity label in Settings > Composing so that all new emails start with a specific classification. Labels are visible to recipients if your organisation's Microsoft 365 sensitivity label policies are configured.",
+    },
+    {
+      question: "How do I pin emails to the top of my inbox?",
+      answer:
+        "Click the pin icon in the email action bar (visible when viewing or hovering over an email) to pin it to the top of your inbox. Pinned emails always appear above unpinned emails regardless of date or sort order. This is useful for keeping active matters, urgent client requests, or reference emails readily accessible. To unpin, click the pin icon again. Pinned status is stored locally in your EaseMail account and does not affect your Microsoft 365 mailbox.",
+    },
   ];
 
   const features = [
@@ -541,6 +571,61 @@ function FeaturesToolsPanel() {
           strokeLinecap="round"
           strokeLinejoin="round"
           d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+        />
+      ),
+    },
+    {
+      name: "Email Templates",
+      desc: "Create reusable text blocks with {{variable}} placeholders. Insert from the composer toolbar.",
+      icon: (
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z"
+        />
+      ),
+    },
+    {
+      name: "Undo Send",
+      desc: "Cancel sent emails within a configurable countdown window (5-30 seconds).",
+      icon: (
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="M3 10h10a5 5 0 015 5v2M3 10l4-4M3 10l4 4"
+        />
+      ),
+    },
+    {
+      name: "Follow-up Reminders",
+      desc: "Set reminders on emails if no reply in 1, 3, or 7 days. Manage from your Dashboard.",
+      icon: (
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+        />
+      ),
+    },
+    {
+      name: "Sensitivity Labels",
+      desc: "Mark emails as Attorney-Client Privilege, Confidential, or Work Product with color-coded badges.",
+      icon: (
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A2 2 0 013 12V7a4 4 0 014-4z"
+        />
+      ),
+    },
+    {
+      name: "Pinned Emails",
+      desc: "Pin important emails to the top of your inbox regardless of date.",
+      icon: (
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"
         />
       ),
     },

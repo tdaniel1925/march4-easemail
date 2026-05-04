@@ -327,6 +327,14 @@ export default function ComposeClient({
   const [scheduledAt, setScheduledAt] = useState<Date | null>(null);
   const [showScheduleMenu, setShowScheduleMenu] = useState(false);
 
+  // ── Undo Send state ─────────────────────────────────────────────────────────
+  const [undoPending, setUndoPending] = useState<{
+    pendingId: string;
+    secondsLeft: number;
+    totalSeconds: number;
+  } | null>(null);
+  const undoTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
   // ── Importance + read receipt ────────────────────────────────────────────────
   const [importance, setImportance] = useState<"normal" | "high">("normal");
   const [requestReadReceipt, setRequestReadReceipt] = useState(false);
@@ -423,6 +431,11 @@ export default function ComposeClient({
   const [showHighlightPicker, setShowHighlightPicker] = useState(false);
   const savedSelectionRef = useRef<Range | null>(null);
   const [bodyExpanded, setBodyExpanded] = useState(false);
+
+  // ── Templates state ──────────────────────────────────────────────────────────
+  const [showTemplatePicker, setShowTemplatePicker] = useState(false);
+  const [templateList, setTemplateList] = useState<{ id: string; name: string; subject: string | null; body: string; variables: string[]; category: string | null }[]>([]);
+  const [templateVarPrompts, setTemplateVarPrompts] = useState<{ template: { subject: string | null; body: string; variables: string[] }; values: Record<string, string> } | null>(null);
 
   // ── Signature state ──────────────────────────────────────────────────────────
   const [sig, setSig] = useState<{ name: string; title: string } | null>(null);
@@ -577,28 +590,53 @@ export default function ComposeClient({
         allAttachments.push({ name: `voice-message.${ext}`, contentType: voiceBlob.type, data: btoa(binary) });
       }
 
-      const res = await fetch("/api/mail/send", {
+      const sendPayload = {
+        to: finalTo.map((addr) => ({ emailAddress: { address: addr } })),
+        cc: finalCc.map((addr) => ({ emailAddress: { address: addr } })),
+        bcc: finalBcc.map((addr) => ({ emailAddress: { address: addr } })),
+        subject,
+        body: { contentType: "HTML", content: bodyHtml },
+        attachments: allAttachments,
+        fromHomeAccountId: fromAccountId,
+        draftId: draftIdRef.current ?? undefined,
+        importance,
+        isReadReceiptRequested: requestReadReceipt,
+      };
+
+      // Use delayed send for undo functionality
+      const res = await fetch("/api/mail/send-delayed", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          to: finalTo.map((addr) => ({ emailAddress: { address: addr } })),
-          cc: finalCc.map((addr) => ({ emailAddress: { address: addr } })),
-          bcc: finalBcc.map((addr) => ({ emailAddress: { address: addr } })),
-          subject,
-          body: { contentType: "HTML", content: bodyHtml },
-          attachments: allAttachments,
-          fromHomeAccountId: fromAccountId,
-          draftId: draftIdRef.current ?? undefined,
-          importance,
-          isReadReceiptRequested: requestReadReceipt,
-        }),
+        body: JSON.stringify(sendPayload),
       });
       if (!res.ok) {
         const err = await res.json().catch(() => ({ error: "Send failed" }));
         setSendError((err as { error?: string }).error ?? "Send failed");
         return;
       }
-      goBack();
+
+      const data = await res.json() as { pendingId: string; delaySeconds: number };
+
+      // Start undo countdown
+      const totalSeconds = data.delaySeconds;
+      setUndoPending({ pendingId: data.pendingId, secondsLeft: totalSeconds, totalSeconds });
+
+      // Clear any existing timer
+      if (undoTimerRef.current) clearInterval(undoTimerRef.current);
+
+      undoTimerRef.current = setInterval(() => {
+        setUndoPending((prev) => {
+          if (!prev) return null;
+          const next = prev.secondsLeft - 1;
+          if (next <= 0) {
+            if (undoTimerRef.current) clearInterval(undoTimerRef.current);
+            // Timer expired — email sent by cron, navigate away
+            setTimeout(() => goBack(), 300);
+            return null;
+          }
+          return { ...prev, secondsLeft: next };
+        });
+      }, 1000);
     } catch {
       setSendError("Network error. Please try again.");
     } finally {
@@ -2186,6 +2224,60 @@ export default function ComposeClient({
                 </button>
               )}
 
+              {/* Templates picker */}
+              <div className="relative">
+                <button
+                  onClick={() => {
+                    if (!showTemplatePicker) {
+                      fetch("/api/templates").then((r) => r.json()).then((data) => setTemplateList(data)).catch(() => {});
+                    }
+                    setShowTemplatePicker(!showTemplatePicker);
+                  }}
+                  className="flex items-center gap-1.5 text-xs text-neutral-400 hover:text-primary-600 transition-colors px-2 py-1.5 rounded-small hover:bg-background-100"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                  </svg>
+                  Templates
+                </button>
+                {showTemplatePicker && (
+                  <div className="absolute bottom-full left-0 mb-1 z-50 bg-white border border-neutral-200 rounded-[10px] shadow-xl w-72 max-h-64 overflow-y-auto">
+                    {templateList.length === 0 ? (
+                      <div className="p-4 text-center text-xs text-neutral-400">
+                        <p>No templates yet</p>
+                        <button onClick={() => { setShowTemplatePicker(false); navigateTo("/templates"); }} className="mt-1 text-[rgb(138,9,9)] underline">Create one</button>
+                      </div>
+                    ) : (
+                      <div className="py-1">
+                        {templateList.map((t) => (
+                          <button
+                            key={t.id}
+                            onClick={() => {
+                              setShowTemplatePicker(false);
+                              if (t.variables.length > 0) {
+                                setTemplateVarPrompts({ template: { subject: t.subject, body: t.body, variables: t.variables }, values: {} });
+                              } else {
+                                if (t.subject) setSubject(t.subject);
+                                const el = bodyRef.current;
+                                if (el) el.innerHTML = t.body;
+                                triggerAutoSave();
+                              }
+                            }}
+                            className="w-full text-left px-4 py-2.5 hover:bg-neutral-50 transition-colors border-b border-neutral-100 last:border-0"
+                          >
+                            <div className="flex items-center gap-2">
+                              <span className="text-sm font-medium text-neutral-800 truncate">{t.name}</span>
+                              {t.category && <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-neutral-100 text-neutral-500">{t.category}</span>}
+                            </div>
+                            {t.subject && <p className="text-[11px] text-neutral-400 truncate mt-0.5">{t.subject}</p>}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+
               <button onClick={() => navigateTo("/email-rules")} className="flex items-center gap-1.5 text-xs text-neutral-400 hover:text-primary-600 transition-colors px-2 py-1.5 rounded-small hover:bg-background-100">
                 <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
@@ -2238,6 +2330,60 @@ export default function ComposeClient({
 
         </div>
       </div>
+
+      {/* ── TEMPLATE VARIABLE PROMPT MODAL ─────────────────────────────────────── */}
+      {templateVarPrompts && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30">
+          <div className="bg-white rounded-[14px] shadow-xl border border-neutral-200 p-6 max-w-md w-full mx-4">
+            <h3 className="font-semibold text-neutral-900 text-base mb-1">Fill in template variables</h3>
+            <p className="text-xs text-neutral-500 mb-4">Replace placeholders with actual values</p>
+            <div className="space-y-3 mb-5">
+              {templateVarPrompts.template.variables.map((v) => (
+                <div key={v}>
+                  <label className="text-xs font-medium text-neutral-600 mb-1 block">{`{{${v}}}`}</label>
+                  <input
+                    type="text"
+                    value={templateVarPrompts.values[v] ?? ""}
+                    onChange={(e) => setTemplateVarPrompts((prev) => prev ? { ...prev, values: { ...prev.values, [v]: e.target.value } } : null)}
+                    placeholder={`Enter ${v}...`}
+                    className="w-full px-3 py-2 text-sm border border-neutral-200 rounded-[8px] focus:outline-none focus:border-[rgb(138,9,9)] transition-colors"
+                  />
+                </div>
+              ))}
+            </div>
+            <div className="flex items-center gap-3 justify-end">
+              <button
+                onClick={() => setTemplateVarPrompts(null)}
+                className="px-4 py-2 text-sm font-medium text-neutral-600 border border-neutral-200 rounded-[8px] hover:bg-neutral-50 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  const t = templateVarPrompts.template;
+                  const vals = templateVarPrompts.values;
+                  let finalBody = t.body;
+                  let finalSubject = t.subject ?? "";
+                  for (const v of t.variables) {
+                    const replacement = vals[v] ?? "";
+                    finalBody = finalBody.replace(new RegExp(`\\{\\{${v}\\}\\}`, "g"), replacement);
+                    finalSubject = finalSubject.replace(new RegExp(`\\{\\{${v}\\}\\}`, "g"), replacement);
+                  }
+                  if (finalSubject) setSubject(finalSubject);
+                  const el = bodyRef.current;
+                  if (el) el.innerHTML = finalBody;
+                  triggerAutoSave();
+                  setTemplateVarPrompts(null);
+                }}
+                className="px-4 py-2 text-sm font-medium text-white rounded-[8px] transition-colors"
+                style={{ backgroundColor: "rgb(138 9 9)" }}
+              >
+                Apply Template
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* ── AI REMIX OVERLAY ───────────────────────────────────────────────────── */}
       {activePanel === "remix" && (
