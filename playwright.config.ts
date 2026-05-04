@@ -20,7 +20,7 @@ module.exports = defineConfig({
   reporter: [["list"], ["html", { outputFolder: "playwright-report", open: "never" }]],
 
   use: {
-    baseURL: process.env.PLAYWRIGHT_BASE_URL ?? "http://localhost:3000",
+    baseURL: process.env.PLAYWRIGHT_BASE_URL ?? "http://localhost:4000",
     storageState: process.env.PLAYWRIGHT_STORAGE_STATE ?? "tests/e2e/auth/session.json",
     trace: "retain-on-failure",
     screenshot: "only-on-failure",

@@ -119,7 +119,7 @@ export async function GET(req: NextRequest) {
     // Fallback to Graph (Fix 9: include parentFolderId)
     const data = await graphGet<{ value: GraphFolder[] }>(
       user.id, homeAccountId,
-      "/me/mailFolders?$select=id,displayName,unreadItemCount,totalItemCount,wellKnownName,parentFolderId&$top=100"
+      "/me/mailFolders?$select=id,displayName,unreadItemCount,totalItemCount,parentFolderId&$top=100"
     );
 
     // Include custom folders (no wellKnownName) + archive folder (Fix 3)

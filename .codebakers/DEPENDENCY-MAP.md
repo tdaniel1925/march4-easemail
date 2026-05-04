@@ -1,6 +1,6 @@
 # CodeBakers Dependency Map
 # GENERATED — never edit by hand. Run `pnpm dep:map` to regenerate.
-# Last generated: 2026-05-04 | git: 383039e
+# Last generated: 2026-05-04 | git: e552b40
 # Debug: pnpm dep:map --debug
 
 ---
