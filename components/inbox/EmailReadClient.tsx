@@ -75,6 +75,8 @@ function SafeHtml({ html }: { html: string }) {
       if (ref.current) {
         ref.current.innerHTML = DOMPurify.sanitize(html, {
           FORBID_TAGS: ["script", "iframe", "object", "embed"],
+          ALLOWED_URI_REGEXP: /^(?:(?:(?:f|ht)tps?|mailto|tel|callto|cid|data|blob):|[^a-z]|[a-z+.\-]*(?:[^a-z+.\-:]|$))/i,
+          ADD_ATTR: ["target", "loading"],
         });
       }
     });

@@ -141,10 +141,16 @@ export async function GET(req: NextRequest, { params }: Params) {
 
   for (const att of allAttachments) {
     if (att.contentId && att.isInline) {
-      const cidPattern = new RegExp(`cid:${att.contentId.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`, 'gi');
-      bodyContent = bodyContent.replace(cidPattern,
-        `/api/mail/attachments/${encodeURIComponent(msg.id)}/${encodeURIComponent(att.id)}?homeAccountId=${encodeURIComponent(accountId)}&mode=inline`
-      );
+      // Strip angle brackets from contentId (Graph returns "<id>" but HTML uses "cid:id")
+      const cleanCid = att.contentId.replace(/^<|>$/g, "");
+      const cidPattern = new RegExp(`cid:${cleanCid.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`, 'gi');
+      const replacementUrl = `/api/mail/attachments/${encodeURIComponent(msg.id)}/${encodeURIComponent(att.id)}?homeAccountId=${encodeURIComponent(accountId)}&mode=inline`;
+      bodyContent = bodyContent.replace(cidPattern, replacementUrl);
+      // Also try with the raw contentId in case it doesn't have brackets
+      if (cleanCid !== att.contentId) {
+        const rawPattern = new RegExp(`cid:${att.contentId.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`, 'gi');
+        bodyContent = bodyContent.replace(rawPattern, replacementUrl);
+      }
     }
   }
 
