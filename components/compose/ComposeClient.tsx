@@ -603,8 +603,8 @@ export default function ComposeClient({
         isReadReceiptRequested: requestReadReceipt,
       };
 
-      // Use delayed send for undo functionality
-      const res = await fetch("/api/mail/send-delayed", {
+      // Send email directly via Graph API
+      const res = await fetch("/api/mail/send", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(sendPayload),
@@ -615,54 +615,8 @@ export default function ComposeClient({
         return;
       }
 
-      const data = await res.json() as { pendingId: string; delaySeconds: number };
-
-      // Start undo countdown
-      const totalSeconds = data.delaySeconds;
-      setUndoPending({ pendingId: data.pendingId, secondsLeft: totalSeconds, totalSeconds });
-
-      // Clear any existing timer
-      if (undoTimerRef.current) clearInterval(undoTimerRef.current);
-
-      // Store the payload for actual sending after countdown
-      const pendingId = data.pendingId;
-      const storedPayload = { ...sendPayload };
-
-      undoTimerRef.current = setInterval(() => {
-        setUndoPending((prev) => {
-          if (!prev) return null;
-          const next = prev.secondsLeft - 1;
-          if (next <= 0) {
-            if (undoTimerRef.current) clearInterval(undoTimerRef.current);
-            // Timer expired — actually send the email now
-            (async () => {
-              try {
-                const sendRes = await fetch("/api/mail/send", {
-                  method: "POST",
-                  headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify(storedPayload),
-                });
-                if (!sendRes.ok) {
-                  const err = await sendRes.json().catch(() => ({ error: "Send failed" }));
-                  setSendError((err as { error?: string }).error ?? "Send failed after delay");
-                  return;
-                }
-                // Clean up pending record
-                fetch("/api/mail/cancel-send", {
-                  method: "POST",
-                  headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify({ pendingId }),
-                }).catch(() => {});
-              } catch {
-                setSendError("Network error sending email.");
-              }
-              setTimeout(() => goBack(), 300);
-            })();
-            return null;
-          }
-          return { ...prev, secondsLeft: next };
-        });
-      }, 1000);
+      // Email sent successfully — navigate away
+      setTimeout(() => goBack(), 300);
     } catch {
       setSendError("Network error. Please try again.");
     } finally {
