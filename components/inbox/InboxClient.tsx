@@ -340,6 +340,7 @@ export default function InboxClient({
   const [loadingTab, setLoadingTab] = useState(false);
   const [requiresReauth, setRequiresReauth] = useState(false);
   const [fetchError, setFetchError] = useState<string | null>(null);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
 
   // Inline email expansion
   const [expandedEmailId, setExpandedEmailId] = useState<string | null>(null);
@@ -561,19 +562,31 @@ export default function InboxClient({
     });
   }, [activeAccount, scheduleAction]);
 
-  const handleDeleteEmail = useCallback((email: EmailMessage) => {
+  const handleDeleteEmail = useCallback(async (email: EmailMessage) => {
     if (!activeAccount) return;
     const ts = Date.now();
-    setUndoStack((prev) => [...prev, { action: "delete", emails: [email], timestamp: ts }]);
+    // Optimistic removal
     setEmails((prev) => prev.filter((e) => e.id !== email.id));
-    scheduleAction(ts, () => {
-      void fetch("/api/mail/batch", {
+    try {
+      const res = await fetch("/api/mail/batch", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ action: "delete", messageIds: [email.id], homeAccountId: activeAccount.homeAccountId }),
       });
-    });
-  }, [activeAccount, scheduleAction]);
+      if (!res.ok) {
+        // API failed — restore the email back into the list
+        setEmails((prev) => [email, ...prev]);
+        setDeleteError("Failed to delete email. Please try again.");
+        return;
+      }
+      // Success — add to undo stack for UI feedback
+      setUndoStack((prev) => [...prev, { action: "delete", emails: [email], timestamp: ts }]);
+    } catch {
+      // Network error — restore the email
+      setEmails((prev) => [email, ...prev]);
+      setDeleteError("Network error. Could not delete email.");
+    }
+  }, [activeAccount]);
 
   const handleMarkUnread = useCallback((email: EmailMessage) => {
     if (!activeAccount) return;
@@ -602,7 +615,7 @@ export default function InboxClient({
     });
   }, []);
 
-  const bulkDelete = useCallback(() => {
+  const bulkDelete = useCallback(async () => {
     if (!activeAccount || selectedIds.size === 0) return;
 
     const selectedEmails = emails.filter((e) => selectedIds.has(e.id));
@@ -610,28 +623,35 @@ export default function InboxClient({
     const idsToDelete = [...selectedIds];
     const hid = activeAccount.homeAccountId;
 
-    // Add to undo stack
-    setUndoStack((prev) => [...prev, {
-      action: "delete",
-      emails: selectedEmails,
-      timestamp: ts,
-    }]);
-
-    // Remove from UI immediately
+    // Optimistic removal
     setEmails((prev) => prev.filter((e) => !selectedIds.has(e.id)));
 
-    // Delay API call — cancel on undo (C5 fix)
-    scheduleAction(ts, () => {
-      void fetch("/api/mail/batch", {
+    try {
+      const res = await fetch("/api/mail/batch", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ action: "delete", messageIds: idsToDelete, homeAccountId: hid }),
       });
-    });
+      if (!res.ok) {
+        // Restore emails on failure
+        setEmails((prev) => [...selectedEmails, ...prev]);
+        setDeleteError("Failed to delete emails. Please try again.");
+        return;
+      }
+      setUndoStack((prev) => [...prev, {
+        action: "delete",
+        emails: selectedEmails,
+        timestamp: ts,
+      }]);
+    } catch {
+      setEmails((prev) => [...selectedEmails, ...prev]);
+      setDeleteError("Network error. Could not delete emails.");
+      return;
+    }
 
     setSelectedIds(new Set());
     setBulkMode(false);
-  }, [activeAccount, selectedIds, emails, scheduleAction]);
+  }, [activeAccount, selectedIds, emails]);
 
   const bulkArchive = useCallback(() => {
     if (!activeAccount || selectedIds.size === 0) return;
@@ -1391,6 +1411,14 @@ export default function InboxClient({
           <div className="mx-4 mt-3 px-4 py-3 rounded-[10px] border flex items-center justify-between gap-3" style={{ backgroundColor: "rgb(254 243 199)", borderColor: "rgb(253 224 71)" }}>
             <p className="text-xs" style={{ color: "rgb(113 63 18)" }}>{fetchError}</p>
             <button onClick={() => setFetchError(null)} className="text-xs font-semibold flex-shrink-0" style={{ color: "rgb(113 63 18)" }}>Dismiss</button>
+          </div>
+        )}
+
+        {/* Delete error banner */}
+        {deleteError && (
+          <div className="mx-4 mt-3 px-4 py-3 rounded-[10px] border flex items-center justify-between gap-3" style={{ backgroundColor: "rgb(253 235 235)", borderColor: "rgb(252 216 216)" }}>
+            <p className="text-xs" style={{ color: "rgb(138 9 9)" }}>{deleteError}</p>
+            <button onClick={() => setDeleteError(null)} className="text-xs font-semibold flex-shrink-0" style={{ color: "rgb(138 9 9)" }}>Dismiss</button>
           </div>
         )}
 

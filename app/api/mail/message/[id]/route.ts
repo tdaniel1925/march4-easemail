@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { verifyAccountOwnership, getProvider, detectProviderType } from "@/lib/providers/registry";
 import { graphGet } from "@/lib/microsoft/graph";
 import { proxyExternalImages } from "@/lib/utils/proxy-images";
+import { prisma } from "@/lib/prisma";
 
 type Params = { params: Promise<{ id: string }> };
 
@@ -127,6 +128,8 @@ export async function GET(req: NextRequest, { params }: Params) {
       }
     }
     if (!msg) {
+      // Auto-clean stale cached entry so it doesn't keep appearing in trash/folder lists
+      await prisma.cachedEmail.deleteMany({ where: { id, userId: user.id } }).catch(() => {});
       const errMsg = primaryErr instanceof Error ? primaryErr.message : String(primaryErr);
       return NextResponse.json({ error: `Could not find message: ${errMsg}` }, { status: 404 });
     }

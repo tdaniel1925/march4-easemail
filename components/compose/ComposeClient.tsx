@@ -420,6 +420,8 @@ export default function ComposeClient({
   const [voiceTime, setVoiceTime] = useState(0);
   const [voiceDuration, setVoiceDuration] = useState(0);
   const [voiceError, setVoiceError] = useState<string | null>(null);
+  const [voicePreviewPlayed, setVoicePreviewPlayed] = useState(false);
+  const [pendingDraftBody, setPendingDraftBody] = useState<string | null>(null);
   const voiceRecorderRef = useRef<MediaRecorder | null>(null);
   const voiceChunksRef = useRef<Blob[]>([]);
   const voiceTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -942,11 +944,21 @@ export default function ComposeClient({
   }
 
   // ── AI Dictate ──────────────────────────────────────────────────────────────
-  function startRecording() {
+  async function startRecording() {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const w = window as any;
     const SR = w.SpeechRecognition ?? w.webkitSpeechRecognition;
     if (!SR) { setDictateError("Speech recognition not supported in this browser."); return; }
+
+    // Request microphone permission first to get a clear error before SpeechRecognition
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      // Immediately stop — we just needed to trigger the permission prompt
+      stream.getTracks().forEach((t) => t.stop());
+    } catch {
+      setDictateError("Microphone permission denied. Allow access in browser settings.");
+      return;
+    }
 
     const rec = new SR();
     rec.continuous = true;
@@ -963,7 +975,18 @@ export default function ComposeClient({
       if (final) setTranscript((prev) => prev + final + " ");
       setInterimTranscript(interim);
     };
-    rec.onerror = () => setDictateError("Microphone error. Please check permissions.");
+    rec.onerror = (event: Event & { error?: string }) => {
+      const errType = event.error ?? "";
+      if (errType === "no-speech") {
+        setDictateError("No speech detected. Try again.");
+      } else if (errType === "audio-capture") {
+        setDictateError("Microphone not found.");
+      } else if (errType === "not-allowed") {
+        setDictateError("Microphone permission denied. Allow access in browser settings.");
+      } else {
+        setDictateError("Recording failed: " + (errType || "unknown error"));
+      }
+    };
     rec.onend = () => {
       // Browser auto-stops after silence — restart unless user intentionally stopped
       if (!intentionalStopRef.current) {
@@ -975,7 +998,12 @@ export default function ComposeClient({
     };
 
     intentionalStopRef.current = false;
-    rec.start();
+    try {
+      rec.start();
+    } catch {
+      setDictateError("Could not start speech recognition. Please try again.");
+      return;
+    }
     recognitionRef.current = rec;
     setIsRecording(true);
     setDictateError(null);
@@ -1113,6 +1141,7 @@ export default function ComposeClient({
     setVoiceDuration(0);
     voiceTimeRef.current = 0;
     voiceChunksRef.current = [];
+    setVoicePreviewPlayed(false);
   }
 
   // Load signature from DB (fallback to localStorage for migration)
@@ -1241,6 +1270,9 @@ export default function ComposeClient({
       setSubject(data.subject ?? "");
       if (bodyRef.current) {
         bodyRef.current.innerHTML = data.bodyHtml ?? "";
+      } else {
+        // Body ref not mounted yet — store for deferred application
+        setPendingDraftBody(data.bodyHtml ?? "");
       }
       setAttachments((data.attachments as FileAttachment[]) ?? []);
       if (data.scheduledAt) setScheduledAt(new Date(data.scheduledAt));
@@ -1265,6 +1297,23 @@ export default function ComposeClient({
       .catch(() => {});
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [draftId, draftData]);
+
+  // ── Apply deferred draft body once bodyRef is mounted ──────────────────────────
+  useEffect(() => {
+    if (pendingDraftBody !== null && bodyRef.current) {
+      bodyRef.current.innerHTML = pendingDraftBody;
+      setPendingDraftBody(null);
+    } else if (pendingDraftBody !== null && !bodyRef.current) {
+      // Ref not ready yet — retry on next animation frame
+      const raf = requestAnimationFrame(() => {
+        if (bodyRef.current) {
+          bodyRef.current.innerHTML = pendingDraftBody;
+          setPendingDraftBody(null);
+        }
+      });
+      return () => cancelAnimationFrame(raf);
+    }
+  }, [pendingDraftBody]);
 
   // ── Pre-fill To from initialTo (e.g. from contacts) ──────────────────────────
   useEffect(() => {
@@ -3128,8 +3177,9 @@ export default function ComposeClient({
               {/* Playback (shown after recording) */}
               {voiceUrl && (
                 <div className="px-6 py-5 border-b border-neutral-200 bg-background-50">
-                  <p className="text-xs font-semibold uppercase tracking-wider mb-3" style={{ color: "rgb(115 115 115)" }}>Preview</p>
-                  <audio controls src={voiceUrl} className="w-full" style={{ height: 36 }} />
+                  <p className="text-xs font-semibold uppercase tracking-wider mb-1" style={{ color: "rgb(115 115 115)" }}>Listen to preview</p>
+                  <p className="text-xs mb-3" style={{ color: "rgb(138 9 9)" }}>Recording complete — listen to preview before attaching</p>
+                  <audio controls src={voiceUrl} className="w-full" style={{ height: 48 }} onPlay={() => setVoicePreviewPlayed(true)} />
                   <p className="text-xs mt-2" style={{ color: "rgb(155 155 155)" }}>
                     {voiceBlob && (voiceBlob.size < 1024 * 1024 ? `${Math.round(voiceBlob.size / 1024)} KB` : `${(voiceBlob.size / (1024 * 1024)).toFixed(1)} MB`)}
                   </p>
@@ -3161,13 +3211,16 @@ export default function ComposeClient({
                 <button
                   onClick={() => void addVoiceAttachment()}
                   disabled={!voiceBlob}
-                  className="flex-1 flex items-center justify-center gap-2 text-white font-semibold text-sm py-2.5 px-5 rounded-small transition-all shadow-custom hover:shadow-custom-hover disabled:opacity-40"
-                  style={{ backgroundColor: "rgb(138 9 9)" }}
+                  className="flex-1 flex items-center justify-center gap-2 font-semibold text-sm py-2.5 px-5 rounded-small transition-all shadow-custom hover:shadow-custom-hover disabled:opacity-40"
+                  style={{
+                    backgroundColor: voicePreviewPlayed ? "rgb(138 9 9)" : "rgb(212 212 212)",
+                    color: voicePreviewPlayed ? "white" : "rgb(82 82 82)",
+                  }}
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
                   </svg>
-                  Attach to Email
+                  {voicePreviewPlayed ? "Attach to Email" : "Listen first, then attach"}
                 </button>
               </div>
             </div>
