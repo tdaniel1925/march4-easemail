@@ -462,6 +462,7 @@ export default function CalendarClient({ weekStart: initialWeekStart, events: in
 
   const { selectedEvent, setSelectedEvent, activeView, setActiveView, setCurrentWeekStart } = useCalendarStore();
   const accounts = useAccountStore((s) => s.accounts);
+  const activeAccount = useAccountStore((s) => s.activeAccount);
 
   // "all" means show all accounts; otherwise filter to one homeAccountId
   const [calendarAccountFilter, setCalendarAccountFilter] = useState<string>("all");
@@ -1341,9 +1342,11 @@ export default function CalendarClient({ weekStart: initialWeekStart, events: in
             onClick={async () => {
               setTeamsMeetingLoading(true);
               setTeamsMeetingUrl(null);
+              setFetchError(null);
               try {
                 const now = new Date();
                 const end = new Date(now.getTime() + 60 * 60 * 1000);
+                const acctId = activeAccount?.homeAccountId;
                 const res = await fetch("/api/calendar/teams-meeting", {
                   method: "POST",
                   headers: { "Content-Type": "application/json" },
@@ -1351,6 +1354,7 @@ export default function CalendarClient({ weekStart: initialWeekStart, events: in
                     subject: "Teams Meeting",
                     startDateTime: now.toISOString(),
                     endDateTime: end.toISOString(),
+                    homeAccountId: acctId,
                   }),
                 });
                 if (res.ok) {
@@ -1363,8 +1367,14 @@ export default function CalendarClient({ weekStart: initialWeekStart, events: in
                     window.location.href = "/api/auth/microsoft/teams-consent";
                     return;
                   }
-                  setFetchError(data.message ?? "Failed to create Teams meeting. Please try again.");
+                  if (data.error === "account_requires_reauth") {
+                    setFetchError("Microsoft session expired. Please reconnect your account on the Accounts page.");
+                  } else {
+                    setFetchError(data.message ?? data.error ?? "Failed to create Teams meeting. Please try again.");
+                  }
                 }
+              } catch {
+                setFetchError("Network error creating Teams meeting. Check your connection.");
               } finally {
                 setTeamsMeetingLoading(false);
               }
@@ -1425,13 +1435,13 @@ export default function CalendarClient({ weekStart: initialWeekStart, events: in
           )}
 
           {/* View toggle */}
-          <div className="flex rounded-[10px] overflow-hidden border border-neutral-200" style={{ boxShadow: "0px 2px 4px rgba(27,29,29,0.08)" }}>
+          <div className="flex rounded-[10px] overflow-hidden border border-neutral-200 flex-shrink-0" style={{ boxShadow: "0px 2px 4px rgba(27,29,29,0.08)" }}>
             {(["Day", "Week", "Month", "Agenda", "Year"] as const).map((view) => {
               const viewKey = view.toLowerCase() as typeof activeView;
               const isActive = activeView === viewKey;
               return (
                 <button key={view} onClick={() => setActiveView(viewKey)}
-                  className="px-3 py-1.5 text-sm font-medium transition-colors"
+                  className="px-3 py-1.5 text-sm font-medium transition-colors whitespace-nowrap"
                   style={isActive ? { background: BRAND, color: "#fff" } : { background: "#fff", color: "#6b7280" }}>
                   {view}
                 </button>

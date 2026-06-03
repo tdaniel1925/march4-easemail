@@ -1109,7 +1109,14 @@ export default function ComposeClient({
         const baseType = mimeType.split(";")[0];
         const blob = new Blob(voiceChunksRef.current, { type: baseType });
         setVoiceBlob(blob);
-        setVoiceUrl(URL.createObjectURL(blob));
+        setVoiceDuration(voiceTimeRef.current);
+        // Create blob URL and fix WebM duration issue by pre-loading
+        const url = URL.createObjectURL(blob);
+        setVoiceUrl(url);
+        // Force browser to load metadata so duration is available
+        const tempAudio = new Audio(url);
+        tempAudio.preload = "metadata";
+        tempAudio.load();
       };
       recorder.start(1000);
       setVoiceRecording(true);
@@ -2013,8 +2020,8 @@ export default function ComposeClient({
             )}
           </div>
 
-          {/* VOICE ATTACHMENT CHIP */}
-          {voiceBlob && (
+          {/* VOICE ATTACHMENT CHIP — only show when voice panel is closed (user already confirmed) */}
+          {voiceBlob && activePanel !== "voice" && (
             <div className="px-6 py-3 border-t border-neutral-200 bg-background-50 flex-shrink-0">
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-small flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "rgb(220 252 231)" }}>
