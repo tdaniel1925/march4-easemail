@@ -13,11 +13,53 @@ export async function GET(req: NextRequest, { params }: Params) {
   if (!user) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
 
   const { id } = await params;
-  const draft = await prisma.draft.findFirst({
+  // Try local Draft ID first, then fall back to Graph message ID
+  let draft = await prisma.draft.findFirst({
     where: { id, userId: user.id }
   });
 
-  if (!draft) return NextResponse.json({ error: "not_found" }, { status: 404 });
+  if (!draft) {
+    // The id might be a Graph message ID (when clicking from drafts folder list)
+    draft = await prisma.draft.findFirst({
+      where: { graphDraftId: id, userId: user.id }
+    });
+  }
+
+  if (!draft) {
+    // Still not found — try fetching directly from Graph API as a draft message
+    try {
+      const account = await prisma.msConnectedAccount.findFirst({
+        where: { userId: user.id, isDefault: true },
+        select: { homeAccountId: true },
+      });
+      if (account) {
+        const graphRes = await graphFetch(
+          user.id,
+          account.homeAccountId,
+          `/me/messages/${id}?$select=id,subject,body,toRecipients,ccRecipients,bccRecipients,importance,isReadReceiptRequested`,
+          { method: "GET" }
+        );
+        if (graphRes.ok) {
+          const msg = await graphRes.json();
+          return NextResponse.json({
+            id: msg.id,
+            subject: msg.subject ?? "",
+            bodyHtml: msg.body?.content ?? "",
+            toRecipients: msg.toRecipients ?? [],
+            ccRecipients: msg.ccRecipients ?? [],
+            bccRecipients: msg.bccRecipients ?? [],
+            importance: msg.importance ?? "normal",
+            requestReadReceipt: msg.isReadReceiptRequested ?? false,
+            graphDraftId: msg.id,
+          });
+        }
+      }
+    } catch {
+      // Fall through to 404
+    }
+    return NextResponse.json({ error: "not_found" }, { status: 404 });
+  }
+
   return NextResponse.json(draft);
 }
 
