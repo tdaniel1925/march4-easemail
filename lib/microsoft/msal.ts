@@ -144,6 +144,20 @@ export async function acquireTokenSilent(
       throw new Error("REAUTH_REQUIRED: No access token returned");
     }
 
+    // Persist the updated token cache back to DB after successful refresh.
+    // Manual deserialize above bypasses the cache plugin's afterCacheAccess hook,
+    // so we must explicitly serialize and save the refreshed tokens.
+    try {
+      const serialized = msalClient.getTokenCache().serialize();
+      await prisma.msalTokenCache.upsert({
+        where: { userId },
+        update: { cacheJson: serialized, updatedAt: new Date() },
+        create: { userId, cacheJson: serialized, updatedAt: new Date() },
+      });
+    } catch (cacheErr) {
+      console.warn("[msal] Failed to persist token cache:", cacheErr);
+    }
+
     return result.accessToken;
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : String(err);
