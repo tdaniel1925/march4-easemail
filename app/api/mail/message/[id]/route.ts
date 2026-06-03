@@ -112,7 +112,9 @@ export async function GET(req: NextRequest, { params }: Params) {
   // Try generic /me/messages/{id} first (works for inbox and most folders).
   // If it 404s (can happen for sent/other folder-scoped IDs), fall back to
   // searching well-known folders explicitly.
-  const msgPath = `?$select=id,subject,from,toRecipients,ccRecipients,body,receivedDateTime&$expand=attachments($select=id,name,size,contentType,contentId,isInline)`;
+  // Note: contentId and isInline are not valid $select fields on microsoft.graph.attachment
+  // (they only exist on the fileAttachment subtype). Omit them from $select — Graph returns them by default.
+  const msgPath = `?$select=id,subject,from,toRecipients,ccRecipients,body,receivedDateTime&$expand=attachments($select=id,name,size,contentType)`;
   let msg: GraphMessage | null = null;
   try {
     msg = await graphGet<GraphMessage>(user.id, accountId, `/me/messages/${id}${msgPath}`);

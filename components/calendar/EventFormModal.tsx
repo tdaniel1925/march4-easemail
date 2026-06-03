@@ -134,6 +134,7 @@ export default function EventFormModal({ prefill, onClose, onSaved, editEvent, u
   const [teamsEnabled, setTeamsEnabled] = useState(false);
   const [teamsMeetingUrl, setTeamsMeetingUrl] = useState("");
   const [teamsLoading, setTeamsLoading] = useState(false);
+  const [teamsError, setTeamsError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
 
   // ── Location presets (persisted to localStorage) ─────────────────────────────
@@ -303,8 +304,9 @@ export default function EventFormModal({ prefill, onClose, onSaved, editEvent, u
 
   // ── Teams meeting ─────────────────────────────────────────────────────────────
   async function handleTeamsToggle() {
-    if (teamsEnabled) { setTeamsEnabled(false); setTeamsMeetingUrl(""); return; }
+    if (teamsEnabled) { setTeamsEnabled(false); setTeamsMeetingUrl(""); setTeamsError(null); return; }
     setTeamsLoading(true);
+    setTeamsError(null);
     try {
       // Graph /me/onlineMeetings expects UTC datetime strings
       const startUtc = new Date(combineToIso(startDate, startTime)).toISOString();
@@ -323,16 +325,17 @@ export default function EventFormModal({ prefill, onClose, onSaved, editEvent, u
       if (data.joinWebUrl) {
         setTeamsMeetingUrl(data.joinWebUrl);
         setTeamsEnabled(true);
+        setTeamsError(null);
         if (!location) setLocation(data.joinWebUrl);
       } else if (data.error === "teams_consent_required") {
-        setError("Teams meeting requires additional permissions. Please go to Settings → Connected Accounts and reconnect your Microsoft account to grant Teams access.");
+        setTeamsError("Teams permissions not granted. Go to Accounts page and reconnect your Microsoft account to grant Teams access.");
       } else if (data.error === "account_requires_reauth") {
-        setError("Your Microsoft session has expired. Please reconnect your account in Settings.");
+        setTeamsError("Microsoft session expired. Please reconnect your account on the Accounts page.");
       } else {
-        setError(data.message ?? data.error ?? `Failed to create Teams meeting (${res.status}). Please try again.`);
+        setTeamsError(data.message ?? data.error ?? "Failed to create Teams meeting. Please try again.");
       }
     } catch {
-      setError("Failed to create Teams meeting. Check your connection and try again.");
+      setTeamsError("Failed to create Teams meeting. Check your connection and try again.");
     } finally {
       setTeamsLoading(false);
     }
@@ -730,6 +733,11 @@ export default function EventFormModal({ prefill, onClose, onSaved, editEvent, u
                   </div>
                 )}
                 {teamsLoading && <p className="text-xs text-neutral-400 mt-1">Creating meeting…</p>}
+                {teamsError && (
+                  <div className="mt-2 px-2.5 py-2 bg-red-50 border border-red-200 rounded-lg">
+                    <p className="text-xs font-medium" style={{ color: BRAND }}>{teamsError}</p>
+                  </div>
+                )}
               </div>
             </div>
           </div>

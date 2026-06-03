@@ -96,7 +96,8 @@ export default function FolderClient({
     useDataCacheStore.getState().setActiveView(view);
     if (folderId) useDataCacheStore.getState().setActiveFolderId(folderId);
     if (view === "email-read" && emailId) {
-      useDataCacheStore.getState().setActiveEmail(emailId);
+      const acctId = useAccountStore.getState().activeAccount?.homeAccountId ?? null;
+      useDataCacheStore.getState().setActiveEmail(emailId, acctId, `/${folder}`);
     }
     if (view === "compose") {
       const sp = new URLSearchParams(href.includes("?") ? href.split("?")[1] : "");
