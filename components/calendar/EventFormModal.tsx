@@ -328,7 +328,9 @@ export default function EventFormModal({ prefill, onClose, onSaved, editEvent, u
         setTeamsError(null);
         if (!location) setLocation(data.joinWebUrl);
       } else if (data.error === "teams_consent_required") {
-        setTeamsError("Teams permissions not granted. Go to Accounts page and reconnect your Microsoft account to grant Teams access.");
+        setTeamsError("Teams permissions needed. Redirecting to grant access...");
+        // Auto-redirect to Teams consent flow after brief delay
+        setTimeout(() => { window.location.href = "/api/auth/microsoft/teams-consent"; }, 1500);
       } else if (data.error === "account_requires_reauth") {
         setTeamsError("Microsoft session expired. Please reconnect your account on the Accounts page.");
       } else {

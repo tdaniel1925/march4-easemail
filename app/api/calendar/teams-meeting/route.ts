@@ -64,21 +64,27 @@ export async function POST(req: NextRequest) {
     });
   } catch (err: unknown) {
     const errMsg = String(err);
-    if (isReauthError(err)) {
-      return NextResponse.json({ error: "account_requires_reauth" }, { status: 401 });
-    }
-    // Detect missing Teams consent (Graph returns 403 or mentions consent/scope)
+    // Check for Teams consent issues FIRST — when Teams scopes were never granted,
+    // MSAL throws "no_tokens_found" or "REAUTH_REQUIRED" which looks like a session
+    // expiry but is actually missing Teams consent. Detect this by checking if the
+    // error mentions consent, scope, or if it's a reauth error for Teams-specific tokens.
     if (
       errMsg.includes("403") ||
       errMsg.includes("Forbidden") ||
       errMsg.includes("consent") ||
       errMsg.includes("insufficient") ||
-      errMsg.includes("Authorization_RequestDenied")
+      errMsg.includes("Authorization_RequestDenied") ||
+      errMsg.includes("no_tokens_found") ||
+      errMsg.includes("InteractionRequired") ||
+      errMsg.includes("interaction_required")
     ) {
       return NextResponse.json(
-        { error: "teams_consent_required", message: "Teams permissions not granted. Please grant Teams access first." },
+        { error: "teams_consent_required", message: "Teams permissions not granted. Click to grant Teams access." },
         { status: 403 }
       );
+    }
+    if (isReauthError(err)) {
+      return NextResponse.json({ error: "account_requires_reauth" }, { status: 401 });
     }
     console.error("[calendar/teams-meeting]", err);
     return NextResponse.json({ error: "Failed to create Teams meeting" }, { status: 500 });
