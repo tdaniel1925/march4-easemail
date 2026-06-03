@@ -208,32 +208,35 @@ export async function GET(req: NextRequest) {
       }
     } else if (WELL_KNOWN[folder]) {
       // Well-known folder (sent, drafts, trash) — folder param is validated against WELL_KNOWN dict
-      const cachedFolder = await prisma.cachedFolder.findFirst({
-        where: { userId: user.id, homeAccountId, wellKnownName: WELL_KNOWN[folder] },
-      });
-      if (cachedFolder) {
-        const orderBy = folder === "sent"
-          ? { sentDateTime: "desc" as const }
-          : { receivedDateTime: "desc" as const };
-        const cached = nextLinkParam
-          ? await prisma.cachedEmail.findMany({
-              where: { userId: user.id, homeAccountId, folderId: cachedFolder.id },
-              orderBy,
-              take: 100, // Fix 15
-              cursor: { id: nextLinkParam },
-              skip: 1,
-            })
-          : await prisma.cachedEmail.findMany({
-              where: { userId: user.id, homeAccountId, folderId: cachedFolder.id },
-              orderBy,
-              take: 100, // Fix 15
+      // Trash always fetches live from Graph to avoid showing phantom/stale entries
+      if (folder !== "trash") {
+        const cachedFolder = await prisma.cachedFolder.findFirst({
+          where: { userId: user.id, homeAccountId, wellKnownName: WELL_KNOWN[folder] },
+        });
+        if (cachedFolder) {
+          const orderBy = folder === "sent"
+            ? { sentDateTime: "desc" as const }
+            : { receivedDateTime: "desc" as const };
+          const cached = nextLinkParam
+            ? await prisma.cachedEmail.findMany({
+                where: { userId: user.id, homeAccountId, folderId: cachedFolder.id },
+                orderBy,
+                take: 100, // Fix 15
+                cursor: { id: nextLinkParam },
+                skip: 1,
+              })
+            : await prisma.cachedEmail.findMany({
+                where: { userId: user.id, homeAccountId, folderId: cachedFolder.id },
+                orderBy,
+                take: 100, // Fix 15
+              });
+          if (cached.length > 0) {
+            cacheHit = true;
+            return NextResponse.json({
+              emails: cached.map(mapCachedEmail),
+              nextLink: cached.length === 100 ? cached[cached.length - 1].id : null,
             });
-        if (cached.length > 0) {
-          cacheHit = true;
-          return NextResponse.json({
-            emails: cached.map(mapCachedEmail),
-            nextLink: cached.length === 100 ? cached[cached.length - 1].id : null,
-          });
+          }
         }
       }
     } else if (folder && !NAMED_FOLDERS.has(folder)) {

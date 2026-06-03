@@ -1490,7 +1490,8 @@ export default function InboxClient({
         {undoStack.length > 0 && (
           <div className="px-4 py-2.5 border-b border-neutral-200 flex items-center justify-between gap-3" style={{ backgroundColor: "rgb(253 235 235)" }}>
             <span className="text-xs" style={{ color: "rgb(83 5 5)" }}>
-              {undoStack[undoStack.length - 1].action === "delete" ? "Deleted" : undoStack[undoStack.length - 1].action === "archive" ? "Archived" : "Modified"} {undoStack[undoStack.length - 1].emails.length} email{undoStack[undoStack.length - 1].emails.length !== 1 ? "s" : ""}
+              {undoStack[undoStack.length - 1].action === "delete" ? "Deleted" : undoStack[undoStack.length - 1].action === "archive" ? "Archived" : "Modified"}{" "}
+              &quot;{undoStack[undoStack.length - 1].emails[0]?.subject || "No subject"}&quot;{undoStack[undoStack.length - 1].emails.length > 1 ? ` and ${undoStack[undoStack.length - 1].emails.length - 1} more` : ""}
             </span>
             <button
               onClick={handleUndo}

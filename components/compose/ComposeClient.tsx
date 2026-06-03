@@ -1300,19 +1300,26 @@ export default function ComposeClient({
 
   // ── Apply deferred draft body once bodyRef is mounted ──────────────────────────
   useEffect(() => {
-    if (pendingDraftBody !== null && bodyRef.current) {
+    if (pendingDraftBody === null) return;
+    if (bodyRef.current) {
       bodyRef.current.innerHTML = pendingDraftBody;
       setPendingDraftBody(null);
-    } else if (pendingDraftBody !== null && !bodyRef.current) {
-      // Ref not ready yet — retry on next animation frame
-      const raf = requestAnimationFrame(() => {
-        if (bodyRef.current) {
-          bodyRef.current.innerHTML = pendingDraftBody;
-          setPendingDraftBody(null);
-        }
-      });
-      return () => cancelAnimationFrame(raf);
+      return;
     }
+    // Ref not ready yet — poll until mounted (up to 3 seconds)
+    let attempts = 0;
+    const maxAttempts = 30;
+    const interval = setInterval(() => {
+      attempts++;
+      if (bodyRef.current) {
+        bodyRef.current.innerHTML = pendingDraftBody;
+        setPendingDraftBody(null);
+        clearInterval(interval);
+      } else if (attempts >= maxAttempts) {
+        clearInterval(interval);
+      }
+    }, 100);
+    return () => clearInterval(interval);
   }, [pendingDraftBody]);
 
   // ── Pre-fill To from initialTo (e.g. from contacts) ──────────────────────────
@@ -3210,7 +3217,7 @@ export default function ComposeClient({
                 </button>
                 <button
                   onClick={() => void addVoiceAttachment()}
-                  disabled={!voiceBlob}
+                  disabled={!voiceBlob || !voicePreviewPlayed}
                   className="flex-1 flex items-center justify-center gap-2 font-semibold text-sm py-2.5 px-5 rounded-small transition-all shadow-custom hover:shadow-custom-hover disabled:opacity-40"
                   style={{
                     backgroundColor: voicePreviewPlayed ? "rgb(138 9 9)" : "rgb(212 212 212)",
