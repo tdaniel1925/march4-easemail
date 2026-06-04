@@ -1914,13 +1914,16 @@ export default function InboxClient({
                       const attBaseUrl = `/api/mail/attachments/${encodeURIComponent(selectedEmail.id)}/${encodeURIComponent(att.id)}?homeAccountId=${encodeURIComponent(acctId)}`;
                       const isImage = att.contentType.startsWith("image/");
                       return isImage ? (
-                        <a key={att.id} href={`${attBaseUrl}&mode=inline`} target="_blank" rel="noopener noreferrer" className="flex flex-col rounded-[10px] border border-neutral-200 bg-white hover:border-neutral-300 hover:shadow-sm transition-all overflow-hidden" style={{ width: 160 }}>
+                        <a key={att.id} href={`${attBaseUrl}&mode=download`} download={att.name || "image"} className="flex flex-col rounded-[10px] border border-neutral-200 bg-white hover:border-neutral-300 hover:shadow-sm transition-all overflow-hidden" style={{ width: 160 }}>
                           <div className="h-24 bg-neutral-50 flex items-center justify-center overflow-hidden">
                             <img src={`${attBaseUrl}&mode=inline`} alt={att.name} className="max-w-full max-h-full object-cover" loading="lazy" />
                           </div>
-                          <div className="px-2.5 py-2">
-                            <p className="text-xs font-medium truncate" style={{ color: "rgb(27 29 29)" }}>{att.name}</p>
-                            <p className="text-xs" style={{ color: "rgb(155 155 155)" }}>{formatSize(att.size)}</p>
+                          <div className="px-2.5 py-2 flex items-center gap-1">
+                            <div className="flex-1 min-w-0">
+                              <p className="text-xs font-medium truncate" style={{ color: "rgb(27 29 29)" }}>{att.name}</p>
+                              <p className="text-xs" style={{ color: "rgb(155 155 155)" }}>{formatSize(att.size)}</p>
+                            </div>
+                            <svg className="w-3.5 h-3.5 flex-shrink-0" style={{ color: "rgb(155 155 155)" }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
                           </div>
                         </a>
                       ) : (
