@@ -16,6 +16,11 @@ function SafeHtml({ html }: { html: string }) {
           ALLOWED_URI_REGEXP: /^(?:(?:(?:f|ht)tps?|mailto|tel|callto|cid|data|blob):|[^a-z]|[a-z+.\-]*(?:[^a-z+.\-:]|$))/i,
           ADD_ATTR: ["target", "loading"],
         });
+        // Force all links to open in new tab
+        ref.current.querySelectorAll("a[href]").forEach((a) => {
+          a.setAttribute("target", "_blank");
+          a.setAttribute("rel", "noopener noreferrer");
+        });
       }
     });
   }, [html]);

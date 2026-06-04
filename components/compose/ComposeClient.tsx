@@ -1096,14 +1096,30 @@ export default function ComposeClient({
     voiceChunksRef.current = [];
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const mimeType = (typeof MediaRecorder !== "undefined" && MediaRecorder.isTypeSupported("audio/webm;codecs=opus"))
-        ? "audio/webm;codecs=opus"
-        : (typeof MediaRecorder !== "undefined" && MediaRecorder.isTypeSupported("audio/ogg;codecs=opus"))
-          ? "audio/ogg;codecs=opus"
-          : "audio/webm";
+      // Find a supported audio MIME type — varies by browser
+      const candidates = [
+        "audio/webm;codecs=opus",
+        "audio/webm",
+        "audio/ogg;codecs=opus",
+        "audio/ogg",
+        "audio/mp4",
+        "audio/mpeg",
+      ];
+      const mimeType = candidates.find((m) => typeof MediaRecorder !== "undefined" && MediaRecorder.isTypeSupported(m)) ?? "";
+      if (!mimeType) {
+        stream.getTracks().forEach((t) => t.stop());
+        setVoiceError("Audio recording not supported in this browser. Try Chrome or Edge.");
+        return;
+      }
       const recorder = new MediaRecorder(stream, { mimeType });
       voiceRecorderRef.current = recorder;
       recorder.ondataavailable = (e) => { if (e.data.size > 0) voiceChunksRef.current.push(e.data); };
+      recorder.onerror = () => {
+        setVoiceError("Recording failed. Please try again.");
+        setVoiceRecording(false);
+        if (voiceTimerRef.current) { clearInterval(voiceTimerRef.current); voiceTimerRef.current = null; }
+        stream.getTracks().forEach((t) => t.stop());
+      };
       recorder.onstop = () => {
         stream.getTracks().forEach((t) => t.stop());
         const baseType = mimeType.split(";")[0];
