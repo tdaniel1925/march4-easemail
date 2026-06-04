@@ -1756,7 +1756,7 @@ export default function InboxClient({
                   </p>
                   <div className="flex gap-2 flex-wrap">
                     {splitPaneDetails.attachments.map((att) => {
-                      const attUrl = `/api/mail/attachments/${encodeURIComponent(splitSelected.id)}/${encodeURIComponent(att.id)}?homeAccountId=${encodeURIComponent(acctId)}`;
+                      const attUrl = `/api/mail/attachments/${encodeURIComponent(splitSelected.id)}/${encodeURIComponent(att.id)}?homeAccountId=${encodeURIComponent(acctId)}&mode=download`;
                       return (
                         <a key={att.id} href={attUrl} className="flex items-center gap-2 px-3 py-2 rounded-[8px] border border-neutral-200 bg-white hover:border-neutral-300 text-xs" style={{ minWidth: 160 }}>
                           <span className="text-base">{fileIcon(att.contentType)}</span>
@@ -1911,12 +1911,12 @@ export default function InboxClient({
                   </p>
                   <div className="flex gap-2 flex-wrap">
                     {expandedDetails.attachments.map((att) => {
-                      const attUrl = `/api/mail/attachments/${encodeURIComponent(selectedEmail.id)}/${encodeURIComponent(att.id)}?homeAccountId=${encodeURIComponent(acctId)}`;
+                      const attBaseUrl = `/api/mail/attachments/${encodeURIComponent(selectedEmail.id)}/${encodeURIComponent(att.id)}?homeAccountId=${encodeURIComponent(acctId)}`;
                       const isImage = att.contentType.startsWith("image/");
                       return isImage ? (
-                        <a key={att.id} href={`${attUrl}&mode=inline`} target="_blank" rel="noopener noreferrer" className="flex flex-col rounded-[10px] border border-neutral-200 bg-white hover:border-neutral-300 hover:shadow-sm transition-all overflow-hidden" style={{ width: 160 }}>
+                        <a key={att.id} href={`${attBaseUrl}&mode=inline`} target="_blank" rel="noopener noreferrer" className="flex flex-col rounded-[10px] border border-neutral-200 bg-white hover:border-neutral-300 hover:shadow-sm transition-all overflow-hidden" style={{ width: 160 }}>
                           <div className="h-24 bg-neutral-50 flex items-center justify-center overflow-hidden">
-                            <img src={`${attUrl}&mode=inline`} alt={att.name} className="max-w-full max-h-full object-cover" loading="lazy" />
+                            <img src={`${attBaseUrl}&mode=inline`} alt={att.name} className="max-w-full max-h-full object-cover" loading="lazy" />
                           </div>
                           <div className="px-2.5 py-2">
                             <p className="text-xs font-medium truncate" style={{ color: "rgb(27 29 29)" }}>{att.name}</p>
@@ -1924,7 +1924,7 @@ export default function InboxClient({
                           </div>
                         </a>
                       ) : (
-                        <a key={att.id} href={attUrl} className="flex items-center gap-2.5 px-3 py-2.5 rounded-[10px] border border-neutral-200 bg-white hover:border-neutral-300 hover:shadow-sm transition-all" style={{ minWidth: 180, maxWidth: 260 }}>
+                        <a key={att.id} href={`${attBaseUrl}&mode=download`} download={att.name || "attachment"} className="flex items-center gap-2.5 px-3 py-2.5 rounded-[10px] border border-neutral-200 bg-white hover:border-neutral-300 hover:shadow-sm transition-all" style={{ minWidth: 180, maxWidth: 260 }}>
                           <span className="text-lg flex-shrink-0">{fileIcon(att.contentType)}</span>
                           <div className="flex-1 min-w-0">
                             <p className="text-xs font-medium truncate" style={{ color: "rgb(27 29 29)" }}>{att.name}</p>

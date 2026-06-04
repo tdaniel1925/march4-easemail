@@ -613,8 +613,8 @@ export default function EmailReadClient({ email: initialEmail, homeAccountId, re
                 {email.attachments.map((att) => (
                   <a
                     key={att.id}
-                    href={`/api/mail/attachments/${encodeURIComponent(email.id)}/${encodeURIComponent(att.id)}?homeAccountId=${encodeURIComponent(homeAccountId)}`}
-                    download={att.name}
+                    href={`/api/mail/attachments/${encodeURIComponent(email.id)}/${encodeURIComponent(att.id)}?homeAccountId=${encodeURIComponent(homeAccountId)}&mode=download`}
+                    download={att.name || "attachment"}
                     className="inline-flex items-center gap-3 p-3 border border-neutral-200 rounded-large bg-white cursor-pointer hover:border-primary-300 hover:shadow-custom transition-all"
                   >
                     <div className="p-2 bg-primary-50 border border-primary-100 rounded-small text-primary-600">

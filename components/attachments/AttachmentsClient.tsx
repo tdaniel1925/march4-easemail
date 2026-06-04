@@ -574,7 +574,7 @@ export default function AttachmentsClient({
                       );
                       for (const item of selectedItems) {
                         try {
-                          const url = `/api/mail/attachments/${encodeURIComponent(item.messageId)}/${encodeURIComponent(item.id)}?homeAccountId=${encodeURIComponent(item.homeAccountId)}`;
+                          const url = `/api/mail/attachments/${encodeURIComponent(item.messageId)}/${encodeURIComponent(item.id)}?homeAccountId=${encodeURIComponent(item.homeAccountId)}&mode=download`;
                           const res = await fetch(url);
                           if (!res.ok) throw new Error(`Download failed: ${res.status}`);
                           const rawBlob = await res.blob();
@@ -829,7 +829,7 @@ export default function AttachmentsClient({
               <button
                 onClick={async () => {
                   try {
-                    const url = `/api/mail/attachments/${encodeURIComponent(previewItem.messageId)}/${encodeURIComponent(previewItem.id)}?homeAccountId=${encodeURIComponent(previewItem.homeAccountId)}`;
+                    const url = `/api/mail/attachments/${encodeURIComponent(previewItem.messageId)}/${encodeURIComponent(previewItem.id)}?homeAccountId=${encodeURIComponent(previewItem.homeAccountId)}&mode=download`;
                     const res = await fetch(url);
                     if (!res.ok) throw new Error(`Download failed: ${res.status}`);
                     const rawBlob = await res.blob();
@@ -886,7 +886,7 @@ function AttachmentRow({
     if (downloading) return;
     setDownloading(true);
     try {
-      const url = `/api/mail/attachments/${encodeURIComponent(item.messageId)}/${encodeURIComponent(item.id)}?homeAccountId=${encodeURIComponent(item.homeAccountId)}`;
+      const url = `/api/mail/attachments/${encodeURIComponent(item.messageId)}/${encodeURIComponent(item.id)}?homeAccountId=${encodeURIComponent(item.homeAccountId)}&mode=download`;
       const res = await fetch(url);
       if (!res.ok) throw new Error(`Download failed: ${res.status}`);
       const rawBlob = await res.blob();
