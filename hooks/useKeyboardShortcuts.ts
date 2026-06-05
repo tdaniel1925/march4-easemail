@@ -95,6 +95,13 @@ export function useKeyboardShortcuts(
           }
           break;
         }
+        case "R": {
+          if (selectedEmail) {
+            e.preventDefault();
+            handlers.onReplyAll(selectedEmail);
+          }
+          break;
+        }
         case "a": {
           if (selectedEmail) {
             e.preventDefault();

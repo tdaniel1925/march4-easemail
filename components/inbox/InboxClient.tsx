@@ -1661,7 +1661,7 @@ export default function InboxClient({
           bodyHtml = raw;
         } else {
           const escaped = raw.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-          const withLinks = escaped.replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener" style="color:#8a0909">$1</a>');
+          const withLinks = escaped.replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer" style="color:#8a0909">$1</a>');
           const paragraphs = withLinks.split(/\n{2,}/).map(p => p.trim()).filter(Boolean);
           bodyHtml = paragraphs.map(p => `<p style="margin:0 0 12px">${p.replace(/\n/g, "<br>")}</p>`).join("") || `<p>${withLinks.replace(/\n/g, "<br>")}</p>`;
         }
@@ -1774,12 +1774,11 @@ export default function InboxClient({
               {/* Body */}
               <div className="px-5 py-4">
                 {splitPaneLoading ? (
-                  <div className="flex flex-col items-center gap-3 py-16">
-                    <svg className="w-5 h-5 animate-spin" style={{ color: "rgb(138 9 9)" }} fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
-                    </svg>
-                    <span className="text-xs font-medium" style={{ color: "rgb(155 155 155)" }}>Loading email...</span>
+                  <div className="p-6 space-y-3 animate-pulse">
+                    <div className="h-4 bg-neutral-200 rounded w-3/4" />
+                    <div className="h-4 bg-neutral-200 rounded w-1/2" />
+                    <div className="h-4 bg-neutral-200 rounded w-5/6" />
+                    <div className="h-4 bg-neutral-200 rounded w-2/3" />
                   </div>
                 ) : (
                   <div className="email-body-render" dangerouslySetInnerHTML={{ __html: bodyHtml }} />
@@ -1825,7 +1824,7 @@ export default function InboxClient({
           bodyHtml = raw;
         } else {
           const escaped = raw.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-          const withLinks = escaped.replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener" style="color:#8a0909">$1</a>');
+          const withLinks = escaped.replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer" style="color:#8a0909">$1</a>');
           const replyPattern = /(?:^|\n)((?:From:|On .+ wrote:|Sent from|_{5,}|-{5,}).*)$/m;
           const parts = withLinks.split(replyPattern);
           const sections: string[] = [];
@@ -1944,12 +1943,11 @@ export default function InboxClient({
               {/* Email body */}
               <div className="px-6 py-4">
                 {expandedLoading ? (
-                  <div className="flex flex-col items-center gap-3 py-16">
-                    <svg className="w-5 h-5 animate-spin" style={{ color: "rgb(138 9 9)" }} fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
-                    </svg>
-                    <span className="text-xs font-medium" style={{ color: "rgb(155 155 155)" }}>Loading email...</span>
+                  <div className="p-6 space-y-3 animate-pulse">
+                    <div className="h-4 bg-neutral-200 rounded w-3/4" />
+                    <div className="h-4 bg-neutral-200 rounded w-1/2" />
+                    <div className="h-4 bg-neutral-200 rounded w-5/6" />
+                    <div className="h-4 bg-neutral-200 rounded w-2/3" />
                   </div>
                 ) : (
                   <div

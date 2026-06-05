@@ -23,8 +23,11 @@ export default function SectionError({
           </svg>
         </div>
         <p className="text-neutral-900 font-medium mb-1">Something went wrong</p>
-        <p className="text-neutral-500 text-sm mb-6">
-          Could not load this section. Try reloading.
+        <p className="text-neutral-500 text-sm mb-2">
+          {error.message || "An unexpected error occurred."}
+        </p>
+        <p className="text-neutral-400 text-xs mb-6">
+          Try again, or go to inbox to start fresh.
         </p>
         <div className="flex gap-3 justify-center">
           <button
