@@ -43,6 +43,9 @@ export function useKeyboardShortcuts(
         return;
       }
 
+      // Ignore keystrokes with modifier keys (Ctrl, Meta, Alt) — those are browser shortcuts
+      if (e.ctrlKey || e.metaKey || e.altKey) return;
+
       const total = emails.length;
       const current = selectedEmailIndex;
       const selectedEmail = current >= 0 && current < total ? emails[current] : null;
@@ -78,7 +81,8 @@ export function useKeyboardShortcuts(
           break;
         }
         case "#": {
-          if (selectedEmail) {
+          // Shift+3 = # — only delete with Shift held (deliberate action)
+          if (selectedEmail && e.shiftKey) {
             e.preventDefault();
             handlers.onDelete(selectedEmail);
           }
