@@ -20,6 +20,24 @@ interface Sig {
 
 type SaveState = "idle" | "saving" | "saved" | "error";
 
+// ─── Sanitized HTML preview (DOMPurify, lazy-loaded) ─────────────────────────
+
+function SanitizedPreview({ html }: { html: string }) {
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!ref.current) return;
+    let cancelled = false;
+    import("dompurify").then(({ default: DOMPurify }) => {
+      if (cancelled || !ref.current) return;
+      ref.current.innerHTML = DOMPurify.sanitize(html, {
+        FORBID_TAGS: ["script", "iframe", "object", "embed"],
+      });
+    });
+    return () => { cancelled = true; };
+  }, [html]);
+  return <div ref={ref} className="text-sm text-neutral-700 leading-relaxed" />;
+}
+
 // ─── Rich Editor ──────────────────────────────────────────────────────────────
 
 function RichEditor({
@@ -310,10 +328,7 @@ function SigEditor({
           </p>
           <div className="w-8 h-px bg-neutral-300 mb-2" />
           {form.html?.trim() ? (
-            <div
-              className="text-sm text-neutral-700 leading-relaxed"
-              dangerouslySetInnerHTML={{ __html: form.html }}
-            />
+            <SanitizedPreview html={form.html} />
           ) : (
             <>
               {form.name && (

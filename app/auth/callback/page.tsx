@@ -37,7 +37,13 @@ function AuthCallbackInner() {
   const searchParams = useSearchParams();
 
   useEffect(() => {
-    const next = searchParams.get("next") ?? "/inbox";
+    // Prevent open redirect: only allow same-origin relative paths
+    // ("/foo" but not "//evil.com" or "/\evil.com").
+    const rawNext = searchParams.get("next") ?? "/inbox";
+    const next =
+      rawNext.startsWith("/") && !rawNext.startsWith("//") && !rawNext.startsWith("/\\")
+        ? rawNext
+        : "/inbox";
     const code = searchParams.get("code");
 
     const supabase = createBrowserClient(

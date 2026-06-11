@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import Anthropic from "@anthropic-ai/sdk";
+import { withRateLimit, rateLimiters } from "@/lib/rate-limit";
 
 const client = new Anthropic();
 
@@ -18,7 +19,7 @@ interface PriorityScore {
 }
 
 /** POST /api/mail/ai-priority — score emails by urgency using Claude Haiku */
-export async function POST(req: NextRequest) {
+async function aiPriorityHandler(req: NextRequest) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -74,3 +75,6 @@ Low: newsletters, automated notifications, CC-only, marketing, no action needed`
     return NextResponse.json({ error: "AI scoring failed", scores: [] }, { status: 500 });
   }
 }
+
+// Export with rate limiting (30 AI calls per hour)
+export const POST = withRateLimit(aiPriorityHandler, rateLimiters.ai);

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { graphFetch } from "@/lib/microsoft/graph";
+import { verifyAccountOwnership } from "@/lib/providers/registry";
 
 interface GraphMessage {
   id: string;
@@ -48,6 +49,15 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
   if (!nextLink || !homeAccountId) {
     return NextResponse.json({ error: "nextLink and homeAccountId required" }, { status: 400 });
   }
+
+  // nextLink must be a Graph URL or a relative Graph path — nothing else
+  if (!nextLink.startsWith("https://graph.microsoft.com/") && !nextLink.startsWith("/")) {
+    return NextResponse.json({ error: "Invalid nextLink" }, { status: 400 });
+  }
+
+  // Verify the homeAccountId belongs to this authenticated user (prevents IDOR)
+  const account = await verifyAccountOwnership(user.id, homeAccountId);
+  if (!account) return NextResponse.json({ error: "Account not found" }, { status: 404 });
 
   try {
     // Extract relative path from full Graph URL

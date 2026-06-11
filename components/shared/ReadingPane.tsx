@@ -9,20 +9,23 @@ function SafeHtml({ html }: { html: string }) {
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (!ref.current) return;
+    // Cancelled flag — the dynamic import resolves async, so without it an
+    // older email's sanitized HTML could overwrite a newer one.
+    let cancelled = false;
     import("dompurify").then(({ default: DOMPurify }) => {
-      if (ref.current) {
-        ref.current.innerHTML = DOMPurify.sanitize(html, {
-          FORBID_TAGS: ["script", "iframe", "object", "embed"],
-          ALLOWED_URI_REGEXP: /^(?:(?:(?:f|ht)tps?|mailto|tel|callto|cid|data|blob):|[^a-z]|[a-z+.\-]*(?:[^a-z+.\-:]|$))/i,
-          ADD_ATTR: ["target", "loading"],
-        });
-        // Force all links to open in new tab
-        ref.current.querySelectorAll("a[href]").forEach((a) => {
-          a.setAttribute("target", "_blank");
-          a.setAttribute("rel", "noopener noreferrer");
-        });
-      }
+      if (cancelled || !ref.current) return;
+      ref.current.innerHTML = DOMPurify.sanitize(html, {
+        FORBID_TAGS: ["script", "iframe", "object", "embed"],
+        ALLOWED_URI_REGEXP: /^(?:(?:(?:f|ht)tps?|mailto|tel|callto|cid):|[^a-z]|[a-z+.\-]*(?:[^a-z+.\-:]|$))/i,
+        ADD_ATTR: ["target", "loading"],
+      });
+      // Force all links to open in new tab
+      ref.current.querySelectorAll("a[href]").forEach((a) => {
+        a.setAttribute("target", "_blank");
+        a.setAttribute("rel", "noopener noreferrer");
+      });
     });
+    return () => { cancelled = true; };
   }, [html]);
   return <div ref={ref} />;
 }
@@ -47,14 +50,25 @@ export function ReadingPane({
   const [replySent, setReplySent] = useState(false);
   const [replySending, setReplySending] = useState(false);
   const [replyError, setReplyError] = useState<string | null>(null);
+  // Toolbar actions (archive / delete / read / star)
+  const [actionLoading, setActionLoading] = useState<string | null>(null);
+  const [actionError, setActionError] = useState<string | null>(null);
+  const [actionNotice, setActionNotice] = useState<string | null>(null);
+  const [localRead, setLocalRead] = useState<boolean | null>(null);
+  const [localStarred, setLocalStarred] = useState<boolean | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  // Reset compose panel when email changes
+  // Reset compose panel + action state when email changes
   useEffect(() => {
     setComposeMode(null);
     setToField("");
     setReplySent(false);
     setReplyError(null);
+    setActionLoading(null);
+    setActionError(null);
+    setActionNotice(null);
+    setLocalRead(null);
+    setLocalStarred(null);
   }, [email?.id]);
 
   // Auto-open reply when AI Reply pre-fills replyText
@@ -78,6 +92,62 @@ export function ReadingPane({
     setReplyText("");
     setToField("");
     setReplyError(null);
+  };
+
+  // ── Toolbar action handlers ─────────────────────────────────────────────
+  // homeAccountId is omitted — the mail routes fall back to the default
+  // account (same pattern as /api/mail/reply above).
+  const runAction = async (key: string, endpoint: string, payload: Record<string, unknown>): Promise<boolean> => {
+    if (!email || actionLoading) return false;
+    setActionLoading(key);
+    setActionError(null);
+    setActionNotice(null);
+    try {
+      const res = await fetch(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ messageId: email.id, ...payload }),
+      });
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({} as { error?: string }));
+        throw new Error((body as { error?: string }).error ?? "Action failed. Please try again.");
+      }
+      return true;
+    } catch (e) {
+      setActionError((e as Error).message);
+      return false;
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
+  const handleArchive = async () => {
+    if (await runAction("archive", "/api/mail/archive", {})) {
+      setActionNotice("Email archived.");
+    }
+  };
+
+  const handleDelete = async () => {
+    if (await runAction("delete", "/api/mail/delete", {})) {
+      setActionNotice("Email moved to trash.");
+    }
+  };
+
+  const handleToggleRead = async () => {
+    if (!email) return;
+    const next = !(localRead ?? email.isRead);
+    if (await runAction("read", "/api/mail/mark-read", { isRead: next })) {
+      setLocalRead(next);
+      if (next && onMarkRead) onMarkRead(email.id);
+    }
+  };
+
+  const handleToggleStar = async () => {
+    if (!email) return;
+    const next = !(localStarred ?? email.flag?.flagStatus === "flagged");
+    if (await runAction("star", "/api/mail/star", { flagged: next })) {
+      setLocalStarred(next);
+    }
   };
 
   const handleSend = async () => {
@@ -140,6 +210,9 @@ export function ReadingPane({
     composeMode === "replyAll" ? "Reply All" :
     "Reply";
 
+  const isEmailRead = localRead ?? email.isRead;
+  const isEmailStarred = localStarred ?? email.flag?.flagStatus === "flagged";
+
   return (
     <div className="hidden lg:flex flex-col flex-1 bg-white" style={{ overflow: "hidden" }}>
 
@@ -177,17 +250,19 @@ export function ReadingPane({
         {/* Action icons */}
         <div className="flex items-center gap-0.5">
           {[
-            { title: "Archive", icon: <path strokeLinecap="round" strokeLinejoin="round" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" /> },
-            { title: "Delete",  icon: <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /> },
-            { title: "Mark unread", icon: <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /> },
-            { title: "Star", icon: <path strokeLinecap="round" strokeLinejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" /> },
+            { key: "archive", title: "Archive", onClick: handleArchive, active: false, fill: false, icon: <path strokeLinecap="round" strokeLinejoin="round" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" /> },
+            { key: "delete", title: "Delete", onClick: handleDelete, active: false, fill: false, icon: <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /> },
+            { key: "read", title: isEmailRead ? "Mark unread" : "Mark read", onClick: handleToggleRead, active: false, fill: false, icon: <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /> },
+            { key: "star", title: isEmailStarred ? "Unstar" : "Star", onClick: handleToggleStar, active: isEmailStarred, fill: isEmailStarred, icon: <path strokeLinecap="round" strokeLinejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" /> },
           ].map((btn) => (
-            <button key={btn.title} title={btn.title}
-              className="p-1.5 rounded-[8px] transition-colors"
-              style={{ color: "rgb(155 155 155)" }}
-              onMouseEnter={(e) => { e.currentTarget.style.color = "rgb(58 58 58)"; e.currentTarget.style.backgroundColor = "rgb(245 245 245)"; }}
-              onMouseLeave={(e) => { e.currentTarget.style.color = "rgb(155 155 155)"; e.currentTarget.style.backgroundColor = "transparent"; }}>
-              <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>{btn.icon}</svg>
+            <button key={btn.key} title={btn.title}
+              onClick={() => void btn.onClick()}
+              disabled={actionLoading !== null}
+              className="p-1.5 rounded-[8px] transition-colors disabled:opacity-50"
+              style={{ color: btn.active || actionLoading === btn.key ? "rgb(138 9 9)" : "rgb(155 155 155)" }}
+              onMouseEnter={(e) => { if (!btn.active) { e.currentTarget.style.color = "rgb(58 58 58)"; e.currentTarget.style.backgroundColor = "rgb(245 245 245)"; } }}
+              onMouseLeave={(e) => { if (!btn.active) { e.currentTarget.style.color = "rgb(155 155 155)"; e.currentTarget.style.backgroundColor = "transparent"; } }}>
+              <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill={btn.fill ? "currentColor" : "none"} viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>{btn.icon}</svg>
             </button>
           ))}
           <button title="More" className="p-1.5 rounded-[8px] transition-colors" style={{ color: "rgb(155 155 155)" }}
@@ -221,6 +296,18 @@ export function ReadingPane({
           )}
         </div>
       </div>
+
+      {/* Toolbar action feedback */}
+      {(actionError || actionNotice) && (
+        <div
+          className="px-4 py-2 text-xs border-b border-neutral-100 flex-shrink-0"
+          style={actionError
+            ? { color: "rgb(153 27 27)", backgroundColor: "rgb(254 242 242)" }
+            : { color: "rgb(4 120 87)", backgroundColor: "rgb(236 253 245)" }}
+        >
+          {actionError ?? actionNotice}
+        </div>
+      )}
 
       {/* ── Sticky Compose Panel ──────────────────────────────── */}
       {composeMode && (

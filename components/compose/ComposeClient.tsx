@@ -322,6 +322,8 @@ export default function ComposeClient({
     originalSubject: string;
     originalBodyHtml: string;
   } | null>(null);
+  // Guard: the quoted original message is inserted into the editor exactly once
+  const quoteInsertedRef = useRef(false);
 
   // ── Schedule Send ────────────────────────────────────────────────────────────
   const [scheduledAt, setScheduledAt] = useState<Date | null>(null);
@@ -426,6 +428,9 @@ export default function ComposeClient({
   const voiceChunksRef = useRef<Blob[]>([]);
   const voiceTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const voiceTimeRef = useRef(0);
+  // Mirror voiceUrl into a ref so unmount cleanup can revoke the latest object URL
+  const voiceUrlRef = useRef<string | null>(null);
+  voiceUrlRef.current = voiceUrl;
 
   // ── Toolbar formatting state ─────────────────────────────────────────────────
   const [activeFormats, setActiveFormats] = useState<Set<string>>(new Set());
@@ -562,7 +567,8 @@ export default function ComposeClient({
     const sendAt = scheduleAt ?? scheduledAt;
     if (sendAt) {
       try {
-        await saveDraftFn(sendAt);
+        // Pass the committed recipients explicitly — `to`/`cc`/`bcc` state is still stale here
+        await saveDraftFn(sendAt, { to: finalTo, cc: finalCc, bcc: finalBcc });
         navigateTo("/drafts");
       } catch {
         setSendError("Failed to schedule. Please try again.");
@@ -626,26 +632,48 @@ export default function ComposeClient({
     }
   }
 
+  // Keep a ref to the latest handleSend so the keyboard shortcut never calls a stale closure
+  const handleSendRef = useRef(handleSend);
+  handleSendRef.current = handleSend;
+
   // ── Draft save ───────────────────────────────────────────────────────────────
-  async function saveDraftFn(scheduleAt?: Date | null) {
+  async function saveDraftFn(
+    scheduleAt?: Date | null,
+    finalRecipients?: { to: string[]; cc: string[]; bcc: string[] }
+  ) {
     const bodyHtml = bodyRef.current?.innerHTML ?? "";
-    const hasContent = to.length > 0 || subject.trim() || (bodyHtml.length > 20);
+    // Scheduled sends pass committed recipients explicitly (state is stale at that point)
+    const toList = finalRecipients?.to ?? to;
+    const ccList = finalRecipients?.cc ?? cc;
+    const bccList = finalRecipients?.bcc ?? bcc;
+    const hasContent = toList.length > 0 || subject.trim() || (bodyHtml.length > 20);
     if (!hasContent) return;
 
     setDraftSaving(true);
     try {
+      // Serialize attachments; when scheduling, include the voice recording so it isn't lost
+      const draftAttachments = attachments.map(({ name, type, size, data }) => ({ name, type, size, data })); // FIX: Include data for voice attachments
+      if (scheduleAt && voiceBlob) {
+        const buf = await voiceBlob.arrayBuffer();
+        const bytes = new Uint8Array(buf);
+        let binary = "";
+        for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
+        const ext = voiceBlob.type.includes("ogg") ? "ogg" : "webm";
+        draftAttachments.push({ name: `voice-message.${ext}`, type: voiceBlob.type, size: voiceBlob.size, data: btoa(binary) });
+      }
+
       const res = await fetch("/api/drafts", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           draftId: draftIdRef.current ?? undefined,
           homeAccountId: fromAccountId || defaultAccount?.homeAccountId,
-          toRecipients: to.map((addr) => ({ emailAddress: { address: addr } })),
-          ccRecipients: cc.map((addr) => ({ emailAddress: { address: addr } })),
-          bccRecipients: bcc.map((addr) => ({ emailAddress: { address: addr } })),
+          toRecipients: toList.map((addr) => ({ emailAddress: { address: addr } })),
+          ccRecipients: ccList.map((addr) => ({ emailAddress: { address: addr } })),
+          bccRecipients: bccList.map((addr) => ({ emailAddress: { address: addr } })),
           subject,
           bodyHtml,
-          attachments: attachments.map(({ name, type, size, data }) => ({ name, type, size, data })), // FIX: Include data for voice attachments
+          attachments: draftAttachments,
           scheduledAt: scheduleAt !== undefined ? scheduleAt?.toISOString() ?? null : null,
           // FIX: Add missing fields that were collected but never saved
           importance,
@@ -656,12 +684,20 @@ export default function ComposeClient({
           originalMessageBody: replyContext?.originalBodyHtml,
         }),
       });
+      if (!res.ok) {
+        setDraftSaved(false);
+        setSendError("Draft could not be saved. Check your connection and try again.");
+        if (scheduleAt) throw new Error("draft_save_failed");
+        return;
+      }
       const data = await res.json() as { id?: string };
       if (data.id) draftIdRef.current = data.id;
       setDraftSaved(true);
       setLastSaved(new Date());
-    } catch {
-      // Non-fatal — draft save failure silently ignored
+    } catch (err) {
+      // Scheduling must surface the failure — rethrow so handleSend shows the inline error
+      if (scheduleAt) throw err;
+      // Non-fatal — background auto-save failure surfaced via missing "Saved" indicator
     } finally {
       setDraftSaving(false);
     }
@@ -1223,7 +1259,7 @@ export default function ComposeClient({
     function onKeyDown(e: KeyboardEvent) {
       if ((e.metaKey || e.ctrlKey) && e.key === "Enter") {
         e.preventDefault();
-        void handleSend();
+        void handleSendRef.current();
       }
     }
     window.addEventListener("keydown", onKeyDown);
@@ -1234,6 +1270,8 @@ export default function ComposeClient({
   // ── Reply/Forward context: fetch original message on mount ───────────────────
   useEffect(() => {
     if (!mode || !messageId) return;
+    // Editing an existing draft — its saved body already contains any quoted original
+    if (draftId || draftData) quoteInsertedRef.current = true;
     fetch(`/api/mail/message/${messageId}?homeAccountId=${encodeURIComponent(defaultAccount?.homeAccountId ?? "")}`)
       .then((r) => r.json() as Promise<{
         subject?: string;
@@ -1241,6 +1279,8 @@ export default function ComposeClient({
         body?: { contentType?: string; content?: string };
         toRecipients?: { emailAddress?: { address?: string } }[];
         ccRecipients?: { emailAddress?: { address?: string } }[];
+        receivedDateTime?: string;
+        attachments?: { id: string; name: string; size: number; contentType: string }[];
       }>)
       .then((msg) => {
         const fromName = msg.from?.emailAddress?.name ?? "";
@@ -1251,14 +1291,21 @@ export default function ComposeClient({
         // Pre-fill To (not for forward — user enters recipient manually)
         if (mode === "reply" && fromAddr) setTo([fromAddr]);
         if (mode === "replyAll") {
+          // Filter out the original sender AND the active account's own address,
+          // and dedupe case-insensitively — never CC yourself
+          const selfAddr = (defaultAccount?.email ?? defaultAccount?.msEmail ?? "").toLowerCase();
           const allTo = (msg.toRecipients ?? []).map((r) => r.emailAddress?.address ?? "").filter(Boolean);
           const allCc = (msg.ccRecipients ?? []).map((r) => r.emailAddress?.address ?? "").filter(Boolean);
           setTo([fromAddr]);
-          if (allCc.length) { setCc(allCc); setShowCc(true); }
-          if (allTo.length > 1) {
-            const rest = allTo.filter((a) => a !== fromAddr);
-            if (rest.length) { setCc((p) => [...new Set([...p, ...rest])]); setShowCc(true); }
+          const seen = new Set<string>([fromAddr.toLowerCase(), selfAddr]);
+          const ccList: string[] = [];
+          for (const addr of [...allCc, ...allTo]) {
+            const lower = addr.toLowerCase();
+            if (seen.has(lower)) continue;
+            seen.add(lower);
+            ccList.push(addr);
           }
+          if (ccList.length) { setCc(ccList); setShowCc(true); }
         }
 
         setSubject(prefix + origSubject);
@@ -1268,15 +1315,61 @@ export default function ComposeClient({
           originalBodyHtml: msg.body?.content ?? "",
         });
 
-        // FIX: Pre-fill body from AI Reply (database instead of sessionStorage)
+        // Build the quoted original message — sanitized, it's third-party email HTML
+        const escHtml = (t: string) => t.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        const sentDate = msg.receivedDateTime
+          ? new Date(msg.receivedDateTime).toLocaleString([], { year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })
+          : "";
+        const senderDisplay = fromName ? `${fromName} <${fromAddr}>` : fromAddr;
+        const quotedBody = `<blockquote style="border-left:2px solid #ccc;padding-left:12px;margin-left:0;color:#555">${sanitize(msg.body?.content ?? "")}</blockquote>`;
+        const quoteHtml = mode === "forward"
+          ? `<div class="quote-header">---------- Forwarded message ----------<br>From: ${escHtml(senderDisplay)}<br>Date: ${escHtml(sentDate)}<br>Subject: ${escHtml(origSubject)}<br>To: ${escHtml((msg.toRecipients ?? []).map((r) => r.emailAddress?.address ?? "").filter(Boolean).join(", "))}</div>${quotedBody}`
+          : `<div class="quote-header">On ${escHtml(sentDate)}, ${escHtml(senderDisplay)} wrote:</div>${quotedBody}`;
+
+        // Insert quote below the typing area — once only (guards against re-runs).
+        // handleSend reads bodyRef.current.innerHTML, so the quote rides along automatically.
+        const insertQuote = (userHtml: string) => {
+          const el = bodyRef.current;
+          if (!el || quoteInsertedRef.current) return;
+          quoteInsertedRef.current = true;
+          el.innerHTML = `${userHtml.trim() ? userHtml : "<div><br></div>"}<br><br>${quoteHtml}`;
+          // Place caret at the top, above the quote (reply modes only — forward starts in the To field)
+          if (mode !== "forward") {
+            el.focus();
+            const range = document.createRange();
+            range.setStart(el.firstChild ?? el, 0);
+            range.collapse(true);
+            const sel = window.getSelection();
+            sel?.removeAllRanges();
+            sel?.addRange(range);
+          }
+          triggerAutoSave();
+        };
+
+        // Forward: carry the original attachments into the composer
+        if (mode === "forward" && !draftId && !draftData) {
+          for (const att of msg.attachments ?? []) {
+            fetch(`/api/mail/attachments/${encodeURIComponent(messageId)}/${encodeURIComponent(att.id)}?homeAccountId=${encodeURIComponent(defaultAccount?.homeAccountId ?? "")}&mode=download`)
+              .then(async (res) => {
+                if (!res.ok) throw new Error("attachment fetch failed");
+                const bytes = new Uint8Array(await res.arrayBuffer());
+                let binary = "";
+                for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
+                const data = btoa(binary);
+                setAttachments((prev) => prev.some((p) => p.name === att.name && p.size === att.size)
+                  ? prev
+                  : [...prev, { id: crypto.randomUUID(), name: att.name, type: att.contentType, size: att.size, data }]);
+              })
+              .catch(() => setSendError(`Original attachment "${att.name}" could not be included.`));
+          }
+        }
+
+        // FIX: Pre-fill body from AI Reply (database instead of sessionStorage),
+        // then append the quoted original below the typing area
         fetch(`/api/ai-replies?messageId=${encodeURIComponent(messageId)}`)
           .then((res) => res.json())
-          .then((data) => {
-            if (data.reply && bodyRef.current) {
-              bodyRef.current.innerHTML = data.reply;
-            }
-          })
-          .catch((err) => console.error("Failed to load AI reply:", err));
+          .then((data) => insertQuote(typeof data.reply === "string" ? data.reply : ""))
+          .catch((err) => { console.error("Failed to load AI reply:", err); insertQuote(""); });
       })
       .catch(() => {});
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -1364,6 +1457,18 @@ export default function ComposeClient({
       if (timerRef.current) clearInterval(timerRef.current);
       if (draftTimer.current) clearTimeout(draftTimer.current);
       if (autoSaveTimerRef.current) clearTimeout(autoSaveTimerRef.current);
+      // Voice recording: stop recorder + release mic stream, clear timer, revoke blob URL
+      if (voiceTimerRef.current) { clearInterval(voiceTimerRef.current); voiceTimerRef.current = null; }
+      const recorder = voiceRecorderRef.current;
+      if (recorder) {
+        try {
+          recorder.onstop = null; // don't create a blob URL after unmount
+          if (recorder.state !== "inactive") recorder.stop();
+        } catch { /* already stopped */ }
+        recorder.stream.getTracks().forEach((t) => t.stop());
+        voiceRecorderRef.current = null;
+      }
+      if (voiceUrlRef.current) URL.revokeObjectURL(voiceUrlRef.current);
     };
   }, []);
 
@@ -2367,7 +2472,17 @@ export default function ComposeClient({
                         Keep editing
                       </button>
                       <button
-                        onClick={() => navigateTo("/inbox")}
+                        onClick={() => {
+                          // Cancel any pending auto-save and delete the auto-saved draft
+                          // so the discarded email doesn't reappear in Drafts
+                          if (autoSaveTimerRef.current) clearTimeout(autoSaveTimerRef.current);
+                          const discardId = draftIdRef.current;
+                          if (discardId) {
+                            draftIdRef.current = null;
+                            void fetch(`/api/drafts/${encodeURIComponent(discardId)}`, { method: "DELETE" }).catch(() => {});
+                          }
+                          navigateTo("/inbox");
+                        }}
                         className="px-4 py-2 text-sm font-semibold text-white rounded-small transition-colors"
                         style={{ backgroundColor: "rgb(138 9 9)" }}
                       >

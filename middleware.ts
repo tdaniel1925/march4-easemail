@@ -12,6 +12,8 @@ const PUBLIC_PATHS = new Set([
 const PUBLIC_PREFIXES = [
   "/api/auth/",
   "/api/cron/",
+  "/api/webhooks/", // external callers — routes do their own HMAC verification
+
   "/_next/",
   "/favicon",
   "/icons/",

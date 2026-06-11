@@ -88,6 +88,14 @@ export async function POST(req: NextRequest) {
     scheduledAt?: string | null;
   };
 
+  // Validate scheduledAt if provided
+  if (scheduledAt) {
+    const d = new Date(scheduledAt);
+    if (isNaN(d.getTime())) {
+      return NextResponse.json({ error: "Invalid scheduledAt date" }, { status: 400 });
+    }
+  }
+
   // ── Build DB payload ──────────────────────────────────────────────────────
   const dbData = {
     userId: user.id,

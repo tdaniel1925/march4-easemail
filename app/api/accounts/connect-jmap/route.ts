@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { encryptCredential } from "@/lib/providers/crypto";
 import { createId } from "@paralleldrive/cuid2";
+import { validateSessionUrl } from "../_lib/validate-session-url";
 
 export async function POST(req: NextRequest) {
   const supabase = await createClient();
@@ -26,6 +27,12 @@ export async function POST(req: NextRequest) {
       { error: "email and token are required" },
       { status: 400 }
     );
+  }
+
+  // SSRF guard — sessionUrl is user-supplied and fetched server-side
+  const urlCheck = await validateSessionUrl(sessionUrl);
+  if (!urlCheck.ok) {
+    return NextResponse.json({ error: urlCheck.error }, { status: 400 });
   }
 
   // Check for duplicate email

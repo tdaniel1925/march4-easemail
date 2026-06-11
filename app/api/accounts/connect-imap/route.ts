@@ -53,6 +53,9 @@ export async function POST(req: NextRequest) {
       host: imapHost,
       port: imapPort,
       secure: imapSecurity === "tls",
+      // With secure:false ImapFlow upgrades via STARTTLS when advertised;
+      // enforce certificate validation on the upgraded connection
+      tls: { rejectUnauthorized: true },
       auth: { user: email, pass: password },
       logger: false,
     });
@@ -74,6 +77,9 @@ export async function POST(req: NextRequest) {
       host: smtpHost,
       port: smtpPort,
       secure: smtpSecurity === "tls",
+      // Never fall back to plaintext when STARTTLS is expected
+      requireTLS: smtpSecurity === "starttls",
+      tls: { rejectUnauthorized: true },
       auth: { user: email, pass: password },
     });
     await transport.verify();

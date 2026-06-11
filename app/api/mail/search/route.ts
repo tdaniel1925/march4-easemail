@@ -133,14 +133,42 @@ function buildGraphSearchPath(operators: ReturnType<typeof parseSearchOperators>
   if (operators.before) filters.push(`receivedDateTime lt ${operators.before.toISOString()}`);
   if (operators.after) filters.push(`receivedDateTime ge ${operators.after.toISOString()}`);
 
-  // Construct the URL
+  // Construct the URL.
+  // Graph does NOT support combining $search with $filter in one request —
+  // when a text search is present we use $search only, and the structured
+  // operators are applied client-side on the results (applyClientSideFilters).
   const params: string[] = [];
-  if (searchTerm) params.push(`$search="${searchTerm}"`);
-  if (filters.length > 0) params.push(`$filter=${filters.join(" and ")}`);
+  if (searchTerm) {
+    params.push(`$search="${searchTerm}"`);
+  } else if (filters.length > 0) {
+    params.push(`$filter=${filters.join(" and ")}`);
+  }
   params.push(`$select=${SELECT}`);
   params.push("$top=50");
 
   return `${base}?${params.join("&")}`;
+}
+
+/**
+ * Apply structured operators (has:attachment, is:unread, before:, after:)
+ * client-side. Needed because Graph can't combine $search with $filter.
+ */
+function applyClientSideFilters(
+  emails: EmailMessage[],
+  operators: ReturnType<typeof parseSearchOperators>,
+): EmailMessage[] {
+  return emails.filter((e) => {
+    if (operators.hasAttachment && !e.hasAttachments) return false;
+    if (operators.isUnread && e.isRead) return false;
+    if (operators.isStarred && e.flag?.flagStatus !== "flagged") return false;
+    if (operators.before || operators.after) {
+      const received = new Date(e.receivedDateTime).getTime();
+      if (isNaN(received)) return false;
+      if (operators.before && received >= operators.before.getTime()) return false;
+      if (operators.after && received < operators.after.getTime()) return false;
+    }
+    return true;
+  });
 }
 
 async function searchEmailHandler(req: NextRequest) {
@@ -198,12 +226,18 @@ async function searchEmailHandler(req: NextRequest) {
 
   // ── Microsoft path (existing logic with caching) ───────────────────────────
 
-  // ── 1. Try DB cache first (fast, local) ─────────────────────────────────────
-  // Parse advanced search operators: from:, to:, subject:, has:attachment, before:, after:
-  try {
-    const term = q.trim();
-    const operators = parseSearchOperators(term);
+  // Parse advanced search operators once: from:, to:, subject:, has:attachment, before:, after:
+  // Guard against invalid dates before they reach Prisma or Graph.
+  const operators = parseSearchOperators(q.trim());
+  if (
+    (operators.before && isNaN(operators.before.getTime())) ||
+    (operators.after && isNaN(operators.after.getTime()))
+  ) {
+    return NextResponse.json({ error: "Invalid date in search query" }, { status: 400 });
+  }
 
+  // ── 1. Try DB cache first (fast, local) ─────────────────────────────────────
+  try {
     // Build Prisma where clause based on operators
     const whereConditions: Record<string, unknown>[] = [];
     const baseWhere: Record<string, unknown> = { userId: user.id, homeAccountId };
@@ -299,13 +333,13 @@ async function searchEmailHandler(req: NextRequest) {
 
   // ── 3. Fall back to Graph search ─────────────────────────────────────────────
   // Use operator-aware path builder for structured search
-  const operators = parseSearchOperators(q.trim());
   const path = buildGraphSearchPath(operators, folder);
 
   try {
     const data = await graphGet<{ value: GraphMessage[] }>(user.id, homeAccountId, path);
 
-    const emails = data.value.map(mapGraphMessage);
+    // Apply structured operators client-side — Graph can't combine $search + $filter
+    const emails = applyClientSideFilters(data.value.map(mapGraphMessage), operators);
 
     // ── 4. Cache the Graph search results (1hr TTL) ─────────────────────────────
     try {

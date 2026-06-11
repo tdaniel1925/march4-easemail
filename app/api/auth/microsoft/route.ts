@@ -34,14 +34,18 @@ export async function GET(req: NextRequest) {
     }
 
     const add = req.nextUrl.searchParams.get("add") === "1";
-    let state = "login";
+
+    // CSRF protection: bind this OAuth flow to the initiating browser via a
+    // random nonce stored in an httpOnly cookie and echoed back in `state`.
+    const nonce = crypto.randomUUID();
+    let state = `${nonce}:login`;
 
     if (add) {
       const supabase = await createClient();
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return NextResponse.redirect(new URL("/login", req.url));
       // Embed userId so the callback knows which account to attach to
-      state = `add:${user.id}`;
+      state = `${nonce}:add:${user.id}`;
     }
 
     const msal = new ConfidentialClientApplication({
@@ -60,7 +64,15 @@ export async function GET(req: NextRequest) {
     });
 
     authLogger.info({ add, state: add ? "add" : "login" }, "Redirecting to Microsoft login");
-    return NextResponse.redirect(authUrl);
+    const response = NextResponse.redirect(authUrl);
+    response.cookies.set("ms_oauth_state", nonce, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      maxAge: 600,
+      path: "/",
+    });
+    return response;
 
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);

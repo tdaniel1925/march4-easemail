@@ -45,11 +45,42 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "messageId and recipientEmail required" }, { status: 400 });
   }
 
-  await prisma.readReceipt.upsert({
-    where: { messageId_recipientEmail: { messageId: body.messageId, recipientEmail: body.recipientEmail } },
-    create: { userId: user.id, messageId: body.messageId, recipientEmail: body.recipientEmail },
-    update: {},
+  const { messageId, recipientEmail } = body;
+
+  // Validate inputs
+  if (typeof messageId !== "string" || !messageId.trim() || messageId.length > 512) {
+    return NextResponse.json({ error: "Invalid messageId" }, { status: 400 });
+  }
+  const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (
+    typeof recipientEmail !== "string" ||
+    recipientEmail.length > 320 ||
+    !EMAIL_REGEX.test(recipientEmail)
+  ) {
+    return NextResponse.json({ error: "Invalid recipientEmail" }, { status: 400 });
+  }
+
+  // Ownership-aware create: a (messageId, recipientEmail) row claimed by
+  // another user must not be silently re-used or overwritten.
+  const existing = await prisma.readReceipt.findFirst({
+    where: { messageId, recipientEmail },
   });
+
+  if (existing) {
+    if (existing.userId !== user.id) {
+      return NextResponse.json({ error: "Receipt already exists" }, { status: 409 });
+    }
+    return NextResponse.json({ ok: true });
+  }
+
+  try {
+    await prisma.readReceipt.create({
+      data: { userId: user.id, messageId, recipientEmail },
+    });
+  } catch {
+    // Unique constraint race — another request created the row first
+    return NextResponse.json({ error: "Receipt already exists" }, { status: 409 });
+  }
 
   return NextResponse.json({ ok: true });
 }

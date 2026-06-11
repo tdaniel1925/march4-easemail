@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
-import { graphFetch, graphGet, graphPost } from "@/lib/microsoft/graph";
+import { graphFetch } from "@/lib/microsoft/graph";
 import { mapGraphEvent, type CalEvent, type GraphCalEvent, CALENDAR_SELECT } from "@/lib/types/calendar";
 import { verifyAccountOwnership, getAllAccounts } from "@/lib/providers/registry";
 
@@ -20,18 +20,44 @@ interface EventBody {
   recurrence?: string | null;    // daily | weekly | monthly | null
 }
 
+// Graph returns dateTimes as NAIVE strings (no offset). With the
+// `Prefer: outlook.timezone="UTC"` header they are UTC — append "Z" so
+// new Date() doesn't parse them as server-local time.
+const GRAPH_PREFER_UTC = { Prefer: 'outlook.timezone="UTC"' };
+
+function parseGraphDateTime(dateTime: string): Date {
+  const hasOffset = /Z$|[+-]\d{2}:\d{2}$/i.test(dateTime);
+  return new Date(hasOffset ? dateTime : `${dateTime}Z`);
+}
+
+const WEEKDAY_NAMES = [
+  "sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday",
+] as const;
+
 function buildGraphPayload(data: EventBody) {
   const tz = data.timeZone ?? "UTC";
 
   // Build recurrence pattern for Graph API
   let recurrencePattern = null;
   if (data.recurrence && data.recurrence !== "null") {
-    const startDate = new Date(data.start).toISOString().split("T")[0];
+    const start = new Date(data.start);
+    const startDate = start.toISOString().split("T")[0];
+
+    // Graph requires extra fields per pattern type:
+    //   weekly          → daysOfWeek (derived from the event start weekday)
+    //   absoluteMonthly → dayOfMonth (derived from the event start date)
+    // The client only sends "daily" | "weekly" | "monthly".
+    let pattern: Record<string, unknown>;
+    if (data.recurrence === "weekly") {
+      pattern = { type: "weekly", interval: 1, daysOfWeek: [WEEKDAY_NAMES[start.getUTCDay()]] };
+    } else if (data.recurrence === "monthly") {
+      pattern = { type: "absoluteMonthly", interval: 1, dayOfMonth: start.getUTCDate() };
+    } else {
+      pattern = { type: data.recurrence, interval: 1 };
+    }
+
     recurrencePattern = {
-      pattern: {
-        type: data.recurrence, // "daily" | "weekly" | "monthly"
-        interval: 1,
-      },
+      pattern,
       range: {
         type: "noEnd",
         startDate,
@@ -101,7 +127,16 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
   if (!account) return NextResponse.json({ error: "Account not found" }, { status: 404 });
 
   try {
-    const created = await graphPost<GraphCalEvent>(user.id, accountId, "/me/events", buildGraphPayload(data));
+    const createRes = await graphFetch(user.id, accountId, "/me/events", {
+      method: "POST",
+      headers: GRAPH_PREFER_UTC,
+      body: JSON.stringify(buildGraphPayload(data)),
+    });
+    if (!createRes.ok) {
+      const err = await createRes.text();
+      return NextResponse.json({ error: `Graph error: ${err}` }, { status: createRes.status });
+    }
+    const created = await createRes.json() as GraphCalEvent;
     const event: CalEvent = mapGraphEvent(created, accountId, account.email ?? "");
 
     // Cache the event immediately so it persists across page navigations
@@ -116,9 +151,9 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       where: { id: created.id },
       update: {
         subject: created.subject ?? "",
-        startDateTime: new Date(created.start.dateTime),
-        endDateTime: new Date(created.end.dateTime),
-        timeZone: created.start.timeZone ?? data.timeZone ?? "UTC",
+        startDateTime: parseGraphDateTime(created.start.dateTime),
+        endDateTime: parseGraphDateTime(created.end.dateTime),
+        timeZone: data.timeZone ?? created.start.timeZone ?? "UTC",
         isAllDay: created.isAllDay ?? false,
         location: created.location?.displayName ?? null,
         bodyPreview: data.body ?? "",
@@ -138,9 +173,9 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         userId: user.id,
         homeAccountId: accountId,
         subject: created.subject ?? "",
-        startDateTime: new Date(created.start.dateTime),
-        endDateTime: new Date(created.end.dateTime),
-        timeZone: created.start.timeZone ?? data.timeZone ?? "UTC",
+        startDateTime: parseGraphDateTime(created.start.dateTime),
+        endDateTime: parseGraphDateTime(created.end.dateTime),
+        timeZone: data.timeZone ?? created.start.timeZone ?? "UTC",
         isAllDay: created.isAllDay ?? false,
         location: created.location?.displayName ?? null,
         bodyPreview: data.body ?? "",
@@ -200,15 +235,22 @@ export async function PATCH(req: NextRequest): Promise<NextResponse> {
 
     const res = await graphFetch(user.id, data.homeAccountId, `/me/events/${verifiedEventId}`, {
       method: "PATCH",
+      headers: GRAPH_PREFER_UTC,
       body: JSON.stringify(buildGraphPayload(data)),
     });
     if (!res.ok) {
       const err = await res.text();
       return NextResponse.json({ error: `Graph error: ${err}` }, { status: res.status });
     }
-    const updated = await graphGet<GraphCalEvent>(
-      user.id, data.homeAccountId, `/me/events/${verifiedEventId}?$select=${CALENDAR_SELECT}`
+    const getRes = await graphFetch(
+      user.id, data.homeAccountId, `/me/events/${verifiedEventId}?$select=${CALENDAR_SELECT}`,
+      { headers: GRAPH_PREFER_UTC }
     );
+    if (!getRes.ok) {
+      const err = await getRes.text();
+      return NextResponse.json({ error: `Graph error: ${err}` }, { status: getRes.status });
+    }
+    const updated = await getRes.json() as GraphCalEvent;
     const event: CalEvent = mapGraphEvent(updated, data.homeAccountId, account.email ?? "");
 
     // Update cache after successful modification
@@ -217,8 +259,8 @@ export async function PATCH(req: NextRequest): Promise<NextResponse> {
       data: {
         subject: updated.subject || "",
         bodyPreview: updated.bodyPreview || "",
-        startDateTime: new Date(updated.start.dateTime),
-        endDateTime: new Date(updated.end.dateTime),
+        startDateTime: parseGraphDateTime(updated.start.dateTime),
+        endDateTime: parseGraphDateTime(updated.end.dateTime),
         isAllDay: updated.isAllDay || false,
         location: updated.location?.displayName || null,
         organizerName: updated.organizer?.emailAddress?.name || null,

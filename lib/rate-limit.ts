@@ -195,22 +195,31 @@ export function withRateLimit(
 /**
  * Derives a stable per-request identifier for rate limiting.
  * Prefers the Supabase `sub` claim from a Bearer JWT; falls back to IP.
+ *
+ * The JWT is decoded but NOT verified here, so the IP is always mixed into
+ * the bucket key — a forged token cannot mint unlimited fresh buckets from
+ * a single address.
  */
 function getIdentifier(req: NextRequest): string {
+  const forwarded = req.headers.get("x-forwarded-for");
+  const ip = forwarded
+    ? forwarded.split(",")[0].trim()
+    : (req.headers.get("x-real-ip") ?? "unknown");
+
   const authHeader = req.headers.get("authorization");
   if (authHeader?.startsWith("Bearer ")) {
     try {
       const token = authHeader.slice(7);
-      const payload = JSON.parse(atob(token.split(".")[1])) as { sub?: string };
-      if (payload.sub) return `user:${payload.sub}`;
+      // JWT segments are base64url-encoded; atob chokes on the url-safe
+      // alphabet and missing padding.
+      const payload = JSON.parse(
+        Buffer.from(token.split(".")[1], "base64url").toString("utf8"),
+      ) as { sub?: string };
+      if (payload.sub) return `user:${payload.sub}:${ip}`;
     } catch {
       // Fall through to IP-based limiting.
     }
   }
 
-  const forwarded = req.headers.get("x-forwarded-for");
-  const ip = forwarded
-    ? forwarded.split(",")[0].trim()
-    : (req.headers.get("x-real-ip") ?? "unknown");
   return `ip:${ip}`;
 }

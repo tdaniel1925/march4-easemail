@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { syncFolders } from "@/lib/sync/folder-sync";
 import { isReauthError } from "@/lib/microsoft/auth-errors";
-import { getProvider } from "@/lib/providers/registry";
+import { getProvider, verifyAccountOwnership } from "@/lib/providers/registry";
 
 /**
  * POST /api/mail/folders/sync
@@ -27,6 +27,12 @@ export async function POST(req: NextRequest) {
   const { homeAccountId } = await req.json() as { homeAccountId?: string };
   if (!homeAccountId) {
     return NextResponse.json({ error: "homeAccountId required", errorCode: "server_error" }, { status: 400 });
+  }
+
+  // Verify the homeAccountId belongs to this authenticated user (prevents IDOR)
+  const account = await verifyAccountOwnership(user.id, homeAccountId);
+  if (!account) {
+    return NextResponse.json({ error: "Account not found", errorCode: "server_error" }, { status: 404 });
   }
 
   try {

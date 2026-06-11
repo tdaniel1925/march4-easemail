@@ -211,6 +211,8 @@ model Draft {
   createdAt                DateTime  @default(now())
   updatedAt                DateTime  @updatedAt
 
+  @@index([userId, updatedAt(sort: Desc)])
+  @@index([scheduledAt, scheduledSent])
   @@map("drafts")
 }
 
@@ -294,6 +296,7 @@ model CachedEmail {
   @@index([userId, homeAccountId, isRead])
   @@index([userId, homeAccountId, flagStatus])
   @@index([userId, homeAccountId, isPinned])
+  @@index([userId, conversationId])
   @@map("cached_emails")
 }
 

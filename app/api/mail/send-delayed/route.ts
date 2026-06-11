@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
+import { withRateLimit, rateLimiters } from "@/lib/rate-limit";
 
 // ─── POST /api/mail/send-delayed ─────────────────────────────────────────────
 // Stores email in PendingEmail table instead of sending immediately.
 // Returns pendingId + sendAt so client can show undo countdown.
 
-export async function POST(req: NextRequest) {
+async function sendDelayedHandler(req: NextRequest) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -53,6 +54,30 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Email body required" }, { status: 400 });
   }
 
+  // Validate attachments size and shape (mirrors /api/mail/send)
+  if (attachments && attachments.length > 0) {
+    let totalBytes = 0;
+    for (const att of attachments) {
+      if (!att || typeof att.name !== "string" || typeof att.data !== "string") {
+        return NextResponse.json({ error: "Invalid attachment format" }, { status: 400 });
+      }
+      const sizeBytes = Math.ceil(att.data.length * 0.75); // base64 to bytes approximation
+      if (sizeBytes > 25 * 1024 * 1024) {
+        return NextResponse.json(
+          { error: `Attachment "${att.name}" exceeds 25MB limit` },
+          { status: 400 }
+        );
+      }
+      totalBytes += sizeBytes;
+    }
+    if (totalBytes > 25 * 1024 * 1024) {
+      return NextResponse.json(
+        { error: "Total attachments exceed 25MB limit" },
+        { status: 400 }
+      );
+    }
+  }
+
   // Get user's undo send delay preference
   const dbUser = await prisma.user.findUnique({
     where: { id: user.id },
@@ -93,3 +118,6 @@ export async function POST(req: NextRequest) {
     delaySeconds,
   });
 }
+
+// Export with rate limiting (30 emails per hour)
+export const POST = withRateLimit(sendDelayedHandler, rateLimiters.send);

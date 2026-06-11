@@ -20,8 +20,9 @@ import net from "node:net";
  * - Caches for 1 hour to avoid repeated fetches
  */
 
+// Note: image/svg+xml is intentionally excluded — SVG can contain scripts.
 const ALLOWED_CONTENT_TYPES = [
-  "image/png", "image/jpeg", "image/gif", "image/webp", "image/svg+xml",
+  "image/png", "image/jpeg", "image/gif", "image/webp",
   "image/bmp", "image/x-icon", "image/vnd.microsoft.icon", "image/avif",
 ];
 
@@ -117,11 +118,22 @@ export async function GET(req: NextRequest) {
 
     // Block redirects to prevent redirect-based SSRF
     if (response.status >= 300 && response.status < 400) {
-      return new NextResponse("Redirects not allowed", { status: 403 });
+      return new NextResponse("Redirects not allowed", { status: 400 });
     }
 
     if (!response.ok) {
       return new NextResponse("Upstream error", { status: 502 });
+    }
+
+    // DNS rebinding mitigation: the final response URL host must match the
+    // host we resolved and validated above
+    try {
+      const finalHost = new URL(response.url).hostname.replace(/^\[|\]$/g, "");
+      if (finalHost.toLowerCase() !== hostname.toLowerCase()) {
+        return new NextResponse("Blocked", { status: 403 });
+      }
+    } catch {
+      return new NextResponse("Blocked", { status: 403 });
     }
 
     // Verify content type is an image
@@ -147,6 +159,7 @@ export async function GET(req: NextRequest) {
         "Content-Type": contentType,
         "Cache-Control": "private, max-age=3600, immutable",
         "X-Content-Type-Options": "nosniff",
+        "Content-Security-Policy": "sandbox",
       },
     });
   } catch (err) {

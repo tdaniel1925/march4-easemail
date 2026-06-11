@@ -41,8 +41,8 @@ export async function POST(req: NextRequest) {
 
     if (permanent) {
       await provider.deleteMessage(user.id, accountId, messageId);
-      // Remove from cache so it doesn't reappear on refresh
-      await prisma.cachedEmail.delete({ where: { id: messageId } }).catch(() => {});
+      // Remove from cache so it doesn't reappear on refresh — scoped by userId
+      await prisma.cachedEmail.deleteMany({ where: { id: messageId, userId: user.id } }).catch(() => {});
       return NextResponse.json({ ok: true, deleted: true });
     } else {
       // Move to Deleted Items folder
@@ -54,9 +54,9 @@ export async function POST(req: NextRequest) {
       }
 
       await provider.moveMessage(user.id, accountId, messageId, deletedFolder.id);
-      // Update cached email's folderId so it no longer appears in inbox on refresh
-      await prisma.cachedEmail.update({
-        where: { id: messageId },
+      // Update cached email's folderId so it no longer appears in inbox on refresh — scoped by userId
+      await prisma.cachedEmail.updateMany({
+        where: { id: messageId, userId: user.id },
         data: { folderId: deletedFolder.id },
       }).catch(() => {});
       return NextResponse.json({ ok: true, folderId: deletedFolder.id });

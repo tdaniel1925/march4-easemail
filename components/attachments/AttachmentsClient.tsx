@@ -583,7 +583,9 @@ export default function AttachmentsClient({
                           a.href = URL.createObjectURL(blob);
                           a.download = item.name;
                           a.click();
-                          URL.revokeObjectURL(a.href);
+                          // Delay revoke so the browser has time to start the download
+                          const objectUrl = a.href;
+                          setTimeout(() => URL.revokeObjectURL(objectUrl), 1000);
                           await new Promise(resolve => setTimeout(resolve, 500));
                         } catch (err) {
                           console.error("[bulk-download]", err);
@@ -838,7 +840,9 @@ export default function AttachmentsClient({
                     a.href = URL.createObjectURL(blob);
                     a.download = previewItem.name;
                     a.click();
-                    URL.revokeObjectURL(a.href);
+                    // Delay revoke so the browser has time to start the download
+                    const objectUrl = a.href;
+                    setTimeout(() => URL.revokeObjectURL(objectUrl), 1000);
                   } catch (err) {
                     console.error("[download]", err);
                   }
@@ -897,7 +901,9 @@ function AttachmentRow({
       a.href = URL.createObjectURL(blob);
       a.download = item.name;
       a.click();
-      URL.revokeObjectURL(a.href);
+      // Delay revoke so the browser has time to start the download
+      const objectUrl = a.href;
+      setTimeout(() => URL.revokeObjectURL(objectUrl), 1000);
     } catch (err) {
       console.error("[download]", err);
     } finally {

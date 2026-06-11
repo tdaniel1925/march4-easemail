@@ -53,6 +53,11 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    const remindAtDate = new Date(remindAt);
+    if (isNaN(remindAtDate.getTime())) {
+      return NextResponse.json({ error: "remindAt must be a valid date" }, { status: 400 });
+    }
+
     const reminder = await prisma.followUpReminder.create({
       data: {
         userId: user.id,
@@ -61,7 +66,7 @@ export async function POST(req: NextRequest) {
         homeAccountId: homeAccountId || null,
         subject,
         recipient,
-        remindAt: new Date(remindAt),
+        remindAt: remindAtDate,
         status: "pending",
       },
     });

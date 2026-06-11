@@ -3,8 +3,9 @@ import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { graphPost } from "@/lib/microsoft/graph";
 import { verifyAccountOwnership, detectProviderType, getProvider } from "@/lib/providers/registry";
+import { withRateLimit, rateLimiters } from "@/lib/rate-limit";
 
-export async function POST(req: NextRequest) {
+async function replyHandler(req: NextRequest) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -32,16 +33,19 @@ export async function POST(req: NextRequest) {
 
   // Resolve account: prefer explicit homeAccountId, fall back to default MS account
   let accountId: string;
+  let accountEmail: string | null = null;
   if (homeAccountId) {
     const account = await verifyAccountOwnership(user.id, homeAccountId);
     if (!account) return NextResponse.json({ error: "No connected account" }, { status: 404 });
     accountId = homeAccountId;
+    accountEmail = account.email;
   } else {
     const msDefault = await prisma.msConnectedAccount.findFirst({
       where: { userId: user.id, isDefault: true },
     });
     if (!msDefault) return NextResponse.json({ error: "No connected account" }, { status: 404 });
     accountId = msDefault.homeAccountId;
+    accountEmail = msDefault.msEmail;
   }
 
   const providerType = detectProviderType(accountId);
@@ -61,11 +65,21 @@ export async function POST(req: NextRequest) {
         replyTo = toRecipients!.map((addr) => ({ address: addr.trim() }));
       } else if (type === "replyAll") {
         replyTo = [{ name: original.from.name, address: original.from.address }];
-        // Include all original recipients except the sender
+        // Include all original recipients except the sender and our own
+        // account address (case-insensitive), deduped
+        const senderAddress = original.from.address?.toLowerCase() ?? "";
+        const selfAddress = accountEmail?.toLowerCase() ?? "";
+        const seen = new Set<string>();
         const otherRecipients = [
           ...(original.toRecipients ?? []),
           ...(original.ccRecipients ?? []),
-        ].filter((r) => r.address !== original.from.address);
+        ].filter((r) => {
+          const addr = r.address?.toLowerCase() ?? "";
+          if (!addr || addr === senderAddress || addr === selfAddress) return false;
+          if (seen.has(addr)) return false;
+          seen.add(addr);
+          return true;
+        });
         if (otherRecipients.length > 0) {
           replyCc = otherRecipients.map((r) => ({ name: r.name, address: r.address }));
         }
@@ -95,10 +109,10 @@ export async function POST(req: NextRequest) {
   // ── Microsoft Graph path ──────────────────────────────────────────────────
 
   const graphPath = type === "replyAll"
-    ? `/me/messages/${messageId}/replyAll`
+    ? `/me/messages/${encodeURIComponent(messageId)}/replyAll`
     : type === "forward"
-    ? `/me/messages/${messageId}/forward`
-    : `/me/messages/${messageId}/reply`;
+    ? `/me/messages/${encodeURIComponent(messageId)}/forward`
+    : `/me/messages/${encodeURIComponent(messageId)}/reply`;
 
   const body = type === "forward"
     ? {
@@ -112,3 +126,6 @@ export async function POST(req: NextRequest) {
   await graphPost(user.id, accountId, graphPath, body);
   return NextResponse.json({ ok: true });
 }
+
+// Export with rate limiting (30 sends per hour)
+export const POST = withRateLimit(replyHandler, rateLimiters.send);

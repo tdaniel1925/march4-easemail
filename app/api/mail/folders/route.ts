@@ -3,7 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { graphGet, graphFetch } from "@/lib/microsoft/graph";
 import { isReauthError } from "@/lib/microsoft/auth-errors";
-import { getProvider, detectProviderType } from "@/lib/providers/registry";
+import { getProvider, detectProviderType, verifyAccountOwnership } from "@/lib/providers/registry";
 import type { MailFolder } from "@/lib/types/email";
 
 interface GraphFolder {
@@ -161,6 +161,10 @@ export async function POST(req: NextRequest) {
   if (!homeAccountId || !displayName?.trim()) {
     return NextResponse.json({ error: "homeAccountId and displayName required" }, { status: 400 });
   }
+
+  // Verify the homeAccountId belongs to this authenticated user (prevents IDOR)
+  const account = await verifyAccountOwnership(user.id, homeAccountId);
+  if (!account) return NextResponse.json({ error: "Account not found" }, { status: 404 });
 
   try {
     // Create in Graph API

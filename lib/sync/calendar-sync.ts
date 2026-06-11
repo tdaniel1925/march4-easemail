@@ -12,6 +12,13 @@ const MAX_PAGES = 100;
 const CAL_SELECT =
   "id,subject,bodyPreview,start,end,isAllDay,location,organizer,responseStatus,onlineMeeting,attendees,recurrence";
 
+// Graph delta returns start/end dateTime as NAIVE strings (no offset/Z) in
+// UTC. new Date() would parse them as server-local time — append "Z" first.
+function parseGraphDateTime(dateTime: string): Date {
+  const hasOffset = /Z$|[+-]\d{2}:\d{2}$/i.test(dateTime);
+  return new Date(hasOffset ? dateTime : `${dateTime}Z`);
+}
+
 interface CalDeltaResponse {
   value: CalDeltaItem[];
   "@odata.nextLink"?: string;
@@ -174,8 +181,8 @@ export async function syncCalendar(
     if (toUpsert.length > 0) {
       await Promise.all(
         toUpsert.map((e) => {
-          const startDateTime = e.start?.dateTime ? new Date(e.start.dateTime) : new Date();
-          const endDateTime = e.end?.dateTime ? new Date(e.end.dateTime) : new Date();
+          const startDateTime = e.start?.dateTime ? parseGraphDateTime(e.start.dateTime) : new Date();
+          const endDateTime = e.end?.dateTime ? parseGraphDateTime(e.end.dateTime) : new Date();
           const timeZone = e.start?.timeZone || "UTC";
           const attendees = JSON.parse(
             JSON.stringify(

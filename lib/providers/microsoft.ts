@@ -159,7 +159,9 @@ export class MicrosoftProvider implements EmailProvider {
     let path = `/me/mailFolders/${folderId}/messages?$select=id,subject,bodyPreview,receivedDateTime,sentDateTime,isRead,hasAttachments,flag,from,toRecipients,ccRecipients,categories,importance,parentFolderId,conversationId&$top=${top}&$orderby=receivedDateTime desc`;
 
     if (filterParts.length > 0) {
-      path += `&$filter=${filterParts.join(" and ")}`;
+      // Graph rejects $filter combined with $orderby unless the orderby
+      // property also appears (first) in the filter ("InefficientFilter").
+      path += `&$filter=receivedDateTime ge 1900-01-01T00:00:00Z and ${filterParts.join(" and ")}`;
     }
 
     if (options?.cursor) {
@@ -244,6 +246,11 @@ export class MicrosoftProvider implements EmailProvider {
     await graphPatch(userId, accountId, `/me/messages/${messageId}`, {
       isRead,
     });
+
+    await prisma.cachedEmail.updateMany({
+      where: { id: messageId, userId },
+      data: { isRead },
+    });
   }
 
   async flagMessage(
@@ -254,6 +261,11 @@ export class MicrosoftProvider implements EmailProvider {
   ): Promise<void> {
     await graphPatch(userId, accountId, `/me/messages/${messageId}`, {
       flag: { flagStatus: flagged ? "flagged" : "notFlagged" },
+    });
+
+    await prisma.cachedEmail.updateMany({
+      where: { id: messageId, userId },
+      data: { flagStatus: flagged ? "flagged" : "notFlagged" },
     });
   }
 
@@ -266,6 +278,12 @@ export class MicrosoftProvider implements EmailProvider {
     await graphPost(userId, accountId, `/me/messages/${messageId}/move`, {
       destinationId: destFolderId,
     });
+
+    // Graph assigns a NEW message id on move — drop the stale cached row
+    // (next sync re-adds it under the new id), mirroring the IMAP provider.
+    await prisma.cachedEmail.deleteMany({
+      where: { id: messageId, userId },
+    });
   }
 
   async deleteMessage(
@@ -274,6 +292,10 @@ export class MicrosoftProvider implements EmailProvider {
     messageId: string
   ): Promise<void> {
     await graphDelete(userId, accountId, `/me/messages/${messageId}`);
+
+    await prisma.cachedEmail.deleteMany({
+      where: { id: messageId, userId },
+    });
   }
 
   async searchEmails(

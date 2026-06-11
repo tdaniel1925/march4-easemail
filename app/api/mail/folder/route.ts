@@ -272,7 +272,8 @@ export async function GET(req: NextRequest) {
       }
     }
 
-    if (cacheHit) return; // TypeScript won't reach here but keeps the flow clear
+    // Defensive: all cache-hit branches above already returned their payload
+    if (cacheHit) return NextResponse.json({ emails: [], nextLink: null });
 
     // ── Fallback to Graph ───────────────────────────────────────────────────
     // For custom folder IDs: we already verified ownership above via cachedFolder check.

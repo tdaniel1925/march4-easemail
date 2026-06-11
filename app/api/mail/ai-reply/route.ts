@@ -23,6 +23,10 @@ async function aiReplyHandler(req: NextRequest) {
     body: string;
   };
 
+  if (typeof from !== "string" || !from.trim()) {
+    return NextResponse.json({ error: "from is required" }, { status: 400 });
+  }
+
   const emailContent = body?.trim() || bodyPreview?.trim() || "(no content)";
   // Extract sender first name for greeting (e.g. "John Smith <john@firm.com>" → "John")
   const senderName = from.replace(/<[^>]+>/, "").trim().split(/\s+/)[0] ?? "there";

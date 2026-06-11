@@ -21,7 +21,8 @@ export function isReauthError(err: unknown): boolean {
 export function isConsentError(err: unknown): boolean {
   const msg = String(err);
   return (
-    msg.includes("403") ||
+    // Word-boundary match so ids/timestamps containing "403" don't false-positive
+    /\b403\b/.test(msg) ||
     msg.includes("Forbidden") ||
     msg.includes("Authorization_RequestDenied") ||
     msg.includes("insufficient") ||

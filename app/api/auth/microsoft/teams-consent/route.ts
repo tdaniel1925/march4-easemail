@@ -37,15 +37,27 @@ export async function GET(req: NextRequest) {
       },
     });
 
+    // CSRF protection: bind this OAuth flow to the initiating browser via a
+    // random nonce stored in an httpOnly cookie and echoed back in `state`.
+    const nonce = crypto.randomUUID();
+
     const authUrl = await msal.getAuthCodeUrl({
       scopes: TEAMS_SCOPES,
       redirectUri: process.env.MICROSOFT_REDIRECT_URI!,
       prompt: "consent",
       loginHint,
-      state: `teams_consent:${user.id}`,
+      state: `${nonce}:teams_consent:${user.id}`,
     });
 
-    return NextResponse.redirect(authUrl);
+    const response = NextResponse.redirect(authUrl);
+    response.cookies.set("ms_oauth_state", nonce, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      maxAge: 600,
+      path: "/",
+    });
+    return response;
   } catch (err) {
     console.error("[auth/teams-consent]", err);
     return NextResponse.redirect(new URL("/teams?error=consent_failed", req.url));

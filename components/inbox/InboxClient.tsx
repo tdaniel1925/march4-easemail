@@ -49,6 +49,30 @@ function PinIcon({ className = "w-3.5 h-3.5" }: { className?: string }) {
   );
 }
 
+/** Sanitized HTML renderer — same DOMPurify config as ReadingPane/EmailReadClient */
+function SafeHtml({ html, className }: { html: string; className?: string }) {
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!ref.current) return;
+    let cancelled = false;
+    import("dompurify").then(({ default: DOMPurify }) => {
+      if (cancelled || !ref.current) return;
+      ref.current.innerHTML = DOMPurify.sanitize(html, {
+        FORBID_TAGS: ["script", "iframe", "object", "embed"],
+        ALLOWED_URI_REGEXP: /^(?:(?:(?:f|ht)tps?|mailto|tel|callto|cid):|[^a-z]|[a-z+.\-]*(?:[^a-z+.\-:]|$))/i,
+        ADD_ATTR: ["target", "loading"],
+      });
+      // Force all links to open in new tab
+      ref.current.querySelectorAll("a[href]").forEach((a) => {
+        a.setAttribute("target", "_blank");
+        a.setAttribute("rel", "noopener noreferrer");
+      });
+    });
+    return () => { cancelled = true; };
+  }, [html]);
+  return <div ref={ref} className={className} />;
+}
+
 function EmailRow({
   email,
   onClick,
@@ -371,6 +395,11 @@ export default function InboxClient({
   // ── Keyboard shortcuts ──
   const [showShortcutsHelp, setShowShortcutsHelp] = useState(false);
 
+  // ── Unread badge ──
+  // Tracks how many emails the user marked read locally (minus mark-unread)
+  // so the lagging server total can be adjusted instead of ratcheting up.
+  const [localReadDelta, setLocalReadDelta] = useState(0);
+
   // ── Snooze ──
   const [snoozeEmail, setSnoozeEmail] = useState<EmailMessage | null>(null);
   const [snoozeError, setSnoozeError] = useState<string | null>(null);
@@ -443,6 +472,39 @@ export default function InboxClient({
     };
   }, []);
 
+  // ── List mutation helpers ──
+  // The visible list can be `emails`, `searchResults` or `tabEmails` — every
+  // mutation must update all of them so deleted/archived emails don't stay
+  // visible during search or on filtered tabs.
+
+  const removeEmailEverywhere = useCallback((ids: string | Set<string>) => {
+    const idSet = typeof ids === "string" ? new Set([ids]) : ids;
+    const filterFn = (prev: EmailMessage[]) => prev.filter((e) => !idSet.has(e.id));
+    setEmails(filterFn);
+    setSearchResults((prev) => (prev ? filterFn(prev) : prev));
+    setTabEmails((prev) => (prev ? filterFn(prev) : prev));
+  }, []);
+
+  const updateEmailEverywhere = useCallback((id: string, patch: Partial<EmailMessage>) => {
+    const mapFn = (prev: EmailMessage[]) => prev.map((e) => (e.id === id ? { ...e, ...patch } : e));
+    setEmails(mapFn);
+    setSearchResults((prev) => (prev ? mapFn(prev) : prev));
+    setTabEmails((prev) => (prev ? mapFn(prev) : prev));
+  }, []);
+
+  const restoreEmailsEverywhere = useCallback((toRestore: EmailMessage[]) => {
+    const restoreFn = (prev: EmailMessage[]) => {
+      const existingIds = new Set(prev.map((e) => e.id));
+      const merged = [...prev, ...toRestore.filter((e) => !existingIds.has(e.id))];
+      return merged.sort(
+        (a, b) => new Date(b.receivedDateTime).getTime() - new Date(a.receivedDateTime).getTime()
+      );
+    };
+    setEmails(restoreFn);
+    setSearchResults((prev) => (prev ? restoreFn(prev) : prev));
+    setTabEmails((prev) => (prev ? restoreFn(prev) : prev));
+  }, []);
+
   // ── Rule engine helpers ──
 
   function fireSideEffects(ses: SideEffect[], mc: Map<string, number>) {
@@ -485,13 +547,7 @@ export default function InboxClient({
     const newFlagStatus = email.flag?.flagStatus === "flagged" ? "notFlagged" : "flagged";
 
     // Optimistically update UI
-    setEmails((prev) =>
-      prev.map((e) =>
-        e.id === email.id
-          ? { ...e, flag: { flagStatus: newFlagStatus as "flagged" | "notFlagged" } }
-          : e
-      )
-    );
+    updateEmailEverywhere(email.id, { flag: { flagStatus: newFlagStatus as "flagged" | "notFlagged" } });
 
     // Update via API (will also update cache)
     void fetch("/api/mail/star", {
@@ -505,15 +561,9 @@ export default function InboxClient({
     }).catch((err) => {
       console.error("Failed to update star:", err);
       // Revert on error
-      setEmails((prev) =>
-        prev.map((e) =>
-          e.id === email.id
-            ? { ...e, flag: email.flag }
-            : e
-        )
-      );
+      updateEmailEverywhere(email.id, { flag: email.flag });
     });
-  }, [activeAccount]);
+  }, [activeAccount, updateEmailEverywhere]);
 
   // ── Pin toggle handler ──
 
@@ -522,11 +572,7 @@ export default function InboxClient({
     const newPinned = !email.isPinned;
 
     // Optimistically update UI
-    setEmails((prev) =>
-      prev.map((e) =>
-        e.id === email.id ? { ...e, isPinned: newPinned } : e
-      )
-    );
+    updateEmailEverywhere(email.id, { isPinned: newPinned });
 
     void fetch("/api/mail/pin", {
       method: "POST",
@@ -538,67 +584,80 @@ export default function InboxClient({
       }),
     }).catch(() => {
       // Revert on error
-      setEmails((prev) =>
-        prev.map((e) =>
-          e.id === email.id ? { ...e, isPinned: email.isPinned } : e
-        )
-      );
+      updateEmailEverywhere(email.id, { isPinned: email.isPinned });
     });
-  }, [activeAccount]);
+  }, [activeAccount, updateEmailEverywhere]);
 
   // ── Single email quick actions (for hover + keyboard shortcuts) ──
 
   const handleArchiveEmail = useCallback((email: EmailMessage) => {
     if (!activeAccount) return;
     const ts = Date.now();
+    const hid = activeAccount.homeAccountId;
     setUndoStack((prev) => [...prev, { action: "archive", emails: [email], timestamp: ts }]);
-    setEmails((prev) => prev.filter((e) => e.id !== email.id));
+    removeEmailEverywhere(email.id);
     scheduleAction(ts, () => {
       void fetch("/api/mail/batch", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action: "archive", messageIds: [email.id], homeAccountId: activeAccount.homeAccountId }),
-      });
+        body: JSON.stringify({ action: "archive", messageIds: [email.id], homeAccountId: hid }),
+      })
+        .then((res) => {
+          if (!res.ok) {
+            // API failed — restore the email back into all lists
+            restoreEmailsEverywhere([email]);
+            setDeleteError("Failed to archive email. Please try again.");
+          }
+        })
+        .catch(() => {
+          restoreEmailsEverywhere([email]);
+          setDeleteError("Network error. Could not archive email.");
+        });
     });
-  }, [activeAccount, scheduleAction]);
+  }, [activeAccount, scheduleAction, removeEmailEverywhere, restoreEmailsEverywhere]);
 
-  const handleDeleteEmail = useCallback(async (email: EmailMessage) => {
+  const handleDeleteEmail = useCallback((email: EmailMessage) => {
     if (!activeAccount) return;
     const ts = Date.now();
-    // Optimistic removal
-    setEmails((prev) => prev.filter((e) => e.id !== email.id));
-    try {
-      const res = await fetch("/api/mail/batch", {
+    const hid = activeAccount.homeAccountId;
+    // Optimistic removal + undo entry — the API call is delayed like archive,
+    // so Undo cancels the timer and nothing is sent to the server.
+    setUndoStack((prev) => [...prev, { action: "delete", emails: [email], timestamp: ts }]);
+    removeEmailEverywhere(email.id);
+    scheduleAction(ts, () => {
+      void fetch("/api/mail/batch", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action: "delete", messageIds: [email.id], homeAccountId: activeAccount.homeAccountId }),
-      });
-      if (!res.ok) {
-        // API failed — restore the email back into the list
-        setEmails((prev) => [email, ...prev]);
-        setDeleteError("Failed to delete email. Please try again.");
-        return;
-      }
-      // Success — add to undo stack for UI feedback
-      setUndoStack((prev) => [...prev, { action: "delete", emails: [email], timestamp: ts }]);
-    } catch {
-      // Network error — restore the email
-      setEmails((prev) => [email, ...prev]);
-      setDeleteError("Network error. Could not delete email.");
-    }
-  }, [activeAccount]);
+        body: JSON.stringify({ action: "delete", messageIds: [email.id], homeAccountId: hid }),
+      })
+        .then((res) => {
+          if (!res.ok) {
+            // API failed — restore the email back into all lists
+            restoreEmailsEverywhere([email]);
+            setDeleteError("Failed to delete email. Please try again.");
+          }
+        })
+        .catch(() => {
+          // Network error — restore the email
+          restoreEmailsEverywhere([email]);
+          setDeleteError("Network error. Could not delete email.");
+        });
+    });
+  }, [activeAccount, scheduleAction, removeEmailEverywhere, restoreEmailsEverywhere]);
 
   const handleMarkUnread = useCallback((email: EmailMessage) => {
     if (!activeAccount) return;
-    setEmails((prev) => prev.map((e) => e.id === email.id ? { ...e, isRead: false } : e));
+    if (email.isRead) setLocalReadDelta((d) => d - 1);
+    updateEmailEverywhere(email.id, { isRead: false });
     void fetch("/api/mail/read", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ messageId: email.id, homeAccountId: activeAccount.homeAccountId, isRead: false }),
     }).catch(() => {
-      setEmails((prev) => prev.map((e) => e.id === email.id ? { ...e, isRead: true } : e));
+      if (email.isRead) setLocalReadDelta((d) => d + 1);
+      updateEmailEverywhere(email.id, { isRead: true });
     });
-  }, [activeAccount]);
+  }, [activeAccount, updateEmailEverywhere]);
 
   // ── Bulk selection handlers ──
   // Note: toggleSelectAll defined later after displayEmails is computed
@@ -615,7 +674,7 @@ export default function InboxClient({
     });
   }, []);
 
-  const bulkDelete = useCallback(async () => {
+  const bulkDelete = useCallback(() => {
     if (!activeAccount || selectedIds.size === 0) return;
 
     const selectedEmails = emails.filter((e) => selectedIds.has(e.id));
@@ -623,35 +682,36 @@ export default function InboxClient({
     const idsToDelete = [...selectedIds];
     const hid = activeAccount.homeAccountId;
 
-    // Optimistic removal
-    setEmails((prev) => prev.filter((e) => !selectedIds.has(e.id)));
+    // Optimistic removal + undo entry — API call delayed so Undo cancels it
+    setUndoStack((prev) => [...prev, {
+      action: "delete",
+      emails: selectedEmails,
+      timestamp: ts,
+    }]);
+    removeEmailEverywhere(new Set(idsToDelete));
 
-    try {
-      const res = await fetch("/api/mail/batch", {
+    scheduleAction(ts, () => {
+      void fetch("/api/mail/batch", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ action: "delete", messageIds: idsToDelete, homeAccountId: hid }),
-      });
-      if (!res.ok) {
-        // Restore emails on failure
-        setEmails((prev) => [...selectedEmails, ...prev]);
-        setDeleteError("Failed to delete emails. Please try again.");
-        return;
-      }
-      setUndoStack((prev) => [...prev, {
-        action: "delete",
-        emails: selectedEmails,
-        timestamp: ts,
-      }]);
-    } catch {
-      setEmails((prev) => [...selectedEmails, ...prev]);
-      setDeleteError("Network error. Could not delete emails.");
-      return;
-    }
+      })
+        .then((res) => {
+          if (!res.ok) {
+            // Restore emails on failure
+            restoreEmailsEverywhere(selectedEmails);
+            setDeleteError("Failed to delete emails. Please try again.");
+          }
+        })
+        .catch(() => {
+          restoreEmailsEverywhere(selectedEmails);
+          setDeleteError("Network error. Could not delete emails.");
+        });
+    });
 
     setSelectedIds(new Set());
     setBulkMode(false);
-  }, [activeAccount, selectedIds, emails]);
+  }, [activeAccount, selectedIds, emails, scheduleAction, removeEmailEverywhere, restoreEmailsEverywhere]);
 
   const bulkArchive = useCallback(() => {
     if (!activeAccount || selectedIds.size === 0) return;
@@ -669,7 +729,7 @@ export default function InboxClient({
     }]);
 
     // Remove from UI immediately
-    setEmails((prev) => prev.filter((e) => !selectedIds.has(e.id)));
+    removeEmailEverywhere(new Set(idsToArchive));
 
     // Delay API call — cancel on undo (C5 fix)
     scheduleAction(ts, () => {
@@ -677,22 +737,34 @@ export default function InboxClient({
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ action: "archive", messageIds: idsToArchive, homeAccountId: hid }),
-      });
+      })
+        .then((res) => {
+          if (!res.ok) {
+            restoreEmailsEverywhere(selectedEmails);
+            setDeleteError("Failed to archive emails. Please try again.");
+          }
+        })
+        .catch(() => {
+          restoreEmailsEverywhere(selectedEmails);
+          setDeleteError("Network error. Could not archive emails.");
+        });
     });
 
     setSelectedIds(new Set());
     setBulkMode(false);
-  }, [activeAccount, selectedIds, emails, scheduleAction]);
+  }, [activeAccount, selectedIds, emails, scheduleAction, removeEmailEverywhere, restoreEmailsEverywhere]);
 
   const bulkMarkRead = useCallback(() => {
     if (!activeAccount || selectedIds.size === 0) return;
 
-    // Update UI
-    setEmails((prev) =>
-      prev.map((e) =>
-        selectedIds.has(e.id) ? { ...e, isRead: true } : e
-      )
-    );
+    // Update UI (all lists) + adjust local unread delta
+    const newlyRead = emails.filter((e) => selectedIds.has(e.id) && !e.isRead).length;
+    if (newlyRead > 0) setLocalReadDelta((d) => d + newlyRead);
+    const mapFn = (prev: EmailMessage[]) =>
+      prev.map((e) => (selectedIds.has(e.id) ? { ...e, isRead: true } : e));
+    setEmails(mapFn);
+    setSearchResults((prev) => (prev ? mapFn(prev) : prev));
+    setTabEmails((prev) => (prev ? mapFn(prev) : prev));
 
     // Update via batch API
     void fetch("/api/mail/batch", {
@@ -707,7 +779,7 @@ export default function InboxClient({
 
     setSelectedIds(new Set());
     setBulkMode(false);
-  }, [activeAccount, selectedIds]);
+  }, [activeAccount, selectedIds, emails]);
 
   // ── Undo handler ──
 
@@ -722,17 +794,12 @@ export default function InboxClient({
       pendingActionsRef.current.delete(lastAction.timestamp);
     }
 
-    // Restore emails to UI
-    setEmails((prev) => {
-      const restored = [...prev, ...lastAction.emails];
-      return restored.sort((a, b) =>
-        new Date(b.receivedDateTime).getTime() - new Date(a.receivedDateTime).getTime()
-      );
-    });
+    // Restore emails to UI (all lists)
+    restoreEmailsEverywhere(lastAction.emails);
 
     // Remove from undo stack
     setUndoStack((prev) => prev.slice(0, -1));
-  }, [undoStack]);
+  }, [undoStack, restoreEmailsEverywhere]);
 
   // Auto-expire undo after 10 seconds
   useEffect(() => {
@@ -764,17 +831,22 @@ export default function InboxClient({
 
   // Keep sidebar unread badge in sync — use server total if available, otherwise count loaded
   const loadedUnread = emails.filter((e) => !e.isRead).length;
-  const serverUnread = totalUnread ?? 0;
-  // Use whichever is higher — server total is accurate, loaded count tracks local mark-read actions
+  // Adjust the (lagging) server total by local mark-read/unread actions so the
+  // badge decrements properly instead of ratcheting up on Math.max.
+  const serverUnread = Math.max((totalUnread ?? 0) - localReadDelta, 0);
+  // Server total covers not-yet-loaded pages; loaded count reflects local mutations
   const effectiveUnread = Math.max(serverUnread, loadedUnread);
   useEffect(() => {
     setInboxUnread(effectiveUnread);
   }, [effectiveUnread, setInboxUnread]);
 
-  // Account switch: reload from scratch
+  // Account switch: reload from scratch.
+  // AbortController cancels the previous in-flight request so a stale
+  // response can never overwrite the new account's emails.
   useEffect(() => {
     if (firstRender.current) { firstRender.current = false; return; }
     if (!activeAccount) return;
+    const controller = new AbortController();
     // Clear email list immediately so stale emails aren't shown during fetch
     setEmails([]);
     setRequiresReauth(false);
@@ -782,7 +854,8 @@ export default function InboxClient({
     setLoadingEmails(true);
     setNextLink(null);
     setTabEmails(null);
-    fetch(`/api/mail/inbox?homeAccountId=${encodeURIComponent(activeAccount.homeAccountId)}`)
+    setLocalReadDelta(0);
+    fetch(`/api/mail/inbox?homeAccountId=${encodeURIComponent(activeAccount.homeAccountId)}`, { signal: controller.signal })
       .then(async (r) => {
         if (r.status === 401) {
           const body = await r.json().catch(() => ({} as { error?: string })) as { error?: string };
@@ -796,7 +869,7 @@ export default function InboxClient({
         return r.json() as Promise<{ emails: EmailMessage[]; nextLink: string | null; unreadCount?: number }>;
       })
       .then((data) => {
-        if (!data) return;
+        if (!data || controller.signal.aborted) return;
         setEmails(processWithRules(data.emails, activeAccount.homeAccountId));
         setNextLink(data.nextLink ?? null);
         // Update unread count from the new account's response
@@ -805,10 +878,14 @@ export default function InboxClient({
         }
       })
       .catch((err) => {
+        if (controller.signal.aborted) return;
         console.error("[inbox] account switch error:", err);
         setFetchError(err instanceof Error ? err.message : "Failed to load emails");
       })
-      .finally(() => setLoadingEmails(false));
+      .finally(() => {
+        if (!controller.signal.aborted) setLoadingEmails(false);
+      });
+    return () => { controller.abort(); };
   }, [activeAccount?.homeAccountId]);
 
   // Label change from sidebar: switch to label tab
@@ -821,16 +898,19 @@ export default function InboxClient({
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeLabel]);
 
-  // Tab switch: fetch from Graph for filtered tabs, use local list for "all"
+  // Tab switch: fetch from Graph for filtered tabs, use local list for "all".
+  // AbortController cancels the previous in-flight request so a stale tab's
+  // response can't overwrite the current tab's list.
   useEffect(() => {
     if (activeTab === "all" || activeTab === "labeled") { setTabEmails(null); return; }
     if (!activeAccount) return;
+    const controller = new AbortController();
     setLoadingTab(true);
     setTabEmails(null);
     const url = activeTab === "label" && activeLabel
       ? `/api/mail/inbox?homeAccountId=${encodeURIComponent(activeAccount.homeAccountId)}&tab=label&label=${encodeURIComponent(activeLabel)}`
       : `/api/mail/inbox?homeAccountId=${encodeURIComponent(activeAccount.homeAccountId)}&tab=${activeTab}`;
-    fetch(url)
+    fetch(url, { signal: controller.signal })
       .then(async (r) => {
         if (r.status === 401) {
           const body = await r.json().catch(() => ({} as { error?: string })) as { error?: string };
@@ -840,9 +920,10 @@ export default function InboxClient({
         if (!r.ok) throw new Error(`inbox-tab ${r.status}`);
         return r.json() as Promise<{ emails: EmailMessage[] }>;
       })
-      .then((data) => { if (data) setTabEmails(data.emails); })
-      .catch(console.error)
-      .finally(() => setLoadingTab(false));
+      .then((data) => { if (data && !controller.signal.aborted) setTabEmails(data.emails); })
+      .catch((err) => { if (!controller.signal.aborted) console.error(err); })
+      .finally(() => { if (!controller.signal.aborted) setLoadingTab(false); });
+    return () => { controller.abort(); };
   }, [activeTab, activeAccount?.homeAccountId, activeLabel]);
 
   // Keep knownIds in sync as emails are added
@@ -928,11 +1009,16 @@ export default function InboxClient({
       const res = await fetch(
         `/api/mail/inbox?homeAccountId=${encodeURIComponent(activeAccount.homeAccountId)}&nextLink=${encodeURIComponent(nextLink)}`
       );
+      if (!res.ok) {
+        setFetchError("Failed to load more emails. Please try again.");
+        return;
+      }
       const data: { emails: EmailMessage[]; nextLink: string | null } = await res.json();
       setEmails((prev) => [...prev, ...processWithRules(data.emails, activeAccount.homeAccountId)]);
       setNextLink(data.nextLink ?? null);
     } catch (e) {
       console.error(e);
+      setFetchError("Failed to load more emails. Please try again.");
     } finally {
       setLoadingMore(false);
     }
@@ -958,9 +1044,12 @@ export default function InboxClient({
       return;
     }
     if (!activeAccount) return;
+    // AbortController cancels the previous in-flight search so an older
+    // query's response can't overwrite the latest results.
+    const controller = new AbortController();
     const timer = setTimeout(() => {
       setSearching(true);
-      fetch(`/api/mail/search?homeAccountId=${encodeURIComponent(activeAccount.homeAccountId)}&q=${encodeURIComponent(q)}`)
+      fetch(`/api/mail/search?homeAccountId=${encodeURIComponent(activeAccount.homeAccountId)}&q=${encodeURIComponent(q)}`, { signal: controller.signal })
         .then(async (r) => {
           if (r.status === 401) {
             const body = await r.json().catch(() => ({} as { error?: string })) as { error?: string };
@@ -969,11 +1058,11 @@ export default function InboxClient({
           }
           return r.json() as Promise<{ emails: EmailMessage[] }>;
         })
-        .then((data) => { if (data) setSearchResults(data.emails); })
-        .catch(console.error)
-        .finally(() => setSearching(false));
+        .then((data) => { if (data && !controller.signal.aborted) setSearchResults(data.emails); })
+        .catch((err) => { if (!controller.signal.aborted) console.error(err); })
+        .finally(() => { if (!controller.signal.aborted) setSearching(false); });
     }, 400);
-    return () => clearTimeout(timer);
+    return () => { clearTimeout(timer); controller.abort(); };
   }, [search, activeAccount?.homeAccountId]);
 
   // "All" tab uses local emails (supports infinite scroll); other tabs use Graph-fetched results
@@ -1118,7 +1207,8 @@ export default function InboxClient({
       onEscape: () => { setExpandedEmailId(null); setExpandedBody(null); setExpandedDetails(null); setShowShortcutsHelp(false); },
       onShowHelp: () => setShowShortcutsHelp(true),
     },
-    !showShortcutsHelp,
+    // Disable list shortcuts while any modal is open
+    !showShortcutsHelp && !snoozeEmail && !aiReplyEmail && !showEventForm,
   );
 
   const tabs: { key: FilterTab; label: string }[] = [
@@ -1536,9 +1626,8 @@ export default function InboxClient({
                   const idx = displayEmails.findIndex((e) => e.id === email.id);
                   setSelectedEmailIndex(idx);
                   if (!email.isRead) {
-                    setEmails((prev) =>
-                      prev.map((e) => (e.id === email.id ? { ...e, isRead: true } : e))
-                    );
+                    updateEmailEverywhere(email.id, { isRead: true });
+                    setLocalReadDelta((d) => d + 1);
                     // Mark as read on server
                     if (activeAccount) {
                       void fetch("/api/mail/read", {
@@ -1781,7 +1870,7 @@ export default function InboxClient({
                     <div className="h-4 bg-neutral-200 rounded w-2/3" />
                   </div>
                 ) : (
-                  <div className="email-body-render" dangerouslySetInnerHTML={{ __html: bodyHtml }} />
+                  <SafeHtml className="email-body-render" html={bodyHtml} />
                 )}
               </div>
             </div>
@@ -1950,10 +2039,7 @@ export default function InboxClient({
                     <div className="h-4 bg-neutral-200 rounded w-2/3" />
                   </div>
                 ) : (
-                  <div
-                    className="email-body-render"
-                    dangerouslySetInnerHTML={{ __html: bodyHtml }}
-                  />
+                  <SafeHtml className="email-body-render" html={bodyHtml} />
                 )}
               </div>
             </div>
@@ -1982,7 +2068,7 @@ export default function InboxClient({
             console.error("Failed to save AI reply:", err);
             // Continue anyway - user can still compose manually
           }
-          navigateTo(`/compose?mode=reply&messageId=${encodeURIComponent(aiReplyEmail.id)}`);
+          navigateTo(`/compose?mode=reply&messageId=${encodeURIComponent(aiReplyEmail.id)}&homeAccountId=${encodeURIComponent(activeAccount?.homeAccountId ?? "")}`);
           setAiReplyEmail(null);
         }}
       />
@@ -2004,7 +2090,7 @@ export default function InboxClient({
         email={snoozeEmail}
         homeAccountId={activeAccount.homeAccountId}
         onSnoozed={() => {
-          setEmails((prev) => prev.filter((e) => e.id !== snoozeEmail.id));
+          removeEmailEverywhere(snoozeEmail.id);
           setSnoozeEmail(null);
         }}
         onClose={() => setSnoozeEmail(null)}

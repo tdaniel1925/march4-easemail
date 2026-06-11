@@ -78,11 +78,19 @@ export const useAccountStore = create<AccountStore>((set) => ({
       const activeStillExists = remaining.some(
         (a) => a.homeAccountId === state.activeAccount?.homeAccountId
       );
+      if (activeStillExists) {
+        return { accounts: remaining };
+      }
+      // Active account was removed — switch to a fallback and zero out all
+      // account-scoped state (mirrors setActiveAccount) so stale counts and
+      // folders from the removed account are never shown.
       return {
         accounts: remaining,
-        activeAccount: activeStillExists
-          ? state.activeAccount
-          : (remaining.find((a) => a.isDefault) ?? remaining[0] ?? null),
+        activeAccount: remaining.find((a) => a.isDefault) ?? remaining[0] ?? null,
+        inboxUnread: 0,
+        draftCount: 0,
+        scheduledCount: 0,
+        mailFolders: [],
       };
     }),
   setInboxUnread: (inboxUnread) => set({ inboxUnread }),

@@ -29,7 +29,13 @@ export async function PATCH(
 
     const updateData: Record<string, unknown> = {};
     if (status) updateData.status = status;
-    if (remindAt) updateData.remindAt = new Date(remindAt);
+    if (remindAt) {
+      const remindAtDate = new Date(remindAt);
+      if (isNaN(remindAtDate.getTime())) {
+        return NextResponse.json({ error: "remindAt must be a valid date" }, { status: 400 });
+      }
+      updateData.remindAt = remindAtDate;
+    }
 
     const reminder = await prisma.followUpReminder.updateMany({
       where: { id, userId: user.id },

@@ -320,6 +320,42 @@ function normalizeJmapEmail(
   };
 }
 
+/**
+ * Throws if an Email/set response reports the target id in notUpdated /
+ * notDestroyed, or if the method call itself errored. Call this BEFORE
+ * applying any local cache updates so failed mutations never desync the cache.
+ */
+function assertEmailSetSuccess(
+  response: JmapResponse,
+  jmapEmailId: string,
+  action: string
+): void {
+  const methodError = response.methodResponses.find(
+    ([method]) => method === "error"
+  );
+  if (methodError) {
+    const [, err] = methodError;
+    throw new Error(
+      `JMAP ${action} failed: ${(err.description as string) ?? (err.type as string) ?? "unknown error"}`
+    );
+  }
+
+  const setResult = response.methodResponses.find(
+    ([method]) => method === "Email/set"
+  );
+  if (!setResult) return;
+
+  const [, data] = setResult;
+  const notUpdated =
+    (data.notUpdated as Record<string, { type: string; description?: string }>) ?? {};
+  const notDestroyed =
+    (data.notDestroyed as Record<string, { type: string; description?: string }>) ?? {};
+  const err = notUpdated[jmapEmailId] ?? notDestroyed[jmapEmailId];
+  if (err) {
+    throw new Error(`JMAP ${action} failed: ${err.description ?? err.type}`);
+  }
+}
+
 // ─── Provider Implementation ─────────────────────────────────────────────────
 
 export class JmapProvider implements EmailProvider, CalendarProvider, ContactsProvider {
@@ -738,6 +774,37 @@ export class JmapProvider implements EmailProvider, CalendarProvider, ContactsPr
     if (params.inReplyTo) {
       emailCreate.inReplyTo = [params.inReplyTo];
     }
+    if (params.references) {
+      emailCreate.references = params.references.split(/\s+/).filter(Boolean);
+    }
+
+    // Upload attachments to the JMAP upload endpoint, then reference blobIds
+    if (params.attachments?.length) {
+      const uploadUrl = session.uploadUrl.replace("{accountId}", jmapAccountId);
+      const uploaded: { blobId: string; type: string; name: string; disposition: string }[] = [];
+      for (const att of params.attachments) {
+        const uploadRes = await fetch(uploadUrl, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": att.contentType || "application/octet-stream",
+          },
+          body: Buffer.from(att.data, "base64"),
+        });
+        if (!uploadRes.ok) {
+          const err = await uploadRes.text();
+          throw new Error(`JMAP attachment upload failed ${uploadRes.status} for "${att.name}": ${err}`);
+        }
+        const blob = (await uploadRes.json()) as { blobId: string };
+        uploaded.push({
+          blobId: blob.blobId,
+          type: att.contentType || "application/octet-stream",
+          name: att.name,
+          disposition: "attachment",
+        });
+      }
+      emailCreate.attachments = uploaded;
+    }
 
     // Resolve identity ID (Fastmail uses separate identity IDs from account IDs)
     const identityResponse = await jmapSendCall(
@@ -770,24 +837,33 @@ export class JmapProvider implements EmailProvider, CalendarProvider, ContactsPr
               identityId: primaryIdentity.id,
             },
           },
-          // Destroy the draft after successful submission
-          onSuccessDestroyEmail: ["#draft"],
-          // Move the sent email into the Sent mailbox
-          ...(sentBox ? {
-            onSuccessUpdateEmail: {
-              "#draft": {
+          // On success: clear the $draft keyword and move the message into
+          // the Sent mailbox (never destroy — that would delete the sent copy)
+          onSuccessUpdateEmail: {
+            "#draft": {
+              "keywords/$draft": null,
+              ...(sentBox ? {
                 [`mailboxIds/${draftsBox.id}`]: null,
                 [`mailboxIds/${sentBox.id}`]: true,
-                "keywords/$draft": null,
-              },
+              } : {}),
             },
-          } : {}),
+          },
         },
         "1",
       ],
     ]);
 
     // Check for errors
+    const methodError = response.methodResponses.find(
+      ([method]) => method === "error"
+    );
+    if (methodError) {
+      const [, err] = methodError;
+      throw new Error(
+        `JMAP send failed: ${(err.description as string) ?? (err.type as string) ?? "unknown error"}`
+      );
+    }
+
     const setResult = response.methodResponses.find(
       ([method]) => method === "Email/set"
     );
@@ -799,6 +875,21 @@ export class JmapProvider implements EmailProvider, CalendarProvider, ContactsPr
           throw new Error(`JMAP send failed: ${errors[0].description ?? errors[0].type}`);
         }
       }
+    }
+
+    const submissionResult = response.methodResponses.find(
+      ([method]) => method === "EmailSubmission/set"
+    );
+    if (submissionResult) {
+      const [, data] = submissionResult;
+      if (data.notCreated) {
+        const errors = Object.values(data.notCreated as Record<string, { type: string; description?: string }>);
+        if (errors.length > 0) {
+          throw new Error(`JMAP send failed: ${errors[0].description ?? errors[0].type}`);
+        }
+      }
+    } else {
+      throw new Error("JMAP send failed: no EmailSubmission/set response from server");
     }
   }
 
@@ -818,7 +909,7 @@ export class JmapProvider implements EmailProvider, CalendarProvider, ContactsPr
       ? { "keywords/$seen": true }
       : { "keywords/$seen": null };
 
-    await jmapCall(session.apiUrl, token, jmapAccountId, [
+    const response = await jmapCall(session.apiUrl, token, jmapAccountId, [
       [
         "Email/set",
         {
@@ -828,6 +919,7 @@ export class JmapProvider implements EmailProvider, CalendarProvider, ContactsPr
         "0",
       ],
     ]);
+    assertEmailSetSuccess(response, jmapEmailId, "markRead");
 
     await prisma.cachedEmail.updateMany({
       where: { id: messageId, userId },
@@ -851,7 +943,7 @@ export class JmapProvider implements EmailProvider, CalendarProvider, ContactsPr
       ? { "keywords/$flagged": true }
       : { "keywords/$flagged": null };
 
-    await jmapCall(session.apiUrl, token, jmapAccountId, [
+    const response = await jmapCall(session.apiUrl, token, jmapAccountId, [
       [
         "Email/set",
         {
@@ -861,6 +953,7 @@ export class JmapProvider implements EmailProvider, CalendarProvider, ContactsPr
         "0",
       ],
     ]);
+    assertEmailSetSuccess(response, jmapEmailId, "flagMessage");
 
     await prisma.cachedEmail.updateMany({
       where: { id: messageId, userId },
@@ -900,7 +993,7 @@ export class JmapProvider implements EmailProvider, CalendarProvider, ContactsPr
     // Build new mailboxIds — remove old, add new
     const newMailboxIds: Record<string, boolean> = { [jmapDestMailboxId]: true };
 
-    await jmapCall(session.apiUrl, token, jmapAccountId, [
+    const response = await jmapCall(session.apiUrl, token, jmapAccountId, [
       [
         "Email/set",
         {
@@ -910,6 +1003,7 @@ export class JmapProvider implements EmailProvider, CalendarProvider, ContactsPr
         "0",
       ],
     ]);
+    assertEmailSetSuccess(response, jmapEmailId, "moveMessage");
 
     // Update cache
     await prisma.cachedEmail.updateMany({
@@ -955,7 +1049,7 @@ export class JmapProvider implements EmailProvider, CalendarProvider, ContactsPr
 
       if (emails.length > 0) {
         // Move to trash by replacing mailboxIds
-        await jmapCall(session.apiUrl, token, jmapAccountId, [
+        const moveResponse = await jmapCall(session.apiUrl, token, jmapAccountId, [
           [
             "Email/set",
             {
@@ -967,6 +1061,7 @@ export class JmapProvider implements EmailProvider, CalendarProvider, ContactsPr
             "0",
           ],
         ]);
+        assertEmailSetSuccess(moveResponse, jmapEmailId, "deleteMessage");
 
         // Update cache folderId to the trash folder
         const trashFolderId = `${accountId}:${trashBox.id}`;
@@ -979,7 +1074,7 @@ export class JmapProvider implements EmailProvider, CalendarProvider, ContactsPr
     }
 
     // No trash mailbox or email not found — fall back to permanent destroy
-    await jmapCall(session.apiUrl, token, jmapAccountId, [
+    const destroyResponse = await jmapCall(session.apiUrl, token, jmapAccountId, [
       [
         "Email/set",
         {
@@ -989,6 +1084,7 @@ export class JmapProvider implements EmailProvider, CalendarProvider, ContactsPr
         "0",
       ],
     ]);
+    assertEmailSetSuccess(destroyResponse, jmapEmailId, "deleteMessage");
 
     await prisma.cachedEmail.deleteMany({
       where: { id: messageId, userId },
@@ -1076,6 +1172,15 @@ export class JmapProvider implements EmailProvider, CalendarProvider, ContactsPr
       if (match) jmapMailboxId = match.id;
     }
 
+    // Only messages synced from the Sent folder carry a sentDateTime —
+    // voice-profile detection relies on it to identify messages the user sent.
+    const cachedFolder = await prisma.cachedFolder.findFirst({
+      where: { id: folderId, userId },
+      select: { wellKnownName: true },
+    });
+    const isSentFolder =
+      jmapRole === "sent" || cachedFolder?.wellKnownName === "sentitems";
+
     if (account.emailState) {
       // Delta sync via Email/changes
       try {
@@ -1148,15 +1253,36 @@ export class JmapProvider implements EmailProvider, CalendarProvider, ContactsPr
             const emails = (emailData.list as JmapEmail[]) ?? [];
 
             for (const email of emails) {
-              // Only cache if in our target mailbox
-              if (!email.mailboxIds?.[jmapMailboxId]) continue;
-
               const emailId = `${accountId}:${email.id}`;
               const keywords = email.keywords ?? {};
+
+              if (!email.mailboxIds?.[jmapMailboxId]) {
+                // Email is not (or no longer) in our target mailbox. Update its
+                // cached folder assignment so moves made elsewhere propagate;
+                // if it has no mailbox at all, drop it from the cache.
+                const otherMailboxId = Object.keys(email.mailboxIds ?? {})[0];
+                if (otherMailboxId) {
+                  await prisma.cachedEmail.updateMany({
+                    where: { id: emailId, userId },
+                    data: {
+                      folderId: `${accountId}:${otherMailboxId}`,
+                      isRead: !!keywords["$seen"],
+                      flagStatus: keywords["$flagged"] ? "flagged" : "notFlagged",
+                      syncedAt: new Date(),
+                    },
+                  });
+                } else {
+                  await prisma.cachedEmail.deleteMany({
+                    where: { id: emailId, userId },
+                  });
+                }
+                continue;
+              }
 
               await prisma.cachedEmail.upsert({
                 where: { id: emailId },
                 update: {
+                  folderId,
                   isRead: !!keywords["$seen"],
                   flagStatus: keywords["$flagged"] ? "flagged" : "notFlagged",
                   syncedAt: new Date(),
@@ -1179,7 +1305,8 @@ export class JmapProvider implements EmailProvider, CalendarProvider, ContactsPr
                     )
                   ),
                   receivedDateTime: new Date(email.receivedAt),
-                  sentDateTime: email.sentAt ? new Date(email.sentAt) : null,
+                  sentDateTime:
+                    isSentFolder && email.sentAt ? new Date(email.sentAt) : null,
                   isRead: !!keywords["$seen"],
                   hasAttachments: email.hasAttachment ?? false,
                   flagStatus: keywords["$flagged"] ? "flagged" : "notFlagged",
@@ -1246,12 +1373,10 @@ export class JmapProvider implements EmailProvider, CalendarProvider, ContactsPr
 
     const [, emailData] = getResult;
     const emails = (emailData.list as JmapEmail[]) ?? [];
-    const queryResult = response.methodResponses.find(
-      ([method]) => method === "Email/query"
-    );
-    const newState = queryResult
-      ? (queryResult[1].queryState as string)
-      : undefined;
+    // Use the Email/get `state` property — this is the Email-namespace state
+    // that Email/changes expects as sinceState (Email/query's queryState is a
+    // different namespace and would make every future delta sync fail).
+    const newState = emailData.state as string | undefined;
 
     for (const email of emails) {
       const emailId = `${accountId}:${email.id}`;
@@ -1260,6 +1385,7 @@ export class JmapProvider implements EmailProvider, CalendarProvider, ContactsPr
       await prisma.cachedEmail.upsert({
         where: { id: emailId },
         update: {
+          folderId,
           isRead: !!keywords["$seen"],
           flagStatus: keywords["$flagged"] ? "flagged" : "notFlagged",
           syncedAt: new Date(),
@@ -1282,7 +1408,8 @@ export class JmapProvider implements EmailProvider, CalendarProvider, ContactsPr
             )
           ),
           receivedDateTime: new Date(email.receivedAt),
-          sentDateTime: email.sentAt ? new Date(email.sentAt) : null,
+          sentDateTime:
+            isSentFolder && email.sentAt ? new Date(email.sentAt) : null,
           isRead: !!keywords["$seen"],
           hasAttachments: email.hasAttachment ?? false,
           flagStatus: keywords["$flagged"] ? "flagged" : "notFlagged",
@@ -1557,11 +1684,42 @@ export class JmapProvider implements EmailProvider, CalendarProvider, ContactsPr
     }
     if (updates.body !== undefined) patch.description = updates.body;
 
-    if (updates.start && updates.end) {
-      const diffMs = new Date(updates.end).getTime() - new Date(updates.start).getTime();
-      const hours = Math.floor(diffMs / 3600000);
-      const minutes = Math.floor((diffMs % 3600000) / 60000);
-      patch.duration = `PT${hours}H${minutes > 0 ? `${minutes}M` : ""}`;
+    if (updates.start !== undefined || updates.end !== undefined) {
+      let newStart = updates.start;
+      let newEnd = updates.end;
+
+      // Only one bound supplied — fetch the current event to fill in the other
+      if (!newStart || !newEnd) {
+        const currentResponse = await jmapCalendarCall(session.apiUrl, token, jmapAccountId, [
+          [
+            "CalendarEvent/get",
+            {
+              accountId: jmapAccountId,
+              ids: [jmapEventId],
+              properties: ["id", "start", "duration"],
+            },
+            "0",
+          ],
+        ]);
+        const [, currentData] = currentResponse.methodResponses[0];
+        const current = ((currentData.list as JmapCalendarEvent[]) ?? [])[0];
+        if (current?.start) {
+          const currentStartMs = new Date(current.start).getTime();
+          const currentEndMs =
+            currentStartMs + (current.duration ? parseIsoDuration(current.duration) : 0);
+          newStart = newStart ?? current.start;
+          newEnd = newEnd ?? new Date(currentEndMs).toISOString();
+        }
+      }
+
+      if (newStart && newEnd) {
+        const diffMs = new Date(newEnd).getTime() - new Date(newStart).getTime();
+        if (diffMs > 0) {
+          const hours = Math.floor(diffMs / 3600000);
+          const minutes = Math.floor((diffMs % 3600000) / 60000);
+          patch.duration = `PT${hours}H${minutes > 0 ? `${minutes}M` : ""}`;
+        }
+      }
     }
 
     await jmapCalendarCall(session.apiUrl, token, jmapAccountId, [

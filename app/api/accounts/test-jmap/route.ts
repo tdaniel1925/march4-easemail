@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { validateSessionUrl } from "../_lib/validate-session-url";
 
 export async function POST(req: NextRequest) {
   const supabase = await createClient();
@@ -20,6 +21,12 @@ export async function POST(req: NextRequest) {
       { error: "token is required" },
       { status: 400 }
     );
+  }
+
+  // SSRF guard — sessionUrl is user-supplied and fetched server-side
+  const urlCheck = await validateSessionUrl(sessionUrl);
+  if (!urlCheck.ok) {
+    return NextResponse.json({ error: urlCheck.error }, { status: 400 });
   }
 
   try {

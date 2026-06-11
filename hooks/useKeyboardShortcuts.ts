@@ -50,7 +50,15 @@ export function useKeyboardShortcuts(
       const current = selectedEmailIndex;
       const selectedEmail = current >= 0 && current < total ? emails[current] : null;
 
-      switch (e.key) {
+      // Normalize letter keys so CapsLock doesn't change behavior (with
+      // CapsLock on, "r" arrives as "R"). Branch on e.shiftKey instead of
+      // letter case. Shift+letter combos other than Shift+R (reply-all)
+      // are ignored, matching previous behavior.
+      const isLetterKey = e.key.length === 1 && /[a-zA-Z]/.test(e.key);
+      const key = isLetterKey ? e.key.toLowerCase() : e.key;
+      if (isLetterKey && e.shiftKey && key !== "r") return;
+
+      switch (key) {
         case "j":
         case "ArrowDown": {
           e.preventDefault();
@@ -91,14 +99,13 @@ export function useKeyboardShortcuts(
         case "r": {
           if (selectedEmail) {
             e.preventDefault();
-            handlers.onReply(selectedEmail);
-          }
-          break;
-        }
-        case "R": {
-          if (selectedEmail) {
-            e.preventDefault();
-            handlers.onReplyAll(selectedEmail);
+            // Shift+R = reply-all, plain r = reply (case-insensitive so
+            // CapsLock doesn't accidentally trigger reply-all)
+            if (e.shiftKey) {
+              handlers.onReplyAll(selectedEmail);
+            } else {
+              handlers.onReply(selectedEmail);
+            }
           }
           break;
         }

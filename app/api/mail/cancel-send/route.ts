@@ -23,29 +23,25 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "pendingId required" }, { status: 400 });
   }
 
-  // Find the pending email — filter by both id AND userId for security
-  const pending = await prisma.pendingEmail.findFirst({
-    where: { id: pendingId, userId: user.id },
-  });
-
-  if (!pending) {
-    return NextResponse.json({ error: "Pending email not found" }, { status: 404 });
-  }
-
-  if (pending.cancelled) {
-    return NextResponse.json({ error: "Already cancelled" }, { status: 400 });
-  }
-
-  const now = new Date();
-  if (now >= pending.sendAt) {
-    return NextResponse.json({ error: "Too late to cancel — email already sent" }, { status: 409 });
-  }
-
-  // Cancel the pending email
-  await prisma.pendingEmail.update({
-    where: { id: pendingId },
+  // Atomic conditional cancel — only succeeds if the email is owned by this
+  // user, not already cancelled, and the send time hasn't passed yet.
+  // Avoids the check-then-update race with the delayed-send worker.
+  const result = await prisma.pendingEmail.updateMany({
+    where: {
+      id: pendingId,
+      userId: user.id,
+      cancelled: false,
+      sendAt: { gt: new Date() },
+    },
     data: { cancelled: true },
   });
+
+  if (result.count === 0) {
+    return NextResponse.json(
+      { error: "Too late to cancel — email already sent, cancelled, or not found" },
+      { status: 409 }
+    );
+  }
 
   return NextResponse.json({ ok: true, cancelled: true });
 }

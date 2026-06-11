@@ -69,6 +69,11 @@ async function createImapClient(
     host: account.imapHost,
     port: account.imapPort,
     secure: account.imapSecurity === "tls",
+    // For STARTTLS, enforce certificate validation so a plaintext/MITM
+    // downgrade is impossible.
+    ...(account.imapSecurity === "starttls"
+      ? { tls: { rejectUnauthorized: true } }
+      : {}),
     auth: {
       user: account.email,
       pass: password,
@@ -93,6 +98,11 @@ async function createSmtpTransport(userId: string, accountId: string) {
     host: account.smtpHost,
     port: account.smtpPort,
     secure: account.smtpSecurity === "tls",
+    // For STARTTLS, require the TLS upgrade and validate certificates so a
+    // plaintext downgrade is impossible.
+    ...(account.smtpSecurity === "starttls"
+      ? { requireTLS: true, tls: { rejectUnauthorized: true } }
+      : {}),
     auth: {
       user: account.email,
       pass: password,
@@ -108,6 +118,16 @@ function imapEmailId(accountId: string, folderPath: string, uid: number): string
 /** Generate a unique CachedFolder ID for IMAP folders */
 function imapFolderId(accountId: string, folderPath: string): string {
   return `${accountId}:${folderPath}`;
+}
+
+/**
+ * Format a recipient for SMTP headers. Escapes quotes/backslashes inside the
+ * quoted display name; emits a bare address when no name is present.
+ */
+function formatAddress(r: { name?: string | null; address: string }): string {
+  if (!r.name) return r.address;
+  const escaped = r.name.replace(/(["\\])/g, "\\$1");
+  return `"${escaped}" <${r.address}>`;
 }
 
 /** Extract recipients from an AddressObject */
@@ -378,23 +398,20 @@ export class ImapProvider implements EmailProvider {
     const transport = await createSmtpTransport(userId, accountId);
 
     const mailOptions: nodemailer.SendMailOptions = {
-      from: `"${account.displayName ?? account.email}" <${account.email}>`,
-      to: params.to.map((r) =>
-        r.name ? `"${r.name}" <${r.address}>` : r.address
-      ),
+      from: formatAddress({ name: account.displayName, address: account.email }),
+      to: params.to.map(formatAddress),
       subject: params.subject,
       html: params.bodyHtml,
+      // One Message-ID shared by the SMTP send and the appended Sent copy so
+      // other clients thread the conversation correctly.
+      messageId: `<${Date.now()}.${Math.random().toString(36).slice(2)}@${account.email.split("@")[1] ?? "localhost"}>`,
     };
 
     if (params.cc?.length) {
-      mailOptions.cc = params.cc.map((r) =>
-        r.name ? `"${r.name}" <${r.address}>` : r.address
-      );
+      mailOptions.cc = params.cc.map(formatAddress);
     }
     if (params.bcc?.length) {
-      mailOptions.bcc = params.bcc.map((r) =>
-        r.name ? `"${r.name}" <${r.address}>` : r.address
-      );
+      mailOptions.bcc = params.bcc.map(formatAddress);
     }
     if (params.importance === "high") {
       mailOptions.priority = "high";
@@ -684,7 +701,7 @@ export class ImapProvider implements EmailProvider {
         // Get cached UIDs
         const cachedEmails = await prisma.cachedEmail.findMany({
           where: { userId, homeAccountId: accountId, folderId },
-          select: { id: true },
+          select: { id: true, isRead: true, flagStatus: true },
         });
         const cachedUids = new Set(
           cachedEmails.map((e) => {
@@ -711,6 +728,47 @@ export class ImapProvider implements EmailProvider {
             where: { id: { in: deletedIds }, userId },
           });
         }
+
+        // Refresh flags on already-cached messages so read/star changes made
+        // in other clients propagate (FLAGS-only fetch is cheap)
+        const existingUids = allUids.filter((uid) => cachedUids.has(uid));
+        if (existingUids.length > 0) {
+          const cachedById = new Map(cachedEmails.map((e) => [e.id, e]));
+          try {
+            const flagsFetch = client.fetch(
+              existingUids.join(","),
+              { uid: true, flags: true },
+              { uid: true }
+            );
+            for await (const msg of flagsFetch) {
+              const flags = msg.flags ?? new Set<string>();
+              const emailId = imapEmailId(accountId, folderPath, msg.uid);
+              const cached = cachedById.get(emailId);
+              if (!cached) continue;
+
+              const isRead = flags.has("\\Seen");
+              const flagStatus = flags.has("\\Flagged") ? "flagged" : "notFlagged";
+              if (cached.isRead !== isRead || cached.flagStatus !== flagStatus) {
+                await prisma.cachedEmail.updateMany({
+                  where: { id: emailId, userId },
+                  data: { isRead, flagStatus, syncedAt: new Date() },
+                });
+              }
+            }
+          } catch {
+            // Non-fatal: flag refresh is best-effort
+          }
+        }
+
+        // Whether this folder is the Sent folder — only sent messages carry a
+        // sentDateTime (voice-profile detection relies on it)
+        const folderRecord = await prisma.cachedFolder.findFirst({
+          where: { id: folderId, userId },
+          select: { wellKnownName: true },
+        });
+        const isSentFolder =
+          (folderRecord?.wellKnownName ??
+            resolveWellKnownName(undefined, folderPath)) === "sentitems";
 
         // Fetch new messages (newest first, limit batch size)
         const sortedNewUids = newUids.sort((a, b) => b - a).slice(0, 200);
@@ -750,7 +808,7 @@ export class ImapProvider implements EmailProvider {
                     JSON.stringify(extractRecipients(parsed.to))
                   ),
                   receivedDateTime: parsed.date ?? new Date(),
-                  sentDateTime: parsed.date ?? null,
+                  sentDateTime: isSentFolder ? parsed.date ?? null : null,
                   isRead: flags.has("\\Seen"),
                   hasAttachments: (parsed.attachments?.length ?? 0) > 0,
                   flagStatus: flags.has("\\Flagged") ? "flagged" : "notFlagged",

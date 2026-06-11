@@ -12,6 +12,18 @@ export async function PATCH(req: NextRequest) {
     const { preferredTimeZone } = body;
 
     if (preferredTimeZone && typeof preferredTimeZone === "string") {
+      // Validate against the IANA time zone list; if the Intl API is
+      // unavailable in this runtime, fall back to accepting the value
+      let isValidTimeZone = true;
+      try {
+        isValidTimeZone = Intl.supportedValuesOf("timeZone").includes(preferredTimeZone);
+      } catch {
+        isValidTimeZone = true;
+      }
+      if (!isValidTimeZone) {
+        return NextResponse.json({ error: "Invalid time zone" }, { status: 400 });
+      }
+
       await prisma.user.update({
         where: { id: user.id },
         data: { preferredTimeZone },

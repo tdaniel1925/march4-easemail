@@ -121,11 +121,22 @@ function PresenceDot({ availability }: { availability: PresenceAvailability }) {
   );
 }
 
+function escapeHtml(s: string): string {
+  return s
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
 function MessageBubble({ msg, isMe }: { msg: TeamsMessage; isMe: boolean }) {
   const name = msg.from?.user?.displayName ?? "Unknown";
+  // Plain-text messages must be HTML-escaped before injection; line breaks
+  // are converted to <br> AFTER escaping so they still render.
   const rawContent = msg.body.contentType === "html"
     ? DOMPurify.sanitize(msg.body.content, { ALLOWED_TAGS: ["b", "i", "u", "br", "p", "span", "a"] })
-    : msg.body.content;
+    : escapeHtml(msg.body.content).replace(/\n/g, "<br>");
 
   return (
     <div className={`flex gap-2 ${isMe ? "flex-row-reverse" : "flex-row"}`}>
@@ -179,6 +190,7 @@ export default function TeamsClient({ userName, userEmail }: TeamsClientProps) {
   const [activeThread, setActiveThread] = useState<ActiveThread | null>(null);
   const [messages, setMessages] = useState<TeamsMessage[]>([]);
   const [messagesLoading, setMessagesLoading] = useState(false);
+  const [messagesError, setMessagesError] = useState<string | null>(null);
 
   // Compose
   const [draft, setDraft] = useState("");
@@ -298,6 +310,12 @@ export default function TeamsClient({ userName, userEmail }: TeamsClientProps) {
       }
       const data = await res.json() as { messages: TeamsMessage[] };
       setMessages(data.messages);
+      setMessagesError(null);
+    } catch (err) {
+      // Network error (e.g. from the 30s poll) — keep existing messages,
+      // show an inline error instead of an unhandled rejection.
+      console.error("[teams] loadMessages failed:", err);
+      setMessagesError("Failed to load messages. Will retry automatically.");
     } finally {
       setMessagesLoading(false);
     }
@@ -377,6 +395,9 @@ export default function TeamsClient({ userName, userEmail }: TeamsClientProps) {
       setDraft("");
       // Reload messages to show the sent message
       await loadMessages(activeThread);
+    } catch (err) {
+      console.error("[teams] sendMessage failed:", err);
+      setSendError("Network error. Message not sent — please try again.");
     } finally {
       setSending(false);
     }
@@ -696,6 +717,9 @@ export default function TeamsClient({ userName, userEmail }: TeamsClientProps) {
 
             {/* Messages */}
             <div className="flex-1 overflow-y-auto px-6 py-4 space-y-4">
+              {messagesError && (
+                <p className="text-xs text-center py-1" style={{ color: "rgb(220 38 38)" }}>{messagesError}</p>
+              )}
               {messagesLoading && messages.length === 0 && (
                 <div className="flex items-center justify-center py-12">
                   <div className="w-5 h-5 rounded-full border-2 border-neutral-200 animate-spin" style={{ borderTopColor: "rgb(138 9 9)" }} />
