@@ -1,6 +1,6 @@
 # CodeBakers Dependency Map
 # GENERATED — never edit by hand. Run `pnpm dep:map` to regenerate.
-# Last generated: 2026-06-11 | git: 244280c
+# Last generated: 2026-06-11 | git: 3ec34a3
 # Debug: pnpm dep:map --debug
 
 ---
@@ -104,7 +104,7 @@
 | TeamsClientProps | useTeamsClient | — | — | — | — (set manually) |
 | TeamsMessage | useTeamsClient | — | — | — | — (set manually) |
 | TeamsTeam | useTeamsClient | — | — | — | — (set manually) |
-| Time | useCalendarClient | — | — | — | — (set manually) |
+| Time | useCalendarClient, useComposeClient | — | — | — | — (set manually) |
 | TodoItem | useDashboardClient | — | — | — | — (set manually) |
 | Tone | useComposeClient | — | — | — | — (set manually) |
 | UndoSendDelay | useSettingsClient | — | — | — | — (set manually) |
@@ -156,7 +156,7 @@ Entities: CalendarStore, WeekStart
 
 ### useComposeClient
 File: `components\compose\ComposeClient.tsx`
-Entities: ISpeechRecognitionResultList, ISpeechRecognitionResult, Tone, Length, ActivePanel, ComposeMode, FileAttachment, ContactSuggestion, Account, StylePreset, Target, Color
+Entities: ISpeechRecognitionResultList, ISpeechRecognitionResult, Tone, Length, ActivePanel, ComposeMode, FileAttachment, ContactSuggestion, Account, StylePreset, Target, Time, Color
 
 ### useContactsClient
 File: `components\contacts\ContactsClient.tsx`

@@ -366,6 +366,9 @@ export default function InboxClient({
   const [requiresReauth, setRequiresReauth] = useState(false);
   const [fetchError, setFetchError] = useState<string | null>(null);
   const [deleteError, setDeleteError] = useState<string | null>(null);
+  // Brief inline notice shown when a clicked email no longer exists upstream
+  // (ghost cache entry) and was removed from the list.
+  const [ghostNotice, setGhostNotice] = useState<string | null>(null);
 
   // Inline email expansion
   const [expandedEmailId, setExpandedEmailId] = useState<string | null>(null);
@@ -506,6 +509,27 @@ export default function InboxClient({
     setTabEmails((prev) => (prev ? restoreFn(prev) : prev));
   }, []);
 
+  // A clicked message returned 404 — it no longer exists upstream (the server
+  // already purged its stale cache row). Remove it from every visible list,
+  // close any pane showing it, and show a brief inline notice.
+  const handleGhostEmail = useCallback((id: string) => {
+    removeEmailEverywhere(id);
+    setExpandedEmailId((prev) => (prev === id ? null : prev));
+    setExpandedBody(null);
+    setExpandedDetails(null);
+    setSplitPaneEmailId((prev) => (prev === id ? null : prev));
+    setSplitPaneBody(null);
+    setSplitPaneDetails(null);
+    setGhostNotice("This message no longer exists and was removed.");
+  }, [removeEmailEverywhere]);
+
+  // Auto-dismiss the ghost notice after a few seconds
+  useEffect(() => {
+    if (!ghostNotice) return;
+    const timer = setTimeout(() => setGhostNotice(null), 5000);
+    return () => clearTimeout(timer);
+  }, [ghostNotice]);
+
   // ── Rule engine helpers ──
 
   function fireSideEffects(ses: SideEffect[], mc: Map<string, number>) {
@@ -623,13 +647,16 @@ export default function InboxClient({
     const hid = activeAccount.homeAccountId;
     // Optimistic removal + undo entry — the API call is delayed like archive,
     // so Undo cancels the timer and nothing is sent to the server.
+    // Uses /api/mail/delete (NOT /api/mail/batch) because only the delete
+    // route updates cachedEmail — otherwise the email resurrects from the
+    // server cache on the next inbox load.
     setUndoStack((prev) => [...prev, { action: "delete", emails: [email], timestamp: ts }]);
     removeEmailEverywhere(email.id);
     scheduleAction(ts, () => {
-      void fetch("/api/mail/batch", {
+      void fetch("/api/mail/delete", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action: "delete", messageIds: [email.id], homeAccountId: hid }),
+        body: JSON.stringify({ messageId: email.id, homeAccountId: hid }),
       })
         .then((res) => {
           if (!res.ok) {
@@ -692,22 +719,35 @@ export default function InboxClient({
     removeEmailEverywhere(new Set(idsToDelete));
 
     scheduleAction(ts, () => {
-      void fetch("/api/mail/batch", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action: "delete", messageIds: idsToDelete, homeAccountId: hid }),
-      })
-        .then((res) => {
-          if (!res.ok) {
-            // Restore emails on failure
-            restoreEmailsEverywhere(selectedEmails);
-            setDeleteError("Failed to delete emails. Please try again.");
-          }
-        })
-        .catch(() => {
-          restoreEmailsEverywhere(selectedEmails);
-          setDeleteError("Network error. Could not delete emails.");
-        });
+      // Per-message /api/mail/delete (NOT /api/mail/batch) so the server cache
+      // (cachedEmail) is updated and deleted emails can't resurrect on reload.
+      void Promise.allSettled(
+        idsToDelete.map((id) =>
+          fetch("/api/mail/delete", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ messageId: id, homeAccountId: hid }),
+          }).then((res) => {
+            if (!res.ok) throw new Error(`delete ${res.status}`);
+            return id;
+          })
+        )
+      ).then((results) => {
+        const failedIds = new Set(
+          results
+            .map((r, i) => (r.status === "rejected" ? idsToDelete[i] : null))
+            .filter((id): id is string => id !== null)
+        );
+        if (failedIds.size > 0) {
+          // Restore only the emails that failed to delete
+          restoreEmailsEverywhere(selectedEmails.filter((e) => failedIds.has(e.id)));
+          setDeleteError(
+            failedIds.size === idsToDelete.length
+              ? "Failed to delete emails. Please try again."
+              : `Failed to delete ${failedIds.size} of ${idsToDelete.length} emails. They were restored.`
+          );
+        }
+      });
     });
 
     setSelectedIds(new Set());
@@ -890,6 +930,26 @@ export default function InboxClient({
       });
     return () => { controller.abort(); };
   }, [activeAccount?.homeAccountId]);
+
+  // Silent refresh on mount — AppShell keeps a stale snapshot of the inbox
+  // across SPA view switches (e.g. returning to the inbox after deleting an
+  // email in the read view), so re-fetch and replace the list once mounted.
+  // No loading state: the SSR/snapshot list stays visible until data arrives.
+  useEffect(() => {
+    const hid = activeAccount?.homeAccountId;
+    if (!hid) return;
+    const controller = new AbortController();
+    fetch(`/api/mail/inbox?homeAccountId=${encodeURIComponent(hid)}`, { signal: controller.signal })
+      .then((r) => (r.ok ? (r.json() as Promise<{ emails: EmailMessage[]; nextLink: string | null }>) : null))
+      .then((data) => {
+        if (!data || controller.signal.aborted) return;
+        setEmails(processWithRules(data.emails, hid));
+        setNextLink(data.nextLink ?? null);
+      })
+      .catch(() => {}); // silent — the snapshot list is still usable
+    return () => controller.abort();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Label change from sidebar: switch to label tab
   useEffect(() => {
@@ -1180,9 +1240,14 @@ export default function InboxClient({
         setExpandedDetails(null);
         if (activeAccount) {
           setExpandedLoading(true);
+          let ghost = false;
           fetch(`/api/mail/message/${encodeURIComponent(email.id)}?homeAccountId=${encodeURIComponent(activeAccount.homeAccountId)}`)
-            .then((r) => r.ok ? r.json() : null)
+            .then((r) => {
+              if (r.status === 404) { ghost = true; handleGhostEmail(email.id); return null; }
+              return r.ok ? r.json() : null;
+            })
             .then((data: Record<string, unknown> | null) => {
+              if (ghost) return;
               if (data) {
                 const body = data.body as { content?: string; contentType?: string } | undefined;
                 const toRaw = data.toRecipients as { emailAddress?: { name?: string; address?: string }; name?: string; address?: string }[] | undefined;
@@ -1230,9 +1295,14 @@ export default function InboxClient({
     setSplitPaneDetails(null);
     if (!activeAccount) return;
     setSplitPaneLoading(true);
+    let ghost = false;
     fetch(`/api/mail/message/${encodeURIComponent(email.id)}?homeAccountId=${encodeURIComponent(activeAccount.homeAccountId)}`)
-      .then((r) => r.ok ? r.json() : null)
+      .then((r) => {
+        if (r.status === 404) { ghost = true; handleGhostEmail(email.id); return null; }
+        return r.ok ? r.json() : null;
+      })
       .then((data: Record<string, unknown> | null) => {
+        if (ghost) return;
         if (data) {
           const body = data.body as { content?: string; contentType?: string } | undefined;
           const toRaw = data.toRecipients as { emailAddress?: { name?: string; address?: string }; name?: string; address?: string }[] | undefined;
@@ -1246,7 +1316,7 @@ export default function InboxClient({
       })
       .catch(() => setSplitPaneBody({ content: email.bodyPreview, contentType: "text" }))
       .finally(() => setSplitPaneLoading(false));
-  }, [activeAccount]);
+  }, [activeAccount, handleGhostEmail]);
 
   return (
     <>
@@ -1515,6 +1585,14 @@ export default function InboxClient({
           </div>
         )}
 
+        {/* Ghost email notice — message no longer exists upstream */}
+        {ghostNotice && (
+          <div className="mx-4 mt-3 px-4 py-3 rounded-[10px] border flex items-center justify-between gap-3" style={{ backgroundColor: "rgb(254 252 232)", borderColor: "rgb(250 224 152)" }}>
+            <p className="text-xs" style={{ color: "rgb(113 63 18)" }}>{ghostNotice}</p>
+            <button onClick={() => setGhostNotice(null)} className="text-xs font-semibold flex-shrink-0" style={{ color: "rgb(113 63 18)" }}>Dismiss</button>
+          </div>
+        )}
+
         {/* New emails banner */}
         {pendingNewEmails.length > 0 && (
           <button
@@ -1651,9 +1729,14 @@ export default function InboxClient({
                   if (activeAccount) {
                     setExpandedLoading(true);
                     const acctParam = encodeURIComponent(activeAccount.homeAccountId);
+                    let ghost = false;
                     fetch(`/api/mail/message/${encodeURIComponent(email.id)}?homeAccountId=${acctParam}`)
-                      .then((r) => r.ok ? r.json() : null)
+                      .then((r) => {
+                        if (r.status === 404) { ghost = true; handleGhostEmail(email.id); return null; }
+                        return r.ok ? r.json() : null;
+                      })
                       .then((data: Record<string, unknown> | null) => {
+                        if (ghost) return;
                         if (data) {
                           const body = data.body as { content?: string; contentType?: string } | undefined;
                           // Handle both Graph-style (nested emailAddress) and flat formats

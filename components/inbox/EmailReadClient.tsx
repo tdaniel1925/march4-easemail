@@ -95,6 +95,11 @@ export default function EmailReadClient({ email: initialEmail, homeAccountId, re
   const [email, setEmail] = useState<EmailDetail>(initialEmail);
   const [emailLoading, setEmailLoading] = useState(!initialEmail.subject);
   const [emailError, setEmailError] = useState<string | null>(null);
+  // Ghost entry — the message no longer exists upstream (the server purged
+  // its stale cache row on 404). Show a brief notice, then return to the list.
+  const [emailGone, setEmailGone] = useState(false);
+  // Inline error for toolbar actions (archive / delete)
+  const [actionError, setActionError] = useState<string | null>(null);
 
   // Fetch full email on mount when we only have a placeholder (SPA mode)
   useEffect(() => {
@@ -106,6 +111,12 @@ export default function EmailReadClient({ email: initialEmail, homeAccountId, re
     if (homeAccountId) params.set("homeAccountId", homeAccountId);
     fetch(`/api/mail/message/${encodeURIComponent(initialEmail.id)}?${params}`)
       .then(async (r) => {
+        if (r.status === 404) {
+          // Message no longer exists — server already removed the stale cache
+          // row, and the list will refetch without it when we navigate back.
+          setEmailGone(true);
+          return null;
+        }
         if (!r.ok) {
           const body = await r.json().catch(() => ({ error: `HTTP ${r.status}` }));
           throw new Error((body as { error?: string }).error ?? `HTTP ${r.status}`);
@@ -113,6 +124,7 @@ export default function EmailReadClient({ email: initialEmail, homeAccountId, re
         return r.json();
       })
       .then((data) => {
+        if (!data) return;
         setEmail({
           id: data.id,
           subject: data.subject ?? "(no subject)",
@@ -168,6 +180,15 @@ export default function EmailReadClient({ email: initialEmail, homeAccountId, re
     }
     window.history.pushState(null, "", href);
   }
+
+  // Ghost message: show the notice briefly, then return to the list
+  // automatically (the list refetches on mount, so the entry is gone).
+  useEffect(() => {
+    if (!emailGone) return;
+    const timer = setTimeout(() => navigateTo(returnTo), 2500);
+    return () => clearTimeout(timer);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [emailGone]);
 
   const [isRead, setIsRead] = useState(email.isRead);
   const [isStarred, setIsStarred] = useState(email.flag.flagStatus === "flagged");
@@ -244,6 +265,24 @@ export default function EmailReadClient({ email: initialEmail, homeAccountId, re
       <div className="flex flex-col flex-1 items-center justify-center" style={{ height: "100vh" }}>
         <div className="w-8 h-8 border-2 rounded-full animate-spin mb-3" style={{ borderColor: "rgb(220 220 220)", borderTopColor: "rgb(138 9 9)" }} />
         <p className="text-sm font-medium" style={{ color: "rgb(115 115 115)" }}>Loading email...</p>
+      </div>
+    );
+  }
+
+  if (emailGone) {
+    return (
+      <div className="flex flex-col flex-1 items-center justify-center gap-2" style={{ height: "100vh" }}>
+        <p className="text-sm font-medium" style={{ color: "rgb(113 63 18)" }}>
+          This message no longer exists and was removed.
+        </p>
+        <p className="text-xs" style={{ color: "rgb(155 155 155)" }}>Returning to the list…</p>
+        <button
+          onClick={() => navigateTo(returnTo)}
+          className="text-sm underline font-medium mt-1"
+          style={{ color: "rgb(138 9 9)" }}
+        >
+          Go back now
+        </button>
       </div>
     );
   }
@@ -478,13 +517,25 @@ export default function EmailReadClient({ email: initialEmail, homeAccountId, re
           <button
             title="Archive"
             onClick={() => {
+              setActionError(null);
               fetch("/api/mail/archive", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ messageId: email.id, homeAccountId }),
               })
-                .then(() => navigateTo(returnTo))
-                .catch(console.error);
+                .then(async (res) => {
+                  if (!res.ok) {
+                    const body = await res.json().catch(() => ({} as { error?: string }));
+                    throw new Error((body as { error?: string }).error ?? "Failed to archive email.");
+                  }
+                  // Success — return to the list (it refetches on mount, so
+                  // the archived email is no longer shown).
+                  navigateTo(returnTo);
+                })
+                .catch((err) => {
+                  console.error(err);
+                  setActionError(err instanceof Error ? err.message : "Failed to archive email.");
+                });
             }}
             className="p-1.5 rounded-small transition-colors hover:bg-background-100"
             style={{ color: "rgb(155 155 155)" }}
@@ -497,13 +548,26 @@ export default function EmailReadClient({ email: initialEmail, homeAccountId, re
             title="Delete"
             onClick={() => {
               if (!confirm("Move this email to trash?")) return;
+              setActionError(null);
               fetch("/api/mail/delete", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ messageId: email.id, homeAccountId }),
               })
-                .then(() => navigateTo(returnTo))
-                .catch(console.error);
+                .then(async (res) => {
+                  if (!res.ok) {
+                    const body = await res.json().catch(() => ({} as { error?: string }));
+                    throw new Error((body as { error?: string }).error ?? "Failed to delete email.");
+                  }
+                  // Success — the delete route also updated the server cache,
+                  // and the list refetches on mount, so the deleted email is
+                  // no longer shown when we navigate back.
+                  navigateTo(returnTo);
+                })
+                .catch((err) => {
+                  console.error(err);
+                  setActionError(err instanceof Error ? err.message : "Failed to delete email.");
+                });
             }}
             className="p-1.5 rounded-small transition-colors hover:bg-background-100"
             style={{ color: "rgb(155 155 155)" }}
@@ -514,6 +578,16 @@ export default function EmailReadClient({ email: initialEmail, homeAccountId, re
           </button>
         </div>
       </div>
+
+      {/* Toolbar action error (archive / delete failures) */}
+      {actionError && (
+        <div className="flex items-center justify-between gap-3 px-5 py-2 border-b border-neutral-100 flex-shrink-0" style={{ backgroundColor: "rgb(254 242 242)" }}>
+          <p className="text-xs" style={{ color: "rgb(153 27 27)" }}>{actionError}</p>
+          <button onClick={() => setActionError(null)} className="text-xs font-semibold flex-shrink-0" style={{ color: "rgb(153 27 27)" }}>
+            Dismiss
+          </button>
+        </div>
+      )}
 
       {/* ── Scrollable email body ──────────────────────────────────────────────── */}
       <div className="flex-1 overflow-y-auto">

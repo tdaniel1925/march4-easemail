@@ -26,6 +26,7 @@ const nextConfig: NextConfig = {
               "script-src 'self' 'unsafe-eval' 'unsafe-inline'", // Next.js requires unsafe-eval and unsafe-inline
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://rsms.me",
               "img-src 'self' data: blob: https://graph.microsoft.com https://*.sharepoint.com",
+              "media-src 'self' blob: data:",
               "font-src 'self' data: https://fonts.gstatic.com https://rsms.me",
               "connect-src 'self' https://graph.microsoft.com https://login.microsoftonline.com https://*.supabase.co https://*.sentry.io https://*.ingest.sentry.io",
               "frame-ancestors 'self'",

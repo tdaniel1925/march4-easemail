@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useAccountStore } from "@/lib/stores/account-store";
 import { useDataCacheStore, pathToView } from "@/lib/stores/data-cache";
 import type { EmailMessage } from "@/lib/types/email";
@@ -23,10 +23,14 @@ export async function refreshFolderCounts(homeAccountId: string, setMailFolders:
 function EmailRow({
   email,
   onClick,
+  onDelete,
+  deleteLabel = "Delete",
   showRecipient = false,
 }: {
   email: EmailMessage;
   onClick: () => void;
+  onDelete?: (e: React.MouseEvent) => void;
+  deleteLabel?: string;
   showRecipient?: boolean;
 }) {
   const displayName = showRecipient
@@ -38,7 +42,7 @@ function EmailRow({
     <div
       data-testid="email-item"
       onClick={onClick}
-      className="relative flex items-start gap-3 px-4 py-3.5 cursor-pointer transition-colors hover:bg-neutral-50 border-l-2 border-transparent"
+      className="group relative flex items-start gap-3 px-4 py-3.5 cursor-pointer transition-colors hover:bg-neutral-50 border-l-2 border-transparent"
     >
       <div
         className="w-9 h-9 rounded-[10px] flex items-center justify-center flex-shrink-0 mt-0.5 text-sm font-bold"
@@ -73,6 +77,20 @@ function EmailRow({
 
       {!email.isRead && (
         <span className="w-2 h-2 rounded-full flex-shrink-0 mt-2" style={{ backgroundColor: "rgb(138 9 9)" }} />
+      )}
+
+      {/* Hover delete action */}
+      {onDelete && (
+        <button
+          onClick={(e) => { e.stopPropagation(); onDelete(e); }}
+          title={deleteLabel}
+          className="opacity-0 group-hover:opacity-100 transition-opacity w-7 h-7 flex items-center justify-center rounded-[8px] border border-neutral-200 bg-white hover:border-red-300 flex-shrink-0 mt-0.5"
+          style={{ color: "rgb(115 115 115)" }}
+        >
+          <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+          </svg>
+        </button>
       )}
     </div>
   );
@@ -122,9 +140,10 @@ export default function FolderClient({
   const [searching, setSearching] = useState(false);
   const [searchError, setSearchError] = useState<string | null>(null);
   const [requiresReauth, setRequiresReauth] = useState(false);
+  const [actionError, setActionError] = useState<string | null>(null);
 
   const activeAccount = useAccountStore((s) => s.activeAccount);
-  const _setMailFolders = useAccountStore((s) => s.setMailFolders);
+  const setMailFolders = useAccountStore((s) => s.setMailFolders);
   const setLoadingFolderId = useDataCacheStore((s) => s.setLoadingFolderId);
   const loadingFolderId = useDataCacheStore((s) => s.loadingFolderId);
   const firstRender = useRef(true);
@@ -257,6 +276,53 @@ export default function FolderClient({
 
   const displayEmails = searchResults ?? emails;
 
+  // ── Delete handler — same optimistic pattern as InboxClient ───────────────
+  // The visible list can be `emails` or `searchResults`, so removal/restore
+  // must update both. Uses /api/mail/delete which also updates the server
+  // cache (cachedEmail), so the email can't resurrect on the next load.
+  // In Trash, delete is permanent.
+  const handleDelete = useCallback((email: EmailMessage) => {
+    if (!activeAccount) return;
+    const hid = activeAccount.homeAccountId;
+
+    // Optimistic removal from every visible list
+    const filterFn = (prev: EmailMessage[]) => prev.filter((e) => e.id !== email.id);
+    setEmails(filterFn);
+    setSearchResults((prev) => (prev ? filterFn(prev) : prev));
+    setActionError(null);
+
+    void fetch("/api/mail/delete", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        messageId: email.id,
+        homeAccountId: hid,
+        ...(folder === "trash" ? { permanent: true } : {}),
+      }),
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error(`delete ${res.status}`);
+        // Keep sidebar folder counts in sync (non-critical)
+        void refreshFolderCounts(hid, setMailFolders);
+      })
+      .catch(() => {
+        // Failure — restore the email back into all lists, sorted into place
+        const restoreFn = (prev: EmailMessage[]) => {
+          if (prev.some((e) => e.id === email.id)) return prev;
+          return [...prev, email].sort(
+            (a, b) => new Date(b.receivedDateTime).getTime() - new Date(a.receivedDateTime).getTime()
+          );
+        };
+        setEmails(restoreFn);
+        setSearchResults((prev) => (prev ? restoreFn(prev) : prev));
+        setActionError(
+          folder === "trash"
+            ? "Failed to permanently delete email. Please try again."
+            : "Failed to delete email. Please try again."
+        );
+      });
+  }, [activeAccount, folder, setMailFolders]);
+
   return (
     <div className="flex flex-1" style={{ overflow: "hidden" }}>
       <div className="flex flex-col w-full bg-white flex-shrink-0" style={{ height: "100vh", overflow: "hidden" }}>
@@ -275,6 +341,14 @@ export default function FolderClient({
               <a href="/api/auth/microsoft?add=1" className="text-xs font-semibold flex-shrink-0 underline" style={{ color: "rgb(138 9 9)" }}>
                 Reconnect
               </a>
+            </div>
+          )}
+
+          {/* Delete error banner */}
+          {actionError && (
+            <div className="mb-3 px-4 py-3 rounded-[10px] border flex items-center justify-between gap-3" style={{ backgroundColor: "rgb(253 235 235)", borderColor: "rgb(252 216 216)" }}>
+              <p className="text-xs" style={{ color: "rgb(138 9 9)" }}>{actionError}</p>
+              <button onClick={() => setActionError(null)} className="text-xs font-semibold flex-shrink-0" style={{ color: "rgb(138 9 9)" }}>Dismiss</button>
             </div>
           )}
 
@@ -344,6 +418,8 @@ export default function FolderClient({
               <EmailRow
                 key={email.id}
                 email={email}
+                onDelete={() => handleDelete(email)}
+                deleteLabel={folder === "trash" ? "Delete permanently" : "Delete"}
                 showRecipient={folder === "sent" || folder === "drafts"}
                 onClick={() => {
                   if (folder === "drafts") {

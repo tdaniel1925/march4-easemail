@@ -296,6 +296,51 @@ export async function GET(req: NextRequest) {
     const path = FOLDER_PATHS[folder]
       ?? `/me/mailFolders/${encodeURIComponent(folder)}/messages?$select=${SELECT_RECEIVED}&$top=100&$orderby=receivedDateTime desc`;
     const data = await graphGet<GraphResponse>(user.id, homeAccountId, path);
+
+    // ── Cache reconciliation (ghost prevention) ─────────────────────────────
+    // A fresh first-page fetch from Graph is the source of truth for its date
+    // window: delete cachedEmail rows for this user+folder whose
+    // receivedDateTime falls inside the fetched page's range but whose id the
+    // live listing no longer returns (deleted/moved upstream). Conservative:
+    // only the overlap window — older items beyond page 1 are never touched.
+    // Skipped for "starred" (spans folders) and for paginated requests.
+    if (!nextLinkParam && folder !== "starred" && data.value.length > 0) {
+      try {
+        // Resolve the cachedEmail.folderId this listing corresponds to
+        let cacheFolderId: string | null = null;
+        if (WELL_KNOWN[folder]) {
+          const cf = await prisma.cachedFolder.findFirst({
+            where: { userId: user.id, homeAccountId, wellKnownName: WELL_KNOWN[folder] },
+            select: { id: true },
+          });
+          cacheFolderId = cf?.id ?? null;
+        } else if (!NAMED_FOLDERS.has(folder)) {
+          cacheFolderId = folder; // custom folder id — ownership verified above
+        }
+        if (cacheFolderId) {
+          const liveIds = data.value.map((m) => m.id);
+          const dates = data.value
+            .map((m) => new Date(m.receivedDateTime ?? m.sentDateTime ?? m.lastModifiedDateTime ?? ""))
+            .filter((d) => !Number.isNaN(d.getTime()));
+          if (dates.length > 0) {
+            const min = new Date(Math.min(...dates.map((d) => d.getTime())));
+            const max = new Date(Math.max(...dates.map((d) => d.getTime())));
+            await prisma.cachedEmail.deleteMany({
+              where: {
+                userId: user.id,
+                homeAccountId,
+                folderId: cacheFolderId,
+                id: { notIn: liveIds },
+                receivedDateTime: { gte: min, lte: max },
+              },
+            });
+          }
+        }
+      } catch {
+        // Reconciliation is best-effort — never block the listing response
+      }
+    }
+
     return NextResponse.json({ emails: data.value.map(mapGraphMessage), nextLink: data["@odata.nextLink"] ?? null });
   } catch (err) {
     const msg = String(err);

@@ -341,6 +341,24 @@ export default function ComposeClient({
   const [importance, setImportance] = useState<"normal" | "high">("normal");
   const [requestReadReceipt, setRequestReadReceipt] = useState(false);
 
+  // ── Exit flush bookkeeping ───────────────────────────────────────────────────
+  // Auto-save is debounced (5s) — these track edits made since the last save so a
+  // final flush can run on unmount / navigation / tab close without duplicating
+  // drafts or resurrecting discarded/sent content.
+  const dirtySinceLastSaveRef = useRef(false);
+  const suppressFlushRef = useRef(false); // set on Discard and after successful Send
+  // Mirror of the latest composer state — unmount cleanup and pagehide handlers
+  // run with stale closures, so the flush snapshots current values from here
+  // (the body itself is read live from bodyRef.current.innerHTML).
+  const latestComposeStateRef = useRef({
+    to, cc, bcc, subject, attachments, fromAccountId, importance, requestReadReceipt,
+    originalMessageBody: replyContext?.originalBodyHtml as string | undefined,
+  });
+  latestComposeStateRef.current = {
+    to, cc, bcc, subject, attachments, fromAccountId, importance, requestReadReceipt,
+    originalMessageBody: replyContext?.originalBodyHtml,
+  };
+
   // ── Discard confirmation ─────────────────────────────────────────────────────
   const [showDiscardConfirm, setShowDiscardConfirm] = useState(false);
 
@@ -417,7 +435,6 @@ export default function ComposeClient({
 
   // ── Voice Message state ──────────────────────────────────────────────────────
   const [voiceBlob, setVoiceBlob] = useState<Blob | null>(null);
-  const [voiceUrl, setVoiceUrl] = useState<string | null>(null);
   const [voiceRecording, setVoiceRecording] = useState(false);
   const [voiceTime, setVoiceTime] = useState(0);
   const [voiceDuration, setVoiceDuration] = useState(0);
@@ -428,9 +445,22 @@ export default function ComposeClient({
   const voiceChunksRef = useRef<Blob[]>([]);
   const voiceTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const voiceTimeRef = useRef(0);
-  // Mirror voiceUrl into a ref so unmount cleanup can revoke the latest object URL
-  const voiceUrlRef = useRef<string | null>(null);
-  voiceUrlRef.current = voiceUrl;
+  // Voice preview playback — uses Web Audio instead of <audio src={blobUrl}>.
+  // The CSP (next.config.ts) has no media-src directive, so blob: URLs fall back
+  // to default-src 'self' and the browser refuses to load them — the old <audio>
+  // player rendered but could never play. Decoding the blob with AudioContext
+  // plays entirely in memory (not subject to media-src) and also yields the real
+  // duration (MediaRecorder WebM blobs report Infinity to media elements).
+  const [voicePreviewPlaying, setVoicePreviewPlaying] = useState(false);
+  const [voicePreviewProgress, setVoicePreviewProgress] = useState(0); // seconds
+  const [voicePreviewDuration, setVoicePreviewDuration] = useState(0); // seconds (from decoded buffer)
+  const [voicePreviewError, setVoicePreviewError] = useState<string | null>(null);
+  const voicePreviewCtxRef = useRef<AudioContext | null>(null);
+  const voicePreviewBufferRef = useRef<AudioBuffer | null>(null);
+  const voicePreviewSourceRef = useRef<AudioBufferSourceNode | null>(null);
+  const voicePreviewStartedAtRef = useRef(0); // AudioContext.currentTime at playback start
+  const voicePreviewOffsetRef = useRef(0);    // seconds into the buffer at playback start
+  const voicePreviewRafRef = useRef<number | null>(null);
 
   // ── Toolbar formatting state ─────────────────────────────────────────────────
   const [activeFormats, setActiveFormats] = useState<Set<string>>(new Set());
@@ -455,6 +485,7 @@ export default function ComposeClient({
   // Keep a ref to the latest saveDraftFn to avoid stale closure in the timer
   const saveDraftFnRef = useRef<typeof saveDraftFn | null>(null);
   const triggerAutoSave = useCallback(() => {
+    dirtySinceLastSaveRef.current = true;
     setDraftSaved(false);
     if (autoSaveTimerRef.current) clearTimeout(autoSaveTimerRef.current);
     autoSaveTimerRef.current = setTimeout(() => void saveDraftFnRef.current?.(), 5000);
@@ -569,6 +600,10 @@ export default function ComposeClient({
       try {
         // Pass the committed recipients explicitly — `to`/`cc`/`bcc` state is still stale here
         await saveDraftFn(sendAt, { to: finalTo, cc: finalCc, bcc: finalBcc });
+        // Scheduled draft saved — the unmount flush would re-save with scheduledAt: null
+        // and unschedule it, so suppress it
+        suppressFlushRef.current = true;
+        if (autoSaveTimerRef.current) clearTimeout(autoSaveTimerRef.current);
         navigateTo("/drafts");
       } catch {
         setSendError("Failed to schedule. Please try again.");
@@ -623,6 +658,12 @@ export default function ComposeClient({
         return;
       }
 
+      // Email sent — cancel the pending auto-save and the exit flush so the sent
+      // content is not re-saved as a draft
+      suppressFlushRef.current = true;
+      dirtySinceLastSaveRef.current = false;
+      if (autoSaveTimerRef.current) clearTimeout(autoSaveTimerRef.current);
+
       // Email sent successfully — navigate away
       setTimeout(() => goBack(), 300);
     } catch {
@@ -649,6 +690,9 @@ export default function ComposeClient({
     const hasContent = toList.length > 0 || subject.trim() || (bodyHtml.length > 20);
     if (!hasContent) return;
 
+    // Content as of this moment is being persisted — clear the dirty flag now;
+    // edits made while the request is in flight re-set it via triggerAutoSave.
+    dirtySinceLastSaveRef.current = false;
     setDraftSaving(true);
     try {
       // Serialize attachments; when scheduling, include the voice recording so it isn't lost
@@ -685,6 +729,7 @@ export default function ComposeClient({
         }),
       });
       if (!res.ok) {
+        dirtySinceLastSaveRef.current = true; // save failed — content still unsaved
         setDraftSaved(false);
         setSendError("Draft could not be saved. Check your connection and try again.");
         if (scheduleAt) throw new Error("draft_save_failed");
@@ -695,6 +740,7 @@ export default function ComposeClient({
       setDraftSaved(true);
       setLastSaved(new Date());
     } catch (err) {
+      dirtySinceLastSaveRef.current = true; // save failed — content still unsaved
       // Scheduling must surface the failure — rethrow so handleSend shows the inline error
       if (scheduleAt) throw err;
       // Non-fatal — background auto-save failure surfaced via missing "Saved" indicator
@@ -702,6 +748,58 @@ export default function ComposeClient({
       setDraftSaving(false);
     }
   }
+
+  // ── Exit flush ───────────────────────────────────────────────────────────────
+  // Auto-save is debounced 5s with no flush, so text typed after the last tick
+  // was lost when the user clicked away mid-compose. This kicks a final save
+  // with the CURRENT body/subject/recipients. Uses fetch keepalive (not
+  // navigator.sendBeacon, which posts text/plain — middleware rejects non-JSON
+  // mutations with 415) so the request survives a real page unload.
+  function flushPendingDraftSave(opts?: { keepalive?: boolean }) {
+    if (suppressFlushRef.current) return;        // discarded or sent — must not re-save
+    if (!dirtySinceLastSaveRef.current) return;  // nothing changed since last save
+    const bodyHtml = bodyRef.current?.innerHTML ?? "";
+    const s = latestComposeStateRef.current;
+    const hasContent = s.to.length > 0 || s.subject.trim() || bodyHtml.length > 20;
+    if (!hasContent) return;
+    dirtySinceLastSaveRef.current = false; // claimed — prevents unmount + pagehide double-fire
+    const payload = JSON.stringify({
+      draftId: draftIdRef.current ?? undefined, // UPDATE the existing draft — never duplicate
+      homeAccountId: s.fromAccountId || defaultAccount?.homeAccountId,
+      toRecipients: s.to.map((addr) => ({ emailAddress: { address: addr } })),
+      ccRecipients: s.cc.map((addr) => ({ emailAddress: { address: addr } })),
+      bccRecipients: s.bcc.map((addr) => ({ emailAddress: { address: addr } })),
+      subject: s.subject,
+      bodyHtml,
+      attachments: s.attachments.map(({ name, type, size, data }) => ({ name, type, size, data })),
+      scheduledAt: null,
+      importance: s.importance,
+      requestReadReceipt: s.requestReadReceipt,
+      draftType: mode ?? "new",
+      inReplyToMessageId: mode === "reply" || mode === "replyAll" ? messageId : undefined,
+      forwardedMessageId: mode === "forward" ? messageId : undefined,
+      originalMessageBody: s.originalMessageBody,
+    });
+    try {
+      // keepalive request bodies are capped (~64KB) — larger drafts fall back to
+      // a plain fetch, which still completes for SPA navigation (document persists)
+      const keepalive = (opts?.keepalive ?? false) && payload.length < 60_000;
+      void fetch("/api/drafts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: payload,
+        keepalive,
+      }).then(async (res) => {
+        if (!res.ok) return;
+        const data = await res.json().catch(() => null) as { id?: string } | null;
+        if (data?.id) draftIdRef.current = data.id;
+      }).catch(() => { /* best-effort — page may be unloading */ });
+    } catch { /* best-effort */ }
+  }
+  // Stable ref so the []-deps unmount cleanup and pagehide listeners always call
+  // the latest closure (same pattern as handleSendRef)
+  const flushPendingDraftSaveRef = useRef(flushPendingDraftSave);
+  flushPendingDraftSaveRef.current = flushPendingDraftSave;
 
   // ── Discard: has content? ────────────────────────────────────────────────────
   function hasComposerContent(): boolean {
@@ -1121,11 +1219,99 @@ export default function ComposeClient({
     return `${m}:${s.toString().padStart(2, "0")}`;
   }
 
+  // ── Voice preview playback (Web Audio — see comment on voicePreviewCtxRef) ───
+  async function decodeVoicePreview(blob: Blob): Promise<AudioBuffer | null> {
+    if (voicePreviewBufferRef.current) return voicePreviewBufferRef.current;
+    const w = window as unknown as { AudioContext?: typeof AudioContext; webkitAudioContext?: typeof AudioContext };
+    const Ctx = w.AudioContext ?? w.webkitAudioContext;
+    if (!Ctx) return null;
+    if (!voicePreviewCtxRef.current) voicePreviewCtxRef.current = new Ctx();
+    const buffer = await voicePreviewCtxRef.current.decodeAudioData(await blob.arrayBuffer());
+    voicePreviewBufferRef.current = buffer;
+    setVoicePreviewDuration(buffer.duration);
+    return buffer;
+  }
+
+  function stopVoicePreview(resetToStart: boolean) {
+    if (voicePreviewRafRef.current !== null) { cancelAnimationFrame(voicePreviewRafRef.current); voicePreviewRafRef.current = null; }
+    const src = voicePreviewSourceRef.current;
+    if (src) {
+      src.onended = null;
+      try { src.stop(); } catch { /* never started */ }
+      voicePreviewSourceRef.current = null;
+    }
+    if (resetToStart) { voicePreviewOffsetRef.current = 0; setVoicePreviewProgress(0); }
+    setVoicePreviewPlaying(false);
+  }
+
+  function startVoicePreview(offset: number) {
+    const ctx = voicePreviewCtxRef.current;
+    const buffer = voicePreviewBufferRef.current;
+    if (!ctx || !buffer) return;
+    void ctx.resume().catch(() => {});
+    const src = ctx.createBufferSource();
+    src.buffer = buffer;
+    src.connect(ctx.destination);
+    src.onended = () => stopVoicePreview(true);
+    voicePreviewSourceRef.current = src;
+    voicePreviewOffsetRef.current = offset;
+    voicePreviewStartedAtRef.current = ctx.currentTime;
+    src.start(0, offset);
+    setVoicePreviewPlaying(true);
+    setVoicePreviewPlayed(true); // user is listening — unlock "Attach to Email"
+    const tick = () => {
+      if (!voicePreviewSourceRef.current) return;
+      const elapsed = voicePreviewOffsetRef.current + (ctx.currentTime - voicePreviewStartedAtRef.current);
+      setVoicePreviewProgress(Math.min(elapsed, buffer.duration));
+      voicePreviewRafRef.current = requestAnimationFrame(tick);
+    };
+    voicePreviewRafRef.current = requestAnimationFrame(tick);
+  }
+
+  async function toggleVoicePreview() {
+    if (voicePreviewPlaying) {
+      // Pause: bank elapsed time as the resume offset before tearing down the source
+      const ctx = voicePreviewCtxRef.current;
+      if (ctx) voicePreviewOffsetRef.current += ctx.currentTime - voicePreviewStartedAtRef.current;
+      stopVoicePreview(false);
+      return;
+    }
+    if (!voiceBlob) return;
+    try {
+      const buffer = await decodeVoicePreview(voiceBlob);
+      if (!buffer) { setVoicePreviewError("Audio playback is not supported in this browser."); return; }
+      setVoicePreviewError(null);
+      let offset = voicePreviewOffsetRef.current;
+      if (offset >= buffer.duration - 0.05) offset = 0; // replay from start after finishing
+      startVoicePreview(offset);
+    } catch {
+      setVoicePreviewError("Could not play this recording. Try re-recording.");
+    }
+  }
+
+  function seekVoicePreview(e: React.MouseEvent<HTMLDivElement>) {
+    const buffer = voicePreviewBufferRef.current;
+    if (!buffer) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    const frac = Math.min(Math.max((e.clientX - rect.left) / rect.width, 0), 1);
+    const target = frac * buffer.duration;
+    if (voicePreviewPlaying) { stopVoicePreview(false); startVoicePreview(target); }
+    else { voicePreviewOffsetRef.current = target; setVoicePreviewProgress(target); }
+  }
+
+  function resetVoicePreview() {
+    stopVoicePreview(true);
+    voicePreviewBufferRef.current = null;
+    setVoicePreviewDuration(0);
+    setVoicePreviewError(null);
+  }
+
   // ── Voice recording helpers ──────────────────────────────────────────────────
   async function startVoiceRecording() {
     setVoiceError(null);
     setVoiceBlob(null);
-    if (voiceUrl) { URL.revokeObjectURL(voiceUrl); setVoiceUrl(null); }
+    resetVoicePreview();
+    setVoicePreviewPlayed(false);
     setVoiceTime(0);
     setVoiceDuration(0);
     voiceTimeRef.current = 0;
@@ -1162,13 +1348,11 @@ export default function ComposeClient({
         const blob = new Blob(voiceChunksRef.current, { type: baseType });
         setVoiceBlob(blob);
         setVoiceDuration(voiceTimeRef.current);
-        // Create blob URL and fix WebM duration issue by pre-loading
-        const url = URL.createObjectURL(blob);
-        setVoiceUrl(url);
-        // Force browser to load metadata so duration is available
-        const tempAudio = new Audio(url);
-        tempAudio.preload = "metadata";
-        tempAudio.load();
+        // Decode eagerly so the preview shows the real duration immediately and
+        // an unplayable recording surfaces as an error right away
+        decodeVoicePreview(blob).catch(() => {
+          setVoicePreviewError("Could not prepare playback. Try re-recording.");
+        });
       };
       recorder.start(1000);
       setVoiceRecording(true);
@@ -1194,8 +1378,8 @@ export default function ComposeClient({
 
   function clearVoiceRecording() {
     stopVoiceRecording();
+    resetVoicePreview();
     setVoiceBlob(null);
-    if (voiceUrl) { URL.revokeObjectURL(voiceUrl); setVoiceUrl(null); }
     setVoiceTime(0);
     setVoiceDuration(0);
     voiceTimeRef.current = 0;
@@ -1457,18 +1641,39 @@ export default function ComposeClient({
       if (timerRef.current) clearInterval(timerRef.current);
       if (draftTimer.current) clearTimeout(draftTimer.current);
       if (autoSaveTimerRef.current) clearTimeout(autoSaveTimerRef.current);
-      // Voice recording: stop recorder + release mic stream, clear timer, revoke blob URL
+      // Final draft flush — the auto-save is debounced (5s), so without this any
+      // text typed after the last debounce tick is lost when navigating away
+      flushPendingDraftSaveRef.current({ keepalive: true });
+      // Voice recording: stop recorder + release mic stream, clear timer
       if (voiceTimerRef.current) { clearInterval(voiceTimerRef.current); voiceTimerRef.current = null; }
       const recorder = voiceRecorderRef.current;
       if (recorder) {
         try {
-          recorder.onstop = null; // don't create a blob URL after unmount
+          recorder.onstop = null; // don't update state after unmount
           if (recorder.state !== "inactive") recorder.stop();
         } catch { /* already stopped */ }
         recorder.stream.getTracks().forEach((t) => t.stop());
         voiceRecorderRef.current = null;
       }
-      if (voiceUrlRef.current) URL.revokeObjectURL(voiceUrlRef.current);
+      // Voice preview: stop playback and release the AudioContext
+      if (voicePreviewRafRef.current !== null) cancelAnimationFrame(voicePreviewRafRef.current);
+      try { voicePreviewSourceRef.current?.stop(); } catch { /* never started */ }
+      voicePreviewSourceRef.current = null;
+      void voicePreviewCtxRef.current?.close().catch(() => {});
+      voicePreviewCtxRef.current = null;
+    };
+  }, []);
+
+  // Flush on tab close / page hide — keepalive lets the request outlive the page.
+  // (SPA navigation is covered by the unmount cleanup above.)
+  useEffect(() => {
+    const flushOnExit = () => flushPendingDraftSaveRef.current({ keepalive: true });
+    const onVisibilityChange = () => { if (document.visibilityState === "hidden") flushOnExit(); };
+    window.addEventListener("pagehide", flushOnExit);
+    document.addEventListener("visibilitychange", onVisibilityChange);
+    return () => {
+      window.removeEventListener("pagehide", flushOnExit);
+      document.removeEventListener("visibilitychange", onVisibilityChange);
     };
   }, []);
 
@@ -2473,9 +2678,11 @@ export default function ComposeClient({
                       </button>
                       <button
                         onClick={() => {
-                          // Cancel any pending auto-save and delete the auto-saved draft
+                          // Cancel any pending auto-save AND the unmount exit flush
                           // so the discarded email doesn't reappear in Drafts
                           if (autoSaveTimerRef.current) clearTimeout(autoSaveTimerRef.current);
+                          suppressFlushRef.current = true;
+                          dirtySinceLastSaveRef.current = false;
                           const discardId = draftIdRef.current;
                           if (discardId) {
                             draftIdRef.current = null;
@@ -3319,14 +3526,53 @@ export default function ComposeClient({
                 </p>
               </div>
 
-              {/* Playback (shown after recording) */}
-              {voiceUrl && (
+              {/* Playback (shown after recording) — custom Web Audio player; <audio src=blob:>
+                  is blocked by the CSP (no media-src directive → default-src 'self') */}
+              {voiceBlob && (
                 <div className="px-6 py-5 border-b border-neutral-200 bg-background-50">
                   <p className="text-xs font-semibold uppercase tracking-wider mb-1" style={{ color: "rgb(115 115 115)" }}>Listen to preview</p>
                   <p className="text-xs mb-3" style={{ color: "rgb(138 9 9)" }}>Recording complete — listen to preview before attaching</p>
-                  <audio controls src={voiceUrl} className="w-full" style={{ height: 48 }} onPlay={() => setVoicePreviewPlayed(true)} />
+                  <div className="flex items-center gap-3">
+                    <button
+                      onClick={() => void toggleVoicePreview()}
+                      className="w-12 h-12 rounded-large flex items-center justify-center flex-shrink-0 shadow-custom transition-all text-white hover:opacity-90"
+                      style={{ backgroundColor: "rgb(138 9 9)" }}
+                      title={voicePreviewPlaying ? "Pause preview" : "Play preview"}
+                    >
+                      {voicePreviewPlaying ? (
+                        <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                          <rect x="6" y="5" width="4" height="14" rx="1" />
+                          <rect x="14" y="5" width="4" height="14" rx="1" />
+                        </svg>
+                      ) : (
+                        <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M8 5.14v13.72a1 1 0 001.5.86l11-6.86a1 1 0 000-1.72l-11-6.86a1 1 0 00-1.5.86z" />
+                        </svg>
+                      )}
+                    </button>
+                    <div
+                      className="flex-1 h-2 rounded-small cursor-pointer"
+                      style={{ backgroundColor: "rgb(229 229 229)" }}
+                      onClick={seekVoicePreview}
+                      title="Seek"
+                    >
+                      <div
+                        className="h-full rounded-small"
+                        style={{
+                          width: `${Math.min(100, (voicePreviewProgress / Math.max(voicePreviewDuration || voiceDuration, 0.01)) * 100)}%`,
+                          backgroundColor: "rgb(138 9 9)",
+                        }}
+                      />
+                    </div>
+                    <span className="text-xs font-mono flex-shrink-0" style={{ color: "rgb(115 115 115)" }}>
+                      {formatTime(Math.floor(voicePreviewProgress))} / {formatTime(Math.round(voicePreviewDuration || voiceDuration))}
+                    </span>
+                  </div>
+                  {voicePreviewError && (
+                    <p className="text-xs mt-2" style={{ color: "rgb(138 9 9)" }}>{voicePreviewError}</p>
+                  )}
                   <p className="text-xs mt-2" style={{ color: "rgb(155 155 155)" }}>
-                    {voiceBlob && (voiceBlob.size < 1024 * 1024 ? `${Math.round(voiceBlob.size / 1024)} KB` : `${(voiceBlob.size / (1024 * 1024)).toFixed(1)} MB`)}
+                    {voiceBlob.size < 1024 * 1024 ? `${Math.round(voiceBlob.size / 1024)} KB` : `${(voiceBlob.size / (1024 * 1024)).toFixed(1)} MB`}
                   </p>
                 </div>
               )}

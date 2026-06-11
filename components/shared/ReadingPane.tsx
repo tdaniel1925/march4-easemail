@@ -37,12 +37,19 @@ export function ReadingPane({
   replyText,
   setReplyText,
   onMarkRead,
+  onDeleted,
+  onArchived,
   emptyLabel = "Select an email to read",
 }: {
   email: EmailMessage | null;
   replyText: string;
   setReplyText: (v: string) => void;
   onMarkRead?: (id: string) => void;
+  /** Called after a successful delete — the parent owns the email list and
+   *  must remove the email from it (this pane has no access to list state). */
+  onDeleted?: (id: string) => void;
+  /** Called after a successful archive — same contract as onDeleted. */
+  onArchived?: (id: string) => void;
   emptyLabel?: string;
 }) {
   const [composeMode, setComposeMode] = useState<ComposeMode | null>(null);
@@ -122,14 +129,22 @@ export function ReadingPane({
   };
 
   const handleArchive = async () => {
+    if (!email) return;
+    const id = email.id;
     if (await runAction("archive", "/api/mail/archive", {})) {
       setActionNotice("Email archived.");
+      // Notify the parent so it removes the email from its list
+      if (onArchived) onArchived(id);
     }
   };
 
   const handleDelete = async () => {
+    if (!email) return;
+    const id = email.id;
     if (await runAction("delete", "/api/mail/delete", {})) {
       setActionNotice("Email moved to trash.");
+      // Notify the parent so it removes the email from its list
+      if (onDeleted) onDeleted(id);
     }
   };
 
