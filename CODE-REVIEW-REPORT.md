@@ -82,6 +82,10 @@ Severity legend: 🔴 CRITICAL (exploitable / data loss) · 🟠 HIGH (broken fe
 - `AttachmentsClient.tsx:586,841,900` — `revokeObjectURL` immediately after `click()` can abort downloads.
 - `.eslintrc.json` deprecated format; 821 eslint errors (mostly unused vars in tests).
 
+## ✅ Resolution status (2026-06-11)
+
+All CRITICAL and HIGH findings fixed and verified (commits `489d728`, `6c1c402`, `7317ac3`): tsc 0 errors, eslint 0 errors, production build passing, 100/100 unit tests, full e2e suite 0 failures. Zod validation wired into every route; stable IMAP/JMAP pagination; MSAL race mutexed; reauth no longer logs users out; Set-as-Default account feature added. `GRAPH_WEBHOOK_SECRET` (new random secret) and `DATABASE_CA_CERT` (CA verified via strict-TLS test connection) were set in Vercel production/preview and `.env.local` — strict DB TLS confirmed working end-to-end. Remaining e2e skips are solely data-gated on the test mailbox's Microsoft re-consent (requires the account owner's interactive login — not an app defect; the app correctly shows its inline reconnect banner, which the tests verify).
+
 ## 🔧 Environment finding (local dev)
 
 Every secret in `.env.local` ended with a literal `\r\n` escape sequence inside the quotes (paste artifact). dotenv expands `\n` in double-quoted values to a real newline, so the local server loaded corrupted Supabase keys — **local auth always failed with "Invalid API key" while production worked**. Fixed by cleaning the 10 affected values (backup at `.env.local.bak`). Tooling added: `tests/e2e/auth/mint-session.mjs` mints a fresh Playwright session for `TEST_USER_EMAIL` via the Supabase admin API — no interactive login needed.
