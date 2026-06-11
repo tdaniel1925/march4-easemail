@@ -227,7 +227,8 @@ test("10. Typing an email in Attendees and pressing Enter creates a chip", async
   await goToCalendar(page);
   await openNewEventModal(page);
 
-  const attendeeInput = page.locator('input[type="email"]');
+  // Attendee input is type="text" with autocomplete; identified by placeholder
+  const attendeeInput = page.getByPlaceholder(/Search people or add email/);
   await attendeeInput.fill("client@lawfirm.com");
   await attendeeInput.press("Enter");
 
@@ -242,7 +243,8 @@ test("10b. Clicking × on attendee chip removes it", async ({ page }) => {
   await goToCalendar(page);
   await openNewEventModal(page);
 
-  const attendeeInput = page.locator('input[type="email"]');
+  // Attendee input is type="text" with autocomplete; identified by placeholder
+  const attendeeInput = page.getByPlaceholder(/Search people or add email/);
   await attendeeInput.fill("remove@lawfirm.com");
   await attendeeInput.press("Enter");
 

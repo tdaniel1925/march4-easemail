@@ -135,5 +135,9 @@ test("8. Composer toolbar has Templates button", async ({ page }) => {
   await page.goto(COMPOSE_URL);
   await expect(page).not.toHaveURL(/login/, { timeout: 8000 });
 
-  await expect(page.locator("button", { hasText: "Templates" })).toBeVisible({ timeout: 8000 });
+  // The sidebar nav also has a "Templates" button — scope to the composer
+  // toolbar button (the only Templates button outside <nav>).
+  await expect(
+    page.locator("button:not(nav button)", { hasText: "Templates" }).first()
+  ).toBeVisible({ timeout: 8000 });
 });

@@ -23,6 +23,7 @@ interface AccountStore {
   setAccounts: (accounts: ConnectedAccount[]) => void;
   setActiveAccount: (account: ConnectedAccount) => void;
   removeAccount: (homeAccountId: string) => void;
+  setDefaultAccount: (homeAccountId: string) => void;
   setInboxUnread: (count: number) => void;
   setDraftCount: (count: number) => void;
   setScheduledCount: (count: number) => void;
@@ -93,6 +94,17 @@ export const useAccountStore = create<AccountStore>((set) => ({
         mailFolders: [],
       };
     }),
+  setDefaultAccount: (homeAccountId) =>
+    set((state) => ({
+      accounts: state.accounts.map((a) => ({
+        ...a,
+        isDefault: a.homeAccountId === homeAccountId,
+      })),
+      // Keep activeAccount object in sync if it's one of the affected accounts
+      activeAccount: state.activeAccount
+        ? { ...state.activeAccount, isDefault: state.activeAccount.homeAccountId === homeAccountId }
+        : null,
+    })),
   setInboxUnread: (inboxUnread) => set({ inboxUnread }),
   setDraftCount: (draftCount) => set({ draftCount }),
   setScheduledCount: (scheduledCount) => set({ scheduledCount }),

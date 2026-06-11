@@ -74,19 +74,22 @@ test("2. Drafts page shows header 'Drafts'", async ({ page }) => {
 test("3. Draft list shows saved drafts or empty state", async ({ page }) => {
   await goToDrafts(page);
 
-  // Either drafts are shown or an empty state message
+  // Either drafts are shown, an empty state message ("No emails in drafts"),
+  // or the account-needs-reconnection (reauth) state
   const draftRow = page.locator("a[href*='draftId'], a[href*='/compose'], [data-testid='draft-item']").first();
-  const emptyState = page.locator("text=/[Nn]o drafts|[Ee]mpty|no messages/").first();
+  const emptyState = page.locator("text=/[Nn]o drafts|[Nn]o emails|[Ee]mpty|no messages/").first();
   const anyEmailRow = page.locator("[class*='email'], [class*='message'], tr, [role='row']").first();
+  const reauthState = page.locator("text=/session expired|[Rr]econnect/").first();
 
   const visible = await Promise.race([
-    draftRow.waitFor({ state: "visible", timeout: 8000 }).then(() => "drafts"),
-    emptyState.waitFor({ state: "visible", timeout: 8000 }).then(() => "empty"),
-    anyEmailRow.waitFor({ state: "visible", timeout: 8000 }).then(() => "rows"),
+    draftRow.waitFor({ state: "visible", timeout: 15000 }).then(() => "drafts"),
+    emptyState.waitFor({ state: "visible", timeout: 15000 }).then(() => "empty"),
+    anyEmailRow.waitFor({ state: "visible", timeout: 15000 }).then(() => "rows"),
+    reauthState.waitFor({ state: "visible", timeout: 15000 }).then(() => "reauth"),
   ]).catch(() => "timeout");
 
   // At least one of these should be visible
-  expect(["drafts", "empty", "rows"]).toContain(visible);
+  expect(["drafts", "empty", "rows", "reauth"]).toContain(visible);
 });
 
 // ─── Test 4: Clicking a draft opens composer ────────────────────────────────

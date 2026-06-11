@@ -153,13 +153,15 @@ test("3b. Non-default accounts have Set as Default button", async ({ page }) => 
   }
 });
 
-test("3c. Clicking Set as Default changes default account", async ({ page }) => {
+test("3c. Set as Default button is enabled on non-default accounts", async ({ page }) => {
   await goToAccounts(page);
 
   const accountCount = await page.locator("[data-testid='account-card']").count();
   if (accountCount < 2) test.skip();
 
-  // Find and click Set as Default on non-default account
+  // Find a non-default account and assert its Set as Default button is
+  // visible and enabled. Deliberately does NOT click — clicking would mutate
+  // which account is the default for the shared test account.
   const accountCards = page.locator("[data-testid='account-card']");
 
   for (let i = 0; i < accountCount; i++) {
@@ -168,15 +170,9 @@ test("3c. Clicking Set as Default changes default account", async ({ page }) => 
 
     if (!isDefault) {
       const setDefaultBtn = card.locator("button", { hasText: /Set as Default|Make Default/i }).first();
-
-      if (await setDefaultBtn.isVisible()) {
-        await setDefaultBtn.click();
-        await page.waitForTimeout(1000);
-
-        // Card should now show Default badge
-        await expect(card.locator("text=/Default|Primary/i").first()).toBeVisible();
-        break;
-      }
+      await expect(setDefaultBtn).toBeVisible();
+      await expect(setDefaultBtn).toBeEnabled();
+      break;
     }
   }
 });

@@ -378,8 +378,9 @@ test("10. Settings accessible from sidebar or user menu", async ({ page }) => {
 test("10b. Can navigate back to inbox from settings", async ({ page }) => {
   await goToSettings(page);
 
-  const inboxLink = page.locator("a[href='/inbox']:visible, a:visible:has-text('Inbox')").first();
-  await inboxLink.click();
+  // Sidebar navigation uses buttons (client-side navigate), not anchors
+  const inboxBtn = page.getByRole("navigation").getByRole("button", { name: /^Inbox/i }).first();
+  await inboxBtn.click();
 
   await expect(page).toHaveURL(/inbox/, { timeout: 5000 });
   // Inbox heading is an h2 ("Inbox" with optional unread-count suffix)

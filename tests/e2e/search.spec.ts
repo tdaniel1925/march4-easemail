@@ -160,16 +160,30 @@ test.describe("Search", () => {
   });
 
   // 9
-  test("9. Tab buttons still visible during search", async ({ page }) => {
+  // Current app behavior (InboxClient.tsx: "Filter tabs — hidden during search"):
+  // the All/Unread/Starred/Attachments tab bar is intentionally replaced while a
+  // search is active, and restored when the query is cleared.
+  test("9. Tab buttons hidden during search and restored after clearing", async ({ page }) => {
     await goToInbox(page);
+
+    const allTab = page.getByRole("button", { name: /^All$/i });
+    await expect(allTab).toBeVisible();
+
     const search = page.locator('input[placeholder*="Search"]');
     await search.fill("some query");
     await page.waitForTimeout(1000);
-    for (const tab of ["All", "Unread", "Starred", "Attachments"]) {
+
+    // Tabs are hidden during an active search.
+    // ("Starred" is excluded — the sidebar has a Starred nav button that stays visible.)
+    for (const tab of ["All", "Unread", "Attachments"]) {
       await expect(
         page.getByRole("button", { name: new RegExp(`^${tab}$`, "i") })
-      ).toBeVisible();
+      ).toBeHidden();
     }
+
+    // Clearing the search restores the tab bar
+    await search.fill("");
+    await expect(allTab).toBeVisible({ timeout: 5000 });
   });
 
   // 10
