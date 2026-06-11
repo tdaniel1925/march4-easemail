@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
+import { incrementRuleCountSchema } from "@/lib/validation/schemas";
 
 // ─── POST /api/rules/[id]/increment — bump emailCount after rule fires ────────
 
@@ -13,7 +14,14 @@ export async function POST(
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const { id } = await params;
-  const { count } = await req.json() as { count: number };
+  const parsed = incrementRuleCountSchema.safeParse(await req.json().catch(() => null));
+  if (!parsed.success) {
+    return NextResponse.json(
+      { error: "Invalid request", details: parsed.error.flatten() },
+      { status: 400 }
+    );
+  }
+  const { count } = parsed.data;
   if (!count || count < 1) return NextResponse.json({ ok: true }); // no-op
 
   const existing = await prisma.emailRule.findFirst({

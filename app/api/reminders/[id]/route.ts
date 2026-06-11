@@ -1,6 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
+import { z } from "zod";
+
+const updateReminderSchema = z.object({
+  status: z.enum(["pending", "triggered", "replied", "dismissed"]).optional(),
+  // Equivalent to the previous manual new Date()/isNaN guard
+  remindAt: z
+    .string()
+    .max(64)
+    .refine((s) => !isNaN(new Date(s).getTime()), "remindAt must be a valid date")
+    .optional(),
+});
 
 // ─── PATCH /api/reminders/[id] ──────────────────────────────────────────────
 // Update reminder status (dismiss, snooze)
@@ -19,23 +30,18 @@ export async function PATCH(
   const { id } = await params;
 
   try {
-    const body = await req.json();
-    const { status, remindAt } = body;
-
-    const validStatuses = ["pending", "triggered", "replied", "dismissed"];
-    if (status && !validStatuses.includes(status)) {
-      return NextResponse.json({ error: "Invalid status" }, { status: 400 });
+    const parsed = updateReminderSchema.safeParse(await req.json().catch(() => null));
+    if (!parsed.success) {
+      return NextResponse.json(
+        { error: "Invalid request", details: parsed.error.flatten() },
+        { status: 400 }
+      );
     }
+    const { status, remindAt } = parsed.data;
 
     const updateData: Record<string, unknown> = {};
     if (status) updateData.status = status;
-    if (remindAt) {
-      const remindAtDate = new Date(remindAt);
-      if (isNaN(remindAtDate.getTime())) {
-        return NextResponse.json({ error: "remindAt must be a valid date" }, { status: 400 });
-      }
-      updateData.remindAt = remindAtDate;
-    }
+    if (remindAt) updateData.remindAt = new Date(remindAt);
 
     const reminder = await prisma.followUpReminder.updateMany({
       where: { id, userId: user.id },

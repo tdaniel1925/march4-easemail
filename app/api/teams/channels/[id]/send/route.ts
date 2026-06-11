@@ -4,6 +4,10 @@ import { prisma } from "@/lib/prisma";
 import { graphPost } from "@/lib/microsoft/graph";
 import { TEAMS_SCOPES } from "@/lib/microsoft/msal";
 import { isReauthError } from "@/lib/microsoft/auth-errors";
+import { z } from "zod";
+import { sendChannelMessageSchema } from "@/lib/validation/schemas";
+
+const idSchema = z.string().min(1).max(512);
 
 export async function POST(
   req: NextRequest,
@@ -23,14 +27,20 @@ export async function POST(
   if (!account) return NextResponse.json({ error: "No MS account" }, { status: 400 });
 
   const { id: channelId } = await params;
-  const { content, teamId, homeAccountId } = await req.json() as {
-    content: string;
-    teamId: string;
-    homeAccountId?: string;
-  };
+  if (!idSchema.safeParse(channelId).success) {
+    return NextResponse.json({ error: "Invalid channel ID" }, { status: 400 });
+  }
 
-  if (!content?.trim()) return NextResponse.json({ error: "content required" }, { status: 400 });
-  if (!teamId) return NextResponse.json({ error: "teamId required" }, { status: 400 });
+  const parsed = sendChannelMessageSchema.safeParse(await req.json().catch(() => null));
+  if (!parsed.success) {
+    return NextResponse.json(
+      { error: "Invalid request", details: parsed.error.flatten() },
+      { status: 400 }
+    );
+  }
+  const { content, teamId, homeAccountId } = parsed.data;
+
+  if (!content.trim()) return NextResponse.json({ error: "content required" }, { status: 400 });
 
   const accountId = homeAccountId ?? account.homeAccountId;
 

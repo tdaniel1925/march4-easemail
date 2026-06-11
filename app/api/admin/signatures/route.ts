@@ -2,6 +2,16 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { isAdminEmail } from "@/lib/admin";
+import { z } from "zod";
+
+const adminCreateSignatureSchema = z.object({
+  userId: z.string().min(1, "userId required").max(128),
+  name: z.string().min(1, "name required").max(100),
+  title: z.string().max(100).optional(),
+  company: z.string().max(100).optional(),
+  phone: z.string().max(50).optional(),
+  isDefault: z.boolean().optional(),
+});
 
 async function requireAdmin() {
   const supabase = await createClient();
@@ -31,17 +41,17 @@ export async function POST(req: NextRequest) {
   const admin = await requireAdmin();
   if (!admin) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
-  const { userId, name, title, company, phone, isDefault } = await req.json() as {
-    userId: string;
-    name: string;
-    title?: string;
-    company?: string;
-    phone?: string;
-    isDefault?: boolean;
-  };
+  const parsed = adminCreateSignatureSchema.safeParse(await req.json().catch(() => null));
+  if (!parsed.success) {
+    return NextResponse.json(
+      { error: "Invalid request", details: parsed.error.flatten() },
+      { status: 400 }
+    );
+  }
+  const { userId, name, title, company, phone, isDefault } = parsed.data;
 
-  if (!userId?.trim()) return NextResponse.json({ error: "userId required" }, { status: 400 });
-  if (!name?.trim()) return NextResponse.json({ error: "name required" }, { status: 400 });
+  if (!userId.trim()) return NextResponse.json({ error: "userId required" }, { status: 400 });
+  if (!name.trim()) return NextResponse.json({ error: "name required" }, { status: 400 });
 
   // Verify target user exists
   const target = await prisma.user.findUnique({ where: { id: userId } });

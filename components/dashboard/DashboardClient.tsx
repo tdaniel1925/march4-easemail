@@ -309,7 +309,7 @@ export default function DashboardClient({
   const [newTodo, setNewTodo] = useState("");
   const [newTodoPriority, setNewTodoPriority] = useState<"normal" | "high">("normal");
   const [addingTodo, setAddingTodo] = useState(false);
-  const [deletingTodoId, setDeletingTodoId] = useState<string | null>(null);
+  const [_deletingTodoId, setDeletingTodoId] = useState<string | null>(null);
   const [timeUntilNext, setTimeUntilNext] = useState("");
 
   useEffect(() => {

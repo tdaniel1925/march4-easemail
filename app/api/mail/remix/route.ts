@@ -2,26 +2,30 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import Anthropic from "@anthropic-ai/sdk";
 import { withRateLimit, rateLimiters } from "@/lib/rate-limit";
+import { z } from "zod";
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+
+const remixSchema = z.object({
+  // Handler slices to 4000 chars itself; cap generously
+  body: z.string().max(200000).refine((s) => s.trim().length > 0, "Email body required"),
+  tone: z.string().max(100),
+  length: z.string().max(100),
+  formality: z.string().max(100),
+  extras: z.array(z.string().max(200)).max(20).optional(),
+  customInstruction: z.string().max(2000).optional(),
+});
 
 async function remixHandler(req: NextRequest) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { body, tone, length, formality, extras, customInstruction } = await req.json() as {
-    body: string;
-    tone: string;
-    length: string;
-    formality: string;
-    extras: string[];
-    customInstruction?: string;
-  };
-
-  if (!body?.trim()) {
-    return NextResponse.json({ error: "Email body required" }, { status: 400 });
+  const parsed = remixSchema.safeParse(await req.json());
+  if (!parsed.success) {
+    return NextResponse.json({ error: "Invalid request", details: parsed.error.flatten() }, { status: 400 });
   }
+  const { body, tone, length, formality, extras, customInstruction } = parsed.data;
 
   const toneMap: Record<string, string> = {
     professional: "formal, polished, and businesslike",

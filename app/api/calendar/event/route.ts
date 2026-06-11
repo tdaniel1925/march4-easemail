@@ -4,21 +4,14 @@ import { prisma } from "@/lib/prisma";
 import { graphFetch } from "@/lib/microsoft/graph";
 import { mapGraphEvent, type CalEvent, type GraphCalEvent, CALENDAR_SELECT } from "@/lib/types/calendar";
 import { verifyAccountOwnership, getAllAccounts } from "@/lib/providers/registry";
+import { z } from "zod";
+import {
+  createEventSchema,
+  updateEventSchema,
+  deleteEventSchema,
+} from "@/lib/validation/schemas";
 
-interface EventBody {
-  homeAccountId: string;
-  subject: string;
-  start: string;          // ISO datetime
-  end: string;            // ISO datetime
-  isAllDay?: boolean;
-  location?: string;
-  body?: string;
-  attendees?: string[];   // email addresses
-  timeZone?: string;
-  reminderMinutes?: number | null; // Reminder in minutes (null = no reminder)
-  showAs?: string;        // busy | free | tentative
-  recurrence?: string | null;    // daily | weekly | monthly | null
-}
+type EventBody = z.infer<typeof createEventSchema>;
 
 // Graph returns dateTimes as NAIVE strings (no offset). With the
 // `Prefer: outlook.timezone="UTC"` header they are UTC — append "Z" so
@@ -108,10 +101,14 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const data = await req.json() as EventBody;
-  if (!data.subject || !data.start || !data.end) {
-    return NextResponse.json({ error: "subject, start, end required" }, { status: 400 });
+  const parsed = createEventSchema.safeParse(await req.json().catch(() => null));
+  if (!parsed.success) {
+    return NextResponse.json(
+      { error: "Invalid request", details: parsed.error.flatten() },
+      { status: 400 }
+    );
   }
+  const data = parsed.data;
 
   // Resolve account: use provided homeAccountId or fall back to default
   let accountId = data.homeAccountId;
@@ -203,10 +200,14 @@ export async function PATCH(req: NextRequest): Promise<NextResponse> {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { eventId, ...data } = await req.json() as EventBody & { eventId: string };
-  if (!eventId || !data.homeAccountId) {
-    return NextResponse.json({ error: "eventId and homeAccountId required" }, { status: 400 });
+  const parsedPatch = updateEventSchema.safeParse(await req.json().catch(() => null));
+  if (!parsedPatch.success) {
+    return NextResponse.json(
+      { error: "Invalid request", details: parsedPatch.error.flatten() },
+      { status: 400 }
+    );
   }
+  const { eventId, ...data } = parsedPatch.data;
 
   // Verify account ownership before any data access
   const account = await verifyAccountOwnership(user.id, data.homeAccountId);
@@ -286,10 +287,14 @@ export async function DELETE(req: NextRequest): Promise<NextResponse> {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { eventId, homeAccountId } = await req.json() as { eventId: string; homeAccountId: string };
-  if (!eventId || !homeAccountId) {
-    return NextResponse.json({ error: "eventId and homeAccountId required" }, { status: 400 });
+  const parsedDelete = deleteEventSchema.safeParse(await req.json().catch(() => null));
+  if (!parsedDelete.success) {
+    return NextResponse.json(
+      { error: "Invalid request", details: parsedDelete.error.flatten() },
+      { status: 400 }
+    );
   }
+  const { eventId, homeAccountId } = parsedDelete.data;
 
   // Verify account ownership before any data access
   const ownershipCheck = await verifyAccountOwnership(user.id, homeAccountId);

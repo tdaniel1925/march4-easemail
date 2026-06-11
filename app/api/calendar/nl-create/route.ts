@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import Anthropic from "@anthropic-ai/sdk";
 import { z } from "zod";
 import { withRateLimit, rateLimiters } from "@/lib/rate-limit";
+import { nlCreateEventSchema } from "@/lib/validation/schemas";
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
@@ -22,8 +23,15 @@ async function nlCreateHandler(req: NextRequest): Promise<NextResponse> {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { text, now, timeZone } = await req.json() as { text: string; now: string; timeZone?: string };
-  if (!text?.trim()) return NextResponse.json({ error: "text required" }, { status: 400 });
+  const parsedBody = nlCreateEventSchema.safeParse(await req.json().catch(() => null));
+  if (!parsedBody.success) {
+    return NextResponse.json(
+      { error: "Invalid request", details: parsedBody.error.flatten() },
+      { status: 400 }
+    );
+  }
+  const { text, now, timeZone } = parsedBody.data;
+  if (!text.trim()) return NextResponse.json({ error: "text required" }, { status: 400 });
 
   const tz = timeZone ?? "America/Chicago";
   // Parse the local now string to extract today's date for the prompt

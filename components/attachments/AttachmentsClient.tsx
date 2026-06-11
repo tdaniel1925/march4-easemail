@@ -114,7 +114,7 @@ export default function AttachmentsClient({
   sentNextLink: string | null;
   homeAccountId: string;
 }) {
-  const router = useRouter();
+  const _router = useRouter();
 
   /** SPA-aware navigation — updates store + pushState instead of server round-trip */
   function navigateTo(href: string) {

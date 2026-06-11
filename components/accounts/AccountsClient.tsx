@@ -107,7 +107,7 @@ function AccountCard({
   const connectedDate = new Date(account.connectedAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
 
   return (
-    <div className="bg-white rounded-large border border-neutral-200 shadow-custom px-5 py-4 transition-shadow hover:shadow-custom-hover">
+    <div data-testid="account-card" className="bg-white rounded-large border border-neutral-200 shadow-custom px-5 py-4 transition-shadow hover:shadow-custom-hover">
       <div className="flex items-center gap-4">
         {/* Account Icon */}
         <div className="w-11 h-11 rounded-large flex items-center justify-center flex-shrink-0 border"

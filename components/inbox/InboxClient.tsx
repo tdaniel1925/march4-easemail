@@ -76,7 +76,7 @@ function SafeHtml({ html, className }: { html: string; className?: string }) {
 function EmailRow({
   email,
   onClick,
-  onAiReply,
+  onAiReply: _onAiReply,
   onStar,
   onPin,
   onSnooze,
@@ -113,6 +113,7 @@ function EmailRow({
 
   return (
     <div
+      data-testid="email-item"
       onClick={onClick}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
@@ -306,7 +307,7 @@ export default function InboxClient({
   initialNextLink?: string | null;
   totalUnread?: number;
 }) {
-  const router = useRouter();
+  const _router = useRouter();
 
   /** SPA-aware navigation — updates store + pushState instead of server round-trip */
   function navigateTo(href: string) {
@@ -439,7 +440,7 @@ export default function InboxClient({
   });
 
   const activeAccount = useAccountStore((s) => s.activeAccount);
-  const accounts = useAccountStore((s) => s.accounts);
+  const _accounts = useAccountStore((s) => s.accounts);
   const setInboxUnread = useAccountStore((s) => s.setInboxUnread);
   const activeLabel = useAccountStore((s) => s.activeLabel);
   const selectedEmailIndex = useDataCacheStore((s) => s.selectedEmailIndex);
@@ -858,8 +859,10 @@ export default function InboxClient({
     fetch(`/api/mail/inbox?homeAccountId=${encodeURIComponent(activeAccount.homeAccountId)}`, { signal: controller.signal })
       .then(async (r) => {
         if (r.status === 401) {
-          const body = await r.json().catch(() => ({} as { error?: string })) as { error?: string };
-          if (body.error === "Unauthorized") { window.location.href = "/login"; return null; }
+          // Provider token expired (Microsoft Graph) — app session is still valid
+          // (middleware handles missing sessions), so show the inline reconnect
+          // banner instead of bouncing the user to /login.
+          await r.json().catch(() => null);
           setRequiresReauth(true); return null;
         }
         if (!r.ok) {
@@ -913,8 +916,8 @@ export default function InboxClient({
     fetch(url, { signal: controller.signal })
       .then(async (r) => {
         if (r.status === 401) {
-          const body = await r.json().catch(() => ({} as { error?: string })) as { error?: string };
-          if (body.error === "Unauthorized") { window.location.href = "/login"; return null; }
+          // Provider token expired — show inline reconnect banner, never /login.
+          await r.json().catch(() => null);
           setRequiresReauth(true); return null;
         }
         if (!r.ok) throw new Error(`inbox-tab ${r.status}`);
@@ -1052,8 +1055,8 @@ export default function InboxClient({
       fetch(`/api/mail/search?homeAccountId=${encodeURIComponent(activeAccount.homeAccountId)}&q=${encodeURIComponent(q)}`, { signal: controller.signal })
         .then(async (r) => {
           if (r.status === 401) {
-            const body = await r.json().catch(() => ({} as { error?: string })) as { error?: string };
-            if (body.error === "Unauthorized") { window.location.href = "/login"; return null; }
+            // Provider token expired — show inline reconnect banner, never /login.
+            await r.json().catch(() => null);
             setRequiresReauth(true); return null;
           }
           return r.json() as Promise<{ emails: EmailMessage[] }>;
@@ -1755,7 +1758,7 @@ export default function InboxClient({
           bodyHtml = paragraphs.map(p => `<p style="margin:0 0 12px">${p.replace(/\n/g, "<br>")}</p>`).join("") || `<p>${withLinks.replace(/\n/g, "<br>")}</p>`;
         }
         return (
-          <div className="flex flex-col flex-1 bg-white border-l border-neutral-200" style={{ height: "100vh", overflow: "hidden" }}>
+          <div data-testid="reading-pane" className="flex flex-col flex-1 bg-white border-l border-neutral-200" style={{ height: "100vh", overflow: "hidden" }}>
             {/* Action toolbar */}
             <div className="flex items-center gap-2 px-4 py-2.5 border-b border-neutral-200 flex-shrink-0" style={{ backgroundColor: "rgb(250 250 250)" }}>
               <button

@@ -1,6 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
+import { z } from "zod";
+
+const preferencesSchema = z.object({
+  notificationNewEmail: z.boolean().optional(),
+  notificationDailyDigest: z.boolean().optional(),
+  notificationAiReplies: z.boolean().optional(),
+  notificationCalendarReminders: z.boolean().optional(),
+  notificationWeeklyReport: z.boolean().optional(),
+  appTheme: z.enum(["light", "dark"]).optional(),
+  fontSize: z.enum(["default", "compact", "comfortable"]).optional(),
+  emailDensity: z.enum(["comfortable", "compact"]).optional(),
+  undoSendDelay: z.union([z.literal(5), z.literal(10), z.literal(20), z.literal(30)]).optional(),
+});
 
 // ─── GET /api/user/preferences ────────────────────────────────────────────────
 // Returns current user preferences (notifications + appearance)
@@ -40,34 +53,15 @@ export async function PUT(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const body = await req.json() as {
-    notificationNewEmail?: boolean;
-    notificationDailyDigest?: boolean;
-    notificationAiReplies?: boolean;
-    notificationCalendarReminders?: boolean;
-    notificationWeeklyReport?: boolean;
-    appTheme?: string;
-    fontSize?: string;
-    emailDensity?: string;
-    undoSendDelay?: number;
-  };
-
-  // Validate enum values
-  if (body.appTheme && !["light", "dark"].includes(body.appTheme)) {
-    return NextResponse.json({ error: "Invalid appTheme value" }, { status: 400 });
+  // Enum/literal guards previously enforced manually are absorbed by the schema
+  const parsed = preferencesSchema.safeParse(await req.json().catch(() => null));
+  if (!parsed.success) {
+    return NextResponse.json(
+      { error: "Invalid request", details: parsed.error.flatten() },
+      { status: 400 }
+    );
   }
-
-  if (body.fontSize && !["default", "compact", "comfortable"].includes(body.fontSize)) {
-    return NextResponse.json({ error: "Invalid fontSize value" }, { status: 400 });
-  }
-
-  if (body.emailDensity && !["comfortable", "compact"].includes(body.emailDensity)) {
-    return NextResponse.json({ error: "Invalid emailDensity value" }, { status: 400 });
-  }
-
-  if (body.undoSendDelay !== undefined && ![5, 10, 20, 30].includes(body.undoSendDelay)) {
-    return NextResponse.json({ error: "Invalid undoSendDelay value. Must be 5, 10, 20, or 30." }, { status: 400 });
-  }
+  const body = parsed.data;
 
   const updated = await prisma.user.update({
     where: { id: user.id },

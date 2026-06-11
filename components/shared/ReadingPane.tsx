@@ -187,7 +187,7 @@ export function ReadingPane({
 
   if (!email) {
     return (
-      <div className="hidden lg:flex flex-col flex-1 items-center justify-center" style={{ backgroundColor: "rgb(250 250 250)" }}>
+      <div data-testid="reading-pane" className="hidden lg:flex flex-col flex-1 items-center justify-center" style={{ backgroundColor: "rgb(250 250 250)" }}>
         <div className="text-center">
           <div className="w-16 h-16 rounded-[10px] flex items-center justify-center mx-auto mb-4" style={{ backgroundColor: "rgb(253 235 235)" }}>
             <svg xmlns="http://www.w3.org/2000/svg" className="w-8 h-8" style={{ color: "rgb(138 9 9)" }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
@@ -214,7 +214,7 @@ export function ReadingPane({
   const isEmailStarred = localStarred ?? email.flag?.flagStatus === "flagged";
 
   return (
-    <div className="hidden lg:flex flex-col flex-1 bg-white" style={{ overflow: "hidden" }}>
+    <div data-testid="reading-pane" className="hidden lg:flex flex-col flex-1 bg-white" style={{ overflow: "hidden" }}>
 
       {/* ── Toolbar ───────────────────────────────────────────── */}
       <div className="flex items-center justify-between px-4 py-2.5 border-b border-neutral-200 flex-shrink-0 bg-white gap-2">

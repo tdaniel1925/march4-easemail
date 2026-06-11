@@ -437,7 +437,7 @@ export default function ContactsClient({ contacts: initialContacts }: Props) {
         </div>
 
         {/* Contact list */}
-        <div className="flex-1 overflow-y-auto">
+        <div data-testid="contacts-list" className="flex-1 overflow-y-auto">
           {initialLoading ? (
             <div className="flex flex-col items-center justify-center h-full gap-2 px-6 text-center">
               <div className="w-8 h-8 border-2 rounded-full animate-spin" style={{ borderColor: "rgb(220 220 220)", borderTopColor: "rgb(138 9 9)" }} />

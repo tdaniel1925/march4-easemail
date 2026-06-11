@@ -127,7 +127,7 @@ export class MicrosoftProvider implements EmailProvider {
     userId: string,
     accountId: string
   ): Promise<NormalizedFolder[]> {
-    const refs = await graphSyncFolders(userId, accountId);
+    await graphSyncFolders(userId, accountId);
     // Return the cached folders after sync
     const folders = await prisma.cachedFolder.findMany({
       where: { userId, homeAccountId: accountId },

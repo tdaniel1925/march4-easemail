@@ -123,7 +123,7 @@ export default function AppShell(props: AppShellProps) {
   const [inboxNextLink, setInboxNextLink] = useState(props.initialNextLink);
   const [calEvents, setCalEvents] = useState(props.initialEvents);
   const [calWeekStart, setCalWeekStart] = useState(props.weekStart);
-  const [dashData, setDashData] = useState(props.dashboardData);
+  const [dashData, _setDashData] = useState(props.dashboardData);
   const [accountSwitching, setAccountSwitching] = useState(false);
 
   // ── Load draft count on mount and on account switch ───────────────────────

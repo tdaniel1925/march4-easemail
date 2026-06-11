@@ -546,7 +546,6 @@ export class JmapProvider implements EmailProvider, CalendarProvider, ContactsPr
   ): Promise<{ emails: NormalizedEmail[]; nextCursor?: string }> {
     let jmapMailboxId = folderId.replace(`${accountId}:`, "");
     const top = options?.top ?? 50;
-    const position = options?.cursor ? parseInt(options.cursor, 10) : 0;
 
     const { token, session, jmapAccountId } = await getSessionAndToken(
       userId,
@@ -598,60 +597,93 @@ export class JmapProvider implements EmailProvider, CalendarProvider, ContactsPr
       filter.hasAttachment = true;
     }
 
-    const response = await jmapCall(session.apiUrl, token, jmapAccountId, [
-      [
-        "Email/query",
-        {
-          accountId: jmapAccountId,
-          filter,
-          sort: [{ property: "receivedAt", isAscending: false }],
-          position,
-          limit: top,
-        },
-        "0",
-      ],
-      [
-        "Email/get",
-        {
-          accountId: jmapAccountId,
-          "#ids": { resultOf: "0", name: "Email/query", path: "/ids/*" },
-          properties: [
-            "id",
-            "threadId",
-            "mailboxIds",
-            "keywords",
-            "subject",
-            "preview",
-            "from",
-            "to",
-            "cc",
-            "receivedAt",
-            "sentAt",
-            "hasAttachment",
-            "attachments",
-          ],
-        },
-        "1",
-      ],
+    // Pagination cursor is the last email id of the previous page, passed as
+    // `anchor` with `anchorOffset: 1` (RFC 8620 §5.5). Email ids are stable,
+    // so this stays correct when new mail arrives between pages — a `position`
+    // offset would duplicate or skip items. Legacy numeric cursors fall back
+    // to offset-based `position` so old cursors don't crash.
+    const cursor = options?.cursor;
+    const baseQueryArgs: Record<string, unknown> = {
+      accountId: jmapAccountId,
+      filter,
+      sort: [{ property: "receivedAt", isAscending: false }],
+      limit: top,
+    };
+    const queryArgs: Record<string, unknown> = { ...baseQueryArgs };
+    let usingAnchor = false;
+    if (cursor && /^\d+$/.test(cursor)) {
+      // Legacy numeric-offset cursor
+      queryArgs.position = parseInt(cursor, 10);
+    } else if (cursor) {
+      queryArgs.anchor = cursor;
+      queryArgs.anchorOffset = 1;
+      usingAnchor = true;
+    } else {
+      queryArgs.position = 0;
+    }
+
+    const emailGetCall: [string, Record<string, unknown>, string] = [
+      "Email/get",
+      {
+        accountId: jmapAccountId,
+        "#ids": { resultOf: "0", name: "Email/query", path: "/ids/*" },
+        properties: [
+          "id",
+          "threadId",
+          "mailboxIds",
+          "keywords",
+          "subject",
+          "preview",
+          "from",
+          "to",
+          "cc",
+          "receivedAt",
+          "sentAt",
+          "hasAttachment",
+          "attachments",
+        ],
+      },
+      "1",
+    ];
+
+    let response = await jmapCall(session.apiUrl, token, jmapAccountId, [
+      ["Email/query", queryArgs, "0"],
+      emailGetCall,
     ]);
 
-    const queryResult = response.methodResponses.find(
-      ([method]) => method === "Email/query"
-    );
+    // If the anchor email was deleted since the previous page, JMAP returns an
+    // `anchorNotFound` error — degrade to position-based pagination from the
+    // start instead of breaking the list entirely.
+    if (usingAnchor) {
+      const anchorError = response.methodResponses.find(
+        ([method, data]) =>
+          method === "error" &&
+          (data as Record<string, unknown>).type === "anchorNotFound"
+      );
+      if (anchorError) {
+        response = await jmapCall(session.apiUrl, token, jmapAccountId, [
+          ["Email/query", { ...baseQueryArgs, position: 0 }, "0"],
+          emailGetCall,
+        ]);
+      }
+    }
+
     const getResult = response.methodResponses.find(
       ([method]) => method === "Email/get"
     );
 
     if (!getResult) throw new Error("No Email/get response from JMAP");
 
-    const queryData = queryResult ? queryResult[1] : {} as Record<string, unknown>;
     const [, emailData] = getResult;
     const jmapEmails = (emailData.list as JmapEmail[]) ?? [];
-    const total = ((queryData as Record<string, unknown>).total as number) ?? 0;
 
     const emails = jmapEmails.map((e) => normalizeJmapEmail(e, accountId));
-    const nextPosition = position + top;
-    const nextCursor = nextPosition < total ? String(nextPosition) : undefined;
+    // A full page implies there may be more; the next cursor is the last
+    // email's JMAP id (used as the anchor for the next page).
+    const nextCursor =
+      jmapEmails.length === top
+        ? jmapEmails[jmapEmails.length - 1].id
+        : undefined;
 
     return { emails, nextCursor };
   }

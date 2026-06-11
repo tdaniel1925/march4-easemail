@@ -1,6 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
+import { z } from "zod";
+
+const settingsSchema = z.object({
+  preferredTimeZone: z.string().min(1).max(100).optional(),
+});
 
 export async function PATCH(req: NextRequest) {
   const supabase = await createClient();
@@ -8,10 +13,16 @@ export async function PATCH(req: NextRequest) {
   if (!user) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
 
   try {
-    const body = await req.json();
-    const { preferredTimeZone } = body;
+    const parsed = settingsSchema.safeParse(await req.json().catch(() => null));
+    if (!parsed.success) {
+      return NextResponse.json(
+        { error: "Invalid request", details: parsed.error.flatten() },
+        { status: 400 }
+      );
+    }
+    const { preferredTimeZone } = parsed.data;
 
-    if (preferredTimeZone && typeof preferredTimeZone === "string") {
+    if (preferredTimeZone) {
       // Validate against the IANA time zone list; if the Intl API is
       // unavailable in this runtime, fall back to accepting the value
       let isValidTimeZone = true;

@@ -1,7 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { graphGet } from "@/lib/microsoft/graph";
+
+const folderQuerySchema = z.object({
+  homeAccountId: z.string().min(1).max(512),
+  folder: z.string().max(512).optional(),
+  nextLink: z.string().min(1).max(4096).nullable().optional(),
+});
 import { isReauthError } from "@/lib/microsoft/auth-errors";
 import { mapCachedEmail, mapNormalizedEmail } from "@/lib/utils/email-helpers";
 import { verifyAccountOwnership, getProvider, detectProviderType } from "@/lib/providers/registry";
@@ -101,11 +108,18 @@ export async function GET(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized", errorCode: "reauth_required" }, { status: 401 });
 
-  const homeAccountId = req.nextUrl.searchParams.get("homeAccountId");
-  const folder = req.nextUrl.searchParams.get("folder") ?? "";
-  const nextLinkParam = req.nextUrl.searchParams.get("nextLink");
+  const parsedQuery = folderQuerySchema.safeParse({
+    homeAccountId: req.nextUrl.searchParams.get("homeAccountId") ?? undefined,
+    folder: req.nextUrl.searchParams.get("folder") ?? undefined,
+    nextLink: req.nextUrl.searchParams.get("nextLink"),
+  });
+  if (!parsedQuery.success) {
+    return NextResponse.json({ error: "Invalid request", details: parsedQuery.error.flatten() }, { status: 400 });
+  }
+  const { homeAccountId } = parsedQuery.data;
+  const folder = parsedQuery.data.folder ?? "";
+  const nextLinkParam = parsedQuery.data.nextLink ?? null;
 
-  if (!homeAccountId) return NextResponse.json({ error: "homeAccountId required", errorCode: "server_error" }, { status: 400 });
   if (!folder && !nextLinkParam) return NextResponse.json({ error: "folder required", errorCode: "server_error" }, { status: 400 });
 
   // Verify the homeAccountId belongs to this authenticated user (prevents IDOR)

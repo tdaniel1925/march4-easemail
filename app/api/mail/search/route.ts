@@ -8,6 +8,13 @@ import { verifyAccountOwnership, getProvider, detectProviderType } from "@/lib/p
 import type { EmailMessage } from "@/lib/types/email";
 import type { GraphMessage } from "@/lib/types/graph";
 import { withRateLimit, rateLimiters } from "@/lib/rate-limit";
+import { z } from "zod";
+
+const searchQuerySchema = z.object({
+  homeAccountId: z.string().min(1).max(512),
+  // Blank q is tolerated (returns empty result set); cap at 200 chars
+  q: z.string().max(200),
+});
 
 // Maps well-known folder param → Graph well-known folder name
 const WELL_KNOWN_FOLDER_PATHS: Record<string, string> = {
@@ -176,17 +183,19 @@ async function searchEmailHandler(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const homeAccountId = req.nextUrl.searchParams.get("homeAccountId");
-  const q = req.nextUrl.searchParams.get("q");
+  const parsedQuery = searchQuerySchema.safeParse({
+    homeAccountId: req.nextUrl.searchParams.get("homeAccountId") ?? undefined,
+    q: req.nextUrl.searchParams.get("q") ?? undefined,
+  });
+  if (!parsedQuery.success) {
+    return NextResponse.json({ error: "Invalid request", details: parsedQuery.error.flatten() }, { status: 400 });
+  }
+  const { homeAccountId, q } = parsedQuery.data;
   // Validate folder against allowlist — prevents arbitrary Graph path injection
   const rawFolder = req.nextUrl.searchParams.get("folder") ?? "inbox";
   const folder = ALLOWED_FOLDERS.has(rawFolder) ? rawFolder : "inbox";
 
-  // Input validation
-  if (!homeAccountId) return NextResponse.json({ error: "homeAccountId required" }, { status: 400 });
-  if (!q) return NextResponse.json({ error: "Search query (q) is required" }, { status: 400 });
   if (!q.trim()) return NextResponse.json({ emails: [] });
-  if (q.length > 200) return NextResponse.json({ error: "Search query too long (max 200 chars)" }, { status: 400 });
 
   // Verify the homeAccountId belongs to this authenticated user (prevents IDOR)
   const account = await verifyAccountOwnership(user.id, homeAccountId);

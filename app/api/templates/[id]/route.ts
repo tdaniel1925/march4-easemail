@@ -1,6 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
+import { z } from "zod";
+
+const updateTemplateSchema = z.object({
+  name: z.string().min(1).max(200).optional(),
+  subject: z.string().max(500).nullable().optional(),
+  body: z.string().min(1).max(200_000).optional(),
+  variables: z.array(z.string().max(100)).max(100).optional(),
+  category: z.string().max(100).nullable().optional(),
+});
 
 // ─── GET /api/templates/[id] ─────────────────────────────────────────────────
 
@@ -36,13 +45,14 @@ export async function PATCH(
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const { id } = await params;
-  const { name, subject, body, variables, category } = await req.json() as {
-    name?: string;
-    subject?: string | null;
-    body?: string;
-    variables?: string[];
-    category?: string | null;
-  };
+  const parsed = updateTemplateSchema.safeParse(await req.json().catch(() => null));
+  if (!parsed.success) {
+    return NextResponse.json(
+      { error: "Invalid request", details: parsed.error.flatten() },
+      { status: 400 }
+    );
+  }
+  const { name, subject, body, variables, category } = parsed.data;
 
   // Verify ownership
   const existing = await prisma.emailTemplate.findFirst({

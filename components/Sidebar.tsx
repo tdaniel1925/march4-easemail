@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import AccountSwitcher from "@/components/AccountSwitcher";
 import { useAccountStore } from "@/lib/stores/account-store";
-import { useDataCacheStore, pathToView, viewToPath, type AppView } from "@/lib/stores/data-cache";
+import { useDataCacheStore, pathToView } from "@/lib/stores/data-cache";
 import type { MailFolder } from "@/lib/types/email";
 
 interface SidebarProps {
@@ -44,7 +44,7 @@ const dashboardLink = {
   icon: <path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />,
 };
 
-const contactsLink = {
+const _contactsLink = {
   href: "/contacts", label: "Contacts",
   icon: <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />,
 };
@@ -99,12 +99,14 @@ function SidebarSection({ title, open, onToggle, children, className = "" }: Sec
   );
 }
 
-function NavLink({ href, label, icon, badge, active, onNavigate }: {
+function NavLink({ href, label, icon, badge, active, onNavigate, testId }: {
   href: string; label: string; icon: React.ReactNode; badge?: number | null; active: boolean;
   onNavigate?: (href: string) => void;
+  testId?: string;
 }) {
   return (
     <button
+      data-testid={testId}
       onClick={() => onNavigate?.(href)}
       className="w-full flex items-center gap-3 px-3 py-2 rounded-[10px] text-sm font-medium transition-colors text-left"
       style={{
@@ -138,7 +140,7 @@ export default function Sidebar({ userName = "You", userEmail = "", isAdmin: isA
 
   /** Client-side navigate: update store + push URL without server round-trip */
   function navigateTo(href: string) {
-    const { view, folderId, emailId } = pathToView(href.split("?")[0]);
+    const { view, folderId } = pathToView(href.split("?")[0]);
     useDataCacheStore.getState().setActiveView(view);
     if (folderId) useDataCacheStore.getState().setActiveFolderId(folderId);
     if (view === "compose") {
@@ -348,7 +350,7 @@ export default function Sidebar({ userName = "You", userEmail = "", isAdmin: isA
                 const badge = "badgeKey" in link ? (link.badgeKey === "unread" ? unreadCount : link.badgeKey === "draft" ? draftCount : link.badgeKey === "scheduled" ? (scheduledCount > 0 ? scheduledCount : null) : null) : null;
                 return (
                   <li key={link.href}>
-                    <NavLink href={link.href} label={link.label} icon={link.icon} badge={badge} active={active} onNavigate={navigateTo} />
+                    <NavLink href={link.href} label={link.label} icon={link.icon} badge={badge} active={active} onNavigate={navigateTo} testId={link.href === "/drafts" ? "sidebar-drafts" : undefined} />
                   </li>
                 );
               })}

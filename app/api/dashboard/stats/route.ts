@@ -4,6 +4,11 @@ import { prisma } from "@/lib/prisma";
 import { verifyAccountOwnership } from "@/lib/providers/registry";
 import { mapCachedEmail } from "@/lib/utils/email-helpers";
 import type { EmailMessage } from "@/lib/types/email";
+import { z } from "zod";
+
+const statsQuerySchema = z.object({
+  homeAccountId: z.string().min(1, "homeAccountId required").max(512),
+});
 
 export interface DashboardStats {
   unreadCount: number;
@@ -40,10 +45,16 @@ export async function GET(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const homeAccountId = req.nextUrl.searchParams.get("homeAccountId");
-  if (!homeAccountId) {
-    return NextResponse.json({ error: "homeAccountId required" }, { status: 400 });
+  const parsedQuery = statsQuerySchema.safeParse({
+    homeAccountId: req.nextUrl.searchParams.get("homeAccountId") ?? undefined,
+  });
+  if (!parsedQuery.success) {
+    return NextResponse.json(
+      { error: "Invalid request", details: parsedQuery.error.flatten() },
+      { status: 400 }
+    );
   }
+  const { homeAccountId } = parsedQuery.data;
 
   const account = await verifyAccountOwnership(user.id, homeAccountId);
   if (!account) return NextResponse.json({ error: "Account not found" }, { status: 404 });

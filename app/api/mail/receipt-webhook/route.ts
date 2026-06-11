@@ -1,6 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { timingSafeEqual } from "node:crypto";
+
+// Loose validation only — Graph notification payloads evolve over time.
+const graphNotificationSchema = z.object({
+  value: z.array(z.object({}).passthrough()).max(100).optional(),
+}).passthrough();
 
 /**
  * POST /api/mail/receipt-webhook
@@ -47,6 +53,11 @@ export async function POST(req: NextRequest) {
     body = await req.json();
   } catch {
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
+  }
+
+  const parsedBody = graphNotificationSchema.safeParse(body);
+  if (!parsedBody.success) {
+    return NextResponse.json({ error: "Invalid request", details: parsedBody.error.flatten() }, { status: 400 });
   }
 
   interface GraphNotification {

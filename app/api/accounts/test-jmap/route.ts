@@ -1,6 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { validateSessionUrl } from "../_lib/validate-session-url";
+import { z } from "zod";
+
+const testJmapSchema = z.object({
+  token: z.string().min(1, "token is required").max(8192),
+  sessionUrl: z.string().url("Invalid URL").max(2048).default("https://api.fastmail.com/jmap/session"),
+});
 
 export async function POST(req: NextRequest) {
   const supabase = await createClient();
@@ -10,18 +16,14 @@ export async function POST(req: NextRequest) {
   if (!user)
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const body = await req.json();
-  const {
-    token,
-    sessionUrl = "https://api.fastmail.com/jmap/session",
-  } = body;
-
-  if (!token) {
+  const parsed = testJmapSchema.safeParse(await req.json().catch(() => null));
+  if (!parsed.success) {
     return NextResponse.json(
-      { error: "token is required" },
+      { error: "Invalid request", details: parsed.error.flatten() },
       { status: 400 }
     );
   }
+  const { token, sessionUrl } = parsed.data;
 
   // SSRF guard — sessionUrl is user-supplied and fetched server-side
   const urlCheck = await validateSessionUrl(sessionUrl);

@@ -1,18 +1,24 @@
 import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import { verifyAccountOwnership, getProvider } from "@/lib/providers/registry";
+
+const markReadSchema = z.object({
+  messageId: z.string().min(1).max(512),
+  isRead: z.boolean().optional(),
+  homeAccountId: z.string().min(1).max(512).optional(),
+});
 
 export async function POST(req: NextRequest) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { messageId, isRead, homeAccountId } = await req.json() as {
-    messageId: string;
-    isRead?: boolean;
-    homeAccountId?: string;
-  };
-  if (!messageId) return NextResponse.json({ error: "messageId required" }, { status: 400 });
+  const parsed = markReadSchema.safeParse(await req.json());
+  if (!parsed.success) {
+    return NextResponse.json({ error: "Invalid request", details: parsed.error.flatten() }, { status: 400 });
+  }
+  const { messageId, isRead, homeAccountId } = parsed.data;
 
   // Resolve account: use provided homeAccountId or fall back to default
   let accountId = homeAccountId;

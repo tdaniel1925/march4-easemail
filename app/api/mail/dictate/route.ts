@@ -2,8 +2,14 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import Anthropic from "@anthropic-ai/sdk";
 import { withRateLimit, rateLimiters } from "@/lib/rate-limit";
+import { z } from "zod";
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+
+const dictateSchema = z.object({
+  // Handler slices to 8000 chars itself; cap generously to reject abuse without changing tolerance
+  transcript: z.string().max(200000).refine((s) => s.trim().length > 0, "Transcript required"),
+});
 
 // ─── POST /api/mail/dictate ───────────────────────────────────────────────────
 // Takes a raw speech transcript and returns a properly formatted email body.
@@ -13,10 +19,11 @@ async function dictateHandler(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { transcript } = await req.json() as { transcript: string };
-  if (!transcript?.trim()) {
-    return NextResponse.json({ error: "Transcript required" }, { status: 400 });
+  const parsed = dictateSchema.safeParse(await req.json());
+  if (!parsed.success) {
+    return NextResponse.json({ error: "Invalid request", details: parsed.error.flatten() }, { status: 400 });
   }
+  const { transcript } = parsed.data;
 
   const system = `You are a professional dictation formatter. You convert spoken transcripts into polished, well-structured email bodies on any topic. Preserve all names, dates, amounts, terminology, and specific details exactly as spoken — never paraphrase or omit specifics. Return ONLY the formatted email body with no explanation or commentary.`;
 

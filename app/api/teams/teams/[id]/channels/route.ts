@@ -4,6 +4,9 @@ import { prisma } from "@/lib/prisma";
 import { graphGet } from "@/lib/microsoft/graph";
 import { TEAMS_SCOPES } from "@/lib/microsoft/msal";
 import { isReauthError } from "@/lib/microsoft/auth-errors";
+import { z } from "zod";
+
+const idSchema = z.string().min(1).max(512);
 
 interface GraphChannel {
   id: string;
@@ -35,9 +38,15 @@ export async function GET(
   if (!defaultAccount) return NextResponse.json({ error: "No MS account" }, { status: 400 });
 
   const { id: teamId } = await params;
+  if (!idSchema.safeParse(teamId).success) {
+    return NextResponse.json({ error: "Invalid team ID" }, { status: 400 });
+  }
 
   // Validate homeAccountId from query param against the user's own accounts (prevents IDOR)
   const rawHomeAccountId = req.nextUrl.searchParams.get("homeAccountId");
+  if (rawHomeAccountId !== null && !idSchema.safeParse(rawHomeAccountId).success) {
+    return NextResponse.json({ error: "Invalid homeAccountId" }, { status: 400 });
+  }
   let homeAccountId = defaultAccount.homeAccountId;
   if (rawHomeAccountId && rawHomeAccountId !== defaultAccount.homeAccountId) {
     const owned = await prisma.msConnectedAccount.findFirst({

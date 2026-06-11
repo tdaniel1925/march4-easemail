@@ -1,9 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { graphFetch } from "@/lib/microsoft/graph";
 
 type Params = { params: Promise<{ id: string }> };
+
+const paramsSchema = z.object({
+  id: z.string().min(1).max(512),
+});
 
 // ─── GET /api/drafts/[id] ─────────────────────────────────────────────────────
 
@@ -12,7 +17,11 @@ export async function GET(req: NextRequest, { params }: Params) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
 
-  const { id } = await params;
+  const parsedParams = paramsSchema.safeParse(await params);
+  if (!parsedParams.success) {
+    return NextResponse.json({ error: "Invalid request", details: parsedParams.error.flatten() }, { status: 400 });
+  }
+  const { id } = parsedParams.data;
   // Try local Draft ID first, then fall back to Graph message ID
   let draft = await prisma.draft.findFirst({
     where: { id, userId: user.id }
@@ -70,7 +79,11 @@ export async function DELETE(_req: NextRequest, { params }: Params) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { id } = await params;
+  const parsedParams = paramsSchema.safeParse(await params);
+  if (!parsedParams.success) {
+    return NextResponse.json({ error: "Invalid request", details: parsedParams.error.flatten() }, { status: 400 });
+  }
+  const { id } = parsedParams.data;
 
   const draft = await prisma.draft.findFirst({ where: { id, userId: user.id } });
   if (!draft) return NextResponse.json({ error: "Not found" }, { status: 404 });

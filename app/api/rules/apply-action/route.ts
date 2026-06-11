@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { graphPatch, graphPost, graphDelete } from "@/lib/microsoft/graph";
+import { applyRuleActionSchema } from "@/lib/validation/schemas";
 
 // ─── POST /api/rules/apply-action ────────────────────────────────────────────
 // Executes a single rule action against MS Graph.
@@ -9,25 +10,19 @@ import { graphPatch, graphPost, graphDelete } from "@/lib/microsoft/graph";
 // Errors are logged but never surface to the user — rules failing
 // silently is better than breaking the inbox.
 
-interface ApplyActionBody {
-  emailId: string;
-  homeAccountId: string;
-  action: "markRead" | "markImportant" | "archive" | "delete" | "forward";
-  value?: string; // forward: recipient address
-  ruleId?: string; // optional - if provided, tracks execution status
-}
-
 export async function POST(req: NextRequest) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const body = await req.json() as ApplyActionBody;
-  const { emailId, homeAccountId, action, value, ruleId } = body;
-
-  if (!emailId || !homeAccountId || !action) {
-    return NextResponse.json({ error: "emailId, homeAccountId, action required" }, { status: 400 });
+  const parsed = applyRuleActionSchema.safeParse(await req.json().catch(() => null));
+  if (!parsed.success) {
+    return NextResponse.json(
+      { error: "Invalid request", details: parsed.error.flatten() },
+      { status: 400 }
+    );
   }
+  const { emailId, homeAccountId, action, value, ruleId } = parsed.data;
 
   let executionError: string | null = null;
 

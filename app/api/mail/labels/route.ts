@@ -1,7 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { verifyAccountOwnership } from "@/lib/providers/registry";
+
+const labelsQuerySchema = z.object({
+  homeAccountId: z.string().min(1).max(512),
+});
 
 /**
  * GET /api/mail/labels?homeAccountId=...
@@ -12,10 +17,13 @@ export async function GET(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const homeAccountId = req.nextUrl.searchParams.get("homeAccountId");
-  if (!homeAccountId) {
-    return NextResponse.json({ error: "homeAccountId required" }, { status: 400 });
+  const parsed = labelsQuerySchema.safeParse({
+    homeAccountId: req.nextUrl.searchParams.get("homeAccountId") ?? undefined,
+  });
+  if (!parsed.success) {
+    return NextResponse.json({ error: "Invalid request", details: parsed.error.flatten() }, { status: 400 });
   }
+  const { homeAccountId } = parsed.data;
 
   const account = await verifyAccountOwnership(user.id, homeAccountId);
   if (!account) return NextResponse.json({ error: "Account not found" }, { status: 404 });

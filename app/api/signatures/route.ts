@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
+import { createSignatureSchema } from "@/lib/validation/schemas";
 
 // ─── GET /api/signatures ──────────────────────────────────────────────────────
 
@@ -24,19 +25,16 @@ export async function POST(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { name, html, title, company, phone, defaultNew, defaultReplies, account, isDefault } = await req.json() as {
-    name: string;
-    html?: string;
-    title?: string;
-    company?: string;
-    phone?: string;
-    defaultNew?: boolean;
-    defaultReplies?: boolean;
-    account?: string;
-    isDefault?: boolean;
-  };
+  const parsed = createSignatureSchema.safeParse(await req.json().catch(() => null));
+  if (!parsed.success) {
+    return NextResponse.json(
+      { error: "Invalid request", details: parsed.error.flatten() },
+      { status: 400 }
+    );
+  }
+  const { name, html, title, company, phone, defaultNew, defaultReplies, account, isDefault } = parsed.data;
 
-  if (!name?.trim()) {
+  if (!name.trim()) {
     return NextResponse.json({ error: "Name required" }, { status: 400 });
   }
 

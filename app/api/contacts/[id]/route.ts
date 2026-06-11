@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { graphPatch, graphDelete } from "@/lib/microsoft/graph";
 import { detectProviderType } from "@/lib/providers/registry";
+import { updateContactSchema } from "@/lib/validation/schemas";
 
 // ─── PATCH /api/contacts/[id] — Update a contact ──────────────────────────────
 // Only supported for Microsoft accounts. IMAP/JMAP accounts return 400.
@@ -16,14 +17,14 @@ export async function PATCH(
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const { id } = await params;
-  const body = await req.json() as {
-    displayName?: string;
-    email?: string;
-    phone?: string;
-    company?: string;
-    title?: string;
-    homeAccountId?: string;
-  };
+  const parsed = updateContactSchema.safeParse(await req.json().catch(() => null));
+  if (!parsed.success) {
+    return NextResponse.json(
+      { error: "Invalid request", details: parsed.error.flatten() },
+      { status: 400 }
+    );
+  }
+  const body = parsed.data;
 
   // If a non-Microsoft account is specified, contacts are not supported
   if (body.homeAccountId && detectProviderType(body.homeAccountId) !== "microsoft") {

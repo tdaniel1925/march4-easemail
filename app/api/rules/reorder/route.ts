@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
+import { reorderRulesSchema } from "@/lib/validation/schemas";
 
 // ─── POST /api/rules/reorder — bulk-update priorities ────────────────────────
 // Body: { ids: string[] } — ordered array of rule IDs (first = priority 1)
@@ -10,10 +11,14 @@ export async function POST(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { ids } = await req.json() as { ids: string[] };
-  if (!Array.isArray(ids) || ids.length === 0) {
-    return NextResponse.json({ error: "ids array required" }, { status: 400 });
+  const parsed = reorderRulesSchema.safeParse(await req.json().catch(() => null));
+  if (!parsed.success) {
+    return NextResponse.json(
+      { error: "Invalid request", details: parsed.error.flatten() },
+      { status: 400 }
+    );
   }
+  const { ids } = parsed.data;
 
   // Verify all rules belong to this user before updating
   const rules = await prisma.emailRule.findMany({

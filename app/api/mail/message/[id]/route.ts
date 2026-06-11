@@ -7,6 +7,13 @@ import { prisma } from "@/lib/prisma";
 
 type Params = { params: Promise<{ id: string }> };
 
+import { z } from "zod";
+
+const messageRequestSchema = z.object({
+  id: z.string().min(1).max(512),
+  homeAccountId: z.string().min(1).max(512).nullable().optional(),
+});
+
 interface GraphMessage {
   id: string;
   subject?: string;
@@ -38,9 +45,16 @@ export async function GET(req: NextRequest, { params }: Params) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { id } = await params;
+  const parsed = messageRequestSchema.safeParse({
+    id: (await params).id,
+    homeAccountId: req.nextUrl.searchParams.get("homeAccountId"),
+  });
+  if (!parsed.success) {
+    return NextResponse.json({ error: "Invalid request", details: parsed.error.flatten() }, { status: 400 });
+  }
+  const { id } = parsed.data;
 
-  let accountId = req.nextUrl.searchParams.get("homeAccountId");
+  let accountId = parsed.data.homeAccountId ?? null;
   if (!accountId) {
     const { getAllAccounts } = await import("@/lib/providers/registry");
     const accounts = await getAllAccounts(user.id);

@@ -1,39 +1,27 @@
 import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import { verifyAccountOwnership, getProvider, getAllAccounts } from "@/lib/providers/registry";
 import { withRateLimit, rateLimiters } from "@/lib/rate-limit";
 
-type BatchAction = "delete" | "archive" | "markRead";
-
-interface BatchRequest {
-  action: BatchAction;
-  messageIds: string[];
-  homeAccountId?: string;
-}
-
-const VALID_ACTIONS = new Set<BatchAction>(["delete", "archive", "markRead"]);
 const MAX_BATCH_SIZE = 50;
+
+const batchSchema = z.object({
+  action: z.enum(["delete", "archive", "markRead"]),
+  messageIds: z.array(z.string().min(1).max(512)).min(1).max(MAX_BATCH_SIZE),
+  homeAccountId: z.string().min(1).max(512).optional(),
+});
 
 async function batchHandler(req: NextRequest) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const body = await req.json() as BatchRequest;
-  const { action, messageIds, homeAccountId } = body;
-
-  // Validate action
-  if (!action || !VALID_ACTIONS.has(action)) {
-    return NextResponse.json({ error: "Invalid action. Must be: delete, archive, or markRead" }, { status: 400 });
+  const parsed = batchSchema.safeParse(await req.json());
+  if (!parsed.success) {
+    return NextResponse.json({ error: "Invalid request", details: parsed.error.flatten() }, { status: 400 });
   }
-
-  // Validate messageIds
-  if (!Array.isArray(messageIds) || messageIds.length === 0) {
-    return NextResponse.json({ error: "messageIds must be a non-empty array" }, { status: 400 });
-  }
-  if (messageIds.length > MAX_BATCH_SIZE) {
-    return NextResponse.json({ error: `Maximum ${MAX_BATCH_SIZE} messages per batch` }, { status: 400 });
-  }
+  const { action, messageIds, homeAccountId } = parsed.data;
 
   // Resolve account
   let accountId = homeAccountId;
@@ -88,7 +76,7 @@ async function batchHandler(req: NextRequest) {
     .map((r) => r.value);
   const failed = results
     .filter((r): r is PromiseRejectedResult => r.status === "rejected")
-    .map((r, i) => ({
+    .map((r) => ({
       messageId: messageIds[results.indexOf(r)],
       error: r.reason instanceof Error ? r.reason.message : String(r.reason),
     }));

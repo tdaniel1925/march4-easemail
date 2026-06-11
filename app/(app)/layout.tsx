@@ -12,7 +12,7 @@ import Sidebar from "@/components/Sidebar";
 import { StoreInitializer } from "@/components/StoreInitializer";
 import AppShell from "@/components/AppShell";
 import ErrorBoundary from "@/components/ErrorBoundary";
-import { pathToView, type AppView } from "@/lib/stores/data-cache";
+import { pathToView } from "@/lib/stores/data-cache";
 import type { EmailMessage } from "@/lib/types/email";
 import type {
   CalEvent,
@@ -51,7 +51,7 @@ interface GraphMessageList {
 
 // ─── Layout ──────────────────────────────────────────────────────────────────
 
-export default async function AppLayout({ children }: { children: React.ReactNode }) {
+export default async function AppLayout({ children: _children }: { children: React.ReactNode }) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");

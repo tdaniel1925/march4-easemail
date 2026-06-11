@@ -21,14 +21,14 @@ const INBOX_URL = "/inbox";
 async function goToInbox(page: Page) {
   await page.goto(INBOX_URL);
   await expect(page).not.toHaveURL(/login/, { timeout: 8000 });
-  await expect(page.locator("h1", { hasText: "Inbox" })).toBeVisible({ timeout: 8000 });
+  await expect(page.locator("h2", { hasText: "Inbox" }).first()).toBeVisible({ timeout: 8000 });
 }
 
 // ─── Test 1: Inbox loads ─────────────────────────────────────────────────────
 
 test("1. Inbox page loads", async ({ page }) => {
   await goToInbox(page);
-  await expect(page.locator("h1", { hasText: "Inbox" })).toBeVisible();
+  await expect(page.locator("h2", { hasText: "Inbox" }).first()).toBeVisible();
 });
 
 // ─── Test 2: Pin button on email rows ────────────────────────────────────────

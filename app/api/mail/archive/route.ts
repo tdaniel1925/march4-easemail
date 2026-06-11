@@ -1,7 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import { verifyAccountOwnership, getProvider } from "@/lib/providers/registry";
 import { graphGet } from "@/lib/microsoft/graph";
+
+const archiveSchema = z.object({
+  messageId: z.string().min(1).max(512),
+  homeAccountId: z.string().min(1).max(512).optional(),
+});
 
 /**
  * POST /api/mail/archive
@@ -12,13 +18,11 @@ export async function POST(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { messageId, homeAccountId } = await req.json() as {
-    messageId: string;
-    homeAccountId?: string;
-  };
-  if (!messageId) {
-    return NextResponse.json({ error: "messageId required", errorCode: "server_error" }, { status: 400 });
+  const parsed = archiveSchema.safeParse(await req.json());
+  if (!parsed.success) {
+    return NextResponse.json({ error: "Invalid request", details: parsed.error.flatten() }, { status: 400 });
   }
+  const { messageId, homeAccountId } = parsed.data;
 
   // Resolve account: use provided homeAccountId or fall back to default
   let accountId = homeAccountId;

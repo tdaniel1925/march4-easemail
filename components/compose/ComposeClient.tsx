@@ -198,7 +198,7 @@ function ColorPicker({
 const SALUTATION_RE = /^(hey|hi+|hello|dear|to whom it may concern|good (morning|afternoon|evening))\b/i;
 const CLOSING_RE = /^(best( regards)?|kind regards|warm(ly| regards)?|sincerely(,| yours)?|yours (truly|sincerely)?|thank you|thanks|regards|with (appreciation|gratitude|best regards)|respectfully|cheers|take care|looking forward|cordially|all the best|best wishes|many thanks|much appreciated),?\.?\s*$/i;
 
-function formatEmailSpacing(text: string): string {
+function _formatEmailSpacing(text: string): string {
   const lines = text.split("\n").map((l) => l.trimEnd());
   while (lines.length && !lines[0].trim()) lines.shift();
   while (lines.length && !lines[lines.length - 1].trim()) lines.pop();
@@ -330,12 +330,12 @@ export default function ComposeClient({
   const [showScheduleMenu, setShowScheduleMenu] = useState(false);
 
   // ── Undo Send state ─────────────────────────────────────────────────────────
-  const [undoPending, setUndoPending] = useState<{
+  const [_undoPending, _setUndoPending] = useState<{
     pendingId: string;
     secondsLeft: number;
     totalSeconds: number;
   } | null>(null);
-  const undoTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const _undoTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   // ── Importance + read receipt ────────────────────────────────────────────────
   const [importance, setImportance] = useState<"normal" | "high">("normal");

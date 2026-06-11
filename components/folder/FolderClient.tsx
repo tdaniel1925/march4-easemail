@@ -36,6 +36,7 @@ function EmailRow({
 
   return (
     <div
+      data-testid="email-item"
       onClick={onClick}
       className="relative flex items-start gap-3 px-4 py-3.5 cursor-pointer transition-colors hover:bg-neutral-50 border-l-2 border-transparent"
     >
@@ -123,7 +124,7 @@ export default function FolderClient({
   const [requiresReauth, setRequiresReauth] = useState(false);
 
   const activeAccount = useAccountStore((s) => s.activeAccount);
-  const setMailFolders = useAccountStore((s) => s.setMailFolders);
+  const _setMailFolders = useAccountStore((s) => s.setMailFolders);
   const setLoadingFolderId = useDataCacheStore((s) => s.setLoadingFolderId);
   const loadingFolderId = useDataCacheStore((s) => s.loadingFolderId);
   const firstRender = useRef(true);
@@ -142,8 +143,10 @@ export default function FolderClient({
     fetch(`/api/mail/folder?folder=${encodeURIComponent(folder)}&homeAccountId=${encodeURIComponent(hid)}`)
       .then(async (r) => {
         if (r.status === 401) {
-          const body = await r.json().catch(() => ({} as { error?: string; errorCode?: string })) as { error?: string; errorCode?: string };
-          if (body.error === "Unauthorized" || body.errorCode === "reauth_required") { window.location.href = "/login"; return null; }
+          // Provider token expired (401 / Unauthorized / reauth_required) — the app
+          // session is still valid (middleware handles missing sessions), so show
+          // the inline reconnect banner instead of bouncing the user to /login.
+          await r.json().catch(() => null);
           setRequiresReauth(true); return null;
         }
         if (!r.ok) {
@@ -238,8 +241,8 @@ export default function FolderClient({
       fetch(`/api/mail/search?homeAccountId=${encodeURIComponent(activeAccount.homeAccountId)}&q=${encodeURIComponent(q)}&folder=${encodeURIComponent(folder)}`)
         .then(async (r) => {
           if (r.status === 401) {
-            const body = await r.json().catch(() => ({} as { error?: string })) as { error?: string };
-            if (body.error === "Unauthorized") { window.location.href = "/login"; return null; }
+            // Provider token expired — show inline reconnect banner, never /login.
+            await r.json().catch(() => null);
             setRequiresReauth(true); return null;
           }
           if (!r.ok) throw new Error(`search ${r.status}`);

@@ -1,7 +1,43 @@
 import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { graphFetch } from "@/lib/microsoft/graph";
+
+const draftsQuerySchema = z.object({
+  homeAccountId: z.string().min(1).max(512).nullable().optional(),
+});
+
+// Draft recipients may be in-progress (not yet valid emails) — do not enforce .email()
+const draftRecipientSchema = z.object({
+  emailAddress: z.object({
+    address: z.string().max(320),
+    name: z.string().max(320).optional(),
+  }),
+});
+
+const createDraftSchema = z.object({
+  draftId: z.string().min(1).max(512).optional(),
+  homeAccountId: z.string().min(1).max(512).optional(),
+  toRecipients: z.array(draftRecipientSchema).max(500).optional(),
+  ccRecipients: z.array(draftRecipientSchema).max(500).optional(),
+  bccRecipients: z.array(draftRecipientSchema).max(500).optional(),
+  subject: z.string().max(998).optional(),
+  bodyHtml: z.string().max(200000).optional(),
+  attachments: z.array(z.object({
+    name: z.string().max(255).optional(),
+    type: z.string().max(255).optional(),
+    size: z.number().int().min(0).optional(),
+    data: z.string().max(35_000_000).optional(), // base64, ~25MB binary
+  }).passthrough()).max(25).optional(),
+  importance: z.string().max(20).optional(),
+  requestReadReceipt: z.boolean().optional(),
+  draftType: z.string().max(50).optional(),
+  inReplyToMessageId: z.string().max(512).nullable().optional(),
+  forwardedMessageId: z.string().max(512).nullable().optional(),
+  originalMessageBody: z.string().max(200000).nullable().optional(),
+  scheduledAt: z.string().max(64).nullable().optional(),
+});
 
 // ─── GET /api/drafts ─────────────────────────────────────────────────────────
 // Returns local drafts for the authenticated user.
@@ -15,7 +51,13 @@ export async function GET(req: NextRequest) {
 
   const { searchParams } = new URL(req.url);
   const scheduledOnly = searchParams.get("scheduled") === "1";
-  const homeAccountId = searchParams.get("homeAccountId");
+  const parsedQuery = draftsQuerySchema.safeParse({
+    homeAccountId: searchParams.get("homeAccountId"),
+  });
+  if (!parsedQuery.success) {
+    return NextResponse.json({ error: "Invalid request", details: parsedQuery.error.flatten() }, { status: 400 });
+  }
+  const homeAccountId = parsedQuery.data.homeAccountId ?? null;
 
   if (scheduledOnly) {
     const drafts = await prisma.draft.findMany({
@@ -54,6 +96,10 @@ export async function POST(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
+  const parsed = createDraftSchema.safeParse(await req.json());
+  if (!parsed.success) {
+    return NextResponse.json({ error: "Invalid request", details: parsed.error.flatten() }, { status: 400 });
+  }
   const {
     draftId,
     homeAccountId,
@@ -70,23 +116,7 @@ export async function POST(req: NextRequest) {
     forwardedMessageId,
     originalMessageBody,
     scheduledAt,
-  } = await req.json() as {
-    draftId?: string;
-    homeAccountId?: string;
-    toRecipients?: { emailAddress: { address: string } }[];
-    ccRecipients?: { emailAddress: { address: string } }[];
-    bccRecipients?: { emailAddress: { address: string } }[];
-    subject?: string;
-    bodyHtml?: string;
-    attachments?: { name: string; type: string; size: number; data?: string }[];
-    importance?: string;
-    requestReadReceipt?: boolean;
-    draftType?: string;
-    inReplyToMessageId?: string | null;
-    forwardedMessageId?: string | null;
-    originalMessageBody?: string | null;
-    scheduledAt?: string | null;
-  };
+  } = parsed.data;
 
   // Validate scheduledAt if provided
   if (scheduledAt) {

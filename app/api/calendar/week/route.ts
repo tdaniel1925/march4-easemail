@@ -11,6 +11,14 @@ import {
   mapGraphEvent,
   CALENDAR_SELECT,
 } from "@/lib/types/calendar";
+import { z } from "zod";
+
+const weekQuerySchema = z.object({
+  start: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/, "Expected YYYY-MM-DD")
+    .refine((s) => !isNaN(Date.parse(`${s}T00:00:00`)), "Invalid date"),
+});
 
 function addDays(dateStr: string, days: number): string {
   const [y, m, d] = dateStr.split("-").map(Number);
@@ -27,10 +35,16 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const startParam = req.nextUrl.searchParams.get("start");
-  if (!startParam || isNaN(Date.parse(`${startParam}T00:00:00`))) {
-    return NextResponse.json({ error: "start param required (YYYY-MM-DD)" }, { status: 400 });
+  const parsedQuery = weekQuerySchema.safeParse({
+    start: req.nextUrl.searchParams.get("start") ?? undefined,
+  });
+  if (!parsedQuery.success) {
+    return NextResponse.json(
+      { error: "Invalid request", details: parsedQuery.error.flatten() },
+      { status: 400 }
+    );
   }
+  const startParam = parsedQuery.data.start;
 
   const accounts = await getAllAccounts(user.id);
   if (!accounts.length) {

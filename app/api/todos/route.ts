@@ -1,8 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
+import { z } from "zod";
 
-export async function GET(req: NextRequest) {
+const createTodoSchema = z.object({
+  text: z.string().min(1, "text is required").max(2000, "text too long"),
+  priority: z.enum(["low", "normal", "high"]).optional(),
+});
+
+export async function GET(_req: NextRequest) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
@@ -32,12 +38,14 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const body = await req.json();
-    const { text, priority } = body;
-
-    if (!text || typeof text !== "string") {
-      return NextResponse.json({ error: "text is required" }, { status: 400 });
+    const parsed = createTodoSchema.safeParse(await req.json().catch(() => null));
+    if (!parsed.success) {
+      return NextResponse.json(
+        { error: "Invalid request", details: parsed.error.flatten() },
+        { status: 400 }
+      );
     }
+    const { text, priority } = parsed.data;
 
     const todo = await prisma.todoItem.create({
       data: {

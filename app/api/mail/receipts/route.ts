@@ -1,6 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
+
+const receiptsQuerySchema = z.object({
+  // Comma-separated message ids; empty/missing is tolerated (returns [])
+  messageIds: z.string().max(25600).optional(),
+});
+
+const createReceiptSchema = z.object({
+  messageId: z.string().max(512).refine((s) => s.trim().length > 0, "Invalid messageId"),
+  recipientEmail: z.string().email().max(320),
+});
 
 /** GET /api/mail/receipts?messageIds=id1,id2,...
  *  Returns read receipt status for a list of sent message IDs.
@@ -10,7 +21,13 @@ export async function GET(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const messageIdsParam = req.nextUrl.searchParams.get("messageIds") ?? "";
+  const parsedQuery = receiptsQuerySchema.safeParse({
+    messageIds: req.nextUrl.searchParams.get("messageIds") ?? undefined,
+  });
+  if (!parsedQuery.success) {
+    return NextResponse.json({ error: "Invalid request", details: parsedQuery.error.flatten() }, { status: 400 });
+  }
+  const messageIdsParam = parsedQuery.data.messageIds ?? "";
   const messageIds = messageIdsParam.split(",").map((id) => id.trim()).filter(Boolean);
 
   if (!messageIds.length) {
@@ -36,29 +53,11 @@ export async function POST(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const body = await req.json().catch(() => null) as {
-    messageId: string;
-    recipientEmail: string;
-  } | null;
-
-  if (!body?.messageId || !body.recipientEmail) {
-    return NextResponse.json({ error: "messageId and recipientEmail required" }, { status: 400 });
+  const parsed = createReceiptSchema.safeParse(await req.json().catch(() => null));
+  if (!parsed.success) {
+    return NextResponse.json({ error: "Invalid request", details: parsed.error.flatten() }, { status: 400 });
   }
-
-  const { messageId, recipientEmail } = body;
-
-  // Validate inputs
-  if (typeof messageId !== "string" || !messageId.trim() || messageId.length > 512) {
-    return NextResponse.json({ error: "Invalid messageId" }, { status: 400 });
-  }
-  const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (
-    typeof recipientEmail !== "string" ||
-    recipientEmail.length > 320 ||
-    !EMAIL_REGEX.test(recipientEmail)
-  ) {
-    return NextResponse.json({ error: "Invalid recipientEmail" }, { status: 400 });
-  }
+  const { messageId, recipientEmail } = parsed.data;
 
   // Ownership-aware create: a (messageId, recipientEmail) row claimed by
   // another user must not be silently re-used or overwritten.

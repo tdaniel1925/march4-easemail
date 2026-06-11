@@ -1,7 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { verifyAccountOwnership, getProvider, getAllAccounts } from "@/lib/providers/registry";
+
+const labelSchema = z.object({
+  messageId: z.string().min(1).max(512),
+  homeAccountId: z.string().min(1).max(512).optional(),
+  label: z.enum(["attorney-client-privilege", "confidential", "work-product"]).nullable(),
+});
 
 /**
  * POST /api/mail/label
@@ -13,21 +20,11 @@ export async function POST(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { messageId, homeAccountId, label } = await req.json() as {
-    messageId: string;
-    homeAccountId?: string;
-    label: "attorney-client-privilege" | "confidential" | "work-product" | null;
-  };
-
-  if (!messageId) {
-    return NextResponse.json({ error: "messageId required" }, { status: 400 });
+  const parsed = labelSchema.safeParse(await req.json());
+  if (!parsed.success) {
+    return NextResponse.json({ error: "Invalid request", details: parsed.error.flatten() }, { status: 400 });
   }
-
-  // Validate label value
-  const validLabels = ["attorney-client-privilege", "confidential", "work-product", null];
-  if (!validLabels.includes(label)) {
-    return NextResponse.json({ error: "Invalid label value" }, { status: 400 });
-  }
+  const { messageId, homeAccountId, label } = parsed.data;
 
   // Resolve account
   let accountId = homeAccountId;

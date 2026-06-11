@@ -23,7 +23,7 @@ const DASHBOARD_URL = "/dashboard";
 async function goToInbox(page: Page) {
   await page.goto(INBOX_URL);
   await expect(page).not.toHaveURL(/login/, { timeout: 8000 });
-  await expect(page.locator("h1", { hasText: "Inbox" })).toBeVisible({ timeout: 8000 });
+  await expect(page.locator("h2", { hasText: "Inbox" }).first()).toBeVisible({ timeout: 8000 });
 }
 
 async function goToDashboard(page: Page) {
@@ -35,7 +35,7 @@ async function goToDashboard(page: Page) {
 
 test("1. Inbox page loads", async ({ page }) => {
   await goToInbox(page);
-  await expect(page.locator("h1", { hasText: "Inbox" })).toBeVisible();
+  await expect(page.locator("h2", { hasText: "Inbox" }).first()).toBeVisible();
 });
 
 // ─── Test 2: Remind me button in email detail ────────────────────────────────
@@ -94,5 +94,5 @@ test("4. Dashboard shows reminders section", async ({ page }) => {
   await goToDashboard(page);
 
   // RemindersPanel component should render on dashboard
-  await expect(page.locator("text=/Reminder|Follow-up|Remind/i")).toBeVisible({ timeout: 8000 });
+  await expect(page.locator("text=/Reminder|Follow-up|Remind/i").first()).toBeVisible({ timeout: 8000 });
 });

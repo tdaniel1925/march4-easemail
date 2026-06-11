@@ -1,7 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { verifyAccountOwnership, getProvider, getAllAccounts } from "@/lib/providers/registry";
+
+const starSchema = z.object({
+  messageId: z.string().min(1).max(512),
+  homeAccountId: z.string().min(1).max(512).optional(),
+  flagged: z.boolean(),
+});
 
 /**
  * POST /api/mail/star
@@ -12,15 +19,11 @@ export async function POST(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { messageId, homeAccountId, flagged } = await req.json() as {
-    messageId: string;
-    homeAccountId?: string;
-    flagged: boolean;
-  };
-
-  if (!messageId) {
-    return NextResponse.json({ error: "messageId required" }, { status: 400 });
+  const parsed = starSchema.safeParse(await req.json());
+  if (!parsed.success) {
+    return NextResponse.json({ error: "Invalid request", details: parsed.error.flatten() }, { status: 400 });
   }
+  const { messageId, homeAccountId, flagged } = parsed.data;
 
   // Resolve account: use provided homeAccountId or fall back to default
   let accountId = homeAccountId;

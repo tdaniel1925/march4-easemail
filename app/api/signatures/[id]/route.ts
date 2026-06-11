@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
+import { updateSignatureSchema } from "@/lib/validation/schemas";
 
 type Params = { params: Promise<{ id: string }> };
 
@@ -15,17 +16,14 @@ export async function PUT(req: NextRequest, { params }: Params) {
   const sig = await prisma.signature.findFirst({ where: { id, userId: user.id } });
   if (!sig) return NextResponse.json({ error: "Not found" }, { status: 404 });
 
-  const { name, html, title, company, phone, defaultNew, defaultReplies, account, isDefault } = await req.json() as {
-    name?: string;
-    html?: string;
-    title?: string;
-    company?: string;
-    phone?: string;
-    defaultNew?: boolean;
-    defaultReplies?: boolean;
-    account?: string;
-    isDefault?: boolean;
-  };
+  const parsed = updateSignatureSchema.safeParse(await req.json().catch(() => null));
+  if (!parsed.success) {
+    return NextResponse.json(
+      { error: "Invalid request", details: parsed.error.flatten() },
+      { status: 400 }
+    );
+  }
+  const { name, html, title, company, phone, defaultNew, defaultReplies, account, isDefault } = parsed.data;
 
   if (isDefault) {
     await prisma.signature.updateMany({

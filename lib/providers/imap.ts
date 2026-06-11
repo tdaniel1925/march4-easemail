@@ -298,10 +298,24 @@ export class ImapProvider implements EmailProvider {
         const searchResult = await client.search(searchQuery, { uid: true });
         const uids = Array.isArray(searchResult) ? searchResult : [];
 
-        // Sort UIDs descending (newest first) and paginate
+        // Sort UIDs descending (newest first) and paginate.
+        // The cursor is the last-returned UID, encoded as "uid:<n>". UIDs are
+        // stable and monotonically assigned, so paging by "strictly less than
+        // the cursor UID" stays correct even when new mail arrives between
+        // pages (an index offset would duplicate or skip items). Legacy
+        // numeric-offset cursors (or anything unparseable) are treated as
+        // page 1 rather than crashing.
         const sortedUids = [...uids].sort((a, b) => b - a);
-        const startIdx = options?.cursor ? parseInt(options.cursor, 10) : 0;
-        const pageUids = sortedUids.slice(startIdx, startIdx + top);
+        let cursorUid: number | null = null;
+        if (options?.cursor?.startsWith("uid:")) {
+          const parsed = parseInt(options.cursor.slice(4), 10);
+          if (Number.isFinite(parsed)) cursorUid = parsed;
+        }
+        const remainingUids =
+          cursorUid !== null
+            ? sortedUids.filter((uid) => uid < (cursorUid as number))
+            : sortedUids;
+        const pageUids = remainingUids.slice(0, top);
 
         if (pageUids.length === 0) {
           return { emails: [] };
@@ -335,9 +349,10 @@ export class ImapProvider implements EmailProvider {
           }
         }
 
-        const nextIdx = startIdx + top;
         const nextCursor =
-          nextIdx < sortedUids.length ? String(nextIdx) : undefined;
+          remainingUids.length > pageUids.length
+            ? `uid:${pageUids[pageUids.length - 1]}`
+            : undefined;
 
         return { emails, nextCursor };
       } finally {

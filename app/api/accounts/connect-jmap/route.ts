@@ -4,6 +4,14 @@ import { prisma } from "@/lib/prisma";
 import { encryptCredential } from "@/lib/providers/crypto";
 import { createId } from "@paralleldrive/cuid2";
 import { validateSessionUrl } from "../_lib/validate-session-url";
+import { z } from "zod";
+
+const connectJmapSchema = z.object({
+  email: z.string().email("Invalid email address").max(320),
+  displayName: z.string().max(200).optional(),
+  token: z.string().min(1, "token is required").max(8192),
+  sessionUrl: z.string().url("Invalid URL").max(2048).default("https://api.fastmail.com/jmap/session"),
+});
 
 export async function POST(req: NextRequest) {
   const supabase = await createClient();
@@ -13,21 +21,14 @@ export async function POST(req: NextRequest) {
   if (!user)
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const body = await req.json();
-  const {
-    email,
-    displayName,
-    token,
-    sessionUrl = "https://api.fastmail.com/jmap/session",
-  } = body;
-
-  // Validate required fields
-  if (!email || !token) {
+  const parsed = connectJmapSchema.safeParse(await req.json().catch(() => null));
+  if (!parsed.success) {
     return NextResponse.json(
-      { error: "email and token are required" },
+      { error: "Invalid request", details: parsed.error.flatten() },
       { status: 400 }
     );
   }
+  const { email, displayName, token, sessionUrl } = parsed.data;
 
   // SSRF guard — sessionUrl is user-supplied and fetched server-side
   const urlCheck = await validateSessionUrl(sessionUrl);

@@ -3,6 +3,12 @@ import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { graphGet } from "@/lib/microsoft/graph";
 import { verifyAccountOwnership, detectProviderType } from "@/lib/providers/registry";
+import { z } from "zod";
+
+const listQuerySchema = z.object({
+  homeAccountId: z.string().min(1, "homeAccountId required").max(512),
+  cursor: z.string().max(4096).optional(),
+});
 
 interface GraphContact {
   id: string;
@@ -26,16 +32,23 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const homeAccountId = req.nextUrl.searchParams.get("homeAccountId");
-  if (!homeAccountId) {
-    return NextResponse.json({ error: "homeAccountId required" }, { status: 400 });
+  const parsedQuery = listQuerySchema.safeParse({
+    homeAccountId: req.nextUrl.searchParams.get("homeAccountId") ?? undefined,
+    cursor: req.nextUrl.searchParams.get("cursor") ?? undefined,
+  });
+  if (!parsedQuery.success) {
+    return NextResponse.json(
+      { error: "Invalid request", details: parsedQuery.error.flatten() },
+      { status: 400 }
+    );
   }
+  const { homeAccountId, cursor: cursorParam } = parsedQuery.data;
 
   const account = await verifyAccountOwnership(user.id, homeAccountId);
   if (!account) return NextResponse.json({ error: "Account not found" }, { status: 404 });
 
   // ── Fetch org directory contacts (first page only) ──────────────────────────
-  const cursor = req.nextUrl.searchParams.get("cursor");
+  const cursor = cursorParam ?? null;
   let orgContacts: { id: string; displayName: string; email: string; phone: string; jobTitle: string; company: string; initials: string; isVIP: boolean; frequencyScore: number; isOrgContact?: boolean }[] = [];
   if (!cursor) {
     try {

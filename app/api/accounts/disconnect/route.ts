@@ -4,15 +4,25 @@ import { prisma } from "@/lib/prisma";
 import { createMsalClient } from "@/lib/microsoft/msal";
 import { graphFetch } from "@/lib/microsoft/graph";
 import { detectProviderType } from "@/lib/providers/registry";
+import { z } from "zod";
+
+const disconnectSchema = z.object({
+  homeAccountId: z.string().min(1, "homeAccountId required").max(512),
+});
 
 export async function POST(req: NextRequest) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const body = await req.json() as { homeAccountId?: unknown };
-  const homeAccountId = typeof body.homeAccountId === "string" ? body.homeAccountId : "";
-  if (!homeAccountId) return NextResponse.json({ error: "homeAccountId required" }, { status: 400 });
+  const parsed = disconnectSchema.safeParse(await req.json().catch(() => null));
+  if (!parsed.success) {
+    return NextResponse.json(
+      { error: "Invalid request", details: parsed.error.flatten() },
+      { status: 400 }
+    );
+  }
+  const { homeAccountId } = parsed.data;
 
   const providerType = detectProviderType(homeAccountId);
 

@@ -3,18 +3,29 @@ import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { encryptCredential } from "@/lib/providers/crypto";
 import { validateSessionUrl } from "../_lib/validate-session-url";
+import { z } from "zod";
+
+const updateAccountSchema = z.object({
+  homeAccountId: z.string().min(1, "homeAccountId is required").max(512),
+  displayName: z.string().max(200).optional(),
+  token: z.string().min(1).max(8192).optional(),
+  password: z.string().min(1).max(1024).optional(),
+  sessionUrl: z.string().url("Invalid URL").max(2048).optional(),
+});
 
 export async function POST(req: NextRequest) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const body = await req.json();
-  const { homeAccountId, displayName, token, password, sessionUrl } = body;
-
-  if (!homeAccountId) {
-    return NextResponse.json({ error: "homeAccountId is required" }, { status: 400 });
+  const parsed = updateAccountSchema.safeParse(await req.json().catch(() => null));
+  if (!parsed.success) {
+    return NextResponse.json(
+      { error: "Invalid request", details: parsed.error.flatten() },
+      { status: 400 }
+    );
   }
+  const { homeAccountId, displayName, token, password, sessionUrl } = parsed.data;
 
   // ── JMAP account update ────────────────────────────────────────────────────
   if (homeAccountId.startsWith("jmap:")) {

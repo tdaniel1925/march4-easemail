@@ -5,6 +5,19 @@ import { encryptCredential } from "@/lib/providers/crypto";
 import { ImapFlow } from "imapflow";
 import * as nodemailer from "nodemailer";
 import { createId } from "@paralleldrive/cuid2";
+import { z } from "zod";
+
+const connectImapSchema = z.object({
+  email: z.string().email("Invalid email address").max(320),
+  displayName: z.string().max(200).optional(),
+  password: z.string().min(1, "password is required").max(1024),
+  imapHost: z.string().min(1, "imapHost is required").max(255),
+  imapPort: z.number().int().min(1).max(65535).default(993),
+  imapSecurity: z.enum(["tls", "starttls", "none"]).default("tls"),
+  smtpHost: z.string().min(1, "smtpHost is required").max(255),
+  smtpPort: z.number().int().min(1).max(65535).default(587),
+  smtpSecurity: z.enum(["tls", "starttls", "none"]).default("starttls"),
+});
 
 export async function POST(req: NextRequest) {
   const supabase = await createClient();
@@ -14,26 +27,24 @@ export async function POST(req: NextRequest) {
   if (!user)
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const body = await req.json();
+  const parsed = connectImapSchema.safeParse(await req.json().catch(() => null));
+  if (!parsed.success) {
+    return NextResponse.json(
+      { error: "Invalid request", details: parsed.error.flatten() },
+      { status: 400 }
+    );
+  }
   const {
     email,
     displayName,
     password,
     imapHost,
-    imapPort = 993,
-    imapSecurity = "tls",
+    imapPort,
+    imapSecurity,
     smtpHost,
-    smtpPort = 587,
-    smtpSecurity = "starttls",
-  } = body;
-
-  // Validate required fields
-  if (!email || !password || !imapHost || !smtpHost) {
-    return NextResponse.json(
-      { error: "email, password, imapHost, and smtpHost are required" },
-      { status: 400 }
-    );
-  }
+    smtpPort,
+    smtpSecurity,
+  } = parsed.data;
 
   // Check for duplicate email
   const existing = await prisma.imapConnectedAccount.findFirst({

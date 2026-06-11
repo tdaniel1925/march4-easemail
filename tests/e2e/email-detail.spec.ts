@@ -54,7 +54,7 @@ async function navigateToFirstEmail(page: Page): Promise<boolean> {
 /**
  * Go directly to the email detail page if already on it, or navigate there.
  */
-async function ensureOnEmailDetail(page: Page): Promise<boolean> {
+async function _ensureOnEmailDetail(page: Page): Promise<boolean> {
   if (page.url().match(/\/inbox\/.+/)) return true;
   return navigateToFirstEmail(page);
 }

@@ -1,7 +1,14 @@
 import { type NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import { graphGet } from "@/lib/microsoft/graph";
 import { verifyAccountOwnership, detectProviderType } from "@/lib/providers/registry";
+
+const attachmentRequestSchema = z.object({
+  messageId: z.string().min(1).max(512),
+  attachmentId: z.string().min(1).max(512),
+  homeAccountId: z.string().min(1).max(512),
+});
 
 interface GraphAttachment {
   name: string;
@@ -18,9 +25,16 @@ export async function GET(
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { messageId, attachmentId } = await params;
-  const homeAccountId = req.nextUrl.searchParams.get("homeAccountId");
-  if (!homeAccountId) return NextResponse.json({ error: "homeAccountId required" }, { status: 400 });
+  const rawParams = await params;
+  const parsed = attachmentRequestSchema.safeParse({
+    messageId: rawParams.messageId,
+    attachmentId: rawParams.attachmentId,
+    homeAccountId: req.nextUrl.searchParams.get("homeAccountId") ?? undefined,
+  });
+  if (!parsed.success) {
+    return NextResponse.json({ error: "Invalid request", details: parsed.error.flatten() }, { status: 400 });
+  }
+  const { messageId, attachmentId, homeAccountId } = parsed.data;
 
   const account = await verifyAccountOwnership(user.id, homeAccountId);
   if (!account) return NextResponse.json({ error: "Account not found" }, { status: 404 });
@@ -48,7 +62,7 @@ export async function GET(
       const session = await sessionRes.json() as { downloadUrl: string };
 
       // JMAP download URL template: https://api.fastmail.com/jmap/download/{accountId}/{blobId}/{name}?type={type}
-      const jmapEmailId = messageId.replace(`${homeAccountId}:`, "");
+      const _jmapEmailId = messageId.replace(`${homeAccountId}:`, "");
       const blobId = attachmentId; // attachmentId is the blobId for JMAP
       const downloadUrl = session.downloadUrl
         .replace("{accountId}", jmapAccount.jmapAccountId)

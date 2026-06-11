@@ -4,6 +4,9 @@ import { prisma } from "@/lib/prisma";
 import { graphGet } from "@/lib/microsoft/graph";
 import { TEAMS_SCOPES } from "@/lib/microsoft/msal";
 import { isReauthError } from "@/lib/microsoft/auth-errors";
+import { z } from "zod";
+
+const idSchema = z.string().min(1).max(512);
 
 interface GraphChannelMessage {
   id: string;
@@ -37,8 +40,18 @@ export async function GET(
   if (!account) return NextResponse.json({ error: "No MS account" }, { status: 400 });
 
   const { id: channelId } = await params;
+  if (!idSchema.safeParse(channelId).success) {
+    return NextResponse.json({ error: "Invalid channel ID" }, { status: 400 });
+  }
   const teamId = req.nextUrl.searchParams.get("teamId");
-  const homeAccountId = req.nextUrl.searchParams.get("homeAccountId") ?? account.homeAccountId;
+  if (teamId !== null && !idSchema.safeParse(teamId).success) {
+    return NextResponse.json({ error: "Invalid teamId" }, { status: 400 });
+  }
+  const rawHomeAccountId = req.nextUrl.searchParams.get("homeAccountId");
+  if (rawHomeAccountId !== null && !idSchema.safeParse(rawHomeAccountId).success) {
+    return NextResponse.json({ error: "Invalid homeAccountId" }, { status: 400 });
+  }
+  const homeAccountId = rawHomeAccountId ?? account.homeAccountId;
 
   const { verifyAccountOwnership } = await import("@/lib/providers/registry");
   const verifiedAccount = await verifyAccountOwnership(user.id, homeAccountId);

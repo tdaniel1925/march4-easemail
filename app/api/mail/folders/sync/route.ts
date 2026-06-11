@@ -1,8 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import { syncFolders } from "@/lib/sync/folder-sync";
 import { isReauthError } from "@/lib/microsoft/auth-errors";
 import { getProvider, verifyAccountOwnership } from "@/lib/providers/registry";
+
+const folderSyncSchema = z.object({
+  homeAccountId: z.string().min(1).max(512),
+});
 
 /**
  * POST /api/mail/folders/sync
@@ -24,10 +29,11 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized", errorCode: "reauth_required" }, { status: 401 });
   }
 
-  const { homeAccountId } = await req.json() as { homeAccountId?: string };
-  if (!homeAccountId) {
-    return NextResponse.json({ error: "homeAccountId required", errorCode: "server_error" }, { status: 400 });
+  const parsed = folderSyncSchema.safeParse(await req.json());
+  if (!parsed.success) {
+    return NextResponse.json({ error: "Invalid request", details: parsed.error.flatten() }, { status: 400 });
   }
+  const { homeAccountId } = parsed.data;
 
   // Verify the homeAccountId belongs to this authenticated user (prevents IDOR)
   const account = await verifyAccountOwnership(user.id, homeAccountId);

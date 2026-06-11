@@ -48,7 +48,9 @@ test.describe("Inbox", () => {
     await goToInbox(page);
     for (const label of ["Inbox", "Starred", "Sent", "Drafts", "Trash"]) {
       await expect(
-        page.getByRole("button", { name: new RegExp(label, "i") })
+        page
+          .getByRole("navigation")
+          .getByRole("button", { name: new RegExp(`^${label}`, "i") })
       ).toBeVisible();
     }
   });
@@ -56,7 +58,9 @@ test.describe("Inbox", () => {
   // 3
   test("3. Sidebar inbox button shows unread count", async ({ page }) => {
     await goToInbox(page);
-    const inboxBtn = page.getByRole("button", { name: /Inbox/i });
+    const inboxBtn = page
+      .getByRole("navigation")
+      .getByRole("button", { name: /^Inbox/i });
     await expect(inboxBtn).toBeVisible();
     // The button text includes the unread count appended (e.g. "Inbox48")
     const text = await inboxBtn.textContent();
@@ -86,8 +90,10 @@ test.describe("Inbox", () => {
   }) => {
     await goToInbox(page);
     for (const tab of ["All", "Unread", "Starred", "Attachments"]) {
+      // .last() — the sidebar can contain a button with the same accessible
+      // name (e.g. Starred); the tab bar renders after it in DOM order.
       await expect(
-        page.getByRole("button", { name: new RegExp(`^${tab}$`, "i") })
+        page.getByRole("button", { name: new RegExp(`^${tab}$`, "i") }).last()
       ).toBeVisible();
     }
   });
@@ -106,7 +112,9 @@ test.describe("Inbox", () => {
   // 7
   test("7. Clicking Starred tab changes view", async ({ page }) => {
     await goToInbox(page);
-    const starredTab = page.getByRole("button", { name: /^Starred$/i });
+    const starredTab = page
+      .getByRole("button", { name: /^Starred$/i })
+      .last();
     await starredTab.click();
     await page.waitForTimeout(1000);
     await expect(starredTab).toBeVisible();

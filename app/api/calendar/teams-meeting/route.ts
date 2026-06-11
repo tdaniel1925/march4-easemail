@@ -4,6 +4,7 @@ import { graphPost } from "@/lib/microsoft/graph";
 import { TEAMS_SCOPES } from "@/lib/microsoft/msal";
 import { isReauthError } from "@/lib/microsoft/auth-errors";
 import { verifyAccountOwnership, getAllAccounts } from "@/lib/providers/registry";
+import { createTeamsMeetingSchema } from "@/lib/validation/schemas";
 
 interface GraphOnlineMeeting {
   id: string;
@@ -19,15 +20,16 @@ export async function POST(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { subject, startDateTime, endDateTime, homeAccountId } = await req.json() as {
-    subject: string;
-    startDateTime: string;
-    endDateTime: string;
-    homeAccountId?: string;
-  };
+  const parsed = createTeamsMeetingSchema.safeParse(await req.json().catch(() => null));
+  if (!parsed.success) {
+    return NextResponse.json(
+      { error: "Invalid request", details: parsed.error.flatten() },
+      { status: 400 }
+    );
+  }
+  const { subject, startDateTime, endDateTime, homeAccountId } = parsed.data;
 
-  if (!subject?.trim()) return NextResponse.json({ error: "subject required" }, { status: 400 });
-  if (!startDateTime || !endDateTime) return NextResponse.json({ error: "startDateTime and endDateTime required" }, { status: 400 });
+  if (!subject.trim()) return NextResponse.json({ error: "subject required" }, { status: 400 });
 
   // Resolve account: use provided homeAccountId or fall back to default
   let accountId = homeAccountId;

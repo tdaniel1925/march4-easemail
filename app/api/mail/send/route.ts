@@ -5,12 +5,34 @@ import { graphFetch } from "@/lib/microsoft/graph";
 import { withRateLimit, rateLimiters } from "@/lib/rate-limit";
 import { verifyAccountOwnership, detectProviderType, getProvider } from "@/lib/providers/registry";
 import type { SendEmailParams } from "@/lib/providers/types";
+import { z } from "zod";
 
-interface Attachment {
-  name: string;
-  contentType: string;
-  data: string; // base64
-}
+const recipientSchema = z.object({
+  emailAddress: z.object({
+    address: z.string().email().max(320),
+    name: z.string().max(320).optional(),
+  }),
+});
+
+const sendSchema = z.object({
+  to: z.array(recipientSchema).min(1).max(500),
+  cc: z.array(recipientSchema).max(500).optional(),
+  bcc: z.array(recipientSchema).max(500).optional(),
+  subject: z.string().max(998).refine((s) => s.trim().length > 0, "Subject required"),
+  body: z.object({
+    contentType: z.string().max(50).optional(),
+    content: z.string().min(1).max(200000),
+  }),
+  attachments: z.array(z.object({
+    name: z.string().max(255),
+    contentType: z.string().max(255).optional(),
+    data: z.string().max(35_000_000), // base64; ~25MB binary (per-attachment size check below)
+  })).max(25).optional(),
+  fromHomeAccountId: z.string().min(1).max(512).optional(),
+  draftId: z.string().min(1).max(512).optional(),
+  importance: z.enum(["normal", "high"]).optional(),
+  isReadReceiptRequested: z.boolean().optional(),
+});
 
 async function sendEmailHandler(req: NextRequest) {
   const supabase = await createClient();
@@ -24,6 +46,10 @@ async function sendEmailHandler(req: NextRequest) {
     return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
   }
 
+  const parsed = sendSchema.safeParse(requestBody);
+  if (!parsed.success) {
+    return NextResponse.json({ error: "Invalid request", details: parsed.error.flatten() }, { status: 400 });
+  }
   const {
     to,
     cc,
@@ -35,29 +61,7 @@ async function sendEmailHandler(req: NextRequest) {
     draftId,
     importance,
     isReadReceiptRequested,
-  } = requestBody as {
-    to: { emailAddress: { address: string } }[];
-    cc?: { emailAddress: { address: string } }[];
-    bcc?: { emailAddress: { address: string } }[];
-    subject: string;
-    body: { contentType: string; content: string };
-    attachments?: Attachment[];
-    fromHomeAccountId?: string;
-    draftId?: string;
-    importance?: "normal" | "high";
-    isReadReceiptRequested?: boolean;
-  };
-
-  // Input validation
-  if (!to?.length) {
-    return NextResponse.json({ error: "At least one recipient required" }, { status: 400 });
-  }
-  if (!subject?.trim()) {
-    return NextResponse.json({ error: "Subject required" }, { status: 400 });
-  }
-  if (!body?.content) {
-    return NextResponse.json({ error: "Email body required" }, { status: 400 });
-  }
+  } = parsed.data;
 
   // Validate attachments size
   if (attachments && attachments.length > 0) {

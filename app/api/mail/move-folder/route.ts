@@ -1,6 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import { verifyAccountOwnership, getProvider } from "@/lib/providers/registry";
+
+const moveFolderSchema = z.object({
+  messageId: z.string().min(1).max(512),
+  folderId: z.string().min(1).max(512),
+  homeAccountId: z.string().min(1).max(512).optional(),
+});
 
 /**
  * POST /api/mail/move-folder
@@ -11,18 +18,11 @@ export async function POST(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { messageId, folderId, homeAccountId } = await req.json() as {
-    messageId: string;
-    folderId: string;
-    homeAccountId?: string;
-  };
-
-  if (!messageId || !folderId) {
-    return NextResponse.json(
-      { error: "messageId and folderId required" },
-      { status: 400 }
-    );
+  const parsed = moveFolderSchema.safeParse(await req.json());
+  if (!parsed.success) {
+    return NextResponse.json({ error: "Invalid request", details: parsed.error.flatten() }, { status: 400 });
   }
+  const { messageId, folderId, homeAccountId } = parsed.data;
 
   // Resolve account: use provided homeAccountId or fall back to default
   let accountId = homeAccountId;

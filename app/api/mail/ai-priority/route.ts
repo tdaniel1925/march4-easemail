@@ -3,14 +3,19 @@ import { createClient } from "@/lib/supabase/server";
 import Anthropic from "@anthropic-ai/sdk";
 import { withRateLimit, rateLimiters } from "@/lib/rate-limit";
 
+import { z } from "zod";
+
 const client = new Anthropic();
 
-interface EmailInput {
-  id: string;
-  subject: string;
-  from: string;
-  bodyPreview: string;
-}
+const aiPrioritySchema = z.object({
+  // Handler caps at 20 via slice; allow more in but bound the array
+  emails: z.array(z.object({
+    id: z.string().min(1).max(512),
+    subject: z.string().max(998),
+    from: z.string().max(500),
+    bodyPreview: z.string().max(5000),
+  })).min(1).max(500),
+});
 
 interface PriorityScore {
   id: string;
@@ -24,12 +29,12 @@ async function aiPriorityHandler(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const body = await req.json().catch(() => null) as { emails?: EmailInput[] } | null;
-  if (!body?.emails?.length) {
-    return NextResponse.json({ error: "emails array required" }, { status: 400 });
+  const parsed = aiPrioritySchema.safeParse(await req.json().catch(() => null));
+  if (!parsed.success) {
+    return NextResponse.json({ error: "Invalid request", details: parsed.error.flatten() }, { status: 400 });
   }
 
-  const emails = body.emails.slice(0, 20); // cap at 20
+  const emails = parsed.data.emails.slice(0, 20); // cap at 20
 
   const systemPrompt = `You are an email priority classifier for a business professional.
 Score each email. Return ONLY a JSON array, no other text:

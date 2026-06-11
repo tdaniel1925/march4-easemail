@@ -2,6 +2,15 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { isAdminEmail } from "@/lib/admin";
+import { z } from "zod";
+
+const adminUpdateSignatureSchema = z.object({
+  name: z.string().min(1).max(100).optional(),
+  title: z.string().max(100).optional(),
+  company: z.string().max(100).optional(),
+  phone: z.string().max(50).optional(),
+  isDefault: z.boolean().optional(),
+});
 
 async function requireAdmin() {
   const supabase = await createClient();
@@ -21,13 +30,14 @@ export async function PATCH(
   if (!admin) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
   const { id } = await params;
-  const { name, title, company, phone, isDefault } = await req.json() as {
-    name?: string;
-    title?: string;
-    company?: string;
-    phone?: string;
-    isDefault?: boolean;
-  };
+  const parsed = adminUpdateSignatureSchema.safeParse(await req.json().catch(() => null));
+  if (!parsed.success) {
+    return NextResponse.json(
+      { error: "Invalid request", details: parsed.error.flatten() },
+      { status: 400 }
+    );
+  }
+  const { name, title, company, phone, isDefault } = parsed.data;
 
   const existing = await prisma.signature.findUnique({ where: { id } });
   if (!existing) return NextResponse.json({ error: "Not found" }, { status: 404 });

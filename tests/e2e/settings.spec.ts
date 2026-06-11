@@ -22,10 +22,14 @@ const SETTINGS_URL = "/settings";
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
+// The redesigned /settings page has no h1 "Settings" — it renders a settings
+// nav (Profile / Notifications / Composing / Appearance / Privacy / Sign Out)
+// with the Profile section (h2 "Profile") shown by default.
 async function goToSettings(page: Page) {
   await page.goto(SETTINGS_URL);
   await expect(page).not.toHaveURL(/login/, { timeout: 8000 });
-  await expect(page.locator("h1", { hasText: "Settings" })).toBeVisible({ timeout: 8000 });
+  await expect(page).toHaveURL(/\/settings/, { timeout: 8000 });
+  await expect(page.locator("h2", { hasText: "Profile" }).first()).toBeVisible({ timeout: 8000 });
 }
 
 // ─── Test 1: Page loads ──────────────────────────────────────────────────────
@@ -33,16 +37,18 @@ async function goToSettings(page: Page) {
 test("1. Settings page loads with heading", async ({ page }) => {
   await goToSettings(page);
 
-  await expect(page.locator("h1", { hasText: "Settings" })).toBeVisible();
+  // Default section heading + settings nav label
+  await expect(page.locator("h2", { hasText: "Profile" }).first()).toBeVisible();
+  await expect(page.locator("text=Settings").first()).toBeVisible();
 });
 
 test("1b. Settings page shows navigation tabs or sections", async ({ page }) => {
   await goToSettings(page);
 
   // Look for common settings sections
-  const hasProfile = await page.locator("text=/Profile|Account/i").isVisible();
-  const hasNotifications = await page.locator("text=Notifications").isVisible();
-  const hasAppearance = await page.locator("text=Appearance").isVisible();
+  const hasProfile = await page.locator("text=/Profile|Account/i").first().isVisible();
+  const hasNotifications = await page.locator("text=Notifications").first().isVisible();
+  const hasAppearance = await page.locator("text=Appearance").first().isVisible();
 
   expect(hasProfile || hasNotifications || hasAppearance).toBeTruthy();
 });
@@ -53,11 +59,11 @@ test("2. Profile section shows user information", async ({ page }) => {
   await goToSettings(page);
 
   // Look for profile section
-  const profileSection = page.locator("text=/Profile|Account Info/i");
+  const profileSection = page.locator("text=/Profile|Account Info/i").first();
 
   if (await profileSection.isVisible()) {
     // Should show email or name
-    const hasEmail = await page.locator("text=/@/").isVisible();
+    const hasEmail = await page.locator("text=/@/").first().isVisible();
     expect(hasEmail).toBeTruthy();
   }
 });
@@ -76,7 +82,7 @@ test("2c. Profile section shows user avatar or initials", async ({ page }) => {
   await goToSettings(page);
 
   // Look for avatar image or initials circle
-  const hasAvatar = await page.locator("img[alt*='avatar'], img[alt*='profile']").isVisible()
+  const _hasAvatar = await page.locator("img[alt*='avatar'], img[alt*='profile']").isVisible()
     || await page.locator("[data-testid='avatar'], .avatar").isVisible();
 
   // Avatar may or may not be present
@@ -113,8 +119,8 @@ test("3b. Notifications preferences include common options", async ({ page }) =>
   }
 
   // Look for common notification options
-  const hasEmailNotif = await page.locator("text=/Email notifications|New email/i").isVisible();
-  const hasSoundNotif = await page.locator("text=/Sound|Audio/i").isVisible();
+  const hasEmailNotif = await page.locator("text=/Email notifications|New email/i").first().isVisible();
+  const hasSoundNotif = await page.locator("text=/Sound|Audio/i").first().isVisible();
 
   // At least one notification option should be present
   expect(hasEmailNotif || hasSoundNotif || true).toBeTruthy();
@@ -158,7 +164,7 @@ test("4. Appearance section shows theme options", async ({ page }) => {
   }
 
   // Look for theme options (light/dark/system)
-  const hasTheme = await page.locator("text=/Theme|Dark mode|Light mode/i").isVisible();
+  const hasTheme = await page.locator("text=/Theme|Dark mode|Light mode/i").first().isVisible();
 
   expect(hasTheme || true).toBeTruthy();
 });
@@ -173,7 +179,7 @@ test("4b. Appearance section has font size options", async ({ page }) => {
   }
 
   // Look for font size or display density options
-  const hasFontSize = await page.locator("text=/Font size|Text size|Display density/i").isVisible();
+  const _hasFontSize = await page.locator("text=/Font size|Text size|Display density/i").first().isVisible();
 
   // Font size may not be implemented
   expect(page).toBeTruthy();
@@ -192,12 +198,12 @@ test("4c. Theme toggle works", async ({ page }) => {
   const lightBtn = page.locator("button", { hasText: /Light/i });
   const darkBtn = page.locator("button", { hasText: /Dark/i });
 
-  if (await lightBtn.isVisible() && await darkBtn.isVisible()) {
-    await darkBtn.click();
+  if (await lightBtn.first().isVisible() && await darkBtn.first().isVisible()) {
+    await darkBtn.first().click();
     await page.waitForTimeout(500);
 
     // Just verify no crash
-    await expect(page.locator("h1", { hasText: "Settings" })).toBeVisible();
+    await expect(page).toHaveURL(/\/settings/);
   }
 });
 
@@ -214,7 +220,7 @@ test("5. Privacy section shows privacy options", async ({ page }) => {
   }
 
   // Look for privacy-related options
-  const hasPrivacyOptions = await page.locator("text=/Read receipts|Privacy|Data/i").isVisible();
+  const hasPrivacyOptions = await page.locator("text=/Read receipts|Privacy|Data/i").first().isVisible();
 
   expect(hasPrivacyOptions || true).toBeTruthy();
 });
@@ -236,7 +242,7 @@ test("5b. Privacy toggles are interactive", async ({ page }) => {
     await page.waitForTimeout(500);
 
     // Just verify interaction works
-    await expect(page.locator("h1", { hasText: "Settings" })).toBeVisible();
+    await expect(page).toHaveURL(/\/settings/);
   }
 });
 
@@ -246,7 +252,7 @@ test("6. Signatures section accessible from settings", async ({ page }) => {
   await goToSettings(page);
 
   // Look for Signatures link or section
-  const signaturesLink = page.locator("a, button").filter({ hasText: /Signatures/i });
+  const signaturesLink = page.locator("a, button").filter({ hasText: /Signatures/i }).first();
 
   if (await signaturesLink.isVisible()) {
     await signaturesLink.click();
@@ -260,7 +266,7 @@ test("6b. Settings mentions signature management", async ({ page }) => {
   await goToSettings(page);
 
   // Look for signature-related text
-  const hasSignatureInfo = await page.locator("text=/Signature|Email signature/i").isVisible();
+  const _hasSignatureInfo = await page.locator("text=/Signature|Email signature/i").first().isVisible();
 
   // Signature may be in separate page
   expect(page).toBeTruthy();
@@ -268,32 +274,37 @@ test("6b. Settings mentions signature management", async ({ page }) => {
 
 // ─── Test 7: Sign out ────────────────────────────────────────────────────────
 
+// Sign Out is an anchor to /api/auth/signout (which revokes the Supabase
+// session server-side). We must NOT actually trigger it in E2E — it would
+// invalidate the shared storageState session for every subsequent test.
 test("7. Sign Out button is visible", async ({ page }) => {
   await goToSettings(page);
 
-  const signOutBtn = page.locator("button", { hasText: /Sign Out|Log Out/i });
+  const signOutBtn = page.locator("a, button").filter({ hasText: /Sign Out|Log Out/i }).first();
   await expect(signOutBtn).toBeVisible({ timeout: 5000 });
 });
 
 test("7b. Sign Out button is styled as destructive action", async ({ page }) => {
   await goToSettings(page);
 
-  const signOutBtn = page.locator("button", { hasText: /Sign Out|Log Out/i });
+  const signOutBtn = page.locator("a, button").filter({ hasText: /Sign Out|Log Out/i }).first();
 
-  // Button should have red or warning styling
-  const btnClasses = await signOutBtn.getAttribute("class");
-
-  // Just verify button exists and is clickable
+  // Just verify the control exists and is interactive
+  await expect(signOutBtn).toBeVisible();
   await expect(signOutBtn).toBeEnabled();
 });
 
-test("7c. Clicking Sign Out redirects to login", async ({ page }) => {
+test("7c. Sign Out points to the signout endpoint (logout redirects to login)", async ({ page }) => {
   await goToSettings(page);
 
-  const signOutBtn = page.locator("button", { hasText: /Sign Out|Log Out/i });
-  await signOutBtn.click();
+  // Verify the sign-out link targets the signout API (which redirects to /login)
+  const signOutLink = page.locator("a[href='/api/auth/signout']").first();
+  await expect(signOutLink).toBeVisible({ timeout: 5000 });
 
-  // Should redirect to login page
+  // Simulate a signed-out client (without revoking the shared test session
+  // server-side): clear cookies and verify protected routes bounce to login.
+  await page.context().clearCookies();
+  await page.goto("/settings");
   await expect(page).toHaveURL(/login/, { timeout: 8000 });
 });
 
@@ -303,7 +314,7 @@ test("8. Settings have save button when changes made", async ({ page }) => {
   await goToSettings(page);
 
   // Look for Save or Update button
-  const saveBtn = page.locator("button", { hasText: /Save|Update|Apply/i });
+  const saveBtn = page.locator("button", { hasText: /Save|Update|Apply/i }).first();
 
   if (await saveBtn.isVisible()) {
     await expect(saveBtn).toBeEnabled();
@@ -313,15 +324,15 @@ test("8. Settings have save button when changes made", async ({ page }) => {
 test("8b. Changing a setting enables save button", async ({ page }) => {
   await goToSettings(page);
 
-  // Find any input or toggle
-  const input = page.locator("input[type='text']").first();
+  // Find any editable input (profile fields are read-only in the redesign)
+  const input = page.locator("input[type='text']:not([readonly])").first();
 
-  if (await input.isVisible()) {
+  if (await input.isVisible() && await input.isEditable()) {
     const originalValue = await input.inputValue();
     await input.fill(originalValue + " test");
 
     // Look for save button
-    const saveBtn = page.locator("button", { hasText: /Save|Update/i });
+    const saveBtn = page.locator("button", { hasText: /Save|Update/i }).first();
 
     if (await saveBtn.isVisible()) {
       await expect(saveBtn).toBeEnabled();
@@ -335,7 +346,7 @@ test("9. Settings show connected email account", async ({ page }) => {
   await goToSettings(page);
 
   // Should show user's email address
-  const hasEmail = await page.locator("text=/@/").isVisible();
+  const hasEmail = await page.locator("text=/@/").first().isVisible();
   expect(hasEmail).toBeTruthy();
 });
 
@@ -343,7 +354,7 @@ test("9b. Settings show account type or plan", async ({ page }) => {
   await goToSettings(page);
 
   // May show account type (free, premium, etc.)
-  const hasPlanInfo = await page.locator("text=/Plan|Account type|Subscription/i").isVisible();
+  const _hasPlanInfo = await page.locator("text=/Plan|Account type|Subscription/i").first().isVisible();
 
   // Plan info is optional
   expect(page).toBeTruthy();
@@ -354,22 +365,25 @@ test("9b. Settings show account type or plan", async ({ page }) => {
 test("10. Settings accessible from sidebar or user menu", async ({ page }) => {
   await page.goto("/inbox");
 
-  // Look for settings link in sidebar or user dropdown
-  const settingsLink = page.locator("a, button").filter({ hasText: /Settings/i });
+  // Sidebar exposes settings as an icon-only button with title="Settings"
+  const settingsLink = page
+    .locator("button[title='Settings'], a[href='/settings'], a:has-text('Settings'), button:has-text('Settings')")
+    .first();
   await settingsLink.click();
 
   await expect(page).toHaveURL(/settings/, { timeout: 5000 });
-  await expect(page.locator("h1", { hasText: "Settings" })).toBeVisible();
+  await expect(page.locator("h2", { hasText: "Profile" }).first()).toBeVisible({ timeout: 8000 });
 });
 
 test("10b. Can navigate back to inbox from settings", async ({ page }) => {
   await goToSettings(page);
 
-  const inboxLink = page.locator("a").filter({ hasText: /^Inbox$/i });
+  const inboxLink = page.locator("a[href='/inbox']:visible, a:visible:has-text('Inbox')").first();
   await inboxLink.click();
 
   await expect(page).toHaveURL(/inbox/, { timeout: 5000 });
-  await expect(page.locator("h1", { hasText: "Inbox" })).toBeVisible();
+  // Inbox heading is an h2 ("Inbox" with optional unread-count suffix)
+  await expect(page.locator("h2", { hasText: "Inbox" }).first()).toBeVisible({ timeout: 8000 });
 });
 
 // ─── Test 11: Responsive design ──────────────────────────────────────────────
@@ -400,16 +414,17 @@ test("11b. Settings sections are clearly separated", async ({ page }) => {
 test("12. Email field validates email format", async ({ page }) => {
   await goToSettings(page);
 
-  const emailInput = page.locator("input[type='email']").first();
+  // Profile email is read-only in the redesign — only validate editable fields
+  const emailInput = page.locator("input[type='email']:not([readonly])").first();
 
-  if (await emailInput.isVisible()) {
+  if (await emailInput.isVisible() && await emailInput.isEditable()) {
     // Try invalid email
     await emailInput.clear();
     await emailInput.fill("invalid-email");
     await emailInput.blur();
 
     // Look for validation error
-    const hasError = await page.locator("text=/invalid email|valid email/i").isVisible();
+    const _hasError = await page.locator("text=/invalid email|valid email/i").first().isVisible();
 
     // Validation may be client-side or server-side
     expect(emailInput).toBeTruthy();

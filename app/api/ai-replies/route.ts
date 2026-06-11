@@ -1,6 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
+
+const createAiReplySchema = z.object({
+  messageId: z.string().min(1).max(512),
+  generatedBody: z.string().min(1).max(200000),
+});
+
+const getAiReplyQuerySchema = z.object({
+  messageId: z.string().min(1).max(512),
+});
 
 /**
  * POST /api/ai-replies
@@ -12,17 +22,11 @@ export async function POST(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { messageId, generatedBody } = await req.json() as {
-    messageId: string;
-    generatedBody: string;
-  };
-
-  if (!messageId || !generatedBody) {
-    return NextResponse.json(
-      { error: "messageId and generatedBody required" },
-      { status: 400 }
-    );
+  const parsed = createAiReplySchema.safeParse(await req.json());
+  if (!parsed.success) {
+    return NextResponse.json({ error: "Invalid request", details: parsed.error.flatten() }, { status: 400 });
   }
+  const { messageId, generatedBody } = parsed.data;
 
   try {
     // Delete any existing AI reply for this message (replace old one)
@@ -63,10 +67,13 @@ export async function GET(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const messageId = req.nextUrl.searchParams.get("messageId");
-  if (!messageId) {
-    return NextResponse.json({ error: "messageId required" }, { status: 400 });
+  const parsed = getAiReplyQuerySchema.safeParse({
+    messageId: req.nextUrl.searchParams.get("messageId") ?? undefined,
+  });
+  if (!parsed.success) {
+    return NextResponse.json({ error: "Invalid request", details: parsed.error.flatten() }, { status: 400 });
   }
+  const { messageId } = parsed.data;
 
   try {
     const reply = await prisma.aiGeneratedReply.findFirst({

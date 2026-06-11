@@ -4,6 +4,9 @@ import { prisma } from "@/lib/prisma";
 import { graphGet } from "@/lib/microsoft/graph";
 import { TEAMS_SCOPES } from "@/lib/microsoft/msal";
 import { isReauthError } from "@/lib/microsoft/auth-errors";
+import { z } from "zod";
+
+const idSchema = z.string().min(1).max(512);
 
 interface GraphPresence {
   id: string;
@@ -26,7 +29,14 @@ export async function GET(req: NextRequest) {
   if (!account) return NextResponse.json({ error: "No MS account" }, { status: 400 });
 
   const userId = req.nextUrl.searchParams.get("userId");
-  const homeAccountId = req.nextUrl.searchParams.get("homeAccountId") ?? account.homeAccountId;
+  if (userId !== null && !idSchema.safeParse(userId).success) {
+    return NextResponse.json({ error: "Invalid userId" }, { status: 400 });
+  }
+  const rawHomeAccountId = req.nextUrl.searchParams.get("homeAccountId");
+  if (rawHomeAccountId !== null && !idSchema.safeParse(rawHomeAccountId).success) {
+    return NextResponse.json({ error: "Invalid homeAccountId" }, { status: 400 });
+  }
+  const homeAccountId = rawHomeAccountId ?? account.homeAccountId;
 
   const { verifyAccountOwnership } = await import("@/lib/providers/registry");
   const verifiedAccount = await verifyAccountOwnership(user.id, homeAccountId);

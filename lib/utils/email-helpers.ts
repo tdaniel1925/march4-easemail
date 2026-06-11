@@ -99,7 +99,9 @@ export function mapNormalizedEmail(e: NormalizedEmail): EmailMessage {
 export function formatDate(iso: string): string {
   const d = new Date(iso);
   const now = new Date();
-  const diff = now.getTime() - d.getTime();
+  // Clamp at 0 so future-dated emails (sender clock skew) show "0m ago"
+  // instead of a negative duration like "-5m ago".
+  const diff = Math.max(0, now.getTime() - d.getTime());
   const mins = Math.floor(diff / 60000);
   const hours = Math.floor(diff / 3600000);
   const days = Math.floor(diff / 86400000);

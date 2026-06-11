@@ -1,7 +1,35 @@
 import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { withRateLimit, rateLimiters } from "@/lib/rate-limit";
+
+const recipientSchema = z.object({
+  emailAddress: z.object({
+    address: z.string().email().max(320),
+    name: z.string().max(320).optional(),
+  }),
+});
+
+const sendDelayedSchema = z.object({
+  to: z.array(recipientSchema).min(1).max(500),
+  cc: z.array(recipientSchema).max(500).optional(),
+  bcc: z.array(recipientSchema).max(500).optional(),
+  subject: z.string().max(998).refine((s) => s.trim().length > 0, "Subject required"),
+  body: z.object({
+    contentType: z.string().max(50).optional(),
+    content: z.string().min(1).max(200000),
+  }),
+  attachments: z.array(z.object({
+    name: z.string().max(255),
+    contentType: z.string().max(255).optional(),
+    data: z.string().max(35_000_000), // base64; ~25MB binary (size checks below)
+  })).max(25).optional(),
+  fromHomeAccountId: z.string().min(1).max(512).optional(),
+  draftId: z.string().min(1).max(512).optional(),
+  importance: z.enum(["normal", "high"]).optional(),
+  isReadReceiptRequested: z.boolean().optional(),
+});
 
 // ─── POST /api/mail/send-delayed ─────────────────────────────────────────────
 // Stores email in PendingEmail table instead of sending immediately.
@@ -19,6 +47,10 @@ async function sendDelayedHandler(req: NextRequest) {
     return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
   }
 
+  const parsed = sendDelayedSchema.safeParse(requestBody);
+  if (!parsed.success) {
+    return NextResponse.json({ error: "Invalid request", details: parsed.error.flatten() }, { status: 400 });
+  }
   const {
     to,
     cc,
@@ -30,37 +62,12 @@ async function sendDelayedHandler(req: NextRequest) {
     draftId,
     importance,
     isReadReceiptRequested,
-  } = requestBody as {
-    to: { emailAddress: { address: string } }[];
-    cc?: { emailAddress: { address: string } }[];
-    bcc?: { emailAddress: { address: string } }[];
-    subject: string;
-    body: { contentType: string; content: string };
-    attachments?: { name: string; contentType: string; data: string }[];
-    fromHomeAccountId?: string;
-    draftId?: string;
-    importance?: "normal" | "high";
-    isReadReceiptRequested?: boolean;
-  };
+  } = parsed.data;
 
-  // Input validation
-  if (!to?.length) {
-    return NextResponse.json({ error: "At least one recipient required" }, { status: 400 });
-  }
-  if (!subject?.trim()) {
-    return NextResponse.json({ error: "Subject required" }, { status: 400 });
-  }
-  if (!body?.content) {
-    return NextResponse.json({ error: "Email body required" }, { status: 400 });
-  }
-
-  // Validate attachments size and shape (mirrors /api/mail/send)
+  // Validate attachments size (mirrors /api/mail/send; shape enforced by schema)
   if (attachments && attachments.length > 0) {
     let totalBytes = 0;
     for (const att of attachments) {
-      if (!att || typeof att.name !== "string" || typeof att.data !== "string") {
-        return NextResponse.json({ error: "Invalid attachment format" }, { status: 400 });
-      }
       const sizeBytes = Math.ceil(att.data.length * 0.75); // base64 to bytes approximation
       if (sizeBytes > 25 * 1024 * 1024) {
         return NextResponse.json(

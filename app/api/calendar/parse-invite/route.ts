@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import Anthropic from "@anthropic-ai/sdk";
 import { z } from "zod";
 import { withRateLimit, rateLimiters } from "@/lib/rate-limit";
+import { parseInviteSchema } from "@/lib/validation/schemas";
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
@@ -22,13 +23,14 @@ async function parseInviteHandler(req: NextRequest): Promise<NextResponse> {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { subject, fromAddress, body, bodyPreview, receivedDateTime } = await req.json() as {
-    subject: string;
-    fromAddress: string;
-    body: string;
-    bodyPreview: string;
-    receivedDateTime: string;
-  };
+  const parsedBody = parseInviteSchema.safeParse(await req.json().catch(() => null));
+  if (!parsedBody.success) {
+    return NextResponse.json(
+      { error: "Invalid request", details: parsedBody.error.flatten() },
+      { status: 400 }
+    );
+  }
+  const { subject, fromAddress, body, bodyPreview, receivedDateTime } = parsedBody.data;
 
   const emailContent = body?.trim() || bodyPreview?.trim() || "(no content)";
   const now = new Date(receivedDateTime || Date.now()).toISOString();

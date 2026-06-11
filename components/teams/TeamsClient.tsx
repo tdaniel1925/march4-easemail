@@ -170,7 +170,7 @@ interface TeamsClientProps {
   userEmail: string;
 }
 
-export default function TeamsClient({ userName, userEmail }: TeamsClientProps) {
+export default function TeamsClient({ userName }: TeamsClientProps) {
   const [tab, setTab] = useState<"chats" | "teams">("chats");
 
   // Chats state

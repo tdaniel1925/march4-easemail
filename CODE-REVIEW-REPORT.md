@@ -82,6 +82,10 @@ Severity legend: 🔴 CRITICAL (exploitable / data loss) · 🟠 HIGH (broken fe
 - `AttachmentsClient.tsx:586,841,900` — `revokeObjectURL` immediately after `click()` can abort downloads.
 - `.eslintrc.json` deprecated format; 821 eslint errors (mostly unused vars in tests).
 
+## 🔧 Environment finding (local dev)
+
+Every secret in `.env.local` ended with a literal `\r\n` escape sequence inside the quotes (paste artifact). dotenv expands `\n` in double-quoted values to a real newline, so the local server loaded corrupted Supabase keys — **local auth always failed with "Invalid API key" while production worked**. Fixed by cleaning the 10 affected values (backup at `.env.local.bak`). Tooling added: `tests/e2e/auth/mint-session.mjs` mints a fresh Playwright session for `TEST_USER_EMAIL` via the Supabase admin API — no interactive login needed.
+
 ## ✅ Verified clean
 
 Exact-pinned deps, 0 `.single()`, 0 raw SQL, no committed secrets, strict TS passes, cron routes require `CRON_SECRET`, deploy webhook uses HMAC + `timingSafeEqual`, crypto.ts (AES-256-GCM) sound, admin routes properly gated, ownership filters correct on rules/templates/signatures/todos/reminders/contacts, security headers present in next.config.

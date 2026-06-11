@@ -4,6 +4,10 @@ import { prisma } from "@/lib/prisma";
 import { graphPost } from "@/lib/microsoft/graph";
 import { TEAMS_SCOPES } from "@/lib/microsoft/msal";
 import { isReauthError } from "@/lib/microsoft/auth-errors";
+import { z } from "zod";
+import { sendTeamsMessageSchema } from "@/lib/validation/schemas";
+
+const idSchema = z.string().min(1).max(512);
 
 export async function POST(
   req: NextRequest,
@@ -23,9 +27,20 @@ export async function POST(
   if (!account) return NextResponse.json({ error: "No MS account" }, { status: 400 });
 
   const { id: chatId } = await params;
-  const { content, homeAccountId } = await req.json() as { content: string; homeAccountId?: string };
+  if (!idSchema.safeParse(chatId).success) {
+    return NextResponse.json({ error: "Invalid chat ID" }, { status: 400 });
+  }
 
-  if (!content?.trim()) return NextResponse.json({ error: "content required" }, { status: 400 });
+  const parsed = sendTeamsMessageSchema.safeParse(await req.json().catch(() => null));
+  if (!parsed.success) {
+    return NextResponse.json(
+      { error: "Invalid request", details: parsed.error.flatten() },
+      { status: 400 }
+    );
+  }
+  const { content, homeAccountId } = parsed.data;
+
+  if (!content.trim()) return NextResponse.json({ error: "content required" }, { status: 400 });
 
   const accountId = homeAccountId ?? account.homeAccountId;
 

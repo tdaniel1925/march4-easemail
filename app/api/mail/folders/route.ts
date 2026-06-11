@@ -1,9 +1,31 @@
 import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { graphGet, graphFetch } from "@/lib/microsoft/graph";
+
+const foldersQuerySchema = z.object({
+  homeAccountId: z.string().min(1).max(512),
+});
+
+const createFolderSchema = z.object({
+  homeAccountId: z.string().min(1).max(512),
+  displayName: z.string().max(255).refine((s) => s.trim().length > 0, "displayName required"),
+  parentFolderId: z.string().min(1).max(512).optional(),
+});
+
+const renameFolderSchema = z.object({
+  homeAccountId: z.string().min(1).max(512),
+  folderId: z.string().min(1).max(512),
+  displayName: z.string().max(255).refine((s) => s.trim().length > 0, "displayName required"),
+});
+
+const deleteFolderQuerySchema = z.object({
+  homeAccountId: z.string().min(1).max(512),
+  folderId: z.string().min(1).max(512),
+});
 import { isReauthError } from "@/lib/microsoft/auth-errors";
-import { getProvider, detectProviderType, verifyAccountOwnership } from "@/lib/providers/registry";
+import { getProvider, verifyAccountOwnership } from "@/lib/providers/registry";
 import type { MailFolder } from "@/lib/types/email";
 
 interface GraphFolder {
@@ -22,8 +44,13 @@ export async function GET(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized", errorCode: "reauth_required" }, { status: 401 });
 
-  const homeAccountId = req.nextUrl.searchParams.get("homeAccountId");
-  if (!homeAccountId) return NextResponse.json({ error: "homeAccountId required", errorCode: "server_error" }, { status: 400 });
+  const parsedQuery = foldersQuerySchema.safeParse({
+    homeAccountId: req.nextUrl.searchParams.get("homeAccountId") ?? undefined,
+  });
+  if (!parsedQuery.success) {
+    return NextResponse.json({ error: "Invalid request", details: parsedQuery.error.flatten() }, { status: 400 });
+  }
+  const { homeAccountId } = parsedQuery.data;
 
   // Non-Microsoft accounts — cache-first, fall back to live provider
   if (homeAccountId.startsWith("imap:") || homeAccountId.startsWith("jmap:")) {
@@ -152,15 +179,11 @@ export async function POST(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { homeAccountId, displayName, parentFolderId } = await req.json() as {
-    homeAccountId: string;
-    displayName: string;
-    parentFolderId?: string;
-  };
-
-  if (!homeAccountId || !displayName?.trim()) {
-    return NextResponse.json({ error: "homeAccountId and displayName required" }, { status: 400 });
+  const parsed = createFolderSchema.safeParse(await req.json());
+  if (!parsed.success) {
+    return NextResponse.json({ error: "Invalid request", details: parsed.error.flatten() }, { status: 400 });
   }
+  const { homeAccountId, displayName, parentFolderId } = parsed.data;
 
   // Verify the homeAccountId belongs to this authenticated user (prevents IDOR)
   const account = await verifyAccountOwnership(user.id, homeAccountId);
@@ -223,15 +246,11 @@ export async function PATCH(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { homeAccountId, folderId, displayName } = await req.json() as {
-    homeAccountId: string;
-    folderId: string;
-    displayName: string;
-  };
-
-  if (!homeAccountId || !folderId || !displayName?.trim()) {
-    return NextResponse.json({ error: "homeAccountId, folderId, and displayName required" }, { status: 400 });
+  const parsed = renameFolderSchema.safeParse(await req.json());
+  if (!parsed.success) {
+    return NextResponse.json({ error: "Invalid request", details: parsed.error.flatten() }, { status: 400 });
   }
+  const { homeAccountId, folderId, displayName } = parsed.data;
 
   try {
     // Verify ownership
@@ -282,12 +301,14 @@ export async function DELETE(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const homeAccountId = req.nextUrl.searchParams.get("homeAccountId");
-  const folderId = req.nextUrl.searchParams.get("folderId");
-
-  if (!homeAccountId || !folderId) {
-    return NextResponse.json({ error: "homeAccountId and folderId required" }, { status: 400 });
+  const parsed = deleteFolderQuerySchema.safeParse({
+    homeAccountId: req.nextUrl.searchParams.get("homeAccountId") ?? undefined,
+    folderId: req.nextUrl.searchParams.get("folderId") ?? undefined,
+  });
+  if (!parsed.success) {
+    return NextResponse.json({ error: "Invalid request", details: parsed.error.flatten() }, { status: 400 });
   }
+  const { homeAccountId, folderId } = parsed.data;
 
   try {
     // Verify ownership

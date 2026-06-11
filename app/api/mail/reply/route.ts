@@ -4,29 +4,33 @@ import { prisma } from "@/lib/prisma";
 import { graphPost } from "@/lib/microsoft/graph";
 import { verifyAccountOwnership, detectProviderType, getProvider } from "@/lib/providers/registry";
 import { withRateLimit, rateLimiters } from "@/lib/rate-limit";
+import { z } from "zod";
+
+const replySchema = z.object({
+  messageId: z.string().min(1).max(512),
+  comment: z.string().max(200000).refine((s) => s.trim().length > 0, "comment required"),
+  type: z.enum(["reply", "replyAll", "forward"]).optional(),
+  toRecipients: z.array(z.string().trim().email().max(320)).max(500).optional(),
+  homeAccountId: z.string().min(1).max(512).optional(),
+});
 
 async function replyHandler(req: NextRequest) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
+  const parsed = replySchema.safeParse(await req.json());
+  if (!parsed.success) {
+    return NextResponse.json({ error: "Invalid request", details: parsed.error.flatten() }, { status: 400 });
+  }
   const {
     messageId,
     comment,
     type = "reply",
     toRecipients,
     homeAccountId,
-  } = await req.json() as {
-    messageId: string;
-    comment: string;
-    type?: "reply" | "replyAll" | "forward";
-    toRecipients?: string[];
-    homeAccountId?: string;
-  };
+  } = parsed.data;
 
-  if (!messageId || !comment?.trim()) {
-    return NextResponse.json({ error: "messageId and comment required" }, { status: 400 });
-  }
   if (type === "forward" && (!toRecipients?.length || !toRecipients[0]?.trim())) {
     return NextResponse.json({ error: "toRecipients required for forward" }, { status: 400 });
   }

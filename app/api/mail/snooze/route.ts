@@ -1,6 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
+
+const snoozeSchema = z.object({
+  messageId: z.string().min(1).max(512),
+  homeAccountId: z.string().min(1).max(512),
+  snoozeUntil: z.string().max(64).refine((s) => !isNaN(new Date(s).getTime()), "Invalid date"),
+  subject: z.string().max(998).optional(),
+  senderName: z.string().max(320).optional(),
+  senderEmail: z.string().email().max(320),
+});
 
 /** POST /api/mail/snooze — snooze an email until a future time */
 export async function POST(req: NextRequest) {
@@ -8,18 +18,11 @@ export async function POST(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const body = await req.json().catch(() => null) as {
-    messageId: string;
-    homeAccountId: string;
-    snoozeUntil: string;
-    subject: string;
-    senderName?: string;
-    senderEmail: string;
-  } | null;
-
-  if (!body?.messageId || !body.homeAccountId || !body.snoozeUntil || !body.senderEmail) {
-    return NextResponse.json({ error: "messageId, homeAccountId, snoozeUntil, senderEmail required" }, { status: 400 });
+  const parsed = snoozeSchema.safeParse(await req.json().catch(() => null));
+  if (!parsed.success) {
+    return NextResponse.json({ error: "Invalid request", details: parsed.error.flatten() }, { status: 400 });
   }
+  const body = parsed.data;
 
   const snoozeUntil = new Date(body.snoozeUntil);
   if (isNaN(snoozeUntil.getTime()) || snoozeUntil <= new Date()) {

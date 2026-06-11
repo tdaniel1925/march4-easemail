@@ -1,6 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
+import { z } from "zod";
+
+const updateTodoSchema = z.object({
+  text: z.string().min(1).max(2000).optional(),
+  done: z.boolean().optional(),
+  priority: z.enum(["low", "normal", "high"]).optional(),
+});
 
 type Params = Promise<{ id: string }>;
 
@@ -14,7 +21,14 @@ export async function PATCH(req: NextRequest, { params }: { params: Params }) {
 
   try {
     const { id } = await params;
-    const body = await req.json();
+    const parsed = updateTodoSchema.safeParse(await req.json().catch(() => null));
+    if (!parsed.success) {
+      return NextResponse.json(
+        { error: "Invalid request", details: parsed.error.flatten() },
+        { status: 400 }
+      );
+    }
+    const body = parsed.data;
 
     // Security: Ensure user owns this todo
     const existing = await prisma.todoItem.findFirst({

@@ -1,7 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import { graphFetch } from "@/lib/microsoft/graph";
 import { verifyAccountOwnership } from "@/lib/providers/registry";
+
+const paginateQuerySchema = z.object({
+  nextLink: z.string().min(1).max(4096),
+  homeAccountId: z.string().min(1).max(512),
+  // Tolerant default mirrors handler: anything other than "sent" is treated as "received"
+  direction: z.string().max(20).optional(),
+});
 
 interface GraphMessage {
   id: string;
@@ -42,13 +50,16 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const nextLink = req.nextUrl.searchParams.get("nextLink");
-  const homeAccountId = req.nextUrl.searchParams.get("homeAccountId");
-  const direction = req.nextUrl.searchParams.get("direction") ?? "received";
-
-  if (!nextLink || !homeAccountId) {
-    return NextResponse.json({ error: "nextLink and homeAccountId required" }, { status: 400 });
+  const parsed = paginateQuerySchema.safeParse({
+    nextLink: req.nextUrl.searchParams.get("nextLink") ?? undefined,
+    homeAccountId: req.nextUrl.searchParams.get("homeAccountId") ?? undefined,
+    direction: req.nextUrl.searchParams.get("direction") ?? undefined,
+  });
+  if (!parsed.success) {
+    return NextResponse.json({ error: "Invalid request", details: parsed.error.flatten() }, { status: 400 });
   }
+  const { nextLink, homeAccountId } = parsed.data;
+  const direction = parsed.data.direction ?? "received";
 
   // nextLink must be a Graph URL or a relative Graph path — nothing else
   if (!nextLink.startsWith("https://graph.microsoft.com/") && !nextLink.startsWith("/")) {

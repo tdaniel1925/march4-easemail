@@ -254,8 +254,8 @@ function NotificationsSection() {
     calendarReminders: true,
     weeklyReport: false,
   });
-  const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
+  const [_loading, setLoading] = useState(true);
+  const [_saving, setSaving] = useState(false);
 
   // Load preferences from API on mount
   useEffect(() => {
@@ -385,7 +385,7 @@ function NotificationsSection() {
 function AppearanceSection() {
   const [fontSize, setFontSize] = useState<FontSize>("default");
   const [density, setDensity] = useState<EmailDensity>("comfortable");
-  const [loading, setLoading] = useState(true);
+  const [_loading, setLoading] = useState(true);
 
   // Load preferences from API on mount
   useEffect(() => {
@@ -586,7 +586,7 @@ function AppearanceSection() {
 function ComposingSection() {
   const [undoSendDelay, setUndoSendDelay] = useState<UndoSendDelay>("10");
   const [defaultSensitivity, setDefaultSensitivity] = useState<SensitivityLabel>("none");
-  const [loading, setLoading] = useState(true);
+  const [_loading, setLoading] = useState(true);
 
   // Load preferences from API on mount
   useEffect(() => {

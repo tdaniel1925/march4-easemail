@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import type { Condition, RuleAction } from "@/lib/types/rules";
+import { updateRuleSchema } from "@/lib/validation/schemas";
 
 // ─── PUT /api/rules/[id] — update a rule ─────────────────────────────────────
 
@@ -14,13 +15,14 @@ export async function PUT(
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const { id } = await params;
-  const body = await req.json() as Partial<{
-    name: string;
-    active: boolean;
-    conditions: Condition[];
-    actions: RuleAction[];
-    stopProcessing: boolean;
-  }>;
+  const parsed = updateRuleSchema.safeParse(await req.json().catch(() => null));
+  if (!parsed.success) {
+    return NextResponse.json(
+      { error: "Invalid request", details: parsed.error.flatten() },
+      { status: 400 }
+    );
+  }
+  const body = parsed.data;
 
   const existing = await prisma.emailRule.findFirst({
     where: { id, userId: user.id },

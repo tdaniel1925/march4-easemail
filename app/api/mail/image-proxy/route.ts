@@ -1,7 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import dns from "node:dns/promises";
 import net from "node:net";
+
+const imageProxyQuerySchema = z.object({
+  url: z.string().min(1).max(4096),
+});
 
 /**
  * Image proxy — fetches external images through EaseMail's server.
@@ -34,8 +39,13 @@ export async function GET(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return new NextResponse("Unauthorized", { status: 401 });
 
-  const url = req.nextUrl.searchParams.get("url");
-  if (!url) return new NextResponse("Missing url parameter", { status: 400 });
+  const parsedQuery = imageProxyQuerySchema.safeParse({
+    url: req.nextUrl.searchParams.get("url") ?? undefined,
+  });
+  if (!parsedQuery.success) {
+    return NextResponse.json({ error: "Invalid request", details: parsedQuery.error.flatten() }, { status: 400 });
+  }
+  const { url } = parsedQuery.data;
 
   // Validate it's an http(s) URL
   let parsed: URL;

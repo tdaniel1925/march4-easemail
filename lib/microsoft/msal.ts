@@ -110,11 +110,53 @@ export async function acquireTokenByCode(
   });
 }
 
+// In-process per-user mutex for the deserialize → acquire → persist flow.
+// Without it, concurrent requests on the same instance race last-write-wins
+// on the cache row and can clobber a newer rotated refresh token, causing
+// REAUTH_REQUIRED loops. Entries are deleted once their chain settles, so the
+// map stays bounded. Note: cross-instance races remain possible by design —
+// this only covers the common case of concurrent requests hitting the same
+// warm serverless instance, and the changed-check below narrows the
+// cross-instance clobber window.
+const tokenCacheLocks = new Map<string, Promise<void>>();
+
+async function withTokenCacheLock<T>(
+  userId: string,
+  fn: () => Promise<T>
+): Promise<T> {
+  const prev = tokenCacheLocks.get(userId) ?? Promise.resolve();
+  const run = prev.then(fn, fn);
+  // Tail promise never rejects; delete the map entry once the chain settles
+  // (unless another caller has already chained a newer tail).
+  const tail = run.then(
+    () => undefined,
+    () => undefined
+  );
+  tokenCacheLocks.set(userId, tail);
+  void tail.then(() => {
+    if (tokenCacheLocks.get(userId) === tail) {
+      tokenCacheLocks.delete(userId);
+    }
+  });
+  return run;
+}
+
 export async function acquireTokenSilent(
   msalClient: ConfidentialClientApplication,
   homeAccountId: string,
   userId: string,
   scopes: string[] = GRAPH_SCOPES
+) {
+  return withTokenCacheLock(userId, () =>
+    acquireTokenSilentLocked(msalClient, homeAccountId, userId, scopes)
+  );
+}
+
+async function acquireTokenSilentLocked(
+  msalClient: ConfidentialClientApplication,
+  homeAccountId: string,
+  userId: string,
+  scopes: string[]
 ) {
   // getAllAccounts() is synchronous — it reads the in-memory cache only and does NOT
   // trigger beforeCacheAccess. We must manually deserialize from DB first so that
@@ -123,8 +165,9 @@ export async function acquireTokenSilent(
     where: { userId },
     select: { cacheJson: true },
   });
-  if (row?.cacheJson) {
-    msalClient.getTokenCache().deserialize(row.cacheJson);
+  const loadedCacheJson = row?.cacheJson ?? null;
+  if (loadedCacheJson) {
+    msalClient.getTokenCache().deserialize(loadedCacheJson);
   }
 
   const accounts = await msalClient.getTokenCache().getAllAccounts();
@@ -146,14 +189,19 @@ export async function acquireTokenSilent(
 
     // Persist the updated token cache back to DB after successful refresh.
     // Manual deserialize above bypasses the cache plugin's afterCacheAccess hook,
-    // so we must explicitly serialize and save the refreshed tokens.
+    // so we must explicitly serialize and save the refreshed tokens. Only write
+    // when the serialized cache actually differs from what we loaded — a
+    // no-change write would needlessly widen the window for clobbering a newer
+    // cache written by another instance.
     try {
       const serialized = msalClient.getTokenCache().serialize();
-      await prisma.msalTokenCache.upsert({
-        where: { userId },
-        update: { cacheJson: serialized, updatedAt: new Date() },
-        create: { userId, cacheJson: serialized, updatedAt: new Date() },
-      });
+      if (serialized !== loadedCacheJson) {
+        await prisma.msalTokenCache.upsert({
+          where: { userId },
+          update: { cacheJson: serialized, updatedAt: new Date() },
+          create: { userId, cacheJson: serialized, updatedAt: new Date() },
+        });
+      }
     } catch (cacheErr) {
       console.warn("[msal] Failed to persist token cache:", cacheErr);
     }

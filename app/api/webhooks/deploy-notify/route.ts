@@ -2,6 +2,17 @@ import { NextRequest, NextResponse } from "next/server";
 import { createHmac, timingSafeEqual } from "crypto";
 import Anthropic from "@anthropic-ai/sdk";
 import { prisma } from "@/lib/prisma";
+import { z } from "zod";
+
+// Loose validation of the GitHub push payload — only the fields this route
+// actually reads. Runs AFTER HMAC signature verification (which needs the
+// raw body); .passthrough() keeps the rest of GitHub's payload intact.
+const pushPayloadSchema = z
+  .object({
+    commits: z.array(z.object({ message: z.string() }).passthrough()).optional(),
+    pusher: z.object({ name: z.string().max(500) }).passthrough().optional(),
+  })
+  .passthrough();
 
 // GitHub push event shape (partial)
 interface GitHubCommit {
@@ -12,15 +23,6 @@ interface GitHubCommit {
   added: string[];
   modified: string[];
   removed: string[];
-}
-
-interface GitHubPushPayload {
-  ref: string;
-  compare: string;
-  commits: GitHubCommit[];
-  head_commit: GitHubCommit | null;
-  pusher: { name: string; email: string };
-  repository: { full_name: string; html_url: string };
 }
 
 function verifySignature(body: string, signature: string | null): boolean {
@@ -38,7 +40,7 @@ function escHtml(str: string): string {
   return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 }
 
-function buildEmailHtml(summary: string, pusher: string, date: string): string {
+function _buildEmailHtml(summary: string, pusher: string, date: string): string {
   const brand = "rgb(138, 9, 9)";
   return `<!DOCTYPE html>
 <html>
@@ -71,7 +73,7 @@ function buildEmailHtml(summary: string, pusher: string, date: string): string {
 </html>`;
 }
 
-async function generatePlainEnglishSummary(commits: GitHubCommit[]): Promise<string> {
+async function _generatePlainEnglishSummary(commits: GitHubCommit[]): Promise<string> {
   // Instantiate inside function so env vars are available at runtime, not build time
   const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
   const messages = commits.map((c) => c.message.split("\n")[0]).join("\n");
@@ -107,15 +109,31 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     return NextResponse.json({ error: "Invalid signature" }, { status: 401 });
   }
 
-  let payload: GitHubPushPayload;
+  let json: unknown;
   try {
-    payload = JSON.parse(rawBody) as GitHubPushPayload;
+    json = JSON.parse(rawBody);
   } catch {
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
   }
 
+  const parsed = pushPayloadSchema.safeParse(json);
+  if (!parsed.success) {
+    return NextResponse.json(
+      { error: "Invalid request", details: parsed.error.flatten() },
+      { status: 400 }
+    );
+  }
+  const payload = parsed.data;
+
   // Skip branch deletions (no commits)
   if (!payload.commits?.length) return NextResponse.json({ ok: true, skipped: true });
+
+  if (!payload.pusher?.name) {
+    return NextResponse.json(
+      { error: "Invalid request", details: { fieldErrors: { pusher: ["pusher.name required"] } } },
+      { status: 400 }
+    );
+  }
 
   // Save commits to DB — digest cron sends once per day
   await prisma.deployLog.create({

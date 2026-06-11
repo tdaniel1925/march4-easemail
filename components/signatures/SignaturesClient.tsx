@@ -30,9 +30,9 @@ interface Signature {
   account: string;
 }
 
-const STORAGE_KEY = "easemail_signatures";
+const _STORAGE_KEY = "easemail_signatures";
 
-function makeId() {
+function _makeId() {
   return Math.random().toString(36).slice(2, 10);
 }
 

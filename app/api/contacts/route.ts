@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { graphGet, graphPost } from "@/lib/microsoft/graph";
 import { detectProviderType } from "@/lib/providers/registry";
+import { createContactSchema } from "@/lib/validation/schemas";
 
 interface GraphPerson {
   displayName?: string;
@@ -142,14 +143,14 @@ export async function POST(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const body = await req.json() as {
-    displayName: string;
-    email?: string;
-    phone?: string;
-    company?: string;
-    title?: string;
-    homeAccountId?: string;
-  };
+  const parsed = createContactSchema.safeParse(await req.json().catch(() => null));
+  if (!parsed.success) {
+    return NextResponse.json(
+      { error: "Invalid request", details: parsed.error.flatten() },
+      { status: 400 }
+    );
+  }
+  const body = parsed.data;
 
   // If a non-Microsoft account is specified, contacts are not supported
   if (body.homeAccountId && detectProviderType(body.homeAccountId) !== "microsoft") {

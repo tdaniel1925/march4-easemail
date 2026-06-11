@@ -1,13 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { graphGet } from "@/lib/microsoft/graph";
 import { isReauthError } from "@/lib/microsoft/auth-errors";
 import { mapCachedEmail, mapGraphMessage, mapNormalizedEmail } from "@/lib/utils/email-helpers";
 import { verifyAccountOwnership, detectProviderType, getProvider } from "@/lib/providers/registry";
-import type { NormalizedEmail, FetchEmailsOptions } from "@/lib/providers/types";
-import type { EmailMessage } from "@/lib/types/email";
-import type { GraphMessage, GraphMessagesResponse } from "@/lib/types/graph";
+import type { FetchEmailsOptions } from "@/lib/providers/types";
+import type { GraphMessagesResponse } from "@/lib/types/graph";
 
 const GRAPH_BASE = "https://graph.microsoft.com/v1.0";
 const SELECT = "id,subject,bodyPreview,receivedDateTime,isRead,hasAttachments,flag,from,body,conversationId";
@@ -26,16 +26,28 @@ const ALLOWED_TABS = new Set(["", "unread", "starred", "attachments", "label"]);
 /** mapNormalizedToEmailMessage — alias for backward compat in this route */
 const mapNormalizedToEmailMessage = mapNormalizedEmail;
 
+const inboxQuerySchema = z.object({
+  homeAccountId: z.string().min(1).max(512),
+  // nextLink may be a Graph URL or a cursor id
+  nextLink: z.string().min(1).max(4096).nullable().optional(),
+});
+
 export async function GET(req: NextRequest) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const homeAccountId = req.nextUrl.searchParams.get("homeAccountId");
-  if (!homeAccountId) return NextResponse.json({ error: "homeAccountId required" }, { status: 400 });
+  const parsedQuery = inboxQuerySchema.safeParse({
+    homeAccountId: req.nextUrl.searchParams.get("homeAccountId") ?? undefined,
+    nextLink: req.nextUrl.searchParams.get("nextLink"),
+  });
+  if (!parsedQuery.success) {
+    return NextResponse.json({ error: "Invalid request", details: parsedQuery.error.flatten() }, { status: 400 });
+  }
+  const { homeAccountId } = parsedQuery.data;
+  const nextLinkParam = parsedQuery.data.nextLink ?? null;
 
   const providerType = detectProviderType(homeAccountId);
-  const nextLinkParam = req.nextUrl.searchParams.get("nextLink");
   const rawTab = req.nextUrl.searchParams.get("tab") ?? "";
   // Validate tab against allowed values — reject unknown tabs
   const tab = ALLOWED_TABS.has(rawTab) ? rawTab : "";

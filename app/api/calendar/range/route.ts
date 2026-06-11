@@ -4,6 +4,14 @@ import { prisma } from "@/lib/prisma";
 import { getAllAccounts } from "@/lib/providers/registry";
 import { syncCalendar } from "@/lib/sync/calendar-sync";
 import type { CalEvent } from "@/lib/types/calendar";
+import { z } from "zod";
+
+const dayString = z
+  .string()
+  .regex(/^\d{4}-\d{2}-\d{2}$/, "Expected YYYY-MM-DD")
+  .refine((s) => !isNaN(new Date(`${s}T00:00:00`).getTime()), "Invalid date");
+
+const rangeQuerySchema = z.object({ start: dayString, end: dayString });
 
 // ─── GET /api/calendar/range?start={YYYY-MM-DD}&end={YYYY-MM-DD} ──────────────
 // Returns events from cache immediately, fires background sync to keep cache fresh.
@@ -13,11 +21,17 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const startParam = req.nextUrl.searchParams.get("start");
-  const endParam = req.nextUrl.searchParams.get("end");
-  if (!startParam || !endParam) {
-    return NextResponse.json({ error: "start and end params required (YYYY-MM-DD)" }, { status: 400 });
+  const parsedQuery = rangeQuerySchema.safeParse({
+    start: req.nextUrl.searchParams.get("start") ?? undefined,
+    end: req.nextUrl.searchParams.get("end") ?? undefined,
+  });
+  if (!parsedQuery.success) {
+    return NextResponse.json(
+      { error: "Invalid request", details: parsedQuery.error.flatten() },
+      { status: 400 }
+    );
   }
+  const { start: startParam, end: endParam } = parsedQuery.data;
 
   const rangeStart = new Date(`${startParam}T00:00:00`);
   const rangeEnd = new Date(`${endParam}T23:59:59.999`);

@@ -1,6 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
+
+const cancelSendSchema = z.object({
+  pendingId: z.string().min(1).max(512),
+});
 
 // ─── POST /api/mail/cancel-send ──────────────────────────────────────────────
 // Cancels a pending email if the sendAt time hasn't passed yet.
@@ -17,11 +22,11 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
   }
 
-  const { pendingId } = requestBody as { pendingId: string };
-
-  if (!pendingId) {
-    return NextResponse.json({ error: "pendingId required" }, { status: 400 });
+  const parsed = cancelSendSchema.safeParse(requestBody);
+  if (!parsed.success) {
+    return NextResponse.json({ error: "Invalid request", details: parsed.error.flatten() }, { status: 400 });
   }
+  const { pendingId } = parsed.data;
 
   // Atomic conditional cancel — only succeeds if the email is owned by this
   // user, not already cancelled, and the send time hasn't passed yet.

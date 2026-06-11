@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import type { Condition, RuleAction } from "@/lib/types/rules";
+import { createRuleSchema } from "@/lib/validation/schemas";
 
 // ─── GET /api/rules — list all rules for the current user ─────────────────────
 
@@ -36,14 +37,16 @@ export async function POST(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const body = await req.json() as {
-    name: string;
-    conditions: Condition[];
-    actions: RuleAction[];
-    stopProcessing: boolean;
-  };
+  const parsed = createRuleSchema.safeParse(await req.json().catch(() => null));
+  if (!parsed.success) {
+    return NextResponse.json(
+      { error: "Invalid request", details: parsed.error.flatten() },
+      { status: 400 }
+    );
+  }
+  const body = parsed.data;
 
-  if (!body.name?.trim()) {
+  if (!body.name.trim()) {
     return NextResponse.json({ error: "name required" }, { status: 400 });
   }
 

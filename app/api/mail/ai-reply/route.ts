@@ -5,6 +5,15 @@ import { withRateLimit, rateLimiters } from "@/lib/rate-limit";
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
+import { z } from "zod";
+
+const aiReplyRequestSchema = z.object({
+  subject: z.string().max(998).optional(),
+  from: z.string().max(500).refine((s) => s.trim().length > 0, "from is required"),
+  bodyPreview: z.string().max(5000).optional(),
+  body: z.string().max(200000).optional(),
+});
+
 export interface AiReplyResponse {
   summary: string;
   urgency: "high" | "medium" | "low";
@@ -16,16 +25,11 @@ async function aiReplyHandler(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { subject, from, bodyPreview, body } = await req.json() as {
-    subject: string;
-    from: string;
-    bodyPreview: string;
-    body: string;
-  };
-
-  if (typeof from !== "string" || !from.trim()) {
-    return NextResponse.json({ error: "from is required" }, { status: 400 });
+  const parsed = aiReplyRequestSchema.safeParse(await req.json());
+  if (!parsed.success) {
+    return NextResponse.json({ error: "Invalid request", details: parsed.error.flatten() }, { status: 400 });
   }
+  const { subject, from, bodyPreview, body } = parsed.data;
 
   const emailContent = body?.trim() || bodyPreview?.trim() || "(no content)";
   // Extract sender first name for greeting (e.g. "John Smith <john@firm.com>" → "John")
