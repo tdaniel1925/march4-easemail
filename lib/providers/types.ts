@@ -41,6 +41,16 @@ export interface NormalizedEmail {
     name: string;
     size: number;
     contentType: string;
+    /** MIME Content-ID (without angle brackets) — what `cid:` HTML refs point to */
+    cid?: string;
+    /** True when the part is an inline (related) part, not a real attachment */
+    isInline?: boolean;
+    /**
+     * Base64 part content, populated only for inline image parts of a single
+     * fetched message (IMAP), so the API layer can embed them as data: URIs.
+     * Never populated for list fetches.
+     */
+    contentBase64?: string;
   }>;
 }
 

@@ -309,14 +309,18 @@ function normalizeJmapEmail(
     importance: "normal",
     folderId: `${accountId}:${mailboxId}`,
     isDraft: !!keywords["$draft"],
-    attachments: email.attachments
-      ?.filter((a) => a.disposition !== "inline" || !a.type?.startsWith("image/"))
-      .map((a) => ({
-        id: a.blobId,
-        name: a.name || `file.${(a.type ?? "bin").split("/").pop()}`,
-        size: a.size ?? 0,
-        contentType: a.type ?? "application/octet-stream",
-      })),
+    // Include inline parts too — the API layer needs their cid to rewrite
+    // cid: image refs in the HTML body, and filters them out of the visible
+    // attachment bar itself.
+    attachments: email.attachments?.map((a) => ({
+      id: a.blobId,
+      name: a.name || `file.${(a.type ?? "bin").split("/").pop()}`,
+      size: a.size ?? 0,
+      contentType: a.type ?? "application/octet-stream",
+      // RFC 8621 EmailBodyPart.cid — strip angle brackets to match cid: refs
+      cid: a.cid ? a.cid.replace(/^<|>$/g, "") : undefined,
+      isInline: a.disposition === "inline",
+    })),
   };
 }
 
@@ -354,6 +358,52 @@ function assertEmailSetSuccess(
   if (err) {
     throw new Error(`JMAP ${action} failed: ${err.description ?? err.type}`);
   }
+}
+
+/**
+ * Look up an attachment's real metadata (filename + MIME type) by blobId.
+ *
+ * Used by the attachment download route: Fastmail's blob download endpoint
+ * echoes back whatever `type=` query param it is given, so the route must
+ * know the part's real type from the message metadata — requesting
+ * application/octet-stream would mask the real Content-Type.
+ *
+ * Takes apiUrl/token/jmapAccountId directly so the caller can reuse a JMAP
+ * session it has already fetched (avoids a second session round trip).
+ */
+export async function getAttachmentMetadataByBlobId(
+  apiUrl: string,
+  token: string,
+  jmapAccountId: string,
+  jmapEmailId: string,
+  blobId: string
+): Promise<{ name: string; type: string } | null> {
+  const response = await jmapCall(apiUrl, token, jmapAccountId, [
+    [
+      "Email/get",
+      {
+        accountId: jmapAccountId,
+        ids: [jmapEmailId],
+        properties: ["id", "attachments"],
+      },
+      "0",
+    ],
+  ]);
+
+  const getResult = response.methodResponses.find(
+    ([method]) => method === "Email/get"
+  );
+  if (!getResult) return null;
+
+  const [, result] = getResult;
+  const emails = (result.list as JmapEmail[]) ?? [];
+  const att = emails[0]?.attachments?.find((a) => a.blobId === blobId);
+  if (!att) return null;
+
+  return {
+    name: att.name || `file.${(att.type ?? "bin").split("/").pop()}`,
+    type: att.type || "application/octet-stream",
+  };
 }
 
 // ─── Provider Implementation ─────────────────────────────────────────────────
