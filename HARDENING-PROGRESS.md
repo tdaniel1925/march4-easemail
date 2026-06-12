@@ -41,6 +41,14 @@ Correction to my earlier analysis: `@sentry/nextjs` IS fully integrated — `ins
 - New `PATCH /api/admin/users/[id]/role` to grant/revoke roles: org_admin can manage member|org_admin in its own org only; only super_admin can grant super_admin; no self-role-change (anti-escalation). Audited as `admin.role_change`.
 - tenant-isolation guard updated to recognize RBAC-guarded routes.
 
+### 6. Data retention + legal hold
+**Was:** none. A law-firm SaaS must retain/purge on a policy and freeze data under litigation hold.
+**Done:**
+- `RetentionPolicy` (per-org, days-to-keep per cached data class; 0 = keep forever) and `LegalHold` (whole-org or single-user; releasing sets `releasedAt`, never hard-deleted) models + idempotent migration (applied to prod via the pooler).
+- `lib/retention.ts`: `getHeldUserIds`, `isUserUnderHold`, `getActivePolicies`.
+- `GET /api/cron/retention` (CRON_SECRET-guarded, daily 03:30): purges cached emails/calendar/contacts/audit-logs older than each org's window, **always skipping users under an active legal hold**; audited as `retention.purge`.
+- Admin APIs (org_admin scoped, audited): `GET/PUT /api/admin/retention` (policy), `GET/POST /api/admin/legal-holds`, `DELETE /api/admin/legal-holds/[id]` (release).
+
 ## ⬜ Remaining enterprise gaps (in priority order)
 6. **Data retention / e-discovery / legal hold** — none. Required for a law-firm SaaS.
 7. **Rate limiting** — single Upstash limiter that fails open; needs per-route policy and a fail-closed option for auth endpoints.

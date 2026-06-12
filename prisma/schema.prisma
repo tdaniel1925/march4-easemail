@@ -17,10 +17,55 @@ model Organization {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  users       User[]
-  orgContacts OrgContact[]
+  users           User[]
+  orgContacts     OrgContact[]
+  retentionPolicy RetentionPolicy?
+  legalHolds      LegalHold[]
 
   @@map("organizations")
+}
+
+// ─── Data Retention Policy ───────────────────────────────────────────────────
+// Per-org cached-data retention. A value of 0 means "keep forever" (the safe
+// default). The retention cron purges cached items older than the window —
+// but NEVER purges data covered by an active LegalHold.
+
+model RetentionPolicy {
+  id           String   @id @default(cuid())
+  orgId        String   @unique
+  org          Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+
+  // Days to retain each cached data class. 0 = keep forever (default).
+  cachedEmailDays    Int @default(0)
+  cachedCalendarDays Int @default(0)
+  cachedContactDays  Int @default(0)
+  auditLogDays       Int @default(0) // audit logs are usually kept long; 0 = forever
+
+  updatedAt    DateTime @updatedAt
+  createdAt    DateTime @default(now())
+
+  @@map("retention_policies")
+}
+
+// ─── Legal Hold ──────────────────────────────────────────────────────────────
+// Litigation hold: while active, the covered scope is EXEMPT from retention
+// purging. Scope is either an entire org (userId = null) or a single user.
+// Holds are never auto-deleted; releasing sets releasedAt (kept for the record).
+
+model LegalHold {
+  id          String   @id @default(cuid())
+  orgId       String
+  org         Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  userId      String?  // null = whole-org hold; set = single-user hold
+
+  reason      String
+  createdByUserId String
+  createdAt   DateTime @default(now())
+  releasedAt  DateTime? // null = active
+
+  @@index([orgId, releasedAt])
+  @@index([userId, releasedAt])
+  @@map("legal_holds")
 }
 
 // ─── Organization Directory Contacts ─────────────────────────────────────────
