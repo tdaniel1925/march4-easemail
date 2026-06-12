@@ -71,6 +71,16 @@ Correction to my earlier analysis: `@sentry/nextjs` IS fully integrated — `ins
 Total unit tests now 228.
 **Still open:** calendar-sync (deferred — richest shape: recurrence/all-day/attendee mapping; best paired with calendar feature verification).
 
+### 9. DB-level RLS — built & proven (no cutover, by design)
+**Was:** the planned architectural item. The app connects as `postgres` (BYPASSRLS=true), so tenant isolation was app-layer only.
+**Done (Phase 1 — "build + prove, no cutover"):**
+- Migration `20260612150000_enable_rls`: RLS enabled + FORCEd on all 31 tenant tables with a `tenant_isolation` policy keyed on per-request GUCs (`app.current_user_id` / `app.current_org_id`) via `app_current_user_id()`/`app_current_org_id()` helpers. Applied to prod; **dormant** (the app's role bypasses it) — live app verified unaffected (all pages + DB APIs 200).
+- `lib/prisma-rls.ts` `withTenant(ctx, fn)`: runs queries in a tx with transaction-scoped `SET LOCAL` GUCs (safe under the transaction-mode pooler; verified SET LOCAL works on the pooler).
+- Dedicated `app_user` NOBYPASSRLS role with the cutover grants.
+- `scripts/verify-rls.mjs` — repeatable PROOF: as `app_user`, no-GUC → 0 rows; GUC=userA → exactly userA's 18,402 rows and 0 of userB's; cross-tenant INSERT blocked by WITH CHECK. PASS.
+- `RLS-RUNBOOK.md` — the deliberate cutover procedure (wire `withTenant` into routes → give `app_user` a login → stage on a preview → switch DATABASE_URL, with instant rollback).
+**Still open:** the cutover itself (wiring `withTenant` into every tenant route + switching the prod role) — intentionally a separate, staged change.
+
 ## ⬜ Remaining enterprise gaps (in priority order)
 6. **Data retention / e-discovery / legal hold** — none. Required for a law-firm SaaS.
 7. **Rate limiting** — single Upstash limiter that fails open; needs per-route policy and a fail-closed option for auth endpoints.
