@@ -51,6 +51,38 @@ enforced in production. Do this only with a tested rollback. Steps:
    URL. **Rollback** = switch DATABASE_URL back to the `postgres` URL (instant).
 5. Re-run `node scripts/verify-rls.mjs` to confirm enforcement.
 
+## ⚠️ CUTOVER BLOCKER discovered in staging (2026-06-12)
+
+Staging the cutover surfaced a hard architectural blocker BEFORE any prod change:
+
+- A custom `app_user` role authenticates on the **direct** connection (:5432)
+  but is **rejected by the Supabase pooler** (:6543): `password authentication
+  failed` / `no tenant identifier`. The Supavisor pooler only authenticates the
+  roles it knows (`postgres`, `authenticator`, …) — not arbitrary custom roles.
+- The app MUST use the pooler (Vercel cannot reach :5432 — the P1001 we hit
+  earlier). So **the app cannot connect as a custom non-bypassing role through
+  the pooler.**
+- The only poolable login roles are `postgres` (BYPASSRLS) and `authenticator`.
+  The correct RLS-enforcing role is `authenticated` (BYPASSRLS=false) but it is
+  `canlogin=false` — Supabase's design is to connect as `authenticator` then
+  `SET ROLE authenticated` per request with a verified JWT. That is how
+  PostgREST/supabase-js enforce RLS; it is NOT how Prisma-over-pooler connects.
+
+**Conclusion:** full RLS *enforcement* here is not a connection-string switch.
+It requires either (a) routing tenant DB access through the
+`authenticator`→`SET ROLE authenticated` flow with per-tx role+GUC setup over
+the pooler (a real architectural change to the Prisma layer, with the same
+transaction-pooler constraints proven workable here), or (b) using a direct
+(non-pooler) connection from a runtime that can reach :5432 (not Vercel
+serverless). Both are larger than a cutover and carry correctness risk.
+
+**What IS proven and in place:** the RLS policies are correct and enforce
+isolation under any non-bypassing role (`scripts/verify-rls.mjs` + the per-tx
+GUC Prisma mechanism in `scripts/prove-rls-client.mjs` both PASS against prod).
+The moment the app connects with a non-bypassing role via either path above,
+isolation is enforced with no policy changes. The app-layer tenant guard
+(CI-enforced) remains the active protection meanwhile.
+
 ## Why it's staged this way
 
 Switching the production DB role is the one change that can take the live app

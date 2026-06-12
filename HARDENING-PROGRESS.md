@@ -79,7 +79,7 @@ Total unit tests now 228.
 - Dedicated `app_user` NOBYPASSRLS role with the cutover grants.
 - `scripts/verify-rls.mjs` — repeatable PROOF: as `app_user`, no-GUC → 0 rows; GUC=userA → exactly userA's 18,402 rows and 0 of userB's; cross-tenant INSERT blocked by WITH CHECK. PASS.
 - `RLS-RUNBOOK.md` — the deliberate cutover procedure (wire `withTenant` into routes → give `app_user` a login → stage on a preview → switch DATABASE_URL, with instant rollback).
-**Still open:** the cutover itself (wiring `withTenant` into every tenant route + switching the prod role) — intentionally a separate, staged change.
+**Cutover staged & blocker found (2026-06-12):** attempting the cutover surfaced an architectural blocker BEFORE any prod change — a custom non-bypassing role authenticates on the direct connection but is **rejected by the Supabase pooler** (Supavisor only authenticates known roles), and the app must use the pooler (Vercel can't reach :5432). The per-tx GUC Prisma mechanism is itself proven (`scripts/prove-rls-client.mjs` PASS as `app_user` on a direct connection). So full enforcement needs either the `authenticator`→`SET ROLE authenticated` flow over the pooler or a direct-connection runtime — both larger than a cutover. Details + options in `RLS-RUNBOOK.md`. The `app_user` role was re-locked to NOLOGIN/NOBYPASSRLS after probing (verified). Infrastructure (`lib/tenant-context.ts` ALS, `lib/prisma-rls.ts` `withTenant`) is in place for whichever enforcement path is chosen. **Net:** RLS policies proven-correct and dormant; app-layer guard remains the active enforcement.
 
 ## ⬜ Remaining enterprise gaps (in priority order)
 6. **Data retention / e-discovery / legal hold** — none. Required for a law-firm SaaS.
