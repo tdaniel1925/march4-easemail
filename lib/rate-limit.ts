@@ -22,6 +22,19 @@ interface LimiterConfig {
   requests: number;
   window: string; // e.g. "15 m", "1 h", "1 m"
   prefix: string;
+  /**
+   * Window length in milliseconds — used by the in-memory fallback limiter.
+   * Must match `window`.
+   */
+  windowMs: number;
+  /**
+   * When true, this limiter FAILS CLOSED: if the backing store is unreachable,
+   * requests are rejected (429) rather than allowed. Also enables the in-memory
+   * fallback so protection exists even when Upstash isn't configured. Use for
+   * security-sensitive endpoints (auth, send) where unlimited abuse during an
+   * outage is worse than briefly rejecting legitimate traffic.
+   */
+  failClosed: boolean;
 }
 
 /** Minimal subset of @upstash/ratelimit's Ratelimit that we actually use. */
@@ -37,19 +50,57 @@ interface UpstashRatelimit {
 // ─── Limiter configs ──────────────────────────────────────────────────────────
 
 const LIMITER_CONFIGS = {
-  /** 10 auth callbacks per 15 minutes — very strict. */
-  auth: { requests: 10, window: "15 m", prefix: "@easemail/ratelimit/auth" },
-  /** 30 sends per hour. */
-  send: { requests: 30, window: "1 h", prefix: "@easemail/ratelimit/send" },
+  /** 10 auth callbacks per 15 minutes — very strict, fail-closed. */
+  auth: { requests: 10, window: "15 m", windowMs: 15 * 60_000, prefix: "@easemail/ratelimit/auth", failClosed: true },
+  /** 30 sends per hour — fail-closed (sending is abuse-sensitive). */
+  send: { requests: 30, window: "1 h", windowMs: 60 * 60_000, prefix: "@easemail/ratelimit/send", failClosed: true },
   /** 100 read/search ops per minute. */
-  read: { requests: 100, window: "1 m", prefix: "@easemail/ratelimit/read" },
+  read: { requests: 100, window: "1 m", windowMs: 60_000, prefix: "@easemail/ratelimit/read", failClosed: false },
   /** 200 general API calls per minute. */
-  general: { requests: 200, window: "1 m", prefix: "@easemail/ratelimit/general" },
-  /** 30 AI/LLM calls per hour. */
-  ai: { requests: 30, window: "1 h", prefix: "@easemail/ratelimit/ai" },
+  general: { requests: 200, window: "1 m", windowMs: 60_000, prefix: "@easemail/ratelimit/general", failClosed: false },
+  /** 30 AI/LLM calls per hour — fail-closed (spend-sensitive). */
+  ai: { requests: 30, window: "1 h", windowMs: 60 * 60_000, prefix: "@easemail/ratelimit/ai", failClosed: true },
 } satisfies Record<string, LimiterConfig>;
 
 export type RateLimiterKey = keyof typeof LIMITER_CONFIGS;
+
+// ─── In-memory fallback limiter (per-instance) ─────────────────────────────────
+// Used for fail-closed limiters when Upstash is not configured, so abuse-
+// sensitive endpoints still have SOME protection. Per-serverless-instance and
+// best-effort (not a substitute for Upstash across instances), but far better
+// than unlimited. Bounded to avoid unbounded memory growth.
+
+const MEMORY_BUCKET_CAP = 10_000;
+const memoryBuckets = new Map<string, { count: number; resetAt: number }>();
+
+function memoryLimit(key: RateLimiterKey, identifier: string): {
+  success: boolean;
+  limit: number;
+  reset: number;
+  remaining: number;
+} {
+  const cfg = LIMITER_CONFIGS[key];
+  const now = Date.now();
+  const bucketKey = `${cfg.prefix}:${identifier}`;
+  let bucket = memoryBuckets.get(bucketKey);
+  if (!bucket || bucket.resetAt <= now) {
+    bucket = { count: 0, resetAt: now + cfg.windowMs };
+    // Evict oldest entries if the map grows too large.
+    if (memoryBuckets.size >= MEMORY_BUCKET_CAP) {
+      const firstKey = memoryBuckets.keys().next().value;
+      if (firstKey) memoryBuckets.delete(firstKey);
+    }
+    memoryBuckets.set(bucketKey, bucket);
+  }
+  bucket.count++;
+  const success = bucket.count <= cfg.requests;
+  return {
+    success,
+    limit: cfg.requests,
+    reset: bucket.resetAt,
+    remaining: Math.max(0, cfg.requests - bucket.count),
+  };
+}
 
 // ─── Lazy singleton state ─────────────────────────────────────────────────────
 
@@ -115,7 +166,11 @@ export const rateLimiters: Record<RateLimiterKey, UpstashRatelimit> = (
       async limit(identifier: string) {
         const limiters = getLimiters();
         if (!limiters) {
-          // Upstash not configured — always allow.
+          // Upstash not configured. Fail-closed limiters fall back to the
+          // in-memory limiter (some protection); others pass through.
+          if (LIMITER_CONFIGS[key].failClosed) {
+            return memoryLimit(key, identifier);
+          }
           return { success: true, limit: 0, reset: 0, remaining: 0 };
         }
         return limiters[key].limit(identifier);
@@ -126,6 +181,14 @@ export const rateLimiters: Record<RateLimiterKey, UpstashRatelimit> = (
   {} as Record<RateLimiterKey, UpstashRatelimit>,
 );
 
+/** Maps a rateLimiters.* instance back to its key (for the legacy call form). */
+function resolveLimiterKey(instance: UpstashRatelimit): RateLimiterKey | null {
+  for (const k of Object.keys(rateLimiters) as RateLimiterKey[]) {
+    if (rateLimiters[k] === instance) return k;
+  }
+  return null;
+}
+
 // ─── Middleware wrapper ───────────────────────────────────────────────────────
 
 type RouteHandler = (req: NextRequest) => Promise<NextResponse>;
@@ -135,29 +198,50 @@ type RouteHandler = (req: NextRequest) => Promise<NextResponse>;
  *
  * - When Upstash is configured: enforces the supplied limiter and adds
  *   `X-RateLimit-*` headers to every response.
- * - When Upstash is NOT configured: passes through transparently (no-op).
+ * - When the store ERRORS: fail-closed limiters (auth/send/ai) try the
+ *   in-memory fallback and reject if still over; others pass through.
+ * - When Upstash is NOT configured: fail-closed limiters use the in-memory
+ *   fallback; others pass through transparently.
  *
+ * `key` selects the fail-open/closed behavior. Prefer the keyed overload:
  * @example
- * export const GET = withRateLimit(myHandler, rateLimiters.auth);
+ * export const POST = withRateLimit(myHandler, "auth");
  */
 export function withRateLimit(
   handler: RouteHandler,
-  limiter: UpstashRatelimit,
+  limiter: UpstashRatelimit | RateLimiterKey,
 ): RouteHandler {
+  // Resolve a key (for fail-closed behavior) and the limiter instance.
+  const key: RateLimiterKey | null =
+    typeof limiter === "string" ? limiter : resolveLimiterKey(limiter);
+  const limiterInstance: UpstashRatelimit =
+    typeof limiter === "string" ? rateLimiters[limiter] : limiter;
+  const failClosed = key ? LIMITER_CONFIGS[key].failClosed : false;
+
   return async (req: NextRequest): Promise<NextResponse> => {
     let success = true;
     let limit = 0;
     let reset = 0;
     let remaining = 0;
     try {
-      const result = await limiter.limit(getIdentifier(req));
+      const result = await limiterInstance.limit(getIdentifier(req));
       success = result.success;
       limit = result.limit;
       reset = result.reset;
       remaining = result.remaining;
     } catch {
-      // Rate limiting infra failed (e.g. bad Upstash URL) — allow the request through
-      console.warn("[rate-limit] Rate limiter error, allowing request through");
+      // Store errored (e.g. Redis unreachable). Fail-closed limiters fall back
+      // to the per-instance in-memory limiter and reject if over; others allow.
+      if (failClosed && key) {
+        const fb = memoryLimit(key, getIdentifier(req));
+        success = fb.success;
+        limit = fb.limit;
+        reset = fb.reset;
+        remaining = fb.remaining;
+        console.warn(`[rate-limit] store error on fail-closed '${key}' — using in-memory fallback`);
+      } else {
+        console.warn("[rate-limit] Rate limiter error, allowing request through");
+      }
     }
 
     const headers: Record<string, string> = limit > 0

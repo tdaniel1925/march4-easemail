@@ -49,6 +49,15 @@ Correction to my earlier analysis: `@sentry/nextjs` IS fully integrated — `ins
 - `GET /api/cron/retention` (CRON_SECRET-guarded, daily 03:30): purges cached emails/calendar/contacts/audit-logs older than each org's window, **always skipping users under an active legal hold**; audited as `retention.purge`.
 - Admin APIs (org_admin scoped, audited): `GET/PUT /api/admin/retention` (policy), `GET/POST /api/admin/legal-holds`, `DELETE /api/admin/legal-holds/[id]` (release).
 
+### 7. Fail-closed rate limiting
+**Was:** a single Upstash limiter that failed OPEN — if Redis erred OR Upstash was simply unconfigured, every limit became a no-op, so auth/send/AI endpoints lost all protection during an outage.
+**Done (`lib/rate-limit.ts`):**
+- Per-limiter `failClosed` flag — ON for `auth`, `send`, `ai` (abuse/spend-sensitive); OFF for `read`/`general`.
+- A bounded per-instance **in-memory fallback limiter** so fail-closed limiters still enforce caps when Upstash isn't configured (local/CI/current prod) instead of allowing everything.
+- On a store ERROR, fail-closed limiters fall back to the in-memory limiter and reject if over (instead of blanket-allow); fail-open limiters still pass through.
+- `withRateLimit` accepts a limiter key (`"auth"`) or the legacy instance; existing callers keep working.
+- Unit tests in `tests/unit/rate-limit.test.ts`.
+
 ## ⬜ Remaining enterprise gaps (in priority order)
 6. **Data retention / e-discovery / legal hold** — none. Required for a law-firm SaaS.
 7. **Rate limiting** — single Upstash limiter that fails open; needs per-route policy and a fail-closed option for auth endpoints.
