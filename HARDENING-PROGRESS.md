@@ -58,6 +58,14 @@ Correction to my earlier analysis: `@sentry/nextjs` IS fully integrated — `ins
 - `withRateLimit` accepts a limiter key (`"auth"`) or the legacy instance; existing callers keep working.
 - Unit tests in `tests/unit/rate-limit.test.ts`.
 
+### 8. Sync/provider test coverage (started)
+**Was:** the provider transform/parse helpers — exactly where this session's real bugs lived (header-injection escaping, timezone-naive datetime parsing, cid/image rewriting, base64url) — were unexported and untested.
+**Done:**
+- Extracted `formatAddress` + `parseGraphDateTime` into `lib/providers/mime-helpers.ts` (pure, dependency-free) and pointed imap.ts / calendar-sync.ts at it (behavior-preserving).
+- `tests/unit/provider-helpers.test.ts` (14 tests): header-injection escaping incl. the `Evil" <attacker@…>` breakout case; offset-less Graph datetime parsed as UTC; provider-type routing; `proxyExternalImages` rewrites http(s) but skips cid/data/blob/relative/api; AES-256-GCM round-trip, fresh-IV, and tamper-rejection.
+- Total unit tests now 215 (was 100 at the start of hardening).
+**Still open:** the four `sync*()` orchestration entry points remain integration-shaped (Prisma + live providers) — best covered by a seeded integration harness rather than heavy mocking; deferred.
+
 ## ⬜ Remaining enterprise gaps (in priority order)
 6. **Data retention / e-discovery / legal hold** — none. Required for a law-firm SaaS.
 7. **Rate limiting** — single Upstash limiter that fails open; needs per-route policy and a fail-closed option for auth endpoints.

@@ -8,6 +8,7 @@ import * as nodemailer from "nodemailer";
 import { simpleParser, type ParsedMail, type AddressObject } from "mailparser";
 import { prisma } from "@/lib/prisma";
 import { decryptCredential } from "./crypto";
+import { formatAddress } from "./mime-helpers";
 import type {
   EmailProvider,
   NormalizedEmail,
@@ -121,14 +122,9 @@ function imapFolderId(accountId: string, folderPath: string): string {
 }
 
 /**
- * Format a recipient for SMTP headers. Escapes quotes/backslashes inside the
- * quoted display name; emits a bare address when no name is present.
+ * formatAddress (SMTP header recipient formatting) lives in ./mime-helpers —
+ * pure and unit-tested for header-injection safety.
  */
-function formatAddress(r: { name?: string | null; address: string }): string {
-  if (!r.name) return r.address;
-  const escaped = r.name.replace(/(["\\])/g, "\\$1");
-  return `"${escaped}" <${r.address}>`;
-}
 
 /** Extract recipients from an AddressObject */
 function extractRecipients(

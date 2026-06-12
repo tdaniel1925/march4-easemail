@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { detectProviderType } from "@/lib/providers/registry";
 import { JmapProvider } from "@/lib/providers/jmap";
 import type { NormalizedCalendarEvent } from "@/lib/providers/types";
+import { parseGraphDateTime } from "@/lib/providers/mime-helpers";
 
 const GRAPH_BASE = "https://graph.microsoft.com/v1.0";
 const CALENDAR_DELTA_KEY = "calendar";
@@ -11,13 +12,6 @@ const MAX_PAGES = 100;
 // which are automatically included when selecting start and end
 const CAL_SELECT =
   "id,subject,bodyPreview,start,end,isAllDay,location,organizer,responseStatus,onlineMeeting,attendees,recurrence";
-
-// Graph delta returns start/end dateTime as NAIVE strings (no offset/Z) in
-// UTC. new Date() would parse them as server-local time — append "Z" first.
-function parseGraphDateTime(dateTime: string): Date {
-  const hasOffset = /Z$|[+-]\d{2}:\d{2}$/i.test(dateTime);
-  return new Date(hasOffset ? dateTime : `${dateTime}Z`);
-}
 
 interface CalDeltaResponse {
   value: CalDeltaItem[];
