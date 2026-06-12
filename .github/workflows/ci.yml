@@ -1,0 +1,66 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+# Cancel superseded runs on the same ref to save minutes.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: type-check · lint · unit · build
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      # Build/codegen need these present but not necessarily reachable.
+      # prisma generate reads the schema only; next build runs no live queries.
+      DATABASE_URL: "postgresql://user:pass@localhost:5432/db?pgbouncer=true"
+      DIRECT_URL: "postgresql://user:pass@localhost:5432/db"
+      NEXT_PUBLIC_SUPABASE_URL: "https://example.supabase.co"
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: "ci-placeholder-anon-key"
+      SUPABASE_SERVICE_ROLE_KEY: "ci-placeholder-service-key"
+      CREDENTIAL_ENCRYPTION_KEY: "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
+      CRON_SECRET: "ci-cron-secret"
+      MICROSOFT_CLIENT_ID: "ci-client-id"
+      MICROSOFT_CLIENT_SECRET: "ci-client-secret"
+      MICROSOFT_TENANT_ID: "common"
+      MICROSOFT_REDIRECT_URI: "http://localhost:4000/api/auth/microsoft/callback"
+      ANTHROPIC_API_KEY: "ci-placeholder"
+      NEXT_TELEMETRY_DISABLED: "1"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.2
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Generate Prisma client
+        run: pnpm exec prisma generate
+
+      - name: Type check
+        run: pnpm run type-check
+
+      - name: Lint
+        run: pnpm run lint
+
+      - name: Unit tests (incl. tenant-isolation guard)
+        run: pnpm run test:unit -- --run
+
+      - name: Build
+        run: pnpm run build

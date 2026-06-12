@@ -5,6 +5,7 @@ import { graphFetch } from "@/lib/microsoft/graph";
 import { withRateLimit, rateLimiters } from "@/lib/rate-limit";
 import { verifyAccountOwnership, detectProviderType, getProvider } from "@/lib/providers/registry";
 import type { SendEmailParams } from "@/lib/providers/types";
+import { audit } from "@/lib/audit";
 import { z } from "zod";
 
 const recipientSchema = z.object({
@@ -112,14 +113,19 @@ async function sendEmailHandler(req: NextRequest) {
       };
       await provider.sendEmail(user.id, accountId, params);
 
-      // Delete local draft after successful send
+      // Delete local draft after successful send (tenant-scoped delete).
       if (draftId) {
-        const draft = await prisma.draft.findFirst({ where: { id: draftId, userId: user.id } });
-        if (draft) {
-          await prisma.draft.delete({ where: { id: draftId } });
-        }
+        await prisma.draft.deleteMany({ where: { id: draftId, userId: user.id } });
       }
 
+      void audit({
+        action: "email.send",
+        userId: user.id,
+        actorEmail: user.email,
+        target: accountId,
+        metadata: { provider: providerType, recipientCount: to.length, hasAttachments: (attachments ?? []).length > 0 },
+        req,
+      });
       return NextResponse.json({ ok: true });
     } catch (err) {
       console.error("[send] provider error:", String(err));
@@ -173,9 +179,18 @@ async function sendEmailHandler(req: NextRequest) {
           });
         } catch {}
       }
-      await prisma.draft.delete({ where: { id: draftId } });
+      await prisma.draft.deleteMany({ where: { id: draftId, userId: user.id } });
     }
   }
+
+  void audit({
+    action: "email.send",
+    userId: user.id,
+    actorEmail: user.email,
+    target: accountId,
+    metadata: { provider: "microsoft", recipientCount: to.length, hasAttachments: (attachments ?? []).length > 0 },
+    req,
+  });
 
   // ── Cache sent email locally for immediate Sent folder visibility ─────────
   try {

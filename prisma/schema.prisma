@@ -714,3 +714,26 @@ model PendingEmail {
   @@index([userId, sendAt, cancelled])
   @@map("pending_emails")
 }
+
+// ─── Audit Log ───────────────────────────────────────────────────────────────
+// Append-only record of security- and compliance-relevant actions (who did
+// what, when, from where). Required for a legal/enterprise product. Never
+// updated or deleted by application code; retained per the org's policy.
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  userId    String?  // null for unauthenticated/system events
+  orgId     String?  // tenant, when known — enables per-org audit export
+  actorEmail String? // denormalized for readability even if the user is later removed
+  action    String   // e.g. "email.send", "account.disconnect", "auth.signin"
+  target    String?  // affected entity id (messageId, accountId, ruleId, …)
+  metadata  Json?    // small, non-sensitive context (never email bodies/credentials)
+  ip        String?
+  userAgent String?
+  createdAt DateTime @default(now())
+
+  @@index([userId, createdAt(sort: Desc)])
+  @@index([orgId, createdAt(sort: Desc)])
+  @@index([action, createdAt(sort: Desc)])
+  @@map("audit_logs")
+}

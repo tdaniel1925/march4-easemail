@@ -88,7 +88,10 @@ export async function POST(req: NextRequest) {
 
     if (!messageId) continue;
 
-    // Scope the update to the user that owns the subscription when derivable
+    // Resolve the user that owns the subscription. Tenant isolation: we MUST
+    // scope the write by userId. If the owner can't be resolved, SKIP the write
+    // rather than fall back to an all-tenant messageId-only update — a missed
+    // read receipt is harmless; a cross-tenant write is not.
     let ownerUserId: string | null = null;
     if (notification.subscriptionId) {
       try {
@@ -97,21 +100,24 @@ export async function POST(req: NextRequest) {
         });
         if (sub) ownerUserId = sub.userId;
       } catch {
-        // Lookup failure — fall back to messageId-only scope (clientState already validated)
+        // fall through — ownerUserId stays null and we skip below
       }
     }
 
-    const ownerScope = ownerUserId ? { userId: ownerUserId } : {};
+    if (!ownerUserId) {
+      // Cannot prove tenant ownership → do not write.
+      continue;
+    }
 
     try {
       if (isRead) {
         await prisma.readReceipt.updateMany({
-          where: { messageId, ...ownerScope, readAt: null },
+          where: { messageId, userId: ownerUserId, readAt: null },
           data: { readAt: new Date() },
         });
       } else {
         await prisma.readReceipt.updateMany({
-          where: { messageId, ...ownerScope, deliveredAt: null },
+          where: { messageId, userId: ownerUserId, deliveredAt: null },
           data: { deliveredAt: new Date() },
         });
       }

@@ -29,9 +29,14 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Some rules not found" }, { status: 404 });
   }
 
-  await Promise.all(
+  // Scope each write by userId as well, so it is tenant-safe by construction
+  // (not only because of the ownership check above).
+  await prisma.$transaction(
     ids.map((id, idx) =>
-      prisma.emailRule.update({ where: { id }, data: { priority: idx + 1 } })
+      prisma.emailRule.updateMany({
+        where: { id, userId: user.id },
+        data: { priority: idx + 1 },
+      })
     )
   );
 

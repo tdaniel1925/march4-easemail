@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { createMsalClient } from "@/lib/microsoft/msal";
 import { graphFetch } from "@/lib/microsoft/graph";
 import { detectProviderType } from "@/lib/providers/registry";
+import { audit } from "@/lib/audit";
 import { z } from "zod";
 
 const disconnectSchema = z.object({
@@ -59,6 +60,14 @@ export async function POST(req: NextRequest) {
       });
     }
 
+    void audit({
+      action: "account.disconnect",
+      userId: user.id,
+      actorEmail: user.email,
+      target: homeAccountId,
+      metadata: { provider: providerType },
+      req,
+    });
     return NextResponse.json({ ok: true });
   }
 
@@ -95,6 +104,14 @@ export async function POST(req: NextRequest) {
       });
     }
 
+    void audit({
+      action: "account.disconnect",
+      userId: user.id,
+      actorEmail: user.email,
+      target: homeAccountId,
+      metadata: { provider: providerType },
+      req,
+    });
     return NextResponse.json({ ok: true });
   }
 
