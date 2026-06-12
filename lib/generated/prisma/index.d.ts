@@ -5992,6 +5992,7 @@ export namespace Prisma {
     createdAt: Date | null
     updatedAt: Date | null
     orgId: string | null
+    role: string | null
     notificationNewEmail: boolean | null
     notificationDailyDigest: boolean | null
     notificationAiReplies: boolean | null
@@ -6015,6 +6016,7 @@ export namespace Prisma {
     createdAt: Date | null
     updatedAt: Date | null
     orgId: string | null
+    role: string | null
     notificationNewEmail: boolean | null
     notificationDailyDigest: boolean | null
     notificationAiReplies: boolean | null
@@ -6038,6 +6040,7 @@ export namespace Prisma {
     createdAt: number
     updatedAt: number
     orgId: number
+    role: number
     notificationNewEmail: number
     notificationDailyDigest: number
     notificationAiReplies: number
@@ -6072,6 +6075,7 @@ export namespace Prisma {
     createdAt?: true
     updatedAt?: true
     orgId?: true
+    role?: true
     notificationNewEmail?: true
     notificationDailyDigest?: true
     notificationAiReplies?: true
@@ -6095,6 +6099,7 @@ export namespace Prisma {
     createdAt?: true
     updatedAt?: true
     orgId?: true
+    role?: true
     notificationNewEmail?: true
     notificationDailyDigest?: true
     notificationAiReplies?: true
@@ -6118,6 +6123,7 @@ export namespace Prisma {
     createdAt?: true
     updatedAt?: true
     orgId?: true
+    role?: true
     notificationNewEmail?: true
     notificationDailyDigest?: true
     notificationAiReplies?: true
@@ -6229,6 +6235,7 @@ export namespace Prisma {
     createdAt: Date
     updatedAt: Date
     orgId: string
+    role: string
     notificationNewEmail: boolean
     notificationDailyDigest: boolean
     notificationAiReplies: boolean
@@ -6272,6 +6279,7 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     orgId?: boolean
+    role?: boolean
     notificationNewEmail?: boolean
     notificationDailyDigest?: boolean
     notificationAiReplies?: boolean
@@ -6323,6 +6331,7 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     orgId?: boolean
+    role?: boolean
     notificationNewEmail?: boolean
     notificationDailyDigest?: boolean
     notificationAiReplies?: boolean
@@ -6348,6 +6357,7 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     orgId?: boolean
+    role?: boolean
     notificationNewEmail?: boolean
     notificationDailyDigest?: boolean
     notificationAiReplies?: boolean
@@ -6373,6 +6383,7 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     orgId?: boolean
+    role?: boolean
     notificationNewEmail?: boolean
     notificationDailyDigest?: boolean
     notificationAiReplies?: boolean
@@ -6389,7 +6400,7 @@ export namespace Prisma {
     voiceProfileUpdatedAt?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "name" | "avatarUrl" | "createdAt" | "updatedAt" | "orgId" | "notificationNewEmail" | "notificationDailyDigest" | "notificationAiReplies" | "notificationCalendarReminders" | "notificationWeeklyReport" | "appTheme" | "fontSize" | "emailDensity" | "preferredTimeZone" | "lastActiveAccountId" | "undoSendDelay" | "defaultSensitivityLabel" | "voiceProfile" | "voiceProfileUpdatedAt", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "name" | "avatarUrl" | "createdAt" | "updatedAt" | "orgId" | "role" | "notificationNewEmail" | "notificationDailyDigest" | "notificationAiReplies" | "notificationCalendarReminders" | "notificationWeeklyReport" | "appTheme" | "fontSize" | "emailDensity" | "preferredTimeZone" | "lastActiveAccountId" | "undoSendDelay" | "defaultSensitivityLabel" | "voiceProfile" | "voiceProfileUpdatedAt", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     org?: boolean | OrganizationDefaultArgs<ExtArgs>
     msAccounts?: boolean | User$msAccountsArgs<ExtArgs>
@@ -6464,6 +6475,7 @@ export namespace Prisma {
       createdAt: Date
       updatedAt: Date
       orgId: string
+      role: string
       notificationNewEmail: boolean
       notificationDailyDigest: boolean
       notificationAiReplies: boolean
@@ -6934,6 +6946,7 @@ export namespace Prisma {
     readonly createdAt: FieldRef<"User", 'DateTime'>
     readonly updatedAt: FieldRef<"User", 'DateTime'>
     readonly orgId: FieldRef<"User", 'String'>
+    readonly role: FieldRef<"User", 'String'>
     readonly notificationNewEmail: FieldRef<"User", 'Boolean'>
     readonly notificationDailyDigest: FieldRef<"User", 'Boolean'>
     readonly notificationAiReplies: FieldRef<"User", 'Boolean'>
@@ -39093,6 +39106,7 @@ export namespace Prisma {
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
     orgId: 'orgId',
+    role: 'role',
     notificationNewEmail: 'notificationNewEmail',
     notificationDailyDigest: 'notificationDailyDigest',
     notificationAiReplies: 'notificationAiReplies',
@@ -39869,6 +39883,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
     orgId?: StringFilter<"User"> | string
+    role?: StringFilter<"User"> | string
     notificationNewEmail?: BoolFilter<"User"> | boolean
     notificationDailyDigest?: BoolFilter<"User"> | boolean
     notificationAiReplies?: BoolFilter<"User"> | boolean
@@ -39919,6 +39934,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     orgId?: SortOrder
+    role?: SortOrder
     notificationNewEmail?: SortOrder
     notificationDailyDigest?: SortOrder
     notificationAiReplies?: SortOrder
@@ -39972,6 +39988,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
     orgId?: StringFilter<"User"> | string
+    role?: StringFilter<"User"> | string
     notificationNewEmail?: BoolFilter<"User"> | boolean
     notificationDailyDigest?: BoolFilter<"User"> | boolean
     notificationAiReplies?: BoolFilter<"User"> | boolean
@@ -40022,6 +40039,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     orgId?: SortOrder
+    role?: SortOrder
     notificationNewEmail?: SortOrder
     notificationDailyDigest?: SortOrder
     notificationAiReplies?: SortOrder
@@ -40054,6 +40072,7 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
     orgId?: StringWithAggregatesFilter<"User"> | string
+    role?: StringWithAggregatesFilter<"User"> | string
     notificationNewEmail?: BoolWithAggregatesFilter<"User"> | boolean
     notificationDailyDigest?: BoolWithAggregatesFilter<"User"> | boolean
     notificationAiReplies?: BoolWithAggregatesFilter<"User"> | boolean
@@ -42673,6 +42692,7 @@ export namespace Prisma {
     avatarUrl?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    role?: string
     notificationNewEmail?: boolean
     notificationDailyDigest?: boolean
     notificationAiReplies?: boolean
@@ -42723,6 +42743,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     orgId: string
+    role?: string
     notificationNewEmail?: boolean
     notificationDailyDigest?: boolean
     notificationAiReplies?: boolean
@@ -42771,6 +42792,7 @@ export namespace Prisma {
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    role?: StringFieldUpdateOperationsInput | string
     notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
     notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
     notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
@@ -42821,6 +42843,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orgId?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
     notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
     notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
     notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
@@ -42870,6 +42893,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     orgId: string
+    role?: string
     notificationNewEmail?: boolean
     notificationDailyDigest?: boolean
     notificationAiReplies?: boolean
@@ -42893,6 +42917,7 @@ export namespace Prisma {
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    role?: StringFieldUpdateOperationsInput | string
     notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
     notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
     notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
@@ -42917,6 +42942,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orgId?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
     notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
     notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
     notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
@@ -46229,6 +46255,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     orgId?: SortOrder
+    role?: SortOrder
     notificationNewEmail?: SortOrder
     notificationDailyDigest?: SortOrder
     notificationAiReplies?: SortOrder
@@ -46257,6 +46284,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     orgId?: SortOrder
+    role?: SortOrder
     notificationNewEmail?: SortOrder
     notificationDailyDigest?: SortOrder
     notificationAiReplies?: SortOrder
@@ -46280,6 +46308,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     orgId?: SortOrder
+    role?: SortOrder
     notificationNewEmail?: SortOrder
     notificationDailyDigest?: SortOrder
     notificationAiReplies?: SortOrder
@@ -49545,6 +49574,7 @@ export namespace Prisma {
     avatarUrl?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    role?: string
     notificationNewEmail?: boolean
     notificationDailyDigest?: boolean
     notificationAiReplies?: boolean
@@ -49593,6 +49623,7 @@ export namespace Prisma {
     avatarUrl?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    role?: string
     notificationNewEmail?: boolean
     notificationDailyDigest?: boolean
     notificationAiReplies?: boolean
@@ -49699,6 +49730,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
     orgId?: StringFilter<"User"> | string
+    role?: StringFilter<"User"> | string
     notificationNewEmail?: BoolFilter<"User"> | boolean
     notificationDailyDigest?: BoolFilter<"User"> | boolean
     notificationAiReplies?: BoolFilter<"User"> | boolean
@@ -51680,6 +51712,7 @@ export namespace Prisma {
     avatarUrl?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    role?: string
     notificationNewEmail?: boolean
     notificationDailyDigest?: boolean
     notificationAiReplies?: boolean
@@ -51729,6 +51762,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     orgId: string
+    role?: string
     notificationNewEmail?: boolean
     notificationDailyDigest?: boolean
     notificationAiReplies?: boolean
@@ -51792,6 +51826,7 @@ export namespace Prisma {
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    role?: StringFieldUpdateOperationsInput | string
     notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
     notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
     notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
@@ -51841,6 +51876,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orgId?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
     notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
     notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
     notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
@@ -51888,6 +51924,7 @@ export namespace Prisma {
     avatarUrl?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    role?: string
     notificationNewEmail?: boolean
     notificationDailyDigest?: boolean
     notificationAiReplies?: boolean
@@ -51937,6 +51974,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     orgId: string
+    role?: string
     notificationNewEmail?: boolean
     notificationDailyDigest?: boolean
     notificationAiReplies?: boolean
@@ -52000,6 +52038,7 @@ export namespace Prisma {
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    role?: StringFieldUpdateOperationsInput | string
     notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
     notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
     notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
@@ -52049,6 +52088,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orgId?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
     notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
     notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
     notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
@@ -52096,6 +52136,7 @@ export namespace Prisma {
     avatarUrl?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    role?: string
     notificationNewEmail?: boolean
     notificationDailyDigest?: boolean
     notificationAiReplies?: boolean
@@ -52145,6 +52186,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     orgId: string
+    role?: string
     notificationNewEmail?: boolean
     notificationDailyDigest?: boolean
     notificationAiReplies?: boolean
@@ -52208,6 +52250,7 @@ export namespace Prisma {
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    role?: StringFieldUpdateOperationsInput | string
     notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
     notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
     notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
@@ -52257,6 +52300,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orgId?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
     notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
     notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
     notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
@@ -52304,6 +52348,7 @@ export namespace Prisma {
     avatarUrl?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    role?: string
     notificationNewEmail?: boolean
     notificationDailyDigest?: boolean
     notificationAiReplies?: boolean
@@ -52353,6 +52398,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     orgId: string
+    role?: string
     notificationNewEmail?: boolean
     notificationDailyDigest?: boolean
     notificationAiReplies?: boolean
@@ -52416,6 +52462,7 @@ export namespace Prisma {
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    role?: StringFieldUpdateOperationsInput | string
     notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
     notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
     notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
@@ -52465,6 +52512,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orgId?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
     notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
     notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
     notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
@@ -52512,6 +52560,7 @@ export namespace Prisma {
     avatarUrl?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    role?: string
     notificationNewEmail?: boolean
     notificationDailyDigest?: boolean
     notificationAiReplies?: boolean
@@ -52561,6 +52610,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     orgId: string
+    role?: string
     notificationNewEmail?: boolean
     notificationDailyDigest?: boolean
     notificationAiReplies?: boolean
@@ -52624,6 +52674,7 @@ export namespace Prisma {
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    role?: StringFieldUpdateOperationsInput | string
     notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
     notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
     notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
@@ -52673,6 +52724,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orgId?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
     notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
     notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
     notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
@@ -52720,6 +52772,7 @@ export namespace Prisma {
     avatarUrl?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    role?: string
     notificationNewEmail?: boolean
     notificationDailyDigest?: boolean
     notificationAiReplies?: boolean
@@ -52769,6 +52822,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     orgId: string
+    role?: string
     notificationNewEmail?: boolean
     notificationDailyDigest?: boolean
     notificationAiReplies?: boolean
@@ -52832,6 +52886,7 @@ export namespace Prisma {
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    role?: StringFieldUpdateOperationsInput | string
     notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
     notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
     notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
@@ -52881,6 +52936,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orgId?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
     notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
     notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
     notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
@@ -52928,6 +52984,7 @@ export namespace Prisma {
     avatarUrl?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    role?: string
     notificationNewEmail?: boolean
     notificationDailyDigest?: boolean
     notificationAiReplies?: boolean
@@ -52977,6 +53034,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     orgId: string
+    role?: string
     notificationNewEmail?: boolean
     notificationDailyDigest?: boolean
     notificationAiReplies?: boolean
@@ -53040,6 +53098,7 @@ export namespace Prisma {
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    role?: StringFieldUpdateOperationsInput | string
     notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
     notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
     notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
@@ -53089,6 +53148,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orgId?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
     notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
     notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
     notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
@@ -53136,6 +53196,7 @@ export namespace Prisma {
     avatarUrl?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    role?: string
     notificationNewEmail?: boolean
     notificationDailyDigest?: boolean
     notificationAiReplies?: boolean
@@ -53185,6 +53246,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     orgId: string
+    role?: string
     notificationNewEmail?: boolean
     notificationDailyDigest?: boolean
     notificationAiReplies?: boolean
@@ -53248,6 +53310,7 @@ export namespace Prisma {
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    role?: StringFieldUpdateOperationsInput | string
     notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
     notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
     notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
@@ -53297,6 +53360,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orgId?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
     notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
     notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
     notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
@@ -53344,6 +53408,7 @@ export namespace Prisma {
     avatarUrl?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    role?: string
     notificationNewEmail?: boolean
     notificationDailyDigest?: boolean
     notificationAiReplies?: boolean
@@ -53393,6 +53458,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     orgId: string
+    role?: string
     notificationNewEmail?: boolean
     notificationDailyDigest?: boolean
     notificationAiReplies?: boolean
@@ -53456,6 +53522,7 @@ export namespace Prisma {
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    role?: StringFieldUpdateOperationsInput | string
     notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
     notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
     notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
@@ -53505,6 +53572,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orgId?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
     notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
     notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
     notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
@@ -53552,6 +53620,7 @@ export namespace Prisma {
     avatarUrl?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    role?: string
     notificationNewEmail?: boolean
     notificationDailyDigest?: boolean
     notificationAiReplies?: boolean
@@ -53601,6 +53670,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     orgId: string
+    role?: string
     notificationNewEmail?: boolean
     notificationDailyDigest?: boolean
     notificationAiReplies?: boolean
@@ -53664,6 +53734,7 @@ export namespace Prisma {
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    role?: StringFieldUpdateOperationsInput | string
     notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
     notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
     notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
@@ -53713,6 +53784,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orgId?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
     notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
     notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
     notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
@@ -53760,6 +53832,7 @@ export namespace Prisma {
     avatarUrl?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    role?: string
     notificationNewEmail?: boolean
     notificationDailyDigest?: boolean
     notificationAiReplies?: boolean
@@ -53809,6 +53882,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     orgId: string
+    role?: string
     notificationNewEmail?: boolean
     notificationDailyDigest?: boolean
     notificationAiReplies?: boolean
@@ -53872,6 +53946,7 @@ export namespace Prisma {
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    role?: StringFieldUpdateOperationsInput | string
     notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
     notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
     notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
@@ -53921,6 +53996,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orgId?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
     notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
     notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
     notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
@@ -53968,6 +54044,7 @@ export namespace Prisma {
     avatarUrl?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    role?: string
     notificationNewEmail?: boolean
     notificationDailyDigest?: boolean
     notificationAiReplies?: boolean
@@ -54017,6 +54094,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     orgId: string
+    role?: string
     notificationNewEmail?: boolean
     notificationDailyDigest?: boolean
     notificationAiReplies?: boolean
@@ -54080,6 +54158,7 @@ export namespace Prisma {
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    role?: StringFieldUpdateOperationsInput | string
     notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
     notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
     notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
@@ -54129,6 +54208,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orgId?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
     notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
     notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
     notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
@@ -54176,6 +54256,7 @@ export namespace Prisma {
     avatarUrl?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    role?: string
     notificationNewEmail?: boolean
     notificationDailyDigest?: boolean
     notificationAiReplies?: boolean
@@ -54225,6 +54306,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     orgId: string
+    role?: string
     notificationNewEmail?: boolean
     notificationDailyDigest?: boolean
     notificationAiReplies?: boolean
@@ -54288,6 +54370,7 @@ export namespace Prisma {
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    role?: StringFieldUpdateOperationsInput | string
     notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
     notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
     notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
@@ -54337,6 +54420,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orgId?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
     notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
     notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
     notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
@@ -54384,6 +54468,7 @@ export namespace Prisma {
     avatarUrl?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    role?: string
     notificationNewEmail?: boolean
     notificationDailyDigest?: boolean
     notificationAiReplies?: boolean
@@ -54433,6 +54518,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     orgId: string
+    role?: string
     notificationNewEmail?: boolean
     notificationDailyDigest?: boolean
     notificationAiReplies?: boolean
@@ -54496,6 +54582,7 @@ export namespace Prisma {
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    role?: StringFieldUpdateOperationsInput | string
     notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
     notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
     notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
@@ -54545,6 +54632,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orgId?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
     notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
     notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
     notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
@@ -54592,6 +54680,7 @@ export namespace Prisma {
     avatarUrl?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    role?: string
     notificationNewEmail?: boolean
     notificationDailyDigest?: boolean
     notificationAiReplies?: boolean
@@ -54641,6 +54730,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     orgId: string
+    role?: string
     notificationNewEmail?: boolean
     notificationDailyDigest?: boolean
     notificationAiReplies?: boolean
@@ -54704,6 +54794,7 @@ export namespace Prisma {
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    role?: StringFieldUpdateOperationsInput | string
     notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
     notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
     notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
@@ -54753,6 +54844,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orgId?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
     notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
     notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
     notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
@@ -54800,6 +54892,7 @@ export namespace Prisma {
     avatarUrl?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    role?: string
     notificationNewEmail?: boolean
     notificationDailyDigest?: boolean
     notificationAiReplies?: boolean
@@ -54849,6 +54942,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     orgId: string
+    role?: string
     notificationNewEmail?: boolean
     notificationDailyDigest?: boolean
     notificationAiReplies?: boolean
@@ -54912,6 +55006,7 @@ export namespace Prisma {
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    role?: StringFieldUpdateOperationsInput | string
     notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
     notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
     notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
@@ -54961,6 +55056,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orgId?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
     notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
     notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
     notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
@@ -55008,6 +55104,7 @@ export namespace Prisma {
     avatarUrl?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    role?: string
     notificationNewEmail?: boolean
     notificationDailyDigest?: boolean
     notificationAiReplies?: boolean
@@ -55057,6 +55154,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     orgId: string
+    role?: string
     notificationNewEmail?: boolean
     notificationDailyDigest?: boolean
     notificationAiReplies?: boolean
@@ -55120,6 +55218,7 @@ export namespace Prisma {
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    role?: StringFieldUpdateOperationsInput | string
     notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
     notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
     notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
@@ -55169,6 +55268,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orgId?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
     notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
     notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
     notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
@@ -55216,6 +55316,7 @@ export namespace Prisma {
     avatarUrl?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    role?: string
     notificationNewEmail?: boolean
     notificationDailyDigest?: boolean
     notificationAiReplies?: boolean
@@ -55265,6 +55366,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     orgId: string
+    role?: string
     notificationNewEmail?: boolean
     notificationDailyDigest?: boolean
     notificationAiReplies?: boolean
@@ -55328,6 +55430,7 @@ export namespace Prisma {
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    role?: StringFieldUpdateOperationsInput | string
     notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
     notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
     notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
@@ -55377,6 +55480,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orgId?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
     notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
     notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
     notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
@@ -55424,6 +55528,7 @@ export namespace Prisma {
     avatarUrl?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    role?: string
     notificationNewEmail?: boolean
     notificationDailyDigest?: boolean
     notificationAiReplies?: boolean
@@ -55473,6 +55578,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     orgId: string
+    role?: string
     notificationNewEmail?: boolean
     notificationDailyDigest?: boolean
     notificationAiReplies?: boolean
@@ -55536,6 +55642,7 @@ export namespace Prisma {
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    role?: StringFieldUpdateOperationsInput | string
     notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
     notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
     notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
@@ -55585,6 +55692,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orgId?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
     notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
     notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
     notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
@@ -55632,6 +55740,7 @@ export namespace Prisma {
     avatarUrl?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    role?: string
     notificationNewEmail?: boolean
     notificationDailyDigest?: boolean
     notificationAiReplies?: boolean
@@ -55681,6 +55790,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     orgId: string
+    role?: string
     notificationNewEmail?: boolean
     notificationDailyDigest?: boolean
     notificationAiReplies?: boolean
@@ -55744,6 +55854,7 @@ export namespace Prisma {
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    role?: StringFieldUpdateOperationsInput | string
     notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
     notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
     notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
@@ -55793,6 +55904,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orgId?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
     notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
     notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
     notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
@@ -55840,6 +55952,7 @@ export namespace Prisma {
     avatarUrl?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    role?: string
     notificationNewEmail?: boolean
     notificationDailyDigest?: boolean
     notificationAiReplies?: boolean
@@ -55889,6 +56002,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     orgId: string
+    role?: string
     notificationNewEmail?: boolean
     notificationDailyDigest?: boolean
     notificationAiReplies?: boolean
@@ -55952,6 +56066,7 @@ export namespace Prisma {
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    role?: StringFieldUpdateOperationsInput | string
     notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
     notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
     notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
@@ -56001,6 +56116,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orgId?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
     notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
     notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
     notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
@@ -56048,6 +56164,7 @@ export namespace Prisma {
     avatarUrl?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    role?: string
     notificationNewEmail?: boolean
     notificationDailyDigest?: boolean
     notificationAiReplies?: boolean
@@ -56097,6 +56214,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     orgId: string
+    role?: string
     notificationNewEmail?: boolean
     notificationDailyDigest?: boolean
     notificationAiReplies?: boolean
@@ -56160,6 +56278,7 @@ export namespace Prisma {
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    role?: StringFieldUpdateOperationsInput | string
     notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
     notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
     notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
@@ -56209,6 +56328,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orgId?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
     notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
     notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
     notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
@@ -56256,6 +56376,7 @@ export namespace Prisma {
     avatarUrl?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    role?: string
     notificationNewEmail?: boolean
     notificationDailyDigest?: boolean
     notificationAiReplies?: boolean
@@ -56305,6 +56426,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     orgId: string
+    role?: string
     notificationNewEmail?: boolean
     notificationDailyDigest?: boolean
     notificationAiReplies?: boolean
@@ -56368,6 +56490,7 @@ export namespace Prisma {
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    role?: StringFieldUpdateOperationsInput | string
     notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
     notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
     notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
@@ -56417,6 +56540,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orgId?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
     notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
     notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
     notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
@@ -56464,6 +56588,7 @@ export namespace Prisma {
     avatarUrl?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    role?: string
     notificationNewEmail?: boolean
     notificationDailyDigest?: boolean
     notificationAiReplies?: boolean
@@ -56513,6 +56638,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     orgId: string
+    role?: string
     notificationNewEmail?: boolean
     notificationDailyDigest?: boolean
     notificationAiReplies?: boolean
@@ -56576,6 +56702,7 @@ export namespace Prisma {
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    role?: StringFieldUpdateOperationsInput | string
     notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
     notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
     notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
@@ -56625,6 +56752,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orgId?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
     notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
     notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
     notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
@@ -56672,6 +56800,7 @@ export namespace Prisma {
     avatarUrl?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    role?: string
     notificationNewEmail?: boolean
     notificationDailyDigest?: boolean
     notificationAiReplies?: boolean
@@ -56721,6 +56850,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     orgId: string
+    role?: string
     notificationNewEmail?: boolean
     notificationDailyDigest?: boolean
     notificationAiReplies?: boolean
@@ -56784,6 +56914,7 @@ export namespace Prisma {
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    role?: StringFieldUpdateOperationsInput | string
     notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
     notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
     notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
@@ -56833,6 +56964,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orgId?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
     notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
     notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
     notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
@@ -56880,6 +57012,7 @@ export namespace Prisma {
     avatarUrl?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    role?: string
     notificationNewEmail?: boolean
     notificationDailyDigest?: boolean
     notificationAiReplies?: boolean
@@ -56912,6 +57045,7 @@ export namespace Prisma {
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    role?: StringFieldUpdateOperationsInput | string
     notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
     notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
     notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
@@ -56960,6 +57094,7 @@ export namespace Prisma {
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    role?: StringFieldUpdateOperationsInput | string
     notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
     notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
     notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
@@ -57008,6 +57143,7 @@ export namespace Prisma {
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    role?: StringFieldUpdateOperationsInput | string
     notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
     notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
     notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean

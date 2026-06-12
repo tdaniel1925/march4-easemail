@@ -56,6 +56,11 @@ model User {
   orgId String
   org   Organization @relation(fields: [orgId], references: [id])
 
+  // RBAC role within the org. "member" (default) | "org_admin" | "super_admin".
+  // super_admin is bootstrapped from the ADMIN_EMAILS allowlist; org_admin is
+  // granted by a super_admin / existing org_admin and is scoped to its own org.
+  role String @default("member")
+
   // Notification preferences
   notificationNewEmail          Boolean @default(true)
   notificationDailyDigest       Boolean @default(false)

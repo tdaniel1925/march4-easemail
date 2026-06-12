@@ -27,10 +27,21 @@ Correction to my earlier analysis: `@sentry/nextjs` IS fully integrated — `ins
 ### Deploy/migrations (fixed earlier today)
 `GET /api/cron/migrate` applies pending SQL migrations through the pooler (the Vercel build can't reach the direct DB port). Auto-runs every 10 min. See memory `easemail-deploy-db`.
 
-## ⬜ Remaining enterprise gaps (in priority order)
+## ✅ Done (cont.)
 
-4. **Audit logging** — no record of who did what (critical for a legal product / compliance). Add an append-only `AuditLog` (actor, action, target, timestamp, ip) written on every mutation + auth event.
-5. **RBAC / org admin** — `isAdminEmail` is a global allowlist; there's no per-org admin role or member management.
+### 4. Audit logging — see item 4 above (append-only AuditLog + lib/audit.ts, wired into send/disconnect/signout + admin actions).
+
+### 5. RBAC / per-org admin
+**Was:** `isAdminEmail` global env allowlist, used in 3 places; org_admins reaching admin surfaces would have seen ALL tenants' data.
+**Done:**
+- `User.role` column (`member` | `org_admin` | `super_admin`) + idempotent migration (applied to prod via the pooler; all 11 users default to `member`).
+- `lib/rbac.ts`: `getAuthContext` (resolves effective role; ADMIN_EMAILS bootstraps super_admin so the owner never locks out), `requireRole`/`requireOrgAdmin`/`requireSuperAdmin`, `canActOnOrg`, `roleAtLeast`. Pure-logic unit tests in `tests/unit/rbac.test.ts`.
+- Admin signature routes (`/api/admin/signatures`, `[id]`) migrated off the global allowlist to `requireOrgAdmin` + `canActOnOrg` org-scoping; GET/list now filtered to the admin's org unless super_admin.
+- `app/admin/page.tsx` gated by role and **all cross-user queries org-scoped** (users, sync stats, rules, signatures) — an org_admin sees only their tenant.
+- New `PATCH /api/admin/users/[id]/role` to grant/revoke roles: org_admin can manage member|org_admin in its own org only; only super_admin can grant super_admin; no self-role-change (anti-escalation). Audited as `admin.role_change`.
+- tenant-isolation guard updated to recognize RBAC-guarded routes.
+
+## ⬜ Remaining enterprise gaps (in priority order)
 6. **Data retention / e-discovery / legal hold** — none. Required for a law-firm SaaS.
 7. **Rate limiting** — single Upstash limiter that fails open; needs per-route policy and a fail-closed option for auth endpoints.
 8. **Test coverage depth** — ~26 test files for 42k LOC; the sync engine and send/schedule/delete money-paths need real coverage beyond smoke e2e.

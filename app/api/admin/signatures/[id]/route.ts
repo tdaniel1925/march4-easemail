@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
-import { isAdminEmail } from "@/lib/admin";
+import { requireOrgAdmin, canActOnOrg } from "@/lib/rbac";
+import { audit } from "@/lib/audit";
 import { z } from "zod";
 
 const adminUpdateSignatureSchema = z.object({
@@ -12,12 +12,12 @@ const adminUpdateSignatureSchema = z.object({
   isDefault: z.boolean().optional(),
 });
 
-async function requireAdmin() {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return null;
-  if (!isAdminEmail(user.email ?? "")) return null;
-  return user;
+/** Loads a signature with its owner's org, returns null if not found. */
+async function loadWithOrg(id: string) {
+  return prisma.signature.findUnique({
+    where: { id },
+    select: { id: true, userId: true, user: { select: { orgId: true } } },
+  });
 }
 
 // ─── PATCH /api/admin/signatures/[id] ────────────────────────────────────────
@@ -26,7 +26,7 @@ export async function PATCH(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const admin = await requireAdmin();
+  const admin = await requireOrgAdmin();
   if (!admin) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
   const { id } = await params;
@@ -39,8 +39,11 @@ export async function PATCH(
   }
   const { name, title, company, phone, isDefault } = parsed.data;
 
-  const existing = await prisma.signature.findUnique({ where: { id } });
+  const existing = await loadWithOrg(id);
   if (!existing) return NextResponse.json({ error: "Not found" }, { status: 404 });
+  if (!canActOnOrg(admin, existing.user.orgId)) {
+    return NextResponse.json({ error: "Forbidden — signature belongs to another organization" }, { status: 403 });
+  }
 
   if (isDefault) {
     await prisma.signature.updateMany({
@@ -67,17 +70,30 @@ export async function PATCH(
 // ─── DELETE /api/admin/signatures/[id] ───────────────────────────────────────
 
 export async function DELETE(
-  _req: NextRequest,
+  req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const admin = await requireAdmin();
+  const admin = await requireOrgAdmin();
   if (!admin) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
   const { id } = await params;
 
-  const existing = await prisma.signature.findUnique({ where: { id } });
+  const existing = await loadWithOrg(id);
   if (!existing) return NextResponse.json({ error: "Not found" }, { status: 404 });
+  if (!canActOnOrg(admin, existing.user.orgId)) {
+    return NextResponse.json({ error: "Forbidden — signature belongs to another organization" }, { status: 403 });
+  }
 
   await prisma.signature.delete({ where: { id } });
+
+  void audit({
+    action: "admin.signature_delete",
+    userId: admin.userId,
+    actorEmail: admin.email,
+    orgId: existing.user.orgId,
+    target: id,
+    metadata: { targetUserId: existing.userId },
+    req,
+  });
   return NextResponse.json({ ok: true });
 }

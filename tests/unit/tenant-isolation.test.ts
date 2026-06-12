@@ -116,7 +116,10 @@ describe("tenant isolation (static guard over app/api)", () => {
         /findUnique\s*\(\s*\{[\s\S]*?userId/.test(src) ||
         /findMany\s*\(\s*\{[\s\S]*?userId/.test(src) ||
         /verifyAccountOwnership/.test(src) ||
-        /requireAdmin/.test(src);
+        /requireAdmin/.test(src) ||
+        // RBAC-guarded routes verify the actor may act on the target's org via
+        // canActOnOrg before mutating by id.
+        /(requireOrgAdmin|requireSuperAdmin|requireRole)/.test(src);
 
       const violations: string[] = [];
 
