@@ -26,12 +26,19 @@ function EmailRow({
   onDelete,
   deleteLabel = "Delete",
   showRecipient = false,
+  confirmDelete = false,
+  onConfirmDelete,
+  onCancelDelete,
 }: {
   email: EmailMessage;
   onClick: () => void;
   onDelete?: (e: React.MouseEvent) => void;
   deleteLabel?: string;
   showRecipient?: boolean;
+  /** When true, this row is awaiting a permanent-delete confirmation (Trash). */
+  confirmDelete?: boolean;
+  onConfirmDelete?: () => void;
+  onCancelDelete?: () => void;
 }) {
   const displayName = showRecipient
     ? (email.toRecipients?.[0]?.name || email.toRecipients?.[0]?.address || email.from.name)
@@ -79,8 +86,30 @@ function EmailRow({
         <span className="w-2 h-2 rounded-full flex-shrink-0 mt-2" style={{ backgroundColor: "rgb(138 9 9)" }} />
       )}
 
-      {/* Hover delete action */}
-      {onDelete && (
+      {/* Inline permanent-delete confirmation (Trash) — replaces the one-click
+          hover delete so a permanent delete can't fire from a single hover click. */}
+      {onDelete && confirmDelete ? (
+        <div
+          onClick={(e) => e.stopPropagation()}
+          className="flex items-center gap-1.5 flex-shrink-0 mt-0.5"
+        >
+          <span className="text-xs font-medium mr-0.5" style={{ color: "rgb(138 9 9)" }}>Delete forever?</span>
+          <button
+            onClick={(e) => { e.stopPropagation(); onConfirmDelete?.(); }}
+            className="text-xs font-semibold px-2 py-1 rounded-[8px] text-white"
+            style={{ backgroundColor: "rgb(138 9 9)" }}
+          >
+            Delete
+          </button>
+          <button
+            onClick={(e) => { e.stopPropagation(); onCancelDelete?.(); }}
+            className="text-xs font-medium px-2 py-1 rounded-[8px] border border-neutral-200 bg-white"
+            style={{ color: "rgb(115 115 115)" }}
+          >
+            Cancel
+          </button>
+        </div>
+      ) : onDelete ? (
         <button
           onClick={(e) => { e.stopPropagation(); onDelete(e); }}
           title={deleteLabel}
@@ -91,7 +120,7 @@ function EmailRow({
             <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
           </svg>
         </button>
-      )}
+      ) : null}
     </div>
   );
 }
@@ -132,6 +161,8 @@ export default function FolderClient({
   }
 
   const [emails, setEmails] = useState<EmailMessage[]>(initialEmails);
+  // Trash-only: id of the row whose permanent delete is awaiting confirmation.
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [loadingEmails, setLoadingEmails] = useState(true);
   const [nextLink, setNextLink] = useState<string | null>(initialNextLink);
@@ -147,6 +178,12 @@ export default function FolderClient({
   const setLoadingFolderId = useDataCacheStore((s) => s.setLoadingFolderId);
   const loadingFolderId = useDataCacheStore((s) => s.loadingFolderId);
   const firstRender = useRef(true);
+  // Separate guard for the account-switch effect. Without it the effect fires
+  // on initial mount and (a) immediately redirects custom folders to /inbox,
+  // making them unreachable, and (b) double-fetches system folders alongside
+  // the mount effect. The redirect/refetch must only run on an ACTUAL account
+  // change, never the first render.
+  const accountSwitchFirstRender = useRef(true);
   const sentinelRef = useRef<HTMLDivElement>(null);
 
   // Well-known folder names that exist on every account
@@ -200,6 +237,10 @@ export default function FolderClient({
 
   // Account switch: reload system folders, redirect away from custom folders (Fix 4)
   useEffect(() => {
+    // First-render guard — the mount effect above already handles the initial
+    // load. Only run on an actual account change so custom folders stay
+    // reachable on direct navigation and system folders aren't double-fetched.
+    if (accountSwitchFirstRender.current) { accountSwitchFirstRender.current = false; return; }
     if (!activeAccount) return;
     if (isCustomFolder) {
       // Fix 4: clear activeFolderId before navigating away
@@ -244,10 +285,12 @@ export default function FolderClient({
   }, [loadMore]);
 
   // Debounced search — with inline error state (Fix 6)
+  // Bumping searchNonce forces the search effect to re-run even when the query
+  // text is unchanged (setSearch(prev=>prev) was a no-op and never retried).
+  const [searchNonce, setSearchNonce] = useState(0);
   const retrySearch = useCallback(() => {
     setSearchError(null);
-    // Re-trigger by bumping the search (touch the value)
-    setSearch((prev) => prev);
+    setSearchNonce((n) => n + 1);
   }, []);
 
   useEffect(() => {
@@ -272,7 +315,7 @@ export default function FolderClient({
         .finally(() => setSearching(false));
     }, 400);
     return () => clearTimeout(timer);
-  }, [search, activeAccount?.homeAccountId, folder]);
+  }, [search, activeAccount?.homeAccountId, folder, searchNonce]);
 
   const displayEmails = searchResults ?? emails;
 
@@ -290,6 +333,17 @@ export default function FolderClient({
     setEmails(filterFn);
     setSearchResults((prev) => (prev ? filterFn(prev) : prev));
     setActionError(null);
+
+    // In the Drafts folder, the Graph delete alone leaves the local Prisma draft
+    // row intact — a scheduled draft would still be sent by the send-scheduled
+    // cron. Also delete the local draft so it is fully cancelled. The list keys
+    // rows by the Graph message ID, so the DELETE endpoint resolves it via
+    // graphDraftId. Best-effort; never blocks the optimistic UI.
+    if (folder === "drafts") {
+      void fetch(`/api/drafts/${encodeURIComponent(email.id)}`, { method: "DELETE" }).catch(() => {
+        // non-critical — Graph copy is removed below; local row cleanup retried on next delete
+      });
+    }
 
     void fetch("/api/mail/delete", {
       method: "POST",
@@ -418,7 +472,15 @@ export default function FolderClient({
               <EmailRow
                 key={email.id}
                 email={email}
-                onDelete={() => handleDelete(email)}
+                // In Trash, the trash icon arms an inline confirm instead of
+                // deleting immediately. Elsewhere it deletes (moves to trash) as before.
+                onDelete={() => {
+                  if (folder === "trash") setConfirmDeleteId(email.id);
+                  else handleDelete(email);
+                }}
+                confirmDelete={folder === "trash" && confirmDeleteId === email.id}
+                onConfirmDelete={() => { setConfirmDeleteId(null); handleDelete(email); }}
+                onCancelDelete={() => setConfirmDeleteId(null)}
                 deleteLabel={folder === "trash" ? "Delete permanently" : "Delete"}
                 showRecipient={folder === "sent" || folder === "drafts"}
                 onClick={() => {

@@ -27,13 +27,35 @@ const WEEKDAY_NAMES = [
   "sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday",
 ] as const;
 
-function buildGraphPayload(data: EventBody) {
+// `partial` = true for PATCH: only emit fields the client explicitly sent, so
+// untouched fields (body, reminder, showAs, recurrence, attendees) are preserved
+// by Graph rather than reset to defaults.
+function buildGraphPayload(data: EventBody, partial = false) {
   const tz = data.timeZone ?? "UTC";
+
+  // For all-day events Graph requires the end to be the EXCLUSIVE next-day
+  // midnight (start = date 00:00, end = date+1 00:00). Normalise both ends.
+  const isAllDay = data.isAllDay ?? false;
+  let startDateTime = data.start;
+  let endDateTime = data.end;
+  if (isAllDay) {
+    const startDay = data.start.split("T")[0];
+    const endDaySource = data.end.split("T")[0];
+    // Graph rejects an all-day event whose end is not strictly after start.
+    // If client sent end == start (or earlier), roll end forward to start+1 day.
+    const nextDay = (d: string) => {
+      const dt = new Date(`${d}T00:00:00Z`);
+      dt.setUTCDate(dt.getUTCDate() + 1);
+      return dt.toISOString().split("T")[0];
+    };
+    startDateTime = `${startDay}T00:00:00`;
+    endDateTime = `${endDaySource > startDay ? endDaySource : nextDay(startDay)}T00:00:00`;
+  }
 
   // Build recurrence pattern for Graph API
   let recurrencePattern = null;
   if (data.recurrence && data.recurrence !== "null") {
-    const start = new Date(data.start);
+    const start = new Date(startDateTime);
     const startDate = start.toISOString().split("T")[0];
 
     // Graph requires extra fields per pattern type:
@@ -64,10 +86,14 @@ function buildGraphPayload(data: EventBody) {
 
   return {
     subject: data.subject,
-    ...(data.body ? { body: { contentType: "HTML", content: data.body } } : {}),
-    start: { dateTime: data.start, timeZone: tz },
-    end: { dateTime: data.end, timeZone: tz },
-    isAllDay: data.isAllDay ?? false,
+    // In partial (PATCH) mode, only overwrite the body when the client actually
+    // sent one — otherwise the existing Graph body is preserved.
+    ...(data.body !== undefined && (!partial || data.body)
+      ? { body: { contentType: "HTML", content: data.body } }
+      : {}),
+    start: { dateTime: startDateTime, timeZone: tz },
+    end: { dateTime: endDateTime, timeZone: tz },
+    isAllDay,
     ...(data.location ? { location: { displayName: data.location } } : {}),
     ...(data.attendees?.length
       ? {
@@ -84,14 +110,15 @@ function buildGraphPayload(data: EventBody) {
     ...(hasTeamsUrl
       ? { isOnlineMeeting: true, onlineMeetingProvider: "teamsForBusiness" }
       : {}),
+    // reminder/showAs/recurrence: in partial mode only set when explicitly
+    // provided, so a drag-drop or other partial PATCH never strips them.
     ...(data.reminderMinutes !== undefined && data.reminderMinutes !== null
-      ? {
-          isReminderOn: true,
-          reminderMinutesBeforeStart: data.reminderMinutes,
-        }
-      : { isReminderOn: false }),
+      ? { isReminderOn: true, reminderMinutesBeforeStart: data.reminderMinutes }
+      : partial ? {} : { isReminderOn: false }),
     ...(data.showAs ? { showAs: data.showAs } : {}),
-    ...(recurrencePattern ? { recurrence: recurrencePattern } : {}),
+    ...(recurrencePattern
+      ? { recurrence: recurrencePattern }
+      : partial ? {} : {}),
   };
 }
 
@@ -237,7 +264,7 @@ export async function PATCH(req: NextRequest): Promise<NextResponse> {
     const res = await graphFetch(user.id, data.homeAccountId, `/me/events/${verifiedEventId}`, {
       method: "PATCH",
       headers: GRAPH_PREFER_UTC,
-      body: JSON.stringify(buildGraphPayload(data)),
+      body: JSON.stringify(buildGraphPayload(data, true)),
     });
     if (!res.ok) {
       const err = await res.text();
@@ -254,7 +281,18 @@ export async function PATCH(req: NextRequest): Promise<NextResponse> {
     const updated = await getRes.json() as GraphCalEvent;
     const event: CalEvent = mapGraphEvent(updated, data.homeAccountId, account.email ?? "");
 
-    // Update cache after successful modification
+    // Cache the same mapped attendee shape that POST writes ({name,address,
+    // responseStatus}) so rendering after an edit matches a freshly-created event.
+    const mappedAttendees = JSON.parse(JSON.stringify(
+      (updated.attendees ?? []).map((a) => ({
+        name: a.emailAddress?.name ?? "",
+        address: a.emailAddress?.address ?? "",
+        responseStatus: a.status?.response,
+      }))
+    ));
+
+    // Partial-update semantics: only overwrite reminder/showAs/recurrence in the
+    // cache when the PATCH explicitly included them — otherwise keep what's cached.
     await prisma.cachedCalendarEvent.update({
       where: { id: verifiedEventId },
       data: {
@@ -267,10 +305,10 @@ export async function PATCH(req: NextRequest): Promise<NextResponse> {
         organizerName: updated.organizer?.emailAddress?.name || null,
         organizerEmail: updated.organizer?.emailAddress?.address || null,
         onlineMeetingUrl: updated.onlineMeeting?.joinUrl || null,
-        attendees: updated.attendees || [],
-        reminderMinutes: data.reminderMinutes ?? null,
-        showAs: data.showAs || "busy",
-        recurrence: data.recurrence || null,
+        attendees: mappedAttendees,
+        ...(data.reminderMinutes !== undefined ? { reminderMinutes: data.reminderMinutes } : {}),
+        ...(data.showAs !== undefined ? { showAs: data.showAs } : {}),
+        ...(data.recurrence !== undefined ? { recurrence: data.recurrence } : {}),
         timeZone: data.timeZone ?? "UTC",
       },
     });

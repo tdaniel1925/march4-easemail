@@ -34,6 +34,10 @@ const mailboxLinks = [
     icon: <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />,
   },
   {
+    href: "/snoozed", label: "Snoozed",
+    icon: <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />,
+  },
+  {
     href: "/trash", label: "Trash",
     icon: <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />,
   },
@@ -331,12 +335,14 @@ export default function Sidebar({ userName = "You", userEmail = "", isAdmin: isA
         {/* Nav */}
         <nav className="flex-1 px-3 pb-4 overflow-y-auto space-y-1">
 
-          {/* Dashboard — top of sidebar */}
+          {/* Dashboard — top of sidebar. Badge surfaces triggered reminders,
+              whose detail panel lives on the dashboard itself (Fix 5). */}
           <div className="mb-1">
             <NavLink
               href={dashboardLink.href}
               label={dashboardLink.label}
               icon={dashboardLink.icon}
+              badge={remindersCount > 0 ? remindersCount : null}
               active={isActive(dashboardLink.href)}
               onNavigate={navigateTo}
             />
@@ -441,18 +447,13 @@ export default function Sidebar({ userName = "You", userEmail = "", isAdmin: isA
           )}
 
           {/* Tools */}
+          {/* Fix 5: the former "Reminders" item was a disguised /dashboard link
+              (active={false} always). Reminders live on the Dashboard, which
+              already has its own link above; the triggered-reminders badge is
+              now shown on that Dashboard link instead. Removed to avoid the
+              surprise of a second, never-highlighted Dashboard entry. */}
           <SidebarSection title="Tools" open={open.tools} onToggle={() => toggle("tools")} className="mt-2">
             <ul className="space-y-0.5">
-              <li>
-                <NavLink
-                  href="/dashboard"
-                  label="Reminders"
-                  badge={remindersCount > 0 ? remindersCount : null}
-                  active={false}
-                  onNavigate={navigateTo}
-                  icon={<path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />}
-                />
-              </li>
               <li>
                 <NavLink
                   href="/templates"

@@ -38,7 +38,7 @@ const RESPONSE_COLORS: Record<string, string> = {
   organizer: "rgb(109 40 217)",
 };
 
-export default function EventDetailModal({ onEdit, onDeleted }: { onEdit?: () => void; onDeleted?: (eventId: string) => void }) {
+export default function EventDetailModal({ onEdit, onDeleted, userTimeZone }: { onEdit?: () => void; onDeleted?: (eventId: string) => void; userTimeZone?: string }) {
   const { selectedEvent, setSelectedEvent } = useCalendarStore();
   const [respondLoading, setRespondLoading] = useState<string | null>(null);
   const [respondStatus, setRespondStatus] = useState<string | null>(null);
@@ -154,11 +154,11 @@ export default function EventDetailModal({ onEdit, onDeleted }: { onEdit?: () =>
             </svg>
             <div>
               {e.isAllDay ? (
-                <p className="text-sm text-neutral-700">{fmt(e.startDateTime, true)}</p>
+                <p className="text-sm text-neutral-700">{fmt(e.startDateTime, true, userTimeZone)}</p>
               ) : (
                 <>
-                  <p className="text-sm font-medium text-neutral-700">{fmt(e.startDateTime, false)}</p>
-                  <p className="text-xs text-neutral-400">to {fmt(e.endDateTime, false)} · {duration(e.startDateTime, e.endDateTime)}</p>
+                  <p className="text-sm font-medium text-neutral-700">{fmt(e.startDateTime, false, userTimeZone)}</p>
+                  <p className="text-xs text-neutral-400">to {fmt(e.endDateTime, false, userTimeZone)} · {duration(e.startDateTime, e.endDateTime)}</p>
                 </>
               )}
             </div>

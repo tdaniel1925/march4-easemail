@@ -453,6 +453,10 @@ export default function InboxClient({
   const sentinelRef = useRef<HTMLDivElement>(null);
   const rulesRef = useRef<Rule[]>([]);
   const knownIdsRef = useRef<Set<string>>(new Set(initialEmails.map((e) => e.id)));
+  // Aborts the previous in-flight message-body fetch (split pane / expanded /
+  // keyboard-open) so switching emails quickly can't render a stale body under
+  // a new header.
+  const bodyFetchAbortRef = useRef<AbortController | null>(null);
 
   // Pending actions for delayed undo (C5 fix) — actions fire after 10s unless undone
   const pendingActionsRef = useRef<Map<number, { timer: ReturnType<typeof setTimeout>; action: () => void }>>(new Map());
@@ -575,6 +579,7 @@ export default function InboxClient({
     updateEmailEverywhere(email.id, { flag: { flagStatus: newFlagStatus as "flagged" | "notFlagged" } });
 
     // Update via API (will also update cache)
+    const revertStar = () => updateEmailEverywhere(email.id, { flag: email.flag });
     void fetch("/api/mail/star", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -583,11 +588,12 @@ export default function InboxClient({
         homeAccountId: activeAccount.homeAccountId,
         flagged: newFlagStatus === "flagged",
       }),
-    }).catch((err) => {
-      console.error("Failed to update star:", err);
-      // Revert on error
-      updateEmailEverywhere(email.id, { flag: email.flag });
-    });
+    })
+      .then((res) => { if (!res.ok) revertStar(); })
+      .catch((err) => {
+        console.error("Failed to update star:", err);
+        revertStar();
+      });
   }, [activeAccount, updateEmailEverywhere]);
 
   // ── Pin toggle handler ──
@@ -599,6 +605,7 @@ export default function InboxClient({
     // Optimistically update UI
     updateEmailEverywhere(email.id, { isPinned: newPinned });
 
+    const revertPin = () => updateEmailEverywhere(email.id, { isPinned: email.isPinned });
     void fetch("/api/mail/pin", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -607,10 +614,9 @@ export default function InboxClient({
         homeAccountId: activeAccount.homeAccountId,
         pinned: newPinned,
       }),
-    }).catch(() => {
-      // Revert on error
-      updateEmailEverywhere(email.id, { isPinned: email.isPinned });
-    });
+    })
+      .then((res) => { if (!res.ok) revertPin(); })
+      .catch(revertPin);
   }, [activeAccount, updateEmailEverywhere]);
 
   // ── Single email quick actions (for hover + keyboard shortcuts) ──
@@ -677,14 +683,18 @@ export default function InboxClient({
     if (!activeAccount) return;
     if (email.isRead) setLocalReadDelta((d) => d - 1);
     updateEmailEverywhere(email.id, { isRead: false });
-    void fetch("/api/mail/read", {
+    const revert = () => {
+      if (email.isRead) setLocalReadDelta((d) => d + 1);
+      updateEmailEverywhere(email.id, { isRead: true });
+      setDeleteError("Failed to mark email unread. Please try again.");
+    };
+    void fetch("/api/mail/mark-read", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ messageId: email.id, homeAccountId: activeAccount.homeAccountId, isRead: false }),
-    }).catch(() => {
-      if (email.isRead) setLocalReadDelta((d) => d + 1);
-      updateEmailEverywhere(email.id, { isRead: true });
-    });
+    })
+      .then((res) => { if (!res.ok) revert(); })
+      .catch(revert);
   }, [activeAccount, updateEmailEverywhere]);
 
   // ── Bulk selection handlers ──
@@ -1239,15 +1249,18 @@ export default function InboxClient({
         setExpandedBody(null);
         setExpandedDetails(null);
         if (activeAccount) {
+          bodyFetchAbortRef.current?.abort();
+          const controller = new AbortController();
+          bodyFetchAbortRef.current = controller;
           setExpandedLoading(true);
           let ghost = false;
-          fetch(`/api/mail/message/${encodeURIComponent(email.id)}?homeAccountId=${encodeURIComponent(activeAccount.homeAccountId)}`)
+          fetch(`/api/mail/message/${encodeURIComponent(email.id)}?homeAccountId=${encodeURIComponent(activeAccount.homeAccountId)}`, { signal: controller.signal })
             .then((r) => {
               if (r.status === 404) { ghost = true; handleGhostEmail(email.id); return null; }
               return r.ok ? r.json() : null;
             })
             .then((data: Record<string, unknown> | null) => {
-              if (ghost) return;
+              if (controller.signal.aborted || ghost) return;
               if (data) {
                 const body = data.body as { content?: string; contentType?: string } | undefined;
                 const toRaw = data.toRecipients as { emailAddress?: { name?: string; address?: string }; name?: string; address?: string }[] | undefined;
@@ -1259,8 +1272,8 @@ export default function InboxClient({
                 setExpandedBody({ content: email.bodyPreview, contentType: "text" });
               }
             })
-            .catch(() => setExpandedBody({ content: email.bodyPreview, contentType: "text" }))
-            .finally(() => setExpandedLoading(false));
+            .catch((err) => { if ((err as Error)?.name !== "AbortError") setExpandedBody({ content: email.bodyPreview, contentType: "text" }); })
+            .finally(() => { if (!controller.signal.aborted) setExpandedLoading(false); });
         }
       },
       onArchive: handleArchiveEmail,
@@ -1294,15 +1307,20 @@ export default function InboxClient({
     setSplitPaneBody(null);
     setSplitPaneDetails(null);
     if (!activeAccount) return;
+    // Cancel any previous in-flight body fetch so a stale response can't render
+    // under the newly selected email.
+    bodyFetchAbortRef.current?.abort();
+    const controller = new AbortController();
+    bodyFetchAbortRef.current = controller;
     setSplitPaneLoading(true);
     let ghost = false;
-    fetch(`/api/mail/message/${encodeURIComponent(email.id)}?homeAccountId=${encodeURIComponent(activeAccount.homeAccountId)}`)
+    fetch(`/api/mail/message/${encodeURIComponent(email.id)}?homeAccountId=${encodeURIComponent(activeAccount.homeAccountId)}`, { signal: controller.signal })
       .then((r) => {
         if (r.status === 404) { ghost = true; handleGhostEmail(email.id); return null; }
         return r.ok ? r.json() : null;
       })
       .then((data: Record<string, unknown> | null) => {
-        if (ghost) return;
+        if (controller.signal.aborted || ghost) return;
         if (data) {
           const body = data.body as { content?: string; contentType?: string } | undefined;
           const toRaw = data.toRecipients as { emailAddress?: { name?: string; address?: string }; name?: string; address?: string }[] | undefined;
@@ -1314,8 +1332,8 @@ export default function InboxClient({
           setSplitPaneBody({ content: email.bodyPreview, contentType: "text" });
         }
       })
-      .catch(() => setSplitPaneBody({ content: email.bodyPreview, contentType: "text" }))
-      .finally(() => setSplitPaneLoading(false));
+      .catch((err) => { if ((err as Error)?.name !== "AbortError") setSplitPaneBody({ content: email.bodyPreview, contentType: "text" }); })
+      .finally(() => { if (!controller.signal.aborted) setSplitPaneLoading(false); });
   }, [activeAccount, handleGhostEmail]);
 
   return (
@@ -1709,13 +1727,20 @@ export default function InboxClient({
                   if (!email.isRead) {
                     updateEmailEverywhere(email.id, { isRead: true });
                     setLocalReadDelta((d) => d + 1);
-                    // Mark as read on server
+                    // Mark as read on server — revert optimistic state on failure
                     if (activeAccount) {
-                      void fetch("/api/mail/read", {
+                      const revertRead = () => {
+                        updateEmailEverywhere(email.id, { isRead: false });
+                        setLocalReadDelta((d) => d - 1);
+                        setDeleteError("Failed to mark email read. Please try again.");
+                      };
+                      void fetch("/api/mail/mark-read", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({ messageId: email.id, homeAccountId: activeAccount.homeAccountId, isRead: true }),
-                      }).catch(() => {});
+                      })
+                        .then((res) => { if (!res.ok) revertRead(); })
+                        .catch(revertRead);
                     }
                   }
                   if (readingPane === "split") {
@@ -1727,16 +1752,19 @@ export default function InboxClient({
                   setExpandedDetails(null);
                   // Always fetch full message body for proper formatting
                   if (activeAccount) {
+                    bodyFetchAbortRef.current?.abort();
+                    const controller = new AbortController();
+                    bodyFetchAbortRef.current = controller;
                     setExpandedLoading(true);
                     const acctParam = encodeURIComponent(activeAccount.homeAccountId);
                     let ghost = false;
-                    fetch(`/api/mail/message/${encodeURIComponent(email.id)}?homeAccountId=${acctParam}`)
+                    fetch(`/api/mail/message/${encodeURIComponent(email.id)}?homeAccountId=${acctParam}`, { signal: controller.signal })
                       .then((r) => {
                         if (r.status === 404) { ghost = true; handleGhostEmail(email.id); return null; }
                         return r.ok ? r.json() : null;
                       })
                       .then((data: Record<string, unknown> | null) => {
-                        if (ghost) return;
+                        if (controller.signal.aborted || ghost) return;
                         if (data) {
                           const body = data.body as { content?: string; contentType?: string } | undefined;
                           // Handle both Graph-style (nested emailAddress) and flat formats
@@ -1759,8 +1787,8 @@ export default function InboxClient({
                           setExpandedBody({ content: email.bodyPreview, contentType: "text" });
                         }
                       })
-                      .catch(() => setExpandedBody({ content: email.bodyPreview, contentType: "text" }))
-                      .finally(() => setExpandedLoading(false));
+                      .catch((err) => { if ((err as Error)?.name !== "AbortError") setExpandedBody({ content: email.bodyPreview, contentType: "text" }); })
+                      .finally(() => { if (!controller.signal.aborted) setExpandedLoading(false); });
                   }
                 }}
                 onAiReply={(e) => { e.stopPropagation(); setAiReplyEmail(email); }}

@@ -4,9 +4,36 @@ import { prisma } from "@/lib/prisma";
 import { graphPatch, graphDelete } from "@/lib/microsoft/graph";
 import { detectProviderType } from "@/lib/providers/registry";
 import { updateContactSchema } from "@/lib/validation/schemas";
+import { z } from "zod";
+
+// Notes are persisted locally in CachedContact (not synced to Graph), so they
+// are validated separately from the Graph-backed contact fields.
+const notesSchema = z.string().max(10_000, "Note too long");
+
+// ─── GET /api/contacts/[id] — Load locally-stored data for a contact ──────────
+// Returns the saved private note (if any) for this contact + user.
+
+export async function GET(
+  _req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  const { id } = await params;
+  const cached = await prisma.cachedContact.findUnique({
+    where: { id },
+    select: { id: true, userId: true, notes: true },
+  });
+  // Only expose notes belonging to the requesting user.
+  const notes = cached && cached.userId === user.id ? cached.notes : "";
+  return NextResponse.json({ notes: notes ?? "" });
+}
 
 // ─── PATCH /api/contacts/[id] — Update a contact ──────────────────────────────
-// Only supported for Microsoft accounts. IMAP/JMAP accounts return 400.
+// Microsoft contact fields are pushed to Graph. The private `notes` field is
+// persisted locally in CachedContact for all account types.
 
 export async function PATCH(
   req: NextRequest,
@@ -17,7 +44,8 @@ export async function PATCH(
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const { id } = await params;
-  const parsed = updateContactSchema.safeParse(await req.json().catch(() => null));
+  const raw = await req.json().catch(() => null);
+  const parsed = updateContactSchema.safeParse(raw);
   if (!parsed.success) {
     return NextResponse.json(
       { error: "Invalid request", details: parsed.error.flatten() },
@@ -25,6 +53,36 @@ export async function PATCH(
     );
   }
   const body = parsed.data;
+
+  // ── Notes-only update (persisted locally, never sent to Graph) ──────────────
+  // The contacts UI auto-saves notes via PATCH with just { notes }. Handle that
+  // here so the note is actually stored and survives a reload.
+  const rawNotes = (raw as Record<string, unknown> | null)?.notes;
+  if (rawNotes !== undefined) {
+    const notesParsed = notesSchema.safeParse(rawNotes);
+    if (!notesParsed.success) {
+      return NextResponse.json(
+        { error: "Invalid request", details: notesParsed.error.flatten() },
+        { status: 400 }
+      );
+    }
+    const homeAccountId = body.homeAccountId ?? "";
+    await prisma.cachedContact.upsert({
+      where: { id },
+      create: { id, userId: user.id, homeAccountId, notes: notesParsed.data },
+      update: { notes: notesParsed.data },
+    });
+    // If this PATCH was notes-only, we're done — no Graph fields to push.
+    const hasGraphFields =
+      body.displayName !== undefined ||
+      body.email !== undefined ||
+      body.phone !== undefined ||
+      body.company !== undefined ||
+      body.title !== undefined;
+    if (!hasGraphFields) {
+      return NextResponse.json({ ok: true, notes: notesParsed.data });
+    }
+  }
 
   // If a non-Microsoft account is specified, contacts are not supported
   if (body.homeAccountId && detectProviderType(body.homeAccountId) !== "microsoft") {

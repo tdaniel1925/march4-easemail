@@ -25,6 +25,8 @@ const EmailRulesClient = lazy(() => import("@/components/email-rules/EmailRulesC
 const TemplatesClient = lazy(() => import("@/components/templates/TemplatesClient"));
 const TeamsClient = lazy(() => import("@/components/teams/TeamsClient"));
 const EmailReadClient = lazy(() => import("@/components/inbox/EmailReadClient"));
+const SnoozedClient = lazy(() => import("@/components/SnoozedClient"));
+const ScheduledEmailsClient = lazy(() => import("@/components/scheduled/ScheduledEmailsClient"));
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -117,6 +119,9 @@ export default function AppShell(props: AppShellProps) {
   const activeAccount = useAccountStore((s) => s.activeAccount);
   const inboxUnread = useAccountStore((s) => s.inboxUnread);
   const prevAccountRef = useRef(activeAccount?.homeAccountId);
+  // Monotonic token: lets a newer account-switch fetch invalidate an older,
+  // still-in-flight one so a stale account's response can't win the race.
+  const switchSeqRef = useRef(0);
 
   // ── Account-specific data (starts with SSR props, refetched on account switch)
   const [inboxEmails, setInboxEmails] = useState(props.initialEmails);
@@ -201,8 +206,21 @@ export default function AppShell(props: AppShellProps) {
   // ── Refetch data when account changes ──────────────────────────────────────
   useEffect(() => {
     const currentId = activeAccount?.homeAccountId;
-    if (!currentId || currentId === prevAccountRef.current) return;
+    if (!currentId) return;
+    // First non-null account (cold load / hydration): the SSR props already hold
+    // this account's data, so just seed the ref — never run the switch refetch,
+    // which would throw away the SSR work behind a skeleton flash.
+    if (prevAccountRef.current == null) {
+      prevAccountRef.current = currentId;
+      return;
+    }
+    // No-op if the account didn't actually change.
+    if (currentId === prevAccountRef.current) return;
     prevAccountRef.current = currentId;
+
+    // Stamp this switch; only the latest one is allowed to commit results.
+    const seq = ++switchSeqRef.current;
+    const isStale = () => seq !== switchSeqRef.current;
     setAccountSwitching(true);
 
     const hid = encodeURIComponent(currentId);
@@ -227,6 +245,9 @@ export default function AppShell(props: AppShellProps) {
         .then((r) => r.ok ? r.json() : null)
         .catch(() => null),
     ]).then(([inboxData, calData, draftsData]) => {
+      // A newer account switch started while we were fetching — discard this
+      // response so the stale account's data can't overwrite the current one.
+      if (isStale()) return;
       if (inboxData) {
         setInboxEmails(inboxData.emails ?? []);
         setInboxNextLink(inboxData.nextLink ?? null);
@@ -413,6 +434,12 @@ export default function AppShell(props: AppShellProps) {
             returnTo={activeEmailReturnTo ?? "/inbox"}
           />
         );
+
+      case "snoozed":
+        return <SnoozedClient key={`snoozed-${activeAccount?.homeAccountId}`} />;
+
+      case "scheduled":
+        return <ScheduledEmailsClient key={`scheduled-${activeAccount?.homeAccountId}`} />;
 
       default:
         return (

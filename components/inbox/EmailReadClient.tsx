@@ -101,15 +101,18 @@ export default function EmailReadClient({ email: initialEmail, homeAccountId, re
   // Inline error for toolbar actions (archive / delete)
   const [actionError, setActionError] = useState<string | null>(null);
 
-  // Fetch full email on mount when we only have a placeholder (SPA mode)
+  // Fetch full email on mount when we only have a placeholder (SPA mode).
+  // AbortController cancels the previous in-flight request so switching emails
+  // quickly can't render a stale body under a new header.
   useEffect(() => {
     if (initialEmail.subject) { setEmailLoading(false); return; }
     if (!initialEmail.id) { setEmailLoading(false); return; }
+    const controller = new AbortController();
     setEmailLoading(true);
     setEmailError(null);
     const params = new URLSearchParams();
     if (homeAccountId) params.set("homeAccountId", homeAccountId);
-    fetch(`/api/mail/message/${encodeURIComponent(initialEmail.id)}?${params}`)
+    fetch(`/api/mail/message/${encodeURIComponent(initialEmail.id)}?${params}`, { signal: controller.signal })
       .then(async (r) => {
         if (r.status === 404) {
           // Message no longer exists — server already removed the stale cache
@@ -124,15 +127,20 @@ export default function EmailReadClient({ email: initialEmail, homeAccountId, re
         return r.json();
       })
       .then((data) => {
-        if (!data) return;
+        if (!data || controller.signal.aborted) return;
+        // The message route returns body/recipients/attachments but NOT the
+        // read/starred/pinned/sensitivity status. Carry those through from the
+        // stub email (the list row that was clicked) so the toolbar reflects
+        // the real state — never hardcode isRead:true (that broke mark-as-read
+        // and the unread badge).
         setEmail({
           id: data.id,
           subject: data.subject ?? "(no subject)",
           bodyPreview: data.bodyPreview ?? "",
           receivedDateTime: data.receivedDateTime ?? "",
-          isRead: true,
+          isRead: data.isRead ?? initialEmail.isRead ?? false,
           hasAttachments: (data.attachments?.length ?? 0) > 0,
-          flag: { flagStatus: data.flag?.flagStatus ?? "notFlagged" },
+          flag: { flagStatus: data.flag?.flagStatus ?? initialEmail.flag?.flagStatus ?? "notFlagged" },
           from: {
             name: data.from?.emailAddress?.name ?? "Unknown",
             address: data.from?.emailAddress?.address ?? "",
@@ -152,12 +160,17 @@ export default function EmailReadClient({ email: initialEmail, homeAccountId, re
           attachments: (data.attachments ?? []).map((a: { id: string; name: string; size: number; contentType: string }) => ({
             id: a.id, name: a.name, size: a.size, contentType: a.contentType,
           })),
+          conversationId: data.conversationId ?? initialEmail.conversationId,
+          sensitivityLabel: data.sensitivityLabel ?? initialEmail.sensitivityLabel ?? null,
+          isPinned: data.isPinned ?? initialEmail.isPinned ?? false,
         });
       })
       .catch((err) => {
+        if ((err as Error)?.name === "AbortError") return;
         setEmailError(err instanceof Error ? err.message : "Failed to load email");
       })
-      .finally(() => setEmailLoading(false));
+      .finally(() => { if (!controller.signal.aborted) setEmailLoading(false); });
+    return () => controller.abort();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialEmail.id]);
   /** SPA-aware navigation — updates store + pushState instead of server round-trip */
@@ -194,6 +207,17 @@ export default function EmailReadClient({ email: initialEmail, homeAccountId, re
   const [isStarred, setIsStarred] = useState(email.flag.flagStatus === "flagged");
   const [isPinned, setIsPinned] = useState(email.isPinned ?? false);
   const [sensitivityLabel, setSensitivityLabel] = useState<string | null>(email.sensitivityLabel ?? null);
+
+  // Re-sync the toolbar state after the real email is fetched (the initial
+  // useState above only saw the AppShell stub). Keyed on email.id so it also
+  // refreshes when navigating between messages in SPA mode.
+  useEffect(() => {
+    setIsRead(email.isRead);
+    setIsStarred(email.flag.flagStatus === "flagged");
+    setIsPinned(email.isPinned ?? false);
+    setSensitivityLabel(email.sensitivityLabel ?? null);
+  }, [email.id, email.isRead, email.flag.flagStatus, email.isPinned, email.sensitivityLabel]);
+
   const [showLabelDropdown, setShowLabelDropdown] = useState(false);
   const [showAllRecipients, setShowAllRecipients] = useState(false);
   const [calLoading, setCalLoading] = useState(false);
@@ -203,18 +227,21 @@ export default function EmailReadClient({ email: initialEmail, homeAccountId, re
 
   const isInvite = isLikelyInvite(email);
 
-  // Mark as read on mount
+  // Mark as read once the (fetched) email is known to be unread. Keyed on the
+  // fetched read state so it fires after the real message loads — not off the
+  // stub. Reverts the optimistic UI if the server call fails.
   useEffect(() => {
-    if (!email.isRead) {
-      setIsRead(true);
-      fetch("/api/mail/mark-read", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messageId: email.id, homeAccountId }),
-      }).catch(console.error);
-    }
+    if (email.isRead) return;
+    setIsRead(true);
+    fetch("/api/mail/mark-read", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ messageId: email.id, isRead: true, homeAccountId }),
+    })
+      .then((res) => { if (!res.ok) setIsRead(false); })
+      .catch((err) => { console.error(err); setIsRead(false); });
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [email.id]);
+  }, [email.id, email.isRead]);
 
   function openCompose(mode: "reply" | "replyAll" | "forward") {
     navigateTo(`/compose?mode=${mode}&messageId=${encodeURIComponent(email.id)}&homeAccountId=${encodeURIComponent(homeAccountId)}`);
@@ -391,10 +418,12 @@ export default function EmailReadClient({ email: initialEmail, homeAccountId, re
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ messageId: email.id, homeAccountId, pinned: newPinned }),
-              }).catch((err) => {
-                console.error("Failed to toggle pin:", err);
-                setIsPinned(!newPinned);
-              });
+              })
+                .then((res) => { if (!res.ok) setIsPinned(!newPinned); })
+                .catch((err) => {
+                  console.error("Failed to toggle pin:", err);
+                  setIsPinned(!newPinned);
+                });
             }}
             className="p-1.5 rounded-small transition-colors hover:bg-background-100"
             style={{ color: isPinned ? "rgb(138 9 9)" : "rgb(155 155 155)" }}
@@ -481,10 +510,12 @@ export default function EmailReadClient({ email: initialEmail, homeAccountId, re
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ messageId: email.id, homeAccountId, flagged: newStarred }),
-              }).catch((err) => {
-                console.error("Failed to toggle star:", err);
-                setIsStarred(!newStarred);
-              });
+              })
+                .then((res) => { if (!res.ok) setIsStarred(!newStarred); })
+                .catch((err) => {
+                  console.error("Failed to toggle star:", err);
+                  setIsStarred(!newStarred);
+                });
             }}
             className="p-1.5 rounded-small transition-colors"
             style={{ color: isStarred ? "rgb(138 9 9)" : "rgb(155 155 155)" }}
@@ -502,10 +533,12 @@ export default function EmailReadClient({ email: initialEmail, homeAccountId, re
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ messageId: email.id, homeAccountId, isRead: newRead }),
-              }).catch((err) => {
-                console.error("Failed to toggle read:", err);
-                setIsRead(!newRead);
-              });
+              })
+                .then((res) => { if (!res.ok) setIsRead(!newRead); })
+                .catch((err) => {
+                  console.error("Failed to toggle read:", err);
+                  setIsRead(!newRead);
+                });
             }}
             className="p-1.5 rounded-small transition-colors hover:bg-background-100"
             style={{ color: "rgb(155 155 155)" }}

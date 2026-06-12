@@ -12,7 +12,17 @@ const preferencesSchema = z.object({
   appTheme: z.enum(["light", "dark"]).optional(),
   fontSize: z.enum(["default", "compact", "comfortable"]).optional(),
   emailDensity: z.enum(["comfortable", "compact"]).optional(),
-  undoSendDelay: z.union([z.literal(5), z.literal(10), z.literal(20), z.literal(30)]).optional(),
+  // Client sends the value as a string ("5" | "10" | "20" | "30"); coerce to a
+  // number and constrain to the allowed set so the PUT no longer 400s.
+  undoSendDelay: z.coerce
+    .number()
+    .int()
+    .refine((n) => [5, 10, 20, 30].includes(n), "Invalid undo send delay")
+    .optional(),
+  // Default sensitivity label for new emails (null/"none" = no default).
+  defaultSensitivityLabel: z
+    .enum(["none", "attorney-client", "confidential", "work-product"])
+    .optional(),
 });
 
 // ─── GET /api/user/preferences ────────────────────────────────────────────────
@@ -35,6 +45,7 @@ export async function GET() {
       fontSize: true,
       emailDensity: true,
       undoSendDelay: true,
+      defaultSensitivityLabel: true,
     },
   });
 
@@ -75,6 +86,7 @@ export async function PUT(req: NextRequest) {
       ...(body.fontSize !== undefined && { fontSize: body.fontSize }),
       ...(body.emailDensity !== undefined && { emailDensity: body.emailDensity }),
       ...(body.undoSendDelay !== undefined && { undoSendDelay: body.undoSendDelay }),
+      ...(body.defaultSensitivityLabel !== undefined && { defaultSensitivityLabel: body.defaultSensitivityLabel }),
     },
     select: {
       notificationNewEmail: true,
@@ -86,6 +98,7 @@ export async function PUT(req: NextRequest) {
       fontSize: true,
       emailDensity: true,
       undoSendDelay: true,
+      defaultSensitivityLabel: true,
     },
   });
 

@@ -256,6 +256,8 @@ function NotificationsSection() {
   });
   const [_loading, setLoading] = useState(true);
   const [_saving, setSaving] = useState(false);
+  const [loaded, setLoaded] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   // Load preferences from API on mount
   useEffect(() => {
@@ -273,14 +275,18 @@ function NotificationsSection() {
         }
       })
       .catch(() => {})
-      .finally(() => setLoading(false));
+      .finally(() => {
+        setLoading(false);
+        setLoaded(true);
+      });
   }, []);
 
-  // Save to API whenever settings change
-  const saveSettings = useCallback(async (newSettings: NotificationSettings) => {
+  // Save to API whenever settings change. Reverts on failure.
+  const saveSettings = useCallback(async (newSettings: NotificationSettings, prevSettings: NotificationSettings) => {
     setSaving(true);
+    setError(null);
     try {
-      await fetch("/api/user/preferences", {
+      const res = await fetch("/api/user/preferences", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -291,17 +297,22 @@ function NotificationsSection() {
           notificationWeeklyReport: newSettings.weeklyReport,
         }),
       });
+      if (!res.ok) throw new Error("Save failed");
     } catch (err) {
       console.error("Failed to save notification settings:", err);
+      setSettings(prevSettings); // revert optimistic update
+      setError("Couldn't save your changes. Please try again.");
     } finally {
       setSaving(false);
     }
   }, []);
 
   function toggle(key: keyof NotificationSettings) {
+    // Don't save until the initial GET has resolved (avoids clobbering with defaults)
+    if (!loaded) return;
     setSettings((prev) => {
       const updated = { ...prev, [key]: !prev[key] };
-      saveSettings(updated);
+      saveSettings(updated, prev);
       return updated;
     });
   }
@@ -352,6 +363,12 @@ function NotificationsSection() {
         </p>
       </div>
 
+      {error && (
+        <div className="px-4 py-3 rounded-[10px] bg-red-50 border border-red-200">
+          <p className="text-sm text-red-700">{error}</p>
+        </div>
+      )}
+
       <div className="space-y-1">
         {rows.map((row) => (
           <div
@@ -386,6 +403,8 @@ function AppearanceSection() {
   const [fontSize, setFontSize] = useState<FontSize>("default");
   const [density, setDensity] = useState<EmailDensity>("comfortable");
   const [_loading, setLoading] = useState(true);
+  const [loaded, setLoaded] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   // Load preferences from API on mount
   useEffect(() => {
@@ -393,39 +412,54 @@ function AppearanceSection() {
       .then((res) => res.json())
       .then((data) => {
         if (!data.error) {
-          setFontSize(data.fontSize as FontSize);
-          setDensity(data.emailDensity as EmailDensity);
+          if (data.fontSize) setFontSize(data.fontSize as FontSize);
+          if (data.emailDensity) setDensity(data.emailDensity as EmailDensity);
         }
       })
       .catch(() => {})
-      .finally(() => setLoading(false));
+      .finally(() => {
+        setLoading(false);
+        setLoaded(true);
+      });
   }, []);
 
-  // Save fontSize to API
+  // Save fontSize to API (reverts on failure)
   const saveFontSize = async (newSize: FontSize) => {
+    if (!loaded) return;
+    const prev = fontSize;
     setFontSize(newSize);
+    setError(null);
     try {
-      await fetch("/api/user/preferences", {
+      const res = await fetch("/api/user/preferences", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ fontSize: newSize }),
       });
+      if (!res.ok) throw new Error("Save failed");
     } catch (err) {
       console.error("Failed to save fontSize:", err);
+      setFontSize(prev);
+      setError("Couldn't save your changes. Please try again.");
     }
   };
 
-  // Save density to API
+  // Save density to API (reverts on failure)
   const saveDensity = async (newDensity: EmailDensity) => {
+    if (!loaded) return;
+    const prev = density;
     setDensity(newDensity);
+    setError(null);
     try {
-      await fetch("/api/user/preferences", {
+      const res = await fetch("/api/user/preferences", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ emailDensity: newDensity }),
       });
+      if (!res.ok) throw new Error("Save failed");
     } catch (err) {
       console.error("Failed to save emailDensity:", err);
+      setDensity(prev);
+      setError("Couldn't save your changes. Please try again.");
     }
   };
 
@@ -442,6 +476,12 @@ function AppearanceSection() {
           Customise how EaseMail looks and feels.
         </p>
       </div>
+
+      {error && (
+        <div className="px-4 py-3 rounded-[10px] bg-red-50 border border-red-200">
+          <p className="text-sm text-red-700">{error}</p>
+        </div>
+      )}
 
       <div>
         <p
@@ -583,10 +623,16 @@ function AppearanceSection() {
 
 // ─── Composing section ───────────────────────────────────────────────────────
 
+// Allowed undo-send values; used to normalize the numeric value returned by GET
+// into the string union the UI compares against.
+const UNDO_SEND_VALUES: UndoSendDelay[] = ["5", "10", "20", "30"];
+
 function ComposingSection() {
   const [undoSendDelay, setUndoSendDelay] = useState<UndoSendDelay>("10");
   const [defaultSensitivity, setDefaultSensitivity] = useState<SensitivityLabel>("none");
   const [_loading, setLoading] = useState(true);
+  const [loaded, setLoaded] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   // Load preferences from API on mount
   useEffect(() => {
@@ -594,39 +640,60 @@ function ComposingSection() {
       .then((res) => res.json())
       .then((data) => {
         if (!data.error) {
-          if (data.undoSendDelay) setUndoSendDelay(data.undoSendDelay as UndoSendDelay);
+          // GET returns undoSendDelay as a number; normalize to the string union
+          // so the selector highlights the stored value.
+          if (data.undoSendDelay !== undefined && data.undoSendDelay !== null) {
+            const asStr = String(data.undoSendDelay) as UndoSendDelay;
+            if (UNDO_SEND_VALUES.includes(asStr)) setUndoSendDelay(asStr);
+          }
           if (data.defaultSensitivityLabel) setDefaultSensitivity(data.defaultSensitivityLabel as SensitivityLabel);
         }
       })
       .catch(() => {})
-      .finally(() => setLoading(false));
+      .finally(() => {
+        setLoading(false);
+        setLoaded(true);
+      });
   }, []);
 
-  // Save undo send delay to API
+  // Save undo send delay to API (reverts on failure).
+  // Send Number(value) so it round-trips against the numeric DB column.
   const saveUndoSendDelay = async (newDelay: UndoSendDelay) => {
+    if (!loaded) return;
+    const prev = undoSendDelay;
     setUndoSendDelay(newDelay);
+    setError(null);
     try {
-      await fetch("/api/user/preferences", {
+      const res = await fetch("/api/user/preferences", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ undoSendDelay: newDelay }),
+        body: JSON.stringify({ undoSendDelay: Number(newDelay) }),
       });
+      if (!res.ok) throw new Error("Save failed");
     } catch (err) {
       console.error("Failed to save undoSendDelay:", err);
+      setUndoSendDelay(prev);
+      setError("Couldn't save your changes. Please try again.");
     }
   };
 
-  // Save default sensitivity label to API
+  // Save default sensitivity label to API (reverts on failure)
   const saveDefaultSensitivity = async (newLabel: SensitivityLabel) => {
+    if (!loaded) return;
+    const prev = defaultSensitivity;
     setDefaultSensitivity(newLabel);
+    setError(null);
     try {
-      await fetch("/api/user/preferences", {
+      const res = await fetch("/api/user/preferences", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ defaultSensitivityLabel: newLabel }),
       });
+      if (!res.ok) throw new Error("Save failed");
     } catch (err) {
       console.error("Failed to save defaultSensitivityLabel:", err);
+      setDefaultSensitivity(prev);
+      setError("Couldn't save your changes. Please try again.");
     }
   };
 
@@ -657,6 +724,12 @@ function ComposingSection() {
           Configure email composition behaviour including undo send and sensitivity labels.
         </p>
       </div>
+
+      {error && (
+        <div className="px-4 py-3 rounded-[10px] bg-red-50 border border-red-200">
+          <p className="text-sm text-red-700">{error}</p>
+        </div>
+      )}
 
       {/* Undo Send Delay */}
       <div className="rounded-[14px] border border-neutral-200 bg-white p-5">

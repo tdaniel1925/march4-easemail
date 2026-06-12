@@ -5912,6 +5912,7 @@ export namespace Prisma {
     preferredTimeZone: string | null
     lastActiveAccountId: string | null
     undoSendDelay: number | null
+    defaultSensitivityLabel: string | null
     voiceProfileUpdatedAt: Date | null
   }
 
@@ -5934,6 +5935,7 @@ export namespace Prisma {
     preferredTimeZone: string | null
     lastActiveAccountId: string | null
     undoSendDelay: number | null
+    defaultSensitivityLabel: string | null
     voiceProfileUpdatedAt: Date | null
   }
 
@@ -5956,6 +5958,7 @@ export namespace Prisma {
     preferredTimeZone: number
     lastActiveAccountId: number
     undoSendDelay: number
+    defaultSensitivityLabel: number
     voiceProfile: number
     voiceProfileUpdatedAt: number
     _all: number
@@ -5989,6 +5992,7 @@ export namespace Prisma {
     preferredTimeZone?: true
     lastActiveAccountId?: true
     undoSendDelay?: true
+    defaultSensitivityLabel?: true
     voiceProfileUpdatedAt?: true
   }
 
@@ -6011,6 +6015,7 @@ export namespace Prisma {
     preferredTimeZone?: true
     lastActiveAccountId?: true
     undoSendDelay?: true
+    defaultSensitivityLabel?: true
     voiceProfileUpdatedAt?: true
   }
 
@@ -6033,6 +6038,7 @@ export namespace Prisma {
     preferredTimeZone?: true
     lastActiveAccountId?: true
     undoSendDelay?: true
+    defaultSensitivityLabel?: true
     voiceProfile?: true
     voiceProfileUpdatedAt?: true
     _all?: true
@@ -6143,6 +6149,7 @@ export namespace Prisma {
     preferredTimeZone: string
     lastActiveAccountId: string | null
     undoSendDelay: number
+    defaultSensitivityLabel: string | null
     voiceProfile: JsonValue | null
     voiceProfileUpdatedAt: Date | null
     _count: UserCountAggregateOutputType | null
@@ -6185,6 +6192,7 @@ export namespace Prisma {
     preferredTimeZone?: boolean
     lastActiveAccountId?: boolean
     undoSendDelay?: boolean
+    defaultSensitivityLabel?: boolean
     voiceProfile?: boolean
     voiceProfileUpdatedAt?: boolean
     org?: boolean | OrganizationDefaultArgs<ExtArgs>
@@ -6235,6 +6243,7 @@ export namespace Prisma {
     preferredTimeZone?: boolean
     lastActiveAccountId?: boolean
     undoSendDelay?: boolean
+    defaultSensitivityLabel?: boolean
     voiceProfile?: boolean
     voiceProfileUpdatedAt?: boolean
     org?: boolean | OrganizationDefaultArgs<ExtArgs>
@@ -6259,6 +6268,7 @@ export namespace Prisma {
     preferredTimeZone?: boolean
     lastActiveAccountId?: boolean
     undoSendDelay?: boolean
+    defaultSensitivityLabel?: boolean
     voiceProfile?: boolean
     voiceProfileUpdatedAt?: boolean
     org?: boolean | OrganizationDefaultArgs<ExtArgs>
@@ -6283,11 +6293,12 @@ export namespace Prisma {
     preferredTimeZone?: boolean
     lastActiveAccountId?: boolean
     undoSendDelay?: boolean
+    defaultSensitivityLabel?: boolean
     voiceProfile?: boolean
     voiceProfileUpdatedAt?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "name" | "avatarUrl" | "createdAt" | "updatedAt" | "orgId" | "notificationNewEmail" | "notificationDailyDigest" | "notificationAiReplies" | "notificationCalendarReminders" | "notificationWeeklyReport" | "appTheme" | "fontSize" | "emailDensity" | "preferredTimeZone" | "lastActiveAccountId" | "undoSendDelay" | "voiceProfile" | "voiceProfileUpdatedAt", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "name" | "avatarUrl" | "createdAt" | "updatedAt" | "orgId" | "notificationNewEmail" | "notificationDailyDigest" | "notificationAiReplies" | "notificationCalendarReminders" | "notificationWeeklyReport" | "appTheme" | "fontSize" | "emailDensity" | "preferredTimeZone" | "lastActiveAccountId" | "undoSendDelay" | "defaultSensitivityLabel" | "voiceProfile" | "voiceProfileUpdatedAt", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     org?: boolean | OrganizationDefaultArgs<ExtArgs>
     msAccounts?: boolean | User$msAccountsArgs<ExtArgs>
@@ -6373,6 +6384,7 @@ export namespace Prisma {
       preferredTimeZone: string
       lastActiveAccountId: string | null
       undoSendDelay: number
+      defaultSensitivityLabel: string | null
       voiceProfile: Prisma.JsonValue | null
       voiceProfileUpdatedAt: Date | null
     }, ExtArgs["result"]["user"]>
@@ -6842,6 +6854,7 @@ export namespace Prisma {
     readonly preferredTimeZone: FieldRef<"User", 'String'>
     readonly lastActiveAccountId: FieldRef<"User", 'String'>
     readonly undoSendDelay: FieldRef<"User", 'Int'>
+    readonly defaultSensitivityLabel: FieldRef<"User", 'String'>
     readonly voiceProfile: FieldRef<"User", 'Json'>
     readonly voiceProfileUpdatedAt: FieldRef<"User", 'DateTime'>
   }
@@ -37944,6 +37957,7 @@ export namespace Prisma {
     preferredTimeZone: 'preferredTimeZone',
     lastActiveAccountId: 'lastActiveAccountId',
     undoSendDelay: 'undoSendDelay',
+    defaultSensitivityLabel: 'defaultSensitivityLabel',
     voiceProfile: 'voiceProfile',
     voiceProfileUpdatedAt: 'voiceProfileUpdatedAt'
   };
@@ -38703,6 +38717,7 @@ export namespace Prisma {
     preferredTimeZone?: StringFilter<"User"> | string
     lastActiveAccountId?: StringNullableFilter<"User"> | string | null
     undoSendDelay?: IntFilter<"User"> | number
+    defaultSensitivityLabel?: StringNullableFilter<"User"> | string | null
     voiceProfile?: JsonNullableFilter<"User">
     voiceProfileUpdatedAt?: DateTimeNullableFilter<"User"> | Date | string | null
     org?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
@@ -38752,6 +38767,7 @@ export namespace Prisma {
     preferredTimeZone?: SortOrder
     lastActiveAccountId?: SortOrderInput | SortOrder
     undoSendDelay?: SortOrder
+    defaultSensitivityLabel?: SortOrderInput | SortOrder
     voiceProfile?: SortOrderInput | SortOrder
     voiceProfileUpdatedAt?: SortOrderInput | SortOrder
     org?: OrganizationOrderByWithRelationInput
@@ -38804,6 +38820,7 @@ export namespace Prisma {
     preferredTimeZone?: StringFilter<"User"> | string
     lastActiveAccountId?: StringNullableFilter<"User"> | string | null
     undoSendDelay?: IntFilter<"User"> | number
+    defaultSensitivityLabel?: StringNullableFilter<"User"> | string | null
     voiceProfile?: JsonNullableFilter<"User">
     voiceProfileUpdatedAt?: DateTimeNullableFilter<"User"> | Date | string | null
     org?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
@@ -38853,6 +38870,7 @@ export namespace Prisma {
     preferredTimeZone?: SortOrder
     lastActiveAccountId?: SortOrderInput | SortOrder
     undoSendDelay?: SortOrder
+    defaultSensitivityLabel?: SortOrderInput | SortOrder
     voiceProfile?: SortOrderInput | SortOrder
     voiceProfileUpdatedAt?: SortOrderInput | SortOrder
     _count?: UserCountOrderByAggregateInput
@@ -38884,6 +38902,7 @@ export namespace Prisma {
     preferredTimeZone?: StringWithAggregatesFilter<"User"> | string
     lastActiveAccountId?: StringNullableWithAggregatesFilter<"User"> | string | null
     undoSendDelay?: IntWithAggregatesFilter<"User"> | number
+    defaultSensitivityLabel?: StringNullableWithAggregatesFilter<"User"> | string | null
     voiceProfile?: JsonNullableWithAggregatesFilter<"User">
     voiceProfileUpdatedAt?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
   }
@@ -41425,6 +41444,7 @@ export namespace Prisma {
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
     undoSendDelay?: number
+    defaultSensitivityLabel?: string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
@@ -41474,6 +41494,7 @@ export namespace Prisma {
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
     undoSendDelay?: number
+    defaultSensitivityLabel?: string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
@@ -41521,6 +41542,7 @@ export namespace Prisma {
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     undoSendDelay?: IntFieldUpdateOperationsInput | number
+    defaultSensitivityLabel?: NullableStringFieldUpdateOperationsInput | string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
@@ -41570,6 +41592,7 @@ export namespace Prisma {
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     undoSendDelay?: IntFieldUpdateOperationsInput | number
+    defaultSensitivityLabel?: NullableStringFieldUpdateOperationsInput | string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
@@ -41618,6 +41641,7 @@ export namespace Prisma {
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
     undoSendDelay?: number
+    defaultSensitivityLabel?: string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
   }
@@ -41640,6 +41664,7 @@ export namespace Prisma {
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     undoSendDelay?: IntFieldUpdateOperationsInput | number
+    defaultSensitivityLabel?: NullableStringFieldUpdateOperationsInput | string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
@@ -41663,6 +41688,7 @@ export namespace Prisma {
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     undoSendDelay?: IntFieldUpdateOperationsInput | number
+    defaultSensitivityLabel?: NullableStringFieldUpdateOperationsInput | string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
@@ -44883,6 +44909,7 @@ export namespace Prisma {
     preferredTimeZone?: SortOrder
     lastActiveAccountId?: SortOrder
     undoSendDelay?: SortOrder
+    defaultSensitivityLabel?: SortOrder
     voiceProfile?: SortOrder
     voiceProfileUpdatedAt?: SortOrder
   }
@@ -44910,6 +44937,7 @@ export namespace Prisma {
     preferredTimeZone?: SortOrder
     lastActiveAccountId?: SortOrder
     undoSendDelay?: SortOrder
+    defaultSensitivityLabel?: SortOrder
     voiceProfileUpdatedAt?: SortOrder
   }
 
@@ -44932,6 +44960,7 @@ export namespace Prisma {
     preferredTimeZone?: SortOrder
     lastActiveAccountId?: SortOrder
     undoSendDelay?: SortOrder
+    defaultSensitivityLabel?: SortOrder
     voiceProfileUpdatedAt?: SortOrder
   }
 
@@ -48159,6 +48188,7 @@ export namespace Prisma {
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
     undoSendDelay?: number
+    defaultSensitivityLabel?: string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     msAccounts?: MsConnectedAccountCreateNestedManyWithoutUserInput
@@ -48206,6 +48236,7 @@ export namespace Prisma {
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
     undoSendDelay?: number
+    defaultSensitivityLabel?: string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
@@ -48311,6 +48342,7 @@ export namespace Prisma {
     preferredTimeZone?: StringFilter<"User"> | string
     lastActiveAccountId?: StringNullableFilter<"User"> | string | null
     undoSendDelay?: IntFilter<"User"> | number
+    defaultSensitivityLabel?: StringNullableFilter<"User"> | string | null
     voiceProfile?: JsonNullableFilter<"User">
     voiceProfileUpdatedAt?: DateTimeNullableFilter<"User"> | Date | string | null
   }
@@ -50291,6 +50323,7 @@ export namespace Prisma {
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
     undoSendDelay?: number
+    defaultSensitivityLabel?: string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
@@ -50339,6 +50372,7 @@ export namespace Prisma {
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
     undoSendDelay?: number
+    defaultSensitivityLabel?: string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     imapAccounts?: ImapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
@@ -50401,6 +50435,7 @@ export namespace Prisma {
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     undoSendDelay?: IntFieldUpdateOperationsInput | number
+    defaultSensitivityLabel?: NullableStringFieldUpdateOperationsInput | string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
@@ -50449,6 +50484,7 @@ export namespace Prisma {
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     undoSendDelay?: IntFieldUpdateOperationsInput | number
+    defaultSensitivityLabel?: NullableStringFieldUpdateOperationsInput | string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     imapAccounts?: ImapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
@@ -50495,6 +50531,7 @@ export namespace Prisma {
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
     undoSendDelay?: number
+    defaultSensitivityLabel?: string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
@@ -50543,6 +50580,7 @@ export namespace Prisma {
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
     undoSendDelay?: number
+    defaultSensitivityLabel?: string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
@@ -50605,6 +50643,7 @@ export namespace Prisma {
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     undoSendDelay?: IntFieldUpdateOperationsInput | number
+    defaultSensitivityLabel?: NullableStringFieldUpdateOperationsInput | string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
@@ -50653,6 +50692,7 @@ export namespace Prisma {
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     undoSendDelay?: IntFieldUpdateOperationsInput | number
+    defaultSensitivityLabel?: NullableStringFieldUpdateOperationsInput | string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
@@ -50699,6 +50739,7 @@ export namespace Prisma {
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
     undoSendDelay?: number
+    defaultSensitivityLabel?: string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
@@ -50747,6 +50788,7 @@ export namespace Prisma {
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
     undoSendDelay?: number
+    defaultSensitivityLabel?: string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
@@ -50809,6 +50851,7 @@ export namespace Prisma {
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     undoSendDelay?: IntFieldUpdateOperationsInput | number
+    defaultSensitivityLabel?: NullableStringFieldUpdateOperationsInput | string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
@@ -50857,6 +50900,7 @@ export namespace Prisma {
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     undoSendDelay?: IntFieldUpdateOperationsInput | number
+    defaultSensitivityLabel?: NullableStringFieldUpdateOperationsInput | string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
@@ -50903,6 +50947,7 @@ export namespace Prisma {
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
     undoSendDelay?: number
+    defaultSensitivityLabel?: string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
@@ -50951,6 +50996,7 @@ export namespace Prisma {
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
     undoSendDelay?: number
+    defaultSensitivityLabel?: string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
@@ -51013,6 +51059,7 @@ export namespace Prisma {
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     undoSendDelay?: IntFieldUpdateOperationsInput | number
+    defaultSensitivityLabel?: NullableStringFieldUpdateOperationsInput | string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
@@ -51061,6 +51108,7 @@ export namespace Prisma {
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     undoSendDelay?: IntFieldUpdateOperationsInput | number
+    defaultSensitivityLabel?: NullableStringFieldUpdateOperationsInput | string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
@@ -51107,6 +51155,7 @@ export namespace Prisma {
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
     undoSendDelay?: number
+    defaultSensitivityLabel?: string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
@@ -51155,6 +51204,7 @@ export namespace Prisma {
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
     undoSendDelay?: number
+    defaultSensitivityLabel?: string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
@@ -51217,6 +51267,7 @@ export namespace Prisma {
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     undoSendDelay?: IntFieldUpdateOperationsInput | number
+    defaultSensitivityLabel?: NullableStringFieldUpdateOperationsInput | string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
@@ -51265,6 +51316,7 @@ export namespace Prisma {
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     undoSendDelay?: IntFieldUpdateOperationsInput | number
+    defaultSensitivityLabel?: NullableStringFieldUpdateOperationsInput | string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
@@ -51311,6 +51363,7 @@ export namespace Prisma {
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
     undoSendDelay?: number
+    defaultSensitivityLabel?: string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
@@ -51359,6 +51412,7 @@ export namespace Prisma {
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
     undoSendDelay?: number
+    defaultSensitivityLabel?: string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
@@ -51421,6 +51475,7 @@ export namespace Prisma {
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     undoSendDelay?: IntFieldUpdateOperationsInput | number
+    defaultSensitivityLabel?: NullableStringFieldUpdateOperationsInput | string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
@@ -51469,6 +51524,7 @@ export namespace Prisma {
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     undoSendDelay?: IntFieldUpdateOperationsInput | number
+    defaultSensitivityLabel?: NullableStringFieldUpdateOperationsInput | string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
@@ -51515,6 +51571,7 @@ export namespace Prisma {
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
     undoSendDelay?: number
+    defaultSensitivityLabel?: string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
@@ -51563,6 +51620,7 @@ export namespace Prisma {
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
     undoSendDelay?: number
+    defaultSensitivityLabel?: string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
@@ -51625,6 +51683,7 @@ export namespace Prisma {
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     undoSendDelay?: IntFieldUpdateOperationsInput | number
+    defaultSensitivityLabel?: NullableStringFieldUpdateOperationsInput | string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
@@ -51673,6 +51732,7 @@ export namespace Prisma {
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     undoSendDelay?: IntFieldUpdateOperationsInput | number
+    defaultSensitivityLabel?: NullableStringFieldUpdateOperationsInput | string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
@@ -51719,6 +51779,7 @@ export namespace Prisma {
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
     undoSendDelay?: number
+    defaultSensitivityLabel?: string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
@@ -51767,6 +51828,7 @@ export namespace Prisma {
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
     undoSendDelay?: number
+    defaultSensitivityLabel?: string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
@@ -51829,6 +51891,7 @@ export namespace Prisma {
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     undoSendDelay?: IntFieldUpdateOperationsInput | number
+    defaultSensitivityLabel?: NullableStringFieldUpdateOperationsInput | string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
@@ -51877,6 +51940,7 @@ export namespace Prisma {
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     undoSendDelay?: IntFieldUpdateOperationsInput | number
+    defaultSensitivityLabel?: NullableStringFieldUpdateOperationsInput | string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
@@ -51923,6 +51987,7 @@ export namespace Prisma {
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
     undoSendDelay?: number
+    defaultSensitivityLabel?: string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
@@ -51971,6 +52036,7 @@ export namespace Prisma {
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
     undoSendDelay?: number
+    defaultSensitivityLabel?: string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
@@ -52033,6 +52099,7 @@ export namespace Prisma {
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     undoSendDelay?: IntFieldUpdateOperationsInput | number
+    defaultSensitivityLabel?: NullableStringFieldUpdateOperationsInput | string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
@@ -52081,6 +52148,7 @@ export namespace Prisma {
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     undoSendDelay?: IntFieldUpdateOperationsInput | number
+    defaultSensitivityLabel?: NullableStringFieldUpdateOperationsInput | string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
@@ -52127,6 +52195,7 @@ export namespace Prisma {
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
     undoSendDelay?: number
+    defaultSensitivityLabel?: string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
@@ -52175,6 +52244,7 @@ export namespace Prisma {
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
     undoSendDelay?: number
+    defaultSensitivityLabel?: string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
@@ -52237,6 +52307,7 @@ export namespace Prisma {
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     undoSendDelay?: IntFieldUpdateOperationsInput | number
+    defaultSensitivityLabel?: NullableStringFieldUpdateOperationsInput | string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
@@ -52285,6 +52356,7 @@ export namespace Prisma {
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     undoSendDelay?: IntFieldUpdateOperationsInput | number
+    defaultSensitivityLabel?: NullableStringFieldUpdateOperationsInput | string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
@@ -52331,6 +52403,7 @@ export namespace Prisma {
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
     undoSendDelay?: number
+    defaultSensitivityLabel?: string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
@@ -52379,6 +52452,7 @@ export namespace Prisma {
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
     undoSendDelay?: number
+    defaultSensitivityLabel?: string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
@@ -52441,6 +52515,7 @@ export namespace Prisma {
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     undoSendDelay?: IntFieldUpdateOperationsInput | number
+    defaultSensitivityLabel?: NullableStringFieldUpdateOperationsInput | string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
@@ -52489,6 +52564,7 @@ export namespace Prisma {
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     undoSendDelay?: IntFieldUpdateOperationsInput | number
+    defaultSensitivityLabel?: NullableStringFieldUpdateOperationsInput | string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
@@ -52535,6 +52611,7 @@ export namespace Prisma {
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
     undoSendDelay?: number
+    defaultSensitivityLabel?: string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
@@ -52583,6 +52660,7 @@ export namespace Prisma {
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
     undoSendDelay?: number
+    defaultSensitivityLabel?: string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
@@ -52645,6 +52723,7 @@ export namespace Prisma {
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     undoSendDelay?: IntFieldUpdateOperationsInput | number
+    defaultSensitivityLabel?: NullableStringFieldUpdateOperationsInput | string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
@@ -52693,6 +52772,7 @@ export namespace Prisma {
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     undoSendDelay?: IntFieldUpdateOperationsInput | number
+    defaultSensitivityLabel?: NullableStringFieldUpdateOperationsInput | string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
@@ -52739,6 +52819,7 @@ export namespace Prisma {
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
     undoSendDelay?: number
+    defaultSensitivityLabel?: string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
@@ -52787,6 +52868,7 @@ export namespace Prisma {
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
     undoSendDelay?: number
+    defaultSensitivityLabel?: string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
@@ -52849,6 +52931,7 @@ export namespace Prisma {
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     undoSendDelay?: IntFieldUpdateOperationsInput | number
+    defaultSensitivityLabel?: NullableStringFieldUpdateOperationsInput | string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
@@ -52897,6 +52980,7 @@ export namespace Prisma {
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     undoSendDelay?: IntFieldUpdateOperationsInput | number
+    defaultSensitivityLabel?: NullableStringFieldUpdateOperationsInput | string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
@@ -52943,6 +53027,7 @@ export namespace Prisma {
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
     undoSendDelay?: number
+    defaultSensitivityLabel?: string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
@@ -52991,6 +53076,7 @@ export namespace Prisma {
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
     undoSendDelay?: number
+    defaultSensitivityLabel?: string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
@@ -53053,6 +53139,7 @@ export namespace Prisma {
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     undoSendDelay?: IntFieldUpdateOperationsInput | number
+    defaultSensitivityLabel?: NullableStringFieldUpdateOperationsInput | string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
@@ -53101,6 +53188,7 @@ export namespace Prisma {
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     undoSendDelay?: IntFieldUpdateOperationsInput | number
+    defaultSensitivityLabel?: NullableStringFieldUpdateOperationsInput | string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
@@ -53147,6 +53235,7 @@ export namespace Prisma {
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
     undoSendDelay?: number
+    defaultSensitivityLabel?: string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
@@ -53195,6 +53284,7 @@ export namespace Prisma {
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
     undoSendDelay?: number
+    defaultSensitivityLabel?: string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
@@ -53257,6 +53347,7 @@ export namespace Prisma {
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     undoSendDelay?: IntFieldUpdateOperationsInput | number
+    defaultSensitivityLabel?: NullableStringFieldUpdateOperationsInput | string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
@@ -53305,6 +53396,7 @@ export namespace Prisma {
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     undoSendDelay?: IntFieldUpdateOperationsInput | number
+    defaultSensitivityLabel?: NullableStringFieldUpdateOperationsInput | string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
@@ -53351,6 +53443,7 @@ export namespace Prisma {
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
     undoSendDelay?: number
+    defaultSensitivityLabel?: string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
@@ -53399,6 +53492,7 @@ export namespace Prisma {
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
     undoSendDelay?: number
+    defaultSensitivityLabel?: string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
@@ -53461,6 +53555,7 @@ export namespace Prisma {
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     undoSendDelay?: IntFieldUpdateOperationsInput | number
+    defaultSensitivityLabel?: NullableStringFieldUpdateOperationsInput | string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
@@ -53509,6 +53604,7 @@ export namespace Prisma {
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     undoSendDelay?: IntFieldUpdateOperationsInput | number
+    defaultSensitivityLabel?: NullableStringFieldUpdateOperationsInput | string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
@@ -53555,6 +53651,7 @@ export namespace Prisma {
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
     undoSendDelay?: number
+    defaultSensitivityLabel?: string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
@@ -53603,6 +53700,7 @@ export namespace Prisma {
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
     undoSendDelay?: number
+    defaultSensitivityLabel?: string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
@@ -53665,6 +53763,7 @@ export namespace Prisma {
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     undoSendDelay?: IntFieldUpdateOperationsInput | number
+    defaultSensitivityLabel?: NullableStringFieldUpdateOperationsInput | string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
@@ -53713,6 +53812,7 @@ export namespace Prisma {
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     undoSendDelay?: IntFieldUpdateOperationsInput | number
+    defaultSensitivityLabel?: NullableStringFieldUpdateOperationsInput | string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
@@ -53759,6 +53859,7 @@ export namespace Prisma {
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
     undoSendDelay?: number
+    defaultSensitivityLabel?: string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
@@ -53807,6 +53908,7 @@ export namespace Prisma {
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
     undoSendDelay?: number
+    defaultSensitivityLabel?: string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
@@ -53869,6 +53971,7 @@ export namespace Prisma {
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     undoSendDelay?: IntFieldUpdateOperationsInput | number
+    defaultSensitivityLabel?: NullableStringFieldUpdateOperationsInput | string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
@@ -53917,6 +54020,7 @@ export namespace Prisma {
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     undoSendDelay?: IntFieldUpdateOperationsInput | number
+    defaultSensitivityLabel?: NullableStringFieldUpdateOperationsInput | string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
@@ -53963,6 +54067,7 @@ export namespace Prisma {
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
     undoSendDelay?: number
+    defaultSensitivityLabel?: string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
@@ -54011,6 +54116,7 @@ export namespace Prisma {
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
     undoSendDelay?: number
+    defaultSensitivityLabel?: string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
@@ -54073,6 +54179,7 @@ export namespace Prisma {
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     undoSendDelay?: IntFieldUpdateOperationsInput | number
+    defaultSensitivityLabel?: NullableStringFieldUpdateOperationsInput | string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
@@ -54121,6 +54228,7 @@ export namespace Prisma {
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     undoSendDelay?: IntFieldUpdateOperationsInput | number
+    defaultSensitivityLabel?: NullableStringFieldUpdateOperationsInput | string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
@@ -54167,6 +54275,7 @@ export namespace Prisma {
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
     undoSendDelay?: number
+    defaultSensitivityLabel?: string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
@@ -54215,6 +54324,7 @@ export namespace Prisma {
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
     undoSendDelay?: number
+    defaultSensitivityLabel?: string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
@@ -54277,6 +54387,7 @@ export namespace Prisma {
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     undoSendDelay?: IntFieldUpdateOperationsInput | number
+    defaultSensitivityLabel?: NullableStringFieldUpdateOperationsInput | string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
@@ -54325,6 +54436,7 @@ export namespace Prisma {
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     undoSendDelay?: IntFieldUpdateOperationsInput | number
+    defaultSensitivityLabel?: NullableStringFieldUpdateOperationsInput | string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
@@ -54371,6 +54483,7 @@ export namespace Prisma {
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
     undoSendDelay?: number
+    defaultSensitivityLabel?: string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
@@ -54419,6 +54532,7 @@ export namespace Prisma {
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
     undoSendDelay?: number
+    defaultSensitivityLabel?: string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
@@ -54481,6 +54595,7 @@ export namespace Prisma {
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     undoSendDelay?: IntFieldUpdateOperationsInput | number
+    defaultSensitivityLabel?: NullableStringFieldUpdateOperationsInput | string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
@@ -54529,6 +54644,7 @@ export namespace Prisma {
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     undoSendDelay?: IntFieldUpdateOperationsInput | number
+    defaultSensitivityLabel?: NullableStringFieldUpdateOperationsInput | string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
@@ -54575,6 +54691,7 @@ export namespace Prisma {
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
     undoSendDelay?: number
+    defaultSensitivityLabel?: string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
@@ -54623,6 +54740,7 @@ export namespace Prisma {
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
     undoSendDelay?: number
+    defaultSensitivityLabel?: string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
@@ -54685,6 +54803,7 @@ export namespace Prisma {
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     undoSendDelay?: IntFieldUpdateOperationsInput | number
+    defaultSensitivityLabel?: NullableStringFieldUpdateOperationsInput | string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
@@ -54733,6 +54852,7 @@ export namespace Prisma {
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     undoSendDelay?: IntFieldUpdateOperationsInput | number
+    defaultSensitivityLabel?: NullableStringFieldUpdateOperationsInput | string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
@@ -54779,6 +54899,7 @@ export namespace Prisma {
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
     undoSendDelay?: number
+    defaultSensitivityLabel?: string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
@@ -54827,6 +54948,7 @@ export namespace Prisma {
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
     undoSendDelay?: number
+    defaultSensitivityLabel?: string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
@@ -54889,6 +55011,7 @@ export namespace Prisma {
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     undoSendDelay?: IntFieldUpdateOperationsInput | number
+    defaultSensitivityLabel?: NullableStringFieldUpdateOperationsInput | string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
@@ -54937,6 +55060,7 @@ export namespace Prisma {
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     undoSendDelay?: IntFieldUpdateOperationsInput | number
+    defaultSensitivityLabel?: NullableStringFieldUpdateOperationsInput | string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
@@ -54983,6 +55107,7 @@ export namespace Prisma {
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
     undoSendDelay?: number
+    defaultSensitivityLabel?: string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
@@ -55031,6 +55156,7 @@ export namespace Prisma {
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
     undoSendDelay?: number
+    defaultSensitivityLabel?: string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
@@ -55093,6 +55219,7 @@ export namespace Prisma {
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     undoSendDelay?: IntFieldUpdateOperationsInput | number
+    defaultSensitivityLabel?: NullableStringFieldUpdateOperationsInput | string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
@@ -55141,6 +55268,7 @@ export namespace Prisma {
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     undoSendDelay?: IntFieldUpdateOperationsInput | number
+    defaultSensitivityLabel?: NullableStringFieldUpdateOperationsInput | string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
@@ -55187,6 +55315,7 @@ export namespace Prisma {
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
     undoSendDelay?: number
+    defaultSensitivityLabel?: string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     org: OrganizationCreateNestedOneWithoutUsersInput
@@ -55235,6 +55364,7 @@ export namespace Prisma {
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
     undoSendDelay?: number
+    defaultSensitivityLabel?: string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
     msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
@@ -55297,6 +55427,7 @@ export namespace Prisma {
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     undoSendDelay?: IntFieldUpdateOperationsInput | number
+    defaultSensitivityLabel?: NullableStringFieldUpdateOperationsInput | string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
@@ -55345,6 +55476,7 @@ export namespace Prisma {
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     undoSendDelay?: IntFieldUpdateOperationsInput | number
+    defaultSensitivityLabel?: NullableStringFieldUpdateOperationsInput | string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
@@ -55391,6 +55523,7 @@ export namespace Prisma {
     preferredTimeZone?: string
     lastActiveAccountId?: string | null
     undoSendDelay?: number
+    defaultSensitivityLabel?: string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: Date | string | null
   }
@@ -55422,6 +55555,7 @@ export namespace Prisma {
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     undoSendDelay?: IntFieldUpdateOperationsInput | number
+    defaultSensitivityLabel?: NullableStringFieldUpdateOperationsInput | string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     msAccounts?: MsConnectedAccountUpdateManyWithoutUserNestedInput
@@ -55469,6 +55603,7 @@ export namespace Prisma {
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     undoSendDelay?: IntFieldUpdateOperationsInput | number
+    defaultSensitivityLabel?: NullableStringFieldUpdateOperationsInput | string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
@@ -55516,6 +55651,7 @@ export namespace Prisma {
     preferredTimeZone?: StringFieldUpdateOperationsInput | string
     lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     undoSendDelay?: IntFieldUpdateOperationsInput | number
+    defaultSensitivityLabel?: NullableStringFieldUpdateOperationsInput | string | null
     voiceProfile?: NullableJsonNullValueInput | InputJsonValue
     voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }

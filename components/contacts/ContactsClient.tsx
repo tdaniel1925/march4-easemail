@@ -740,19 +740,39 @@ function ContactDetail({
   const [notesSaved, setNotesSaved] = useState(false);
   const [notesError, setNotesError] = useState<string | null>(null);
   const notesTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // True only once the user has edited the current contact's note. Prevents the
+  // debounced auto-save from overwriting a stored note with empty text on select.
+  const notesDirty = useRef(false);
 
   // ── Email history ────────────────────────────────────────────────────────────
   const [emails, setEmails] = useState<ContactEmail[]>([]);
   const [emailsLoading, setEmailsLoading] = useState(false);
   const [emailsError, setEmailsError] = useState<string | null>(null);
 
-  // Reset state when contact changes
+  // Reset + load state when contact changes
   useEffect(() => {
+    // Cancel any pending save from the previous contact so it can't write to the
+    // wrong contact, and reset the dirty flag for the newly-selected contact.
+    if (notesTimer.current) clearTimeout(notesTimer.current);
+    notesDirty.current = false;
     setNotes("");
     setNotesSaved(false);
     setNotesError(null);
     setEmails([]);
     setEmailsError(null);
+
+    const contactId = contact.id;
+
+    // Load the saved private note for this contact. Ignore the response if the
+    // user has already started typing or switched contacts.
+    fetch(`/api/contacts/${encodeURIComponent(contactId)}`)
+      .then((r) => (r.ok ? r.json() : { notes: "" }))
+      .then((data: { notes?: string }) => {
+        if (contactId === contact.id && !notesDirty.current) {
+          setNotes(data.notes ?? "");
+        }
+      })
+      .catch(() => { /* note load is best-effort */ });
 
     if (!contact.email) return;
 
@@ -766,19 +786,26 @@ function ContactDetail({
       .then((data) => setEmails(data.emails ?? []))
       .catch((err) => setEmailsError(err instanceof Error ? err.message : "Failed to load"))
       .finally(() => setEmailsLoading(false));
+
+    // Cancel pending debounce on unmount / contact switch.
+    return () => {
+      if (notesTimer.current) clearTimeout(notesTimer.current);
+    };
   }, [contact.id, contact.email]);
 
-  // Auto-save notes 800ms after last keystroke
+  // Auto-save notes 800ms after last keystroke — only once the user has edited.
   const handleNotesChange = useCallback((value: string) => {
+    notesDirty.current = true;
     setNotes(value);
     setNotesSaved(false);
     setNotesError(null);
     if (notesTimer.current) clearTimeout(notesTimer.current);
+    const targetId = contact.id;
     notesTimer.current = setTimeout(async () => {
       setNotesSaving(true);
       try {
         const hid = useAccountStore.getState().activeAccount?.homeAccountId;
-        const res = await fetch(`/api/contacts/${encodeURIComponent(contact.id)}`, {
+        const res = await fetch(`/api/contacts/${encodeURIComponent(targetId)}`, {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ notes: value, homeAccountId: hid }),

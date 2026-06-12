@@ -28,9 +28,46 @@ export async function GET(req: NextRequest) {
     include: { user: true },
   });
 
+  // Total attachment payload cap (25MB of binary, approximated from base64 length).
+  const MAX_TOTAL_ATTACHMENT_BYTES = 25 * 1024 * 1024;
+
+  /**
+   * Read the draft's serialized attachments (JSON array of {name,type,size,data})
+   * and return only those that fit within the 25MB total cap. Oversized items are
+   * skipped and logged so the scheduled email still sends with whatever fits.
+   */
+  function collectDraftAttachments(
+    raw: unknown,
+    draftId: string,
+  ): { name: string; contentType: string; data: string }[] {
+    const list = Array.isArray(raw)
+      ? (raw as { name?: string; type?: string; data?: string }[])
+      : [];
+    const out: { name: string; contentType: string; data: string }[] = [];
+    let totalBytes = 0;
+    for (const att of list) {
+      if (!att?.data) continue;
+      const bytes = Math.ceil(att.data.length * 0.75); // base64 → binary bytes
+      if (totalBytes + bytes > MAX_TOTAL_ATTACHMENT_BYTES) {
+        console.error(
+          `[cron] skipping oversized attachment "${att.name ?? "(unnamed)"}" on draft ${draftId} — would exceed 25MB total cap`,
+        );
+        continue;
+      }
+      totalBytes += bytes;
+      out.push({
+        name: att.name ?? "attachment",
+        contentType: att.type || "application/octet-stream",
+        data: att.data,
+      });
+    }
+    return out;
+  }
+
   const results = await Promise.allSettled(
     dueDrafts.map(async (draft) => {
       const accountId = draft.homeAccountId;
+      const draftAttachments = collectDraftAttachments(draft.attachments, draft.id);
 
       // Determine provider type and resolve account
       const providerType = accountId ? detectProviderType(accountId) : "microsoft";
@@ -51,6 +88,7 @@ export async function GET(req: NextRequest) {
           bcc: bcc?.length ? bcc.map((r) => ({ address: r.emailAddress.address })) : undefined,
           subject: draft.subject ?? "(No subject)",
           bodyHtml: draft.bodyHtml ?? "",
+          ...(draftAttachments.length ? { attachments: draftAttachments } : {}),
           importance: (draft.importance as "normal" | "high" | "low") ?? "normal",
         };
 
@@ -71,6 +109,13 @@ export async function GET(req: NextRequest) {
         const cc = draft.ccRecipients as unknown as { emailAddress: { address: string } }[];
         const bcc = draft.bccRecipients as unknown as { emailAddress: { address: string } }[];
 
+        const graphAttachments = draftAttachments.map((att) => ({
+          "@odata.type": "#microsoft.graph.fileAttachment",
+          name: att.name,
+          contentType: att.contentType,
+          contentBytes: att.data,
+        }));
+
         const payload = {
           message: {
             subject: draft.subject ?? "(No subject)",
@@ -78,6 +123,7 @@ export async function GET(req: NextRequest) {
             toRecipients: to,
             ...(cc?.length ? { ccRecipients: cc } : {}),
             ...(bcc?.length ? { bccRecipients: bcc } : {}),
+            ...(graphAttachments.length ? { attachments: graphAttachments } : {}),
             ...(draft.importance === "high" ? { importance: "high" } : {}),
             ...(draft.requestReadReceipt ? { isReadReceiptRequested: true } : {}),
           },

@@ -77,6 +77,10 @@ model User {
   // Undo Send preference (delay in seconds before email actually sends)
   undoSendDelay Int @default(10) // 5 | 10 | 20 | 30
 
+  // Default sensitivity label applied to new emails
+  // none | attorney-client | confidential | work-product (null = none)
+  defaultSensitivityLabel String?
+
   // AI voice profile — cached analysis of user's writing style
   voiceProfile          Json?
   voiceProfileUpdatedAt DateTime?

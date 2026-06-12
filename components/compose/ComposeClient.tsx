@@ -353,10 +353,12 @@ export default function ComposeClient({
   const latestComposeStateRef = useRef({
     to, cc, bcc, subject, attachments, fromAccountId, importance, requestReadReceipt,
     originalMessageBody: replyContext?.originalBodyHtml as string | undefined,
+    scheduledAt: null as Date | null,
   });
   latestComposeStateRef.current = {
     to, cc, bcc, subject, attachments, fromAccountId, importance, requestReadReceipt,
     originalMessageBody: replyContext?.originalBodyHtml,
+    scheduledAt,
   };
 
   // ── Discard confirmation ─────────────────────────────────────────────────────
@@ -718,7 +720,15 @@ export default function ComposeClient({
           subject,
           bodyHtml,
           attachments: draftAttachments,
-          scheduledAt: scheduleAt !== undefined ? scheduleAt?.toISOString() ?? null : null,
+          // Preserve the schedule across normal saves/auto-saves. Only an explicit
+          // scheduleAt arg (Schedule Send) or the user clearing it (state → null
+          // via the schedule chip's X) changes it. When scheduleAt is undefined,
+          // fall back to the current scheduledAt state so opening or re-saving a
+          // scheduled draft never silently unschedules it.
+          scheduledAt:
+            scheduleAt !== undefined
+              ? scheduleAt?.toISOString() ?? null
+              : scheduledAt?.toISOString() ?? null,
           // FIX: Add missing fields that were collected but never saved
           importance,
           requestReadReceipt,
@@ -772,7 +782,9 @@ export default function ComposeClient({
       subject: s.subject,
       bodyHtml,
       attachments: s.attachments.map(({ name, type, size, data }) => ({ name, type, size, data })),
-      scheduledAt: null,
+      // Preserve any active schedule on the final exit flush — a scheduled draft
+      // must not be silently unscheduled when the user navigates away.
+      scheduledAt: s.scheduledAt?.toISOString() ?? null,
       importance: s.importance,
       requestReadReceipt: s.requestReadReceipt,
       draftType: mode ?? "new",

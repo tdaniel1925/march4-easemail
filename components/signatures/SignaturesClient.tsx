@@ -30,31 +30,6 @@ interface Signature {
   account: string;
 }
 
-const _STORAGE_KEY = "easemail_signatures";
-
-function _makeId() {
-  return Math.random().toString(36).slice(2, 10);
-}
-
-const SAMPLE: Signature[] = [
-  {
-    id: "sig-1",
-    name: "Professional",
-    html: `<p><strong>{{YOUR NAME}}</strong></p><p style="color:#6b7280">Attorney at Law &middot; Darren Miller Law Firm</p><p style="color:#8a0909">{{YOUR EMAIL}}</p>`,
-    defaultNew: true,
-    defaultReplies: false,
-    account: "all",
-  },
-  {
-    id: "sig-2",
-    name: "Casual",
-    html: `<p>&mdash; {{YOUR NAME}}</p><p style="color:#6b7280">{{YOUR EMAIL}}</p>`,
-    defaultNew: false,
-    defaultReplies: true,
-    account: "all",
-  },
-];
-
 // ─── Toggle ───────────────────────────────────────────────────────────────────
 
 function Toggle({ on, onChange }: { on: boolean; onChange: (v: boolean) => void }) {
@@ -178,19 +153,30 @@ export default function SignaturesClient({ userEmail }: { userEmail: string }) {
   const [copySrcId, setCopySrcId] = useState<string>("");
   const [saved, setSaved] = useState(false);
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
+  // Inline operation error (save / create / delete) shown to the user.
+  const [actionError, setActionError] = useState<string | null>(null);
+  // Pending signature to switch to, awaiting confirmation when there are unsaved edits.
+  const [pendingSelect, setPendingSelect] = useState<Signature | null>(null);
 
   // Editor fields (mirror of selected signature)
   const [editName, setEditName] = useState("");
   const [editDefaultNew, setEditDefaultNew] = useState(false);
   const [editDefaultReplies, setEditDefaultReplies] = useState(false);
   const [editAccount, setEditAccount] = useState("all");
+  // Tracks whether the editor has unsaved changes vs the selected signature.
+  const [dirty, setDirty] = useState(false);
 
   const editorRef = useRef<HTMLDivElement>(null);
 
   // ── Load from API ──
   useEffect(() => {
     fetch("/api/signatures")
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to load signatures");
+        return res.json();
+      })
       .then((data) => {
         if (Array.isArray(data) && data.length > 0) {
           // Map API response to client format
@@ -204,17 +190,14 @@ export default function SignaturesClient({ userEmail }: { userEmail: string }) {
           }));
           setSignatures(mapped);
           selectSig(mapped[0], false);
-        } else {
-          // No signatures in database - show sample
-          setSignatures(SAMPLE);
-          selectSig(SAMPLE[0], false);
         }
+        // No signatures: leave list empty — a real empty state is rendered.
       })
       .catch(() => {
-        // API error - fallback to sample
-        setSignatures(SAMPLE);
-        selectSig(SAMPLE[0], false);
-      });
+        // API error — surface an empty state with a retry, never fake data.
+        setLoadError(true);
+      })
+      .finally(() => setLoading(false));
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -224,9 +207,21 @@ export default function SignaturesClient({ userEmail }: { userEmail: string }) {
     setEditDefaultNew(sig.defaultNew);
     setEditDefaultReplies(sig.defaultReplies);
     setEditAccount(sig.account);
+    setDirty(false);
+    setActionError(null);
     if (focus && editorRef.current) {
       editorRef.current.innerHTML = sig.html;
     }
+  }
+
+  // Guard switching signatures when there are unsaved edits.
+  function requestSelect(sig: Signature) {
+    if (sig.id === selectedId) return;
+    if (dirty) {
+      setPendingSelect(sig);
+      return;
+    }
+    selectSig(sig);
   }
 
   // When selection changes, load HTML into editor
@@ -240,6 +235,7 @@ export default function SignaturesClient({ userEmail }: { userEmail: string }) {
   async function handleSave() {
     if (!selectedId) return;
     const html = editorRef.current?.innerHTML ?? "";
+    setActionError(null);
 
     try {
       // Update via API
@@ -255,32 +251,35 @@ export default function SignaturesClient({ userEmail }: { userEmail: string }) {
         }),
       });
 
-      if (res.ok) {
-        const updatedSig = await res.json();
-        // Update local state
-        const updated = signatures.map((s) => {
-          if (s.id !== selectedId) return s;
-          return {
-            id: updatedSig.id,
-            name: updatedSig.name,
-            html: updatedSig.html,
-            defaultNew: updatedSig.defaultNew,
-            defaultReplies: updatedSig.defaultReplies,
-            account: updatedSig.account,
-          };
-        });
-        setSignatures(updated);
-        setSaved(true);
-        setTimeout(() => setSaved(false), 2000);
-      }
+      if (!res.ok) throw new Error("Save failed");
+
+      const updatedSig = await res.json();
+      // Update local state
+      const updated = signatures.map((s) => {
+        if (s.id !== selectedId) return s;
+        return {
+          id: updatedSig.id,
+          name: updatedSig.name,
+          html: updatedSig.html,
+          defaultNew: updatedSig.defaultNew,
+          defaultReplies: updatedSig.defaultReplies,
+          account: updatedSig.account,
+        };
+      });
+      setSignatures(updated);
+      setDirty(false);
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2000);
     } catch (err) {
       console.error("Failed to save signature:", err);
+      setActionError("Couldn't save this signature. Please try again.");
     }
   }
 
   async function handleCreate() {
     if (!newSigName.trim()) return;
     const src = newFrom === "copy" && copySrcId ? signatures.find((s) => s.id === copySrcId) : null;
+    setActionError(null);
 
     try {
       // Create via API
@@ -296,50 +295,54 @@ export default function SignaturesClient({ userEmail }: { userEmail: string }) {
         }),
       });
 
-      if (res.ok) {
-        const created = await res.json();
-        const newSig: Signature = {
-          id: created.id,
-          name: created.name,
-          html: created.html,
-          defaultNew: created.defaultNew,
-          defaultReplies: created.defaultReplies,
-          account: created.account,
-        };
-        const updated = [...signatures, newSig];
-        setSignatures(updated);
-        setShowNewModal(false);
-        setNewSigName("");
-        setNewFrom("blank");
-        setCopySrcId("");
-        selectSig(newSig);
-      }
+      if (!res.ok) throw new Error("Create failed");
+
+      const created = await res.json();
+      const newSig: Signature = {
+        id: created.id,
+        name: created.name,
+        html: created.html,
+        defaultNew: created.defaultNew,
+        defaultReplies: created.defaultReplies,
+        account: created.account,
+      };
+      const updated = [...signatures, newSig];
+      setSignatures(updated);
+      setShowNewModal(false);
+      setNewSigName("");
+      setNewFrom("blank");
+      setCopySrcId("");
+      selectSig(newSig);
     } catch (err) {
       console.error("Failed to create signature:", err);
+      setActionError("Couldn't create the signature. Please try again.");
     }
   }
 
   async function handleDelete(id: string) {
+    setActionError(null);
     try {
       // Delete via API
       const res = await fetch(`/api/signatures/${id}`, {
         method: "DELETE",
       });
 
-      if (res.ok) {
-        const updated = signatures.filter((s) => s.id !== id);
-        setSignatures(updated);
-        setDeleteConfirmId(null);
-        if (selectedId === id) {
-          if (updated.length > 0) {
-            selectSig(updated[0]);
-          } else {
-            setSelectedId(null);
-          }
+      if (!res.ok) throw new Error("Delete failed");
+
+      const updated = signatures.filter((s) => s.id !== id);
+      setSignatures(updated);
+      setDeleteConfirmId(null);
+      if (selectedId === id) {
+        if (updated.length > 0) {
+          selectSig(updated[0]);
+        } else {
+          setSelectedId(null);
         }
       }
     } catch (err) {
       console.error("Failed to delete signature:", err);
+      setActionError("Couldn't delete the signature. Please try again.");
+      setDeleteConfirmId(null);
     }
   }
 
@@ -406,12 +409,24 @@ export default function SignaturesClient({ userEmail }: { userEmail: string }) {
                 <span className="bg-neutral-100 text-neutral-600 text-xs font-semibold px-2 py-0.5 rounded-small">{signatures.length}</span>
               </div>
               <div className="flex-1 overflow-y-auto">
-                {signatures.length === 0 ? (
-                  <div className="flex flex-col items-center justify-center h-40 text-neutral-400">
+                {loading ? (
+                  <div className="flex flex-col items-center justify-center h-40 text-neutral-400 gap-2">
+                    <div className="w-6 h-6 border-2 rounded-full animate-spin" style={{ borderColor: "rgb(220 220 220)", borderTopColor: "rgb(138 9 9)" }} />
+                    <p className="text-sm">Loading signatures…</p>
+                  </div>
+                ) : loadError ? (
+                  <div className="flex flex-col items-center justify-center h-40 text-center px-6 gap-2">
+                    <p className="text-sm font-medium" style={{ color: "rgb(138 9 9)" }}>Couldn&apos;t load signatures</p>
+                    <button onClick={() => window.location.reload()} className="text-sm underline font-medium" style={{ color: "rgb(138 9 9)" }}>
+                      Retry
+                    </button>
+                  </div>
+                ) : signatures.length === 0 ? (
+                  <div className="flex flex-col items-center justify-center h-40 text-neutral-400 px-6 text-center">
                     <svg xmlns="http://www.w3.org/2000/svg" className="w-8 h-8 mb-2 opacity-40" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                     </svg>
-                    <p className="text-sm">No signatures yet</p>
+                    <p className="text-sm">No signatures yet — create one</p>
                   </div>
                 ) : (
                   signatures.map((sig) => (
@@ -419,7 +434,7 @@ export default function SignaturesClient({ userEmail }: { userEmail: string }) {
                       key={sig.id}
                       sig={sig}
                       selected={sig.id === selectedId}
-                      onSelect={() => selectSig(sig)}
+                      onSelect={() => requestSelect(sig)}
                       onDelete={() => setDeleteConfirmId(sig.id)}
                     />
                   ))
@@ -479,13 +494,19 @@ export default function SignaturesClient({ userEmail }: { userEmail: string }) {
                 {/* Editor body */}
                 <div className="flex-1 px-6 py-5 space-y-5">
 
+                  {actionError && (
+                    <div className="px-4 py-3 rounded-large border" style={{ backgroundColor: "rgb(254 242 242)", borderColor: "rgb(254 202 202)" }}>
+                      <p className="text-sm" style={{ color: "rgb(185 28 28)" }}>{actionError}</p>
+                    </div>
+                  )}
+
                   {/* Signature name */}
                   <section className="bg-background-50 rounded-large shadow-custom p-5">
                     <label className="block text-xs font-semibold text-neutral-600 uppercase tracking-wider mb-2">Signature Name</label>
                     <input
                       type="text"
                       value={editName}
-                      onChange={(e) => setEditName(e.target.value)}
+                      onChange={(e) => { setEditName(e.target.value); setDirty(true); }}
                       className="w-full px-3 py-2.5 text-sm bg-background-100 border border-neutral-200 rounded-small text-neutral-800 focus:outline-none focus:border-primary-300 focus:bg-background-50 transition-colors"
                     />
                   </section>
@@ -529,6 +550,7 @@ export default function SignaturesClient({ userEmail }: { userEmail: string }) {
                       ref={editorRef}
                       contentEditable
                       suppressContentEditableWarning
+                      onInput={() => setDirty(true)}
                       className="p-5 bg-background-50 text-sm text-neutral-800 focus:outline-none"
                       style={{ minHeight: 200 }}
                     />
@@ -543,14 +565,14 @@ export default function SignaturesClient({ userEmail }: { userEmail: string }) {
                           <p className="text-sm font-medium text-neutral-800">Default for new emails</p>
                           <p className="text-xs text-neutral-500 mt-0.5">Automatically append to all new composed emails</p>
                         </div>
-                        <Toggle on={editDefaultNew} onChange={setEditDefaultNew} />
+                        <Toggle on={editDefaultNew} onChange={(v) => { setEditDefaultNew(v); setDirty(true); }} />
                       </div>
                       <div className="flex items-center justify-between">
                         <div className="flex-1 min-w-0 pr-4">
                           <p className="text-sm font-medium text-neutral-800">Default for replies &amp; forwards</p>
                           <p className="text-xs text-neutral-500 mt-0.5">Append to reply and forwarded email threads</p>
                         </div>
-                        <Toggle on={editDefaultReplies} onChange={setEditDefaultReplies} />
+                        <Toggle on={editDefaultReplies} onChange={(v) => { setEditDefaultReplies(v); setDirty(true); }} />
                       </div>
                       <div className="flex items-start justify-between pt-1 border-t border-neutral-100">
                         <div className="flex-1 min-w-0 pr-4">
@@ -559,7 +581,7 @@ export default function SignaturesClient({ userEmail }: { userEmail: string }) {
                         </div>
                         <select
                           value={editAccount}
-                          onChange={(e) => setEditAccount(e.target.value)}
+                          onChange={(e) => { setEditAccount(e.target.value); setDirty(true); }}
                           className="text-sm text-neutral-700 bg-background-100 border border-neutral-200 rounded-small px-3 py-1.5 focus:outline-none focus:border-primary-300 flex-shrink-0"
                         >
                           <option value="all">All accounts</option>
@@ -621,6 +643,11 @@ export default function SignaturesClient({ userEmail }: { userEmail: string }) {
               </button>
             </div>
             <div className="px-6 py-5 space-y-4">
+              {actionError && (
+                <div className="px-4 py-3 rounded-large border" style={{ backgroundColor: "rgb(254 242 242)", borderColor: "rgb(254 202 202)" }}>
+                  <p className="text-sm" style={{ color: "rgb(185 28 28)" }}>{actionError}</p>
+                </div>
+              )}
               <div>
                 <label className="block text-xs font-semibold text-neutral-600 uppercase tracking-wider mb-1.5">Signature Name</label>
                 <input
@@ -703,6 +730,30 @@ export default function SignaturesClient({ userEmail }: { userEmail: string }) {
                 style={{ backgroundColor: "rgb(138 9 9)" }}
               >
                 Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── Unsaved Changes Confirm Modal ── */}
+      {pendingSelect && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-neutral-900 bg-opacity-40">
+          <div className="bg-background-50 rounded-large shadow-custom-hover w-full max-w-sm mx-4 overflow-hidden">
+            <div className="px-6 py-5">
+              <h3 className="font-heading font-semibold text-neutral-900 text-base mb-2">Discard unsaved changes?</h3>
+              <p className="text-sm text-neutral-500">You have unsaved edits to this signature. Switching will discard them.</p>
+            </div>
+            <div className="px-6 py-4 border-t border-neutral-200 flex items-center justify-end gap-3">
+              <button onClick={() => setPendingSelect(null)} className="px-4 py-2 text-sm font-medium text-neutral-600 border border-neutral-200 rounded-small hover:bg-background-100 transition-colors shadow-custom">
+                Keep editing
+              </button>
+              <button
+                onClick={() => { const next = pendingSelect; setPendingSelect(null); if (next) selectSig(next); }}
+                className="px-4 py-2 text-sm font-semibold text-white rounded-small transition-all"
+                style={{ backgroundColor: "rgb(138 9 9)" }}
+              >
+                Discard &amp; switch
               </button>
             </div>
           </div>

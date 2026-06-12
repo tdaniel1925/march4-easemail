@@ -119,6 +119,10 @@ export default function EventFormModal({ prefill, onClose, onSaved, editEvent, u
 
   const [location, setLocation] = useState(editEvent?.location ?? prefill?.location ?? "");
   const [body, setBody] = useState(editEvent?.bodyPreview ?? prefill?.body ?? "");
+  // When editing, `body` is only the truncated bodyPreview — never the full HTML
+  // body. Track whether the user actually edited it so we can omit `body` from
+  // the PATCH payload and let the server preserve the existing full body.
+  const [descriptionDirty, setDescriptionDirty] = useState(false);
   const [attendeeInput, setAttendeeInput] = useState("");
   const [attendees, setAttendees] = useState<string[]>(
     editEvent?.attendees.map((a) => a.address) ?? prefill?.attendees ?? []
@@ -258,7 +262,7 @@ export default function EventFormModal({ prefill, onClose, onSaved, editEvent, u
         if (p.start) { setStartDate(toLocalDate(p.start)); setStartTime(toLocalTime(p.start)); }
         if (p.end) { setEndDate(toLocalDate(p.end)); setEndTime(toLocalTime(p.end)); }
         if (p.location) setLocation(p.location);
-        if (p.body) setBody(p.body);
+        if (p.body) { setBody(p.body); setDescriptionDirty(true); }
         if (p.attendees?.length) setAttendees(p.attendees);
       }
     } catch { /* ignore */ }
@@ -355,7 +359,10 @@ export default function EventFormModal({ prefill, onClose, onSaved, editEvent, u
     if (!subject.trim()) { setError("Event title is required."); return; }
     const startIso = combineToIso(startDate, startTime);
     const endIso = combineToIso(endDate, endTime);
-    if (!isAllDay && new Date(endIso) <= new Date(startIso)) {
+    if (isAllDay) {
+      // All-day: validate by date only (end must be the same day or later).
+      if (endDate < startDate) { setError("End date must be on or after the start date."); return; }
+    } else if (new Date(endIso) <= new Date(startIso)) {
       setError("End time must be after start time."); return;
     }
     setLoading(true); setError(null);
@@ -366,6 +373,11 @@ export default function EventFormModal({ prefill, onClose, onSaved, editEvent, u
           : `<b>Join Teams Meeting:</b> <a href="${teamsMeetingUrl}">${teamsMeetingUrl}</a>`)
       : body.trim() || undefined;
 
+    // When editing, only send `body` if the user actually changed the description
+    // (or attached a Teams meeting). Otherwise omit it so the server preserves the
+    // full HTML body — `body` here is only the truncated bodyPreview.
+    const shouldSendBody = !editEvent || descriptionDirty || (teamsEnabled && !!teamsMeetingUrl);
+
     const payload = {
       homeAccountId,
       subject: subject.trim(),
@@ -373,7 +385,7 @@ export default function EventFormModal({ prefill, onClose, onSaved, editEvent, u
       end: isAllDay ? endDate + "T00:00:00" : endIso,
       isAllDay,
       location: location.trim() || undefined,
-      body: bodyText,
+      ...(shouldSendBody ? { body: bodyText } : {}),
       attendees: attendees.length ? attendees : undefined,
       timeZone: tz,
       reminderMinutes,
@@ -809,7 +821,7 @@ export default function EventFormModal({ prefill, onClose, onSaved, editEvent, u
             <label className="text-xs font-semibold text-neutral-500 uppercase tracking-wide block mb-2">Description</label>
             <textarea
               value={body}
-              onChange={(e) => setBody(e.target.value)}
+              onChange={(e) => { setBody(e.target.value); setDescriptionDirty(true); }}
               placeholder="Add description, agenda, or notes…"
               rows={4}
               className="w-full text-sm border border-neutral-200 rounded-lg px-3 py-2.5 focus:outline-none focus:border-neutral-400 resize-none"

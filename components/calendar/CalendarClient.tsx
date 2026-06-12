@@ -459,6 +459,10 @@ export default function CalendarClient({ weekStart: initialWeekStart, events: in
   const scrollRef = useRef<HTMLDivElement>(null);
   const isInitialMount = useRef(true);
   const recogRef = useRef<SpeechRecognitionInstance | null>(null);
+  // Guards against stale week renders: fast week nav can resolve out of order,
+  // so only the most-recent request is allowed to apply its result.
+  const weekFetchSeq = useRef(0);
+  const weekAbortRef = useRef<AbortController | null>(null);
 
   const { selectedEvent, setSelectedEvent, activeView, setActiveView, setCurrentWeekStart } = useCalendarStore();
   const accounts = useAccountStore((s) => s.accounts);
@@ -490,15 +494,27 @@ export default function CalendarClient({ weekStart: initialWeekStart, events: in
   // ── Data fetching ─────────────────────────────────────────────────────────────
 
   const fetchWeekEvents = useCallback(async (start: string) => {
+    // Cancel any in-flight week request and claim a sequence number so a slow
+    // earlier request can't overwrite the result of a newer one.
+    weekAbortRef.current?.abort();
+    const controller = new AbortController();
+    weekAbortRef.current = controller;
+    const seq = ++weekFetchSeq.current;
+
     setLoading(true); setFetchError(null);
     try {
-      const res = await fetch(`/api/calendar/week?start=${encodeURIComponent(start)}`);
+      const res = await fetch(`/api/calendar/week?start=${encodeURIComponent(start)}`, { signal: controller.signal });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json() as { events: CalEvent[]; requiresReauth?: boolean };
+      if (seq !== weekFetchSeq.current) return; // a newer request superseded this one
       setEvents(data.events);
       if (data.requiresReauth) setRequiresReauth(true);
-    } catch { setFetchError("Could not load calendar events."); setEvents([]); }
-    finally { setLoading(false); }
+    } catch (err) {
+      if (err instanceof DOMException && err.name === "AbortError") return; // superseded — ignore
+      if (seq !== weekFetchSeq.current) return;
+      setFetchError("Could not load calendar events."); setEvents([]);
+    }
+    finally { if (seq === weekFetchSeq.current) setLoading(false); }
   }, []);
 
   const fetchRangeEvents = useCallback(async (start: string, end: string) => {
@@ -716,6 +732,9 @@ export default function CalendarClient({ weekStart: initialWeekStart, events: in
         isAllDay: event.isAllDay,
         location: event.location,
         timeZone: userTimeZone,
+        // Preserve reminder/showAs so a drag-move doesn't strip them server-side
+        ...(event.reminderMinutes !== undefined ? { reminderMinutes: event.reminderMinutes } : {}),
+        ...(event.showAs ? { showAs: event.showAs as "busy" | "free" | "tentative" } : {}),
       }),
     }).then((res) => {
       if (!res.ok) {
@@ -857,20 +876,11 @@ export default function CalendarClient({ weekStart: initialWeekStart, events: in
                     if (!eventData) return;
                     try {
                       const droppedEvent = JSON.parse(eventData) as CalEvent;
-                      // Preserve original time, just change the date
+                      // Preserve original time, just change the date.
+                      // handleEventDrop does the optimistic update AND the PATCH —
+                      // no separate fetch here (that caused a duplicate request).
                       const origStart = new Date(droppedEvent.startDateTime);
-                      const origEnd = new Date(droppedEvent.endDateTime);
-                      const durationMs = origEnd.getTime() - origStart.getTime();
-                      const pad2 = (n: number) => String(n).padStart(2, "0");
-                      const newStart = `${dateStr}T${pad2(origStart.getHours())}:${pad2(origStart.getMinutes())}:00`;
-                      const newEndDate = new Date(new Date(newStart).getTime() + durationMs);
-                      const newEnd = `${newEndDate.getFullYear()}-${pad2(newEndDate.getMonth()+1)}-${pad2(newEndDate.getDate())}T${pad2(newEndDate.getHours())}:${pad2(newEndDate.getMinutes())}:00`;
                       handleEventDrop(droppedEvent, dateStr, origStart.getHours(), origStart.getMinutes());
-                      void fetch("/api/calendar/event", {
-                        method: "PATCH",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ eventId: droppedEvent.id, homeAccountId: droppedEvent.accountHomeId, subject: droppedEvent.subject, start: newStart, end: newEnd, isAllDay: droppedEvent.isAllDay, timeZone: userTimeZone }),
-                      });
                     } catch { /* ignore */ }
                   }}
                 >
@@ -1533,6 +1543,7 @@ export default function CalendarClient({ weekStart: initialWeekStart, events: in
       {/* ── Event Detail Modal ── */}
       {selectedEvent && (
         <EventDetailModal
+          userTimeZone={userTimeZone}
           onEdit={() => {
             setEditingEvent(selectedEvent);
             setSelectedEvent(null);
@@ -1610,7 +1621,7 @@ export default function CalendarClient({ weekStart: initialWeekStart, events: in
                 onClick={async () => {
                   setShowNlPreview(false);
                   // Quick-create directly from prefill without opening form
-                  const acc = accounts[0]?.homeAccountId;
+                  const acc = activeAccount?.homeAccountId ?? accounts[0]?.homeAccountId;
                   if (!acc || !nlPrefill.start || !nlPrefill.end) { setShowForm(true); return; }
                   try {
                     const res = await fetch("/api/calendar/event", {

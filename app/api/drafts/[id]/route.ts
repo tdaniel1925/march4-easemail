@@ -85,7 +85,14 @@ export async function DELETE(_req: NextRequest, { params }: Params) {
   }
   const { id } = parsedParams.data;
 
-  const draft = await prisma.draft.findFirst({ where: { id, userId: user.id } });
+  // Resolve by local Draft ID first, then fall back to Graph message ID.
+  // The drafts-folder list keys rows by graphDraftId, so deleting from that
+  // list passes a Graph message ID — we must still find (and remove) the local
+  // row, otherwise a scheduled draft stays in the DB and the cron sends it.
+  let draft = await prisma.draft.findFirst({ where: { id, userId: user.id } });
+  if (!draft) {
+    draft = await prisma.draft.findFirst({ where: { graphDraftId: id, userId: user.id } });
+  }
   if (!draft) return NextResponse.json({ error: "Not found" }, { status: 404 });
 
   // Delete from Graph if synced
@@ -99,6 +106,9 @@ export async function DELETE(_req: NextRequest, { params }: Params) {
     }
   }
 
-  await prisma.draft.delete({ where: { id } });
+  // Delete by the resolved draft.id (the param may have been a Graph message ID).
+  // Removing the row guarantees the send-scheduled cron (which queries
+  // scheduledSent:false) can never pick it up again.
+  await prisma.draft.delete({ where: { id: draft.id } });
   return NextResponse.json({ ok: true });
 }
