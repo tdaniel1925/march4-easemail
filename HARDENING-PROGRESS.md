@@ -64,8 +64,12 @@ Correction to my earlier analysis: `@sentry/nextjs` IS fully integrated — `ins
 - Extracted `formatAddress` + `parseGraphDateTime` into `lib/providers/mime-helpers.ts` (pure, dependency-free) and pointed imap.ts / calendar-sync.ts at it (behavior-preserving).
 - `tests/unit/provider-helpers.test.ts` (14 tests): header-injection escaping incl. the `Evil" <attacker@…>` breakout case; offset-less Graph datetime parsed as UTC; provider-type routing; `proxyExternalImages` rewrites http(s) but skips cid/data/blob/relative/api; AES-256-GCM round-trip, fresh-IV, and tamper-rejection.
 - Total unit tests now 215 (was 100 at the start of hardening).
-**Sync orchestration harness (done for email):** `tests/unit/email-sync.test.ts` runs the REAL `syncEmails` control flow against faked boundaries only — `graphFetch` (scripted Response queue) + an in-memory Prisma fake. 6 tests cover the bug-prone paths: first-sync upsert + delta-link persist, nextLink pagination, `@removed` deletion (user-scoped), 410 → token reset, resume-from-stored-token, and non-410 error propagation. The pattern (mock the network + DB boundaries, exercise real logic) is reusable for calendar/contact/folder sync. Total unit tests now 221.
-**Still open:** apply the same harness to the other three `sync*()` functions.
+**Sync orchestration harness (done for email):** `tests/unit/email-sync.test.ts` runs the REAL `syncEmails` control flow against faked boundaries only — `graphFetch` (scripted Response queue) + an in-memory Prisma fake. 6 tests cover the bug-prone paths: first-sync upsert + delta-link persist, nextLink pagination, `@removed` deletion (user-scoped), 410 → token reset, resume-from-stored-token, and non-410 error propagation. The pattern (mock the network + DB boundaries, exercise real logic) covers three distinct sync shapes:
+- `tests/unit/email-sync.test.ts` (6) — delta-token resume, nextLink pagination, `@removed` deletion (user-scoped), 410 reset, error propagation.
+- `tests/unit/folder-sync.test.ts` (4) — top-level persist with ownership, recursive child fetch, top-level pagination, per-branch resilience (a failing child branch doesn't kill the sync).
+- `tests/unit/contact-sync.test.ts` (3) — pagination, displayName filtering + first-email selection, transactional delete-then-recreate full refresh (scoped to the account).
+Total unit tests now 228.
+**Still open:** calendar-sync (deferred — richest shape: recurrence/all-day/attendee mapping; best paired with calendar feature verification).
 
 ## ⬜ Remaining enterprise gaps (in priority order)
 6. **Data retention / e-discovery / legal hold** — none. Required for a law-firm SaaS.
