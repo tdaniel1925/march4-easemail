@@ -10,6 +10,7 @@ import { applyRules } from "@/lib/utils/rule-engine";
 import type { SideEffect } from "@/lib/utils/rule-engine";
 import type { Rule } from "@/lib/types/rules";
 import AiReplyModal from "@/components/inbox/AiReplyModal";
+import { AiSummaryPanel } from "@/components/inbox/AiSummaryPanel";
 import EventFormModal from "@/components/calendar/EventFormModal";
 import KeyboardShortcutsModal from "@/components/KeyboardShortcutsModal";
 import SnoozePicker from "@/components/SnoozePicker";
@@ -1973,6 +1974,30 @@ export default function InboxClient({
                   </div>
                 </div>
               )}
+
+              {/* AI summary panel — generated lazily once the body is loaded */}
+              {!splitPaneLoading && (() => {
+                const aiText = splitPaneBody?.contentType === "html"
+                  ? raw.replace(/<style[\s\S]*?<\/style>/gi, " ").replace(/<[^>]+>/g, " ").replace(/&nbsp;/g, " ").replace(/\s+/g, " ").trim()
+                  : raw;
+                if (aiText.trim().length < 40) return null; // too short to be worth summarizing
+                return (
+                  <AiSummaryPanel
+                    messageId={splitSelected.id}
+                    homeAccountId={acctId}
+                    subject={splitSelected.subject}
+                    from={`${splitSelected.from.name} <${splitSelected.from.address}>`}
+                    body={aiText}
+                    latestReceivedAt={splitSelected.receivedDateTime}
+                    onSuggestedAction={(action) => {
+                      if (action === "reply") setAiReplyEmail(splitSelected);
+                      else if (action === "reply_all") navigateTo(`/compose?mode=replyAll&messageId=${encodeURIComponent(splitSelected.id)}&homeAccountId=${encodeURIComponent(acctId)}`);
+                      else if (action === "forward") navigateTo(`/compose?mode=forward&messageId=${encodeURIComponent(splitSelected.id)}&homeAccountId=${encodeURIComponent(acctId)}`);
+                      else if (action === "archive") handleArchiveEmail(splitSelected);
+                    }}
+                  />
+                );
+              })()}
 
               {/* Body */}
               <div className="px-5 py-4">

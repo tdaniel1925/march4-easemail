@@ -1,6 +1,6 @@
 # CodeBakers Dependency Map
 # GENERATED — never edit by hand. Run `pnpm dep:map` to regenerate.
-# Last generated: 2026-06-12 | git: 9e78189
+# Last generated: 2026-06-13 | git: dc9c136
 # Debug: pnpm dep:map --debug
 
 ---
@@ -12,6 +12,7 @@
 | Account | useAccountsClient, useComposeClient, useContactsClient, useScheduledEmailsClient, useAccountStore | AccountsClient, AccountSwitcher, AppShell, AttachmentsClient, CalendarClient | — | activeAccount | — (set manually) |
 | AccountItem | useAppShell | — | — | — | — (set manually) |
 | AccountStore | useAccountStore | AccountsClient, AccountSwitcher, AppShell, AttachmentsClient, CalendarClient | — | — | — (set manually) |
+| ActionItem | useAiSummaryPanel | — | — | — | — (set manually) |
 | ActivePanel | useComposeClient | — | — | — | — (set manually) |
 | ActiveThread | useTeamsClient | — | — | — | — (set manually) |
 | AdminEmailRule | useAdminClient | — | — | — | — (set manually) |
@@ -59,6 +60,7 @@
 | FontSize | useSettingsClient | — | — | — | — (set manually) |
 | Hour | useCalendarClient | — | — | — | — (set manually) |
 | ImapAccount | useStoreInitializer | — | — | — | — (set manually) |
+| Insight | useAiSummaryPanel | — | — | — | — (set manually) |
 | ISpeechRecognitionResult | useComposeClient | — | — | — | — (set manually) |
 | ISpeechRecognitionResultList | useComposeClient | — | — | — | — (set manually) |
 | JmapAccount | useStoreInitializer | — | — | — | — (set manually) |
@@ -137,6 +139,10 @@ Entities: AdminUser, SyncStat, AdminEmailRule, AdminSignature, Props, Tab, Targe
 ### useAiReplyModal
 File: `components\inbox\AiReplyModal.tsx`
 Entities: Target, Color
+
+### useAiSummaryPanel
+File: `components\inbox\AiSummaryPanel.tsx`
+Entities: ActionItem, Insight
 
 ### useAppShell
 File: `components\AppShell.tsx`

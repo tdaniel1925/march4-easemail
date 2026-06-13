@@ -160,6 +160,7 @@ model User {
   readReceipts        ReadReceipt[]
   pendingEmails       PendingEmail[]
   followUpReminders   FollowUpReminder[]
+  aiEmailInsights     AiEmailInsight[]
 
   @@map("users")
 }
@@ -763,6 +764,32 @@ model PendingEmail {
 
   @@index([userId, sendAt, cancelled])
   @@map("pending_emails")
+}
+
+// ─── AI Email Insights (per-email summary cache) ─────────────────────────────
+// Cached AI summary + action items for a message. Keyed by (userId, messageId);
+// invalidated by comparing latestReceivedAt so a new reply in the thread
+// regenerates. Generated lazily on open, never at sync time, to control spend.
+
+model AiEmailInsight {
+  id               String   @id @default(cuid())
+  userId           String
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  messageId        String // Graph/provider message id
+  homeAccountId    String?
+  latestReceivedAt DateTime // newest message time the insight was generated against
+
+  tldr            String  @db.Text
+  bullets         Json    @default("[]") // string[]
+  actionItems     Json    @default("[]") // { type, label, payload }[]
+  suggestedAction String? // reply | reply_all | forward | schedule | archive | snooze | none
+
+  model     String // which model produced it
+  createdAt DateTime @default(now())
+
+  @@unique([userId, messageId])
+  @@index([userId, createdAt(sort: Desc)])
+  @@map("ai_email_insights")
 }
 
 // ─── Audit Log ───────────────────────────────────────────────────────────────

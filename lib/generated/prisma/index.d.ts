@@ -169,6 +169,11 @@ export type JmapConnectedAccount = $Result.DefaultSelection<Prisma.$JmapConnecte
  */
 export type PendingEmail = $Result.DefaultSelection<Prisma.$PendingEmailPayload>
 /**
+ * Model AiEmailInsight
+ * 
+ */
+export type AiEmailInsight = $Result.DefaultSelection<Prisma.$AiEmailInsightPayload>
+/**
  * Model AuditLog
  * 
  */
@@ -604,6 +609,16 @@ export class PrismaClient<
     * ```
     */
   get pendingEmail(): Prisma.PendingEmailDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.aiEmailInsight`: Exposes CRUD operations for the **AiEmailInsight** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more AiEmailInsights
+    * const aiEmailInsights = await prisma.aiEmailInsight.findMany()
+    * ```
+    */
+  get aiEmailInsight(): Prisma.AiEmailInsightDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.auditLog`: Exposes CRUD operations for the **AuditLog** model.
@@ -1079,6 +1094,7 @@ export namespace Prisma {
     ImapConnectedAccount: 'ImapConnectedAccount',
     JmapConnectedAccount: 'JmapConnectedAccount',
     PendingEmail: 'PendingEmail',
+    AiEmailInsight: 'AiEmailInsight',
     AuditLog: 'AuditLog'
   };
 
@@ -1095,7 +1111,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "organization" | "retentionPolicy" | "legalHold" | "orgContact" | "user" | "msConnectedAccount" | "msalTokenCache" | "emailDeltaLink" | "webhookSubscription" | "draft" | "signature" | "cachedFolder" | "cachedEmail" | "cachedCalendarEvent" | "cachedContact" | "deployLog" | "emailRule" | "emailAttachment" | "aiGeneratedReply" | "cachedSearchResult" | "syncStatus" | "notificationLog" | "migrationStatus" | "snoozedEmail" | "readReceipt" | "todoItem" | "emailTemplate" | "followUpReminder" | "imapConnectedAccount" | "jmapConnectedAccount" | "pendingEmail" | "auditLog"
+      modelProps: "organization" | "retentionPolicy" | "legalHold" | "orgContact" | "user" | "msConnectedAccount" | "msalTokenCache" | "emailDeltaLink" | "webhookSubscription" | "draft" | "signature" | "cachedFolder" | "cachedEmail" | "cachedCalendarEvent" | "cachedContact" | "deployLog" | "emailRule" | "emailAttachment" | "aiGeneratedReply" | "cachedSearchResult" | "syncStatus" | "notificationLog" | "migrationStatus" | "snoozedEmail" | "readReceipt" | "todoItem" | "emailTemplate" | "followUpReminder" | "imapConnectedAccount" | "jmapConnectedAccount" | "pendingEmail" | "aiEmailInsight" | "auditLog"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -3393,6 +3409,80 @@ export namespace Prisma {
           }
         }
       }
+      AiEmailInsight: {
+        payload: Prisma.$AiEmailInsightPayload<ExtArgs>
+        fields: Prisma.AiEmailInsightFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.AiEmailInsightFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AiEmailInsightPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.AiEmailInsightFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AiEmailInsightPayload>
+          }
+          findFirst: {
+            args: Prisma.AiEmailInsightFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AiEmailInsightPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.AiEmailInsightFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AiEmailInsightPayload>
+          }
+          findMany: {
+            args: Prisma.AiEmailInsightFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AiEmailInsightPayload>[]
+          }
+          create: {
+            args: Prisma.AiEmailInsightCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AiEmailInsightPayload>
+          }
+          createMany: {
+            args: Prisma.AiEmailInsightCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.AiEmailInsightCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AiEmailInsightPayload>[]
+          }
+          delete: {
+            args: Prisma.AiEmailInsightDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AiEmailInsightPayload>
+          }
+          update: {
+            args: Prisma.AiEmailInsightUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AiEmailInsightPayload>
+          }
+          deleteMany: {
+            args: Prisma.AiEmailInsightDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.AiEmailInsightUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.AiEmailInsightUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AiEmailInsightPayload>[]
+          }
+          upsert: {
+            args: Prisma.AiEmailInsightUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AiEmailInsightPayload>
+          }
+          aggregate: {
+            args: Prisma.AiEmailInsightAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateAiEmailInsight>
+          }
+          groupBy: {
+            args: Prisma.AiEmailInsightGroupByArgs<ExtArgs>
+            result: $Utils.Optional<AiEmailInsightGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.AiEmailInsightCountArgs<ExtArgs>
+            result: $Utils.Optional<AiEmailInsightCountAggregateOutputType> | number
+          }
+        }
+      }
       AuditLog: {
         payload: Prisma.$AuditLogPayload<ExtArgs>
         fields: Prisma.AuditLogFieldRefs
@@ -3606,6 +3696,7 @@ export namespace Prisma {
     imapConnectedAccount?: ImapConnectedAccountOmit
     jmapConnectedAccount?: JmapConnectedAccountOmit
     pendingEmail?: PendingEmailOmit
+    aiEmailInsight?: AiEmailInsightOmit
     auditLog?: AuditLogOmit
   }
 
@@ -3760,6 +3851,7 @@ export namespace Prisma {
     readReceipts: number
     pendingEmails: number
     followUpReminders: number
+    aiEmailInsights: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -3787,6 +3879,7 @@ export namespace Prisma {
     readReceipts?: boolean | UserCountOutputTypeCountReadReceiptsArgs
     pendingEmails?: boolean | UserCountOutputTypeCountPendingEmailsArgs
     followUpReminders?: boolean | UserCountOutputTypeCountFollowUpRemindersArgs
+    aiEmailInsights?: boolean | UserCountOutputTypeCountAiEmailInsightsArgs
   }
 
   // Custom InputTypes
@@ -3966,6 +4059,13 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountFollowUpRemindersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: FollowUpReminderWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountAiEmailInsightsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AiEmailInsightWhereInput
   }
 
 
@@ -8789,6 +8889,7 @@ export namespace Prisma {
     readReceipts?: boolean | User$readReceiptsArgs<ExtArgs>
     pendingEmails?: boolean | User$pendingEmailsArgs<ExtArgs>
     followUpReminders?: boolean | User$followUpRemindersArgs<ExtArgs>
+    aiEmailInsights?: boolean | User$aiEmailInsightsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -8897,6 +8998,7 @@ export namespace Prisma {
     readReceipts?: boolean | User$readReceiptsArgs<ExtArgs>
     pendingEmails?: boolean | User$pendingEmailsArgs<ExtArgs>
     followUpReminders?: boolean | User$followUpRemindersArgs<ExtArgs>
+    aiEmailInsights?: boolean | User$aiEmailInsightsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -8935,6 +9037,7 @@ export namespace Prisma {
       readReceipts: Prisma.$ReadReceiptPayload<ExtArgs>[]
       pendingEmails: Prisma.$PendingEmailPayload<ExtArgs>[]
       followUpReminders: Prisma.$FollowUpReminderPayload<ExtArgs>[]
+      aiEmailInsights: Prisma.$AiEmailInsightPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -9379,6 +9482,7 @@ export namespace Prisma {
     readReceipts<T extends User$readReceiptsArgs<ExtArgs> = {}>(args?: Subset<T, User$readReceiptsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReadReceiptPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     pendingEmails<T extends User$pendingEmailsArgs<ExtArgs> = {}>(args?: Subset<T, User$pendingEmailsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PendingEmailPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     followUpReminders<T extends User$followUpRemindersArgs<ExtArgs> = {}>(args?: Subset<T, User$followUpRemindersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FollowUpReminderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    aiEmailInsights<T extends User$aiEmailInsightsArgs<ExtArgs> = {}>(args?: Subset<T, User$aiEmailInsightsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AiEmailInsightPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -10418,6 +10522,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: FollowUpReminderScalarFieldEnum | FollowUpReminderScalarFieldEnum[]
+  }
+
+  /**
+   * User.aiEmailInsights
+   */
+  export type User$aiEmailInsightsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiEmailInsight
+     */
+    select?: AiEmailInsightSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiEmailInsight
+     */
+    omit?: AiEmailInsightOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AiEmailInsightInclude<ExtArgs> | null
+    where?: AiEmailInsightWhereInput
+    orderBy?: AiEmailInsightOrderByWithRelationInput | AiEmailInsightOrderByWithRelationInput[]
+    cursor?: AiEmailInsightWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: AiEmailInsightScalarFieldEnum | AiEmailInsightScalarFieldEnum[]
   }
 
   /**
@@ -40474,6 +40602,1134 @@ export namespace Prisma {
 
 
   /**
+   * Model AiEmailInsight
+   */
+
+  export type AggregateAiEmailInsight = {
+    _count: AiEmailInsightCountAggregateOutputType | null
+    _min: AiEmailInsightMinAggregateOutputType | null
+    _max: AiEmailInsightMaxAggregateOutputType | null
+  }
+
+  export type AiEmailInsightMinAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    messageId: string | null
+    homeAccountId: string | null
+    latestReceivedAt: Date | null
+    tldr: string | null
+    suggestedAction: string | null
+    model: string | null
+    createdAt: Date | null
+  }
+
+  export type AiEmailInsightMaxAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    messageId: string | null
+    homeAccountId: string | null
+    latestReceivedAt: Date | null
+    tldr: string | null
+    suggestedAction: string | null
+    model: string | null
+    createdAt: Date | null
+  }
+
+  export type AiEmailInsightCountAggregateOutputType = {
+    id: number
+    userId: number
+    messageId: number
+    homeAccountId: number
+    latestReceivedAt: number
+    tldr: number
+    bullets: number
+    actionItems: number
+    suggestedAction: number
+    model: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type AiEmailInsightMinAggregateInputType = {
+    id?: true
+    userId?: true
+    messageId?: true
+    homeAccountId?: true
+    latestReceivedAt?: true
+    tldr?: true
+    suggestedAction?: true
+    model?: true
+    createdAt?: true
+  }
+
+  export type AiEmailInsightMaxAggregateInputType = {
+    id?: true
+    userId?: true
+    messageId?: true
+    homeAccountId?: true
+    latestReceivedAt?: true
+    tldr?: true
+    suggestedAction?: true
+    model?: true
+    createdAt?: true
+  }
+
+  export type AiEmailInsightCountAggregateInputType = {
+    id?: true
+    userId?: true
+    messageId?: true
+    homeAccountId?: true
+    latestReceivedAt?: true
+    tldr?: true
+    bullets?: true
+    actionItems?: true
+    suggestedAction?: true
+    model?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type AiEmailInsightAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which AiEmailInsight to aggregate.
+     */
+    where?: AiEmailInsightWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AiEmailInsights to fetch.
+     */
+    orderBy?: AiEmailInsightOrderByWithRelationInput | AiEmailInsightOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: AiEmailInsightWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AiEmailInsights from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AiEmailInsights.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned AiEmailInsights
+    **/
+    _count?: true | AiEmailInsightCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: AiEmailInsightMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: AiEmailInsightMaxAggregateInputType
+  }
+
+  export type GetAiEmailInsightAggregateType<T extends AiEmailInsightAggregateArgs> = {
+        [P in keyof T & keyof AggregateAiEmailInsight]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateAiEmailInsight[P]>
+      : GetScalarType<T[P], AggregateAiEmailInsight[P]>
+  }
+
+
+
+
+  export type AiEmailInsightGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AiEmailInsightWhereInput
+    orderBy?: AiEmailInsightOrderByWithAggregationInput | AiEmailInsightOrderByWithAggregationInput[]
+    by: AiEmailInsightScalarFieldEnum[] | AiEmailInsightScalarFieldEnum
+    having?: AiEmailInsightScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: AiEmailInsightCountAggregateInputType | true
+    _min?: AiEmailInsightMinAggregateInputType
+    _max?: AiEmailInsightMaxAggregateInputType
+  }
+
+  export type AiEmailInsightGroupByOutputType = {
+    id: string
+    userId: string
+    messageId: string
+    homeAccountId: string | null
+    latestReceivedAt: Date
+    tldr: string
+    bullets: JsonValue
+    actionItems: JsonValue
+    suggestedAction: string | null
+    model: string
+    createdAt: Date
+    _count: AiEmailInsightCountAggregateOutputType | null
+    _min: AiEmailInsightMinAggregateOutputType | null
+    _max: AiEmailInsightMaxAggregateOutputType | null
+  }
+
+  type GetAiEmailInsightGroupByPayload<T extends AiEmailInsightGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<AiEmailInsightGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof AiEmailInsightGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], AiEmailInsightGroupByOutputType[P]>
+            : GetScalarType<T[P], AiEmailInsightGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type AiEmailInsightSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    messageId?: boolean
+    homeAccountId?: boolean
+    latestReceivedAt?: boolean
+    tldr?: boolean
+    bullets?: boolean
+    actionItems?: boolean
+    suggestedAction?: boolean
+    model?: boolean
+    createdAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["aiEmailInsight"]>
+
+  export type AiEmailInsightSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    messageId?: boolean
+    homeAccountId?: boolean
+    latestReceivedAt?: boolean
+    tldr?: boolean
+    bullets?: boolean
+    actionItems?: boolean
+    suggestedAction?: boolean
+    model?: boolean
+    createdAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["aiEmailInsight"]>
+
+  export type AiEmailInsightSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    messageId?: boolean
+    homeAccountId?: boolean
+    latestReceivedAt?: boolean
+    tldr?: boolean
+    bullets?: boolean
+    actionItems?: boolean
+    suggestedAction?: boolean
+    model?: boolean
+    createdAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["aiEmailInsight"]>
+
+  export type AiEmailInsightSelectScalar = {
+    id?: boolean
+    userId?: boolean
+    messageId?: boolean
+    homeAccountId?: boolean
+    latestReceivedAt?: boolean
+    tldr?: boolean
+    bullets?: boolean
+    actionItems?: boolean
+    suggestedAction?: boolean
+    model?: boolean
+    createdAt?: boolean
+  }
+
+  export type AiEmailInsightOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "messageId" | "homeAccountId" | "latestReceivedAt" | "tldr" | "bullets" | "actionItems" | "suggestedAction" | "model" | "createdAt", ExtArgs["result"]["aiEmailInsight"]>
+  export type AiEmailInsightInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type AiEmailInsightIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type AiEmailInsightIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $AiEmailInsightPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "AiEmailInsight"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      userId: string
+      messageId: string
+      homeAccountId: string | null
+      latestReceivedAt: Date
+      tldr: string
+      bullets: Prisma.JsonValue
+      actionItems: Prisma.JsonValue
+      suggestedAction: string | null
+      model: string
+      createdAt: Date
+    }, ExtArgs["result"]["aiEmailInsight"]>
+    composites: {}
+  }
+
+  type AiEmailInsightGetPayload<S extends boolean | null | undefined | AiEmailInsightDefaultArgs> = $Result.GetResult<Prisma.$AiEmailInsightPayload, S>
+
+  type AiEmailInsightCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<AiEmailInsightFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: AiEmailInsightCountAggregateInputType | true
+    }
+
+  export interface AiEmailInsightDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['AiEmailInsight'], meta: { name: 'AiEmailInsight' } }
+    /**
+     * Find zero or one AiEmailInsight that matches the filter.
+     * @param {AiEmailInsightFindUniqueArgs} args - Arguments to find a AiEmailInsight
+     * @example
+     * // Get one AiEmailInsight
+     * const aiEmailInsight = await prisma.aiEmailInsight.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends AiEmailInsightFindUniqueArgs>(args: SelectSubset<T, AiEmailInsightFindUniqueArgs<ExtArgs>>): Prisma__AiEmailInsightClient<$Result.GetResult<Prisma.$AiEmailInsightPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one AiEmailInsight that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {AiEmailInsightFindUniqueOrThrowArgs} args - Arguments to find a AiEmailInsight
+     * @example
+     * // Get one AiEmailInsight
+     * const aiEmailInsight = await prisma.aiEmailInsight.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends AiEmailInsightFindUniqueOrThrowArgs>(args: SelectSubset<T, AiEmailInsightFindUniqueOrThrowArgs<ExtArgs>>): Prisma__AiEmailInsightClient<$Result.GetResult<Prisma.$AiEmailInsightPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first AiEmailInsight that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AiEmailInsightFindFirstArgs} args - Arguments to find a AiEmailInsight
+     * @example
+     * // Get one AiEmailInsight
+     * const aiEmailInsight = await prisma.aiEmailInsight.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends AiEmailInsightFindFirstArgs>(args?: SelectSubset<T, AiEmailInsightFindFirstArgs<ExtArgs>>): Prisma__AiEmailInsightClient<$Result.GetResult<Prisma.$AiEmailInsightPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first AiEmailInsight that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AiEmailInsightFindFirstOrThrowArgs} args - Arguments to find a AiEmailInsight
+     * @example
+     * // Get one AiEmailInsight
+     * const aiEmailInsight = await prisma.aiEmailInsight.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends AiEmailInsightFindFirstOrThrowArgs>(args?: SelectSubset<T, AiEmailInsightFindFirstOrThrowArgs<ExtArgs>>): Prisma__AiEmailInsightClient<$Result.GetResult<Prisma.$AiEmailInsightPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more AiEmailInsights that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AiEmailInsightFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all AiEmailInsights
+     * const aiEmailInsights = await prisma.aiEmailInsight.findMany()
+     * 
+     * // Get first 10 AiEmailInsights
+     * const aiEmailInsights = await prisma.aiEmailInsight.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const aiEmailInsightWithIdOnly = await prisma.aiEmailInsight.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends AiEmailInsightFindManyArgs>(args?: SelectSubset<T, AiEmailInsightFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AiEmailInsightPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a AiEmailInsight.
+     * @param {AiEmailInsightCreateArgs} args - Arguments to create a AiEmailInsight.
+     * @example
+     * // Create one AiEmailInsight
+     * const AiEmailInsight = await prisma.aiEmailInsight.create({
+     *   data: {
+     *     // ... data to create a AiEmailInsight
+     *   }
+     * })
+     * 
+     */
+    create<T extends AiEmailInsightCreateArgs>(args: SelectSubset<T, AiEmailInsightCreateArgs<ExtArgs>>): Prisma__AiEmailInsightClient<$Result.GetResult<Prisma.$AiEmailInsightPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many AiEmailInsights.
+     * @param {AiEmailInsightCreateManyArgs} args - Arguments to create many AiEmailInsights.
+     * @example
+     * // Create many AiEmailInsights
+     * const aiEmailInsight = await prisma.aiEmailInsight.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends AiEmailInsightCreateManyArgs>(args?: SelectSubset<T, AiEmailInsightCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many AiEmailInsights and returns the data saved in the database.
+     * @param {AiEmailInsightCreateManyAndReturnArgs} args - Arguments to create many AiEmailInsights.
+     * @example
+     * // Create many AiEmailInsights
+     * const aiEmailInsight = await prisma.aiEmailInsight.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many AiEmailInsights and only return the `id`
+     * const aiEmailInsightWithIdOnly = await prisma.aiEmailInsight.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends AiEmailInsightCreateManyAndReturnArgs>(args?: SelectSubset<T, AiEmailInsightCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AiEmailInsightPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a AiEmailInsight.
+     * @param {AiEmailInsightDeleteArgs} args - Arguments to delete one AiEmailInsight.
+     * @example
+     * // Delete one AiEmailInsight
+     * const AiEmailInsight = await prisma.aiEmailInsight.delete({
+     *   where: {
+     *     // ... filter to delete one AiEmailInsight
+     *   }
+     * })
+     * 
+     */
+    delete<T extends AiEmailInsightDeleteArgs>(args: SelectSubset<T, AiEmailInsightDeleteArgs<ExtArgs>>): Prisma__AiEmailInsightClient<$Result.GetResult<Prisma.$AiEmailInsightPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one AiEmailInsight.
+     * @param {AiEmailInsightUpdateArgs} args - Arguments to update one AiEmailInsight.
+     * @example
+     * // Update one AiEmailInsight
+     * const aiEmailInsight = await prisma.aiEmailInsight.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends AiEmailInsightUpdateArgs>(args: SelectSubset<T, AiEmailInsightUpdateArgs<ExtArgs>>): Prisma__AiEmailInsightClient<$Result.GetResult<Prisma.$AiEmailInsightPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more AiEmailInsights.
+     * @param {AiEmailInsightDeleteManyArgs} args - Arguments to filter AiEmailInsights to delete.
+     * @example
+     * // Delete a few AiEmailInsights
+     * const { count } = await prisma.aiEmailInsight.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends AiEmailInsightDeleteManyArgs>(args?: SelectSubset<T, AiEmailInsightDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more AiEmailInsights.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AiEmailInsightUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many AiEmailInsights
+     * const aiEmailInsight = await prisma.aiEmailInsight.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends AiEmailInsightUpdateManyArgs>(args: SelectSubset<T, AiEmailInsightUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more AiEmailInsights and returns the data updated in the database.
+     * @param {AiEmailInsightUpdateManyAndReturnArgs} args - Arguments to update many AiEmailInsights.
+     * @example
+     * // Update many AiEmailInsights
+     * const aiEmailInsight = await prisma.aiEmailInsight.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more AiEmailInsights and only return the `id`
+     * const aiEmailInsightWithIdOnly = await prisma.aiEmailInsight.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends AiEmailInsightUpdateManyAndReturnArgs>(args: SelectSubset<T, AiEmailInsightUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AiEmailInsightPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one AiEmailInsight.
+     * @param {AiEmailInsightUpsertArgs} args - Arguments to update or create a AiEmailInsight.
+     * @example
+     * // Update or create a AiEmailInsight
+     * const aiEmailInsight = await prisma.aiEmailInsight.upsert({
+     *   create: {
+     *     // ... data to create a AiEmailInsight
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the AiEmailInsight we want to update
+     *   }
+     * })
+     */
+    upsert<T extends AiEmailInsightUpsertArgs>(args: SelectSubset<T, AiEmailInsightUpsertArgs<ExtArgs>>): Prisma__AiEmailInsightClient<$Result.GetResult<Prisma.$AiEmailInsightPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of AiEmailInsights.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AiEmailInsightCountArgs} args - Arguments to filter AiEmailInsights to count.
+     * @example
+     * // Count the number of AiEmailInsights
+     * const count = await prisma.aiEmailInsight.count({
+     *   where: {
+     *     // ... the filter for the AiEmailInsights we want to count
+     *   }
+     * })
+    **/
+    count<T extends AiEmailInsightCountArgs>(
+      args?: Subset<T, AiEmailInsightCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], AiEmailInsightCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a AiEmailInsight.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AiEmailInsightAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends AiEmailInsightAggregateArgs>(args: Subset<T, AiEmailInsightAggregateArgs>): Prisma.PrismaPromise<GetAiEmailInsightAggregateType<T>>
+
+    /**
+     * Group by AiEmailInsight.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AiEmailInsightGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends AiEmailInsightGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: AiEmailInsightGroupByArgs['orderBy'] }
+        : { orderBy?: AiEmailInsightGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, AiEmailInsightGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetAiEmailInsightGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the AiEmailInsight model
+   */
+  readonly fields: AiEmailInsightFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for AiEmailInsight.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__AiEmailInsightClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the AiEmailInsight model
+   */
+  interface AiEmailInsightFieldRefs {
+    readonly id: FieldRef<"AiEmailInsight", 'String'>
+    readonly userId: FieldRef<"AiEmailInsight", 'String'>
+    readonly messageId: FieldRef<"AiEmailInsight", 'String'>
+    readonly homeAccountId: FieldRef<"AiEmailInsight", 'String'>
+    readonly latestReceivedAt: FieldRef<"AiEmailInsight", 'DateTime'>
+    readonly tldr: FieldRef<"AiEmailInsight", 'String'>
+    readonly bullets: FieldRef<"AiEmailInsight", 'Json'>
+    readonly actionItems: FieldRef<"AiEmailInsight", 'Json'>
+    readonly suggestedAction: FieldRef<"AiEmailInsight", 'String'>
+    readonly model: FieldRef<"AiEmailInsight", 'String'>
+    readonly createdAt: FieldRef<"AiEmailInsight", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * AiEmailInsight findUnique
+   */
+  export type AiEmailInsightFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiEmailInsight
+     */
+    select?: AiEmailInsightSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiEmailInsight
+     */
+    omit?: AiEmailInsightOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AiEmailInsightInclude<ExtArgs> | null
+    /**
+     * Filter, which AiEmailInsight to fetch.
+     */
+    where: AiEmailInsightWhereUniqueInput
+  }
+
+  /**
+   * AiEmailInsight findUniqueOrThrow
+   */
+  export type AiEmailInsightFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiEmailInsight
+     */
+    select?: AiEmailInsightSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiEmailInsight
+     */
+    omit?: AiEmailInsightOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AiEmailInsightInclude<ExtArgs> | null
+    /**
+     * Filter, which AiEmailInsight to fetch.
+     */
+    where: AiEmailInsightWhereUniqueInput
+  }
+
+  /**
+   * AiEmailInsight findFirst
+   */
+  export type AiEmailInsightFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiEmailInsight
+     */
+    select?: AiEmailInsightSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiEmailInsight
+     */
+    omit?: AiEmailInsightOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AiEmailInsightInclude<ExtArgs> | null
+    /**
+     * Filter, which AiEmailInsight to fetch.
+     */
+    where?: AiEmailInsightWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AiEmailInsights to fetch.
+     */
+    orderBy?: AiEmailInsightOrderByWithRelationInput | AiEmailInsightOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for AiEmailInsights.
+     */
+    cursor?: AiEmailInsightWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AiEmailInsights from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AiEmailInsights.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AiEmailInsights.
+     */
+    distinct?: AiEmailInsightScalarFieldEnum | AiEmailInsightScalarFieldEnum[]
+  }
+
+  /**
+   * AiEmailInsight findFirstOrThrow
+   */
+  export type AiEmailInsightFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiEmailInsight
+     */
+    select?: AiEmailInsightSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiEmailInsight
+     */
+    omit?: AiEmailInsightOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AiEmailInsightInclude<ExtArgs> | null
+    /**
+     * Filter, which AiEmailInsight to fetch.
+     */
+    where?: AiEmailInsightWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AiEmailInsights to fetch.
+     */
+    orderBy?: AiEmailInsightOrderByWithRelationInput | AiEmailInsightOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for AiEmailInsights.
+     */
+    cursor?: AiEmailInsightWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AiEmailInsights from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AiEmailInsights.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AiEmailInsights.
+     */
+    distinct?: AiEmailInsightScalarFieldEnum | AiEmailInsightScalarFieldEnum[]
+  }
+
+  /**
+   * AiEmailInsight findMany
+   */
+  export type AiEmailInsightFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiEmailInsight
+     */
+    select?: AiEmailInsightSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiEmailInsight
+     */
+    omit?: AiEmailInsightOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AiEmailInsightInclude<ExtArgs> | null
+    /**
+     * Filter, which AiEmailInsights to fetch.
+     */
+    where?: AiEmailInsightWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AiEmailInsights to fetch.
+     */
+    orderBy?: AiEmailInsightOrderByWithRelationInput | AiEmailInsightOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing AiEmailInsights.
+     */
+    cursor?: AiEmailInsightWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AiEmailInsights from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AiEmailInsights.
+     */
+    skip?: number
+    distinct?: AiEmailInsightScalarFieldEnum | AiEmailInsightScalarFieldEnum[]
+  }
+
+  /**
+   * AiEmailInsight create
+   */
+  export type AiEmailInsightCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiEmailInsight
+     */
+    select?: AiEmailInsightSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiEmailInsight
+     */
+    omit?: AiEmailInsightOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AiEmailInsightInclude<ExtArgs> | null
+    /**
+     * The data needed to create a AiEmailInsight.
+     */
+    data: XOR<AiEmailInsightCreateInput, AiEmailInsightUncheckedCreateInput>
+  }
+
+  /**
+   * AiEmailInsight createMany
+   */
+  export type AiEmailInsightCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many AiEmailInsights.
+     */
+    data: AiEmailInsightCreateManyInput | AiEmailInsightCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * AiEmailInsight createManyAndReturn
+   */
+  export type AiEmailInsightCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiEmailInsight
+     */
+    select?: AiEmailInsightSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiEmailInsight
+     */
+    omit?: AiEmailInsightOmit<ExtArgs> | null
+    /**
+     * The data used to create many AiEmailInsights.
+     */
+    data: AiEmailInsightCreateManyInput | AiEmailInsightCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AiEmailInsightIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * AiEmailInsight update
+   */
+  export type AiEmailInsightUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiEmailInsight
+     */
+    select?: AiEmailInsightSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiEmailInsight
+     */
+    omit?: AiEmailInsightOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AiEmailInsightInclude<ExtArgs> | null
+    /**
+     * The data needed to update a AiEmailInsight.
+     */
+    data: XOR<AiEmailInsightUpdateInput, AiEmailInsightUncheckedUpdateInput>
+    /**
+     * Choose, which AiEmailInsight to update.
+     */
+    where: AiEmailInsightWhereUniqueInput
+  }
+
+  /**
+   * AiEmailInsight updateMany
+   */
+  export type AiEmailInsightUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update AiEmailInsights.
+     */
+    data: XOR<AiEmailInsightUpdateManyMutationInput, AiEmailInsightUncheckedUpdateManyInput>
+    /**
+     * Filter which AiEmailInsights to update
+     */
+    where?: AiEmailInsightWhereInput
+    /**
+     * Limit how many AiEmailInsights to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * AiEmailInsight updateManyAndReturn
+   */
+  export type AiEmailInsightUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiEmailInsight
+     */
+    select?: AiEmailInsightSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiEmailInsight
+     */
+    omit?: AiEmailInsightOmit<ExtArgs> | null
+    /**
+     * The data used to update AiEmailInsights.
+     */
+    data: XOR<AiEmailInsightUpdateManyMutationInput, AiEmailInsightUncheckedUpdateManyInput>
+    /**
+     * Filter which AiEmailInsights to update
+     */
+    where?: AiEmailInsightWhereInput
+    /**
+     * Limit how many AiEmailInsights to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AiEmailInsightIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * AiEmailInsight upsert
+   */
+  export type AiEmailInsightUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiEmailInsight
+     */
+    select?: AiEmailInsightSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiEmailInsight
+     */
+    omit?: AiEmailInsightOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AiEmailInsightInclude<ExtArgs> | null
+    /**
+     * The filter to search for the AiEmailInsight to update in case it exists.
+     */
+    where: AiEmailInsightWhereUniqueInput
+    /**
+     * In case the AiEmailInsight found by the `where` argument doesn't exist, create a new AiEmailInsight with this data.
+     */
+    create: XOR<AiEmailInsightCreateInput, AiEmailInsightUncheckedCreateInput>
+    /**
+     * In case the AiEmailInsight was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<AiEmailInsightUpdateInput, AiEmailInsightUncheckedUpdateInput>
+  }
+
+  /**
+   * AiEmailInsight delete
+   */
+  export type AiEmailInsightDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiEmailInsight
+     */
+    select?: AiEmailInsightSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiEmailInsight
+     */
+    omit?: AiEmailInsightOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AiEmailInsightInclude<ExtArgs> | null
+    /**
+     * Filter which AiEmailInsight to delete.
+     */
+    where: AiEmailInsightWhereUniqueInput
+  }
+
+  /**
+   * AiEmailInsight deleteMany
+   */
+  export type AiEmailInsightDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which AiEmailInsights to delete
+     */
+    where?: AiEmailInsightWhereInput
+    /**
+     * Limit how many AiEmailInsights to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * AiEmailInsight without action
+   */
+  export type AiEmailInsightDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiEmailInsight
+     */
+    select?: AiEmailInsightSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiEmailInsight
+     */
+    omit?: AiEmailInsightOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AiEmailInsightInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Model AuditLog
    */
 
@@ -42095,6 +43351,23 @@ export namespace Prisma {
   export type PendingEmailScalarFieldEnum = (typeof PendingEmailScalarFieldEnum)[keyof typeof PendingEmailScalarFieldEnum]
 
 
+  export const AiEmailInsightScalarFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    messageId: 'messageId',
+    homeAccountId: 'homeAccountId',
+    latestReceivedAt: 'latestReceivedAt',
+    tldr: 'tldr',
+    bullets: 'bullets',
+    actionItems: 'actionItems',
+    suggestedAction: 'suggestedAction',
+    model: 'model',
+    createdAt: 'createdAt'
+  };
+
+  export type AiEmailInsightScalarFieldEnum = (typeof AiEmailInsightScalarFieldEnum)[keyof typeof AiEmailInsightScalarFieldEnum]
+
+
   export const AuditLogScalarFieldEnum: {
     id: 'id',
     userId: 'userId',
@@ -42563,6 +43836,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptListRelationFilter
     pendingEmails?: PendingEmailListRelationFilter
     followUpReminders?: FollowUpReminderListRelationFilter
+    aiEmailInsights?: AiEmailInsightListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -42614,6 +43888,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptOrderByRelationAggregateInput
     pendingEmails?: PendingEmailOrderByRelationAggregateInput
     followUpReminders?: FollowUpReminderOrderByRelationAggregateInput
+    aiEmailInsights?: AiEmailInsightOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -42668,6 +43943,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptListRelationFilter
     pendingEmails?: PendingEmailListRelationFilter
     followUpReminders?: FollowUpReminderListRelationFilter
+    aiEmailInsights?: AiEmailInsightListRelationFilter
   }, "id" | "email">
 
   export type UserOrderByWithAggregationInput = {
@@ -45114,6 +46390,92 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"PendingEmail"> | Date | string
   }
 
+  export type AiEmailInsightWhereInput = {
+    AND?: AiEmailInsightWhereInput | AiEmailInsightWhereInput[]
+    OR?: AiEmailInsightWhereInput[]
+    NOT?: AiEmailInsightWhereInput | AiEmailInsightWhereInput[]
+    id?: StringFilter<"AiEmailInsight"> | string
+    userId?: StringFilter<"AiEmailInsight"> | string
+    messageId?: StringFilter<"AiEmailInsight"> | string
+    homeAccountId?: StringNullableFilter<"AiEmailInsight"> | string | null
+    latestReceivedAt?: DateTimeFilter<"AiEmailInsight"> | Date | string
+    tldr?: StringFilter<"AiEmailInsight"> | string
+    bullets?: JsonFilter<"AiEmailInsight">
+    actionItems?: JsonFilter<"AiEmailInsight">
+    suggestedAction?: StringNullableFilter<"AiEmailInsight"> | string | null
+    model?: StringFilter<"AiEmailInsight"> | string
+    createdAt?: DateTimeFilter<"AiEmailInsight"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type AiEmailInsightOrderByWithRelationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    messageId?: SortOrder
+    homeAccountId?: SortOrderInput | SortOrder
+    latestReceivedAt?: SortOrder
+    tldr?: SortOrder
+    bullets?: SortOrder
+    actionItems?: SortOrder
+    suggestedAction?: SortOrderInput | SortOrder
+    model?: SortOrder
+    createdAt?: SortOrder
+    user?: UserOrderByWithRelationInput
+  }
+
+  export type AiEmailInsightWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    userId_messageId?: AiEmailInsightUserIdMessageIdCompoundUniqueInput
+    AND?: AiEmailInsightWhereInput | AiEmailInsightWhereInput[]
+    OR?: AiEmailInsightWhereInput[]
+    NOT?: AiEmailInsightWhereInput | AiEmailInsightWhereInput[]
+    userId?: StringFilter<"AiEmailInsight"> | string
+    messageId?: StringFilter<"AiEmailInsight"> | string
+    homeAccountId?: StringNullableFilter<"AiEmailInsight"> | string | null
+    latestReceivedAt?: DateTimeFilter<"AiEmailInsight"> | Date | string
+    tldr?: StringFilter<"AiEmailInsight"> | string
+    bullets?: JsonFilter<"AiEmailInsight">
+    actionItems?: JsonFilter<"AiEmailInsight">
+    suggestedAction?: StringNullableFilter<"AiEmailInsight"> | string | null
+    model?: StringFilter<"AiEmailInsight"> | string
+    createdAt?: DateTimeFilter<"AiEmailInsight"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id" | "userId_messageId">
+
+  export type AiEmailInsightOrderByWithAggregationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    messageId?: SortOrder
+    homeAccountId?: SortOrderInput | SortOrder
+    latestReceivedAt?: SortOrder
+    tldr?: SortOrder
+    bullets?: SortOrder
+    actionItems?: SortOrder
+    suggestedAction?: SortOrderInput | SortOrder
+    model?: SortOrder
+    createdAt?: SortOrder
+    _count?: AiEmailInsightCountOrderByAggregateInput
+    _max?: AiEmailInsightMaxOrderByAggregateInput
+    _min?: AiEmailInsightMinOrderByAggregateInput
+  }
+
+  export type AiEmailInsightScalarWhereWithAggregatesInput = {
+    AND?: AiEmailInsightScalarWhereWithAggregatesInput | AiEmailInsightScalarWhereWithAggregatesInput[]
+    OR?: AiEmailInsightScalarWhereWithAggregatesInput[]
+    NOT?: AiEmailInsightScalarWhereWithAggregatesInput | AiEmailInsightScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"AiEmailInsight"> | string
+    userId?: StringWithAggregatesFilter<"AiEmailInsight"> | string
+    messageId?: StringWithAggregatesFilter<"AiEmailInsight"> | string
+    homeAccountId?: StringNullableWithAggregatesFilter<"AiEmailInsight"> | string | null
+    latestReceivedAt?: DateTimeWithAggregatesFilter<"AiEmailInsight"> | Date | string
+    tldr?: StringWithAggregatesFilter<"AiEmailInsight"> | string
+    bullets?: JsonWithAggregatesFilter<"AiEmailInsight">
+    actionItems?: JsonWithAggregatesFilter<"AiEmailInsight">
+    suggestedAction?: StringNullableWithAggregatesFilter<"AiEmailInsight"> | string | null
+    model?: StringWithAggregatesFilter<"AiEmailInsight"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"AiEmailInsight"> | Date | string
+  }
+
   export type AuditLogWhereInput = {
     AND?: AuditLogWhereInput | AuditLogWhereInput[]
     OR?: AuditLogWhereInput[]
@@ -45525,6 +46887,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptCreateNestedManyWithoutUserInput
     pendingEmails?: PendingEmailCreateNestedManyWithoutUserInput
     followUpReminders?: FollowUpReminderCreateNestedManyWithoutUserInput
+    aiEmailInsights?: AiEmailInsightCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -45575,6 +46938,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptUncheckedCreateNestedManyWithoutUserInput
     pendingEmails?: PendingEmailUncheckedCreateNestedManyWithoutUserInput
     followUpReminders?: FollowUpReminderUncheckedCreateNestedManyWithoutUserInput
+    aiEmailInsights?: AiEmailInsightUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserUpdateInput = {
@@ -45625,6 +46989,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptUpdateManyWithoutUserNestedInput
     pendingEmails?: PendingEmailUpdateManyWithoutUserNestedInput
     followUpReminders?: FollowUpReminderUpdateManyWithoutUserNestedInput
+    aiEmailInsights?: AiEmailInsightUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -45675,6 +47040,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptUncheckedUpdateManyWithoutUserNestedInput
     pendingEmails?: PendingEmailUncheckedUpdateManyWithoutUserNestedInput
     followUpReminders?: FollowUpReminderUncheckedUpdateManyWithoutUserNestedInput
+    aiEmailInsights?: AiEmailInsightUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -48491,6 +49857,103 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type AiEmailInsightCreateInput = {
+    id?: string
+    messageId: string
+    homeAccountId?: string | null
+    latestReceivedAt: Date | string
+    tldr: string
+    bullets?: JsonNullValueInput | InputJsonValue
+    actionItems?: JsonNullValueInput | InputJsonValue
+    suggestedAction?: string | null
+    model: string
+    createdAt?: Date | string
+    user: UserCreateNestedOneWithoutAiEmailInsightsInput
+  }
+
+  export type AiEmailInsightUncheckedCreateInput = {
+    id?: string
+    userId: string
+    messageId: string
+    homeAccountId?: string | null
+    latestReceivedAt: Date | string
+    tldr: string
+    bullets?: JsonNullValueInput | InputJsonValue
+    actionItems?: JsonNullValueInput | InputJsonValue
+    suggestedAction?: string | null
+    model: string
+    createdAt?: Date | string
+  }
+
+  export type AiEmailInsightUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    messageId?: StringFieldUpdateOperationsInput | string
+    homeAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    latestReceivedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    tldr?: StringFieldUpdateOperationsInput | string
+    bullets?: JsonNullValueInput | InputJsonValue
+    actionItems?: JsonNullValueInput | InputJsonValue
+    suggestedAction?: NullableStringFieldUpdateOperationsInput | string | null
+    model?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutAiEmailInsightsNestedInput
+  }
+
+  export type AiEmailInsightUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    messageId?: StringFieldUpdateOperationsInput | string
+    homeAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    latestReceivedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    tldr?: StringFieldUpdateOperationsInput | string
+    bullets?: JsonNullValueInput | InputJsonValue
+    actionItems?: JsonNullValueInput | InputJsonValue
+    suggestedAction?: NullableStringFieldUpdateOperationsInput | string | null
+    model?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AiEmailInsightCreateManyInput = {
+    id?: string
+    userId: string
+    messageId: string
+    homeAccountId?: string | null
+    latestReceivedAt: Date | string
+    tldr: string
+    bullets?: JsonNullValueInput | InputJsonValue
+    actionItems?: JsonNullValueInput | InputJsonValue
+    suggestedAction?: string | null
+    model: string
+    createdAt?: Date | string
+  }
+
+  export type AiEmailInsightUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    messageId?: StringFieldUpdateOperationsInput | string
+    homeAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    latestReceivedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    tldr?: StringFieldUpdateOperationsInput | string
+    bullets?: JsonNullValueInput | InputJsonValue
+    actionItems?: JsonNullValueInput | InputJsonValue
+    suggestedAction?: NullableStringFieldUpdateOperationsInput | string | null
+    model?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AiEmailInsightUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    messageId?: StringFieldUpdateOperationsInput | string
+    homeAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    latestReceivedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    tldr?: StringFieldUpdateOperationsInput | string
+    bullets?: JsonNullValueInput | InputJsonValue
+    actionItems?: JsonNullValueInput | InputJsonValue
+    suggestedAction?: NullableStringFieldUpdateOperationsInput | string | null
+    model?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type AuditLogCreateInput = {
     id?: string
     userId?: string | null
@@ -49083,6 +50546,12 @@ export namespace Prisma {
     none?: FollowUpReminderWhereInput
   }
 
+  export type AiEmailInsightListRelationFilter = {
+    every?: AiEmailInsightWhereInput
+    some?: AiEmailInsightWhereInput
+    none?: AiEmailInsightWhereInput
+  }
+
   export type MsConnectedAccountOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
@@ -49176,6 +50645,10 @@ export namespace Prisma {
   }
 
   export type FollowUpReminderOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type AiEmailInsightOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -50629,6 +52102,49 @@ export namespace Prisma {
     createdAt?: SortOrder
   }
 
+  export type AiEmailInsightUserIdMessageIdCompoundUniqueInput = {
+    userId: string
+    messageId: string
+  }
+
+  export type AiEmailInsightCountOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    messageId?: SortOrder
+    homeAccountId?: SortOrder
+    latestReceivedAt?: SortOrder
+    tldr?: SortOrder
+    bullets?: SortOrder
+    actionItems?: SortOrder
+    suggestedAction?: SortOrder
+    model?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type AiEmailInsightMaxOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    messageId?: SortOrder
+    homeAccountId?: SortOrder
+    latestReceivedAt?: SortOrder
+    tldr?: SortOrder
+    suggestedAction?: SortOrder
+    model?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type AiEmailInsightMinOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    messageId?: SortOrder
+    homeAccountId?: SortOrder
+    latestReceivedAt?: SortOrder
+    tldr?: SortOrder
+    suggestedAction?: SortOrder
+    model?: SortOrder
+    createdAt?: SortOrder
+  }
+
   export type AuditLogCountOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
@@ -51070,6 +52586,13 @@ export namespace Prisma {
     connect?: FollowUpReminderWhereUniqueInput | FollowUpReminderWhereUniqueInput[]
   }
 
+  export type AiEmailInsightCreateNestedManyWithoutUserInput = {
+    create?: XOR<AiEmailInsightCreateWithoutUserInput, AiEmailInsightUncheckedCreateWithoutUserInput> | AiEmailInsightCreateWithoutUserInput[] | AiEmailInsightUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: AiEmailInsightCreateOrConnectWithoutUserInput | AiEmailInsightCreateOrConnectWithoutUserInput[]
+    createMany?: AiEmailInsightCreateManyUserInputEnvelope
+    connect?: AiEmailInsightWhereUniqueInput | AiEmailInsightWhereUniqueInput[]
+  }
+
   export type MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<MsConnectedAccountCreateWithoutUserInput, MsConnectedAccountUncheckedCreateWithoutUserInput> | MsConnectedAccountCreateWithoutUserInput[] | MsConnectedAccountUncheckedCreateWithoutUserInput[]
     connectOrCreate?: MsConnectedAccountCreateOrConnectWithoutUserInput | MsConnectedAccountCreateOrConnectWithoutUserInput[]
@@ -51242,6 +52765,13 @@ export namespace Prisma {
     connectOrCreate?: FollowUpReminderCreateOrConnectWithoutUserInput | FollowUpReminderCreateOrConnectWithoutUserInput[]
     createMany?: FollowUpReminderCreateManyUserInputEnvelope
     connect?: FollowUpReminderWhereUniqueInput | FollowUpReminderWhereUniqueInput[]
+  }
+
+  export type AiEmailInsightUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<AiEmailInsightCreateWithoutUserInput, AiEmailInsightUncheckedCreateWithoutUserInput> | AiEmailInsightCreateWithoutUserInput[] | AiEmailInsightUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: AiEmailInsightCreateOrConnectWithoutUserInput | AiEmailInsightCreateOrConnectWithoutUserInput[]
+    createMany?: AiEmailInsightCreateManyUserInputEnvelope
+    connect?: AiEmailInsightWhereUniqueInput | AiEmailInsightWhereUniqueInput[]
   }
 
   export type BoolFieldUpdateOperationsInput = {
@@ -51602,6 +53132,20 @@ export namespace Prisma {
     deleteMany?: FollowUpReminderScalarWhereInput | FollowUpReminderScalarWhereInput[]
   }
 
+  export type AiEmailInsightUpdateManyWithoutUserNestedInput = {
+    create?: XOR<AiEmailInsightCreateWithoutUserInput, AiEmailInsightUncheckedCreateWithoutUserInput> | AiEmailInsightCreateWithoutUserInput[] | AiEmailInsightUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: AiEmailInsightCreateOrConnectWithoutUserInput | AiEmailInsightCreateOrConnectWithoutUserInput[]
+    upsert?: AiEmailInsightUpsertWithWhereUniqueWithoutUserInput | AiEmailInsightUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: AiEmailInsightCreateManyUserInputEnvelope
+    set?: AiEmailInsightWhereUniqueInput | AiEmailInsightWhereUniqueInput[]
+    disconnect?: AiEmailInsightWhereUniqueInput | AiEmailInsightWhereUniqueInput[]
+    delete?: AiEmailInsightWhereUniqueInput | AiEmailInsightWhereUniqueInput[]
+    connect?: AiEmailInsightWhereUniqueInput | AiEmailInsightWhereUniqueInput[]
+    update?: AiEmailInsightUpdateWithWhereUniqueWithoutUserInput | AiEmailInsightUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: AiEmailInsightUpdateManyWithWhereWithoutUserInput | AiEmailInsightUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: AiEmailInsightScalarWhereInput | AiEmailInsightScalarWhereInput[]
+  }
+
   export type MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput = {
     create?: XOR<MsConnectedAccountCreateWithoutUserInput, MsConnectedAccountUncheckedCreateWithoutUserInput> | MsConnectedAccountCreateWithoutUserInput[] | MsConnectedAccountUncheckedCreateWithoutUserInput[]
     connectOrCreate?: MsConnectedAccountCreateOrConnectWithoutUserInput | MsConnectedAccountCreateOrConnectWithoutUserInput[]
@@ -51946,6 +53490,20 @@ export namespace Prisma {
     update?: FollowUpReminderUpdateWithWhereUniqueWithoutUserInput | FollowUpReminderUpdateWithWhereUniqueWithoutUserInput[]
     updateMany?: FollowUpReminderUpdateManyWithWhereWithoutUserInput | FollowUpReminderUpdateManyWithWhereWithoutUserInput[]
     deleteMany?: FollowUpReminderScalarWhereInput | FollowUpReminderScalarWhereInput[]
+  }
+
+  export type AiEmailInsightUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<AiEmailInsightCreateWithoutUserInput, AiEmailInsightUncheckedCreateWithoutUserInput> | AiEmailInsightCreateWithoutUserInput[] | AiEmailInsightUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: AiEmailInsightCreateOrConnectWithoutUserInput | AiEmailInsightCreateOrConnectWithoutUserInput[]
+    upsert?: AiEmailInsightUpsertWithWhereUniqueWithoutUserInput | AiEmailInsightUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: AiEmailInsightCreateManyUserInputEnvelope
+    set?: AiEmailInsightWhereUniqueInput | AiEmailInsightWhereUniqueInput[]
+    disconnect?: AiEmailInsightWhereUniqueInput | AiEmailInsightWhereUniqueInput[]
+    delete?: AiEmailInsightWhereUniqueInput | AiEmailInsightWhereUniqueInput[]
+    connect?: AiEmailInsightWhereUniqueInput | AiEmailInsightWhereUniqueInput[]
+    update?: AiEmailInsightUpdateWithWhereUniqueWithoutUserInput | AiEmailInsightUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: AiEmailInsightUpdateManyWithWhereWithoutUserInput | AiEmailInsightUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: AiEmailInsightScalarWhereInput | AiEmailInsightScalarWhereInput[]
   }
 
   export type UserCreateNestedOneWithoutMsAccountsInput = {
@@ -52306,6 +53864,20 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutPendingEmailsInput, UserUpdateWithoutPendingEmailsInput>, UserUncheckedUpdateWithoutPendingEmailsInput>
   }
 
+  export type UserCreateNestedOneWithoutAiEmailInsightsInput = {
+    create?: XOR<UserCreateWithoutAiEmailInsightsInput, UserUncheckedCreateWithoutAiEmailInsightsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutAiEmailInsightsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserUpdateOneRequiredWithoutAiEmailInsightsNestedInput = {
+    create?: XOR<UserCreateWithoutAiEmailInsightsInput, UserUncheckedCreateWithoutAiEmailInsightsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutAiEmailInsightsInput
+    upsert?: UserUpsertWithoutAiEmailInsightsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutAiEmailInsightsInput, UserUpdateWithoutAiEmailInsightsInput>, UserUncheckedUpdateWithoutAiEmailInsightsInput>
+  }
+
   export type NestedStringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -52600,6 +54172,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptCreateNestedManyWithoutUserInput
     pendingEmails?: PendingEmailCreateNestedManyWithoutUserInput
     followUpReminders?: FollowUpReminderCreateNestedManyWithoutUserInput
+    aiEmailInsights?: AiEmailInsightCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutOrgInput = {
@@ -52649,6 +54222,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptUncheckedCreateNestedManyWithoutUserInput
     pendingEmails?: PendingEmailUncheckedCreateNestedManyWithoutUserInput
     followUpReminders?: FollowUpReminderUncheckedCreateNestedManyWithoutUserInput
+    aiEmailInsights?: AiEmailInsightUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutOrgInput = {
@@ -54049,6 +55623,42 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type AiEmailInsightCreateWithoutUserInput = {
+    id?: string
+    messageId: string
+    homeAccountId?: string | null
+    latestReceivedAt: Date | string
+    tldr: string
+    bullets?: JsonNullValueInput | InputJsonValue
+    actionItems?: JsonNullValueInput | InputJsonValue
+    suggestedAction?: string | null
+    model: string
+    createdAt?: Date | string
+  }
+
+  export type AiEmailInsightUncheckedCreateWithoutUserInput = {
+    id?: string
+    messageId: string
+    homeAccountId?: string | null
+    latestReceivedAt: Date | string
+    tldr: string
+    bullets?: JsonNullValueInput | InputJsonValue
+    actionItems?: JsonNullValueInput | InputJsonValue
+    suggestedAction?: string | null
+    model: string
+    createdAt?: Date | string
+  }
+
+  export type AiEmailInsightCreateOrConnectWithoutUserInput = {
+    where: AiEmailInsightWhereUniqueInput
+    create: XOR<AiEmailInsightCreateWithoutUserInput, AiEmailInsightUncheckedCreateWithoutUserInput>
+  }
+
+  export type AiEmailInsightCreateManyUserInputEnvelope = {
+    data: AiEmailInsightCreateManyUserInput | AiEmailInsightCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
   export type OrganizationUpsertWithoutUsersInput = {
     update: XOR<OrganizationUpdateWithoutUsersInput, OrganizationUncheckedUpdateWithoutUsersInput>
     create: XOR<OrganizationCreateWithoutUsersInput, OrganizationUncheckedCreateWithoutUsersInput>
@@ -54940,6 +56550,39 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"FollowUpReminder"> | Date | string
   }
 
+  export type AiEmailInsightUpsertWithWhereUniqueWithoutUserInput = {
+    where: AiEmailInsightWhereUniqueInput
+    update: XOR<AiEmailInsightUpdateWithoutUserInput, AiEmailInsightUncheckedUpdateWithoutUserInput>
+    create: XOR<AiEmailInsightCreateWithoutUserInput, AiEmailInsightUncheckedCreateWithoutUserInput>
+  }
+
+  export type AiEmailInsightUpdateWithWhereUniqueWithoutUserInput = {
+    where: AiEmailInsightWhereUniqueInput
+    data: XOR<AiEmailInsightUpdateWithoutUserInput, AiEmailInsightUncheckedUpdateWithoutUserInput>
+  }
+
+  export type AiEmailInsightUpdateManyWithWhereWithoutUserInput = {
+    where: AiEmailInsightScalarWhereInput
+    data: XOR<AiEmailInsightUpdateManyMutationInput, AiEmailInsightUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type AiEmailInsightScalarWhereInput = {
+    AND?: AiEmailInsightScalarWhereInput | AiEmailInsightScalarWhereInput[]
+    OR?: AiEmailInsightScalarWhereInput[]
+    NOT?: AiEmailInsightScalarWhereInput | AiEmailInsightScalarWhereInput[]
+    id?: StringFilter<"AiEmailInsight"> | string
+    userId?: StringFilter<"AiEmailInsight"> | string
+    messageId?: StringFilter<"AiEmailInsight"> | string
+    homeAccountId?: StringNullableFilter<"AiEmailInsight"> | string | null
+    latestReceivedAt?: DateTimeFilter<"AiEmailInsight"> | Date | string
+    tldr?: StringFilter<"AiEmailInsight"> | string
+    bullets?: JsonFilter<"AiEmailInsight">
+    actionItems?: JsonFilter<"AiEmailInsight">
+    suggestedAction?: StringNullableFilter<"AiEmailInsight"> | string | null
+    model?: StringFilter<"AiEmailInsight"> | string
+    createdAt?: DateTimeFilter<"AiEmailInsight"> | Date | string
+  }
+
   export type UserCreateWithoutMsAccountsInput = {
     id: string
     email: string
@@ -54987,6 +56630,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptCreateNestedManyWithoutUserInput
     pendingEmails?: PendingEmailCreateNestedManyWithoutUserInput
     followUpReminders?: FollowUpReminderCreateNestedManyWithoutUserInput
+    aiEmailInsights?: AiEmailInsightCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutMsAccountsInput = {
@@ -55036,6 +56680,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptUncheckedCreateNestedManyWithoutUserInput
     pendingEmails?: PendingEmailUncheckedCreateNestedManyWithoutUserInput
     followUpReminders?: FollowUpReminderUncheckedCreateNestedManyWithoutUserInput
+    aiEmailInsights?: AiEmailInsightUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutMsAccountsInput = {
@@ -55101,6 +56746,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptUpdateManyWithoutUserNestedInput
     pendingEmails?: PendingEmailUpdateManyWithoutUserNestedInput
     followUpReminders?: FollowUpReminderUpdateManyWithoutUserNestedInput
+    aiEmailInsights?: AiEmailInsightUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutMsAccountsInput = {
@@ -55150,6 +56796,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptUncheckedUpdateManyWithoutUserNestedInput
     pendingEmails?: PendingEmailUncheckedUpdateManyWithoutUserNestedInput
     followUpReminders?: FollowUpReminderUncheckedUpdateManyWithoutUserNestedInput
+    aiEmailInsights?: AiEmailInsightUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutMsalCacheInput = {
@@ -55199,6 +56846,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptCreateNestedManyWithoutUserInput
     pendingEmails?: PendingEmailCreateNestedManyWithoutUserInput
     followUpReminders?: FollowUpReminderCreateNestedManyWithoutUserInput
+    aiEmailInsights?: AiEmailInsightCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutMsalCacheInput = {
@@ -55248,6 +56896,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptUncheckedCreateNestedManyWithoutUserInput
     pendingEmails?: PendingEmailUncheckedCreateNestedManyWithoutUserInput
     followUpReminders?: FollowUpReminderUncheckedCreateNestedManyWithoutUserInput
+    aiEmailInsights?: AiEmailInsightUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutMsalCacheInput = {
@@ -55313,6 +56962,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptUpdateManyWithoutUserNestedInput
     pendingEmails?: PendingEmailUpdateManyWithoutUserNestedInput
     followUpReminders?: FollowUpReminderUpdateManyWithoutUserNestedInput
+    aiEmailInsights?: AiEmailInsightUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutMsalCacheInput = {
@@ -55362,6 +57012,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptUncheckedUpdateManyWithoutUserNestedInput
     pendingEmails?: PendingEmailUncheckedUpdateManyWithoutUserNestedInput
     followUpReminders?: FollowUpReminderUncheckedUpdateManyWithoutUserNestedInput
+    aiEmailInsights?: AiEmailInsightUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutDeltaLinksInput = {
@@ -55411,6 +57062,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptCreateNestedManyWithoutUserInput
     pendingEmails?: PendingEmailCreateNestedManyWithoutUserInput
     followUpReminders?: FollowUpReminderCreateNestedManyWithoutUserInput
+    aiEmailInsights?: AiEmailInsightCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutDeltaLinksInput = {
@@ -55460,6 +57112,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptUncheckedCreateNestedManyWithoutUserInput
     pendingEmails?: PendingEmailUncheckedCreateNestedManyWithoutUserInput
     followUpReminders?: FollowUpReminderUncheckedCreateNestedManyWithoutUserInput
+    aiEmailInsights?: AiEmailInsightUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutDeltaLinksInput = {
@@ -55525,6 +57178,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptUpdateManyWithoutUserNestedInput
     pendingEmails?: PendingEmailUpdateManyWithoutUserNestedInput
     followUpReminders?: FollowUpReminderUpdateManyWithoutUserNestedInput
+    aiEmailInsights?: AiEmailInsightUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutDeltaLinksInput = {
@@ -55574,6 +57228,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptUncheckedUpdateManyWithoutUserNestedInput
     pendingEmails?: PendingEmailUncheckedUpdateManyWithoutUserNestedInput
     followUpReminders?: FollowUpReminderUncheckedUpdateManyWithoutUserNestedInput
+    aiEmailInsights?: AiEmailInsightUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutWebhookSubsInput = {
@@ -55623,6 +57278,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptCreateNestedManyWithoutUserInput
     pendingEmails?: PendingEmailCreateNestedManyWithoutUserInput
     followUpReminders?: FollowUpReminderCreateNestedManyWithoutUserInput
+    aiEmailInsights?: AiEmailInsightCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutWebhookSubsInput = {
@@ -55672,6 +57328,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptUncheckedCreateNestedManyWithoutUserInput
     pendingEmails?: PendingEmailUncheckedCreateNestedManyWithoutUserInput
     followUpReminders?: FollowUpReminderUncheckedCreateNestedManyWithoutUserInput
+    aiEmailInsights?: AiEmailInsightUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutWebhookSubsInput = {
@@ -55737,6 +57394,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptUpdateManyWithoutUserNestedInput
     pendingEmails?: PendingEmailUpdateManyWithoutUserNestedInput
     followUpReminders?: FollowUpReminderUpdateManyWithoutUserNestedInput
+    aiEmailInsights?: AiEmailInsightUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutWebhookSubsInput = {
@@ -55786,6 +57444,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptUncheckedUpdateManyWithoutUserNestedInput
     pendingEmails?: PendingEmailUncheckedUpdateManyWithoutUserNestedInput
     followUpReminders?: FollowUpReminderUncheckedUpdateManyWithoutUserNestedInput
+    aiEmailInsights?: AiEmailInsightUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutDraftsInput = {
@@ -55835,6 +57494,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptCreateNestedManyWithoutUserInput
     pendingEmails?: PendingEmailCreateNestedManyWithoutUserInput
     followUpReminders?: FollowUpReminderCreateNestedManyWithoutUserInput
+    aiEmailInsights?: AiEmailInsightCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutDraftsInput = {
@@ -55884,6 +57544,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptUncheckedCreateNestedManyWithoutUserInput
     pendingEmails?: PendingEmailUncheckedCreateNestedManyWithoutUserInput
     followUpReminders?: FollowUpReminderUncheckedCreateNestedManyWithoutUserInput
+    aiEmailInsights?: AiEmailInsightUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutDraftsInput = {
@@ -55949,6 +57610,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptUpdateManyWithoutUserNestedInput
     pendingEmails?: PendingEmailUpdateManyWithoutUserNestedInput
     followUpReminders?: FollowUpReminderUpdateManyWithoutUserNestedInput
+    aiEmailInsights?: AiEmailInsightUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutDraftsInput = {
@@ -55998,6 +57660,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptUncheckedUpdateManyWithoutUserNestedInput
     pendingEmails?: PendingEmailUncheckedUpdateManyWithoutUserNestedInput
     followUpReminders?: FollowUpReminderUncheckedUpdateManyWithoutUserNestedInput
+    aiEmailInsights?: AiEmailInsightUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutSignaturesInput = {
@@ -56047,6 +57710,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptCreateNestedManyWithoutUserInput
     pendingEmails?: PendingEmailCreateNestedManyWithoutUserInput
     followUpReminders?: FollowUpReminderCreateNestedManyWithoutUserInput
+    aiEmailInsights?: AiEmailInsightCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutSignaturesInput = {
@@ -56096,6 +57760,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptUncheckedCreateNestedManyWithoutUserInput
     pendingEmails?: PendingEmailUncheckedCreateNestedManyWithoutUserInput
     followUpReminders?: FollowUpReminderUncheckedCreateNestedManyWithoutUserInput
+    aiEmailInsights?: AiEmailInsightUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutSignaturesInput = {
@@ -56161,6 +57826,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptUpdateManyWithoutUserNestedInput
     pendingEmails?: PendingEmailUpdateManyWithoutUserNestedInput
     followUpReminders?: FollowUpReminderUpdateManyWithoutUserNestedInput
+    aiEmailInsights?: AiEmailInsightUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSignaturesInput = {
@@ -56210,6 +57876,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptUncheckedUpdateManyWithoutUserNestedInput
     pendingEmails?: PendingEmailUncheckedUpdateManyWithoutUserNestedInput
     followUpReminders?: FollowUpReminderUncheckedUpdateManyWithoutUserNestedInput
+    aiEmailInsights?: AiEmailInsightUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutCachedFoldersInput = {
@@ -56259,6 +57926,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptCreateNestedManyWithoutUserInput
     pendingEmails?: PendingEmailCreateNestedManyWithoutUserInput
     followUpReminders?: FollowUpReminderCreateNestedManyWithoutUserInput
+    aiEmailInsights?: AiEmailInsightCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCachedFoldersInput = {
@@ -56308,6 +57976,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptUncheckedCreateNestedManyWithoutUserInput
     pendingEmails?: PendingEmailUncheckedCreateNestedManyWithoutUserInput
     followUpReminders?: FollowUpReminderUncheckedCreateNestedManyWithoutUserInput
+    aiEmailInsights?: AiEmailInsightUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCachedFoldersInput = {
@@ -56373,6 +58042,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptUpdateManyWithoutUserNestedInput
     pendingEmails?: PendingEmailUpdateManyWithoutUserNestedInput
     followUpReminders?: FollowUpReminderUpdateManyWithoutUserNestedInput
+    aiEmailInsights?: AiEmailInsightUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCachedFoldersInput = {
@@ -56422,6 +58092,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptUncheckedUpdateManyWithoutUserNestedInput
     pendingEmails?: PendingEmailUncheckedUpdateManyWithoutUserNestedInput
     followUpReminders?: FollowUpReminderUncheckedUpdateManyWithoutUserNestedInput
+    aiEmailInsights?: AiEmailInsightUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutCachedEmailsInput = {
@@ -56471,6 +58142,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptCreateNestedManyWithoutUserInput
     pendingEmails?: PendingEmailCreateNestedManyWithoutUserInput
     followUpReminders?: FollowUpReminderCreateNestedManyWithoutUserInput
+    aiEmailInsights?: AiEmailInsightCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCachedEmailsInput = {
@@ -56520,6 +58192,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptUncheckedCreateNestedManyWithoutUserInput
     pendingEmails?: PendingEmailUncheckedCreateNestedManyWithoutUserInput
     followUpReminders?: FollowUpReminderUncheckedCreateNestedManyWithoutUserInput
+    aiEmailInsights?: AiEmailInsightUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCachedEmailsInput = {
@@ -56585,6 +58258,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptUpdateManyWithoutUserNestedInput
     pendingEmails?: PendingEmailUpdateManyWithoutUserNestedInput
     followUpReminders?: FollowUpReminderUpdateManyWithoutUserNestedInput
+    aiEmailInsights?: AiEmailInsightUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCachedEmailsInput = {
@@ -56634,6 +58308,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptUncheckedUpdateManyWithoutUserNestedInput
     pendingEmails?: PendingEmailUncheckedUpdateManyWithoutUserNestedInput
     followUpReminders?: FollowUpReminderUncheckedUpdateManyWithoutUserNestedInput
+    aiEmailInsights?: AiEmailInsightUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutCachedCalEventsInput = {
@@ -56683,6 +58358,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptCreateNestedManyWithoutUserInput
     pendingEmails?: PendingEmailCreateNestedManyWithoutUserInput
     followUpReminders?: FollowUpReminderCreateNestedManyWithoutUserInput
+    aiEmailInsights?: AiEmailInsightCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCachedCalEventsInput = {
@@ -56732,6 +58408,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptUncheckedCreateNestedManyWithoutUserInput
     pendingEmails?: PendingEmailUncheckedCreateNestedManyWithoutUserInput
     followUpReminders?: FollowUpReminderUncheckedCreateNestedManyWithoutUserInput
+    aiEmailInsights?: AiEmailInsightUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCachedCalEventsInput = {
@@ -56797,6 +58474,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptUpdateManyWithoutUserNestedInput
     pendingEmails?: PendingEmailUpdateManyWithoutUserNestedInput
     followUpReminders?: FollowUpReminderUpdateManyWithoutUserNestedInput
+    aiEmailInsights?: AiEmailInsightUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCachedCalEventsInput = {
@@ -56846,6 +58524,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptUncheckedUpdateManyWithoutUserNestedInput
     pendingEmails?: PendingEmailUncheckedUpdateManyWithoutUserNestedInput
     followUpReminders?: FollowUpReminderUncheckedUpdateManyWithoutUserNestedInput
+    aiEmailInsights?: AiEmailInsightUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutCachedContactsInput = {
@@ -56895,6 +58574,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptCreateNestedManyWithoutUserInput
     pendingEmails?: PendingEmailCreateNestedManyWithoutUserInput
     followUpReminders?: FollowUpReminderCreateNestedManyWithoutUserInput
+    aiEmailInsights?: AiEmailInsightCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCachedContactsInput = {
@@ -56944,6 +58624,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptUncheckedCreateNestedManyWithoutUserInput
     pendingEmails?: PendingEmailUncheckedCreateNestedManyWithoutUserInput
     followUpReminders?: FollowUpReminderUncheckedCreateNestedManyWithoutUserInput
+    aiEmailInsights?: AiEmailInsightUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCachedContactsInput = {
@@ -57009,6 +58690,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptUpdateManyWithoutUserNestedInput
     pendingEmails?: PendingEmailUpdateManyWithoutUserNestedInput
     followUpReminders?: FollowUpReminderUpdateManyWithoutUserNestedInput
+    aiEmailInsights?: AiEmailInsightUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCachedContactsInput = {
@@ -57058,6 +58740,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptUncheckedUpdateManyWithoutUserNestedInput
     pendingEmails?: PendingEmailUncheckedUpdateManyWithoutUserNestedInput
     followUpReminders?: FollowUpReminderUncheckedUpdateManyWithoutUserNestedInput
+    aiEmailInsights?: AiEmailInsightUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutEmailRulesInput = {
@@ -57107,6 +58790,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptCreateNestedManyWithoutUserInput
     pendingEmails?: PendingEmailCreateNestedManyWithoutUserInput
     followUpReminders?: FollowUpReminderCreateNestedManyWithoutUserInput
+    aiEmailInsights?: AiEmailInsightCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutEmailRulesInput = {
@@ -57156,6 +58840,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptUncheckedCreateNestedManyWithoutUserInput
     pendingEmails?: PendingEmailUncheckedCreateNestedManyWithoutUserInput
     followUpReminders?: FollowUpReminderUncheckedCreateNestedManyWithoutUserInput
+    aiEmailInsights?: AiEmailInsightUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutEmailRulesInput = {
@@ -57221,6 +58906,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptUpdateManyWithoutUserNestedInput
     pendingEmails?: PendingEmailUpdateManyWithoutUserNestedInput
     followUpReminders?: FollowUpReminderUpdateManyWithoutUserNestedInput
+    aiEmailInsights?: AiEmailInsightUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutEmailRulesInput = {
@@ -57270,6 +58956,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptUncheckedUpdateManyWithoutUserNestedInput
     pendingEmails?: PendingEmailUncheckedUpdateManyWithoutUserNestedInput
     followUpReminders?: FollowUpReminderUncheckedUpdateManyWithoutUserNestedInput
+    aiEmailInsights?: AiEmailInsightUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutEmailAttachmentsInput = {
@@ -57319,6 +59006,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptCreateNestedManyWithoutUserInput
     pendingEmails?: PendingEmailCreateNestedManyWithoutUserInput
     followUpReminders?: FollowUpReminderCreateNestedManyWithoutUserInput
+    aiEmailInsights?: AiEmailInsightCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutEmailAttachmentsInput = {
@@ -57368,6 +59056,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptUncheckedCreateNestedManyWithoutUserInput
     pendingEmails?: PendingEmailUncheckedCreateNestedManyWithoutUserInput
     followUpReminders?: FollowUpReminderUncheckedCreateNestedManyWithoutUserInput
+    aiEmailInsights?: AiEmailInsightUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutEmailAttachmentsInput = {
@@ -57433,6 +59122,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptUpdateManyWithoutUserNestedInput
     pendingEmails?: PendingEmailUpdateManyWithoutUserNestedInput
     followUpReminders?: FollowUpReminderUpdateManyWithoutUserNestedInput
+    aiEmailInsights?: AiEmailInsightUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutEmailAttachmentsInput = {
@@ -57482,6 +59172,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptUncheckedUpdateManyWithoutUserNestedInput
     pendingEmails?: PendingEmailUncheckedUpdateManyWithoutUserNestedInput
     followUpReminders?: FollowUpReminderUncheckedUpdateManyWithoutUserNestedInput
+    aiEmailInsights?: AiEmailInsightUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutAiGeneratedRepliesInput = {
@@ -57531,6 +59222,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptCreateNestedManyWithoutUserInput
     pendingEmails?: PendingEmailCreateNestedManyWithoutUserInput
     followUpReminders?: FollowUpReminderCreateNestedManyWithoutUserInput
+    aiEmailInsights?: AiEmailInsightCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutAiGeneratedRepliesInput = {
@@ -57580,6 +59272,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptUncheckedCreateNestedManyWithoutUserInput
     pendingEmails?: PendingEmailUncheckedCreateNestedManyWithoutUserInput
     followUpReminders?: FollowUpReminderUncheckedCreateNestedManyWithoutUserInput
+    aiEmailInsights?: AiEmailInsightUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutAiGeneratedRepliesInput = {
@@ -57645,6 +59338,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptUpdateManyWithoutUserNestedInput
     pendingEmails?: PendingEmailUpdateManyWithoutUserNestedInput
     followUpReminders?: FollowUpReminderUpdateManyWithoutUserNestedInput
+    aiEmailInsights?: AiEmailInsightUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAiGeneratedRepliesInput = {
@@ -57694,6 +59388,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptUncheckedUpdateManyWithoutUserNestedInput
     pendingEmails?: PendingEmailUncheckedUpdateManyWithoutUserNestedInput
     followUpReminders?: FollowUpReminderUncheckedUpdateManyWithoutUserNestedInput
+    aiEmailInsights?: AiEmailInsightUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutCachedSearchResultsInput = {
@@ -57743,6 +59438,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptCreateNestedManyWithoutUserInput
     pendingEmails?: PendingEmailCreateNestedManyWithoutUserInput
     followUpReminders?: FollowUpReminderCreateNestedManyWithoutUserInput
+    aiEmailInsights?: AiEmailInsightCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCachedSearchResultsInput = {
@@ -57792,6 +59488,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptUncheckedCreateNestedManyWithoutUserInput
     pendingEmails?: PendingEmailUncheckedCreateNestedManyWithoutUserInput
     followUpReminders?: FollowUpReminderUncheckedCreateNestedManyWithoutUserInput
+    aiEmailInsights?: AiEmailInsightUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCachedSearchResultsInput = {
@@ -57857,6 +59554,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptUpdateManyWithoutUserNestedInput
     pendingEmails?: PendingEmailUpdateManyWithoutUserNestedInput
     followUpReminders?: FollowUpReminderUpdateManyWithoutUserNestedInput
+    aiEmailInsights?: AiEmailInsightUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCachedSearchResultsInput = {
@@ -57906,6 +59604,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptUncheckedUpdateManyWithoutUserNestedInput
     pendingEmails?: PendingEmailUncheckedUpdateManyWithoutUserNestedInput
     followUpReminders?: FollowUpReminderUncheckedUpdateManyWithoutUserNestedInput
+    aiEmailInsights?: AiEmailInsightUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutSyncStatusesInput = {
@@ -57955,6 +59654,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptCreateNestedManyWithoutUserInput
     pendingEmails?: PendingEmailCreateNestedManyWithoutUserInput
     followUpReminders?: FollowUpReminderCreateNestedManyWithoutUserInput
+    aiEmailInsights?: AiEmailInsightCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutSyncStatusesInput = {
@@ -58004,6 +59704,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptUncheckedCreateNestedManyWithoutUserInput
     pendingEmails?: PendingEmailUncheckedCreateNestedManyWithoutUserInput
     followUpReminders?: FollowUpReminderUncheckedCreateNestedManyWithoutUserInput
+    aiEmailInsights?: AiEmailInsightUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutSyncStatusesInput = {
@@ -58069,6 +59770,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptUpdateManyWithoutUserNestedInput
     pendingEmails?: PendingEmailUpdateManyWithoutUserNestedInput
     followUpReminders?: FollowUpReminderUpdateManyWithoutUserNestedInput
+    aiEmailInsights?: AiEmailInsightUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSyncStatusesInput = {
@@ -58118,6 +59820,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptUncheckedUpdateManyWithoutUserNestedInput
     pendingEmails?: PendingEmailUncheckedUpdateManyWithoutUserNestedInput
     followUpReminders?: FollowUpReminderUncheckedUpdateManyWithoutUserNestedInput
+    aiEmailInsights?: AiEmailInsightUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutNotificationLogsInput = {
@@ -58167,6 +59870,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptCreateNestedManyWithoutUserInput
     pendingEmails?: PendingEmailCreateNestedManyWithoutUserInput
     followUpReminders?: FollowUpReminderCreateNestedManyWithoutUserInput
+    aiEmailInsights?: AiEmailInsightCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutNotificationLogsInput = {
@@ -58216,6 +59920,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptUncheckedCreateNestedManyWithoutUserInput
     pendingEmails?: PendingEmailUncheckedCreateNestedManyWithoutUserInput
     followUpReminders?: FollowUpReminderUncheckedCreateNestedManyWithoutUserInput
+    aiEmailInsights?: AiEmailInsightUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutNotificationLogsInput = {
@@ -58281,6 +59986,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptUpdateManyWithoutUserNestedInput
     pendingEmails?: PendingEmailUpdateManyWithoutUserNestedInput
     followUpReminders?: FollowUpReminderUpdateManyWithoutUserNestedInput
+    aiEmailInsights?: AiEmailInsightUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutNotificationLogsInput = {
@@ -58330,6 +60036,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptUncheckedUpdateManyWithoutUserNestedInput
     pendingEmails?: PendingEmailUncheckedUpdateManyWithoutUserNestedInput
     followUpReminders?: FollowUpReminderUncheckedUpdateManyWithoutUserNestedInput
+    aiEmailInsights?: AiEmailInsightUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutMigrationStatusesInput = {
@@ -58379,6 +60086,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptCreateNestedManyWithoutUserInput
     pendingEmails?: PendingEmailCreateNestedManyWithoutUserInput
     followUpReminders?: FollowUpReminderCreateNestedManyWithoutUserInput
+    aiEmailInsights?: AiEmailInsightCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutMigrationStatusesInput = {
@@ -58428,6 +60136,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptUncheckedCreateNestedManyWithoutUserInput
     pendingEmails?: PendingEmailUncheckedCreateNestedManyWithoutUserInput
     followUpReminders?: FollowUpReminderUncheckedCreateNestedManyWithoutUserInput
+    aiEmailInsights?: AiEmailInsightUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutMigrationStatusesInput = {
@@ -58493,6 +60202,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptUpdateManyWithoutUserNestedInput
     pendingEmails?: PendingEmailUpdateManyWithoutUserNestedInput
     followUpReminders?: FollowUpReminderUpdateManyWithoutUserNestedInput
+    aiEmailInsights?: AiEmailInsightUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutMigrationStatusesInput = {
@@ -58542,6 +60252,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptUncheckedUpdateManyWithoutUserNestedInput
     pendingEmails?: PendingEmailUncheckedUpdateManyWithoutUserNestedInput
     followUpReminders?: FollowUpReminderUncheckedUpdateManyWithoutUserNestedInput
+    aiEmailInsights?: AiEmailInsightUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutSnoozedEmailsInput = {
@@ -58591,6 +60302,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptCreateNestedManyWithoutUserInput
     pendingEmails?: PendingEmailCreateNestedManyWithoutUserInput
     followUpReminders?: FollowUpReminderCreateNestedManyWithoutUserInput
+    aiEmailInsights?: AiEmailInsightCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutSnoozedEmailsInput = {
@@ -58640,6 +60352,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptUncheckedCreateNestedManyWithoutUserInput
     pendingEmails?: PendingEmailUncheckedCreateNestedManyWithoutUserInput
     followUpReminders?: FollowUpReminderUncheckedCreateNestedManyWithoutUserInput
+    aiEmailInsights?: AiEmailInsightUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutSnoozedEmailsInput = {
@@ -58705,6 +60418,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptUpdateManyWithoutUserNestedInput
     pendingEmails?: PendingEmailUpdateManyWithoutUserNestedInput
     followUpReminders?: FollowUpReminderUpdateManyWithoutUserNestedInput
+    aiEmailInsights?: AiEmailInsightUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSnoozedEmailsInput = {
@@ -58754,6 +60468,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptUncheckedUpdateManyWithoutUserNestedInput
     pendingEmails?: PendingEmailUncheckedUpdateManyWithoutUserNestedInput
     followUpReminders?: FollowUpReminderUncheckedUpdateManyWithoutUserNestedInput
+    aiEmailInsights?: AiEmailInsightUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutReadReceiptsInput = {
@@ -58803,6 +60518,7 @@ export namespace Prisma {
     snoozedEmails?: SnoozedEmailCreateNestedManyWithoutUserInput
     pendingEmails?: PendingEmailCreateNestedManyWithoutUserInput
     followUpReminders?: FollowUpReminderCreateNestedManyWithoutUserInput
+    aiEmailInsights?: AiEmailInsightCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutReadReceiptsInput = {
@@ -58852,6 +60568,7 @@ export namespace Prisma {
     snoozedEmails?: SnoozedEmailUncheckedCreateNestedManyWithoutUserInput
     pendingEmails?: PendingEmailUncheckedCreateNestedManyWithoutUserInput
     followUpReminders?: FollowUpReminderUncheckedCreateNestedManyWithoutUserInput
+    aiEmailInsights?: AiEmailInsightUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutReadReceiptsInput = {
@@ -58917,6 +60634,7 @@ export namespace Prisma {
     snoozedEmails?: SnoozedEmailUpdateManyWithoutUserNestedInput
     pendingEmails?: PendingEmailUpdateManyWithoutUserNestedInput
     followUpReminders?: FollowUpReminderUpdateManyWithoutUserNestedInput
+    aiEmailInsights?: AiEmailInsightUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutReadReceiptsInput = {
@@ -58966,6 +60684,7 @@ export namespace Prisma {
     snoozedEmails?: SnoozedEmailUncheckedUpdateManyWithoutUserNestedInput
     pendingEmails?: PendingEmailUncheckedUpdateManyWithoutUserNestedInput
     followUpReminders?: FollowUpReminderUncheckedUpdateManyWithoutUserNestedInput
+    aiEmailInsights?: AiEmailInsightUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutTodoItemsInput = {
@@ -59015,6 +60734,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptCreateNestedManyWithoutUserInput
     pendingEmails?: PendingEmailCreateNestedManyWithoutUserInput
     followUpReminders?: FollowUpReminderCreateNestedManyWithoutUserInput
+    aiEmailInsights?: AiEmailInsightCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutTodoItemsInput = {
@@ -59064,6 +60784,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptUncheckedCreateNestedManyWithoutUserInput
     pendingEmails?: PendingEmailUncheckedCreateNestedManyWithoutUserInput
     followUpReminders?: FollowUpReminderUncheckedCreateNestedManyWithoutUserInput
+    aiEmailInsights?: AiEmailInsightUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutTodoItemsInput = {
@@ -59129,6 +60850,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptUpdateManyWithoutUserNestedInput
     pendingEmails?: PendingEmailUpdateManyWithoutUserNestedInput
     followUpReminders?: FollowUpReminderUpdateManyWithoutUserNestedInput
+    aiEmailInsights?: AiEmailInsightUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutTodoItemsInput = {
@@ -59178,6 +60900,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptUncheckedUpdateManyWithoutUserNestedInput
     pendingEmails?: PendingEmailUncheckedUpdateManyWithoutUserNestedInput
     followUpReminders?: FollowUpReminderUncheckedUpdateManyWithoutUserNestedInput
+    aiEmailInsights?: AiEmailInsightUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutEmailTemplatesInput = {
@@ -59227,6 +60950,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptCreateNestedManyWithoutUserInput
     pendingEmails?: PendingEmailCreateNestedManyWithoutUserInput
     followUpReminders?: FollowUpReminderCreateNestedManyWithoutUserInput
+    aiEmailInsights?: AiEmailInsightCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutEmailTemplatesInput = {
@@ -59276,6 +61000,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptUncheckedCreateNestedManyWithoutUserInput
     pendingEmails?: PendingEmailUncheckedCreateNestedManyWithoutUserInput
     followUpReminders?: FollowUpReminderUncheckedCreateNestedManyWithoutUserInput
+    aiEmailInsights?: AiEmailInsightUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutEmailTemplatesInput = {
@@ -59341,6 +61066,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptUpdateManyWithoutUserNestedInput
     pendingEmails?: PendingEmailUpdateManyWithoutUserNestedInput
     followUpReminders?: FollowUpReminderUpdateManyWithoutUserNestedInput
+    aiEmailInsights?: AiEmailInsightUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutEmailTemplatesInput = {
@@ -59390,6 +61116,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptUncheckedUpdateManyWithoutUserNestedInput
     pendingEmails?: PendingEmailUncheckedUpdateManyWithoutUserNestedInput
     followUpReminders?: FollowUpReminderUncheckedUpdateManyWithoutUserNestedInput
+    aiEmailInsights?: AiEmailInsightUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutFollowUpRemindersInput = {
@@ -59439,6 +61166,7 @@ export namespace Prisma {
     snoozedEmails?: SnoozedEmailCreateNestedManyWithoutUserInput
     readReceipts?: ReadReceiptCreateNestedManyWithoutUserInput
     pendingEmails?: PendingEmailCreateNestedManyWithoutUserInput
+    aiEmailInsights?: AiEmailInsightCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutFollowUpRemindersInput = {
@@ -59488,6 +61216,7 @@ export namespace Prisma {
     snoozedEmails?: SnoozedEmailUncheckedCreateNestedManyWithoutUserInput
     readReceipts?: ReadReceiptUncheckedCreateNestedManyWithoutUserInput
     pendingEmails?: PendingEmailUncheckedCreateNestedManyWithoutUserInput
+    aiEmailInsights?: AiEmailInsightUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutFollowUpRemindersInput = {
@@ -59553,6 +61282,7 @@ export namespace Prisma {
     snoozedEmails?: SnoozedEmailUpdateManyWithoutUserNestedInput
     readReceipts?: ReadReceiptUpdateManyWithoutUserNestedInput
     pendingEmails?: PendingEmailUpdateManyWithoutUserNestedInput
+    aiEmailInsights?: AiEmailInsightUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutFollowUpRemindersInput = {
@@ -59602,6 +61332,7 @@ export namespace Prisma {
     snoozedEmails?: SnoozedEmailUncheckedUpdateManyWithoutUserNestedInput
     readReceipts?: ReadReceiptUncheckedUpdateManyWithoutUserNestedInput
     pendingEmails?: PendingEmailUncheckedUpdateManyWithoutUserNestedInput
+    aiEmailInsights?: AiEmailInsightUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutImapAccountsInput = {
@@ -59651,6 +61382,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptCreateNestedManyWithoutUserInput
     pendingEmails?: PendingEmailCreateNestedManyWithoutUserInput
     followUpReminders?: FollowUpReminderCreateNestedManyWithoutUserInput
+    aiEmailInsights?: AiEmailInsightCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutImapAccountsInput = {
@@ -59700,6 +61432,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptUncheckedCreateNestedManyWithoutUserInput
     pendingEmails?: PendingEmailUncheckedCreateNestedManyWithoutUserInput
     followUpReminders?: FollowUpReminderUncheckedCreateNestedManyWithoutUserInput
+    aiEmailInsights?: AiEmailInsightUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutImapAccountsInput = {
@@ -59765,6 +61498,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptUpdateManyWithoutUserNestedInput
     pendingEmails?: PendingEmailUpdateManyWithoutUserNestedInput
     followUpReminders?: FollowUpReminderUpdateManyWithoutUserNestedInput
+    aiEmailInsights?: AiEmailInsightUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutImapAccountsInput = {
@@ -59814,6 +61548,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptUncheckedUpdateManyWithoutUserNestedInput
     pendingEmails?: PendingEmailUncheckedUpdateManyWithoutUserNestedInput
     followUpReminders?: FollowUpReminderUncheckedUpdateManyWithoutUserNestedInput
+    aiEmailInsights?: AiEmailInsightUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutJmapAccountsInput = {
@@ -59863,6 +61598,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptCreateNestedManyWithoutUserInput
     pendingEmails?: PendingEmailCreateNestedManyWithoutUserInput
     followUpReminders?: FollowUpReminderCreateNestedManyWithoutUserInput
+    aiEmailInsights?: AiEmailInsightCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutJmapAccountsInput = {
@@ -59912,6 +61648,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptUncheckedCreateNestedManyWithoutUserInput
     pendingEmails?: PendingEmailUncheckedCreateNestedManyWithoutUserInput
     followUpReminders?: FollowUpReminderUncheckedCreateNestedManyWithoutUserInput
+    aiEmailInsights?: AiEmailInsightUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutJmapAccountsInput = {
@@ -59977,6 +61714,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptUpdateManyWithoutUserNestedInput
     pendingEmails?: PendingEmailUpdateManyWithoutUserNestedInput
     followUpReminders?: FollowUpReminderUpdateManyWithoutUserNestedInput
+    aiEmailInsights?: AiEmailInsightUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutJmapAccountsInput = {
@@ -60026,6 +61764,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptUncheckedUpdateManyWithoutUserNestedInput
     pendingEmails?: PendingEmailUncheckedUpdateManyWithoutUserNestedInput
     followUpReminders?: FollowUpReminderUncheckedUpdateManyWithoutUserNestedInput
+    aiEmailInsights?: AiEmailInsightUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutPendingEmailsInput = {
@@ -60075,6 +61814,7 @@ export namespace Prisma {
     snoozedEmails?: SnoozedEmailCreateNestedManyWithoutUserInput
     readReceipts?: ReadReceiptCreateNestedManyWithoutUserInput
     followUpReminders?: FollowUpReminderCreateNestedManyWithoutUserInput
+    aiEmailInsights?: AiEmailInsightCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutPendingEmailsInput = {
@@ -60124,6 +61864,7 @@ export namespace Prisma {
     snoozedEmails?: SnoozedEmailUncheckedCreateNestedManyWithoutUserInput
     readReceipts?: ReadReceiptUncheckedCreateNestedManyWithoutUserInput
     followUpReminders?: FollowUpReminderUncheckedCreateNestedManyWithoutUserInput
+    aiEmailInsights?: AiEmailInsightUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutPendingEmailsInput = {
@@ -60189,6 +61930,7 @@ export namespace Prisma {
     snoozedEmails?: SnoozedEmailUpdateManyWithoutUserNestedInput
     readReceipts?: ReadReceiptUpdateManyWithoutUserNestedInput
     followUpReminders?: FollowUpReminderUpdateManyWithoutUserNestedInput
+    aiEmailInsights?: AiEmailInsightUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutPendingEmailsInput = {
@@ -60237,6 +61979,223 @@ export namespace Prisma {
     todoItems?: TodoItemUncheckedUpdateManyWithoutUserNestedInput
     snoozedEmails?: SnoozedEmailUncheckedUpdateManyWithoutUserNestedInput
     readReceipts?: ReadReceiptUncheckedUpdateManyWithoutUserNestedInput
+    followUpReminders?: FollowUpReminderUncheckedUpdateManyWithoutUserNestedInput
+    aiEmailInsights?: AiEmailInsightUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserCreateWithoutAiEmailInsightsInput = {
+    id: string
+    email: string
+    name?: string | null
+    avatarUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    role?: string
+    notificationNewEmail?: boolean
+    notificationDailyDigest?: boolean
+    notificationAiReplies?: boolean
+    notificationCalendarReminders?: boolean
+    notificationWeeklyReport?: boolean
+    appTheme?: string
+    fontSize?: string
+    emailDensity?: string
+    preferredTimeZone?: string
+    lastActiveAccountId?: string | null
+    undoSendDelay?: number
+    defaultSensitivityLabel?: string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: Date | string | null
+    org: OrganizationCreateNestedOneWithoutUsersInput
+    msAccounts?: MsConnectedAccountCreateNestedManyWithoutUserInput
+    imapAccounts?: ImapConnectedAccountCreateNestedManyWithoutUserInput
+    jmapAccounts?: JmapConnectedAccountCreateNestedManyWithoutUserInput
+    msalCache?: MsalTokenCacheCreateNestedOneWithoutUserInput
+    deltaLinks?: EmailDeltaLinkCreateNestedManyWithoutUserInput
+    webhookSubs?: WebhookSubscriptionCreateNestedManyWithoutUserInput
+    drafts?: DraftCreateNestedManyWithoutUserInput
+    emailRules?: EmailRuleCreateNestedManyWithoutUserInput
+    signatures?: SignatureCreateNestedManyWithoutUserInput
+    emailTemplates?: EmailTemplateCreateNestedManyWithoutUserInput
+    cachedFolders?: CachedFolderCreateNestedManyWithoutUserInput
+    cachedEmails?: CachedEmailCreateNestedManyWithoutUserInput
+    cachedCalEvents?: CachedCalendarEventCreateNestedManyWithoutUserInput
+    cachedContacts?: CachedContactCreateNestedManyWithoutUserInput
+    emailAttachments?: EmailAttachmentCreateNestedManyWithoutUserInput
+    aiGeneratedReplies?: AiGeneratedReplyCreateNestedManyWithoutUserInput
+    cachedSearchResults?: CachedSearchResultCreateNestedManyWithoutUserInput
+    syncStatuses?: SyncStatusCreateNestedManyWithoutUserInput
+    notificationLogs?: NotificationLogCreateNestedManyWithoutUserInput
+    migrationStatuses?: MigrationStatusCreateNestedManyWithoutUserInput
+    todoItems?: TodoItemCreateNestedManyWithoutUserInput
+    snoozedEmails?: SnoozedEmailCreateNestedManyWithoutUserInput
+    readReceipts?: ReadReceiptCreateNestedManyWithoutUserInput
+    pendingEmails?: PendingEmailCreateNestedManyWithoutUserInput
+    followUpReminders?: FollowUpReminderCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutAiEmailInsightsInput = {
+    id: string
+    email: string
+    name?: string | null
+    avatarUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    orgId: string
+    role?: string
+    notificationNewEmail?: boolean
+    notificationDailyDigest?: boolean
+    notificationAiReplies?: boolean
+    notificationCalendarReminders?: boolean
+    notificationWeeklyReport?: boolean
+    appTheme?: string
+    fontSize?: string
+    emailDensity?: string
+    preferredTimeZone?: string
+    lastActiveAccountId?: string | null
+    undoSendDelay?: number
+    defaultSensitivityLabel?: string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: Date | string | null
+    msAccounts?: MsConnectedAccountUncheckedCreateNestedManyWithoutUserInput
+    imapAccounts?: ImapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
+    jmapAccounts?: JmapConnectedAccountUncheckedCreateNestedManyWithoutUserInput
+    msalCache?: MsalTokenCacheUncheckedCreateNestedOneWithoutUserInput
+    deltaLinks?: EmailDeltaLinkUncheckedCreateNestedManyWithoutUserInput
+    webhookSubs?: WebhookSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    drafts?: DraftUncheckedCreateNestedManyWithoutUserInput
+    emailRules?: EmailRuleUncheckedCreateNestedManyWithoutUserInput
+    signatures?: SignatureUncheckedCreateNestedManyWithoutUserInput
+    emailTemplates?: EmailTemplateUncheckedCreateNestedManyWithoutUserInput
+    cachedFolders?: CachedFolderUncheckedCreateNestedManyWithoutUserInput
+    cachedEmails?: CachedEmailUncheckedCreateNestedManyWithoutUserInput
+    cachedCalEvents?: CachedCalendarEventUncheckedCreateNestedManyWithoutUserInput
+    cachedContacts?: CachedContactUncheckedCreateNestedManyWithoutUserInput
+    emailAttachments?: EmailAttachmentUncheckedCreateNestedManyWithoutUserInput
+    aiGeneratedReplies?: AiGeneratedReplyUncheckedCreateNestedManyWithoutUserInput
+    cachedSearchResults?: CachedSearchResultUncheckedCreateNestedManyWithoutUserInput
+    syncStatuses?: SyncStatusUncheckedCreateNestedManyWithoutUserInput
+    notificationLogs?: NotificationLogUncheckedCreateNestedManyWithoutUserInput
+    migrationStatuses?: MigrationStatusUncheckedCreateNestedManyWithoutUserInput
+    todoItems?: TodoItemUncheckedCreateNestedManyWithoutUserInput
+    snoozedEmails?: SnoozedEmailUncheckedCreateNestedManyWithoutUserInput
+    readReceipts?: ReadReceiptUncheckedCreateNestedManyWithoutUserInput
+    pendingEmails?: PendingEmailUncheckedCreateNestedManyWithoutUserInput
+    followUpReminders?: FollowUpReminderUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutAiEmailInsightsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutAiEmailInsightsInput, UserUncheckedCreateWithoutAiEmailInsightsInput>
+  }
+
+  export type UserUpsertWithoutAiEmailInsightsInput = {
+    update: XOR<UserUpdateWithoutAiEmailInsightsInput, UserUncheckedUpdateWithoutAiEmailInsightsInput>
+    create: XOR<UserCreateWithoutAiEmailInsightsInput, UserUncheckedCreateWithoutAiEmailInsightsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutAiEmailInsightsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutAiEmailInsightsInput, UserUncheckedUpdateWithoutAiEmailInsightsInput>
+  }
+
+  export type UserUpdateWithoutAiEmailInsightsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    role?: StringFieldUpdateOperationsInput | string
+    notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
+    notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
+    notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
+    notificationCalendarReminders?: BoolFieldUpdateOperationsInput | boolean
+    notificationWeeklyReport?: BoolFieldUpdateOperationsInput | boolean
+    appTheme?: StringFieldUpdateOperationsInput | string
+    fontSize?: StringFieldUpdateOperationsInput | string
+    emailDensity?: StringFieldUpdateOperationsInput | string
+    preferredTimeZone?: StringFieldUpdateOperationsInput | string
+    lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    undoSendDelay?: IntFieldUpdateOperationsInput | number
+    defaultSensitivityLabel?: NullableStringFieldUpdateOperationsInput | string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    org?: OrganizationUpdateOneRequiredWithoutUsersNestedInput
+    msAccounts?: MsConnectedAccountUpdateManyWithoutUserNestedInput
+    imapAccounts?: ImapConnectedAccountUpdateManyWithoutUserNestedInput
+    jmapAccounts?: JmapConnectedAccountUpdateManyWithoutUserNestedInput
+    msalCache?: MsalTokenCacheUpdateOneWithoutUserNestedInput
+    deltaLinks?: EmailDeltaLinkUpdateManyWithoutUserNestedInput
+    webhookSubs?: WebhookSubscriptionUpdateManyWithoutUserNestedInput
+    drafts?: DraftUpdateManyWithoutUserNestedInput
+    emailRules?: EmailRuleUpdateManyWithoutUserNestedInput
+    signatures?: SignatureUpdateManyWithoutUserNestedInput
+    emailTemplates?: EmailTemplateUpdateManyWithoutUserNestedInput
+    cachedFolders?: CachedFolderUpdateManyWithoutUserNestedInput
+    cachedEmails?: CachedEmailUpdateManyWithoutUserNestedInput
+    cachedCalEvents?: CachedCalendarEventUpdateManyWithoutUserNestedInput
+    cachedContacts?: CachedContactUpdateManyWithoutUserNestedInput
+    emailAttachments?: EmailAttachmentUpdateManyWithoutUserNestedInput
+    aiGeneratedReplies?: AiGeneratedReplyUpdateManyWithoutUserNestedInput
+    cachedSearchResults?: CachedSearchResultUpdateManyWithoutUserNestedInput
+    syncStatuses?: SyncStatusUpdateManyWithoutUserNestedInput
+    notificationLogs?: NotificationLogUpdateManyWithoutUserNestedInput
+    migrationStatuses?: MigrationStatusUpdateManyWithoutUserNestedInput
+    todoItems?: TodoItemUpdateManyWithoutUserNestedInput
+    snoozedEmails?: SnoozedEmailUpdateManyWithoutUserNestedInput
+    readReceipts?: ReadReceiptUpdateManyWithoutUserNestedInput
+    pendingEmails?: PendingEmailUpdateManyWithoutUserNestedInput
+    followUpReminders?: FollowUpReminderUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutAiEmailInsightsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    orgId?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    notificationNewEmail?: BoolFieldUpdateOperationsInput | boolean
+    notificationDailyDigest?: BoolFieldUpdateOperationsInput | boolean
+    notificationAiReplies?: BoolFieldUpdateOperationsInput | boolean
+    notificationCalendarReminders?: BoolFieldUpdateOperationsInput | boolean
+    notificationWeeklyReport?: BoolFieldUpdateOperationsInput | boolean
+    appTheme?: StringFieldUpdateOperationsInput | string
+    fontSize?: StringFieldUpdateOperationsInput | string
+    emailDensity?: StringFieldUpdateOperationsInput | string
+    preferredTimeZone?: StringFieldUpdateOperationsInput | string
+    lastActiveAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    undoSendDelay?: IntFieldUpdateOperationsInput | number
+    defaultSensitivityLabel?: NullableStringFieldUpdateOperationsInput | string | null
+    voiceProfile?: NullableJsonNullValueInput | InputJsonValue
+    voiceProfileUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    msAccounts?: MsConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
+    imapAccounts?: ImapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
+    jmapAccounts?: JmapConnectedAccountUncheckedUpdateManyWithoutUserNestedInput
+    msalCache?: MsalTokenCacheUncheckedUpdateOneWithoutUserNestedInput
+    deltaLinks?: EmailDeltaLinkUncheckedUpdateManyWithoutUserNestedInput
+    webhookSubs?: WebhookSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    drafts?: DraftUncheckedUpdateManyWithoutUserNestedInput
+    emailRules?: EmailRuleUncheckedUpdateManyWithoutUserNestedInput
+    signatures?: SignatureUncheckedUpdateManyWithoutUserNestedInput
+    emailTemplates?: EmailTemplateUncheckedUpdateManyWithoutUserNestedInput
+    cachedFolders?: CachedFolderUncheckedUpdateManyWithoutUserNestedInput
+    cachedEmails?: CachedEmailUncheckedUpdateManyWithoutUserNestedInput
+    cachedCalEvents?: CachedCalendarEventUncheckedUpdateManyWithoutUserNestedInput
+    cachedContacts?: CachedContactUncheckedUpdateManyWithoutUserNestedInput
+    emailAttachments?: EmailAttachmentUncheckedUpdateManyWithoutUserNestedInput
+    aiGeneratedReplies?: AiGeneratedReplyUncheckedUpdateManyWithoutUserNestedInput
+    cachedSearchResults?: CachedSearchResultUncheckedUpdateManyWithoutUserNestedInput
+    syncStatuses?: SyncStatusUncheckedUpdateManyWithoutUserNestedInput
+    notificationLogs?: NotificationLogUncheckedUpdateManyWithoutUserNestedInput
+    migrationStatuses?: MigrationStatusUncheckedUpdateManyWithoutUserNestedInput
+    todoItems?: TodoItemUncheckedUpdateManyWithoutUserNestedInput
+    snoozedEmails?: SnoozedEmailUncheckedUpdateManyWithoutUserNestedInput
+    readReceipts?: ReadReceiptUncheckedUpdateManyWithoutUserNestedInput
+    pendingEmails?: PendingEmailUncheckedUpdateManyWithoutUserNestedInput
     followUpReminders?: FollowUpReminderUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -60329,6 +62288,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptUpdateManyWithoutUserNestedInput
     pendingEmails?: PendingEmailUpdateManyWithoutUserNestedInput
     followUpReminders?: FollowUpReminderUpdateManyWithoutUserNestedInput
+    aiEmailInsights?: AiEmailInsightUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutOrgInput = {
@@ -60378,6 +62338,7 @@ export namespace Prisma {
     readReceipts?: ReadReceiptUncheckedUpdateManyWithoutUserNestedInput
     pendingEmails?: PendingEmailUncheckedUpdateManyWithoutUserNestedInput
     followUpReminders?: FollowUpReminderUncheckedUpdateManyWithoutUserNestedInput
+    aiEmailInsights?: AiEmailInsightUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutOrgInput = {
@@ -60811,6 +62772,19 @@ export namespace Prisma {
     status?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+  }
+
+  export type AiEmailInsightCreateManyUserInput = {
+    id?: string
+    messageId: string
+    homeAccountId?: string | null
+    latestReceivedAt: Date | string
+    tldr: string
+    bullets?: JsonNullValueInput | InputJsonValue
+    actionItems?: JsonNullValueInput | InputJsonValue
+    suggestedAction?: string | null
+    model: string
+    createdAt?: Date | string
   }
 
   export type MsConnectedAccountUpdateWithoutUserInput = {
@@ -61876,6 +63850,45 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AiEmailInsightUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    messageId?: StringFieldUpdateOperationsInput | string
+    homeAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    latestReceivedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    tldr?: StringFieldUpdateOperationsInput | string
+    bullets?: JsonNullValueInput | InputJsonValue
+    actionItems?: JsonNullValueInput | InputJsonValue
+    suggestedAction?: NullableStringFieldUpdateOperationsInput | string | null
+    model?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AiEmailInsightUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    messageId?: StringFieldUpdateOperationsInput | string
+    homeAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    latestReceivedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    tldr?: StringFieldUpdateOperationsInput | string
+    bullets?: JsonNullValueInput | InputJsonValue
+    actionItems?: JsonNullValueInput | InputJsonValue
+    suggestedAction?: NullableStringFieldUpdateOperationsInput | string | null
+    model?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AiEmailInsightUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    messageId?: StringFieldUpdateOperationsInput | string
+    homeAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    latestReceivedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    tldr?: StringFieldUpdateOperationsInput | string
+    bullets?: JsonNullValueInput | InputJsonValue
+    actionItems?: JsonNullValueInput | InputJsonValue
+    suggestedAction?: NullableStringFieldUpdateOperationsInput | string | null
+    model?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
 
