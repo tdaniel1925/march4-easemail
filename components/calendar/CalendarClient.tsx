@@ -1306,8 +1306,8 @@ export default function CalendarClient({ weekStart: initialWeekStart, events: in
 
       {/* ── Header ── */}
       <div className="flex flex-col bg-white flex-shrink-0" style={{ boxShadow: "0px 4px 4px 0px rgba(27,29,29,0.10)", zIndex: 10 }}>
-        <div className="flex items-center flex-wrap gap-x-3 gap-y-2 px-6 py-4">
-          <h1 className="text-xl font-bold text-neutral-900 mr-1">Calendar</h1>
+        <div className="flex items-center flex-wrap gap-x-2 gap-y-2 px-4 py-4">
+          <h1 className="text-xl font-bold text-neutral-900 mr-0.5">Calendar</h1>
 
           <button onClick={goToPrev}
             className="w-8 h-8 flex items-center justify-center rounded-[10px] bg-neutral-100 hover:bg-neutral-200 transition-colors"
@@ -1317,7 +1317,7 @@ export default function CalendarClient({ weekStart: initialWeekStart, events: in
             </svg>
           </button>
 
-          <span className="text-sm font-semibold text-neutral-700 min-w-[200px] text-center">
+          <span className="text-sm font-semibold text-neutral-700 text-center whitespace-nowrap px-1">
             {getViewLabel()}
           </span>
 
