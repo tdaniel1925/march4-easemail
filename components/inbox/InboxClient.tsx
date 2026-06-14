@@ -1874,7 +1874,7 @@ export default function InboxClient({
             {/* Action toolbar */}
             <div className="flex items-center gap-2 px-4 py-2.5 border-b border-neutral-200 flex-shrink-0" style={{ backgroundColor: "rgb(250 250 250)" }}>
               <button
-                onClick={() => setAiReplyEmail(splitSelected)}
+                onClick={() => navigateTo(`/compose?mode=reply&messageId=${encodeURIComponent(splitSelected.id)}&homeAccountId=${encodeURIComponent(acctId)}`)}
                 title="Reply (r)"
                 className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-[8px] text-white"
                 style={{ backgroundColor: "rgb(138 9 9)" }}
@@ -2075,7 +2075,7 @@ export default function InboxClient({
           <div className="flex flex-col flex-1 bg-white" style={{ height: "100vh", overflow: "hidden" }}>
             {/* Action bar top */}
             <div className="flex items-center gap-2 px-5 py-2.5 border-b border-neutral-200 flex-shrink-0" style={{ backgroundColor: "rgb(250 250 250)" }}>
-              <button onClick={() => { setAiReplyEmail(selectedEmail); }} className="flex items-center gap-1.5 text-xs font-semibold px-3.5 py-1.5 rounded-[8px] text-white" style={{ backgroundColor: "rgb(138 9 9)" }}>
+              <button onClick={() => navigateTo(`/compose?mode=reply&messageId=${encodeURIComponent(selectedEmail.id)}&homeAccountId=${encodeURIComponent(acctId)}`)} className="flex items-center gap-1.5 text-xs font-semibold px-3.5 py-1.5 rounded-[8px] text-white" style={{ backgroundColor: "rgb(138 9 9)" }}>
                 <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" /></svg>
                 Reply
               </button>

@@ -1306,7 +1306,7 @@ export default function CalendarClient({ weekStart: initialWeekStart, events: in
 
       {/* ── Header ── */}
       <div className="flex flex-col bg-white flex-shrink-0" style={{ boxShadow: "0px 4px 4px 0px rgba(27,29,29,0.10)", zIndex: 10 }}>
-        <div className="flex items-center gap-3 px-6 py-4">
+        <div className="flex items-center flex-wrap gap-x-3 gap-y-2 px-6 py-4">
           <h1 className="text-xl font-bold text-neutral-900 mr-1">Calendar</h1>
 
           <button onClick={goToPrev}
