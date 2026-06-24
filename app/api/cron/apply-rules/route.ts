@@ -55,9 +55,17 @@ export async function GET(req: NextRequest) {
 
   for (const [userId, rules] of rulesByUser) {
     totals.users++;
-    // Inbox folders for this user, per account.
+    // Inbox folders for this user, per account. Many synced folders never get
+    // wellKnownName populated (Graph doesn't $select it reliably), so also match
+    // the folder literally named "Inbox" — otherwise most accounts are skipped.
     const inboxFolders = await prisma.cachedFolder.findMany({
-      where: { userId, wellKnownName: "inbox" },
+      where: {
+        userId,
+        OR: [
+          { wellKnownName: "inbox" },
+          { displayName: { equals: "Inbox", mode: "insensitive" } },
+        ],
+      },
       select: { id: true, homeAccountId: true },
     });
 
