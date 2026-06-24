@@ -9,6 +9,10 @@
       "schedule": "* * * * *"
     },
     {
+      "path": "/api/cron/apply-rules",
+      "schedule": "* * * * *"
+    },
+    {
       "path": "/api/cron/deploy-digest",
       "schedule": "0 17 * * *"
     },

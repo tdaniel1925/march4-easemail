@@ -298,6 +298,59 @@ export class MicrosoftProvider implements EmailProvider {
     });
   }
 
+  async createFolder(
+    userId: string,
+    accountId: string,
+    displayName: string,
+    parentFolderId?: string | null
+  ): Promise<{ id: string; displayName: string; parentFolderId: string | null }> {
+    const path = parentFolderId
+      ? `/me/mailFolders/${parentFolderId}/childFolders`
+      : `/me/mailFolders`;
+    const created = await graphPost<{ id: string; displayName: string; parentFolderId?: string }>(
+      userId,
+      accountId,
+      path,
+      { displayName }
+    );
+    return {
+      id: created.id,
+      displayName: created.displayName,
+      parentFolderId: created.parentFolderId ?? parentFolderId ?? null,
+    };
+  }
+
+  async forwardMessage(
+    userId: string,
+    accountId: string,
+    messageId: string,
+    toAddress: string
+  ): Promise<void> {
+    await graphPost(userId, accountId, `/me/messages/${messageId}/forward`, {
+      toRecipients: [{ emailAddress: { address: toAddress } }],
+    });
+  }
+
+  async addCategories(
+    userId: string,
+    accountId: string,
+    messageId: string,
+    categories: string[]
+  ): Promise<void> {
+    // Graph categories are a full array — merge with existing to be additive.
+    const existing = await graphGet<{ categories?: string[] }>(
+      userId,
+      accountId,
+      `/me/messages/${messageId}?$select=categories`
+    );
+    const merged = Array.from(new Set([...(existing.categories ?? []), ...categories]));
+    await graphPatch(userId, accountId, `/me/messages/${messageId}`, { categories: merged });
+    await prisma.cachedEmail.updateMany({
+      where: { id: messageId, userId },
+      data: { categories: merged },
+    });
+  }
+
   async searchEmails(
     userId: string,
     accountId: string,

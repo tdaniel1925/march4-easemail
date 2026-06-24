@@ -12,7 +12,8 @@ export type ActionType =
   | "mark_important"
   | "skip_inbox"
   | "mark_read"
-  | "delete";
+  | "delete"
+  | "move_to_folder";
 export type Logic = "AND" | "OR";
 
 export interface Condition {

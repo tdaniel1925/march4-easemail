@@ -1,14 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
-import Anthropic from "@anthropic-ai/sdk";
+import { getAiClient, AI_SUMMARY_MODEL } from "@/lib/ai/client";
 import { withRateLimit, rateLimiters } from "@/lib/rate-limit";
 import { z } from "zod";
 
-const client = new Anthropic();
+const client = getAiClient();
 
 // Claude Fable 5 — most capable; used on-demand for the email the user opened.
-const SUMMARY_MODEL = "claude-fable-5";
+const SUMMARY_MODEL = AI_SUMMARY_MODEL;
 
 const requestSchema = z.object({
   messageId: z.string().min(1).max(512),

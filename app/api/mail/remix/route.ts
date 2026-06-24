@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import Anthropic from "@anthropic-ai/sdk";
+import { getAiClient, AI_MODEL } from "@/lib/ai/client";
 import { withRateLimit, rateLimiters } from "@/lib/rate-limit";
 import { z } from "zod";
 
-const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+const client = getAiClient();
 
 const remixSchema = z.object({
   // Handler slices to 4000 chars itself; cap generously
@@ -65,7 +65,7 @@ ${body.slice(0, 4000)}`;
   let message;
   try {
     message = await client.messages.create({
-      model: "claude-haiku-4-5-20251001",
+      model: AI_MODEL,
       max_tokens: 2048,
       system,
       messages: [{ role: "user", content: prompt }],

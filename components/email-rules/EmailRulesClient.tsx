@@ -79,6 +79,7 @@ const ACTION_LABELS: Record<ActionType, string> = {
   skip_inbox: "Skip Inbox",
   mark_read: "Mark Read",
   delete: "Delete",
+  move_to_folder: "Move to folder",
 };
 
 const ACTION_COLORS: Record<ActionType, { bg: string; text: string; border: string }> = {
@@ -89,6 +90,7 @@ const ACTION_COLORS: Record<ActionType, { bg: string; text: string; border: stri
   skip_inbox: { bg: "bg-neutral-100", text: "text-neutral-600", border: "border-neutral-200" },
   mark_read: { bg: "bg-neutral-100", text: "text-neutral-600", border: "border-neutral-200" },
   delete: { bg: "bg-primary-100", text: "text-primary-700", border: "border-primary-200" },
+  move_to_folder: { bg: "bg-secondary-100", text: "text-secondary-700", border: "border-secondary-200" },
 };
 
 // ─── Toggle ───────────────────────────────────────────────────────────────────
@@ -251,17 +253,23 @@ function RuleForm({ form, onChange }: { form: RuleFormState; onChange: (f: RuleF
                 <option value="archive">Archive</option>
                 <option value="label">Label as…</option>
                 <option value="forward">Forward to…</option>
+                <option value="move_to_folder">Move to folder…</option>
+                <option value="skip_inbox">Skip Inbox (to folder…)</option>
                 <option value="mark_important">Mark Important</option>
-                <option value="skip_inbox">Skip Inbox</option>
                 <option value="mark_read">Mark as Read</option>
                 <option value="delete">Delete</option>
               </select>
-              {(action.type === "label" || action.type === "forward") && (
+              {(action.type === "label" || action.type === "forward" || action.type === "move_to_folder" || action.type === "skip_inbox") && (
                 <input
                   type="text"
                   value={action.value}
                   onChange={(e) => updateAction(action.id!, { value: e.target.value })}
-                  placeholder={action.type === "label" ? "Label name…" : "Email address…"}
+                  placeholder={
+                    action.type === "label" ? "Label name…"
+                    : action.type === "forward" ? "Email address…"
+                    : action.type === "skip_inbox" ? "Folder name (blank = Archive)…"
+                    : "Folder name (created if new)…"
+                  }
                   className="flex-1 min-w-24 px-2 py-1.5 text-xs bg-background-100 border border-neutral-200 rounded-small text-neutral-800 placeholder-neutral-400 focus:outline-none focus:border-primary-300 transition-colors"
                 />
               )}

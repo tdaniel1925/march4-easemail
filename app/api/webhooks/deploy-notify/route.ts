@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createHmac, timingSafeEqual } from "crypto";
-import Anthropic from "@anthropic-ai/sdk";
+import { getAiClient, AI_MODEL } from "@/lib/ai/client";
 import { prisma } from "@/lib/prisma";
 import { z } from "zod";
 
@@ -75,11 +75,11 @@ function _buildEmailHtml(summary: string, pusher: string, date: string): string 
 
 async function _generatePlainEnglishSummary(commits: GitHubCommit[]): Promise<string> {
   // Instantiate inside function so env vars are available at runtime, not build time
-  const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+  const anthropic = getAiClient();
   const messages = commits.map((c) => c.message.split("\n")[0]).join("\n");
   try {
     const response = await anthropic.messages.create({
-      model: "claude-haiku-4-5-20251001",
+      model: AI_MODEL,
       max_tokens: 300,
       system:
         "You summarize software updates for non-technical stakeholders at a law firm. Be concise, friendly, and focus only on things that affect how users experience the app. Skip technical details, bug fixes to internal code, and developer tooling. Use plain English bullet points. If there are no user-facing feature additions, say so briefly.",

@@ -399,9 +399,32 @@ function NotificationsSection() {
 
 // ─── Appearance section ───────────────────────────────────────────────────────
 
+// IANA zones offered in the picker (covers the firm's likely zones; the API
+// validates against the full Intl list so any valid zone is accepted).
+const TIME_ZONES: string[] = [
+  "America/New_York",
+  "America/Chicago",
+  "America/Denver",
+  "America/Phoenix",
+  "America/Los_Angeles",
+  "America/Anchorage",
+  "Pacific/Honolulu",
+  "America/Toronto",
+  "America/Mexico_City",
+  "Europe/London",
+  "Europe/Paris",
+  "Europe/Berlin",
+  "Asia/Kolkata",
+  "Asia/Singapore",
+  "Asia/Tokyo",
+  "Australia/Sydney",
+  "UTC",
+];
+
 function AppearanceSection() {
   const [fontSize, setFontSize] = useState<FontSize>("default");
   const [density, setDensity] = useState<EmailDensity>("comfortable");
+  const [timeZone, setTimeZone] = useState<string>("America/Chicago");
   const [_loading, setLoading] = useState(true);
   const [loaded, setLoaded] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -414,6 +437,7 @@ function AppearanceSection() {
         if (!data.error) {
           if (data.fontSize) setFontSize(data.fontSize as FontSize);
           if (data.emailDensity) setDensity(data.emailDensity as EmailDensity);
+          if (data.preferredTimeZone) setTimeZone(data.preferredTimeZone as string);
         }
       })
       .catch(() => {})
@@ -422,6 +446,26 @@ function AppearanceSection() {
         setLoaded(true);
       });
   }, []);
+
+  // Save preferred time zone via the dedicated settings endpoint (reverts on failure).
+  const saveTimeZone = async (newTz: string) => {
+    if (!loaded) return;
+    const prev = timeZone;
+    setTimeZone(newTz);
+    setError(null);
+    try {
+      const res = await fetch("/api/user/settings", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ preferredTimeZone: newTz }),
+      });
+      if (!res.ok) throw new Error("Save failed");
+    } catch (err) {
+      console.error("Failed to save time zone:", err);
+      setTimeZone(prev);
+      setError("Couldn't save your time zone. Please try again.");
+    }
+  };
 
   // Save fontSize to API (reverts on failure)
   const saveFontSize = async (newSize: FontSize) => {
@@ -616,6 +660,30 @@ function AppearanceSection() {
             </button>
           ))}
         </div>
+      </div>
+
+      <div>
+        <p
+          className="text-xs font-semibold uppercase tracking-wider mb-3"
+          style={{ color: "rgb(115 115 115)" }}
+        >
+          Time Zone
+        </p>
+        <p className="text-sm mb-2" style={{ color: "rgb(115 115 115)" }}>
+          Calendar and email times are shown in this time zone.
+        </p>
+        <select
+          value={timeZone}
+          onChange={(e) => saveTimeZone(e.target.value)}
+          className="w-full max-w-sm px-3 py-2 rounded-[10px] text-sm border bg-white focus:outline-none"
+          style={{ borderColor: "rgb(212 212 212)", color: "rgb(40 40 40)" }}
+        >
+          {/* Ensure the saved zone is selectable even if outside the curated list. */}
+          {!TIME_ZONES.includes(timeZone) && <option value={timeZone}>{timeZone}</option>}
+          {TIME_ZONES.map((tz) => (
+            <option key={tz} value={tz}>{tz.replace(/_/g, " ")}</option>
+          ))}
+        </select>
       </div>
     </div>
   );

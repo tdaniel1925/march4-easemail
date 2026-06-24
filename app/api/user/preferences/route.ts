@@ -46,6 +46,7 @@ export async function GET() {
       emailDensity: true,
       undoSendDelay: true,
       defaultSensitivityLabel: true,
+      preferredTimeZone: true,
     },
   });
 
@@ -99,6 +100,7 @@ export async function PUT(req: NextRequest) {
       emailDensity: true,
       undoSendDelay: true,
       defaultSensitivityLabel: true,
+      preferredTimeZone: true,
     },
   });
 

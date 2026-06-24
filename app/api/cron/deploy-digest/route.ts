@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
-import Anthropic from "@anthropic-ai/sdk";
+import { getAiClient, AI_MODEL } from "@/lib/ai/client";
 import { prisma } from "@/lib/prisma";
 
 const RECIPIENTS = (process.env.DEPLOY_DIGEST_RECIPIENTS ?? "").split(",").map(e => e.trim()).filter(Boolean);
@@ -55,7 +55,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
 
   // Instantiate clients inside the handler so env vars are available at runtime
   const resend = new Resend(process.env.RESEND_API_KEY);
-  const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+  const anthropic = getAiClient();
   const FROM = process.env.NOTIFY_FROM_EMAIL ?? "noreply@easemail.app";
 
   // Grab all unsent logs from today
@@ -76,7 +76,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
   let summary: string;
   try {
     const response = await anthropic.messages.create({
-      model: "claude-haiku-4-5-20251001",
+      model: AI_MODEL,
       max_tokens: 400,
       system: "You summarize software updates for non-technical stakeholders at a law firm. Be concise and friendly. Focus only on things that affect how users experience the app. Use plain English bullet points. Skip technical details, internal bug fixes, and developer tooling. If there are no user-facing changes at all, respond with exactly: NO_USER_CHANGES",
       messages: [{

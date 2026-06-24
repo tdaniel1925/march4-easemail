@@ -143,8 +143,8 @@ export const ruleConditionSchema = z.object({
 
 export const ruleActionSchema = z.object({
   id: z.string().max(128).optional(),
-  type: z.enum(["archive", "label", "forward", "mark_important", "skip_inbox", "mark_read", "delete"]),
-  value: z.string().max(320).optional(),
+  type: z.enum(["archive", "label", "forward", "mark_important", "skip_inbox", "mark_read", "delete", "move_to_folder"]),
+  value: z.string().max(512).optional(),
 });
 
 // Matches app/api/rules/route.ts POST (priority is computed server-side)
@@ -169,8 +169,8 @@ export const updateRuleSchema = z.object({
 export const applyRuleActionSchema = z.object({
   emailId: z.string().min(1, "Email ID is required").max(512),
   homeAccountId: accountIdSchema,
-  action: z.enum(["markRead", "markImportant", "archive", "delete", "forward"]),
-  value: z.string().max(320).optional(),
+  action: z.enum(["markRead", "markImportant", "archive", "delete", "forward", "label", "moveToFolder", "skipInbox"]),
+  value: z.string().max(512).optional(),
   ruleId: z.string().max(128).optional(),
 });
 

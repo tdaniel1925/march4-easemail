@@ -1094,6 +1094,69 @@ export class JmapProvider implements EmailProvider, CalendarProvider, ContactsPr
     });
   }
 
+  async createFolder(
+    userId: string,
+    accountId: string,
+    displayName: string,
+    parentFolderId?: string | null
+  ): Promise<{ id: string; displayName: string; parentFolderId: string | null }> {
+    const { token, session, jmapAccountId } = await getSessionAndToken(userId, accountId);
+    const parentId = parentFolderId ? parentFolderId.replace(`${accountId}:`, "") : null;
+    const response = await jmapCall(session.apiUrl, token, jmapAccountId, [
+      [
+        "Mailbox/set",
+        {
+          accountId: jmapAccountId,
+          create: { newMb: { name: displayName, parentId } },
+        },
+        "0",
+      ],
+    ]);
+    const [, result] = response.methodResponses[0];
+    const created = (result.created as Record<string, { id: string }> | undefined)?.newMb;
+    if (!created?.id) throw new Error("JMAP Mailbox/set create failed");
+    return { id: `${accountId}:${created.id}`, displayName, parentFolderId: parentFolderId ?? null };
+  }
+
+  async forwardMessage(
+    userId: string,
+    accountId: string,
+    messageId: string,
+    toAddress: string
+  ): Promise<void> {
+    const original = await this.fetchMessage(userId, accountId, messageId);
+    const fromLine = `${original.from?.name ?? ""} <${original.from?.address ?? ""}>`.trim();
+    const attribution =
+      `<br><br>---------- Forwarded message ----------<br>` +
+      `From: ${fromLine}<br>Subject: ${original.subject ?? ""}<br><br>`;
+    await this.sendEmail(userId, accountId, {
+      to: [{ name: "", address: toAddress }],
+      subject: `Fwd: ${original.subject ?? ""}`,
+      bodyHtml: `${attribution}${original.bodyHtml ?? original.bodyText ?? ""}`,
+    });
+  }
+
+  async addCategories(
+    userId: string,
+    accountId: string,
+    messageId: string,
+    categories: string[]
+  ): Promise<void> {
+    // JMAP has no categories; map labels onto keywords.
+    const jmapEmailId = messageId.replace(`${accountId}:`, "");
+    const { token, session, jmapAccountId } = await getSessionAndToken(userId, accountId);
+    const keywordPatch: Record<string, boolean> = {};
+    for (const c of categories) keywordPatch[`keywords/${c}`] = true;
+    const response = await jmapCall(session.apiUrl, token, jmapAccountId, [
+      ["Email/set", { accountId: jmapAccountId, update: { [jmapEmailId]: keywordPatch } }, "0"],
+    ]);
+    assertEmailSetSuccess(response, jmapEmailId, "addCategories");
+    const row = await prisma.cachedEmail.findFirst({ where: { id: messageId, userId }, select: { categories: true } });
+    const existing = Array.isArray(row?.categories) ? (row!.categories as string[]) : [];
+    const merged = Array.from(new Set([...existing, ...categories]));
+    await prisma.cachedEmail.updateMany({ where: { id: messageId, userId }, data: { categories: merged } });
+  }
+
   async deleteMessage(
     userId: string,
     accountId: string,

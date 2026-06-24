@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import Anthropic from "@anthropic-ai/sdk";
+import { getAiClient, AI_MODEL } from "@/lib/ai/client";
 import { withRateLimit, rateLimiters } from "@/lib/rate-limit";
 
-const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+const client = getAiClient();
 
 import { z } from "zod";
 
@@ -90,7 +90,7 @@ ${emailContent.slice(0, 4000)}`;
   let message;
   try {
     message = await client.messages.create({
-      model: "claude-haiku-4-5-20251001",
+      model: AI_MODEL,
       max_tokens: 1500,
       system,
       messages: [{ role: "user", content: prompt }],

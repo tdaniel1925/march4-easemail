@@ -12,8 +12,16 @@ import type { Rule, Condition } from "@/lib/types/rules";
 export interface SideEffect {
   emailId: string;
   homeAccountId: string;
-  action: "markRead" | "markImportant" | "archive" | "delete" | "forward";
-  value?: string; // forward: recipient address
+  action:
+    | "markRead"
+    | "markImportant"
+    | "archive"
+    | "delete"
+    | "forward"
+    | "label"
+    | "moveToFolder"
+    | "skipInbox";
+  value?: string; // forward: recipient address; label: name; move/skip: folder id or name
   ruleId?: string; // optional - for execution tracking
 }
 
@@ -88,8 +96,18 @@ export function applyRules(
             break;
 
           case "skip_inbox":
-            // Hide from UI only — no Graph call
+            // Server moves it out of the inbox (default Archive, or a folder).
             removed = true;
+            if (!sideEffects.some((s) => s.emailId === email.id && s.action === "skipInbox")) {
+              sideEffects.push({ emailId: email.id, homeAccountId, action: "skipInbox", value: action.value?.trim(), ruleId: rule.id });
+            }
+            break;
+
+          case "move_to_folder":
+            removed = true; // leaves the inbox view
+            if (action.value?.trim() && !sideEffects.some((s) => s.emailId === email.id && s.action === "moveToFolder")) {
+              sideEffects.push({ emailId: email.id, homeAccountId, action: "moveToFolder", value: action.value.trim(), ruleId: rule.id });
+            }
             break;
 
           case "forward":
@@ -105,7 +123,10 @@ export function applyRules(
             break;
 
           case "label":
-            // MS Graph has no user-defined labels; no-op for now
+            // Implemented as provider categories/keywords server-side.
+            if (action.value?.trim() && !sideEffects.some((s) => s.emailId === email.id && s.action === "label")) {
+              sideEffects.push({ emailId: email.id, homeAccountId, action: "label", value: action.value.trim(), ruleId: rule.id });
+            }
             break;
         }
       }

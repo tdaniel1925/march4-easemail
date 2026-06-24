@@ -99,6 +99,11 @@ export type DeployLog = $Result.DefaultSelection<Prisma.$DeployLogPayload>
  */
 export type EmailRule = $Result.DefaultSelection<Prisma.$EmailRulePayload>
 /**
+ * Model RuleExecution
+ * 
+ */
+export type RuleExecution = $Result.DefaultSelection<Prisma.$RuleExecutionPayload>
+/**
  * Model EmailAttachment
  * 
  */
@@ -469,6 +474,16 @@ export class PrismaClient<
     * ```
     */
   get emailRule(): Prisma.EmailRuleDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.ruleExecution`: Exposes CRUD operations for the **RuleExecution** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more RuleExecutions
+    * const ruleExecutions = await prisma.ruleExecution.findMany()
+    * ```
+    */
+  get ruleExecution(): Prisma.RuleExecutionDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.emailAttachment`: Exposes CRUD operations for the **EmailAttachment** model.
@@ -1080,6 +1095,7 @@ export namespace Prisma {
     CachedContact: 'CachedContact',
     DeployLog: 'DeployLog',
     EmailRule: 'EmailRule',
+    RuleExecution: 'RuleExecution',
     EmailAttachment: 'EmailAttachment',
     AiGeneratedReply: 'AiGeneratedReply',
     CachedSearchResult: 'CachedSearchResult',
@@ -1111,7 +1127,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "organization" | "retentionPolicy" | "legalHold" | "orgContact" | "user" | "msConnectedAccount" | "msalTokenCache" | "emailDeltaLink" | "webhookSubscription" | "draft" | "signature" | "cachedFolder" | "cachedEmail" | "cachedCalendarEvent" | "cachedContact" | "deployLog" | "emailRule" | "emailAttachment" | "aiGeneratedReply" | "cachedSearchResult" | "syncStatus" | "notificationLog" | "migrationStatus" | "snoozedEmail" | "readReceipt" | "todoItem" | "emailTemplate" | "followUpReminder" | "imapConnectedAccount" | "jmapConnectedAccount" | "pendingEmail" | "aiEmailInsight" | "auditLog"
+      modelProps: "organization" | "retentionPolicy" | "legalHold" | "orgContact" | "user" | "msConnectedAccount" | "msalTokenCache" | "emailDeltaLink" | "webhookSubscription" | "draft" | "signature" | "cachedFolder" | "cachedEmail" | "cachedCalendarEvent" | "cachedContact" | "deployLog" | "emailRule" | "ruleExecution" | "emailAttachment" | "aiGeneratedReply" | "cachedSearchResult" | "syncStatus" | "notificationLog" | "migrationStatus" | "snoozedEmail" | "readReceipt" | "todoItem" | "emailTemplate" | "followUpReminder" | "imapConnectedAccount" | "jmapConnectedAccount" | "pendingEmail" | "aiEmailInsight" | "auditLog"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -2370,6 +2386,80 @@ export namespace Prisma {
           count: {
             args: Prisma.EmailRuleCountArgs<ExtArgs>
             result: $Utils.Optional<EmailRuleCountAggregateOutputType> | number
+          }
+        }
+      }
+      RuleExecution: {
+        payload: Prisma.$RuleExecutionPayload<ExtArgs>
+        fields: Prisma.RuleExecutionFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.RuleExecutionFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RuleExecutionPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.RuleExecutionFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RuleExecutionPayload>
+          }
+          findFirst: {
+            args: Prisma.RuleExecutionFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RuleExecutionPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.RuleExecutionFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RuleExecutionPayload>
+          }
+          findMany: {
+            args: Prisma.RuleExecutionFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RuleExecutionPayload>[]
+          }
+          create: {
+            args: Prisma.RuleExecutionCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RuleExecutionPayload>
+          }
+          createMany: {
+            args: Prisma.RuleExecutionCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.RuleExecutionCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RuleExecutionPayload>[]
+          }
+          delete: {
+            args: Prisma.RuleExecutionDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RuleExecutionPayload>
+          }
+          update: {
+            args: Prisma.RuleExecutionUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RuleExecutionPayload>
+          }
+          deleteMany: {
+            args: Prisma.RuleExecutionDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.RuleExecutionUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.RuleExecutionUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RuleExecutionPayload>[]
+          }
+          upsert: {
+            args: Prisma.RuleExecutionUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RuleExecutionPayload>
+          }
+          aggregate: {
+            args: Prisma.RuleExecutionAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateRuleExecution>
+          }
+          groupBy: {
+            args: Prisma.RuleExecutionGroupByArgs<ExtArgs>
+            result: $Utils.Optional<RuleExecutionGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.RuleExecutionCountArgs<ExtArgs>
+            result: $Utils.Optional<RuleExecutionCountAggregateOutputType> | number
           }
         }
       }
@@ -3682,6 +3772,7 @@ export namespace Prisma {
     cachedContact?: CachedContactOmit
     deployLog?: DeployLogOmit
     emailRule?: EmailRuleOmit
+    ruleExecution?: RuleExecutionOmit
     emailAttachment?: EmailAttachmentOmit
     aiGeneratedReply?: AiGeneratedReplyOmit
     cachedSearchResult?: CachedSearchResultOmit
@@ -24901,6 +24992,1001 @@ export namespace Prisma {
 
 
   /**
+   * Model RuleExecution
+   */
+
+  export type AggregateRuleExecution = {
+    _count: RuleExecutionCountAggregateOutputType | null
+    _min: RuleExecutionMinAggregateOutputType | null
+    _max: RuleExecutionMaxAggregateOutputType | null
+  }
+
+  export type RuleExecutionMinAggregateOutputType = {
+    id: string | null
+    ruleId: string | null
+    emailId: string | null
+    userId: string | null
+    createdAt: Date | null
+  }
+
+  export type RuleExecutionMaxAggregateOutputType = {
+    id: string | null
+    ruleId: string | null
+    emailId: string | null
+    userId: string | null
+    createdAt: Date | null
+  }
+
+  export type RuleExecutionCountAggregateOutputType = {
+    id: number
+    ruleId: number
+    emailId: number
+    userId: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type RuleExecutionMinAggregateInputType = {
+    id?: true
+    ruleId?: true
+    emailId?: true
+    userId?: true
+    createdAt?: true
+  }
+
+  export type RuleExecutionMaxAggregateInputType = {
+    id?: true
+    ruleId?: true
+    emailId?: true
+    userId?: true
+    createdAt?: true
+  }
+
+  export type RuleExecutionCountAggregateInputType = {
+    id?: true
+    ruleId?: true
+    emailId?: true
+    userId?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type RuleExecutionAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which RuleExecution to aggregate.
+     */
+    where?: RuleExecutionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RuleExecutions to fetch.
+     */
+    orderBy?: RuleExecutionOrderByWithRelationInput | RuleExecutionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: RuleExecutionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RuleExecutions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RuleExecutions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned RuleExecutions
+    **/
+    _count?: true | RuleExecutionCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: RuleExecutionMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: RuleExecutionMaxAggregateInputType
+  }
+
+  export type GetRuleExecutionAggregateType<T extends RuleExecutionAggregateArgs> = {
+        [P in keyof T & keyof AggregateRuleExecution]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateRuleExecution[P]>
+      : GetScalarType<T[P], AggregateRuleExecution[P]>
+  }
+
+
+
+
+  export type RuleExecutionGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: RuleExecutionWhereInput
+    orderBy?: RuleExecutionOrderByWithAggregationInput | RuleExecutionOrderByWithAggregationInput[]
+    by: RuleExecutionScalarFieldEnum[] | RuleExecutionScalarFieldEnum
+    having?: RuleExecutionScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: RuleExecutionCountAggregateInputType | true
+    _min?: RuleExecutionMinAggregateInputType
+    _max?: RuleExecutionMaxAggregateInputType
+  }
+
+  export type RuleExecutionGroupByOutputType = {
+    id: string
+    ruleId: string
+    emailId: string
+    userId: string
+    createdAt: Date
+    _count: RuleExecutionCountAggregateOutputType | null
+    _min: RuleExecutionMinAggregateOutputType | null
+    _max: RuleExecutionMaxAggregateOutputType | null
+  }
+
+  type GetRuleExecutionGroupByPayload<T extends RuleExecutionGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<RuleExecutionGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof RuleExecutionGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], RuleExecutionGroupByOutputType[P]>
+            : GetScalarType<T[P], RuleExecutionGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type RuleExecutionSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    ruleId?: boolean
+    emailId?: boolean
+    userId?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["ruleExecution"]>
+
+  export type RuleExecutionSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    ruleId?: boolean
+    emailId?: boolean
+    userId?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["ruleExecution"]>
+
+  export type RuleExecutionSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    ruleId?: boolean
+    emailId?: boolean
+    userId?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["ruleExecution"]>
+
+  export type RuleExecutionSelectScalar = {
+    id?: boolean
+    ruleId?: boolean
+    emailId?: boolean
+    userId?: boolean
+    createdAt?: boolean
+  }
+
+  export type RuleExecutionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "ruleId" | "emailId" | "userId" | "createdAt", ExtArgs["result"]["ruleExecution"]>
+
+  export type $RuleExecutionPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "RuleExecution"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      ruleId: string
+      emailId: string
+      userId: string
+      createdAt: Date
+    }, ExtArgs["result"]["ruleExecution"]>
+    composites: {}
+  }
+
+  type RuleExecutionGetPayload<S extends boolean | null | undefined | RuleExecutionDefaultArgs> = $Result.GetResult<Prisma.$RuleExecutionPayload, S>
+
+  type RuleExecutionCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<RuleExecutionFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: RuleExecutionCountAggregateInputType | true
+    }
+
+  export interface RuleExecutionDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['RuleExecution'], meta: { name: 'RuleExecution' } }
+    /**
+     * Find zero or one RuleExecution that matches the filter.
+     * @param {RuleExecutionFindUniqueArgs} args - Arguments to find a RuleExecution
+     * @example
+     * // Get one RuleExecution
+     * const ruleExecution = await prisma.ruleExecution.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends RuleExecutionFindUniqueArgs>(args: SelectSubset<T, RuleExecutionFindUniqueArgs<ExtArgs>>): Prisma__RuleExecutionClient<$Result.GetResult<Prisma.$RuleExecutionPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one RuleExecution that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {RuleExecutionFindUniqueOrThrowArgs} args - Arguments to find a RuleExecution
+     * @example
+     * // Get one RuleExecution
+     * const ruleExecution = await prisma.ruleExecution.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends RuleExecutionFindUniqueOrThrowArgs>(args: SelectSubset<T, RuleExecutionFindUniqueOrThrowArgs<ExtArgs>>): Prisma__RuleExecutionClient<$Result.GetResult<Prisma.$RuleExecutionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first RuleExecution that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RuleExecutionFindFirstArgs} args - Arguments to find a RuleExecution
+     * @example
+     * // Get one RuleExecution
+     * const ruleExecution = await prisma.ruleExecution.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends RuleExecutionFindFirstArgs>(args?: SelectSubset<T, RuleExecutionFindFirstArgs<ExtArgs>>): Prisma__RuleExecutionClient<$Result.GetResult<Prisma.$RuleExecutionPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first RuleExecution that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RuleExecutionFindFirstOrThrowArgs} args - Arguments to find a RuleExecution
+     * @example
+     * // Get one RuleExecution
+     * const ruleExecution = await prisma.ruleExecution.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends RuleExecutionFindFirstOrThrowArgs>(args?: SelectSubset<T, RuleExecutionFindFirstOrThrowArgs<ExtArgs>>): Prisma__RuleExecutionClient<$Result.GetResult<Prisma.$RuleExecutionPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more RuleExecutions that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RuleExecutionFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all RuleExecutions
+     * const ruleExecutions = await prisma.ruleExecution.findMany()
+     * 
+     * // Get first 10 RuleExecutions
+     * const ruleExecutions = await prisma.ruleExecution.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const ruleExecutionWithIdOnly = await prisma.ruleExecution.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends RuleExecutionFindManyArgs>(args?: SelectSubset<T, RuleExecutionFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RuleExecutionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a RuleExecution.
+     * @param {RuleExecutionCreateArgs} args - Arguments to create a RuleExecution.
+     * @example
+     * // Create one RuleExecution
+     * const RuleExecution = await prisma.ruleExecution.create({
+     *   data: {
+     *     // ... data to create a RuleExecution
+     *   }
+     * })
+     * 
+     */
+    create<T extends RuleExecutionCreateArgs>(args: SelectSubset<T, RuleExecutionCreateArgs<ExtArgs>>): Prisma__RuleExecutionClient<$Result.GetResult<Prisma.$RuleExecutionPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many RuleExecutions.
+     * @param {RuleExecutionCreateManyArgs} args - Arguments to create many RuleExecutions.
+     * @example
+     * // Create many RuleExecutions
+     * const ruleExecution = await prisma.ruleExecution.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends RuleExecutionCreateManyArgs>(args?: SelectSubset<T, RuleExecutionCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many RuleExecutions and returns the data saved in the database.
+     * @param {RuleExecutionCreateManyAndReturnArgs} args - Arguments to create many RuleExecutions.
+     * @example
+     * // Create many RuleExecutions
+     * const ruleExecution = await prisma.ruleExecution.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many RuleExecutions and only return the `id`
+     * const ruleExecutionWithIdOnly = await prisma.ruleExecution.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends RuleExecutionCreateManyAndReturnArgs>(args?: SelectSubset<T, RuleExecutionCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RuleExecutionPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a RuleExecution.
+     * @param {RuleExecutionDeleteArgs} args - Arguments to delete one RuleExecution.
+     * @example
+     * // Delete one RuleExecution
+     * const RuleExecution = await prisma.ruleExecution.delete({
+     *   where: {
+     *     // ... filter to delete one RuleExecution
+     *   }
+     * })
+     * 
+     */
+    delete<T extends RuleExecutionDeleteArgs>(args: SelectSubset<T, RuleExecutionDeleteArgs<ExtArgs>>): Prisma__RuleExecutionClient<$Result.GetResult<Prisma.$RuleExecutionPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one RuleExecution.
+     * @param {RuleExecutionUpdateArgs} args - Arguments to update one RuleExecution.
+     * @example
+     * // Update one RuleExecution
+     * const ruleExecution = await prisma.ruleExecution.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends RuleExecutionUpdateArgs>(args: SelectSubset<T, RuleExecutionUpdateArgs<ExtArgs>>): Prisma__RuleExecutionClient<$Result.GetResult<Prisma.$RuleExecutionPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more RuleExecutions.
+     * @param {RuleExecutionDeleteManyArgs} args - Arguments to filter RuleExecutions to delete.
+     * @example
+     * // Delete a few RuleExecutions
+     * const { count } = await prisma.ruleExecution.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends RuleExecutionDeleteManyArgs>(args?: SelectSubset<T, RuleExecutionDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more RuleExecutions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RuleExecutionUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many RuleExecutions
+     * const ruleExecution = await prisma.ruleExecution.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends RuleExecutionUpdateManyArgs>(args: SelectSubset<T, RuleExecutionUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more RuleExecutions and returns the data updated in the database.
+     * @param {RuleExecutionUpdateManyAndReturnArgs} args - Arguments to update many RuleExecutions.
+     * @example
+     * // Update many RuleExecutions
+     * const ruleExecution = await prisma.ruleExecution.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more RuleExecutions and only return the `id`
+     * const ruleExecutionWithIdOnly = await prisma.ruleExecution.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends RuleExecutionUpdateManyAndReturnArgs>(args: SelectSubset<T, RuleExecutionUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RuleExecutionPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one RuleExecution.
+     * @param {RuleExecutionUpsertArgs} args - Arguments to update or create a RuleExecution.
+     * @example
+     * // Update or create a RuleExecution
+     * const ruleExecution = await prisma.ruleExecution.upsert({
+     *   create: {
+     *     // ... data to create a RuleExecution
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the RuleExecution we want to update
+     *   }
+     * })
+     */
+    upsert<T extends RuleExecutionUpsertArgs>(args: SelectSubset<T, RuleExecutionUpsertArgs<ExtArgs>>): Prisma__RuleExecutionClient<$Result.GetResult<Prisma.$RuleExecutionPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of RuleExecutions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RuleExecutionCountArgs} args - Arguments to filter RuleExecutions to count.
+     * @example
+     * // Count the number of RuleExecutions
+     * const count = await prisma.ruleExecution.count({
+     *   where: {
+     *     // ... the filter for the RuleExecutions we want to count
+     *   }
+     * })
+    **/
+    count<T extends RuleExecutionCountArgs>(
+      args?: Subset<T, RuleExecutionCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], RuleExecutionCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a RuleExecution.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RuleExecutionAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends RuleExecutionAggregateArgs>(args: Subset<T, RuleExecutionAggregateArgs>): Prisma.PrismaPromise<GetRuleExecutionAggregateType<T>>
+
+    /**
+     * Group by RuleExecution.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RuleExecutionGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends RuleExecutionGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: RuleExecutionGroupByArgs['orderBy'] }
+        : { orderBy?: RuleExecutionGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, RuleExecutionGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetRuleExecutionGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the RuleExecution model
+   */
+  readonly fields: RuleExecutionFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for RuleExecution.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__RuleExecutionClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the RuleExecution model
+   */
+  interface RuleExecutionFieldRefs {
+    readonly id: FieldRef<"RuleExecution", 'String'>
+    readonly ruleId: FieldRef<"RuleExecution", 'String'>
+    readonly emailId: FieldRef<"RuleExecution", 'String'>
+    readonly userId: FieldRef<"RuleExecution", 'String'>
+    readonly createdAt: FieldRef<"RuleExecution", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * RuleExecution findUnique
+   */
+  export type RuleExecutionFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RuleExecution
+     */
+    select?: RuleExecutionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RuleExecution
+     */
+    omit?: RuleExecutionOmit<ExtArgs> | null
+    /**
+     * Filter, which RuleExecution to fetch.
+     */
+    where: RuleExecutionWhereUniqueInput
+  }
+
+  /**
+   * RuleExecution findUniqueOrThrow
+   */
+  export type RuleExecutionFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RuleExecution
+     */
+    select?: RuleExecutionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RuleExecution
+     */
+    omit?: RuleExecutionOmit<ExtArgs> | null
+    /**
+     * Filter, which RuleExecution to fetch.
+     */
+    where: RuleExecutionWhereUniqueInput
+  }
+
+  /**
+   * RuleExecution findFirst
+   */
+  export type RuleExecutionFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RuleExecution
+     */
+    select?: RuleExecutionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RuleExecution
+     */
+    omit?: RuleExecutionOmit<ExtArgs> | null
+    /**
+     * Filter, which RuleExecution to fetch.
+     */
+    where?: RuleExecutionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RuleExecutions to fetch.
+     */
+    orderBy?: RuleExecutionOrderByWithRelationInput | RuleExecutionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for RuleExecutions.
+     */
+    cursor?: RuleExecutionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RuleExecutions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RuleExecutions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of RuleExecutions.
+     */
+    distinct?: RuleExecutionScalarFieldEnum | RuleExecutionScalarFieldEnum[]
+  }
+
+  /**
+   * RuleExecution findFirstOrThrow
+   */
+  export type RuleExecutionFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RuleExecution
+     */
+    select?: RuleExecutionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RuleExecution
+     */
+    omit?: RuleExecutionOmit<ExtArgs> | null
+    /**
+     * Filter, which RuleExecution to fetch.
+     */
+    where?: RuleExecutionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RuleExecutions to fetch.
+     */
+    orderBy?: RuleExecutionOrderByWithRelationInput | RuleExecutionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for RuleExecutions.
+     */
+    cursor?: RuleExecutionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RuleExecutions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RuleExecutions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of RuleExecutions.
+     */
+    distinct?: RuleExecutionScalarFieldEnum | RuleExecutionScalarFieldEnum[]
+  }
+
+  /**
+   * RuleExecution findMany
+   */
+  export type RuleExecutionFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RuleExecution
+     */
+    select?: RuleExecutionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RuleExecution
+     */
+    omit?: RuleExecutionOmit<ExtArgs> | null
+    /**
+     * Filter, which RuleExecutions to fetch.
+     */
+    where?: RuleExecutionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RuleExecutions to fetch.
+     */
+    orderBy?: RuleExecutionOrderByWithRelationInput | RuleExecutionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing RuleExecutions.
+     */
+    cursor?: RuleExecutionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RuleExecutions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RuleExecutions.
+     */
+    skip?: number
+    distinct?: RuleExecutionScalarFieldEnum | RuleExecutionScalarFieldEnum[]
+  }
+
+  /**
+   * RuleExecution create
+   */
+  export type RuleExecutionCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RuleExecution
+     */
+    select?: RuleExecutionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RuleExecution
+     */
+    omit?: RuleExecutionOmit<ExtArgs> | null
+    /**
+     * The data needed to create a RuleExecution.
+     */
+    data: XOR<RuleExecutionCreateInput, RuleExecutionUncheckedCreateInput>
+  }
+
+  /**
+   * RuleExecution createMany
+   */
+  export type RuleExecutionCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many RuleExecutions.
+     */
+    data: RuleExecutionCreateManyInput | RuleExecutionCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * RuleExecution createManyAndReturn
+   */
+  export type RuleExecutionCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RuleExecution
+     */
+    select?: RuleExecutionSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the RuleExecution
+     */
+    omit?: RuleExecutionOmit<ExtArgs> | null
+    /**
+     * The data used to create many RuleExecutions.
+     */
+    data: RuleExecutionCreateManyInput | RuleExecutionCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * RuleExecution update
+   */
+  export type RuleExecutionUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RuleExecution
+     */
+    select?: RuleExecutionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RuleExecution
+     */
+    omit?: RuleExecutionOmit<ExtArgs> | null
+    /**
+     * The data needed to update a RuleExecution.
+     */
+    data: XOR<RuleExecutionUpdateInput, RuleExecutionUncheckedUpdateInput>
+    /**
+     * Choose, which RuleExecution to update.
+     */
+    where: RuleExecutionWhereUniqueInput
+  }
+
+  /**
+   * RuleExecution updateMany
+   */
+  export type RuleExecutionUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update RuleExecutions.
+     */
+    data: XOR<RuleExecutionUpdateManyMutationInput, RuleExecutionUncheckedUpdateManyInput>
+    /**
+     * Filter which RuleExecutions to update
+     */
+    where?: RuleExecutionWhereInput
+    /**
+     * Limit how many RuleExecutions to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * RuleExecution updateManyAndReturn
+   */
+  export type RuleExecutionUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RuleExecution
+     */
+    select?: RuleExecutionSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the RuleExecution
+     */
+    omit?: RuleExecutionOmit<ExtArgs> | null
+    /**
+     * The data used to update RuleExecutions.
+     */
+    data: XOR<RuleExecutionUpdateManyMutationInput, RuleExecutionUncheckedUpdateManyInput>
+    /**
+     * Filter which RuleExecutions to update
+     */
+    where?: RuleExecutionWhereInput
+    /**
+     * Limit how many RuleExecutions to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * RuleExecution upsert
+   */
+  export type RuleExecutionUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RuleExecution
+     */
+    select?: RuleExecutionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RuleExecution
+     */
+    omit?: RuleExecutionOmit<ExtArgs> | null
+    /**
+     * The filter to search for the RuleExecution to update in case it exists.
+     */
+    where: RuleExecutionWhereUniqueInput
+    /**
+     * In case the RuleExecution found by the `where` argument doesn't exist, create a new RuleExecution with this data.
+     */
+    create: XOR<RuleExecutionCreateInput, RuleExecutionUncheckedCreateInput>
+    /**
+     * In case the RuleExecution was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<RuleExecutionUpdateInput, RuleExecutionUncheckedUpdateInput>
+  }
+
+  /**
+   * RuleExecution delete
+   */
+  export type RuleExecutionDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RuleExecution
+     */
+    select?: RuleExecutionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RuleExecution
+     */
+    omit?: RuleExecutionOmit<ExtArgs> | null
+    /**
+     * Filter which RuleExecution to delete.
+     */
+    where: RuleExecutionWhereUniqueInput
+  }
+
+  /**
+   * RuleExecution deleteMany
+   */
+  export type RuleExecutionDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which RuleExecutions to delete
+     */
+    where?: RuleExecutionWhereInput
+    /**
+     * Limit how many RuleExecutions to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * RuleExecution without action
+   */
+  export type RuleExecutionDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RuleExecution
+     */
+    select?: RuleExecutionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RuleExecution
+     */
+    omit?: RuleExecutionOmit<ExtArgs> | null
+  }
+
+
+  /**
    * Model EmailAttachment
    */
 
@@ -43132,6 +44218,17 @@ export namespace Prisma {
   export type EmailRuleScalarFieldEnum = (typeof EmailRuleScalarFieldEnum)[keyof typeof EmailRuleScalarFieldEnum]
 
 
+  export const RuleExecutionScalarFieldEnum: {
+    id: 'id',
+    ruleId: 'ruleId',
+    emailId: 'emailId',
+    userId: 'userId',
+    createdAt: 'createdAt'
+  };
+
+  export type RuleExecutionScalarFieldEnum = (typeof RuleExecutionScalarFieldEnum)[keyof typeof RuleExecutionScalarFieldEnum]
+
+
   export const EmailAttachmentScalarFieldEnum: {
     id: 'id',
     userId: 'userId',
@@ -45281,6 +46378,59 @@ export namespace Prisma {
     failureCount?: IntWithAggregatesFilter<"EmailRule"> | number
     createdAt?: DateTimeWithAggregatesFilter<"EmailRule"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"EmailRule"> | Date | string
+  }
+
+  export type RuleExecutionWhereInput = {
+    AND?: RuleExecutionWhereInput | RuleExecutionWhereInput[]
+    OR?: RuleExecutionWhereInput[]
+    NOT?: RuleExecutionWhereInput | RuleExecutionWhereInput[]
+    id?: StringFilter<"RuleExecution"> | string
+    ruleId?: StringFilter<"RuleExecution"> | string
+    emailId?: StringFilter<"RuleExecution"> | string
+    userId?: StringFilter<"RuleExecution"> | string
+    createdAt?: DateTimeFilter<"RuleExecution"> | Date | string
+  }
+
+  export type RuleExecutionOrderByWithRelationInput = {
+    id?: SortOrder
+    ruleId?: SortOrder
+    emailId?: SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type RuleExecutionWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    ruleId_emailId?: RuleExecutionRuleIdEmailIdCompoundUniqueInput
+    AND?: RuleExecutionWhereInput | RuleExecutionWhereInput[]
+    OR?: RuleExecutionWhereInput[]
+    NOT?: RuleExecutionWhereInput | RuleExecutionWhereInput[]
+    ruleId?: StringFilter<"RuleExecution"> | string
+    emailId?: StringFilter<"RuleExecution"> | string
+    userId?: StringFilter<"RuleExecution"> | string
+    createdAt?: DateTimeFilter<"RuleExecution"> | Date | string
+  }, "id" | "ruleId_emailId">
+
+  export type RuleExecutionOrderByWithAggregationInput = {
+    id?: SortOrder
+    ruleId?: SortOrder
+    emailId?: SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+    _count?: RuleExecutionCountOrderByAggregateInput
+    _max?: RuleExecutionMaxOrderByAggregateInput
+    _min?: RuleExecutionMinOrderByAggregateInput
+  }
+
+  export type RuleExecutionScalarWhereWithAggregatesInput = {
+    AND?: RuleExecutionScalarWhereWithAggregatesInput | RuleExecutionScalarWhereWithAggregatesInput[]
+    OR?: RuleExecutionScalarWhereWithAggregatesInput[]
+    NOT?: RuleExecutionScalarWhereWithAggregatesInput | RuleExecutionScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"RuleExecution"> | string
+    ruleId?: StringWithAggregatesFilter<"RuleExecution"> | string
+    emailId?: StringWithAggregatesFilter<"RuleExecution"> | string
+    userId?: StringWithAggregatesFilter<"RuleExecution"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"RuleExecution"> | Date | string
   }
 
   export type EmailAttachmentWhereInput = {
@@ -48632,6 +49782,62 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type RuleExecutionCreateInput = {
+    id?: string
+    ruleId: string
+    emailId: string
+    userId: string
+    createdAt?: Date | string
+  }
+
+  export type RuleExecutionUncheckedCreateInput = {
+    id?: string
+    ruleId: string
+    emailId: string
+    userId: string
+    createdAt?: Date | string
+  }
+
+  export type RuleExecutionUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    ruleId?: StringFieldUpdateOperationsInput | string
+    emailId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RuleExecutionUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    ruleId?: StringFieldUpdateOperationsInput | string
+    emailId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RuleExecutionCreateManyInput = {
+    id?: string
+    ruleId: string
+    emailId: string
+    userId: string
+    createdAt?: Date | string
+  }
+
+  export type RuleExecutionUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    ruleId?: StringFieldUpdateOperationsInput | string
+    emailId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RuleExecutionUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    ruleId?: StringFieldUpdateOperationsInput | string
+    emailId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type EmailAttachmentCreateInput = {
     id?: string
     messageId: string
@@ -51523,6 +52729,35 @@ export namespace Prisma {
     priority?: SortOrder
     emailCount?: SortOrder
     failureCount?: SortOrder
+  }
+
+  export type RuleExecutionRuleIdEmailIdCompoundUniqueInput = {
+    ruleId: string
+    emailId: string
+  }
+
+  export type RuleExecutionCountOrderByAggregateInput = {
+    id?: SortOrder
+    ruleId?: SortOrder
+    emailId?: SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type RuleExecutionMaxOrderByAggregateInput = {
+    id?: SortOrder
+    ruleId?: SortOrder
+    emailId?: SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type RuleExecutionMinOrderByAggregateInput = {
+    id?: SortOrder
+    ruleId?: SortOrder
+    emailId?: SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
   }
 
   export type EmailAttachmentCountOrderByAggregateInput = {

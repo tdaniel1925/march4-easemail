@@ -481,6 +481,22 @@ model EmailRule {
   @@map("email_rules")
 }
 
+// ─── Rule Execution Log (idempotency) ────────────────────────────────────────
+// One row per (rule, email) the server engine has acted on, so a rule never
+// re-fires on the same message across sync runs.
+
+model RuleExecution {
+  id        String   @id @default(cuid())
+  ruleId    String
+  emailId   String
+  userId    String
+  createdAt DateTime @default(now())
+
+  @@unique([ruleId, emailId])
+  @@index([userId, createdAt])
+  @@map("rule_executions")
+}
+
 // ─── Email Attachments ────────────────────────────────────────────────────────
 
 model EmailAttachment {

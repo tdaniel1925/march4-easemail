@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import Anthropic from "@anthropic-ai/sdk";
+import { getAiClient, AI_MODEL } from "@/lib/ai/client";
 import { withRateLimit, rateLimiters } from "@/lib/rate-limit";
 
 import { z } from "zod";
 
-const client = new Anthropic();
+const client = getAiClient();
 
 const aiPrioritySchema = z.object({
   // Handler caps at 20 via slice; allow more in but bound the array
@@ -50,7 +50,7 @@ Low: newsletters, automated notifications, CC-only, marketing, no action needed`
 
   try {
     const message = await client.messages.create({
-      model: "claude-haiku-4-5-20251001",
+      model: AI_MODEL,
       max_tokens: 1024,
       system: systemPrompt,
       messages: [{ role: "user", content: userContent }],

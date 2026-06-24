@@ -140,6 +140,29 @@ export interface EmailProvider {
     messageId: string
   ): Promise<void>;
 
+  // ── Rule-engine support ──────────────────────────────────────────────────
+  /** Create a folder (mailbox). Returns the new folder's provider id. */
+  createFolder(
+    userId: string,
+    accountId: string,
+    displayName: string,
+    parentFolderId?: string | null
+  ): Promise<{ id: string; displayName: string; parentFolderId: string | null }>;
+  /** Forward a message to a single recipient address. */
+  forwardMessage(
+    userId: string,
+    accountId: string,
+    messageId: string,
+    toAddress: string
+  ): Promise<void>;
+  /** Apply category/label(s) to a message (additive — merges with existing). */
+  addCategories(
+    userId: string,
+    accountId: string,
+    messageId: string,
+    categories: string[]
+  ): Promise<void>;
+
   // Search
   searchEmails(
     userId: string,

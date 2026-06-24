@@ -3,9 +3,9 @@
  * Used to make AI-generated replies sound like the user.
  */
 import { prisma } from "@/lib/prisma";
-import Anthropic from "@anthropic-ai/sdk";
+import { getAiClient, AI_MODEL } from "@/lib/ai/client";
 
-const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+const client = getAiClient();
 
 export interface VoiceProfile {
   greeting: string;
@@ -56,7 +56,7 @@ export async function getVoiceProfile(userId: string): Promise<VoiceProfile | nu
 
   try {
     const response = await client.messages.create({
-      model: "claude-haiku-4-5-20251001",
+      model: AI_MODEL,
       max_tokens: 500,
       system: "You analyze email writing styles. Return ONLY valid JSON, no markdown.",
       messages: [{

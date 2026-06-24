@@ -164,7 +164,7 @@ describe("rule-engine", () => {
       expect(result.sideEffects[0].action).toBe("delete");
     });
 
-    it("should skip inbox (hide from UI) without side effect", () => {
+    it("should skip inbox (move it out) with a skipInbox side effect", () => {
       const rule: Rule = {
         id: "rule-5",
         name: "Skip inbox for promotions",
@@ -188,7 +188,8 @@ describe("rule-engine", () => {
       const result = applyRules([promoEmail], [rule], homeAccountId);
 
       expect(result.emails).toHaveLength(0);
-      expect(result.sideEffects).toHaveLength(0); // No side effect for skip_inbox
+      // skip_inbox now moves the message server-side, so it emits a side effect.
+      expect(result.sideEffects.some((s) => s.action === "skipInbox")).toBe(true);
     });
 
     it("should forward email with valid recipient", () => {
@@ -384,7 +385,7 @@ describe("rule-engine", () => {
       expect(markReadEffects).toHaveLength(1);
     });
 
-    it("should handle label action (no-op)", () => {
+    it("should handle label action (emits label side effect, keeps email in inbox)", () => {
       const rule: Rule = {
         id: "rule-label",
         name: "Add label",
@@ -402,9 +403,10 @@ describe("rule-engine", () => {
 
       const result = applyRules([mockEmail], [rule], homeAccountId);
 
-      // Label action is no-op, email should remain unchanged
-      expect(result.emails).toEqual([mockEmail]);
-      expect(result.sideEffects).toHaveLength(0);
+      // Label now applies a category server-side; email stays in the inbox view.
+      expect(result.emails).toHaveLength(1);
+      const se = result.sideEffects.find((s) => s.action === "label");
+      expect(se?.value).toBe("important");
     });
 
     it("should process multiple emails independently", () => {
@@ -550,6 +552,41 @@ describe("rule-engine", () => {
         { field: "to" as const, operator: "contains" as const, value: "jane", logic: "AND" as const },
       ];
       expect(matchesConditions(emailNoRecipients as EmailMessage, conditions)).toBe(false);
+    });
+  });
+
+  describe("new rule actions (label / move_to_folder / skip_inbox)", () => {
+    const matchAll = [
+      { field: "subject" as const, operator: "contains" as const, value: "Meeting", logic: "AND" as const },
+    ];
+    const ruleWith = (type: Rule["actions"][number]["type"], value?: string): Rule => ({
+      id: `r-${type}`, name: type, priority: 1, active: true,
+      conditions: matchAll, actions: [{ type, value }], emailCount: 0, stopProcessing: false,
+    });
+
+    it("label emits a label side-effect with the label value", () => {
+      const r = applyRules([mockEmail], [ruleWith("label", "Client")], homeAccountId);
+      const se = r.sideEffects.find((s) => s.action === "label");
+      expect(se?.value).toBe("Client");
+      expect(r.emails).toHaveLength(1); // labeling keeps it in the inbox view
+    });
+
+    it("move_to_folder emits a moveToFolder side-effect and removes from inbox", () => {
+      const r = applyRules([mockEmail], [ruleWith("move_to_folder", "Clients")], homeAccountId);
+      const se = r.sideEffects.find((s) => s.action === "moveToFolder");
+      expect(se?.value).toBe("Clients");
+      expect(r.emails).toHaveLength(0);
+    });
+
+    it("skip_inbox emits a skipInbox side-effect and removes from inbox", () => {
+      const r = applyRules([mockEmail], [ruleWith("skip_inbox")], homeAccountId);
+      expect(r.sideEffects.some((s) => s.action === "skipInbox")).toBe(true);
+      expect(r.emails).toHaveLength(0);
+    });
+
+    it("move_to_folder without a value emits no side-effect", () => {
+      const r = applyRules([mockEmail], [ruleWith("move_to_folder")], homeAccountId);
+      expect(r.sideEffects.some((s) => s.action === "moveToFolder")).toBe(false);
     });
   });
 });

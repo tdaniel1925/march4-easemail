@@ -661,6 +661,80 @@ export class ImapProvider implements EmailProvider {
     });
   }
 
+  async createFolder(
+    userId: string,
+    accountId: string,
+    displayName: string,
+    parentFolderId?: string | null
+  ): Promise<{ id: string; displayName: string; parentFolderId: string | null }> {
+    // Folder ids in this provider are `${accountId}:${mailboxPath}`.
+    const parentPath = parentFolderId ? parentFolderId.replace(`${accountId}:`, "") : null;
+    const { client } = await createImapClient(userId, accountId);
+    let path = displayName;
+    try {
+      // Nest under the parent using the server's hierarchy delimiter.
+      if (parentPath) {
+        const list = await client.list();
+        const delim = list.find((mb) => mb.path === parentPath)?.delimiter ?? "/";
+        path = `${parentPath}${delim}${displayName}`;
+      }
+      await client.mailboxCreate(path);
+    } finally {
+      await client.logout();
+    }
+    return { id: `${accountId}:${path}`, displayName, parentFolderId: parentFolderId ?? null };
+  }
+
+  async forwardMessage(
+    userId: string,
+    accountId: string,
+    messageId: string,
+    toAddress: string
+  ): Promise<void> {
+    const original = await this.fetchMessage(userId, accountId, messageId);
+    const account = await getImapAccount(userId, accountId);
+    const transport = await createSmtpTransport(userId, accountId);
+    const fromLine = `${original.from?.name ?? ""} <${original.from?.address ?? ""}>`.trim();
+    const attribution =
+      `<br><br>---------- Forwarded message ----------<br>` +
+      `From: ${fromLine}<br>Subject: ${original.subject ?? ""}<br><br>`;
+    await transport.sendMail({
+      from: formatAddress({ name: account.displayName, address: account.email }),
+      to: toAddress,
+      subject: `Fwd: ${original.subject ?? ""}`,
+      html: `${attribution}${original.bodyHtml ?? original.bodyText ?? ""}`,
+    });
+  }
+
+  async addCategories(
+    userId: string,
+    accountId: string,
+    messageId: string,
+    categories: string[]
+  ): Promise<void> {
+    // IMAP has no categories; map labels onto IMAP keywords (custom flags).
+    const parts = messageId.split(":");
+    const folderPath = parts.slice(2, -1).join(":");
+    const uid = parseInt(parts[parts.length - 1], 10);
+    const { client } = await createImapClient(userId, accountId);
+    try {
+      const lock = await client.getMailboxLock(folderPath);
+      try {
+        await client.messageFlagsAdd({ uid }, categories, { uid: true });
+      } catch {
+        // Server may reject arbitrary keywords; non-fatal.
+      } finally {
+        lock.release();
+      }
+    } finally {
+      await client.logout();
+    }
+    const row = await prisma.cachedEmail.findFirst({ where: { id: messageId, userId }, select: { categories: true } });
+    const existing = Array.isArray(row?.categories) ? (row!.categories as string[]) : [];
+    const merged = Array.from(new Set([...existing, ...categories]));
+    await prisma.cachedEmail.updateMany({ where: { id: messageId, userId }, data: { categories: merged } });
+  }
+
   async deleteMessage(
     userId: string,
     accountId: string,
