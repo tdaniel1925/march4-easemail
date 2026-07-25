@@ -546,7 +546,9 @@ export class JmapProvider implements EmailProvider, CalendarProvider, ContactsPr
       const wellKnownName = mb.role ? (JMAP_ROLE_MAP[mb.role] ?? null) : null;
 
       await prisma.cachedFolder.upsert({
-        where: { id: fId },
+        where: {
+          userId_homeAccountId_id: { userId, homeAccountId: accountId, id: fId },
+        },
         update: {
           displayName: mb.name,
           parentFolderId: mb.parentId ? `${accountId}:${mb.parentId}` : null,
@@ -1425,7 +1427,9 @@ export class JmapProvider implements EmailProvider, CalendarProvider, ContactsPr
               }
 
               await prisma.cachedEmail.upsert({
-                where: { id: emailId },
+                where: {
+                  userId_homeAccountId_id: { userId, homeAccountId: accountId, id: emailId },
+                },
                 update: {
                   folderId,
                   isRead: !!keywords["$seen"],
@@ -1528,7 +1532,9 @@ export class JmapProvider implements EmailProvider, CalendarProvider, ContactsPr
       const keywords = email.keywords ?? {};
 
       await prisma.cachedEmail.upsert({
-        where: { id: emailId },
+        where: {
+          userId_homeAccountId_id: { userId, homeAccountId: accountId, id: emailId },
+        },
         update: {
           folderId,
           isRead: !!keywords["$seen"],

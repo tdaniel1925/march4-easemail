@@ -5,6 +5,7 @@ import { encryptCredential } from "@/lib/providers/crypto";
 import { ImapFlow } from "imapflow";
 import * as nodemailer from "nodemailer";
 import { createId } from "@paralleldrive/cuid2";
+import { validateNetworkHost } from "../_lib/validate-session-url";
 import { z } from "zod";
 
 const connectImapSchema = z.object({
@@ -45,6 +46,22 @@ export async function POST(req: NextRequest) {
     smtpPort,
     smtpSecurity,
   } = parsed.data;
+
+  const [imapHostCheck, smtpHostCheck] = await Promise.all([
+    validateNetworkHost(imapHost),
+    validateNetworkHost(smtpHost),
+  ]);
+  const hostError = !imapHostCheck.ok
+    ? imapHostCheck.error
+    : !smtpHostCheck.ok
+      ? smtpHostCheck.error
+      : null;
+  if (hostError) {
+    return NextResponse.json(
+      { error: hostError },
+      { status: 400 }
+    );
+  }
 
   // Check for duplicate email
   const existing = await prisma.imapConnectedAccount.findFirst({

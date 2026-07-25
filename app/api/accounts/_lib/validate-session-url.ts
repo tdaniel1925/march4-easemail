@@ -46,6 +46,34 @@ function isPrivateAddress(ip: string): boolean {
   return true; // not an IP — treat as unsafe
 }
 
+export async function validateNetworkHost(host: unknown): Promise<SessionUrlValidation> {
+  if (typeof host !== "string" || !host.trim()) {
+    return { ok: false, error: "Host must be a non-empty string" };
+  }
+  const hostname = host.trim().replace(/^\[|\]$/g, "").toLowerCase();
+  if (
+    hostname === "localhost" ||
+    hostname.endsWith(".local") ||
+    hostname.endsWith(".internal")
+  ) {
+    return { ok: false, error: "Host must not point to a local or internal address" };
+  }
+  if (isIP(hostname)) {
+    return isPrivateAddress(hostname)
+      ? { ok: false, error: "Host must not point to a private or reserved IP address" }
+      : { ok: true };
+  }
+  try {
+    const addresses = await lookup(hostname, { all: true });
+    if (addresses.length === 0 || addresses.some((a) => isPrivateAddress(a.address))) {
+      return { ok: false, error: "Host resolves to a private or reserved IP address" };
+    }
+  } catch {
+    return { ok: false, error: "Host could not be resolved" };
+  }
+  return { ok: true };
+}
+
 export async function validateSessionUrl(sessionUrl: unknown): Promise<SessionUrlValidation> {
   if (typeof sessionUrl !== "string" || !sessionUrl.trim()) {
     return { ok: false, error: "sessionUrl must be a non-empty string" };
@@ -65,27 +93,8 @@ export async function validateSessionUrl(sessionUrl: unknown): Promise<SessionUr
   // URL.hostname keeps brackets around IPv6 literals — strip them
   const hostname = url.hostname.replace(/^\[|\]$/g, "").toLowerCase();
 
-  if (hostname === "localhost" || hostname.endsWith(".local") || hostname.endsWith(".internal")) {
-    return { ok: false, error: "sessionUrl must not point to a local or internal host" };
-  }
-
-  // IP literal — check directly
-  if (isIP(hostname)) {
-    if (isPrivateAddress(hostname)) {
-      return { ok: false, error: "sessionUrl must not point to a private or reserved IP address" };
-    }
-    return { ok: true };
-  }
-
-  // Hostname — resolve DNS and reject if ANY resolved address is private/reserved
-  try {
-    const addresses = await lookup(hostname, { all: true });
-    if (addresses.length === 0 || addresses.some((a) => isPrivateAddress(a.address))) {
-      return { ok: false, error: "sessionUrl resolves to a private or reserved IP address" };
-    }
-  } catch {
-    return { ok: false, error: "sessionUrl hostname could not be resolved" };
-  }
-
-  return { ok: true };
+  const hostCheck = await validateNetworkHost(hostname);
+  return hostCheck.ok
+    ? hostCheck
+    : { ok: false, error: `sessionUrl rejected: ${hostCheck.error}` };
 }

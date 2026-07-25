@@ -15,18 +15,14 @@ function createPrismaClient() {
   }
   const connectionString = rawUrl.replace(/[?&]pgbouncer=true/i, "").replace(/\?$/, "");
   console.log("[prisma] connecting via DATABASE_URL pooler to", connectionString.replace(/:([^:@]+)@/, ":***@"));
-  if (process.env.NODE_ENV === "production" && !process.env.DATABASE_CA_CERT) {
-    console.warn(
-      "[prisma] DATABASE_CA_CERT is not set — DB TLS certificate verification is DISABLED (MITM risk). " +
-        "Download the CA cert from the Supabase dashboard and set DATABASE_CA_CERT to enable verification."
-    );
-  }
+  const databaseCa = process.env.DATABASE_CA_CERT;
   const pool = new Pool({
     connectionString,
     ssl: process.env.NODE_ENV === 'production'
-      ? process.env.DATABASE_CA_CERT
-        ? { rejectUnauthorized: true, ca: process.env.DATABASE_CA_CERT }
-        : { rejectUnauthorized: false }
+      ? {
+          rejectUnauthorized: true,
+          ...(databaseCa ? { ca: databaseCa } : {}),
+        }
       : { rejectUnauthorized: false }
   });
   const adapter = new PrismaPg(pool);

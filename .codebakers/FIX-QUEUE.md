@@ -43,6 +43,7 @@ _Last updated: 2026-03-05 (latest session)_
 - [ ] Add ALLOWED_DOMAINS=dmillerlaw.com to Vercel environment variables
 - [ ] Webhook subscriptions for real-time push (WebhookSubscription table exists, not wired)
 - [ ] Account disconnect: also delete cached_folders/emails/cal_events/contacts for that account
+- [ ] Before the next deploy, apply migration `20260725160000_tenant_safe_cache_keys`
 
 ## DONE ✅ — MS Teams Integration (Option B — Full Page)
 _Approved by user 2026-03-05_

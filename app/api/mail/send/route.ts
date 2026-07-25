@@ -3,7 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { graphFetch } from "@/lib/microsoft/graph";
 import { withRateLimit, rateLimiters } from "@/lib/rate-limit";
-import { verifyAccountOwnership, detectProviderType, getProvider } from "@/lib/providers/registry";
+import { verifyAccountOwnership, detectProviderType, getProvider, getAllAccounts } from "@/lib/providers/registry";
 import type { SendEmailParams } from "@/lib/providers/types";
 import { audit } from "@/lib/audit";
 import { z } from "zod";
@@ -84,12 +84,10 @@ async function sendEmailHandler(req: NextRequest) {
     const account = await verifyAccountOwnership(user.id, accountId);
     if (!account) return NextResponse.json({ error: "No connected account" }, { status: 404 });
   } else {
-    // Fall back to default MS account (legacy behavior)
-    const msDefault = await prisma.msConnectedAccount.findFirst({
-      where: { userId: user.id, isDefault: true },
-    });
-    if (!msDefault) return NextResponse.json({ error: "No connected account" }, { status: 404 });
-    accountId = msDefault.homeAccountId;
+    const accounts = await getAllAccounts(user.id);
+    const defaultAccount = accounts.find((item) => item.isDefault) ?? accounts[0];
+    if (!defaultAccount) return NextResponse.json({ error: "No connected account" }, { status: 404 });
+    accountId = defaultAccount.accountId;
   }
 
   const providerType = detectProviderType(accountId);
@@ -213,7 +211,15 @@ async function sendEmailHandler(req: NextRequest) {
         const msg = sentData?.value?.[0];
         if (msg) {
           // Check if already cached (by Graph message ID used as our primary key)
-          const existing = await prisma.cachedEmail.findUnique({ where: { id: msg.id } });
+          const existing = await prisma.cachedEmail.findUnique({
+            where: {
+              userId_homeAccountId_id: {
+                userId: user.id,
+                homeAccountId: accountId!,
+                id: msg.id,
+              },
+            },
+          });
           if (!existing) {
             await prisma.cachedEmail.create({
               data: {

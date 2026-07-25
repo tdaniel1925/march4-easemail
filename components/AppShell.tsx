@@ -450,7 +450,7 @@ export default function AppShell(props: AppShellProps) {
           />
         );
     }
-  }, [activeView, activeFolderId, activeEmailId, activeEmailAccountId, activeEmailReturnTo, composeParams, activeAccount?.homeAccountId, props, inboxEmails, inboxNextLink, calEvents, calWeekStart, dashData, accountSwitching]);
+  }, [activeView, activeFolderId, activeEmailId, activeEmailAccountId, activeEmailReturnTo, composeParams, activeAccount?.homeAccountId, props, inboxEmails, inboxNextLink, inboxUnread, calEvents, calWeekStart, dashData, accountSwitching]);
 
   return (
     <Suspense fallback={<ViewSkeleton />}>

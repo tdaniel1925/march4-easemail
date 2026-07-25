@@ -26,7 +26,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { timingSafeEqual } from "node:crypto";
 import { ConfidentialClientApplication } from "@azure/msal-node";
 import { createClient, createServiceClient } from "@/lib/supabase/server";
-import { createMsalClient, GRAPH_SCOPES, TEAMS_SCOPES } from "@/lib/microsoft/msal";
+import { createMsalClient, GRAPH_SCOPES, TEAMS_SCOPES, mergeMsalCaches } from "@/lib/microsoft/msal";
 import { prisma } from "@/lib/prisma";
 import { authLogger } from "@/lib/logger";
 
@@ -244,7 +244,12 @@ export async function GET(req: NextRequest) {
     }
 
     // 4. Save MSAL cache + connected account
-    const serializedCache = tempMsal.getTokenCache().serialize();
+    const incomingCache = tempMsal.getTokenCache().serialize();
+    const existingCache = await prisma.msalTokenCache.findUnique({
+      where: { userId: supabaseUserId },
+      select: { cacheJson: true },
+    });
+    const serializedCache = mergeMsalCaches(existingCache?.cacheJson, incomingCache);
     await prisma.msalTokenCache.upsert({
       where: { userId: supabaseUserId },
       update: { cacheJson: serializedCache, updatedAt: new Date() },

@@ -281,7 +281,9 @@ export async function PATCH(req: NextRequest) {
 
     // Update cache
     await prisma.cachedFolder.update({
-      where: { id: folderId },
+      where: {
+        userId_homeAccountId_id: { userId: user.id, homeAccountId, id: folderId },
+      },
       data: { displayName: displayName.trim() },
     }).catch(() => {});
 
@@ -337,7 +339,9 @@ export async function DELETE(req: NextRequest) {
 
     // Delete from cache (also deletes emails via cascade)
     await prisma.cachedFolder.delete({
-      where: { id: folderId },
+      where: {
+        userId_homeAccountId_id: { userId: user.id, homeAccountId, id: folderId },
+      },
     }).catch(() => {});
 
     return NextResponse.json({ ok: true });

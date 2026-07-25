@@ -3,6 +3,9 @@ import { prisma } from "@/lib/prisma";
 import { graphFetch } from "@/lib/microsoft/graph";
 import { verifyAccountOwnership, detectProviderType, getProvider } from "@/lib/providers/registry";
 import type { SendEmailParams } from "@/lib/providers/types";
+import { assertAttachmentTotalWithinLimit } from "@/lib/email/attachment-limits";
+
+const CLAIM_LEASE_MS = 5 * 60 * 1000;
 
 // ─── GET /api/cron/send-scheduled ────────────────────────────────────────────
 // Called by Vercel Cron every minute. Sends any drafts whose scheduledAt has passed.
@@ -19,22 +22,23 @@ export async function GET(req: NextRequest) {
   }
 
   const now = new Date();
+  const claimExpiredBefore = new Date(now.getTime() - CLAIM_LEASE_MS);
 
   const dueDrafts = await prisma.draft.findMany({
     where: {
       scheduledAt: { lte: now },
       scheduledSent: false,
+      OR: [
+        { lastScheduleAttemptAt: null },
+        { lastScheduleAttemptAt: { lt: claimExpiredBefore } },
+      ],
     },
     include: { user: true },
   });
 
-  // Total attachment payload cap (25MB of binary, approximated from base64 length).
-  const MAX_TOTAL_ATTACHMENT_BYTES = 25 * 1024 * 1024;
-
   /**
    * Read the draft's serialized attachments (JSON array of {name,type,size,data})
-   * and return only those that fit within the 25MB total cap. Oversized items are
-   * skipped and logged so the scheduled email still sends with whatever fits.
+   * after enforcing the same aggregate size limit as immediate sends.
    */
   function collectDraftAttachments(
     raw: unknown,
@@ -43,29 +47,45 @@ export async function GET(req: NextRequest) {
     const list = Array.isArray(raw)
       ? (raw as { name?: string; type?: string; data?: string }[])
       : [];
-    const out: { name: string; contentType: string; data: string }[] = [];
-    let totalBytes = 0;
-    for (const att of list) {
-      if (!att?.data) continue;
-      const bytes = Math.ceil(att.data.length * 0.75); // base64 → binary bytes
-      if (totalBytes + bytes > MAX_TOTAL_ATTACHMENT_BYTES) {
-        console.error(
-          `[cron] skipping oversized attachment "${att.name ?? "(unnamed)"}" on draft ${draftId} — would exceed 25MB total cap`,
-        );
-        continue;
-      }
-      totalBytes += bytes;
-      out.push({
+    try {
+      assertAttachmentTotalWithinLimit(list);
+    } catch {
+      throw new Error(`Draft ${draftId} exceeds the 25MB attachment limit`);
+    }
+    return list.flatMap((att) =>
+      att?.data
+        ? [{
         name: att.name ?? "attachment",
         contentType: att.type || "application/octet-stream",
         data: att.data,
-      });
-    }
-    return out;
+          }]
+        : [],
+    );
   }
 
   const results = await Promise.allSettled(
     dueDrafts.map(async (draft) => {
+      // Atomically claim this draft. Only one overlapping cron invocation can
+      // update a row that is unclaimed or whose previous lease has expired.
+      const claim = await prisma.draft.updateMany({
+        where: {
+          id: draft.id,
+          scheduledSent: false,
+          scheduledAt: { lte: now },
+          OR: [
+            { lastScheduleAttemptAt: null },
+            { lastScheduleAttemptAt: { lt: claimExpiredBefore } },
+          ],
+        },
+        data: {
+          lastScheduleAttemptAt: now,
+          scheduleAttemptCount: { increment: 1 },
+          scheduleLastError: null,
+        },
+      });
+      if (claim.count === 0) return false;
+
+      try {
       const accountId = draft.homeAccountId;
       const draftAttachments = collectDraftAttachments(draft.attachments, draft.id);
 
@@ -153,12 +173,24 @@ export async function GET(req: NextRequest) {
       // Mark as sent
       await prisma.draft.update({
         where: { id: draft.id },
-        data: { scheduledSent: true },
+        data: { scheduledSent: true, scheduleLastError: null },
       });
+      return true;
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        await prisma.draft.updateMany({
+          where: { id: draft.id, scheduledSent: false },
+          data: { scheduleLastError: message.slice(0, 10_000) },
+        }).catch(() => {});
+        throw error;
+      }
     })
   );
 
-  const sent = results.filter((r) => r.status === "fulfilled").length;
+  const sent = results.filter(
+    (r): r is PromiseFulfilledResult<boolean> =>
+      r.status === "fulfilled" && r.value
+  ).length;
   const failures = results.filter((r): r is PromiseRejectedResult => r.status === "rejected");
   failures.forEach((f, i) => console.error(`[cron] draft send failure #${i + 1}:`, f.reason));
 
@@ -167,11 +199,41 @@ export async function GET(req: NextRequest) {
     where: {
       sendAt: { lte: now },
       cancelled: false,
+      OR: [
+        { deliveryStatus: "pending" },
+        {
+          deliveryStatus: { in: ["processing", "failed"] },
+          claimedAt: { lt: claimExpiredBefore },
+        },
+      ],
     },
   });
 
   const pendingResults = await Promise.allSettled(
     duePending.map(async (pending) => {
+      const claim = await prisma.pendingEmail.updateMany({
+        where: {
+          id: pending.id,
+          cancelled: false,
+          sendAt: { lte: now },
+          OR: [
+            { deliveryStatus: "pending" },
+            {
+              deliveryStatus: { in: ["processing", "failed"] },
+              claimedAt: { lt: claimExpiredBefore },
+            },
+          ],
+        },
+        data: {
+          deliveryStatus: "processing",
+          claimedAt: now,
+          attemptCount: { increment: 1 },
+          lastError: null,
+        },
+      });
+      if (claim.count === 0) return false;
+
+      try {
       const payload = pending.payload as {
         to: { emailAddress: { address: string } }[];
         cc?: { emailAddress: { address: string } }[];
@@ -186,7 +248,7 @@ export async function GET(req: NextRequest) {
       };
 
       // Determine account
-      let accountId: string | null = payload.fromHomeAccountId ?? null;
+      const accountId: string | null = payload.fromHomeAccountId ?? null;
       const providerType = accountId ? detectProviderType(accountId) : "microsoft";
 
       if (providerType !== "microsoft" && accountId) {
@@ -262,12 +324,34 @@ export async function GET(req: NextRequest) {
         }
       }
 
-      // Delete the pending record after successful send
-      await prisma.pendingEmail.delete({ where: { id: pending.id } });
+      // Retain the delivery record as an idempotency/audit marker.
+      await prisma.pendingEmail.update({
+        where: { id: pending.id },
+        data: {
+          deliveryStatus: "sent",
+          deliveredAt: new Date(),
+          lastError: null,
+        },
+      });
+      return true;
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        await prisma.pendingEmail.updateMany({
+          where: { id: pending.id, deliveryStatus: "processing" },
+          data: {
+            deliveryStatus: "failed",
+            lastError: message.slice(0, 10_000),
+          },
+        }).catch(() => {});
+        throw error;
+      }
     })
   );
 
-  const pendingSent = pendingResults.filter((r) => r.status === "fulfilled").length;
+  const pendingSent = pendingResults.filter(
+    (r): r is PromiseFulfilledResult<boolean> =>
+      r.status === "fulfilled" && r.value
+  ).length;
   const pendingFailures = pendingResults.filter((r): r is PromiseRejectedResult => r.status === "rejected");
   pendingFailures.forEach((f, i) => console.error(`[cron] pending send failure #${i + 1}:`, f.reason));
 

@@ -14,7 +14,7 @@ const notesSchema = z.string().max(10_000, "Note too long");
 // Returns the saved private note (if any) for this contact + user.
 
 export async function GET(
-  _req: NextRequest,
+  req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const supabase = await createClient();
@@ -22,13 +22,15 @@ export async function GET(
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const { id } = await params;
-  const cached = await prisma.cachedContact.findUnique({
-    where: { id },
-    select: { id: true, userId: true, notes: true },
+  const homeAccountId = req.nextUrl.searchParams.get("homeAccountId");
+  if (!homeAccountId) {
+    return NextResponse.json({ error: "homeAccountId required" }, { status: 400 });
+  }
+  const cached = await prisma.cachedContact.findFirst({
+    where: { id, userId: user.id, homeAccountId },
+    select: { id: true, notes: true },
   });
-  // Only expose notes belonging to the requesting user.
-  const notes = cached && cached.userId === user.id ? cached.notes : "";
-  return NextResponse.json({ notes: notes ?? "" });
+  return NextResponse.json({ notes: cached?.notes ?? "" });
 }
 
 // ─── PATCH /api/contacts/[id] — Update a contact ──────────────────────────────
@@ -67,8 +69,13 @@ export async function PATCH(
       );
     }
     const homeAccountId = body.homeAccountId ?? "";
+    if (!homeAccountId) {
+      return NextResponse.json({ error: "homeAccountId required" }, { status: 400 });
+    }
     await prisma.cachedContact.upsert({
-      where: { id },
+      where: {
+        userId_homeAccountId_id: { userId: user.id, homeAccountId, id },
+      },
       create: { id, userId: user.id, homeAccountId, notes: notesParsed.data },
       update: { notes: notesParsed.data },
     });

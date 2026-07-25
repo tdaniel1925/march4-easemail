@@ -36,6 +36,7 @@ export async function POST(req: NextRequest) {
       id: pendingId,
       userId: user.id,
       cancelled: false,
+      deliveryStatus: "pending",
       sendAt: { gt: new Date() },
     },
     data: { cancelled: true },

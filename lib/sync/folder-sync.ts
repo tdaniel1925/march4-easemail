@@ -107,7 +107,9 @@ export async function syncFolders(
   await Promise.all(
     allFolders.map((f) =>
       prisma.cachedFolder.upsert({
-        where: { id: f.id },
+        where: {
+          userId_homeAccountId_id: { userId, homeAccountId, id: f.id },
+        },
         update: {
           // Re-assert ownership in the update to prevent cross-account contamination
           userId,

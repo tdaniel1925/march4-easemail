@@ -17,6 +17,8 @@ import { matchesConditions } from "@/lib/utils/rule-engine";
 import type { Rule } from "@/lib/types/rules";
 import type { EmailMessage } from "@/lib/types/email";
 
+const CLAIM_LEASE_MS = 5 * 60 * 1000;
+
 /** Minimal cached-email shape we need to evaluate + act on a message. */
 interface CachedEmailRow {
   id: string;
@@ -75,7 +77,9 @@ async function resolveFolderId(
       const provider = getProvider(accountId);
       const created = await provider.createFolder(userId, accountId, value.trim(), null);
       await prisma.cachedFolder.upsert({
-        where: { id: created.id },
+        where: {
+          userId_homeAccountId_id: { userId, homeAccountId: accountId, id: created.id },
+        },
         update: { userId, homeAccountId: accountId, displayName: created.displayName, parentFolderId: created.parentFolderId },
         create: {
           id: created.id, userId, homeAccountId: accountId,
@@ -107,6 +111,60 @@ export interface ServerApplyResult {
   errors: number;
 }
 
+async function claimRuleExecution(
+  ruleId: string,
+  emailId: string,
+  userId: string
+): Promise<{ id: string; completedActions: number[] } | null> {
+  const now = new Date();
+  try {
+    const created = await prisma.ruleExecution.create({
+      data: {
+        ruleId,
+        emailId,
+        userId,
+        status: "processing",
+        claimedAt: now,
+      },
+    });
+    return { id: created.id, completedActions: [] };
+  } catch {
+    const existing = await prisma.ruleExecution.findUnique({
+      where: { ruleId_emailId: { ruleId, emailId } },
+    });
+    if (!existing) {
+      throw new Error(`Unable to claim rule ${ruleId} for email ${emailId}`);
+    }
+    if (existing.status === "completed") return null;
+
+    const staleBefore = new Date(now.getTime() - CLAIM_LEASE_MS);
+    const claimed = await prisma.ruleExecution.updateMany({
+      where: {
+        id: existing.id,
+        OR: [
+          { status: "failed" },
+          { status: "processing", claimedAt: { lt: staleBefore } },
+        ],
+      },
+      data: {
+        status: "processing",
+        claimedAt: now,
+        attemptCount: { increment: 1 },
+        lastError: null,
+      },
+    });
+    if (claimed.count === 0) return null;
+
+    const completedActions = Array.isArray(existing.completedActions)
+      ? existing.completedActions.filter(
+          (value): value is number =>
+            typeof value === "number" && Number.isInteger(value) && value >= 0
+        )
+      : [];
+    return { id: existing.id, completedActions };
+  }
+}
+
 /**
  * Apply active rules to the given cached emails for one account.
  * Pass the rows you want evaluated (e.g. newly-synced inbox messages).
@@ -130,37 +188,39 @@ export async function applyRulesServer(
     for (const rule of active) {
       if (!matchesConditions(email, rule.conditions)) continue;
 
-      // Idempotency guard — skip if this rule already ran on this email.
-      const already = await prisma.ruleExecution.findUnique({
-        where: { ruleId_emailId: { ruleId: rule.id, emailId: row.id } },
-      }).catch(() => null);
-      if (already) continue;
+      // Claim before performing side effects. The unique (ruleId, emailId)
+      // constraint makes this a distributed lock across cron instances.
+      const execution = await claimRuleExecution(rule.id, row.id, userId);
+      if (!execution) continue;
 
       result.matched++;
-      let ran = false;
       let moved = false;
+      let executionError: string | null = null;
+      const completedActions = new Set(execution.completedActions);
 
-      for (const action of rule.actions) {
+      for (const [actionIndex, action] of rule.actions.entries()) {
+        if (completedActions.has(actionIndex)) continue;
+        let actionRan = false;
         try {
           switch (action.type) {
             case "mark_read":
               await provider.markRead(userId, accountId, row.id, true);
-              ran = true;
+              actionRan = true;
               break;
             case "mark_important":
               await provider.flagMessage(userId, accountId, row.id, true);
-              ran = true;
+              actionRan = true;
               break;
             case "label":
               if (action.value?.trim()) {
                 await provider.addCategories(userId, accountId, row.id, [action.value.trim()]);
-                ran = true;
+                actionRan = true;
               }
               break;
             case "forward":
               if (action.value?.trim()) {
                 await provider.forwardMessage(userId, accountId, row.id, action.value.trim());
-                ran = true;
+                actionRan = true;
               }
               break;
             case "move_to_folder":
@@ -170,7 +230,7 @@ export async function applyRulesServer(
               const dest = await resolveFolderId(userId, accountId, action.value, fallback);
               if (dest) {
                 await provider.moveMessage(userId, accountId, row.id, dest);
-                ran = true;
+                actionRan = true;
                 moved = true;
               }
               break;
@@ -178,29 +238,77 @@ export async function applyRulesServer(
             case "archive": {
               if (moved) break;
               const dest = await resolveFolderId(userId, accountId, undefined, "archive");
-              if (dest) { await provider.moveMessage(userId, accountId, row.id, dest); moved = true; }
-              ran = true;
+              if (dest) {
+                await provider.moveMessage(userId, accountId, row.id, dest);
+                moved = true;
+                actionRan = true;
+              }
               break;
             }
             case "delete":
-              if (!moved) { await provider.deleteMessage(userId, accountId, row.id); moved = true; }
-              ran = true;
+              if (!moved) {
+                await provider.deleteMessage(userId, accountId, row.id);
+                moved = true;
+                actionRan = true;
+              }
               break;
           }
-          if (ran) result.actionsRun++;
+          // Invalid/no-op actions are complete too; otherwise they would retry
+          // forever. Successful side effects are counted separately.
+          completedActions.add(actionIndex);
+          await prisma.ruleExecution.update({
+            where: { id: execution.id },
+            data: { completedActions: [...completedActions] },
+          });
+          if (actionRan) {
+            result.actionsRun++;
+          }
         } catch (e) {
           result.errors++;
-          console.error(`[rules] action ${action.type} failed on ${row.id}:`, (e as Error).message);
+          executionError = e instanceof Error ? e.message : String(e);
+          console.error(`[rules] action ${action.type} failed on ${row.id}:`, executionError);
+          break;
         }
       }
 
-      // Record execution (idempotency) + bump the rule's match tally.
-      await prisma.ruleExecution.create({
-        data: { ruleId: rule.id, emailId: row.id, userId },
-      }).catch(() => {});
+      if (executionError) {
+        await prisma.ruleExecution.update({
+          where: { id: execution.id },
+          data: {
+            status: "failed",
+            lastError: executionError.slice(0, 10_000),
+          },
+        });
+        await prisma.emailRule.updateMany({
+          where: { id: rule.id, userId },
+          data: {
+            lastExecutedAt: new Date(),
+            lastExecutionStatus: "failure",
+            lastExecutionError: executionError.slice(0, 10_000),
+            failureCount: { increment: 1 },
+          },
+        }).catch(() => {});
+        // Preserve rule priority: retry this rule before lower-priority rules
+        // act on the same email.
+        break;
+      }
+
+      await prisma.ruleExecution.update({
+        where: { id: execution.id },
+        data: {
+          status: "completed",
+          completedAt: new Date(),
+          lastError: null,
+        },
+      });
       await prisma.emailRule.updateMany({
         where: { id: rule.id, userId },
-        data: { emailCount: { increment: 1 } },
+        data: {
+          emailCount: { increment: 1 },
+          lastExecutedAt: new Date(),
+          lastExecutionStatus: "success",
+          lastExecutionError: null,
+        },
       }).catch(() => {});
 
       if (rule.stopProcessing || moved) break;

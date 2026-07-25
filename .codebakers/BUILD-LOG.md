@@ -532,3 +532,33 @@ npm run test:unit:coverage     # Run with coverage report
 - **Total tests:** 188 (162 passing, 26 skipped)
 - **Logic gaps documented:** 12 (4 critical, 4 high, 4 medium)
 - **Documentation files:** 2 new (REVIEW-AND-TEST-PLAN.md, E2E-TEST-DOCUMENTATION.md)
+
+---
+
+## 2026-07-25 — Code Review Remediation
+
+### Reliability and correctness
+- [Fix] Treat Microsoft Graph 202/204 empty responses as successful results.
+- [Fix] Add atomic leases and durable delivery state for scheduled and undo-send mail.
+- [Fix] Make server-side rule execution claimable, retryable, and resumable by action index.
+- [Fix] Reject oversized scheduled attachments instead of silently delivering incomplete messages.
+- [Fix] Restore cross-provider default-account fallback for send and reply.
+- [Fix] Refresh unread counts when the active account changes.
+
+### Security and tenant isolation
+- [Fix] Block private, loopback, link-local, multicast, and reserved connector destinations.
+- [Fix] Disable JMAP redirect following and add request timeouts.
+- [Fix] Merge MSAL caches so adding an account does not erase existing account tokens.
+- [Fix] Require verified production database TLS, with optional custom CA support.
+- [Fix] Scope cached folder, email, calendar-event, and contact primary keys by user and account.
+
+### Database migrations
+- [Applied by operator] `20260725143000_add_delivery_claims`
+- [Pending before deploy] `20260725160000_tenant_safe_cache_keys`
+
+### Verification
+- [Pass] 260 unit tests across 18 files
+- [Pass] `npm run type-check`
+- [Pass] `npm run lint` (0 errors; 90 existing warnings)
+- [Pass] `npm run build`
+- [Pass] Dependency map regenerated

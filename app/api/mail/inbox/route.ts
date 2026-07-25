@@ -146,7 +146,9 @@ export async function GET(req: NextRequest) {
             where,
             orderBy: { receivedDateTime: "desc" },
             take: 50,
-            cursor: { id: nextLinkParam },
+            cursor: {
+              userId_homeAccountId_id: { userId: user.id, homeAccountId, id: nextLinkParam },
+            },
             skip: 1,
           })
         : await prisma.cachedEmail.findMany({

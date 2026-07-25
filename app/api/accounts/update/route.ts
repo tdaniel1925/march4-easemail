@@ -50,6 +50,8 @@ export async function POST(req: NextRequest) {
       try {
         const testSession = await fetch(sessionUrl ?? account.sessionUrl, {
           headers: { Authorization: `Bearer ${token}` },
+          redirect: "error",
+          signal: AbortSignal.timeout(10_000),
         });
         if (!testSession.ok) {
           return NextResponse.json({ error: "Invalid API token — JMAP session test failed" }, { status: 422 });

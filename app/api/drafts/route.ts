@@ -3,6 +3,7 @@ import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { graphFetch } from "@/lib/microsoft/graph";
+import { assertAttachmentTotalWithinLimit } from "@/lib/email/attachment-limits";
 
 const draftsQuerySchema = z.object({
   homeAccountId: z.string().min(1).max(512).nullable().optional(),
@@ -124,6 +125,15 @@ export async function POST(req: NextRequest) {
     if (isNaN(d.getTime())) {
       return NextResponse.json({ error: "Invalid scheduledAt date" }, { status: 400 });
     }
+  }
+
+  try {
+    assertAttachmentTotalWithinLimit(attachments ?? []);
+  } catch (error) {
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : "Attachments are too large" },
+      { status: 413 },
+    );
   }
 
   // ── Build DB payload ──────────────────────────────────────────────────────

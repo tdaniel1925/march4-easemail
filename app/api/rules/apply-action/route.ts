@@ -31,7 +31,9 @@ async function resolveFolderId(
       const provider = getProvider(accountId);
       const created = await provider.createFolder(userId, accountId, value.trim(), null);
       await prisma.cachedFolder.upsert({
-        where: { id: created.id },
+        where: {
+          userId_homeAccountId_id: { userId, homeAccountId: accountId, id: created.id },
+        },
         update: { userId, homeAccountId: accountId, displayName: created.displayName, parentFolderId: created.parentFolderId },
         create: {
           id: created.id, userId, homeAccountId: accountId,

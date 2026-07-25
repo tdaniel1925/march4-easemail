@@ -108,7 +108,15 @@ export async function graphPost<T>(
     const err = await res.text();
     throw new Error(`Graph POST ${path} failed ${res.status}: ${err}`);
   }
-  return res.json() as Promise<T>;
+  // Several Graph action endpoints (sendMail, reply, replyAll, forward) return
+  // 202 Accepted with an empty body. Treat those responses as successful
+  // instead of throwing while attempting to parse nonexistent JSON.
+  if (res.status === 202 || res.status === 204) {
+    return undefined as T;
+  }
+
+  const responseText = await res.text();
+  return (responseText ? JSON.parse(responseText) : undefined) as T;
 }
 
 export async function graphPatch<T>(

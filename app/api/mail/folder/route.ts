@@ -205,7 +205,9 @@ export async function GET(req: NextRequest) {
             where: { userId: user.id, homeAccountId, flagStatus: "flagged" },
             orderBy: { receivedDateTime: "desc" },
             take: 100, // Fix 15
-            cursor: { id: nextLinkParam },
+            cursor: {
+              userId_homeAccountId_id: { userId: user.id, homeAccountId, id: nextLinkParam },
+            },
             skip: 1,
           })
         : await prisma.cachedEmail.findMany({
@@ -236,7 +238,9 @@ export async function GET(req: NextRequest) {
                 where: { userId: user.id, homeAccountId, folderId: cachedFolder.id },
                 orderBy,
                 take: 100, // Fix 15
-                cursor: { id: nextLinkParam },
+                cursor: {
+                  userId_homeAccountId_id: { userId: user.id, homeAccountId, id: nextLinkParam },
+                },
                 skip: 1,
               })
             : await prisma.cachedEmail.findMany({
@@ -269,7 +273,9 @@ export async function GET(req: NextRequest) {
             where: { userId: user.id, homeAccountId, folderId: folder },
             orderBy: { receivedDateTime: "desc" },
             take: 100, // Fix 15
-            cursor: { id: nextLinkParam },
+            cursor: {
+              userId_homeAccountId_id: { userId: user.id, homeAccountId, id: nextLinkParam },
+            },
             skip: 1,
           })
         : await prisma.cachedEmail.findMany({

@@ -108,7 +108,9 @@ export async function syncEmails(
           const categories = JSON.parse(JSON.stringify(m.categories ?? []));
 
           return prisma.cachedEmail.upsert({
-            where: { id: m.id },
+            where: {
+              userId_homeAccountId_id: { userId, homeAccountId, id: m.id },
+            },
             update: {
               folderId: m.parentFolderId ?? folderId,
               subject: m.subject ?? "",

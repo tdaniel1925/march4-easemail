@@ -765,7 +765,8 @@ function ContactDetail({
 
     // Load the saved private note for this contact. Ignore the response if the
     // user has already started typing or switched contacts.
-    fetch(`/api/contacts/${encodeURIComponent(contactId)}`)
+    const notesAccountId = useAccountStore.getState().activeAccount?.homeAccountId ?? "";
+    fetch(`/api/contacts/${encodeURIComponent(contactId)}?homeAccountId=${encodeURIComponent(notesAccountId)}`)
       .then((r) => (r.ok ? r.json() : { notes: "" }))
       .then((data: { notes?: string }) => {
         if (contactId === contact.id && !notesDirty.current) {

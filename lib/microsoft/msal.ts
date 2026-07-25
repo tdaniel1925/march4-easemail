@@ -14,6 +14,36 @@ import {
 } from "@azure/msal-node";
 import { prisma } from "@/lib/prisma";
 
+export function mergeMsalCaches(
+  existingJson: string | null | undefined,
+  incomingJson: string
+): string {
+  if (!existingJson) return incomingJson;
+  try {
+    const existing = JSON.parse(existingJson) as Record<string, unknown>;
+    const incoming = JSON.parse(incomingJson) as Record<string, unknown>;
+    const merged: Record<string, unknown> = { ...existing, ...incoming };
+    for (const key of new Set([...Object.keys(existing), ...Object.keys(incoming)])) {
+      const oldValue = existing[key];
+      const newValue = incoming[key];
+      if (
+        oldValue && newValue &&
+        typeof oldValue === "object" && !Array.isArray(oldValue) &&
+        typeof newValue === "object" && !Array.isArray(newValue)
+      ) {
+        merged[key] = {
+          ...(oldValue as Record<string, unknown>),
+          ...(newValue as Record<string, unknown>),
+        };
+      }
+    }
+    return JSON.stringify(merged);
+  } catch {
+    // A fresh valid MSAL cache is safer than retaining malformed persisted data.
+    return incomingJson;
+  }
+}
+
 // ─── Cache Plugin (persists MSAL cache to DB per user) ───────────────────────
 
 export function createCachePlugin(userId: string): ICachePlugin {

@@ -262,6 +262,7 @@ model Draft {
   scheduledNotificationSent Boolean  @default(false)
   lastScheduleAttemptAt    DateTime?
   scheduleAttemptCount     Int       @default(0)
+  scheduleLastError        String?   @db.Text
 
   createdAt                DateTime  @default(now())
   updatedAt                DateTime  @updatedAt
@@ -295,7 +296,7 @@ model Signature {
 // ─── Sync Cache ───────────────────────────────────────────────────────────────
 
 model CachedFolder {
-  id             String   @id
+  id             String
   userId         String
   user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   homeAccountId  String
@@ -307,12 +308,13 @@ model CachedFolder {
   syncedAt       DateTime @default(now())
   updatedAt      DateTime @updatedAt
 
+  @@id([userId, homeAccountId, id])
   @@index([userId, homeAccountId, wellKnownName])
   @@map("cached_folders")
 }
 
 model CachedEmail {
-  id                      String    @id
+  id                      String
   userId                  String
   user                    User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   homeAccountId           String
@@ -347,6 +349,7 @@ model CachedEmail {
   syncedAt                DateTime  @default(now())
   updatedAt               DateTime  @updatedAt
 
+  @@id([userId, homeAccountId, id])
   @@index([userId, homeAccountId, folderId, receivedDateTime(sort: Desc)])
   @@index([userId, homeAccountId, isRead])
   @@index([userId, homeAccountId, flagStatus])
@@ -356,7 +359,7 @@ model CachedEmail {
 }
 
 model CachedCalendarEvent {
-  id                   String    @id
+  id                   String
   userId               String
   user                 User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   homeAccountId        String
@@ -397,12 +400,13 @@ model CachedCalendarEvent {
   syncedAt             DateTime  @default(now())
   updatedAt            DateTime  @updatedAt
 
+  @@id([userId, homeAccountId, id])
   @@index([userId, startDateTime, endDateTime])
   @@map("cached_calendar_events")
 }
 
 model CachedContact {
-  id              String    @id
+  id              String
   userId          String
   user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   homeAccountId   String
@@ -436,6 +440,7 @@ model CachedContact {
   syncedAt        DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
 
+  @@id([userId, homeAccountId, id])
   @@index([userId, homeAccountId, displayName])
   @@map("cached_contacts")
 }
@@ -486,11 +491,18 @@ model EmailRule {
 // re-fires on the same message across sync runs.
 
 model RuleExecution {
-  id        String   @id @default(cuid())
-  ruleId    String
-  emailId   String
-  userId    String
-  createdAt DateTime @default(now())
+  id               String    @id @default(cuid())
+  ruleId           String
+  emailId          String
+  userId           String
+  status           String    @default("processing") // processing | failed | completed
+  completedActions Json      @default("[]") // zero-based action indexes
+  claimedAt        DateTime  @default(now())
+  attemptCount     Int       @default(1)
+  lastError        String?   @db.Text
+  completedAt      DateTime?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
 
   @@unique([ruleId, emailId])
   @@index([userId, createdAt])
@@ -770,15 +782,22 @@ model JmapConnectedAccount {
 // ─── Pending Emails (Undo Send) ──────────────────────────────────────────────
 
 model PendingEmail {
-  id        String   @id @default(cuid())
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  payload   Json     // Full send payload (to, cc, bcc, subject, body, attachments, etc.)
-  sendAt    DateTime // When the email should actually be sent
-  cancelled Boolean  @default(false)
-  createdAt DateTime @default(now())
+  id             String    @id @default(cuid())
+  userId         String
+  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  payload        Json      // Full send payload (to, cc, bcc, subject, body, attachments, etc.)
+  sendAt         DateTime  // When the email should actually be sent
+  cancelled      Boolean   @default(false)
+  deliveryStatus String    @default("pending") // pending | processing | sent | failed
+  claimedAt      DateTime?
+  attemptCount   Int       @default(0)
+  lastError      String?   @db.Text
+  deliveredAt    DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
 
   @@index([userId, sendAt, cancelled])
+  @@index([deliveryStatus, sendAt, claimedAt])
   @@map("pending_emails")
 }
 

@@ -307,7 +307,9 @@ export class ImapProvider implements EmailProvider {
         const wellKnownName = resolveWellKnownName(mb.specialUse, mb.path);
 
         await prisma.cachedFolder.upsert({
-          where: { id: fId },
+          where: {
+            userId_homeAccountId_id: { userId, homeAccountId: accountId, id: fId },
+          },
           update: {
             displayName: mb.name,
             parentFolderId: mb.parentPath
@@ -952,7 +954,9 @@ export class ImapProvider implements EmailProvider {
               const emailId = imapEmailId(accountId, folderPath, msg.uid);
 
               await prisma.cachedEmail.upsert({
-                where: { id: emailId },
+                where: {
+                  userId_homeAccountId_id: { userId, homeAccountId: accountId, id: emailId },
+                },
                 update: {
                   isRead: flags.has("\\Seen"),
                   flagStatus: flags.has("\\Flagged") ? "flagged" : "notFlagged",

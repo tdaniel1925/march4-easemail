@@ -172,7 +172,9 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       }))
     ));
     await prisma.cachedCalendarEvent.upsert({
-      where: { id: created.id },
+      where: {
+        userId_homeAccountId_id: { userId: user.id, homeAccountId: accountId, id: created.id },
+      },
       update: {
         subject: created.subject ?? "",
         startDateTime: parseGraphDateTime(created.start.dateTime),
@@ -294,7 +296,13 @@ export async function PATCH(req: NextRequest): Promise<NextResponse> {
     // Partial-update semantics: only overwrite reminder/showAs/recurrence in the
     // cache when the PATCH explicitly included them — otherwise keep what's cached.
     await prisma.cachedCalendarEvent.update({
-      where: { id: verifiedEventId },
+      where: {
+        userId_homeAccountId_id: {
+          userId: user.id,
+          homeAccountId: data.homeAccountId,
+          id: verifiedEventId,
+        },
+      },
       data: {
         subject: updated.subject || "",
         bodyPreview: updated.bodyPreview || "",
@@ -367,7 +375,9 @@ export async function DELETE(req: NextRequest): Promise<NextResponse> {
 
     // Clean up cache after successful deletion
     await prisma.cachedCalendarEvent.delete({
-      where: { id: verifiedEventId },
+      where: {
+        userId_homeAccountId_id: { userId: user.id, homeAccountId, id: verifiedEventId },
+      },
     }).catch(() => {
       // Event might already be deleted by sync — not fatal
     });

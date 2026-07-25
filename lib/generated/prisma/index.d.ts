@@ -15034,6 +15034,7 @@ export namespace Prisma {
     scheduledNotificationSent: boolean | null
     lastScheduleAttemptAt: Date | null
     scheduleAttemptCount: number | null
+    scheduleLastError: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -15058,6 +15059,7 @@ export namespace Prisma {
     scheduledNotificationSent: boolean | null
     lastScheduleAttemptAt: Date | null
     scheduleAttemptCount: number | null
+    scheduleLastError: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -15087,6 +15089,7 @@ export namespace Prisma {
     scheduledNotificationSent: number
     lastScheduleAttemptAt: number
     scheduleAttemptCount: number
+    scheduleLastError: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -15121,6 +15124,7 @@ export namespace Prisma {
     scheduledNotificationSent?: true
     lastScheduleAttemptAt?: true
     scheduleAttemptCount?: true
+    scheduleLastError?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -15145,6 +15149,7 @@ export namespace Prisma {
     scheduledNotificationSent?: true
     lastScheduleAttemptAt?: true
     scheduleAttemptCount?: true
+    scheduleLastError?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -15174,6 +15179,7 @@ export namespace Prisma {
     scheduledNotificationSent?: true
     lastScheduleAttemptAt?: true
     scheduleAttemptCount?: true
+    scheduleLastError?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -15290,6 +15296,7 @@ export namespace Prisma {
     scheduledNotificationSent: boolean
     lastScheduleAttemptAt: Date | null
     scheduleAttemptCount: number
+    scheduleLastError: string | null
     createdAt: Date
     updatedAt: Date
     _count: DraftCountAggregateOutputType | null
@@ -15338,6 +15345,7 @@ export namespace Prisma {
     scheduledNotificationSent?: boolean
     lastScheduleAttemptAt?: boolean
     scheduleAttemptCount?: boolean
+    scheduleLastError?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -15368,6 +15376,7 @@ export namespace Prisma {
     scheduledNotificationSent?: boolean
     lastScheduleAttemptAt?: boolean
     scheduleAttemptCount?: boolean
+    scheduleLastError?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -15398,6 +15407,7 @@ export namespace Prisma {
     scheduledNotificationSent?: boolean
     lastScheduleAttemptAt?: boolean
     scheduleAttemptCount?: boolean
+    scheduleLastError?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -15428,11 +15438,12 @@ export namespace Prisma {
     scheduledNotificationSent?: boolean
     lastScheduleAttemptAt?: boolean
     scheduleAttemptCount?: boolean
+    scheduleLastError?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type DraftOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "homeAccountId" | "graphDraftId" | "toRecipients" | "ccRecipients" | "bccRecipients" | "subject" | "bodyHtml" | "attachments" | "importance" | "sensitivity" | "requestReadReceipt" | "requestDeliveryReceipt" | "categories" | "draftType" | "inReplyToMessageId" | "forwardedMessageId" | "originalMessageBody" | "scheduledAt" | "scheduledSent" | "scheduledNotificationSent" | "lastScheduleAttemptAt" | "scheduleAttemptCount" | "createdAt" | "updatedAt", ExtArgs["result"]["draft"]>
+  export type DraftOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "homeAccountId" | "graphDraftId" | "toRecipients" | "ccRecipients" | "bccRecipients" | "subject" | "bodyHtml" | "attachments" | "importance" | "sensitivity" | "requestReadReceipt" | "requestDeliveryReceipt" | "categories" | "draftType" | "inReplyToMessageId" | "forwardedMessageId" | "originalMessageBody" | "scheduledAt" | "scheduledSent" | "scheduledNotificationSent" | "lastScheduleAttemptAt" | "scheduleAttemptCount" | "scheduleLastError" | "createdAt" | "updatedAt", ExtArgs["result"]["draft"]>
   export type DraftInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
   }
@@ -15473,6 +15484,7 @@ export namespace Prisma {
       scheduledNotificationSent: boolean
       lastScheduleAttemptAt: Date | null
       scheduleAttemptCount: number
+      scheduleLastError: string | null
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["draft"]>
@@ -15923,6 +15935,7 @@ export namespace Prisma {
     readonly scheduledNotificationSent: FieldRef<"Draft", 'Boolean'>
     readonly lastScheduleAttemptAt: FieldRef<"Draft", 'DateTime'>
     readonly scheduleAttemptCount: FieldRef<"Draft", 'Int'>
+    readonly scheduleLastError: FieldRef<"Draft", 'String'>
     readonly createdAt: FieldRef<"Draft", 'DateTime'>
     readonly updatedAt: FieldRef<"Draft", 'DateTime'>
   }
@@ -24997,8 +25010,18 @@ export namespace Prisma {
 
   export type AggregateRuleExecution = {
     _count: RuleExecutionCountAggregateOutputType | null
+    _avg: RuleExecutionAvgAggregateOutputType | null
+    _sum: RuleExecutionSumAggregateOutputType | null
     _min: RuleExecutionMinAggregateOutputType | null
     _max: RuleExecutionMaxAggregateOutputType | null
+  }
+
+  export type RuleExecutionAvgAggregateOutputType = {
+    attemptCount: number | null
+  }
+
+  export type RuleExecutionSumAggregateOutputType = {
+    attemptCount: number | null
   }
 
   export type RuleExecutionMinAggregateOutputType = {
@@ -25006,7 +25029,13 @@ export namespace Prisma {
     ruleId: string | null
     emailId: string | null
     userId: string | null
+    status: string | null
+    claimedAt: Date | null
+    attemptCount: number | null
+    lastError: string | null
+    completedAt: Date | null
     createdAt: Date | null
+    updatedAt: Date | null
   }
 
   export type RuleExecutionMaxAggregateOutputType = {
@@ -25014,7 +25043,13 @@ export namespace Prisma {
     ruleId: string | null
     emailId: string | null
     userId: string | null
+    status: string | null
+    claimedAt: Date | null
+    attemptCount: number | null
+    lastError: string | null
+    completedAt: Date | null
     createdAt: Date | null
+    updatedAt: Date | null
   }
 
   export type RuleExecutionCountAggregateOutputType = {
@@ -25022,17 +25057,38 @@ export namespace Prisma {
     ruleId: number
     emailId: number
     userId: number
+    status: number
+    completedActions: number
+    claimedAt: number
+    attemptCount: number
+    lastError: number
+    completedAt: number
     createdAt: number
+    updatedAt: number
     _all: number
   }
 
+
+  export type RuleExecutionAvgAggregateInputType = {
+    attemptCount?: true
+  }
+
+  export type RuleExecutionSumAggregateInputType = {
+    attemptCount?: true
+  }
 
   export type RuleExecutionMinAggregateInputType = {
     id?: true
     ruleId?: true
     emailId?: true
     userId?: true
+    status?: true
+    claimedAt?: true
+    attemptCount?: true
+    lastError?: true
+    completedAt?: true
     createdAt?: true
+    updatedAt?: true
   }
 
   export type RuleExecutionMaxAggregateInputType = {
@@ -25040,7 +25096,13 @@ export namespace Prisma {
     ruleId?: true
     emailId?: true
     userId?: true
+    status?: true
+    claimedAt?: true
+    attemptCount?: true
+    lastError?: true
+    completedAt?: true
     createdAt?: true
+    updatedAt?: true
   }
 
   export type RuleExecutionCountAggregateInputType = {
@@ -25048,7 +25110,14 @@ export namespace Prisma {
     ruleId?: true
     emailId?: true
     userId?: true
+    status?: true
+    completedActions?: true
+    claimedAt?: true
+    attemptCount?: true
+    lastError?: true
+    completedAt?: true
     createdAt?: true
+    updatedAt?: true
     _all?: true
   }
 
@@ -25090,6 +25159,18 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
+     * Select which fields to average
+    **/
+    _avg?: RuleExecutionAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: RuleExecutionSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
      * Select which fields to find the minimum value
     **/
     _min?: RuleExecutionMinAggregateInputType
@@ -25120,6 +25201,8 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: RuleExecutionCountAggregateInputType | true
+    _avg?: RuleExecutionAvgAggregateInputType
+    _sum?: RuleExecutionSumAggregateInputType
     _min?: RuleExecutionMinAggregateInputType
     _max?: RuleExecutionMaxAggregateInputType
   }
@@ -25129,8 +25212,17 @@ export namespace Prisma {
     ruleId: string
     emailId: string
     userId: string
+    status: string
+    completedActions: JsonValue
+    claimedAt: Date
+    attemptCount: number
+    lastError: string | null
+    completedAt: Date | null
     createdAt: Date
+    updatedAt: Date
     _count: RuleExecutionCountAggregateOutputType | null
+    _avg: RuleExecutionAvgAggregateOutputType | null
+    _sum: RuleExecutionSumAggregateOutputType | null
     _min: RuleExecutionMinAggregateOutputType | null
     _max: RuleExecutionMaxAggregateOutputType | null
   }
@@ -25154,7 +25246,14 @@ export namespace Prisma {
     ruleId?: boolean
     emailId?: boolean
     userId?: boolean
+    status?: boolean
+    completedActions?: boolean
+    claimedAt?: boolean
+    attemptCount?: boolean
+    lastError?: boolean
+    completedAt?: boolean
     createdAt?: boolean
+    updatedAt?: boolean
   }, ExtArgs["result"]["ruleExecution"]>
 
   export type RuleExecutionSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -25162,7 +25261,14 @@ export namespace Prisma {
     ruleId?: boolean
     emailId?: boolean
     userId?: boolean
+    status?: boolean
+    completedActions?: boolean
+    claimedAt?: boolean
+    attemptCount?: boolean
+    lastError?: boolean
+    completedAt?: boolean
     createdAt?: boolean
+    updatedAt?: boolean
   }, ExtArgs["result"]["ruleExecution"]>
 
   export type RuleExecutionSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -25170,7 +25276,14 @@ export namespace Prisma {
     ruleId?: boolean
     emailId?: boolean
     userId?: boolean
+    status?: boolean
+    completedActions?: boolean
+    claimedAt?: boolean
+    attemptCount?: boolean
+    lastError?: boolean
+    completedAt?: boolean
     createdAt?: boolean
+    updatedAt?: boolean
   }, ExtArgs["result"]["ruleExecution"]>
 
   export type RuleExecutionSelectScalar = {
@@ -25178,10 +25291,17 @@ export namespace Prisma {
     ruleId?: boolean
     emailId?: boolean
     userId?: boolean
+    status?: boolean
+    completedActions?: boolean
+    claimedAt?: boolean
+    attemptCount?: boolean
+    lastError?: boolean
+    completedAt?: boolean
     createdAt?: boolean
+    updatedAt?: boolean
   }
 
-  export type RuleExecutionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "ruleId" | "emailId" | "userId" | "createdAt", ExtArgs["result"]["ruleExecution"]>
+  export type RuleExecutionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "ruleId" | "emailId" | "userId" | "status" | "completedActions" | "claimedAt" | "attemptCount" | "lastError" | "completedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["ruleExecution"]>
 
   export type $RuleExecutionPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "RuleExecution"
@@ -25191,7 +25311,14 @@ export namespace Prisma {
       ruleId: string
       emailId: string
       userId: string
+      status: string
+      completedActions: Prisma.JsonValue
+      claimedAt: Date
+      attemptCount: number
+      lastError: string | null
+      completedAt: Date | null
       createdAt: Date
+      updatedAt: Date
     }, ExtArgs["result"]["ruleExecution"]>
     composites: {}
   }
@@ -25619,7 +25746,14 @@ export namespace Prisma {
     readonly ruleId: FieldRef<"RuleExecution", 'String'>
     readonly emailId: FieldRef<"RuleExecution", 'String'>
     readonly userId: FieldRef<"RuleExecution", 'String'>
+    readonly status: FieldRef<"RuleExecution", 'String'>
+    readonly completedActions: FieldRef<"RuleExecution", 'Json'>
+    readonly claimedAt: FieldRef<"RuleExecution", 'DateTime'>
+    readonly attemptCount: FieldRef<"RuleExecution", 'Int'>
+    readonly lastError: FieldRef<"RuleExecution", 'String'>
+    readonly completedAt: FieldRef<"RuleExecution", 'DateTime'>
     readonly createdAt: FieldRef<"RuleExecution", 'DateTime'>
+    readonly updatedAt: FieldRef<"RuleExecution", 'DateTime'>
   }
     
 
@@ -40626,8 +40760,18 @@ export namespace Prisma {
 
   export type AggregatePendingEmail = {
     _count: PendingEmailCountAggregateOutputType | null
+    _avg: PendingEmailAvgAggregateOutputType | null
+    _sum: PendingEmailSumAggregateOutputType | null
     _min: PendingEmailMinAggregateOutputType | null
     _max: PendingEmailMaxAggregateOutputType | null
+  }
+
+  export type PendingEmailAvgAggregateOutputType = {
+    attemptCount: number | null
+  }
+
+  export type PendingEmailSumAggregateOutputType = {
+    attemptCount: number | null
   }
 
   export type PendingEmailMinAggregateOutputType = {
@@ -40635,7 +40779,13 @@ export namespace Prisma {
     userId: string | null
     sendAt: Date | null
     cancelled: boolean | null
+    deliveryStatus: string | null
+    claimedAt: Date | null
+    attemptCount: number | null
+    lastError: string | null
+    deliveredAt: Date | null
     createdAt: Date | null
+    updatedAt: Date | null
   }
 
   export type PendingEmailMaxAggregateOutputType = {
@@ -40643,7 +40793,13 @@ export namespace Prisma {
     userId: string | null
     sendAt: Date | null
     cancelled: boolean | null
+    deliveryStatus: string | null
+    claimedAt: Date | null
+    attemptCount: number | null
+    lastError: string | null
+    deliveredAt: Date | null
     createdAt: Date | null
+    updatedAt: Date | null
   }
 
   export type PendingEmailCountAggregateOutputType = {
@@ -40652,17 +40808,37 @@ export namespace Prisma {
     payload: number
     sendAt: number
     cancelled: number
+    deliveryStatus: number
+    claimedAt: number
+    attemptCount: number
+    lastError: number
+    deliveredAt: number
     createdAt: number
+    updatedAt: number
     _all: number
   }
 
+
+  export type PendingEmailAvgAggregateInputType = {
+    attemptCount?: true
+  }
+
+  export type PendingEmailSumAggregateInputType = {
+    attemptCount?: true
+  }
 
   export type PendingEmailMinAggregateInputType = {
     id?: true
     userId?: true
     sendAt?: true
     cancelled?: true
+    deliveryStatus?: true
+    claimedAt?: true
+    attemptCount?: true
+    lastError?: true
+    deliveredAt?: true
     createdAt?: true
+    updatedAt?: true
   }
 
   export type PendingEmailMaxAggregateInputType = {
@@ -40670,7 +40846,13 @@ export namespace Prisma {
     userId?: true
     sendAt?: true
     cancelled?: true
+    deliveryStatus?: true
+    claimedAt?: true
+    attemptCount?: true
+    lastError?: true
+    deliveredAt?: true
     createdAt?: true
+    updatedAt?: true
   }
 
   export type PendingEmailCountAggregateInputType = {
@@ -40679,7 +40861,13 @@ export namespace Prisma {
     payload?: true
     sendAt?: true
     cancelled?: true
+    deliveryStatus?: true
+    claimedAt?: true
+    attemptCount?: true
+    lastError?: true
+    deliveredAt?: true
     createdAt?: true
+    updatedAt?: true
     _all?: true
   }
 
@@ -40721,6 +40909,18 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
+     * Select which fields to average
+    **/
+    _avg?: PendingEmailAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: PendingEmailSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
      * Select which fields to find the minimum value
     **/
     _min?: PendingEmailMinAggregateInputType
@@ -40751,6 +40951,8 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: PendingEmailCountAggregateInputType | true
+    _avg?: PendingEmailAvgAggregateInputType
+    _sum?: PendingEmailSumAggregateInputType
     _min?: PendingEmailMinAggregateInputType
     _max?: PendingEmailMaxAggregateInputType
   }
@@ -40761,8 +40963,16 @@ export namespace Prisma {
     payload: JsonValue
     sendAt: Date
     cancelled: boolean
+    deliveryStatus: string
+    claimedAt: Date | null
+    attemptCount: number
+    lastError: string | null
+    deliveredAt: Date | null
     createdAt: Date
+    updatedAt: Date
     _count: PendingEmailCountAggregateOutputType | null
+    _avg: PendingEmailAvgAggregateOutputType | null
+    _sum: PendingEmailSumAggregateOutputType | null
     _min: PendingEmailMinAggregateOutputType | null
     _max: PendingEmailMaxAggregateOutputType | null
   }
@@ -40787,7 +40997,13 @@ export namespace Prisma {
     payload?: boolean
     sendAt?: boolean
     cancelled?: boolean
+    deliveryStatus?: boolean
+    claimedAt?: boolean
+    attemptCount?: boolean
+    lastError?: boolean
+    deliveredAt?: boolean
     createdAt?: boolean
+    updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["pendingEmail"]>
 
@@ -40797,7 +41013,13 @@ export namespace Prisma {
     payload?: boolean
     sendAt?: boolean
     cancelled?: boolean
+    deliveryStatus?: boolean
+    claimedAt?: boolean
+    attemptCount?: boolean
+    lastError?: boolean
+    deliveredAt?: boolean
     createdAt?: boolean
+    updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["pendingEmail"]>
 
@@ -40807,7 +41029,13 @@ export namespace Prisma {
     payload?: boolean
     sendAt?: boolean
     cancelled?: boolean
+    deliveryStatus?: boolean
+    claimedAt?: boolean
+    attemptCount?: boolean
+    lastError?: boolean
+    deliveredAt?: boolean
     createdAt?: boolean
+    updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["pendingEmail"]>
 
@@ -40817,10 +41045,16 @@ export namespace Prisma {
     payload?: boolean
     sendAt?: boolean
     cancelled?: boolean
+    deliveryStatus?: boolean
+    claimedAt?: boolean
+    attemptCount?: boolean
+    lastError?: boolean
+    deliveredAt?: boolean
     createdAt?: boolean
+    updatedAt?: boolean
   }
 
-  export type PendingEmailOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "payload" | "sendAt" | "cancelled" | "createdAt", ExtArgs["result"]["pendingEmail"]>
+  export type PendingEmailOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "payload" | "sendAt" | "cancelled" | "deliveryStatus" | "claimedAt" | "attemptCount" | "lastError" | "deliveredAt" | "createdAt" | "updatedAt", ExtArgs["result"]["pendingEmail"]>
   export type PendingEmailInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
   }
@@ -40842,7 +41076,13 @@ export namespace Prisma {
       payload: Prisma.JsonValue
       sendAt: Date
       cancelled: boolean
+      deliveryStatus: string
+      claimedAt: Date | null
+      attemptCount: number
+      lastError: string | null
+      deliveredAt: Date | null
       createdAt: Date
+      updatedAt: Date
     }, ExtArgs["result"]["pendingEmail"]>
     composites: {}
   }
@@ -41272,7 +41512,13 @@ export namespace Prisma {
     readonly payload: FieldRef<"PendingEmail", 'Json'>
     readonly sendAt: FieldRef<"PendingEmail", 'DateTime'>
     readonly cancelled: FieldRef<"PendingEmail", 'Boolean'>
+    readonly deliveryStatus: FieldRef<"PendingEmail", 'String'>
+    readonly claimedAt: FieldRef<"PendingEmail", 'DateTime'>
+    readonly attemptCount: FieldRef<"PendingEmail", 'Int'>
+    readonly lastError: FieldRef<"PendingEmail", 'String'>
+    readonly deliveredAt: FieldRef<"PendingEmail", 'DateTime'>
     readonly createdAt: FieldRef<"PendingEmail", 'DateTime'>
+    readonly updatedAt: FieldRef<"PendingEmail", 'DateTime'>
   }
     
 
@@ -44041,6 +44287,7 @@ export namespace Prisma {
     scheduledNotificationSent: 'scheduledNotificationSent',
     lastScheduleAttemptAt: 'lastScheduleAttemptAt',
     scheduleAttemptCount: 'scheduleAttemptCount',
+    scheduleLastError: 'scheduleLastError',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -44223,7 +44470,14 @@ export namespace Prisma {
     ruleId: 'ruleId',
     emailId: 'emailId',
     userId: 'userId',
-    createdAt: 'createdAt'
+    status: 'status',
+    completedActions: 'completedActions',
+    claimedAt: 'claimedAt',
+    attemptCount: 'attemptCount',
+    lastError: 'lastError',
+    completedAt: 'completedAt',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
   };
 
   export type RuleExecutionScalarFieldEnum = (typeof RuleExecutionScalarFieldEnum)[keyof typeof RuleExecutionScalarFieldEnum]
@@ -44442,7 +44696,13 @@ export namespace Prisma {
     payload: 'payload',
     sendAt: 'sendAt',
     cancelled: 'cancelled',
-    createdAt: 'createdAt'
+    deliveryStatus: 'deliveryStatus',
+    claimedAt: 'claimedAt',
+    attemptCount: 'attemptCount',
+    lastError: 'lastError',
+    deliveredAt: 'deliveredAt',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
   };
 
   export type PendingEmailScalarFieldEnum = (typeof PendingEmailScalarFieldEnum)[keyof typeof PendingEmailScalarFieldEnum]
@@ -45391,6 +45651,7 @@ export namespace Prisma {
     scheduledNotificationSent?: BoolFilter<"Draft"> | boolean
     lastScheduleAttemptAt?: DateTimeNullableFilter<"Draft"> | Date | string | null
     scheduleAttemptCount?: IntFilter<"Draft"> | number
+    scheduleLastError?: StringNullableFilter<"Draft"> | string | null
     createdAt?: DateTimeFilter<"Draft"> | Date | string
     updatedAt?: DateTimeFilter<"Draft"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -45421,6 +45682,7 @@ export namespace Prisma {
     scheduledNotificationSent?: SortOrder
     lastScheduleAttemptAt?: SortOrderInput | SortOrder
     scheduleAttemptCount?: SortOrder
+    scheduleLastError?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     user?: UserOrderByWithRelationInput
@@ -45454,6 +45716,7 @@ export namespace Prisma {
     scheduledNotificationSent?: BoolFilter<"Draft"> | boolean
     lastScheduleAttemptAt?: DateTimeNullableFilter<"Draft"> | Date | string | null
     scheduleAttemptCount?: IntFilter<"Draft"> | number
+    scheduleLastError?: StringNullableFilter<"Draft"> | string | null
     createdAt?: DateTimeFilter<"Draft"> | Date | string
     updatedAt?: DateTimeFilter<"Draft"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -45484,6 +45747,7 @@ export namespace Prisma {
     scheduledNotificationSent?: SortOrder
     lastScheduleAttemptAt?: SortOrderInput | SortOrder
     scheduleAttemptCount?: SortOrder
+    scheduleLastError?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: DraftCountOrderByAggregateInput
@@ -45521,6 +45785,7 @@ export namespace Prisma {
     scheduledNotificationSent?: BoolWithAggregatesFilter<"Draft"> | boolean
     lastScheduleAttemptAt?: DateTimeNullableWithAggregatesFilter<"Draft"> | Date | string | null
     scheduleAttemptCount?: IntWithAggregatesFilter<"Draft"> | number
+    scheduleLastError?: StringNullableWithAggregatesFilter<"Draft"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Draft"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Draft"> | Date | string
   }
@@ -45652,10 +45917,11 @@ export namespace Prisma {
   }
 
   export type CachedFolderWhereUniqueInput = Prisma.AtLeast<{
-    id?: string
+    userId_homeAccountId_id?: CachedFolderUserIdHomeAccountIdIdCompoundUniqueInput
     AND?: CachedFolderWhereInput | CachedFolderWhereInput[]
     OR?: CachedFolderWhereInput[]
     NOT?: CachedFolderWhereInput | CachedFolderWhereInput[]
+    id?: StringFilter<"CachedFolder"> | string
     userId?: StringFilter<"CachedFolder"> | string
     homeAccountId?: StringFilter<"CachedFolder"> | string
     displayName?: StringFilter<"CachedFolder"> | string
@@ -45666,7 +45932,7 @@ export namespace Prisma {
     syncedAt?: DateTimeFilter<"CachedFolder"> | Date | string
     updatedAt?: DateTimeFilter<"CachedFolder"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
-  }, "id">
+  }, "userId_homeAccountId_id">
 
   export type CachedFolderOrderByWithAggregationInput = {
     id?: SortOrder
@@ -45766,10 +46032,11 @@ export namespace Prisma {
   }
 
   export type CachedEmailWhereUniqueInput = Prisma.AtLeast<{
-    id?: string
+    userId_homeAccountId_id?: CachedEmailUserIdHomeAccountIdIdCompoundUniqueInput
     AND?: CachedEmailWhereInput | CachedEmailWhereInput[]
     OR?: CachedEmailWhereInput[]
     NOT?: CachedEmailWhereInput | CachedEmailWhereInput[]
+    id?: StringFilter<"CachedEmail"> | string
     userId?: StringFilter<"CachedEmail"> | string
     homeAccountId?: StringFilter<"CachedEmail"> | string
     folderId?: StringFilter<"CachedEmail"> | string
@@ -45796,7 +46063,7 @@ export namespace Prisma {
     syncedAt?: DateTimeFilter<"CachedEmail"> | Date | string
     updatedAt?: DateTimeFilter<"CachedEmail"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
-  }, "id">
+  }, "userId_homeAccountId_id">
 
   export type CachedEmailOrderByWithAggregationInput = {
     id?: SortOrder
@@ -45936,10 +46203,11 @@ export namespace Prisma {
   }
 
   export type CachedCalendarEventWhereUniqueInput = Prisma.AtLeast<{
-    id?: string
+    userId_homeAccountId_id?: CachedCalendarEventUserIdHomeAccountIdIdCompoundUniqueInput
     AND?: CachedCalendarEventWhereInput | CachedCalendarEventWhereInput[]
     OR?: CachedCalendarEventWhereInput[]
     NOT?: CachedCalendarEventWhereInput | CachedCalendarEventWhereInput[]
+    id?: StringFilter<"CachedCalendarEvent"> | string
     userId?: StringFilter<"CachedCalendarEvent"> | string
     homeAccountId?: StringFilter<"CachedCalendarEvent"> | string
     subject?: StringFilter<"CachedCalendarEvent"> | string
@@ -45971,7 +46239,7 @@ export namespace Prisma {
     syncedAt?: DateTimeFilter<"CachedCalendarEvent"> | Date | string
     updatedAt?: DateTimeFilter<"CachedCalendarEvent"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
-  }, "id">
+  }, "userId_homeAccountId_id">
 
   export type CachedCalendarEventOrderByWithAggregationInput = {
     id?: SortOrder
@@ -46115,10 +46383,11 @@ export namespace Prisma {
   }
 
   export type CachedContactWhereUniqueInput = Prisma.AtLeast<{
-    id?: string
+    userId_homeAccountId_id?: CachedContactUserIdHomeAccountIdIdCompoundUniqueInput
     AND?: CachedContactWhereInput | CachedContactWhereInput[]
     OR?: CachedContactWhereInput[]
     NOT?: CachedContactWhereInput | CachedContactWhereInput[]
+    id?: StringFilter<"CachedContact"> | string
     userId?: StringFilter<"CachedContact"> | string
     homeAccountId?: StringFilter<"CachedContact"> | string
     displayName?: StringFilter<"CachedContact"> | string
@@ -46146,7 +46415,7 @@ export namespace Prisma {
     syncedAt?: DateTimeFilter<"CachedContact"> | Date | string
     updatedAt?: DateTimeFilter<"CachedContact"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
-  }, "id">
+  }, "userId_homeAccountId_id">
 
   export type CachedContactOrderByWithAggregationInput = {
     id?: SortOrder
@@ -46388,7 +46657,14 @@ export namespace Prisma {
     ruleId?: StringFilter<"RuleExecution"> | string
     emailId?: StringFilter<"RuleExecution"> | string
     userId?: StringFilter<"RuleExecution"> | string
+    status?: StringFilter<"RuleExecution"> | string
+    completedActions?: JsonFilter<"RuleExecution">
+    claimedAt?: DateTimeFilter<"RuleExecution"> | Date | string
+    attemptCount?: IntFilter<"RuleExecution"> | number
+    lastError?: StringNullableFilter<"RuleExecution"> | string | null
+    completedAt?: DateTimeNullableFilter<"RuleExecution"> | Date | string | null
     createdAt?: DateTimeFilter<"RuleExecution"> | Date | string
+    updatedAt?: DateTimeFilter<"RuleExecution"> | Date | string
   }
 
   export type RuleExecutionOrderByWithRelationInput = {
@@ -46396,7 +46672,14 @@ export namespace Prisma {
     ruleId?: SortOrder
     emailId?: SortOrder
     userId?: SortOrder
+    status?: SortOrder
+    completedActions?: SortOrder
+    claimedAt?: SortOrder
+    attemptCount?: SortOrder
+    lastError?: SortOrderInput | SortOrder
+    completedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type RuleExecutionWhereUniqueInput = Prisma.AtLeast<{
@@ -46408,7 +46691,14 @@ export namespace Prisma {
     ruleId?: StringFilter<"RuleExecution"> | string
     emailId?: StringFilter<"RuleExecution"> | string
     userId?: StringFilter<"RuleExecution"> | string
+    status?: StringFilter<"RuleExecution"> | string
+    completedActions?: JsonFilter<"RuleExecution">
+    claimedAt?: DateTimeFilter<"RuleExecution"> | Date | string
+    attemptCount?: IntFilter<"RuleExecution"> | number
+    lastError?: StringNullableFilter<"RuleExecution"> | string | null
+    completedAt?: DateTimeNullableFilter<"RuleExecution"> | Date | string | null
     createdAt?: DateTimeFilter<"RuleExecution"> | Date | string
+    updatedAt?: DateTimeFilter<"RuleExecution"> | Date | string
   }, "id" | "ruleId_emailId">
 
   export type RuleExecutionOrderByWithAggregationInput = {
@@ -46416,10 +46706,19 @@ export namespace Prisma {
     ruleId?: SortOrder
     emailId?: SortOrder
     userId?: SortOrder
+    status?: SortOrder
+    completedActions?: SortOrder
+    claimedAt?: SortOrder
+    attemptCount?: SortOrder
+    lastError?: SortOrderInput | SortOrder
+    completedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
     _count?: RuleExecutionCountOrderByAggregateInput
+    _avg?: RuleExecutionAvgOrderByAggregateInput
     _max?: RuleExecutionMaxOrderByAggregateInput
     _min?: RuleExecutionMinOrderByAggregateInput
+    _sum?: RuleExecutionSumOrderByAggregateInput
   }
 
   export type RuleExecutionScalarWhereWithAggregatesInput = {
@@ -46430,7 +46729,14 @@ export namespace Prisma {
     ruleId?: StringWithAggregatesFilter<"RuleExecution"> | string
     emailId?: StringWithAggregatesFilter<"RuleExecution"> | string
     userId?: StringWithAggregatesFilter<"RuleExecution"> | string
+    status?: StringWithAggregatesFilter<"RuleExecution"> | string
+    completedActions?: JsonWithAggregatesFilter<"RuleExecution">
+    claimedAt?: DateTimeWithAggregatesFilter<"RuleExecution"> | Date | string
+    attemptCount?: IntWithAggregatesFilter<"RuleExecution"> | number
+    lastError?: StringNullableWithAggregatesFilter<"RuleExecution"> | string | null
+    completedAt?: DateTimeNullableWithAggregatesFilter<"RuleExecution"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"RuleExecution"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"RuleExecution"> | Date | string
   }
 
   export type EmailAttachmentWhereInput = {
@@ -47489,7 +47795,13 @@ export namespace Prisma {
     payload?: JsonFilter<"PendingEmail">
     sendAt?: DateTimeFilter<"PendingEmail"> | Date | string
     cancelled?: BoolFilter<"PendingEmail"> | boolean
+    deliveryStatus?: StringFilter<"PendingEmail"> | string
+    claimedAt?: DateTimeNullableFilter<"PendingEmail"> | Date | string | null
+    attemptCount?: IntFilter<"PendingEmail"> | number
+    lastError?: StringNullableFilter<"PendingEmail"> | string | null
+    deliveredAt?: DateTimeNullableFilter<"PendingEmail"> | Date | string | null
     createdAt?: DateTimeFilter<"PendingEmail"> | Date | string
+    updatedAt?: DateTimeFilter<"PendingEmail"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }
 
@@ -47499,7 +47811,13 @@ export namespace Prisma {
     payload?: SortOrder
     sendAt?: SortOrder
     cancelled?: SortOrder
+    deliveryStatus?: SortOrder
+    claimedAt?: SortOrderInput | SortOrder
+    attemptCount?: SortOrder
+    lastError?: SortOrderInput | SortOrder
+    deliveredAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
     user?: UserOrderByWithRelationInput
   }
 
@@ -47512,7 +47830,13 @@ export namespace Prisma {
     payload?: JsonFilter<"PendingEmail">
     sendAt?: DateTimeFilter<"PendingEmail"> | Date | string
     cancelled?: BoolFilter<"PendingEmail"> | boolean
+    deliveryStatus?: StringFilter<"PendingEmail"> | string
+    claimedAt?: DateTimeNullableFilter<"PendingEmail"> | Date | string | null
+    attemptCount?: IntFilter<"PendingEmail"> | number
+    lastError?: StringNullableFilter<"PendingEmail"> | string | null
+    deliveredAt?: DateTimeNullableFilter<"PendingEmail"> | Date | string | null
     createdAt?: DateTimeFilter<"PendingEmail"> | Date | string
+    updatedAt?: DateTimeFilter<"PendingEmail"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }, "id">
 
@@ -47522,10 +47846,18 @@ export namespace Prisma {
     payload?: SortOrder
     sendAt?: SortOrder
     cancelled?: SortOrder
+    deliveryStatus?: SortOrder
+    claimedAt?: SortOrderInput | SortOrder
+    attemptCount?: SortOrder
+    lastError?: SortOrderInput | SortOrder
+    deliveredAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
     _count?: PendingEmailCountOrderByAggregateInput
+    _avg?: PendingEmailAvgOrderByAggregateInput
     _max?: PendingEmailMaxOrderByAggregateInput
     _min?: PendingEmailMinOrderByAggregateInput
+    _sum?: PendingEmailSumOrderByAggregateInput
   }
 
   export type PendingEmailScalarWhereWithAggregatesInput = {
@@ -47537,7 +47869,13 @@ export namespace Prisma {
     payload?: JsonWithAggregatesFilter<"PendingEmail">
     sendAt?: DateTimeWithAggregatesFilter<"PendingEmail"> | Date | string
     cancelled?: BoolWithAggregatesFilter<"PendingEmail"> | boolean
+    deliveryStatus?: StringWithAggregatesFilter<"PendingEmail"> | string
+    claimedAt?: DateTimeNullableWithAggregatesFilter<"PendingEmail"> | Date | string | null
+    attemptCount?: IntWithAggregatesFilter<"PendingEmail"> | number
+    lastError?: StringNullableWithAggregatesFilter<"PendingEmail"> | string | null
+    deliveredAt?: DateTimeNullableWithAggregatesFilter<"PendingEmail"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"PendingEmail"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"PendingEmail"> | Date | string
   }
 
   export type AiEmailInsightWhereInput = {
@@ -48567,6 +48905,7 @@ export namespace Prisma {
     scheduledNotificationSent?: boolean
     lastScheduleAttemptAt?: Date | string | null
     scheduleAttemptCount?: number
+    scheduleLastError?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutDraftsInput
@@ -48597,6 +48936,7 @@ export namespace Prisma {
     scheduledNotificationSent?: boolean
     lastScheduleAttemptAt?: Date | string | null
     scheduleAttemptCount?: number
+    scheduleLastError?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -48625,6 +48965,7 @@ export namespace Prisma {
     scheduledNotificationSent?: BoolFieldUpdateOperationsInput | boolean
     lastScheduleAttemptAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     scheduleAttemptCount?: IntFieldUpdateOperationsInput | number
+    scheduleLastError?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutDraftsNestedInput
@@ -48655,6 +48996,7 @@ export namespace Prisma {
     scheduledNotificationSent?: BoolFieldUpdateOperationsInput | boolean
     lastScheduleAttemptAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     scheduleAttemptCount?: IntFieldUpdateOperationsInput | number
+    scheduleLastError?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -48684,6 +49026,7 @@ export namespace Prisma {
     scheduledNotificationSent?: boolean
     lastScheduleAttemptAt?: Date | string | null
     scheduleAttemptCount?: number
+    scheduleLastError?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -48712,6 +49055,7 @@ export namespace Prisma {
     scheduledNotificationSent?: BoolFieldUpdateOperationsInput | boolean
     lastScheduleAttemptAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     scheduleAttemptCount?: IntFieldUpdateOperationsInput | number
+    scheduleLastError?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -48741,6 +49085,7 @@ export namespace Prisma {
     scheduledNotificationSent?: BoolFieldUpdateOperationsInput | boolean
     lastScheduleAttemptAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     scheduleAttemptCount?: IntFieldUpdateOperationsInput | number
+    scheduleLastError?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -49787,7 +50132,14 @@ export namespace Prisma {
     ruleId: string
     emailId: string
     userId: string
+    status?: string
+    completedActions?: JsonNullValueInput | InputJsonValue
+    claimedAt?: Date | string
+    attemptCount?: number
+    lastError?: string | null
+    completedAt?: Date | string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type RuleExecutionUncheckedCreateInput = {
@@ -49795,7 +50147,14 @@ export namespace Prisma {
     ruleId: string
     emailId: string
     userId: string
+    status?: string
+    completedActions?: JsonNullValueInput | InputJsonValue
+    claimedAt?: Date | string
+    attemptCount?: number
+    lastError?: string | null
+    completedAt?: Date | string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type RuleExecutionUpdateInput = {
@@ -49803,7 +50162,14 @@ export namespace Prisma {
     ruleId?: StringFieldUpdateOperationsInput | string
     emailId?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    completedActions?: JsonNullValueInput | InputJsonValue
+    claimedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    attemptCount?: IntFieldUpdateOperationsInput | number
+    lastError?: NullableStringFieldUpdateOperationsInput | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type RuleExecutionUncheckedUpdateInput = {
@@ -49811,7 +50177,14 @@ export namespace Prisma {
     ruleId?: StringFieldUpdateOperationsInput | string
     emailId?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    completedActions?: JsonNullValueInput | InputJsonValue
+    claimedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    attemptCount?: IntFieldUpdateOperationsInput | number
+    lastError?: NullableStringFieldUpdateOperationsInput | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type RuleExecutionCreateManyInput = {
@@ -49819,7 +50192,14 @@ export namespace Prisma {
     ruleId: string
     emailId: string
     userId: string
+    status?: string
+    completedActions?: JsonNullValueInput | InputJsonValue
+    claimedAt?: Date | string
+    attemptCount?: number
+    lastError?: string | null
+    completedAt?: Date | string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type RuleExecutionUpdateManyMutationInput = {
@@ -49827,7 +50207,14 @@ export namespace Prisma {
     ruleId?: StringFieldUpdateOperationsInput | string
     emailId?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    completedActions?: JsonNullValueInput | InputJsonValue
+    claimedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    attemptCount?: IntFieldUpdateOperationsInput | number
+    lastError?: NullableStringFieldUpdateOperationsInput | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type RuleExecutionUncheckedUpdateManyInput = {
@@ -49835,7 +50222,14 @@ export namespace Prisma {
     ruleId?: StringFieldUpdateOperationsInput | string
     emailId?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    completedActions?: JsonNullValueInput | InputJsonValue
+    claimedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    attemptCount?: IntFieldUpdateOperationsInput | number
+    lastError?: NullableStringFieldUpdateOperationsInput | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type EmailAttachmentCreateInput = {
@@ -51006,7 +51400,13 @@ export namespace Prisma {
     payload: JsonNullValueInput | InputJsonValue
     sendAt: Date | string
     cancelled?: boolean
+    deliveryStatus?: string
+    claimedAt?: Date | string | null
+    attemptCount?: number
+    lastError?: string | null
+    deliveredAt?: Date | string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
     user: UserCreateNestedOneWithoutPendingEmailsInput
   }
 
@@ -51016,7 +51416,13 @@ export namespace Prisma {
     payload: JsonNullValueInput | InputJsonValue
     sendAt: Date | string
     cancelled?: boolean
+    deliveryStatus?: string
+    claimedAt?: Date | string | null
+    attemptCount?: number
+    lastError?: string | null
+    deliveredAt?: Date | string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type PendingEmailUpdateInput = {
@@ -51024,7 +51430,13 @@ export namespace Prisma {
     payload?: JsonNullValueInput | InputJsonValue
     sendAt?: DateTimeFieldUpdateOperationsInput | Date | string
     cancelled?: BoolFieldUpdateOperationsInput | boolean
+    deliveryStatus?: StringFieldUpdateOperationsInput | string
+    claimedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    attemptCount?: IntFieldUpdateOperationsInput | number
+    lastError?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutPendingEmailsNestedInput
   }
 
@@ -51034,7 +51446,13 @@ export namespace Prisma {
     payload?: JsonNullValueInput | InputJsonValue
     sendAt?: DateTimeFieldUpdateOperationsInput | Date | string
     cancelled?: BoolFieldUpdateOperationsInput | boolean
+    deliveryStatus?: StringFieldUpdateOperationsInput | string
+    claimedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    attemptCount?: IntFieldUpdateOperationsInput | number
+    lastError?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type PendingEmailCreateManyInput = {
@@ -51043,7 +51461,13 @@ export namespace Prisma {
     payload: JsonNullValueInput | InputJsonValue
     sendAt: Date | string
     cancelled?: boolean
+    deliveryStatus?: string
+    claimedAt?: Date | string | null
+    attemptCount?: number
+    lastError?: string | null
+    deliveredAt?: Date | string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type PendingEmailUpdateManyMutationInput = {
@@ -51051,7 +51475,13 @@ export namespace Prisma {
     payload?: JsonNullValueInput | InputJsonValue
     sendAt?: DateTimeFieldUpdateOperationsInput | Date | string
     cancelled?: BoolFieldUpdateOperationsInput | boolean
+    deliveryStatus?: StringFieldUpdateOperationsInput | string
+    claimedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    attemptCount?: IntFieldUpdateOperationsInput | number
+    lastError?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type PendingEmailUncheckedUpdateManyInput = {
@@ -51060,7 +51490,13 @@ export namespace Prisma {
     payload?: JsonNullValueInput | InputJsonValue
     sendAt?: DateTimeFieldUpdateOperationsInput | Date | string
     cancelled?: BoolFieldUpdateOperationsInput | boolean
+    deliveryStatus?: StringFieldUpdateOperationsInput | string
+    claimedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    attemptCount?: IntFieldUpdateOperationsInput | number
+    lastError?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type AiEmailInsightCreateInput = {
@@ -52157,6 +52593,7 @@ export namespace Prisma {
     scheduledNotificationSent?: SortOrder
     lastScheduleAttemptAt?: SortOrder
     scheduleAttemptCount?: SortOrder
+    scheduleLastError?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -52185,6 +52622,7 @@ export namespace Prisma {
     scheduledNotificationSent?: SortOrder
     lastScheduleAttemptAt?: SortOrder
     scheduleAttemptCount?: SortOrder
+    scheduleLastError?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -52209,6 +52647,7 @@ export namespace Prisma {
     scheduledNotificationSent?: SortOrder
     lastScheduleAttemptAt?: SortOrder
     scheduleAttemptCount?: SortOrder
+    scheduleLastError?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -52291,6 +52730,12 @@ export namespace Prisma {
     updatedAt?: SortOrder
   }
 
+  export type CachedFolderUserIdHomeAccountIdIdCompoundUniqueInput = {
+    userId: string
+    homeAccountId: string
+    id: string
+  }
+
   export type CachedFolderCountOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
@@ -52338,6 +52783,12 @@ export namespace Prisma {
   export type CachedFolderSumOrderByAggregateInput = {
     unreadCount?: SortOrder
     totalCount?: SortOrder
+  }
+
+  export type CachedEmailUserIdHomeAccountIdIdCompoundUniqueInput = {
+    userId: string
+    homeAccountId: string
+    id: string
   }
 
   export type CachedEmailCountOrderByAggregateInput = {
@@ -52432,6 +52883,12 @@ export namespace Prisma {
     gt?: number | IntFieldRefInput<$PrismaModel>
     gte?: number | IntFieldRefInput<$PrismaModel>
     not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type CachedCalendarEventUserIdHomeAccountIdIdCompoundUniqueInput = {
+    userId: string
+    homeAccountId: string
+    id: string
   }
 
   export type CachedCalendarEventCountOrderByAggregateInput = {
@@ -52556,6 +53013,12 @@ export namespace Prisma {
     _sum?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedIntNullableFilter<$PrismaModel>
     _max?: NestedIntNullableFilter<$PrismaModel>
+  }
+
+  export type CachedContactUserIdHomeAccountIdIdCompoundUniqueInput = {
+    userId: string
+    homeAccountId: string
+    id: string
   }
 
   export type CachedContactCountOrderByAggregateInput = {
@@ -52741,7 +53204,18 @@ export namespace Prisma {
     ruleId?: SortOrder
     emailId?: SortOrder
     userId?: SortOrder
+    status?: SortOrder
+    completedActions?: SortOrder
+    claimedAt?: SortOrder
+    attemptCount?: SortOrder
+    lastError?: SortOrder
+    completedAt?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type RuleExecutionAvgOrderByAggregateInput = {
+    attemptCount?: SortOrder
   }
 
   export type RuleExecutionMaxOrderByAggregateInput = {
@@ -52749,7 +53223,13 @@ export namespace Prisma {
     ruleId?: SortOrder
     emailId?: SortOrder
     userId?: SortOrder
+    status?: SortOrder
+    claimedAt?: SortOrder
+    attemptCount?: SortOrder
+    lastError?: SortOrder
+    completedAt?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type RuleExecutionMinOrderByAggregateInput = {
@@ -52757,7 +53237,17 @@ export namespace Prisma {
     ruleId?: SortOrder
     emailId?: SortOrder
     userId?: SortOrder
+    status?: SortOrder
+    claimedAt?: SortOrder
+    attemptCount?: SortOrder
+    lastError?: SortOrder
+    completedAt?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type RuleExecutionSumOrderByAggregateInput = {
+    attemptCount?: SortOrder
   }
 
   export type EmailAttachmentCountOrderByAggregateInput = {
@@ -53318,7 +53808,17 @@ export namespace Prisma {
     payload?: SortOrder
     sendAt?: SortOrder
     cancelled?: SortOrder
+    deliveryStatus?: SortOrder
+    claimedAt?: SortOrder
+    attemptCount?: SortOrder
+    lastError?: SortOrder
+    deliveredAt?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type PendingEmailAvgOrderByAggregateInput = {
+    attemptCount?: SortOrder
   }
 
   export type PendingEmailMaxOrderByAggregateInput = {
@@ -53326,7 +53826,13 @@ export namespace Prisma {
     userId?: SortOrder
     sendAt?: SortOrder
     cancelled?: SortOrder
+    deliveryStatus?: SortOrder
+    claimedAt?: SortOrder
+    attemptCount?: SortOrder
+    lastError?: SortOrder
+    deliveredAt?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type PendingEmailMinOrderByAggregateInput = {
@@ -53334,7 +53840,17 @@ export namespace Prisma {
     userId?: SortOrder
     sendAt?: SortOrder
     cancelled?: SortOrder
+    deliveryStatus?: SortOrder
+    claimedAt?: SortOrder
+    attemptCount?: SortOrder
+    lastError?: SortOrder
+    deliveredAt?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type PendingEmailSumOrderByAggregateInput = {
+    attemptCount?: SortOrder
   }
 
   export type AiEmailInsightUserIdMessageIdCompoundUniqueInput = {
@@ -56118,6 +56634,7 @@ export namespace Prisma {
     scheduledNotificationSent?: boolean
     lastScheduleAttemptAt?: Date | string | null
     scheduleAttemptCount?: number
+    scheduleLastError?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -56146,6 +56663,7 @@ export namespace Prisma {
     scheduledNotificationSent?: boolean
     lastScheduleAttemptAt?: Date | string | null
     scheduleAttemptCount?: number
+    scheduleLastError?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -56801,7 +57319,13 @@ export namespace Prisma {
     payload: JsonNullValueInput | InputJsonValue
     sendAt: Date | string
     cancelled?: boolean
+    deliveryStatus?: string
+    claimedAt?: Date | string | null
+    attemptCount?: number
+    lastError?: string | null
+    deliveredAt?: Date | string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type PendingEmailUncheckedCreateWithoutUserInput = {
@@ -56809,7 +57333,13 @@ export namespace Prisma {
     payload: JsonNullValueInput | InputJsonValue
     sendAt: Date | string
     cancelled?: boolean
+    deliveryStatus?: string
+    claimedAt?: Date | string | null
+    attemptCount?: number
+    lastError?: string | null
+    deliveredAt?: Date | string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type PendingEmailCreateOrConnectWithoutUserInput = {
@@ -57162,6 +57692,7 @@ export namespace Prisma {
     scheduledNotificationSent?: BoolFilter<"Draft"> | boolean
     lastScheduleAttemptAt?: DateTimeNullableFilter<"Draft"> | Date | string | null
     scheduleAttemptCount?: IntFilter<"Draft"> | number
+    scheduleLastError?: StringNullableFilter<"Draft"> | string | null
     createdAt?: DateTimeFilter<"Draft"> | Date | string
     updatedAt?: DateTimeFilter<"Draft"> | Date | string
   }
@@ -57749,7 +58280,13 @@ export namespace Prisma {
     payload?: JsonFilter<"PendingEmail">
     sendAt?: DateTimeFilter<"PendingEmail"> | Date | string
     cancelled?: BoolFilter<"PendingEmail"> | boolean
+    deliveryStatus?: StringFilter<"PendingEmail"> | string
+    claimedAt?: DateTimeNullableFilter<"PendingEmail"> | Date | string | null
+    attemptCount?: IntFilter<"PendingEmail"> | number
+    lastError?: StringNullableFilter<"PendingEmail"> | string | null
+    deliveredAt?: DateTimeNullableFilter<"PendingEmail"> | Date | string | null
     createdAt?: DateTimeFilter<"PendingEmail"> | Date | string
+    updatedAt?: DateTimeFilter<"PendingEmail"> | Date | string
   }
 
   export type FollowUpReminderUpsertWithWhereUniqueWithoutUserInput = {
@@ -63746,6 +64283,7 @@ export namespace Prisma {
     scheduledNotificationSent?: boolean
     lastScheduleAttemptAt?: Date | string | null
     scheduleAttemptCount?: number
+    scheduleLastError?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -63993,7 +64531,13 @@ export namespace Prisma {
     payload: JsonNullValueInput | InputJsonValue
     sendAt: Date | string
     cancelled?: boolean
+    deliveryStatus?: string
+    claimedAt?: Date | string | null
+    attemptCount?: number
+    lastError?: string | null
+    deliveredAt?: Date | string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type FollowUpReminderCreateManyUserInput = {
@@ -64250,6 +64794,7 @@ export namespace Prisma {
     scheduledNotificationSent?: BoolFieldUpdateOperationsInput | boolean
     lastScheduleAttemptAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     scheduleAttemptCount?: IntFieldUpdateOperationsInput | number
+    scheduleLastError?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -64278,6 +64823,7 @@ export namespace Prisma {
     scheduledNotificationSent?: BoolFieldUpdateOperationsInput | boolean
     lastScheduleAttemptAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     scheduleAttemptCount?: IntFieldUpdateOperationsInput | number
+    scheduleLastError?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -64306,6 +64852,7 @@ export namespace Prisma {
     scheduledNotificationSent?: BoolFieldUpdateOperationsInput | boolean
     lastScheduleAttemptAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     scheduleAttemptCount?: IntFieldUpdateOperationsInput | number
+    scheduleLastError?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -65029,7 +65576,13 @@ export namespace Prisma {
     payload?: JsonNullValueInput | InputJsonValue
     sendAt?: DateTimeFieldUpdateOperationsInput | Date | string
     cancelled?: BoolFieldUpdateOperationsInput | boolean
+    deliveryStatus?: StringFieldUpdateOperationsInput | string
+    claimedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    attemptCount?: IntFieldUpdateOperationsInput | number
+    lastError?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type PendingEmailUncheckedUpdateWithoutUserInput = {
@@ -65037,7 +65590,13 @@ export namespace Prisma {
     payload?: JsonNullValueInput | InputJsonValue
     sendAt?: DateTimeFieldUpdateOperationsInput | Date | string
     cancelled?: BoolFieldUpdateOperationsInput | boolean
+    deliveryStatus?: StringFieldUpdateOperationsInput | string
+    claimedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    attemptCount?: IntFieldUpdateOperationsInput | number
+    lastError?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type PendingEmailUncheckedUpdateManyWithoutUserInput = {
@@ -65045,7 +65604,13 @@ export namespace Prisma {
     payload?: JsonNullValueInput | InputJsonValue
     sendAt?: DateTimeFieldUpdateOperationsInput | Date | string
     cancelled?: BoolFieldUpdateOperationsInput | boolean
+    deliveryStatus?: StringFieldUpdateOperationsInput | string
+    claimedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    attemptCount?: IntFieldUpdateOperationsInput | number
+    lastError?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type FollowUpReminderUpdateWithoutUserInput = {

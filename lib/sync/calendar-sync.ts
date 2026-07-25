@@ -62,7 +62,9 @@ export async function syncCalendar(
     await Promise.all(
       events.map((e: NormalizedCalendarEvent) =>
         prisma.cachedCalendarEvent.upsert({
-          where: { id: e.id },
+          where: {
+            userId_homeAccountId_id: { userId, homeAccountId, id: e.id },
+          },
           update: {
             subject: e.subject,
             bodyPreview: e.bodyPreview ?? "",
@@ -189,7 +191,9 @@ export async function syncCalendar(
           );
 
           return prisma.cachedCalendarEvent.upsert({
-            where: { id: e.id },
+            where: {
+              userId_homeAccountId_id: { userId, homeAccountId, id: e.id },
+            },
             update: {
               subject: e.subject ?? "",
               bodyPreview: e.bodyPreview ?? "",

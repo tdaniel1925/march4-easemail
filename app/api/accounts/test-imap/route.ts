@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { ImapFlow } from "imapflow";
 import * as nodemailer from "nodemailer";
 import { z } from "zod";
+import { validateNetworkHost } from "../_lib/validate-session-url";
 
 const testImapSchema = z.object({
   email: z.string().email("Invalid email address").max(320),
@@ -40,6 +41,22 @@ export async function POST(req: NextRequest) {
     smtpPort,
     smtpSecurity,
   } = parsed.data;
+
+  const [imapHostCheck, smtpHostCheck] = await Promise.all([
+    validateNetworkHost(imapHost),
+    validateNetworkHost(smtpHost),
+  ]);
+  const hostError = !imapHostCheck.ok
+    ? imapHostCheck.error
+    : !smtpHostCheck.ok
+      ? smtpHostCheck.error
+      : null;
+  if (hostError) {
+    return NextResponse.json(
+      { error: hostError },
+      { status: 400 }
+    );
+  }
 
   const results = { imap: false, smtp: false, errors: [] as string[] };
 

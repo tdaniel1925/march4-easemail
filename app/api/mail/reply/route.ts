@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { prisma } from "@/lib/prisma";
 import { graphPost } from "@/lib/microsoft/graph";
-import { verifyAccountOwnership, detectProviderType, getProvider } from "@/lib/providers/registry";
+import { verifyAccountOwnership, detectProviderType, getProvider, getAllAccounts } from "@/lib/providers/registry";
 import { withRateLimit, rateLimiters } from "@/lib/rate-limit";
 import { z } from "zod";
 
@@ -44,12 +43,11 @@ async function replyHandler(req: NextRequest) {
     accountId = homeAccountId;
     accountEmail = account.email;
   } else {
-    const msDefault = await prisma.msConnectedAccount.findFirst({
-      where: { userId: user.id, isDefault: true },
-    });
-    if (!msDefault) return NextResponse.json({ error: "No connected account" }, { status: 404 });
-    accountId = msDefault.homeAccountId;
-    accountEmail = msDefault.msEmail;
+    const accounts = await getAllAccounts(user.id);
+    const defaultAccount = accounts.find((item) => item.isDefault) ?? accounts[0];
+    if (!defaultAccount) return NextResponse.json({ error: "No connected account" }, { status: 404 });
+    accountId = defaultAccount.accountId;
+    accountEmail = defaultAccount.email;
   }
 
   const providerType = detectProviderType(accountId);

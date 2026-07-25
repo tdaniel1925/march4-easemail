@@ -52,6 +52,8 @@ export async function POST(req: NextRequest) {
   try {
     const res = await fetch(sessionUrl, {
       headers: { Authorization: `Bearer ${token}` },
+      redirect: "error",
+      signal: AbortSignal.timeout(10_000),
     });
     if (!res.ok) {
       throw new Error(`Session fetch failed: ${res.status}`);
